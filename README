@@ -1,0 +1,8 @@
+veyepar - Video Eyeball Processor and Review
+
+Video metadata managre - given file names of raw footage, construct cut list (with human intervention), transcode, upload, anounce.
+
+based on DebConf system
+
+authors: Carl Karsten <carl@personnelware.com>  
+	Cosmin Stejerean <cstejerean@gmail.com>
