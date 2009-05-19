@@ -37,8 +37,9 @@ class Episode(models.Model):
     primary = models.CharField(max_length=135,
         help_text="pointer to master version of event (name,desc,time,author,files,etc)")
     name = models.CharField(max_length=135, help_text="(synced from primary source)")
-    description = models.TextField(blank=True, help_text="(synced from primary source)")
     slug = models.CharField(max_length=135,help_text="used for file name")
+    authors = models.TextField(blank=True,)
+    description = models.TextField(blank=True, help_text="(synced from primary source)")
     start = models.DateTimeField(null=True, blank=True, 
         help_text="initially scheduled time from master, adjusted to match reality")
     end = models.DateTimeField(null=True, blank=True)
