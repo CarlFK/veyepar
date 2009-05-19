@@ -26,13 +26,13 @@ class Raw_FileAdmin(admin.ModelAdmin):
 admin.site.register(Raw_File, Raw_FileAdmin)
 
 class QualityAdmin(admin.ModelAdmin):
-    list_display = ('level', 'name',)
-    admin_order_field = ('level', 'name',)
+    list_display = ('level', 'name','description')
+    admin_order_field = ('level',)
     # list_editable = list_display
 admin.site.register(Quality, QualityAdmin)
 
 class EpisodeAdmin(admin.ModelAdmin):
-    list_display = ('sequence', 'location_name', 'name',)
+    list_display = ('sequence', 'location_name', 'start','end','name',)
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Episode, EpisodeAdmin)
