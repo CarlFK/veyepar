@@ -3,7 +3,7 @@ from django.contrib import admin
 from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_List, State, Log
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('sequence', 'name',)
+    list_display = ('sequence', 'name', 'description',)
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Client, ClientAdmin)

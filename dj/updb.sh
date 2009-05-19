@@ -1,3 +1,5 @@
+#!/bin/bash -xe
+
 ./manage.py  dumpdata --settings dj.settings >vp.json 
 rm vp.db 
 ./manage.py syncdb --noinput

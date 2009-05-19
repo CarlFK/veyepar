@@ -6,6 +6,7 @@ class Client(models.Model):
     sequence = models.IntegerField(default=1)
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    description = models.TextField(blank=True)
     def __unicode__(self):
         return self.name
 
@@ -14,6 +15,7 @@ class Show(models.Model):
     sequence = models.IntegerField(default=1)
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    description = models.TextField(blank=True)
     @property
     def client_name(self):
         return self.client
@@ -25,6 +27,7 @@ class Location(models.Model):
     show = models.ForeignKey(Show)
     name = models.CharField(max_length=135,help_text="room name")
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    description = models.TextField(blank=True)
     @property
     def show_name(self):
         return self.show
