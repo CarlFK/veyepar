@@ -36,7 +36,7 @@ class Location(models.Model):
 
 class Raw_File(models.Model):
     location = models.ForeignKey(Location)
-    filename = models.CharField(max_length=135,help_text="pathname.dv")
+    filename = models.CharField(max_length=135,help_text="filename.dv")
     start = models.DateTimeField(null=True, blank=True, 
         help_text='when recorded (should agree with file name and timestamp)')
     end = models.DateTimeField(null=True, blank=True)
