@@ -1,0 +1,17 @@
+{# client.html #}
+{% extends "base.html" %}
+{% block content %}
+
+    <ul>
+        {% for location in locations %}
+            <li><a href="L/{{location.slug}}/">{{ location.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <ul>
+        {% for episode in episodes %}
+            <li><a href="E/{{episode.id}}/">{{ episode.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
