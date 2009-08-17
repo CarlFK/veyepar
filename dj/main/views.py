@@ -16,13 +16,14 @@ from datetime import datetime
 from datetime import timedelta
 import os
 
-from main.models import Client,Show,Location,Episode
+from main.models import Client,Show,Location,Episode,Cut_List
 
 def main(request):
     return render_to_response('main.html',
         context_instance=RequestContext(request) )
 
 def client(request,client_slug=None):
+    print client_slug
     client=get_object_or_404(Client,slug=client_slug)
     shows=Show.objects.filter(client=client)
     return render_to_response('client.html',
@@ -30,6 +31,7 @@ def client(request,client_slug=None):
        context_instance=RequestContext(request) )
 
 def get_dv_files(path):
+    # files=get_dv_files('/home/juser/temp/clojure/2009-may-meeting/sullys/dv')
     file_names=os.listdir(path)
     files=[{'name':n} for n in file_names]
     files=[]
@@ -40,15 +42,23 @@ def get_dv_files(path):
         files.append(d)
     return files
 
-def show(request,client_slug=None,show_slug=None):
+def client_shows(request,client_slug=None,show_slug=None):
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
     locations=Location.objects.filter(show=show)
     episodes=Episode.objects.filter(location__show=show)
-    files=get_dv_files('/home/juser/temp/clojure/2009-may-meeting/sullys/dv')
     return render_to_response('show.html',
         {'client':client,'show':show,
           'locations':locations,'episodes':episodes,
-          'files':files},
+        },
+	context_instance=RequestContext(request) )
+ 
+def episode(request,episode_no):
+    episode=get_object_or_404(Episode,id=episode_no)
+    cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
+    return render_to_response('episode.html',
+        {'episode':episode,
+        'cuts':cuts, 
+        },
 	context_instance=RequestContext(request) )
     	
