@@ -21,8 +21,8 @@ class LocationAdmin(admin.ModelAdmin):
 admin.site.register(Location, LocationAdmin)
 
 class Raw_FileAdmin(admin.ModelAdmin):
-    list_display = ('filename','start', 'end') 
-    admin_order_field = list_display
+    list_display = ('filename', 'location', 'durationhms', 'start', 'end', ) 
+    ordering = ('start',)
 admin.site.register(Raw_File, Raw_FileAdmin)
 
 class QualityAdmin(admin.ModelAdmin):

@@ -1,0 +1,11 @@
+{# client.html #}
+{% extends "base.html" %}
+{% block content %}
+
+    <ul>
+        {% for show in shows%}
+            <li><a href="S/{{show.slug}}/">{{ show.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

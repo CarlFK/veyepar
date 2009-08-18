@@ -1,0 +1,30 @@
+{# episode.html #}
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{{episode.location}}</h2>
+<h2>{{episode.name}}</h2>
+<table border=1px>
+<tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>
+<tr><td>Start</td><td>{{episode.start}}</td><td>{{episode.start|date:"P"}}</td></tr>
+<tr><td>End</td><td>{{episode.end}}</td> <td>{{episode.end|date:"P"}}</td></tr>
+</table>
+
+</p>
+
+<table border=1px>
+<tr><th>Useful</th><th>Seq</th><th>filename</th><th>Start</th><th>End</th><th>S</th><th>E</th><th>duration h:m:s</th></tr>
+{% for cl in cuts %}
+<tr>
+<td> {{ cl.trash|yesno:"Trash,,Unchecked" }} </td>
+<td> {{cl.sequence}} </td>
+<td> <a href="S/{{show.slug}}/">{{ cl.raw_file }}</a> </td>
+<td>{{cl.raw_file.start}}</td>
+<td>{{cl.raw_file.end}}</td>
+<td> {{cl.raw_file.start|date:"P"}} </td> <td> {{cl.raw_file.end|date:"P"}}</td>
+<td> {{cl.raw_file.durationhms}} </td> 
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

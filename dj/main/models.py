@@ -1,6 +1,7 @@
 # models.py
 
 from django.db import models
+import datetime
 
 class Client(models.Model):
     sequence = models.IntegerField(default=1)
@@ -40,7 +41,21 @@ class Raw_File(models.Model):
     start = models.DateTimeField(null=True, blank=True, 
         help_text='when recorded (should agree with file name and timestamp)')
     end = models.DateTimeField(null=True, blank=True)
+    trash = models.BooleanField(help_text="This clip is trash")
     comment = models.TextField(blank=True)
+    def duration(self):
+        """ returns the lenth in seconds """
+        duration = (self.end - self.start).seconds
+        return duration
+    duration.short_description = 'Duration (seconds)'
+    def durationhms(self):
+        """ returns the lenth in h:m:s """
+        duration = self.duration()
+        hours = duration / 3600
+        minutes = (duration - hours*3600)/60
+        seconds = (duration - hours*3600 - minutes*60)
+        return "%02d:%02d:%02d" % (hours, minutes, seconds)
+    durationhms.short_description = 'Duration (h:m:s)'
     def __unicode__(self):
         return self.filename
 
