@@ -69,7 +69,7 @@ class Quality(models.Model):
 class Episode(models.Model):
     location = models.ForeignKey(Location, null=True)
     state = models.IntegerField(null=True,blank=True,
-        help_test="current processing state" )
+        help_text="current processing state" )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
     primary = models.CharField(max_length=135,blank=True,
