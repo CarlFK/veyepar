@@ -78,8 +78,9 @@ def ocrdv(dvfn,maxframes):
             if score>2:
                 print "score", score
                 print titls
-                return ocrtext
+                return ocrtext,image
 
         frameno+=30*60  # bump on min
 
-    return ''
+    image = stream.GetFrameNo(0)
+    return '',image

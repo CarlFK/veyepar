@@ -23,3 +23,7 @@ urlpatterns = patterns('',
     (r'^databrowse/(.*)', databrowse.site.root),
     (r'^main/', include('main.urls')),
 )
+urlpatterns += patterns('',
+(r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': '/home/carl/Videos/','show_indexes': True}))
+

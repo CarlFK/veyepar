@@ -1,6 +1,7 @@
 # models.py
 
 from django.db import models
+import os
 import datetime
 
 class Client(models.Model):
@@ -42,7 +43,10 @@ class Raw_File(models.Model):
         help_text='when recorded (should agree with file name and timestamp)')
     end = models.DateTimeField(null=True, blank=True)
     trash = models.BooleanField(help_text="This clip is trash")
+    ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
+    def basename(self):
+        return os.path.splitext(self.filename)[0]
     def duration(self):
         """ returns the lenth in seconds """
         duration = (self.end - self.start).seconds
@@ -76,7 +80,7 @@ class Episode(models.Model):
         help_text="pointer to master version of event (name,desc,time,author,files,etc)")
     name = models.CharField(max_length=135, help_text="(synced from primary source)")
     slug = models.CharField(max_length=135,help_text="used for file name")
-    authors = models.TextField(blank=True,)
+    authors = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     start = models.DateTimeField(null=True, blank=True, 
         help_text="initially scheduled time from master, adjusted to match reality")
@@ -100,7 +104,7 @@ class Cut_List(models.Model):
         help_text='offset from start in HH:MM:SS.SS')
     comment = models.TextField(blank=True)
     def __unicode__(self):
-        return "%s - %s" % (self.start, self.end)
+        return "%s - %s" % (self.raw_file, self.episode)
 
 class State(models.Model):
     sequence = models.IntegerField(default=1)

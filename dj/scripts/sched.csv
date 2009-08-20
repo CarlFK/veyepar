@@ -1,29 +1,24 @@
-Date,Time,Room,title
-2009-07-25,10:30:00 AM,Auditorium,Opening Remarks
-2009-07-25,05:00:00 PM,Auditorium,Evening Lightning Talks
-2009-07-26,05:00:00 PM,Auditorium,Evening Lightning Talks
-2009-07-25,11:00:00 AM,Auditorium,#12 Getting Started With Django
-2009-07-25,11:00:00 AM,Classroom 1,#13 Coroutine Use In A Cavern Simulator
-2009-07-25,01:00:00 PM,Auditorium,#16 A Survey of Unit Testing Frameworks
-2009-07-25,01:00:00 PM,Classroom 1,#3 Python for Java Developers
-2009-07-25,01:00:00 PM,Classroom 2,#15 Teach Me Python
-2009-07-25,02:00:00 PM,Auditorium,#11 Show & Tell: IronPython Edition
-2009-07-25,02:00:00 PM,Classroom 1,#22 Operator Overloading and More
-2009-07-25,02:00:00 PM,Classroom 2,#5 Tutorial: Form-to-Database Web development
-2009-07-25,03:00:00 PM,Auditorium,#17 Python not harmful to CS majors (and good for everyone)
-2009-07-25,03:00:00 PM,Classroom 1,#8 Artificial Intelligence and Python: Developing a Conversational Interface Using Python
-2009-07-25,03:00:00 PM,Classroom 2,#5 Tutorial: Form-to-Database Web development (continued)
-2009-07-25,04:00:00 PM,Auditorium,#18 Game Development With Python and Pyglet
-2009-07-25,04:00:00 PM,Classroom 2,#5 Tutorial: Form-to-Database Web development (continued)
-2009-07-26,10:00:00 AM,Auditorium,#1 Django: After the Tutorial
-2009-07-26,10:00:00 AM,Classroom 1,#4 Python for Fun and Profit
-2009-07-26,10:00:00 AM,Classroom 2,#28 Oracle/Python/Linux Tutorial
-2009-07-26,11:00:00 AM,Auditorium,#14 There's nothing wrong with buildbot that a complete rewrite couldn't fix
-2009-07-26,11:00:00 AM,Classroom 1,#0 Clever uses for metaclasses
-2009-07-26,11:00:00 AM,Classroom 2,#28 Oracle/Python/Linux Tutorial (continued)
-2009-07-26,01:00:00 PM,Auditorium,#23 Deciding on a Python Web Technology Stack
-2009-07-26,01:00:00 PM,Classroom 1,#19 Dependency Injection in Python w/ snake-guice
-2009-07-26,02:00:00 PM,Auditorium,#20 Extending Plone using the Zope Component Architecture
-2009-07-26,02:00:00 PM,Classroom 1,#6 Inter-Process/Task Communication With Message Queues
-2009-07-26,03:00:00 PM,Auditorium,#10 Pumping Iron into Python: Intro to FePy
-2009-07-26,03:00:00 PM,Classroom 1,#21 Using Buildout to Develop and Deploy Python Projects
+Date,Time,Room,title,Link to talk,presenter(s),Link to Bio
+7/25/2009,10:30:00,Auditorium,Opening Remarks
+7/25/2009,11:00:00,Auditorium,#12 Getting Started With Django,http://www.pyohio.org/Talks#talk12,Alex Gaynor,http://www.pyohio.org/Presenters#presenter12
+7/25/2009,13:00:00,Auditorium,#3 Python for Java Developers,http://www.pyohio.org/Talks#talk3,Eric Floehr,http://www.pyohio.org/Presenters#presenter4
+7/25/2009,14:00:00,Auditorium,#22 Operator Overloading and More,http://www.pyohio.org/Talks#talk22,Neil Ludban,http://www.pyohio.org/Presenters#presenter22
+7/25/2009,15:00:00,Auditorium,#17 Python not harmful to CS majors (and good for everyone),http://www.pyohio.org/Talks#talk17,Bill Punch,http://www.cse.msu.edu/~punch/
+7/25/2009,16:00:00,Auditorium,#18 Game Development With Python and Pyglet,http://www.pyohio.org/Talks#talk18,Steve Johnson,http://www.pyohio.org/Presenters#presenter18
+7/25/2009,17:00:00,Auditorium,Evening Lightning Talks
+7/25/2009,11:00:00,Classroom 1,#13 Coroutine Use In A Cavern Simulator,http://www.pyohio.org/Talks#talk13,Jay Shaffstall,http://www.pyohio.org/Presenters#presenter13
+7/25/2009,15:00:00,Classroom 1,#8 Artificial Intelligence and Python: Developing a Conversational Interface Using Python,http://www.pyohio.org/Talks#talk8,Jerry Felix,http://www.pyohio.org/Presenters#Jerry_Felix
+7/25/2009,13:00:00,Classroom 1,#15 Teach Me Python,http://www.pyohio.org/Tutorials#tutorial15,David Felix
+7/25/2009,14:00:00,Classroom 2,#5 Tutorial: Form-to-Database Web development,http://www.pyohio.org/Tutorials#tutorial5,Gloria W. Jacobs,http://www.pyohio.org/Presenters#presenter5
+7/26/2009,10:00:00,Auditorium,#4 Python for Fun and Profit,http://www.pyohio.org/Talks#talk4,Eric Floehr,http://www.pyohio.org/Presenters#presenter4
+7/26/2009,11:00:00,Auditorium,#14 There's nothing wrong with buildbot that a complete rewrite couldn't fix,http://www.pyohio.org/Talks#talk14,C. Titus Brown,http://ivory.idyll.org/
+7/26/2009,13:00:00,Auditorium,#23 Deciding on a Python Web Technology Stack,http://www.pyohio.org/Talks#talk23,Mark Ramm-Christensen,http://www.pyohio.org/Presenters#presenter23
+7/26/2009,14:00:00,Auditorium,#20 Extending Plone using the Zope Component Architecture,http://www.pyohio.org/Talks#talk20,Calvin Hendryx-Parker,http://www.pyohio.org/Presenters#presenter20
+7/26/2009,15:00:00,Auditorium,#21 Using Buildout to Develop and Deploy Python Projects,http://www.pyohio.org/Talks#talk21,Clayton Parker,http://www.pyohio.org/Presenters#presenter21
+7/26/2009,16:00:00,Auditorium,#1 Django: After the Tutorial,http://www.pyohio.org/Talks#talk1,Joe Tyson,http://www.pyohio.org/Presenters#presenter1
+7/26/2009,17:00:00,Auditorium,Evening Lightning Talks
+7/26/2009,11:00:00,Classroom 1,#0 Clever uses for metaclasses,http://www.pyohio.org/Talks#talk0,Matt Wilson,http://www.pyohio.org/Presenters#presenter0
+7/26/2009,13:00:00,Classroom 1,#19 Dependency Injection in Python w/ snake-guice,http://www.pyohio.org/Talks#talk19,David Stanek,http://www.pyohio.org/Presenters#presenter19
+7/26/2009,14:00:00,Classroom 1,#6 Inter-Process/Task Communication With Message Queues,http://www.pyohio.org/Talks#talk6,William McVey,http://www.pyohio.org/Presenters#presenter6
+7/26/2009,16:00:00,Classroom 1,#16 A Survey of Unit Testing Frameworks,http://www.pyohio.org/Talks#talk16,John Szakmeister & Tim Woods
+7/26/2009,10:00:00,Classroom 2,#28 Oracle/Python/Linux Tutorial,http://www.pyohio.org/Tutorials#tutorial28,Gloria W. Jacobs,http://www.pyohio.org/Presenters#presenter5

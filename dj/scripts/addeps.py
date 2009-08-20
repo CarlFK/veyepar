@@ -11,22 +11,32 @@ sys.path.insert(0, '..' )
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 import settings
+print settings.DATABASE_NAME
+settings.DATABASE_NAME="../vp.db"
 
-from main.models import Show, Location, Episode
+from main.models import Client, Show, Location, Episode
 
-show = Show.objects.get(name='PyOhio09')
+Client.objects.all().delete()
+Show.objects.all().delete()
+client,created = Client.objects.get_or_create(name='PyOhio',slug="pyohio")
+show,created = Show.objects.get_or_create(name='PyOhio09',slug="pyohio09",client=client)
 print show
 
 # clear out previous runs for this show
 Episode.objects.filter(location__show=show).delete()
+Location.objects.filter(show=show).delete()
 
 reader = DictReader(open("sched.csv", "rb"))
 {'Date': '2009-07-25', 'title': '#12 Getting Started With Django', 'Room': 'Auditorium', 'Time': '11:00:00 AM'}
 seq=1
 for row in reader:
     print row
-    loc = Location.objects.get(show=show,name=row['Room'])
+    location= ''.join([c for c in row['Room'] if c.isalpha() or c.isdigit()]).lower()
+    loc,created = Location.objects.get_or_create(show=show,name=row['Room'],slug=location)
     print loc
+    name = row['title'] 
+    if name.startswith('#'): name = ' '.join(name.split()[1:])
+    slug = ''.join([c for c in name if c.isalpha() or c.isdigit()]).lower()
     dt = row['Date']+' '+ row['Time']
     start=parse(dt)
     end=start+timedelta(minutes=65)
@@ -34,11 +44,10 @@ for row in reader:
     ep = Episode(
        sequence=seq,
        location=loc, 
-       name=row['title'], 
+       name=name,
+       slug=slug,
+       authors=row['presenter(s)'], 
        start=start, end=end,
         ).save()
     seq+=1
-
-
-
 
