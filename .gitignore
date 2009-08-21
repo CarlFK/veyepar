@@ -1,3 +1,7 @@
-*.bak
+dictionary.txt
+vp.db
+vp.json
+main.sql
+temp
 *.pyc
-*.swp
+*.bak
