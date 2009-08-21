@@ -6,7 +6,6 @@ from django.template import RequestContext
 
 from django.core.paginator import Paginator, InvalidPage
 
-
 from django import forms
 from django.forms import ModelForm
 
@@ -17,6 +16,21 @@ from datetime import timedelta
 import os
 
 from main.models import Client,Show,Location,Episode,Cut_List
+
+class Cut_ListRaw_FileForm(forms.Form):
+    trash = forms.BooleanField(label="Trash")
+    sequence = forms.IntegerField(label="Sequence",
+      widget=forms.TextInput(attrs={'size':'3'}))
+    start = forms.CharField(max_length=12,label="Start",
+      help_text = "offset from start in h:m:s or frames, blank for start",
+      widget=forms.TextInput(attrs={'size':'9'}))
+    end = forms.CharField(max_length=12,label="End",
+      help_text = "offset from start in h:m:s or frames, blank for end",
+      widget=forms.TextInput(attrs={'size':'9'}))
+    rf_comment = forms.CharField(label="Raw_File comment",
+      widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
+    cl_comment = forms.CharField(label="Cut_List comment",
+      widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
 
 def main(request):
     return render_to_response('main.html',
@@ -56,9 +70,31 @@ def client_shows(request,client_slug=None,show_slug=None):
 def episode(request,episode_no):
     episode=get_object_or_404(Episode,id=episode_no)
     cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
+    clrfform = Cut_ListRaw_FileForm()
+
+# If all the dates are the same, don't bother displaying them
+    talkdate = episode.start.date()
+    same = talkdate==episode.end.date()
+    if same:
+        for cut in cuts:
+            # cut.raw_file.dur=cut.raw_file.durationhms()
+            same = same and \
+               talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
+        """
+        if same:
+            episode.start = episode.start.time()
+            episode.end = episode.end.time()
+            for cut in cuts:
+                cut.raw_file.start = cut.raw_file.start.time()
+                cut.raw_file.end = cut.raw_file.end.time()
+        """
+
     return render_to_response('episode.html',
         {'episode':episode,
+        'episode_date':talkdate,
+        'same_dates':same,
         'cuts':cuts, 
+        'clrfform':clrfform, 
         },
 	context_instance=RequestContext(request) )
     	

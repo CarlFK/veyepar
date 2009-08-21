@@ -2,35 +2,74 @@
 {% extends "base.html" %}
 {% block content %}
 
+
+
 <h2>{{episode.location}}</h2>
 <h2>Title: {{episode.name}}</h2>
 <h2>Author(s): {{episode.authors}}</h2>
-<table border=1px>
-<tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>
-<tr><td>Start</td><td>{{episode.start}}</td><td>{{episode.start|date:"P"}}</td></tr>
-<tr><td>End</td><td>{{episode.end}}</td> <td>{{episode.end|date:"P"}}</td></tr>
+<table>
+<tbody>
+<tr><td>Date</td><td>{{episode_date|date:"b D d"}}</td></tr>
+<tr><td>Start</td><td>{% if same_dates %}{{episode.start|date:"H:i"}}{% else %}{{episode.start}}{% endif %}</td></tr>
+<tr><td>End</td><td> {% if same_dates %}{{episode.end|date:"H:i"}}{% else %}{{episode.end}}{% endif %} </td></tr>
+</tbody>
 </table>
 
-<table border=1px>
-<tr><th></th><th>Seq</th><th>filename</th><th>Start</th><th>End</th><th>S</th><th>E</th><th>duration h:m:s</th></tr>
+<table border=1>
+<tbody>
 {% for cl in cuts %}
-<tr>
-<td> {{ cl.trash|yesno:"Trash,,Unchecked" }} </td>
-<td> {{cl.sequence}} </td>
-<td> <a href="S/{{show.slug}}/">{{ cl.raw_file }}</a> </td>
-<td>{{cl.raw_file.start}}</td>
-<td>{{cl.raw_file.end}}</td>
-<td> {{cl.raw_file.start|date:"P"}} </td> <td> {{cl.raw_file.end|date:"P"}}</td>
-<td> {{cl.raw_file.durationhms}} </td> 
-</tr>
-<tr>
-<td><a href="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg">
-<img src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg" width=200> </a>
-</td>
-<td>{{cl.raw_file.ocrtext}}</td>
-<td><video src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.ogg" controls ></video> </td>
-</tr>
+  <tr>
+
+  <td>
+  <a href="S/{{show.slug}}/">{{ cl.raw_file }}</a> 
+  <table>
+  <tbody>
+    <tr><td>Trash:</td><td>{{ clrfform.trash }}</td></tr>
+    <tr><td>Seq:</td><td>{{ clrfform.sequence }}</td></tr>
+  </tbody>
+  </table>
+  </td>
+
+  <td>
+  <table border=1>
+  <tbody>
+    <td><a href="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{episode_date|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg">
+<img src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{episode_date|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg" width=200> </a>
+    </td>
+
+    <td>
+    <table border=1>
+    <tbody>
+      <tr> <th></th> <th>Raw File</th> <th>Cut List</th> </tr>
+      <tr> <td>Start</td><td>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</td> <td>{{ clrfform.start }}</td> </tr>
+      <tr> <td>Duration:</td> <td>{{cl.raw_file.durationhms}}</td> </tr>
+      <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}</td> </tr>
+
+      <tr> <td>Comments:</td> <td>{{clrfform.rf_comment}}</td> <td>{{clrfform.cl_comment}}</td> </tr>
+
+    </tbody>
+    </table>
+    </td>
+
+  </tbody>
+  </table>
+  </tr>
+
+  <tr>
+  <td></td>
+  <td>
+  <table border=1>
+  <tbody>
+    <tr>
+    <td>{{cl.raw_file.ocrtext}}</td>
+    <td> <video src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{episode_date|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.ogg" controls='' ></video> </td>
+    </tr>
+  </tbody>
+  </table>
+  </td>
+  </tr>
 {% endfor %}
+</tbody>
 </table>
 
 {% endblock %}
