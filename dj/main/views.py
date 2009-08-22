@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, InvalidPage
 
 from django import forms
 from django.forms import ModelForm
+from django.forms.formsets import formset_factory
 
 from django.db.models import Q
 
@@ -17,7 +18,7 @@ import os
 
 from main.models import Client,Show,Location,Episode,Cut_List
 
-class Cut_ListRaw_FileForm(forms.Form):
+class clrfForm(forms.Form):
     trash = forms.BooleanField(label="Trash")
     sequence = forms.IntegerField(label="Sequence",
       widget=forms.TextInput(attrs={'size':'3'}))
@@ -31,7 +32,6 @@ class Cut_ListRaw_FileForm(forms.Form):
       widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
     cl_comment = forms.CharField(label="Cut_List comment",
       widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
-
 
 def main(request):
     return render_to_response('main.html',
@@ -71,7 +71,6 @@ def client_shows(request,client_slug=None,show_slug=None):
 def episode(request,episode_no):
     episode=get_object_or_404(Episode,id=episode_no)
     cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
-    clrfform = Cut_ListRaw_FileForm()
 
 # If all the dates are the same, don't bother displaying them
     talkdate = episode.start.date()
@@ -82,11 +81,19 @@ def episode(request,episode_no):
             same_dates = same_dates and \
                talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
 
+    clrfFormSet = formset_factory(clrfForm, extra=0)
+    init = [{'trash':cut.raw_file.trash,
+            'sequence':cut.sequence,
+            'start':cut.start, 'end':cut.end,
+            'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
+    } for cut in cuts]
+    clrfformset = clrfFormSet(initial=init)
+
+
     return render_to_response('episode.html',
         {'episode':episode,
         'same_dates':same_dates,
-        'cuts':cuts, 
-        'clrfform':clrfform, 
+        'clrffs':zip(cuts,clrfformset.forms)
         },
-	context_instance=RequestContext(request) )
+    	context_instance=RequestContext(request) )
     	

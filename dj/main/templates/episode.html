@@ -2,8 +2,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-
-
 <h2>{{episode.location}}</h2>
 <h2>Title: {{episode.name}}</h2>
 <h2>Author(s): {{episode.authors}}</h2>
@@ -17,15 +15,14 @@
 
 <table border=1>
 <tbody>
-{% for cl in cuts %}
+{% for cl,clrfform in clrffs %}
   <tr>
-
   <td>
-  <a href="S/{{show.slug}}/">{{ cl.raw_file }}</a> 
+  <a href="S/{{show.slug}}/">{{ cl.raw_file.filename }}</a> 
   <table>
   <tbody>
-    <tr><td>Trash:</td><td>{{ clrfform.trash }}</td></tr>
-    <tr><td>Seq:</td><td>{{ clrfform.sequence }}</td></tr>
+    <tr><td>{{ clrfform.trash.label_tag }}:</td><td>{{ clrfform.trash }}</td></tr>
+    <tr><td>{{ clrfform.sequence.label_tag }}:</td><td>{{ clrfform.sequence }}</td></tr>
   </tbody>
   </table>
   </td>
