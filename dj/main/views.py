@@ -32,6 +32,7 @@ class Cut_ListRaw_FileForm(forms.Form):
     cl_comment = forms.CharField(label="Cut_List comment",
       widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
 
+
 def main(request):
     return render_to_response('main.html',
         context_instance=RequestContext(request) )
