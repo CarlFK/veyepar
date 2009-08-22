@@ -2,12 +2,15 @@
 {% extends "base.html" %}
 {% block content %}
 
+<a href="/main/E/{{ nextepisode.id }}">Next: {{nextepisode.name }}</a>
+
+
 <h2>{{episode.location}}</h2>
 <h2>Title: {{episode.name}}</h2>
 <h2>Author(s): {{episode.authors}}</h2>
 <table>
 <tbody>
-<tr><td>Date</td><td>{{episode_date|date:"b D d"}}</td></tr>
+<tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>
 <tr><td>Start</td><td>{% if same_dates %}{{episode.start|date:"H:i"}}{% else %}{{episode.start}}{% endif %}</td></tr>
 <tr><td>End</td><td> {% if same_dates %}{{episode.end|date:"H:i"}}{% else %}{{episode.end}}{% endif %} </td></tr>
 </tbody>
@@ -22,19 +25,14 @@
   <tr>
   <td>
   {{clrfform.clid}}
-  <a href="S/{{show.slug}}/">{{ cl.raw_file.filename }}</a> 
-  <table>
-  <tbody>
-    <tr><td>{{ clrfform.trash.label_tag }}:</td><td>{{ clrfform.trash }}</td></tr>
-    <tr><td>{{ clrfform.sequence.label_tag }}:</td><td>{{ clrfform.sequence }}</td></tr>
-  </tbody>
-  </table>
-  </td>
-
-  <td>
   <table border=1>
   <tbody>
-    <td><a href="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg">
+    <tr>
+    <td>
+    {{clrfform.clid}}
+    <a href="S/{{show.slug}}/F/{{cl.raw_file.id}}">{{ cl.raw_file.filename }}</a>
+    {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}
+    <a href="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg">
 <img src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg" width=200> </a>
     </td>
 
@@ -46,6 +44,7 @@
       <tr> <td>Duration:</td> <td>{{cl.raw_file.durationhms}}</td> </tr>
       <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}</td> </tr>
 
+      <tr><td></td><td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td><td>{{ clrfform.delete.label_tag }}{{ clrfform.delete }}</td> </tr>
       <tr> <td>Comments:</td> <td>{{clrfform.rf_comment}}</td> <td>{{clrfform.cl_comment}}</td> </tr>
 
     </tbody>
@@ -57,13 +56,12 @@
   </tr>
 
   <tr>
-  <td></td>
   <td>
   <table border=1>
   <tbody>
     <tr>
     <td>{{cl.raw_file.ocrtext}}</td>
-    <td> <video src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.ogg" controls='' ></video> </td>
+    {# <td> <video src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.ogg" controls='' ></video> </td> #}
     </tr>
   </tbody>
   </table>

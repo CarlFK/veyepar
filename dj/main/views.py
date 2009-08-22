@@ -55,6 +55,7 @@ def client_shows(request,client_slug=None,show_slug=None):
  
 class clrfForm(forms.Form):
     clid = forms.IntegerField(widget=forms.HiddenInput())
+    delete = forms.BooleanField(label="Delete",required=False)
     trash = forms.BooleanField(label="Trash",required=False)
     sequence = forms.IntegerField(label="Sequence",required=False,
       widget=forms.TextInput(attrs={'size':'3'}))
@@ -72,25 +73,32 @@ class clrfForm(forms.Form):
 def episode(request,episode_no):
 
     episode=get_object_or_404(Episode,id=episode_no)
-    cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
+    episodes=Episode.objects.filter(id__gt=episode_no,location__show=episode.location.show).order_by('id')
+    if episodes: nextepisode=episodes[0]
+    else: nextepisode=episode
+
+    cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','raw_file__start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.method == 'POST': 
         clrfformset = clrfFormSet(request.POST) 
         if clrfformset.is_valid(): 
             for form in clrfformset.forms:
-                print form.cleaned_data['clid'], form.cleaned_data['sequence']
                 cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])
-                print cl
                 cl.raw_file.trash=form.cleaned_data['trash']
-                cl.sequence=form.cleaned_data['sequence']
-                cl.start=form.cleaned_data['start']
-                cl.end=form.cleaned_data['end']
-                cl.comment=form.cleaned_data['cl_comment']
                 cl.raw_file.comment=form.cleaned_data['rf_comment']
-                cl.save()
                 cl.raw_file.save()
-               
+                if form.cleaned_data['delete']:
+                    cl.delete()
+                else:
+                    cl.sequence=form.cleaned_data['sequence']
+                    cl.start=form.cleaned_data['start']
+                    cl.end=form.cleaned_data['end']
+                    cl.comment=form.cleaned_data['cl_comment']
+                    cl.save()
+
+            # if trash got touched, need to requery to get things in the right order.  I think.
+            cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','raw_file__start')
             # return HttpResponseRedirect('/thanks/') # Redirect after POST
         else:
             print clrfformset.errors
@@ -117,6 +125,7 @@ def episode(request,episode_no):
 
     return render_to_response('episode.html',
         {'episode':episode,
+        'nextepisode':nextepisode,
         'same_dates':same_dates,
         'clrffs':zip(cuts,clrfformset.forms),
         'clrfformset':clrfformset,
