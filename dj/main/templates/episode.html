@@ -13,11 +13,15 @@
 </tbody>
 </table>
 
+<form action="" method="POST">
+{{ clrfformset.management_form }}
+
 <table border=1>
 <tbody>
 {% for cl,clrfform in clrffs %}
   <tr>
   <td>
+  {{clrfform.clid}}
   <a href="S/{{show.slug}}/">{{ cl.raw_file.filename }}</a> 
   <table>
   <tbody>
@@ -68,5 +72,8 @@
 {% endfor %}
 </tbody>
 </table>
+
+<p><input type="submit" value="Save" /></p>
+</form>
 
 {% endblock %}

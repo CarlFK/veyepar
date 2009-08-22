@@ -18,21 +18,6 @@ import os
 
 from main.models import Client,Show,Location,Episode,Cut_List
 
-class clrfForm(forms.Form):
-    trash = forms.BooleanField(label="Trash")
-    sequence = forms.IntegerField(label="Sequence",
-      widget=forms.TextInput(attrs={'size':'3'}))
-    start = forms.CharField(max_length=12,label="Start",
-      help_text = "offset from start in h:m:s or frames, blank for start",
-      widget=forms.TextInput(attrs={'size':'9'}))
-    end = forms.CharField(max_length=12,label="End",
-      help_text = "offset from start in h:m:s or frames, blank for end",
-      widget=forms.TextInput(attrs={'size':'9'}))
-    rf_comment = forms.CharField(label="Raw_File comment",
-      widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
-    cl_comment = forms.CharField(label="Cut_List comment",
-      widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
-
 def main(request):
     return render_to_response('main.html',
         context_instance=RequestContext(request) )
@@ -68,9 +53,58 @@ def client_shows(request,client_slug=None,show_slug=None):
         },
 	context_instance=RequestContext(request) )
  
+class clrfForm(forms.Form):
+    clid = forms.IntegerField(widget=forms.HiddenInput())
+    trash = forms.BooleanField(label="Trash",required=False)
+    sequence = forms.IntegerField(label="Sequence",required=False,
+      widget=forms.TextInput(attrs={'size':'3'}))
+    start = forms.CharField(max_length=12,label="Start",required=False,
+      help_text = "offset from start in h:m:s or frames, blank for start",
+      widget=forms.TextInput(attrs={'size':'9'}))
+    end = forms.CharField(max_length=12,label="End",required=False,
+      help_text = "offset from start in h:m:s or frames, blank for end",
+      widget=forms.TextInput(attrs={'size':'9'}))
+    rf_comment = forms.CharField(label="Raw_File comment",required=False,
+      widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
+    cl_comment = forms.CharField(label="Cut_List comment",required=False,
+      widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
+
 def episode(request,episode_no):
+
     episode=get_object_or_404(Episode,id=episode_no)
     cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
+
+    clrfFormSet = formset_factory(clrfForm, extra=0)
+    if request.method == 'POST': 
+        clrfformset = clrfFormSet(request.POST) 
+        if clrfformset.is_valid(): 
+            for form in clrfformset.forms:
+                print form.cleaned_data['clid'], form.cleaned_data['sequence']
+                cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])
+                print cl
+                cl.raw_file.trash=form.cleaned_data['trash']
+                cl.sequence=form.cleaned_data['sequence']
+                cl.start=form.cleaned_data['start']
+                cl.end=form.cleaned_data['end']
+                cl.comment=form.cleaned_data['cl_comment']
+                cl.raw_file.comment=form.cleaned_data['rf_comment']
+                cl.save()
+                cl.raw_file.save()
+               
+            # return HttpResponseRedirect('/thanks/') # Redirect after POST
+        else:
+            print clrfformset.errors
+    else:
+        # init data with things in the queryset that need editing
+        # this part seems to work.
+        init = [{'clid':cut.id,
+                'trash':cut.raw_file.trash,
+                'sequence':cut.sequence,
+                'start':cut.start, 'end':cut.end,
+                'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
+        } for cut in cuts]
+        clrfformset = clrfFormSet(initial=init)
+
 
 # If all the dates are the same, don't bother displaying them
     talkdate = episode.start.date()
@@ -81,19 +115,11 @@ def episode(request,episode_no):
             same_dates = same_dates and \
                talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
 
-    clrfFormSet = formset_factory(clrfForm, extra=0)
-    init = [{'trash':cut.raw_file.trash,
-            'sequence':cut.sequence,
-            'start':cut.start, 'end':cut.end,
-            'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
-    } for cut in cuts]
-    clrfformset = clrfFormSet(initial=init)
-
-
     return render_to_response('episode.html',
         {'episode':episode,
         'same_dates':same_dates,
-        'clrffs':zip(cuts,clrfformset.forms)
+        'clrffs':zip(cuts,clrfformset.forms),
+        'clrfformset':clrfformset,
         },
     	context_instance=RequestContext(request) )
     	
