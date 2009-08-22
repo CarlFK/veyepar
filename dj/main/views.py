@@ -74,25 +74,16 @@ def episode(request,episode_no):
 
 # If all the dates are the same, don't bother displaying them
     talkdate = episode.start.date()
-    same = talkdate==episode.end.date()
-    if same:
+    same_dates = talkdate==episode.end.date()
+    if same_dates:
         for cut in cuts:
             # cut.raw_file.dur=cut.raw_file.durationhms()
-            same = same and \
+            same_dates = same_dates and \
                talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
-        """
-        if same:
-            episode.start = episode.start.time()
-            episode.end = episode.end.time()
-            for cut in cuts:
-                cut.raw_file.start = cut.raw_file.start.time()
-                cut.raw_file.end = cut.raw_file.end.time()
-        """
 
     return render_to_response('episode.html',
         {'episode':episode,
-        'episode_date':talkdate,
-        'same_dates':same,
+        'same_dates':same_dates,
         'cuts':cuts, 
         'clrfform':clrfform, 
         },
