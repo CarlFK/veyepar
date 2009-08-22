@@ -32,6 +32,7 @@ class Cut_ListRaw_FileForm(forms.Form):
     cl_comment = forms.CharField(label="Cut_List comment",
       widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
 
+
 def main(request):
     return render_to_response('main.html',
         context_instance=RequestContext(request) )
@@ -80,18 +81,9 @@ def episode(request,episode_no):
             # cut.raw_file.dur=cut.raw_file.durationhms()
             same = same and \
                talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
-        """
-        if same:
-            episode.start = episode.start.time()
-            episode.end = episode.end.time()
-            for cut in cuts:
-                cut.raw_file.start = cut.raw_file.start.time()
-                cut.raw_file.end = cut.raw_file.end.time()
-        """
 
     return render_to_response('episode.html',
         {'episode':episode,
-        'episode_date':talkdate,
         'same_dates':same,
         'cuts':cuts, 
         'clrfform':clrfform, 

@@ -33,8 +33,8 @@
   <td>
   <table border=1>
   <tbody>
-    <td><a href="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{episode_date|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg">
-<img src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{episode_date|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg" width=200> </a>
+    <td><a href="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg">
+<img src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg" width=200> </a>
     </td>
 
     <td>
@@ -62,7 +62,7 @@
   <tbody>
     <tr>
     <td>{{cl.raw_file.ocrtext}}</td>
-    <td> <video src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{episode_date|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.ogg" controls='' ></video> </td>
+    <td> <video src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.ogg" controls='' ></video> </td>
     </tr>
   </tbody>
   </table>
