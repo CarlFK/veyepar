@@ -39,6 +39,7 @@ def time2b(time,fps,bpf,default):
     return bytes
 
 def enc_one(ep):
+    print ep.id, ep.name
     root='/home/carl/Videos' # root dir of .dv files
     loc = ep.location
     show = loc.show
@@ -73,9 +74,15 @@ def enc_one(ep):
             outf.close()
         
         cmd+=[dvpathname]
-        # print ' '.join(cmd)
-        # p=subprocess.Popen(cmd).wait()
-        ep.state = 3
+        print ' '.join(cmd)
+        p=subprocess.Popen(cmd).wait()
+        print "returcode:", p.returncode
+        if os.path.exists(oggpathname):
+            ep.state = 3
+        else:
+            print ep.id, ep.name
+            print "transcode failed"
+            # ep.state = 2
     else:
         print "No cutlist found."
     ep.save()
@@ -115,7 +122,7 @@ def main():
         enc_show(show)
     elif options.day:
         show = Show.objects.get(name='PyOhio09')
-        episodes = Episode.objects.filter(start__day=options.day)
+        episodes = Episode.objects.filter(location__show=show,start__day=options.day)
         enc_eps(episodes)
     else:
         episodes = Episode.objects.filter(id__in=args)

@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$', client_shows),
     (r'E/(?P<episode_no>\d+)/$', episode),)
 
-if settings.DEBUG:
+if False and settings.DEBUG:
     urlpatterns += patterns('',
         (r'^validator/', include('lukeplant_me_uk.django.validator.urls')))
 

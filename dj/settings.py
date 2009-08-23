@@ -63,11 +63,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-if False and DEBUG:
-    VALIDATOR_APP_VALIDATORS = {
+VALIDATOR_APP_VALIDATORS = {
         'text/html': '/usr/bin/validate',
         'application/xml+xhtml': '/usr/bin/validate',
     }
+if False and DEBUG:
     MIDDLEWARE_CLASSES = \
         ('lukeplant_me_uk.django.validator.middleware.ValidatorMiddleware', ) +\
         MIDDLEWARE_CLASSES
