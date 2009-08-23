@@ -46,16 +46,18 @@ def enc_one(ep):
     if cl:
         dt=ep.start.strftime("%Y-%m-%d")
         dir="%s/dv/%s/%s" % (root,dt,loc.slug)
+        oggpathname = "%s/%s.ogg"%(show.slug,ep.slug)
         cmd="ffmpeg2theora --videoquality 7 --audioquality 4 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
-        cmd+=['--output',"%s/%s.ogg"%(show.slug,ep.slug)]
+        cmd+=['--output',oggpathname]
         if len(cl)==1:
+            # use the raw dv file and ffmpeg2theora params to trim
             c=cl[0]
             if c.start: cmd+=['--starttime',str(time2s(c.start))]
             if c.end: cmd+=['--endtime',str(time2s(c.end))]
-            pathname = "%s/%s"%(dir,c.raw_file.filename)
-            cmd+=[pathname]
+            dvpathname = "%s/%s"%(dir,c.raw_file.filename)
         else:
-            outpathname = "/home/carl/temp/%s.dv"%ep.slug
+            # make a new dv file using just the frames to encode
+            dvpathname = "/home/carl/temp/%s.dv"%ep.slug
             outf=open(outpathname,'wb')
             for c in cl:
                 print (c.raw_file.filename, c.start,c.end)
@@ -68,20 +70,23 @@ def enc_one(ep):
                     outf.write(inf.read(BPF))
                 inf.close()
             outf.close()
-            cmd+=[outpathname]
-        print ' '.join(cmd)
-        p=subprocess.Popen(cmd).wait()
+        
+        cmd+=[dvpathname]
+        # print ' '.join(cmd)
+        # p=subprocess.Popen(cmd).wait()
+        ep.state = 3
     else:
         print "No cutlist found."
+    ep.save()
 
     return 
 
 def encshow(show):
     locs = Location.objects.filter(show=show)
     for loc in locs:
-        episodes = Episode.objects.filter(location=loc)
+        episodes = Episode.objects.filter(location=loc,state=2)
         for ep in episodes:
-             print ep.id, ep.name
+             # print ep.id, ep.name
              enc_one(ep)
 
 def parse_args():
