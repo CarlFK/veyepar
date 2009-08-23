@@ -4,6 +4,7 @@
 
 import optparse
 import os,sys,subprocess
+import datetime
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
@@ -58,11 +59,11 @@ def enc_one(ep):
         else:
             # make a new dv file using just the frames to encode
             dvpathname = "/home/carl/temp/%s.dv"%ep.slug
-            outf=open(outpathname,'wb')
+            outf=open(dvpathname,'wb')
             for c in cl:
                 print (c.raw_file.filename, c.start,c.end)
-                inpathname = "%s/%s"%(dir,c.raw_file.filename)
-                inf=open(inpathname,'rb')
+                rawpathname = "%s/%s"%(dir,c.raw_file.filename)
+                inf=open(rawpathname,'rb')
                 inf.seek(time2b(c.start,29.9,BPF,0))
                 size=os.fstat(inf.fileno()).st_size
                 end = time2b(c.end,29.9,BPF,size)
@@ -80,19 +81,24 @@ def enc_one(ep):
     ep.save()
 
     return 
+def enc_eps(episodes):
+    for ep in episodes:
+        if ep.state==2:
+             # print ep.id, ep.name
+             enc_one(ep)
 
-def encshow(show):
+def enc_show(show):
     locs = Location.objects.filter(show=show)
     for loc in locs:
         episodes = Episode.objects.filter(location=loc,state=2)
-        for ep in episodes:
-             # print ep.id, ep.name
-             enc_one(ep)
+        enc_eps(episodes)
+
 
 def parse_args():
     parser = optparse.OptionParser()
     parser.add_option('-a', '--all' )
     parser.add_option('-s', '--show' )
+    parser.add_option('-d', '--day' )
 
     options, args = parser.parse_args()
     return options, args
@@ -103,14 +109,17 @@ def main():
 
     if options.all:
         show = Show.objects.get(name='PyOhio09')
-        encshow(show)
+        enc_show(show)
     elif options.show:
         show = Show.objects.get(name=options.show)
-        encshow(show)
+        enc_show(show)
+    elif options.day:
+        show = Show.objects.get(name='PyOhio09')
+        episodes = Episode.objects.filter(start__day=options.day)
+        enc_eps(episodes)
     else:
         episodes = Episode.objects.filter(id__in=args)
-        for episode in episodes:
-            enc_one(episode)
+        enc_eps(episodes)
     
 
 if __name__ == '__main__':
