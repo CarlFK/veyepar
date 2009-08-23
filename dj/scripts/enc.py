@@ -59,7 +59,7 @@ def enc_one(ep):
             dvpathname = "%s/%s"%(dir,c.raw_file.filename)
         else:
             # make a new dv file using just the frames to encode
-            dvpathname = "/home/carl/temp/%s.dv"%ep.slug
+            dvpathname = "/%s/%s.dv"%(dir,ep.slug)
             outf=open(dvpathname,'wb')
             for c in cl:
                 print (c.raw_file.filename, c.start,c.end)
@@ -75,13 +75,15 @@ def enc_one(ep):
         
         cmd+=[dvpathname]
         print ' '.join(cmd)
-        p=subprocess.Popen(cmd).wait()
-        print "returcode:", p.returncode
-        if os.path.exists(oggpathname):
+        p=subprocess.Popen(cmd)
+        p.wait()
+        retcode=p.returncode
+        if not retcode and os.path.exists(oggpathname):
             ep.state = 3
         else:
             print ep.id, ep.name
             print "transcode failed"
+            print retcode, os.path.exists(oggpathname):
             # ep.state = 2
     else:
         print "No cutlist found."
