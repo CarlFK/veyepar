@@ -11,7 +11,7 @@ dvfile = 'pyohio.dv'
 def get_timestamp(dvfilename):
     while True:
         p = subprocess.Popen( ['dvgrab', '-d', '1', '-I', dvfilename, '/tmp/dvg'], stderr=subprocess.PIPE ) 
-        time.sleep(1)
+        time.sleep(10)
         if p.poll() is None:
             print "die!"
             # p.send_signal()
@@ -19,6 +19,8 @@ def get_timestamp(dvfilename):
             print "dead?"
         else:
             out,err = p.communicate()
+            subprocess.Popen(['pkill','-9','dvgrab']).wait()
+            time.sleep(10)
             break
 
     try:

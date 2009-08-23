@@ -77,7 +77,7 @@ def episode(request,episode_no):
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
 
-    cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','raw_file__start')
+    cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','sequence','raw_file__start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.method == 'POST': 
@@ -99,7 +99,15 @@ def episode(request,episode_no):
 
             # if trash got touched, need to requery to get things in the right order.  I think.
             cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','raw_file__start')
-            # return HttpResponseRedirect('/thanks/') # Redirect after POST
+            init = [{'clid':cut.id,
+                'trash':cut.raw_file.trash,
+                'sequence':cut.sequence,
+                'start':cut.start, 'end':cut.end,
+                'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
+                 } for cut in cuts]
+            clrfformset = clrfFormSet(initial=init)
+
+           # return HttpResponseRedirect('/thanks/') # Redirect after POST
         else:
             print clrfformset.errors
     else:
