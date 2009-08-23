@@ -37,7 +37,7 @@ def time2b(time,fps,bpf,default):
         bytes = default
     return bytes
 
-def encone(ep):
+def enc_one(ep):
     root='/home/carl/Videos' # root dir of .dv files
     loc = ep.location
     show = loc.show
@@ -47,32 +47,33 @@ def encone(ep):
         dt=ep.start.strftime("%Y-%m-%d")
         dir="%s/dv/%s/%s" % (root,dt,loc.slug)
         cmd="ffmpeg2theora --videoquality 7 --audioquality 4 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
+        cmd+=['--output',"%s/%s.ogg"%(show.slug,ep.slug)]
         if len(cl)==1:
             c=cl[0]
             if c.start: cmd+=['--starttime',str(time2s(c.start))]
             if c.end: cmd+=['--endtime',str(time2s(c.end))]
-            cmd+=['--output',"%s/%s.ogg"%(show.slug,ep.slug)]
             pathname = "%s/%s"%(dir,c.raw_file.filename)
             cmd+=[pathname]
-            # print ' '.join(cmd)
-            # p=subprocess.Popen(cmd).wait()
         else:
-            outpathname = "/home/carl/temp/enc.dv"
+            outpathname = "/home/carl/temp/%s.dv"%ep.slug
             outf=open(outpathname,'wb')
             for c in cl:
                 print (c.raw_file.filename, c.start,c.end)
                 inpathname = "%s/%s"%(dir,c.raw_file.filename)
                 inf=open(inpathname,'rb')
                 inf.seek(time2b(c.start,29.9,BPF,0))
-                print inf
-                st=os.fstat(inf.fileno())
-                print st
                 size=os.fstat(inf.fileno()).st_size
                 end = time2b(c.end,29.9,BPF,size)
                 while inf.tell()<end:
                     outf.write(inf.read(BPF))
                 inf.close()
             outf.close()
+            cmd+=[outpathname]
+        print ' '.join(cmd)
+        p=subprocess.Popen(cmd).wait()
+    else:
+        print "No cutlist found."
+
     return 
 
 def encshow(show):
@@ -81,7 +82,7 @@ def encshow(show):
         episodes = Episode.objects.filter(location=loc)
         for ep in episodes:
              print ep.id, ep.name
-             encone(ep)
+             enc_one(ep)
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -102,9 +103,9 @@ def main():
         show = Show.objects.get(name=options.show)
         encshow(show)
     else:
-        episodes = Episode.objects.filter(id=args[0])
+        episodes = Episode.objects.filter(id__in=args)
         for episode in episodes:
-            encone(episode)
+            enc_one(episode)
     
 
 if __name__ == '__main__':
