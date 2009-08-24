@@ -75,6 +75,11 @@ def PostMultipart(url, fields, files):
     @return Status, reason, response (see httplib.HTTPConnection.getresponse())
     """
     content_type = 'multipart/form-data; boundary=%s' % MULTIPART_BOUNDARY
+
+    # gather all the data (except for the actual file) into:
+    # fieldsdata - string of "field1:value1\nfield2:value2\n..."
+    # filedatas - list of tuples: [(metadata1, filename1),(m2,f2)...]
+    # footdata - string, final "\n--file delimiter--\n"
     data = []
     for field_name, value in fields.iteritems():
         data.append('--' + MULTIPART_BOUNDARY)
@@ -94,13 +99,14 @@ def PostMultipart(url, fields, files):
         filedatas.append(['\r\n'.join(data),filename])
     footdata='\r\n--' + MULTIPART_BOUNDARY + '--\r\n'
 
-    # sum up the size of the datas
+    # sum up the size of the 3 datas, including the file size
     datalen = len(fieldsdata)
     for filedata, filename in filedatas:
         datalen += len(filedata)
         datalen += os.stat(filename).st_size
     datalen += len(footdata)
 
+    # open the connection, send the headers (not part of datas)
     host, selector = urlparts = urlparse.urlsplit(url)[1:3]
     h = httplib.HTTPConnection(host)
     h.putrequest("POST", selector)
