@@ -46,7 +46,6 @@ for dt in ['2009-07-26']:
             if True: 
                 # get the timestamp from the dv (so from the camera)
                 # ts = time.mktime(start.timetuple())
-                # set the file time stamp
                 st = os.stat(pathname)
                 frames = st.st_size/120000
                 # start=datetime.datetime.fromtimestamp( st.st_mtime ) 

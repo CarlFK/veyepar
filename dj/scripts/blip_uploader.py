@@ -81,24 +81,56 @@ def PostMultipart(url, fields, files):
         data.append('Content-Disposition: form-data; name="%s"' % field_name)
         data.append('')
         data.append(value)
+    fieldsdata="\r\n".join(data)
+    filedatas=[]
     for (field_name, filename) in files:
+        data=['']
         data.append('--' + MULTIPART_BOUNDARY)
         data.append('Content-Disposition: form-data; name="%s"; filename="%s"'
                     % (field_name, filename))
         data.append('Content-Type: %s' % GetMimeType(filename))
         data.append('')
-        data.append(open(filename).read())
-    data.append('--' + MULTIPART_BOUNDARY + '--')
-    data.append('')
-    data = "\r\n".join(data)
+        data.append('')
+        filedatas.append(['\r\n'.join(data),filename])
+    footdata='\r\n--' + MULTIPART_BOUNDARY + '--\r\n'
+
+    """
+    print fieldsdata
+    print filedatas
+    print footdata
+    """
+
+    # sum up the size of the datas
+    datalen = len(fieldsdata)
+    for filedata, filename in filedatas:
+        datalen += len(filedata)
+        datalen += os.stat(filename).st_size
+    datalen += len(footdata)
 
     host, selector = urlparts = urlparse.urlsplit(url)[1:3]
     h = httplib.HTTPConnection(host)
     h.putrequest("POST", selector)
     h.putheader("content-type", content_type)
-    h.putheader("content-length", len(data))
+    h.putheader("content-length", datalen)
     h.endheaders()
-    h.send(data)
+
+    # send the datas
+    dat=open('bu1.dat','wb')
+    h.send(fieldsdata)
+    dat.write(fieldsdata)
+    for filedata, filename in filedatas:
+        h.send(filedata)
+        dat.write(filedata)
+        f = open(filename,'rb')
+        block=f.read(10000)
+        while block:
+            h.send(block)
+            dat.write(block)
+            block=f.read(10000)
+    h.send(footdata)
+    dat.write(footdata)
+    dat.close()
+
     response = h.getresponse()
     return response.status, response.reason, response.read()    
 
@@ -328,4 +360,3 @@ def Main():
 
 if __name__ == "__main__":
     sys.exit(Main())
-
