@@ -115,21 +115,15 @@ def PostMultipart(url, fields, files):
     h.endheaders()
 
     # send the datas
-    dat=open('bu1.dat','wb')
     h.send(fieldsdata)
-    dat.write(fieldsdata)
     for filedata, filename in filedatas:
         h.send(filedata)
-        dat.write(filedata)
         f = open(filename,'rb')
         block=f.read(10000)
         while block:
             h.send(block)
-            dat.write(block)
             block=f.read(10000)
     h.send(footdata)
-    dat.write(footdata)
-    dat.close()
 
     response = h.getresponse()
     return response.status, response.reason, response.read()    
