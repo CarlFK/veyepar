@@ -80,7 +80,7 @@ def episode(request,episode_no):
     cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','sequence','raw_file__start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
-    if request.method == 'POST': 
+    if request.user.is_authenticated() and request.method == 'POST': 
         clrfformset = clrfFormSet(request.POST) 
         if clrfformset.is_valid(): 
             for form in clrfformset.forms:

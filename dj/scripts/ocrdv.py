@@ -71,7 +71,8 @@ def ocrdv(dvfn,maxframes):
         if stderrdata: print "ERR:", stderrdata
 
         if ocrtext != lastocr:
-           
+            lastocr = ocrtext ## saves scoring the same wad of text
+
             # score the text
             print "GOCR found:\n", ocrtext
             score,titls = Score(ocrtext)
