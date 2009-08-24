@@ -94,12 +94,6 @@ def PostMultipart(url, fields, files):
         filedatas.append(['\r\n'.join(data),filename])
     footdata='\r\n--' + MULTIPART_BOUNDARY + '--\r\n'
 
-    """
-    print fieldsdata
-    print filedatas
-    print footdata
-    """
-
     # sum up the size of the datas
     datalen = len(fieldsdata)
     for filedata, filename in filedatas:
