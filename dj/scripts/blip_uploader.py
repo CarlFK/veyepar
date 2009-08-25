@@ -51,6 +51,7 @@
     @endcode
 """
 
+import optparse
 import getpass
 import httplib
 import mimetypes
@@ -82,7 +83,7 @@ def PostMultipart(url, fields, files):
     # footdata - string, final "\n--file delimiter--\n"
     data = []
     for field_name, value in fields.iteritems():
-        print field_name,value
+        print field_name, value
         data.append('--' + MULTIPART_BOUNDARY)
         data.append('Content-Disposition: form-data; name="%s"' % field_name)
         data.append('')
@@ -132,16 +133,17 @@ def PostMultipart(url, fields, files):
 def GetMimeType(filename):
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
-def Upload(video_id, username, password, meta):
+def Upload(video_id, username, password, filename, meta):
     """@brief Upload to blip.tv
     
     @param video_id Either the item ID of an existing post or None to upload
         a new video
     @param username, password
-    @param title New title of the post
-    @param description New description of the post
     @param filename Filename of the video to upload (if a @a video_id is specified),
         this file is uploaded as an additional format to the existing post)
+    @param meta['title'] New title of the post
+    @param meta['description'] New description of the post
+    @param meta['foo'] New foo of the post
     @return Response data
     """
     fields = {
@@ -151,13 +153,17 @@ def Upload(video_id, username, password, meta):
         "password": "%s" % password,
         "item_type": "file",
         }
+
+    meta["title"] = meta["title"].encode("utf-8")
+    meta["description"] = meta["description"].encode("utf-8")
+    
     fields.update(meta)
+
     if video_id:    # update existing
         fields["id"] = "%s" % video_id
         file_field = "file1"
     else:           # new post
         file_field = "file"
-    filename = meta['filename']
     if filename:
         fields[file_field + "_role"] = "Web"
         files = [(file_field, filename)]
@@ -233,31 +239,29 @@ def GetVideoInfo(video_id):
     meta['description'] = unescape(
         GetTextFromDomNode(item.getElementsByTagName("blip:puredescription")[0]))
     meta['link'] = GetTextFromDomNode(item.getElementsByTagName("link")[0])
-    meta['embed_code'] = GetTextFromDomNode(item.getElementsByTagName("media:player")[0])
 
+    embed_code = GetTextFromDomNode(item.getElementsByTagName("media:player")[0])
     m = re.search(r"http://blip.tv/play/(\w+)", embed_code)
-    if m: meta['embed_id'] = m.group(1)
-    else: meta['embed_id'] = None
+    meta['embed_id'] = m.group(1) if m else None
 
     existing_mime_types = {}
     media_group = item.getElementsByTagName("media:group")[0]
     for content in media_group.getElementsByTagName("media:content"):
         existing_mime_types.setdefault(content.attributes["type"].value, []).append( content.attributes["url"].value)
-    meta['existing_mime_types'] = existing_mime_types
 
     # return title, description, link, embed_code, embed_id, existing_mime_types
-    return meta
+    return meta, existing_mime_types
 
-def DisplayVideoInfo(title, link, embed_code, embed_id, existing_mime_types):
+def DisplayVideoInfo(meta,existing_mime_types):
     print "Title           =", meta['title']
     print "Link            =", meta['link']
     if meta['embed_id']:
         print "Embed ID        =", meta['embed_id']
     else:
         print "Embed ID        = <The video hasn't been converted to Flash yet>"
-    if meta['existing_mime_types']:
+    if existing_mime_types:
         print "Files           ="
-        for urls in meta['existing_mime_types'].itervalues():
+        for urls in existing_mime_types.itervalues():
             for url in urls:
                 print "    " + url
 
@@ -284,43 +288,48 @@ def GetDescription(default):
         '  create a file named "description.txt" and run again): ')
     return desc or default
 
+def parse_args():
+    parser = optparse.OptionParser()
+    parser.add_option('-v', '--videoid')
+    parser.add_option('-f', '--filename')
+    parser.add_option('-t', '--title')
+    parser.add_option('-d', '--description')
+    parser.add_option('-u', '--username')
+    parser.add_option('-p', '--password')
+
+    options, args = parser.parse_args()
+    return options, args
+
 def Main():
 
-    meta={} # metadata about the post - title, licence...
+    options, args = parse_args()
+    meta={} # metadata about the post: title, licence...
 
-    if len(sys.argv) < 2:
-        video_id = AskForVideoId()
-    else:
-        video_id = sys.argv[1]
+    video_id = options.videoid if options.videoid is not None \
+        else AskForVideoId()
 
     if video_id:
-        print ""
-        meta = GetVideoInfo(video_id)
+        existing_mime_types, meta = GetVideoInfo(video_id)
     
-        print ""
-        print "Video Info:"
+        print "\nVideo Info:"
         DisplayVideoInfo(meta)
-        print ""
     
-        if not AskYesNo('Is this the video you want to modify?', True):
+        if not AskYesNo('\nIs this the video you want to modify?', True):
             sys.exit(0)
     else:
-        print ""
-        title = raw_input("Title of your new post: ")
-        meta = {'title':title,
-        'description': "",
-        'existing_mime_types': {} }
-        
-    if len(sys.argv) < 3:
-        print ""
-        filename = raw_input( "Filename of video to upload "
+        meta['title'] = options.title if options.title \
+            else raw_input("\nTitle of your new post: ")
+        meta['description'] = \
+            options.description if options.description else "" 
+        existing_mime_types = {}
+
+    filename = options.filename if options.filename is not None \
+        else raw_input( "Filename of video to upload "
             "(leave blank if you want to change the description only): ")
-    else:
-        filename= sys.argv[2]
 
     if filename:
         mime_type = GetMimeType(filename)
-        if mime_type != "application/ogg":
+        if mime_type not in ['audio/ogg', "application/ogg"]:
             print ""
             if AskYesNo('The file "%(filename)s" is of type "%(mime_type)s".\n'
                         'Do you wish to convert it to Ogg Theora?' % locals(),
@@ -331,7 +340,7 @@ def Main():
                 print ""
                 
         print ""
-        if mime_type in meta['existing_mime_types']:
+        if mime_type in existing_mime_types:
             if not AskYesNo('A video of type "%(mime_type)s" was already uploaded.\n'
                             'Would you still like to upload the file "%(filename)s"?'
                             % locals(),
@@ -340,32 +349,29 @@ def Main():
     else:
         filename = None
 
-    meta['filename'] = filename 
-    meta['mime_type'] = mime_type 
-    
     meta['description'] = GetDescription(meta['description'])
 
     #     "title": "%s" % title.encode("utf-8"),
     #     "description": "%s" % description.encode("utf-8"),
     
-    meta["topics"]="python, pycon, conference, chicago, 2009"
+    meta["topics"]="pyohio, python, pycon, conference, ohio, 2009"
     meta["license"]= "13"
     meta["categories_id"]="10"
 
-    del meta['existing_mime_types']
-
     print ""
     print "Ready to post."
-    print "- Upload file:", meta['filename']
+    print "- Upload file:", filename
     print "- Set title to:", meta['title']
     print "- Set description to:\n  {{{%s}}}" % meta['description']
     print ""
     if AskYesNo("Is this okay?", True):
         print ""
-        username = raw_input("blip.tv Username: ")
-        pwd = getpass.getpass("blip.tv Password: ")
+        username = options.username if options.username \
+            else raw_input("blip.tv Username: ")
+        pwd = options.password if options.password \
+            else getpass.getpass("blip.tv Password: ")
         print ""
-        response = Upload(video_id, username, pwd, meta)
+        response = Upload(video_id, username, pwd, filename, meta)
         print ""
         print "Server response:\n  {{{%s}}}" % response
         
