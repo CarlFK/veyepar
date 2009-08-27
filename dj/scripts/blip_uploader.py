@@ -67,7 +67,10 @@ BLIP_UPLOAD_URL = "http://blip.tv/file/post"
 
 MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
-def PostMultipart(url, fields, files):
+def show_pct_done(current,total):
+    sys.stdout.write('\r%3i%%  %s of %s bytes' % (100*current/total, current, total))
+
+def PostMultipart(url, fields, files, progress):
     """@brief Send multi-part HTTP POST request
     
     @param url POST URL
@@ -83,7 +86,6 @@ def PostMultipart(url, fields, files):
     # footdata - string, final "\n--file delimiter--\n"
     data = []
     for field_name, value in fields.iteritems():
-        print field_name, value
         data.append('--' + MULTIPART_BOUNDARY)
         data.append('Content-Disposition: form-data; name="%s"' % field_name)
         data.append('')
@@ -118,22 +120,27 @@ def PostMultipart(url, fields, files):
 
     # send the datas
     h.send(fieldsdata)
+    bytes_sent = len(fieldsdata)
     for filedata, filename in filedatas:
         h.send(filedata)
+        bytes_sent += len(filedata)
         f = open(filename,'rb')
         block=f.read(10000)
         while block:
             h.send(block)
+            bytes_sent += len(block)
+            if progress: progress(bytes_sent,datalen)
             block=f.read(10000)
     h.send(footdata)
 
     response = h.getresponse()
-    return response.status, response.reason, response.read()    
+    return response
+    # return response.status, response.reason, response.read()    
 
 def GetMimeType(filename):
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
-def Upload(video_id, username, password, filename, meta):
+def Upload(video_id, username, password, filename, meta, thumbname):
     """@brief Upload to blip.tv
     
     @param video_id Either the item ID of an existing post or None to upload
@@ -170,9 +177,12 @@ def Upload(video_id, username, password, filename, meta):
     else:
         files = []
     
+    if thumbname:
+        files.append(("thumbnail",thumbname))
+
     print "Posting to", BLIP_UPLOAD_URL
     print "Please wait..."
-    status, reason, response = PostMultipart(BLIP_UPLOAD_URL, fields, files)
+    response = PostMultipart(BLIP_UPLOAD_URL, fields, files,show_pct_done)
     print "Done."
 
     return response
@@ -350,10 +360,6 @@ def Main():
         filename = None
 
     meta['description'] = GetDescription(meta['description'])
-
-    #     "title": "%s" % title.encode("utf-8"),
-    #     "description": "%s" % description.encode("utf-8"),
-    
     meta["topics"]="pyohio, python, pycon, conference, ohio, 2009"
     meta["license"]= "13"
     meta["categories_id"]="10"
@@ -373,7 +379,7 @@ def Main():
         print ""
         response = Upload(video_id, username, pwd, filename, meta)
         print ""
-        print "Server response:\n  {{{%s}}}" % response
+        print "Server response:\n  {{{%s}}}" % response.read()
         
     return 0
 
