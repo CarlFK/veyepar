@@ -46,12 +46,12 @@ def do_one(ep):
 
     print oggpathname, thumb
 
-    # username,pwd = "carlfk","goat"
-    username,pwd = "pyohio09","py0hio"
-    # response = Upload("", username, pwd, oggpathname, meta, thumb)
-    # responsexml = response.read()
-    # blipurl = re.search("post_url>(.*)</post" ,responsexml).groups()[0]
-    blipurl = "http://blip.tv/file/2517969"
+    username,pwd = "blipuser","1234"
+
+    response = Upload("", username, pwd, oggpathname, meta, thumb)
+    responsexml = response.read()
+    blipurl = re.search("post_url>(.*)</post" ,responsexml).groups()[0]
+    # blipurl = ""
     if blipurl:
         print blipurl
         prefix = "#%s VIDEO -" % show.client.name
