@@ -16,7 +16,7 @@ timetweak = -3600  # seconds to adjust file timestamp to reality (like timezones
 
 show = Show.objects.get(name='PyOhio09')
 rfs = Raw_File.objects.filter(location__show=show)
-Cut_List.objects.all().delete()
+# Cut_List.objects.all().delete()
 
 for rf in rfs:
     rf.start += datetime.timedelta(seconds=3600*2)

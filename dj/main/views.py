@@ -73,6 +73,10 @@ class clrfForm(forms.Form):
 def episode(request,episode_no):
 
     episode=get_object_or_404(Episode,id=episode_no)
+    location=episode.location
+    show=location.show
+    client=show.client
+
     episodes=Episode.objects.filter(id__gt=episode_no,location__show=episode.location.show).order_by('id')
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
@@ -133,6 +137,7 @@ def episode(request,episode_no):
 
     return render_to_response('episode.html',
         {'episode':episode,
+        'client':client, 'show':show, 'location':location,
         'nextepisode':nextepisode,
         'same_dates':same_dates,
         'clrffs':zip(cuts,clrfformset.forms),

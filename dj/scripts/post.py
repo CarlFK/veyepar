@@ -9,6 +9,8 @@ import optparse
 import re
 import os,sys
 
+import pw
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
 import settings
@@ -22,19 +24,23 @@ def do_one(ep):
     show = loc.show
     client = show.client
 
-    # look for a thumb
-    root='/home/carl/Videos' 
-    root="%s/%s/%s" % (root,client.slug,show.slug)
-    dt=ep.start.strftime("%Y-%m-%d")
-    dir="%s/dv/%s/%s" % (root,dt,loc.slug)
+    # dir the show is in
+    root=os.path.join('/home/carl/Videos/veyepar',client.slug,show.slug)
 
+    # dir: source and thumbs
+    dt=ep.start.strftime("%Y-%m-%d")
+    dir=os.path.join(root,'dv',loc.slug,dt)
+
+    # look for a thumb
     for cut in Cut_List.objects.filter(episode=ep).order_by('sequence'):
         basename = cut.raw_file.basename()        
-        thumb="%s/%s.jpg"%(dir,basename)
+        thumb=os.path.join(dir, "%s.png"%(basename))
         if os.path.exists(thumb): break
     
-    oggpathname = "%s/%s.ogg"%(show.slug,ep.slug)
-    description = "%s</br>/n</br>/n%s" % (ep.description, show.description)
+    oggpathname = os.path.join( root, "ogg", "%s.ogg"%(ep.slug) )
+    description = "%s</br>\n</br>\n%s" % (ep.description, client.description)
+
+    print description 
 
     meta = {
         'title': ep.name,
@@ -46,16 +52,15 @@ def do_one(ep):
 
     print oggpathname, thumb
 
-    username,pwd = "blipuser","1234"
-
-    response = Upload("", username, pwd, oggpathname, meta, thumb)
+    # blipurl = "http://carlfk.blip.tv/file/2213225"
+    response = Upload("", pw.blip['user'], pw.blip['password'], oggpathname, meta, thumb)
     responsexml = response.read()
     blipurl = re.search("post_url>(.*)</post" ,responsexml).groups()[0]
-    # blipurl = ""
     if blipurl:
         print blipurl
         prefix = "#%s VIDEO -" % show.client.name
         tweet = tweeter.notify(prefix, ep.name, blipurl)
+        if "<id>" not in tweet: print tweet
         tweetid=re.search("<id>(.*)</id>" ,tweet).groups()[0]
         tweeturl="http://twitter.com/cfkarsten/status/%s"%(tweetid,)
         print tweeturl

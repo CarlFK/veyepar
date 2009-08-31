@@ -52,11 +52,13 @@ def ocrdv(dvfn,maxframes):
     
     stream = pyffmpeg.VideoStream()
     stream.open(dvfn)
+    first_img=None
     frameno=0
     lastocr = ''
     while frameno < maxframes:
 
         image = stream.GetFrameNo(frameno)
+        if not first_img: first_img = image
 
         # get PPM image from PIL image 
         buffer = StringIO()
@@ -74,14 +76,14 @@ def ocrdv(dvfn,maxframes):
             lastocr = ocrtext ## saves scoring the same wad of text
 
             # score the text
-            print "GOCR found:\n", ocrtext
+            # print "GOCR found:\n", ocrtext
             score,titls = Score(ocrtext)
             if score>2:
                 print "score", score
                 print titls
                 return ocrtext,image
 
-        frameno+=30*60  # bump on min
+        frameno+=30*15  # bump about 15 seconds
 
-    image = stream.GetFrameNo(0)
-    return '',image
+    # image = stream.GetFrameNo(0)
+    return '',first_image

@@ -16,11 +16,16 @@ def get_timestamp(dvfilename):
             print "die!"
             # p.send_signal()
             p.kill()
+            time.sleep(1)
+            subprocess.Popen(['pkill','-9','dvgrab']).wait()
+            time.sleep(1)
             print "dead?"
+            subprocess.Popen(['pgrep','dvgrab']).wait()
         else:
             out,err = p.communicate()
+            time.sleep(1)
             subprocess.Popen(['pkill','-9','dvgrab']).wait()
-            time.sleep(10)
+            time.sleep(1)
             break
 
     try:

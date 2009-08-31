@@ -5,26 +5,20 @@ Getting started...
 1. install django, create the database
 veyepar/dj$ ./manage.py syncdb
 
-2. create a client and show records in the db
-currently hardcoded into addeps.py: 
+2. create a client, show, location and episodes records in the db
+Use the django admin UI for client and Show.  
+If you have many Episodes it might be worth the effort to import locaion and episodes from a .csv file using addeps.py.  
+Otherwise use the admin UI for location and episode too.
 
-client,created = Client.objects.get_or_create(name='PyOhio',slug="pyohio")
-show,created = Show.objects.get_or_create(name='PyOhio09',slug="pyohio09",client=client)
-
-3. add episodes (what results in one video - a talk, a sigle event...)
-addeps.py:# adds episodes from an external source, like a csv
-
-Make sure the start/end times are right. the next step uses them.  you can fix the db later, but it is much easier if you get it right here, and the camera's clock was set.
+3. Make sure the start/end times are right. the next step uses them.  you can fix the db later, but it is much easier if you get it right here, and the camera's clock was set.  
+If you don't know when someting started, pick a range that definately includes it, like 1/1/1900 - 12/31/2020.  
+This will link all .dv files to the episode.  It is easier to remvoe links than add them.
 
 4. create the dirs for the .dv files:
-(I think there are hardcoded dates... fix that.)
-mkdirs.py:# Makes the dir tree for dvsink-file to put files into
-mkdirs.py:# os.makedirs("%s/%s/dv" % (root,show.slug))
-mkdirs.py:    # dir="%s/%s/dv/%s" % (root,show.slug,dt)
-mkdirs.py:         # dir="%s/%s/dv/%s/%s" % (root,show.slug,dt,loc.slug)
+mkdirs.py:# Makes the dir tree to put files into
 
 5. put the dv files into the dirs
-rsync, mv, whatever.  
+Use your mad file copy skilz to rsync, mv, whatever.  
 
 6. for all dv files, add records into the db:
 adddv.py:# Adds the .dv files to the raw files table

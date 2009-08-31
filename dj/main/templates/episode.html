@@ -32,8 +32,8 @@
     {{clrfform.clid}}
     <a href="S/{{show.slug}}/F/{{cl.raw_file.id}}">{{ cl.raw_file.filename }}</a>
     {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}
-    <a href="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg">
-<img src="/site_media/{{episode.location.show.client.slug}}/{{episode.location.show.slug}}/dv/{{cl.raw_file.start|date:"Y-m-d"}}/{{episode.location.slug}}/{{cl.raw_file.basename}}.jpg" width=200> </a>
+    <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.start|date:"Y-m-d"}}/{{cl.raw_file.basename}}.png">
+    <img src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.start|date:"Y-m-d"}}/{{cl.raw_file.basename}}.png" width=200> </a>
     </td>
 
     <td>

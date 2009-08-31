@@ -26,5 +26,5 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('',
 (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': '/home/carl/Videos/','show_indexes': True}))
+        {'document_root': '/home/carl/Videos/veyepar','show_indexes': True}))
 
