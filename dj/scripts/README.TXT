@@ -23,6 +23,11 @@ Use your mad file copy skilz to rsync, mv, whatever.
 6. for all dv files, add records into the db:
 adddv.py:# Adds the .dv files to the raw files table
 adddv.py:                # find Episodes this may be a part of, add a cutlist record
+adddv.py: files=os.listdir(dir)
+adddv.py: Raw_File.objects.get_or_create( filename=dv,)
+adddv.py: # find Episodes this may be a part of, add a cutlist record 
+adddv.py: eps = Episode.objects.filter(location=location, start__lte=end, end__gte=start) 
+adddv.py:  Cut_List.objects.get_or_create( episode=ep, raw_file=rf, 
 
 This currently uses dvgrab to get the datetime from the file.  it has issues.
 dvdate.py:# dvdate.py - gets date of .dv file - shells out to dvgrab
