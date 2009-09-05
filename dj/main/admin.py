@@ -23,6 +23,7 @@ admin.site.register(Location, LocationAdmin)
 
 class Raw_FileAdmin(admin.ModelAdmin):
     list_display = ('filename', 'location', 'start', 'end', ) 
+    list_filter = ('location',)
     # list_display = ('filename', 'location', 'durationhms', 'start', 'end', ) 
     # ordering = ('start',)
 admin.site.register(Raw_File, Raw_FileAdmin)
