@@ -31,7 +31,7 @@ def Score(ocrtext):
     for w in words:
         # strip all non chars
         w = ''.join([c for c in w if c.isalpha()]).lower()
-        if len(w)>3 and titwords.get(w):
+        if titwords and len(w)>3 and titwords.get(w):
             tits = titwords[w]
             titl.append(tits)
             score+=len(tits)
@@ -43,7 +43,8 @@ def Score(ocrtext):
 
     return score, titl
 
-titwords = Titwords()
+# titwords = Titwords()
+titwords = None
 dictionary = Dictionary()
 
 dvfn = '/home/carl/Videos/pyohio/2009-07-25/auditorium/pyohio-4.dv'
@@ -52,13 +53,11 @@ def ocrdv(dvfn,maxframes):
     
     stream = pyffmpeg.VideoStream()
     stream.open(dvfn)
-    first_img=None
     frameno=0
     lastocr = ''
     while frameno < maxframes:
 
         image = stream.GetFrameNo(frameno)
-        if not first_img: first_img = image
 
         # get PPM image from PIL image 
         buffer = StringIO()
@@ -85,5 +84,5 @@ def ocrdv(dvfn,maxframes):
 
         frameno+=30*15  # bump about 15 seconds
 
-    # image = stream.GetFrameNo(0)
-    return '',first_image
+    image = stream.GetFrameNo(0)
+    return '',image

@@ -11,7 +11,7 @@ sys.path.insert(0, '..' )
 import settings
 settings.DATABASE_NAME="../vp.db"
 
-from main.models import Show, Location, Episode, Raw_File, Cut_List
+from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
 BPF=120000
 
@@ -39,18 +39,14 @@ def time2b(time,fps,bpf,default):
         bytes = default
     return bytes
 
-def enc_one(ep):
+def enc_one(ep,dir):
     print ep.id, ep.name
-    root='/home/carl/Videos/veyepar' # root dir of .dv files
     loc = ep.location
-    show = loc.show
-    client = show.client
-    root=os.path.join(root,client.slug,show.slug)
     cl = Cut_List.objects.filter(episode=ep).order_by('sequence')
     if cl:
         dt=ep.start.strftime("%Y-%m-%d")
-        src_dir=os.path.join(root, 'dv', loc.slug, dt)
-        oggpathname = os.path.join(root, "ogg", "%s.ogg"%ep.slug)
+        src_dir=os.path.join(dir, 'dv', loc.slug, dt)
+        oggpathname = os.path.join(dir, "ogg", "%s.ogg"%ep.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
         if len(cl)==1:
@@ -92,24 +88,26 @@ def enc_one(ep):
     ep.save()
 
     return 
-def enc_eps(episodes):
+def enc_eps(episodes,dir):
     for ep in episodes:
         if ep.state==2:
              # print ep.id, ep.name
-             enc_one(ep)
+             enc_one(ep,dir)
 
-def enc_show(show):
+def one_show(show,dir):
     locs = Location.objects.filter(show=show)
     for loc in locs:
         episodes = Episode.objects.filter(location=loc,state=2)
-        enc_eps(episodes)
+        enc_eps(episodes,dir)
 
 
 def parse_args():
     parser = optparse.OptionParser()
-    parser.add_option('-a', '--all' )
+    parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
+    parser.add_option('-r', '--root', default='/home/carl/Videos/veyepar' )
+    parser.add_option('-l', '--list', action="store_true" )
 
     options, args = parser.parse_args()
     return options, args
@@ -118,12 +116,19 @@ def parse_args():
 def main():
     options, args = parse_args()
 
-    if options.all:
-        show = Show.objects.get(name='PyOhio09')
-        enc_show(show)
-    elif options.show:
-        show = Show.objects.get(name=options.show)
-        enc_show(show)
+    if options.list:
+        for client in Client.objects.all():
+            print "\nName: %s  Slug: %s" %( client.name, client.slug )
+            for show in Show.objects.filter(client=client):
+                print "\tName: %s  Slug: %s" %( show.name, show.slug )
+                print "\t--client %s --show %s" %( client.slug, show.slug )
+    elif options.client and options.show:
+        client = Client.objects.get(slug=options.client)
+        show = Show.objects.get(client=client,slug=options.show)
+        dir = os.path.join(options.root,client.slug,show.slug)
+        print dir, client, show
+        one_show(show,dir)
+
     elif options.day:
         show = Show.objects.get(name='PyOhio09')
         episodes = Episode.objects.filter(location__show=show,start__day=options.day)

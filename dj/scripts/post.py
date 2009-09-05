@@ -45,8 +45,6 @@ class post(process):
         }
 
     print oggpathname, thumb
-    print meta
-    return 
 
     # blipurl = "http://carlfk.blip.tv/file/2213225"
     response = Upload("", pw.blip['user'], pw.blip['password'], oggpathname, meta, thumb)
