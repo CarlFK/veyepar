@@ -1,0 +1,5 @@
+
+add fields to client, show and episode: tags
+add field to client: blip account name
+account user/pw management
+
