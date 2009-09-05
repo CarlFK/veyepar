@@ -2,7 +2,6 @@
 
 # adds episodes from an external source, like a csv
 
-import  os,sys
 from csv import DictReader
 from datetime import timedelta
 from dateutil.parser import parse
@@ -21,14 +20,10 @@ def fnify(text):
     fn = ''.join([c for c in fn if c.isalpha() or c.isdigit() or (c in '_') ])
     return fn
 
-# client,created = Client.objects.get_or_create(name='DjangoCon',slug="djcon")
-# show,created = Show.objects.get_or_create(name='DjangoCon 2008',slug="djc09",client=client)
-
-# clear out previous runs for this show
-# Episode.objects.filter(location__show=show).delete()
-# Location.objects.filter(show=show).delete()
 
 class process_csv(process):
+   
+    state_done=2
 
     def one_show(self, show):
       seq=0
@@ -56,12 +51,15 @@ class process_csv(process):
            primary=row['id'],
            authors=row['presenters'], 
            start=start, end=end,
+           state=self.state_done
             )
         ep.save()
 
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="sched.csv",
           help='csv file' )
+        parser.add_option('--whack', action="store_true", 
+          help="whack current episodes, use with care." )
 
     def main(self):
       options, args = self.parse_args()
@@ -77,6 +75,10 @@ class process_csv(process):
             name=options.client, slug=options.client)
         show,created = Show.objects.get_or_create(client=client,
             name=options.show, slug=options.show)
+        if options.whack:
+# clear out previous runs for this show
+            Episode.objects.filter(location__show=show).delete()
+            # Location.objects.filter(show=show).delete()
         self.csv_pathname = options.filename
         self.one_show(show)
 
