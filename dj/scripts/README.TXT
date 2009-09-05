@@ -17,17 +17,14 @@ This will link all .dv files to the episode.  It is easier to remvoe links than 
 4. create the dirs for the .dv files:
 mkdirs.py:# Makes the dir tree to put files into
 
-5. put the dv files into the dirs
+4.1. put the dv files into the dirs
 Use your mad file copy skilz to rsync, mv, whatever.  
 
-6. for all dv files, add records into the db:
+5. for all dv files, add records into the db:
 adddv.py:# Adds the .dv files to the raw files table
 adddv.py:                # find Episodes this may be a part of, add a cutlist record
 adddv.py: files=os.listdir(dir)
 adddv.py: Raw_File.objects.get_or_create( filename=dv,)
-adddv.py: # find Episodes this may be a part of, add a cutlist record 
-adddv.py: eps = Episode.objects.filter(location=location, start__lte=end, end__gte=start) 
-adddv.py:  Cut_List.objects.get_or_create( episode=ep, raw_file=rf, 
 
 This currently uses dvgrab to get the datetime from the file.  it has issues.
 dvdate.py:# dvdate.py - gets date of .dv file - shells out to dvgrab
@@ -42,6 +39,13 @@ If you find that the clock was screwed up, you can adjust the datetime in the db
 
 fixdv.py:# tweaks the time in the other direction
 fixdv.py:timetweak = -3600  # seconds to adjust file timestamp to reality (like timezones)
+
+
+6. Associte dv files with Episodes.
+adddv.py: # find Episodes this may be a part of, add a cutlist record 
+adddv.py: eps = Episode.objects.filter(location=location, start__lte=end, end__gte=start) 
+adddv.py:  Cut_List.objects.get_or_create( episode=ep, raw_file=rf, 
+
 
 
 7. make low quality versions of all the dv files so you can preview each file in a browser using <video> (not necessary, didn't work too well, I used mplayer.)
