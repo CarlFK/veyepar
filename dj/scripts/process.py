@@ -14,11 +14,17 @@ settings.DATABASE_NAME="../vp.db"
 from main.models import Client, Show, Location, Episode 
 
 class process(object):
+  """
+  Abstract class for processing.
+  Provides basic options and itarators.
+  Only operates on episodes in ready_state,
+  promotes them to done_state.
+  """
 
   ready_state = None
   done_state = None
 
-  root_dir='/home/carl/Videos/veyepar' 
+  root_dir=None
   show_dir=None
   episode_dir=None
 
@@ -31,7 +37,9 @@ class process(object):
         if ep.state==self.ready_state:
             self.episode_dir=os.path.join( self.show_dir, 'dv', 
                 ep.location.slug, ep.start.strftime("%Y-%m-%d") )
-            self.process_ep(ep)
+            if self.process_ep(ep):
+                ep.state=self.done_state
+                ep.save()
 
   def one_show(self, show):
     locs = Location.objects.filter(show=show)
@@ -39,14 +47,24 @@ class process(object):
         episodes = Episode.objects.filter(location=loc,state=self.ready_state)
         self.process_eps(episodes)
 
+  def add_more_options(self, parser):
+    pass
+ 
   def parse_args(self):
     parser = optparse.OptionParser()
+    parser.add_option('-r', '--rootdir', help="media files dir",
+        default= '/home/carl/Videos/veyepar' )
     parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
     parser.add_option('-l', '--list', action="store_true" )
+    parser.add_option('-v', '--verbose', action="store_true" )
+    self.add_more_options(parser)
 
     options, args = parser.parse_args()
+    self.root_dir = options.rootdir
+    self.verbose = options.verbose
+
     return options, args
 
   def main(self):
