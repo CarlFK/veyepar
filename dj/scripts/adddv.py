@@ -39,10 +39,8 @@ class add_dv(process):
         self.one_dir(location,dir)
 
     def one_show(self, show):
-      dir = os.path.join(self.show_dir,'dv')
-      print show,dir
       for loc in Location.objects.filter(show=show):
-        dir=os.path.join(dir,loc.slug)
+        dir=os.path.join(self.show_dir,'dv',loc.slug)
         print show,loc,dir
         self.one_loc(loc, dir)
 
