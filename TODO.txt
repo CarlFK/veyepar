@@ -3,3 +3,6 @@ add fields to client, show and episode: tags
 add field to client: blip account name
 account user/pw management
 
+remove all knowage of using dates for dir names. 
+ use os.walk(root/client/show/location/*.dv) to find files, save path to file as part of the raw file entry.
+
