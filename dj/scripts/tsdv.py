@@ -10,11 +10,13 @@ the first frame of the dv
 the file name (assumes hh:mm:ss.dv format)
 
 Gets end from:
+start + duration based on file size / BBF*FPS
+last frame
 
 """
 
-
 import  os
+import datetime
 
 from process import process
 
@@ -22,33 +24,29 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
 class add_dv(process):
 
-# Raw_File.objects.filter(location__show=show).delete()
+    def one_dv(self, dir, dv ):
+        
+        pathname = os.path.join(dir,dv.filename)
+        print pathname
+        st = os.stat(pathname)    
+# get start from filesystem create timestamp
+        start=datetime.datetime.fromtimestamp( st.st_mtime )
 
-    def one_dir(self, location, dir):
-    
-        files=os.listdir(dir)
-        seq=0
-        for dv in [f for f in files if f[-3:]=='.dv']:
-            seq+=1
-            # print dv
-            pathname = os.path.join(dir,dv)
-            print pathname
-            rf, created = Raw_File.objects.get_or_create(
-                location=location,
-                filename=dv,)
-            if created: 
-                rf.sequence=seq
-                rf.save()
+        # calc duration based on filesize
+        frames = st.st_size/120000
+        duration = frames/ 29.90 ## seconds
+
+        end = start + datetime.timedelta(seconds=duration)
+        
+        dv.start = start
+        dv.end = end
+
+        rf.save()
 
 
     def one_loc(self,location,dir):
-      files=os.listdir(dir)
-      print files
-      for dt in files:
-        # dt is typicaly a date looking thing: 2009-08-20
-        dir = os.path.join(dir,dt) 
-        print (location,dir)
-        self.one_dir(location,dir)
+      for dv in Raw_File.objects.filter(loction=loctaion):
+        self.one_dv(dir,dv)
 
     def one_show(self, show):
       for loc in Location.objects.filter(show=show):
