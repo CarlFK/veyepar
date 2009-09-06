@@ -10,7 +10,7 @@ from django.db.models import Q
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
-class add_dv(process):
+class ass_dv(process):
 
     def one_dv(self, dv, seq ):
         # find Episodes this may be a part of, add a cutlist record
@@ -44,6 +44,6 @@ class add_dv(process):
         self.one_loc(loc)
 
 if __name__=='__main__': 
-    p=add_dv()
+    p=ass_dv()
     p.main()
 
