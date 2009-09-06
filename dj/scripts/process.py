@@ -36,7 +36,7 @@ class process(object):
     for ep in episodes:
         if ep.state==self.ready_state:
             self.episode_dir=os.path.join( self.show_dir, 'dv', 
-                ep.location.slug, ep.start.strftime("%Y-%m-%d") )
+                ep.location.slug )
             if self.process_ep(ep):
                 ep.state=self.done_state
                 ep.save()

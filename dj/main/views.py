@@ -125,11 +125,13 @@ def episode(request,episode_no):
         } for cut in cuts]
         clrfformset = clrfFormSet(initial=init)
 
-
 # If all the dates are the same, don't bother displaying them
-    talkdate = episode.start.date()
-    same_dates = talkdate==episode.end.date()
-    if same_dates:
+    if episode.start is None or episode.end is None:
+      same_dates = False
+    else:
+      talkdate = episode.start.date()
+      same_dates = talkdate==episode.end.date()
+      if same_dates:
         for cut in cuts:
             # cut.raw_file.dur=cut.raw_file.durationhms()
             same_dates = same_dates and \

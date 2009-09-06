@@ -41,11 +41,12 @@ class add_dv(process):
         dv.start = start
         dv.end = end
 
-        rf.save()
+        print dv,start,end
+        dv.save()
 
 
     def one_loc(self,location,dir):
-      for dv in Raw_File.objects.filter(loction=loctaion):
+      for dv in Raw_File.objects.filter(location=location):
         self.one_dv(dir,dv)
 
     def one_show(self, show):

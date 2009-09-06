@@ -2,30 +2,37 @@
 
 # makes .ogg for all dv in a show
 
-import  os,sys
+import  os
 import subprocess
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-sys.path.insert(0, '..' )
-import settings
-settings.DATABASE_NAME="../vp.db"
+from process import process
 
-from main.models import Show, Location, Episode, Raw_File, Cut_List
+from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
-root='/home/carl/Videos' # root dir of .dv files
-show = Show.objects.get(name='PyOhio09')
-root="%s/%s/%s" % (root,show.client.slug,show.slug)
+class mkpreview(process):
 
-rfs=Raw_File.objects.filter(location__show=show)
-for rf in rfs:
-    print rf.basename()
-    dt=rf.start.strftime("%Y-%m-%d")
-    loc=rf.location
-    dir="%s/dv/%s/%s" % (root,dt,loc.slug)
-    print dir
-    cmd="ffmpeg2theora --videoquality 1 --audioquality 2 --audiobitrate 32 --speedlevel 2 --width 360 --height 240 --framerate 2 --keyint 256 --channels 1".split()
-    cmd+=[ '%s/%s'%(dir,rf.filename), '-o', '%s/%s.ogg'%(dir,rf.basename()) ]
-    print ' '.join(cmd)
-    p=subprocess.Popen(cmd).wait()
+    def one_file(self,loc_dir,rf):
+        src = os.path.join(loc_dir,rf.filename)
+        dst = os.path.join(loc_dir,rf.basename()+'.ogg')
+        cmd="ffmpeg2theora --videoquality 1 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --height 240 --framerate 2 --keyint 256 --channels 1".split()
+        cmd+=[ '-o', dst, src ]
+        print ' '.join(cmd)
+        p=subprocess.Popen(cmd).wait()
+   
+    def one_loc(self,location):
+      """
+      process files for this location
+      """
+      loc_dir=os.path.join(self.show_dir,'dv',location.slug)
+      for rf in Raw_File.objects.filter(location=location):
+          self.one_file(loc_dir, rf)
 
+    def one_show(self, show):
+      for loc in Location.objects.filter(show=show):
+        print show,loc
+        self.one_loc(loc)
+
+if __name__=='__main__': 
+    p=mkpreview()
+    p.main()
 

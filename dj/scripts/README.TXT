@@ -11,8 +11,7 @@ If you have many Episodes it might be worth the effort to import locaion and epi
 Otherwise use the admin UI for location and episode too.
 
 3. Make sure the start/end times are right. the next step uses them.  you can fix the db later, but it is much easier if you get it right here, and the camera's clock was set.  
-If you don't know when someting started, pick a range that definately includes it, like 1/1/1900 - 12/31/2020.  
-This will link all .dv files to the episode.  It is easier to remvoe links than add them.
+If you don't know when someting started or ended, leave it blank.  This will link all .dv files to the episode.  It is easier to remvoe links than add them.
 
 4. create the dirs for the .dv files:
 mkdirs.py:# Makes the dir tree to put files into
@@ -26,10 +25,13 @@ adddv.py:                # find Episodes this may be a part of, add a cutlist re
 adddv.py: files=os.listdir(dir)
 adddv.py: Raw_File.objects.get_or_create( filename=dv,)
 
+6.0 collect dv metadata  
+6.1 start/end
 This currently uses dvgrab to get the datetime from the file.  it has issues.
 dvdate.py:# dvdate.py - gets date of .dv file - shells out to dvgrab
 
-It also uses ocr to find some text, which makes for a good thumnail.
+6.2 ocr/thumbnail
+use ocr to find some text, which makes for a good thumnail.
 ocrdv.py:# ocrdv - reads frames from a .dv untill it finds a bunch of words
 ocrdv.py:        # ocr the image
 ocrdv.py:            # score the text
@@ -41,17 +43,17 @@ fixdv.py:# tweaks the time in the other direction
 fixdv.py:timetweak = -3600  # seconds to adjust file timestamp to reality (like timezones)
 
 
-6. Associte dv files with Episodes.
-adddv.py: # find Episodes this may be a part of, add a cutlist record 
-adddv.py: eps = Episode.objects.filter(location=location, start__lte=end, end__gte=start) 
-adddv.py:  Cut_List.objects.get_or_create( episode=ep, raw_file=rf, 
+7. Associte dv files with Episodes.
+assocdv.py: # creates cutlist items for dv files that might belong to an episode
+        eps = Episode.objects.filter(
+            Q(start__lte=dv.end)|Q(start__isnull=True),
+            Q(end__gte=dv.start)|Q(end__isnull=True),
+            location=dv.location).exclude(slug='orphans' )
 
-
-
-7. make low quality versions of all the dv files so you can preview each file in a browser using <video> (not necessary, didn't work too well, I used mplayer.)
+8. make low quality versions of all the dv files so you can preview each file in a browser using <video> (not necessary, didn't work too well, I used mplayer.)
 dvogg.py:# makes .ogg for all dv in a show
 
-8. for each episode, look at what .dv files have been assigned to it.  
+9. for each episode, look at what .dv files have been assigned to it.  
 
 http://0.0.0.0:8080/main/E/1 
 
@@ -63,16 +65,12 @@ If a dv needs junk trimmed from the start or end, put the time offset in "Cut Li
 
 Set Episode.state to 2 - not sure how this hapens :)
 
-9. encode dv to ogg.  for Episodes with only 1 .dv file, that file will be the source.  
+10. encode dv to ogg.  for Episodes with only 1 .dv file, that file will be the source.  
 For more than one, the frames to be included will be copied into a .dv file, and that gets transcoded.  so have appropite amount of space.
 
 enc.py:# encodes to ogg
 
-10. post em:
+11. post em:
 post.py:# posts to blip.tv, tweets it
-post.py:    # username,pwd = "blipuser","1234"
-
-tweeter.py:     
-# TWITTER_USERNAME, TWITTER_PASSWORD = ('twiteruser', '1234')
-# BITLY_USERNAME, BITLY_API_KEY = ('bituser','R_d2f2c394eabcxyz37bd8b340eeb1234')
+pw.py holds user/passwords
 

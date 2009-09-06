@@ -47,16 +47,16 @@ def Score(ocrtext):
 titwords = None
 dictionary = Dictionary()
 
-dvfn = '/home/carl/Videos/pyohio/2009-07-25/auditorium/pyohio-4.dv'
-
-def ocrdv(dvfn,maxframes):
+def ocrdv(dvfn):
     
     stream = pyffmpeg.VideoStream()
     stream.open(dvfn)
     frameno=0
     lastocr = ''
-    while frameno < maxframes:
-
+    done = False
+    while not done:
+  
+      try:
         image = stream.GetFrameNo(frameno)
 
         # get PPM image from PIL image 
@@ -80,9 +80,12 @@ def ocrdv(dvfn,maxframes):
             if score>2:
                 print "score", score
                 print titls
-                return ocrtext,image
 
         frameno+=30*15  # bump about 15 seconds
 
-    image = stream.GetFrameNo(0)
-    return '',image
+      except:
+        ocrtext=''
+        image = stream.GetFrameNo(0)
+        done=True
+
+    return ocrtext,image
