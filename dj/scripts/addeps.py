@@ -2,6 +2,7 @@
 
 # adds episodes from an external source, like a csv
 
+import datetime 
 from csv import DictReader
 from datetime import timedelta
 from dateutil.parser import parse
@@ -9,6 +10,10 @@ from dateutil.parser import parse
 from process import process
 
 from main.models import Client, Show, Location, Episode
+
+
+DJANGOCON_START_DATE = datetime.date(2009, 9, 8)
+
 
 def fnify(text):
     """
@@ -27,6 +32,8 @@ class process_csv(process):
 
     def one_show(self, show):
       seq=0
+      current_date = DJANGOCON_START_DATE
+      last_start = None
       for row in DictReader(open(self.csv_pathname)):
         seq+=1
         print row
@@ -41,25 +48,29 @@ class process_csv(process):
     
         # Remove #N from the start of PhOhio talk titles:
         # if name.startswith('#'): name = ' '.join(name.split()[1:])
+        start = datetime.time(*map(int, row['Startime'].split(':')))
+        end = datetime.time(*map(int, row['Endtime'].split(':')))
 
-        # dt = row['date']+' '+ row['time']
-        talkdate='2009-09-08'
-        start=row['Starttime']
-        start=parse(row['Starttime'])
-        # minutes = int(row['min'])
-        # end=start+timedelta(minutes=minutes)
-        end = row['Endtime']
+        if last_start and start > last_start:
+            current_date = current_date + datetime.timedelta(days=1)
+
+        last_start = start
+
+        start_date = datetime.datetime(
+            *current_date.timetuple()[:3] + (start.hour, start.minute))
+        end_date = datetime.datetime(
+            *current_date.timetuple()[:3] + (end.hour, start.minute))
 
         ep = Episode(
            sequence=seq,
            location=location, 
            name=name,
            slug=fnify(name),
-           primary=row['id'],
-           authors=row['presenters'], 
-           start=start, end=end,
-           state=self.state_done
-            )
+           primary=row['ID'],
+           authors=row['Speakers'], 
+           start=start_date, end=end_date,
+           state=self.state_done)
+        print ep.__dict__
         # ep.save()
 
     def add_more_options(self, parser):
