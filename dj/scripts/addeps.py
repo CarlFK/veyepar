@@ -30,18 +30,25 @@ class process_csv(process):
       for row in DictReader(open(self.csv_pathname)):
         seq+=1
         print row
+# "ID","Talk Title","Speakers","Startime","Endtime","Room","Released"
+# "Multnomah/Holladay"
+        room=row['Room']
+        if room=="Multnomah/Holladay": room="Multnomah"
 
         location,created = Location.objects.get_or_create(
-            show=show,name=row['room'],slug=fnify(row['room']))
-        name = row['title'] 
+            show=show,name=room,slug=fnify(room))
+        name = row['Talk Title'] 
     
         # Remove #N from the start of PhOhio talk titles:
         # if name.startswith('#'): name = ' '.join(name.split()[1:])
 
-        dt = row['date']+' '+ row['time']
-        start=parse(dt)
-        minutes = int(row['min'])
-        end=start+timedelta(minutes=minutes)
+        # dt = row['date']+' '+ row['time']
+        talkdate='2009-09-08'
+        start=row['Starttime']
+        start=parse(row['Starttime'])
+        # minutes = int(row['min'])
+        # end=start+timedelta(minutes=minutes)
+        end = row['Endtime']
 
         ep = Episode(
            sequence=seq,
@@ -53,10 +60,10 @@ class process_csv(process):
            start=start, end=end,
            state=self.state_done
             )
-        ep.save()
+        # ep.save()
 
     def add_more_options(self, parser):
-        parser.add_option('-f', '--filename', default="sched.csv",
+        parser.add_option('-f', '--filename', default="talks.csv",
           help='csv file' )
         parser.add_option('--whack', action="store_true", 
           help="whack current episodes, use with care." )
