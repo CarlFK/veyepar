@@ -31,6 +31,7 @@ class add_dv(process):
         st = os.stat(pathname)    
 # get start from filesystem create timestamp
         start=datetime.datetime.fromtimestamp( st.st_mtime )
+        start += datetime.timedelta(hours=-2)
 
         # calc duration based on filesize
         frames = st.st_size/120000

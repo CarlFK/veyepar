@@ -51,15 +51,13 @@ class process_csv(process):
         start = datetime.time(*map(int, row['Startime'].split(':')))
         end = datetime.time(*map(int, row['Endtime'].split(':')))
 
-        if last_start and start > last_start:
+        if last_start and last_start > start:
             current_date = current_date + datetime.timedelta(days=1)
 
         last_start = start
 
-        start_date = datetime.datetime(
-            *current_date.timetuple()[:3] + (start.hour, start.minute))
-        end_date = datetime.datetime(
-            *current_date.timetuple()[:3] + (end.hour, start.minute))
+        start_date = datetime.datetime.combine( current_date,start )
+        end_date = datetime.datetime.combine( current_date, end)
 
         ep = Episode(
            sequence=seq,
@@ -71,13 +69,11 @@ class process_csv(process):
            start=start_date, end=end_date,
            state=self.state_done)
         print ep.__dict__
-        # ep.save()
+        ep.save()
 
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
           help='csv file' )
-        parser.add_option('--whack', action="store_true", 
-          help="whack current episodes, use with care." )
 
     def main(self):
       options, args = self.parse_args()

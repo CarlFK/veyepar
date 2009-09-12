@@ -13,6 +13,7 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 class ass_dv(process):
 
     def one_dv(self, dv, seq ):
+        print dv
         # find Episodes this may be a part of, add a cutlist record
         eps = Episode.objects.filter(
             Q(start__lte=dv.end)|Q(start__isnull=True), 
@@ -39,6 +40,11 @@ class ass_dv(process):
         self.one_dv(dv,seq)
 
     def one_show(self, show):
+      if self.options.whack:
+          Cut_List.objects.filter(raw_file__location__show=show).delete()
+          Cut_List.objects.filter(episode__location__show=show).delete()
+          return
+
       for loc in Location.objects.filter(show=show):
         print show,loc
         self.one_loc(loc)

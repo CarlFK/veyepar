@@ -20,11 +20,24 @@ class add_dv(process):
         pathname = os.path.join(dir,dv.filename)
         print pathname
 
-        orctext,img=ocrdv.ocrdv(pathname)
-        imgname = os.path.join(dir,dv.basename()+".png")
-        img.save(imgname,'png')
+        ocrtext,img=ocrdv.ocrdv(pathname)
 
+        if img:
+            imgname = os.path.join(dir,dv.basename()+".png")
+            img.save(imgname,'png')
+
+        dv.ocrtext=ocrtext
         dv.save()
+
+    def process_eps(self,episodes):
+      for ep in episodes:
+          show=ep.location.show
+          client=show.client
+          print ep.location.slug
+          self.show_dir = os.path.join(self.options.rootdir,client.slug,show.slug)
+          dir=os.path.join(self.show_dir,'dv',ep.location.slug)
+          for dv in Raw_File.objects.filter(cut_list__episode=ep):
+              self.one_dv(dir,dv)
 
     def one_loc(self,location,dir):
       for dv in Raw_File.objects.filter(location=location):

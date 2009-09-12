@@ -29,8 +29,9 @@ class add_dv(process):
           d=dirpath[len(ep_dir)+1:]
           # print dirpath, d, dirnames, filenames 
           for f in filenames:
-              seq+=1
-              self.one_file(os.path.join(d,f),location,seq)
+              if f[-3:]=='.dv':
+                  seq+=1
+                  self.one_file(os.path.join(d,f),location,seq)
 
     def one_show(self, show):
       for loc in Location.objects.filter(show=show):

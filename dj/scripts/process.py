@@ -21,13 +21,6 @@ class process(object):
   promotes them to done_state.
   """
 
-  ready_state = None
-  done_state = None
-
-  root_dir=None
-  show_dir=None
-  episode_dir=None
-
   def process_ep(self, episode):
     print episode.id, episode.name
     return 
@@ -53,17 +46,19 @@ class process(object):
   def parse_args(self):
     parser = optparse.OptionParser()
     parser.add_option('-r', '--rootdir', help="media files dir",
-        default= '/home/carl/Videos/veyepar' )
+        default= '/media/pycon25wed/Videos/veyepar' )
     parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
+    parser.add_option('--whack', action="store_true",
+              help="whack current episodes, use with care." )
+
     self.add_more_options(parser)
 
     options, args = parser.parse_args()
-    self.root_dir = options.rootdir
-    self.verbose = options.verbose
+    self.options = options
 
     return options, args
 
@@ -82,7 +77,7 @@ class process(object):
     elif options.client and options.show:
         client = Client.objects.get(slug=options.client)
         show = Show.objects.get(client=client,slug=options.show)
-        self.show_dir = os.path.join(self.root_dir,client.slug,show.slug)
+        self.show_dir = os.path.join(self.options.rootdir,client.slug,show.slug)
         self.one_show(show)
 
     elif options.day:
@@ -91,6 +86,7 @@ class process(object):
         enc_eps(episodes)
     else:
         episodes = Episode.objects.filter(id__in=args)
+        print episodes
         self.process_eps(episodes)
     
 

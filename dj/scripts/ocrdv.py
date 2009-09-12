@@ -80,12 +80,16 @@ def ocrdv(dvfn):
             if score>2:
                 print "score", score
                 print titls
+                done=True
 
         frameno+=30*15  # bump about 15 seconds
 
       except:
         ocrtext=''
-        image = stream.GetFrameNo(0)
+        try:
+            image = stream.GetFrameNo(0)
+        except:
+            image = None
         done=True
 
     return ocrtext,image
