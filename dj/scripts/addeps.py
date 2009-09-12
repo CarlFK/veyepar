@@ -40,7 +40,7 @@ class process_csv(process):
 # "ID","Talk Title","Speakers","Startime","Endtime","Room","Released"
 # "Multnomah/Holladay"
         room=row['Room']
-        if room=="Multnomah/Holladay": room="Multnomah"
+        if room=="Multnomah/Holladay": room="Holladay"
 
         location,created = Location.objects.get_or_create(
             show=show,name=room,slug=fnify(room))
@@ -92,7 +92,7 @@ class process_csv(process):
         if options.whack:
 # clear out previous runs for this show
             Episode.objects.filter(location__show=show).delete()
-            # Location.objects.filter(show=show).delete()
+            Location.objects.filter(show=show).delete()
         self.csv_pathname = options.filename
         self.one_show(show)
 

@@ -13,7 +13,7 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 class ass_dv(process):
 
     def one_dv(self, dv, seq ):
-        print dv
+        print dv, dv.location
         # find Episodes this may be a part of, add a cutlist record
         eps = Episode.objects.filter(
             Q(start__lte=dv.end)|Q(start__isnull=True), 

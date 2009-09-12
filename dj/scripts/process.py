@@ -87,6 +87,9 @@ class process(object):
     else:
         episodes = Episode.objects.filter(id__in=args)
         print episodes
+        show = episodes[0].location.show
+        client = show.client
+        self.show_dir = os.path.join(self.options.rootdir,client.slug,show.slug)
         self.process_eps(episodes)
     
 

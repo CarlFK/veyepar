@@ -17,6 +17,7 @@ last frame
 
 import  os
 import datetime
+from dateutil.parser import parse
 
 from process import process
 
@@ -28,10 +29,19 @@ class add_dv(process):
         
         pathname = os.path.join(dir,dv.filename)
         print pathname
+        dt = dv.filename[:-3]
+        dt.replace('/',' ')
         st = os.stat(pathname)    
 # get start from filesystem create timestamp
-        start=datetime.datetime.fromtimestamp( st.st_mtime )
-        start += datetime.timedelta(hours=-2)
+        # start=datetime.datetime.fromtimestamp( st.st_mtime )
+        start=parse(dt)
+        start -= datetime.timedelta(hours=2,minutes=0)
+        if False and start.day==8:
+            if dv.location.slug=='Holladay':
+                print dv.location.slug
+                start -= datetime.timedelta(hours=2,minutes=0)
+            else:
+                start -= datetime.timedelta(hours=2,minutes=37)
 
         # calc duration based on filesize
         frames = st.st_size/120000

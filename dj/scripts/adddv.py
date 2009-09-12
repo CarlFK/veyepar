@@ -34,6 +34,9 @@ class add_dv(process):
                   self.one_file(os.path.join(d,f),location,seq)
 
     def one_show(self, show):
+      if self.options.whack:
+          Raw_File.objects.filter(location__show=show).delete()
+
       for loc in Location.objects.filter(show=show):
         print show,loc
         self.one_loc(loc)
