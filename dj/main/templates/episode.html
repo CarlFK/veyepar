@@ -4,10 +4,13 @@
 
 <a href="/main/E/{{ nextepisode.id }}">Next: {{nextepisode.name }}</a>
 
-
-<h2>{{episode.location}}</h2>
+<h2>Location: {{episode.location}}</h2>
 <h2>Title: {{episode.name}}</h2>
 <h2>Author(s): {{episode.authors}}</h2>
+<a href="/admin/main/episode/{{episode.id}}/">admin</a> 
+<a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a> 
+</br>
+
 <table>
 <tbody>
 <tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>
