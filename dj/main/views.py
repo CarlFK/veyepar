@@ -111,7 +111,6 @@ def episode(request,episode_no):
                  } for cut in cuts]
             clrfformset = clrfFormSet(initial=init)
 
-           # return HttpResponseRedirect('/thanks/') # Redirect after POST
         else:
             print clrfformset.errors
     else:
@@ -144,6 +143,7 @@ def episode(request,episode_no):
         'same_dates':same_dates,
         'clrffs':zip(cuts,clrfformset.forms),
         'clrfformset':clrfformset,
+        'last_raw_file':cuts[len(cuts)-1].raw_file,
         },
     	context_instance=RequestContext(request) )
     	

@@ -11,8 +11,11 @@
 <table>
 <tbody>
 <tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>
-<tr><td>Start</td><td>{% if same_dates %}{{episode.start|date:"H:i"}}{% else %}{{episode.start}}{% endif %}</td></tr>
-<tr><td>End</td><td> {% if same_dates %}{{episode.end|date:"H:i"}}{% else %}{{episode.end}}{% endif %} </td></tr>
+<tr><td>Start</td><td>{% if same_dates %}{{episode.start|date:"H:i"}}{% else %}{{episode.start}}{% endif %}</td>
+<td>First Raw Start</td><td>{% if same_dates %}{{clrffs.0.0.raw_file.start|date:"H:i"}}{% else %}{{clrffs.0.0.faw_file.start}}{% endif %}</td></tr>
+<tr><td>Duration</td><td>{{episode.duration}}</td></tr>
+<tr><td>End</td><td> {% if same_dates %}{{episode.end|date:"H:i"}}{% else %}{{episode.end}}{% endif %} </td>
+<td>Last Raw End</td><td>{% if same_dates %}{{last_raw_file.end|date:"H:i"}}{% else %}{{clrffs.0.0.faw_file.start}}{% endif %}</td></tr>
 </tbody>
 </table>
 
@@ -30,7 +33,8 @@
     <tr>
     <td>
     {{clrfform.clid}}
-    <a href="S/{{show.slug}}/F/{{cl.raw_file.id}}">{{ cl.raw_file.filename }}</a>
+    <a href="S/{{show.slug}}/F/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a><br>
+    <a href="file:///media/pycon25wed/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a><br>
     {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}
     <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
     <img src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" width=200> </a>

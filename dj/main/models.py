@@ -91,6 +91,8 @@ class Episode(models.Model):
     @property
     def location_name(self):
         return self.location
+    def duration(self):
+        return self.end-self.start
     def __unicode__(self):
         return "%s: %s" % ( self.location_name, self.name )
 
