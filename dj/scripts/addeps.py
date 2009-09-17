@@ -44,7 +44,7 @@ class process_csv(process):
 
         location,created = Location.objects.get_or_create(
             show=show,name=room,slug=fnify(room))
-        name = row['Talk Title'] 
+        name = row['Talk Title'].strip()
     
         # Remove #N from the start of PhOhio talk titles:
         # if name.startswith('#'): name = ' '.join(name.split()[1:])

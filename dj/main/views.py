@@ -111,7 +111,6 @@ def episode(request,episode_no):
                  } for cut in cuts]
             clrfformset = clrfFormSet(initial=init)
 
-           # return HttpResponseRedirect('/thanks/') # Redirect after POST
         else:
             print clrfformset.errors
     else:
@@ -136,6 +135,10 @@ def episode(request,episode_no):
             # cut.raw_file.dur=cut.raw_file.durationhms()
             same_dates = same_dates and \
                talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
+    if cuts:
+        last_raw_file = cuts[len(cuts)-1].raw_file
+    else:
+        last_raw_file = None
 
     return render_to_response('episode.html',
         {'episode':episode,
@@ -144,6 +147,7 @@ def episode(request,episode_no):
         'same_dates':same_dates,
         'clrffs':zip(cuts,clrfformset.forms),
         'clrfformset':clrfformset,
+        'last_raw_file':last_raw_file,
         },
     	context_instance=RequestContext(request) )
     	

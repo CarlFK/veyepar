@@ -46,7 +46,7 @@ class post(process):
 
     print oggpathname, thumb
 
-    # blipurl = "http://carlfk.blip.tv/file/2213225"
+    # blipurl = "http://carlfk.blip.tv/file/2558211"
     response = Upload("", pw.blip['user'], pw.blip['password'], oggpathname, meta, thumb)
     responsexml = response.read()
     blipurl = re.search("post_url>(.*)</post" ,responsexml).groups()[0]
@@ -54,6 +54,7 @@ class post(process):
         print blipurl
         prefix = "#%s VIDEO -" % show.client.name
         tweet = tweeter.notify(prefix, ep.name, blipurl)
+        print tweet
         if "<id>" not in tweet: print tweet
         tweetid=re.search("<id>(.*)</id>" ,tweet).groups()[0]
         tweeturl="http://twitter.com/cfkarsten/status/%s"%(tweetid,)
