@@ -12,11 +12,34 @@ from django.forms.formsets import formset_factory
 
 from django.db.models import Q
 
+from django.http import HttpResponse
+from django.core import serializers
+
 from datetime import datetime
 from datetime import timedelta
 import os
 
 from main.models import Client,Show,Location,Episode,Cut_List
+
+def eps_xfer(request,client_slug=None,show_slug=None):
+    """
+    Returns all the episodes for a show as json.
+    Used to synk blip url's with the main conference site.
+    """
+
+    client=get_object_or_404(Client,slug=client_slug)
+    show=get_object_or_404(Show,client=client,slug=show_slug)
+    eps = Episode.objects.filter(location__show=show)
+
+    fields=('id','location','sequence','primary',
+        'name','authors','description','start','end')
+
+    response = HttpResponse(mimetype="text/javascript")
+    response['Content-Disposition'] = \
+        'attachment; filename=%s.json' % show_slug
+    serializers.serialize("json", eps, fields=fields,  stream=response)
+
+    return response
 
 def main(request):
     return render_to_response('main.html',
@@ -135,10 +158,6 @@ def episode(request,episode_no):
             # cut.raw_file.dur=cut.raw_file.durationhms()
             same_dates = same_dates and \
                talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
-    if cuts:
-        last_raw_file = cuts[len(cuts)-1].raw_file
-    else:
-        last_raw_file = None
 
     return render_to_response('episode.html',
         {'episode':episode,
@@ -147,7 +166,6 @@ def episode(request,episode_no):
         'same_dates':same_dates,
         'clrffs':zip(cuts,clrfformset.forms),
         'clrfformset':clrfformset,
-        'last_raw_file':last_raw_file,
         },
     	context_instance=RequestContext(request) )
     	
