@@ -3,6 +3,7 @@
 # adds episodes from an external source, like a csv
 
 import datetime 
+import urllib2,json
 from csv import DictReader
 from datetime import timedelta
 from dateutil.parser import parse
@@ -10,7 +11,6 @@ from dateutil.parser import parse
 from process import process
 
 from main.models import Client, Show, Location, Episode
-
 
 DJANGOCON_START_DATE = datetime.date(2009, 9, 8)
 
@@ -34,7 +34,12 @@ class process_csv(process):
       seq=0
       current_date = DJANGOCON_START_DATE
       last_start = None
-      for row in DictReader(open(self.csv_pathname)):
+      j=urllib2.urlopen(
+        'http://0.0.0.0:8080/main/C/DjangoCon/S/djc09.json').read()
+      eps = l=json.loads(j)
+      for ep in eps:
+      # for row in DictReader(open(self.csv_pathname)):
+        row=ep['fields']
         seq+=1
         print row
 # "ID","Talk Title","Speakers","Startime","Endtime","Room","Released"
@@ -69,7 +74,7 @@ class process_csv(process):
            start=start_date, end=end_date,
            state=self.state_done)
         print ep.__dict__
-        ep.save()
+        # ep.save()
 
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
