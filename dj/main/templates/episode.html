@@ -2,6 +2,7 @@
 {% extends "base.html" %}
 {% block content %}
 
+<a href="/main/C/DjangoCon/S/djc09/">Up</a>
 <a href="/main/E/{{ nextepisode.id }}">Next: {{nextepisode.name }}</a>
 
 <h2>Location: {{episode.location}}</h2>
@@ -18,7 +19,17 @@
 <td>First Raw Start</td><td>{% if same_dates %}{{clrffs.0.0.raw_file.start|date:"H:i"}}{% else %}{{clrffs.0.0.faw_file.start}}{% endif %}</td></tr>
 <tr><td>Duration</td><td>{{episode.duration}}</td></tr>
 <tr><td>End</td><td> {% if same_dates %}{{episode.end|date:"H:i"}}{% else %}{{episode.end}}{% endif %} </td>
-<td>Last Raw End</td><td>{% if same_dates %}{{last_raw_file.end|date:"H:i"}}{% else %}{{clrffs.0.0.faw_file.start}}{% endif %}</td></tr>
+<td>Last Raw End</td>
+{% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %}
+<td>{% if same_dates %}
+{{end|date:"H:i"}}
+{% else %}
+{{end}}
+{% endif %}</td>
+{% endwith %} {% endwith %}
+
+
+</tr>
 </tbody>
 </table>
 
