@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     (r'clients/$', list_detail.object_list, client_list),
     (r'C/(?P<client_slug>\w+)/$', client),
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$', client_shows),
+    (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).json$', eps_xfer ),
     (r'E/(?P<episode_no>\d+)/$', episode),)
 
 if False and settings.DEBUG:
