@@ -78,8 +78,9 @@ def client_shows(request,client_slug=None,show_slug=None):
  
 class clrfForm(forms.Form):
     clid = forms.IntegerField(widget=forms.HiddenInput())
-    delete = forms.BooleanField(label="Delete",required=False)
     trash = forms.BooleanField(label="Trash",required=False)
+    delete = forms.BooleanField(label="Delete",required=False)
+    split = forms.BooleanField(label="Spilt",required=False)
     sequence = forms.IntegerField(label="Sequence",required=False,
       widget=forms.TextInput(attrs={'size':'3'}))
     start = forms.CharField(max_length=12,label="Start",required=False,
@@ -123,6 +124,12 @@ def episode(request,episode_no):
                     cl.end=form.cleaned_data['end']
                     cl.comment=form.cleaned_data['cl_comment']
                     cl.save()
+                    if form.cleaned_data['split']:
+                        cl.id=None
+                        cl.sequence+=1
+                        cl.start = cl.end
+                        cl.end = ''
+                        cl.save(force_insert=True)
 
             # if trash got touched, need to requery to get things in the right order.  I think.
             cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','raw_file__start')

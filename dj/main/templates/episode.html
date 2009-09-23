@@ -62,7 +62,11 @@
       <tr> <td>Duration:</td> <td>{{cl.raw_file.durationhms}}</td> </tr>
       <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}</td> </tr>
 
-      <tr><td></td><td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td><td>{{ clrfform.delete.label_tag }}{{ clrfform.delete }}</td> </tr>
+      <tr><td></td>
+        <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
+        <td>{{ clrfform.delete.label_tag }}{{ clrfform.delete }}
+         {{ clrfform.split.label_tag }}{{ clrfform.split }}</td>
+      </tr>
       <tr> <td>Comments:</td> <td>{{clrfform.rf_comment}}</td> <td>{{clrfform.cl_comment}}</td> </tr>
 
     </tbody>
