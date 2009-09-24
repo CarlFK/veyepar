@@ -56,7 +56,8 @@ def mktitle(name, authors):
     tree=xml.etree.ElementTree.XMLID(svg_in)
     # print tree[1]
     tree[1]['title'].text=name
-    tree[1]['presenternames'].text="By %s" % authors
+    prefix = "Featuring" if "," in authors else "By"
+    tree[1]['presenternames'].text="%s %s" % (prefix,authors)
     open('x.svg','w').write(xml.etree.ElementTree.tostring(tree[0]))
     cmd="inkscape x.svg --export-png title.png"
     run_cmd(cmd)
