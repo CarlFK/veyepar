@@ -52,6 +52,12 @@ def run_cmd(cmd):
 
 
 def mktitle(name, authors):
+    """
+    Make a title slide by filling in a pre-make svg with name/authors.
+    librsvg doesn't support flow, wich is needed for long titles, 
+    so render it to a .png using inkscape
+    """
+
     svg_in=open('/home/carl/dev/py/vid/djcon/djc09b.svg').read()
     tree=xml.etree.ElementTree.XMLID(svg_in)
     # print tree[1]
