@@ -27,12 +27,16 @@ class process(object):
 
   def process_eps(self, episodes):
     for ep in episodes:
-        if ep.state==self.ready_state:
+        if ep.state==self.ready_state or self.options.force:
             self.episode_dir=os.path.join( self.show_dir, 'dv', 
                 ep.location.slug )
             if self.process_ep(ep):
                 ep.state=self.done_state
                 ep.save()
+        else:
+            print "#%s: %s is in state %s, ready is %s" % (
+                ep.id, ep, ep.state, self.ready_state)
+
 
   def one_show(self, show):
     locs = Location.objects.filter(show=show)
@@ -46,12 +50,15 @@ class process(object):
   def parse_args(self):
     parser = optparse.OptionParser()
     parser.add_option('-r', '--rootdir', help="media files dir",
-        default= '/media/pycon25wed/Videos/veyepar' )
+        default= '/home/carl/Videos/veyepar' )
+        # default= '/media/pycon25wed/Videos/veyepar' )
     parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
+    parser.add_option('--force', action="store_true",
+              help="overfide ready state, use with care." )
     parser.add_option('--whack', action="store_true",
               help="whack current episodes, use with care." )
 
