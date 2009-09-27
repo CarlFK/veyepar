@@ -62,6 +62,7 @@ import urllib2
 import urlparse
 from xml.dom.minidom import parseString
 from xml.sax.saxutils import unescape
+import cgi
 
 BLIP_UPLOAD_URL = "http://blip.tv/file/post"
 
@@ -140,7 +141,7 @@ def PostMultipart(url, fields, files, progress):
 def GetMimeType(filename):
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
-def Upload(video_id, username, password, filename, meta, thumbname):
+def Upload(video_id, username, password, filename, meta, thumbname=None):
     """@brief Upload to blip.tv
     
     @param video_id Either the item ID of an existing post or None to upload
@@ -163,6 +164,7 @@ def Upload(video_id, username, password, filename, meta, thumbname):
 
     meta["title"] = meta["title"].encode("utf-8")
     meta["description"] = meta["description"].encode("utf-8")
+    meta["description"] = cgi.escape(meta["description"])
     
     fields.update(meta)
 
@@ -300,7 +302,7 @@ def GetDescription(default):
 
 def parse_args():
     parser = optparse.OptionParser()
-    parser.add_option('-v', '--videoid')
+    parser.add_option('-v', '--videoid', default=None)
     parser.add_option('-f', '--filename')
     parser.add_option('-t', '--title')
     parser.add_option('-d', '--description')
@@ -329,8 +331,13 @@ def Main():
     else:
         meta['title'] = options.title if options.title \
             else raw_input("\nTitle of your new post: ")
-        meta['description'] = \
-            options.description if options.description else "" 
+        if options.description:
+            if options.description[0]=='@':
+                meta['description'] = open(options.description[1:]).read()
+            else:
+                meta['description'] = options.description
+        else:
+            meta['description'] = ''
         existing_mime_types = {}
 
     filename = options.filename if options.filename is not None \
