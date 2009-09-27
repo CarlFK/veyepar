@@ -158,7 +158,13 @@ class enc(process):
         mktitle(episode.name, episode.authors)
 
         oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
-        cmd="melt -verbose -profile dv_ntsc x.mlt -consumer avformat:%s acodec=vorbis ab=128k ar=44100 vcodec=libtheora minrate=0 b=600k" % oggpathname
+ 
+        cmd="melt -verbose -profile dv_ntsc x.mlt -consumer avformat:%s acodec=vorbis ab=128k ar=44100 vcodec=libtheora minrate=0 b=900k progressive=1 deinterlace_method=onefield" % oggpathname
+        ret = run_cmd(cmd)
+
+        flv_pathname = os.path.join(self.show_dir, "ogg", "%s.flv"%episode.slug)
+ 
+        cmd="melt -verbose -profile dv_ntsc x.mlt -consumer avformat:%s acodec=libmp3lame ab=128k ar=44100 vcodec=flv minrate=0 b=900k progressive=1 deinterlace_method=onefield" % oggpathname
         ret = run_cmd(cmd)
 
     else:
