@@ -15,17 +15,6 @@ from main.models import Client, Show, Location, Episode
 DJANGOCON_START_DATE = datetime.date(2009, 9, 8)
 
 
-def fnify(text):
-    """
-    file_name_ify - make a file name out of text, like a talk title.
-    convert spaces to _, remove junk like # and quotes.
-    like slugify, but more file name friendly.
-    """
-    fn = text.replace(' ','_')
-    fn = ''.join([c for c in fn if c.isalpha() or c.isdigit() or (c in '_') ])
-    return fn
-
-
 class process_csv(process):
    
     state_done=2
@@ -48,7 +37,7 @@ class process_csv(process):
         if room=="Multnomah/Holladay": room="Holladay"
 
         location,created = Location.objects.get_or_create(
-            show=show,name=room,slug=fnify(room))
+            show=show,name=room,slug=process.fnify(room))
         name = row['Talk Title'].strip()
     
         # Remove #N from the start of PhOhio talk titles:
@@ -68,7 +57,7 @@ class process_csv(process):
            sequence=seq,
            location=location, 
            name=name,
-           slug=fnify(name),
+           slug=process.fnify(name),
            primary=row['ID'],
            authors=row['Speakers'], 
            start=start_date, end=end_date,
