@@ -3,25 +3,15 @@
 # adds episodes from an external source, like a csv
 
 import datetime 
-import urllib2,json
-from csv import DictReader
-from datetime import timedelta
-from dateutil.parser import parse
-
 import process
-
-# from process import process
 
 from main.models import Client, Show, Location, Episode
 
-
-class process_csv(process.process):
+class process_sched(process.process):
    
     state_done=2
 
     def one_show(self, show):
-        seq=0
-        last_start = None
         sched = """09:30 Morning Tea available on arrival
 10:00 ACQA - 'Yesterday, Today and Tomorrow '
 10:45 Michael Peachy & Nick Heywood Wellness & Lifestyle
@@ -35,12 +25,8 @@ class process_csv(process.process):
 15.30 Terry Wilby - Forum Close - ACQA Chairperson""" 
         eps=[]
         for row in sched.split('\n'):
-            print ":", row
-
-            start = datetime.datetime(2009, 10, 2, int(row[0:2]), int(row[3:5]))
-            print start
-            
-            eps.append( {'start':start, 'name':row[5:]} )
+            eps.append({'name':row[5:], 'start': \
+                datetime.datetime(2009, 10, 2, int(row[0:2]), int(row[3:5]))})
         
 # set the end times to the start of the next event.  close enough.
         for i in range(len(eps)-1):
@@ -48,6 +34,7 @@ class process_csv(process.process):
 # "finishing at 15:45pm"
         eps[-1]['end']= datetime.datetime(2009, 10, 2, 15, 45)
 
+        seq=0
         for row in eps:
             seq+=1
 
@@ -64,10 +51,6 @@ class process_csv(process.process):
                state=self.state_done)
             print ep.__dict__
             ep.save()
-
-    def add_more_options(self, parser):
-        parser.add_option('-f', '--filename', default="talks.csv",
-          help='csv file' )
 
     def main(self):
       options, args = self.parse_args()
@@ -87,6 +70,6 @@ class process_csv(process.process):
         self.one_show(show)
 
 if __name__ == '__main__':
-    p=process_csv()
+    p=process_sched()
     p.main()
 
