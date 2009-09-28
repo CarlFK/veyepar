@@ -13,6 +13,16 @@ settings.DATABASE_NAME="../vp.db"
 
 from main.models import Client, Show, Location, Episode 
 
+def fnify(text):
+    """
+    file_name_ify - make a file name out of text, like a talk title.
+    convert spaces to _, remove junk like # and quotes.
+    like slugify, but more file name friendly.
+    """
+    fn = text.replace(' ','_')
+    fn = ''.join([c for c in fn if c.isalpha() or c.isdigit() or (c in '_') ])
+    return fn
+
 class process(object):
   """
   Abstract class for processing.
@@ -47,6 +57,21 @@ class process(object):
   def add_more_options(self, parser):
     pass
  
+  def list(self):
+    """
+    list clients and shows.
+    todo: filter on something.
+    """
+    for client in Client.objects.all():
+        print "\nName: %s  Slug: %s" %( client.name, client.slug )
+        for show in Show.objects.filter(client=client):
+            print "\tName: %s  Slug: %s" %( show.name, show.slug )
+            print "\t--client %s --show %s" %( client.slug, show.slug )
+            for ep in Episode.objects.filter(location__show=show):
+                print "\t\t id: %s state: %s %s" % ( 
+                    ep.id, ep.state, ep )
+    return
+
   def parse_args(self):
     parser = optparse.OptionParser()
     parser.add_option('-r', '--rootdir', help="media files dir",
@@ -73,14 +98,7 @@ class process(object):
     options, args = self.parse_args()
 
     if options.list:
-        for client in Client.objects.all():
-            print "\nName: %s  Slug: %s" %( client.name, client.slug )
-            for show in Show.objects.filter(client=client):
-                print "\tName: %s  Slug: %s" %( show.name, show.slug )
-                print "\t--client %s --show %s" %( client.slug, show.slug )
-                for ep in Episode.objects.filter(location__show=show):
-                    print "\t\t id: %s state: %s %s" % ( 
-                        ep.id, ep.state, ep.name )
+        self.list()
     elif options.client and options.show:
         client = Client.objects.get(slug=options.client)
         show = Show.objects.get(client=client,slug=options.show)
