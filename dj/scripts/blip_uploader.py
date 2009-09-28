@@ -27,28 +27,35 @@
     This script can be used to post videos to blip.tv, or to upload additional
     formats for existing posts, or to change the description of existing posts.
     
-    The script uses ffmpeg2theora to (optionally) convert video files to Ogg Theora.
-    See http://v2v.cc/~j/ffmpeg2theora/.
-    
     The script uses the blip.tv "REST Upload API". See http://blip.tv/about/api/.
-    
     blip.tv uses item IDs to identify videos. For the video at
     http://blip.tv/file/123456, the item ID is "123456". The code refers to
     this ID as "video_id".
     
+    user/password will be prompted for if not passed.
+    
     Usage:
     @code
-      blip_uploader.py [<video-id> [<filename>]]
+      blip_uploader.py --help
 
-      # Entirely interactive (you are prompted for all required information):
-      blip_uploader.py
-        
-      # Upload alternate format to existing post:
-      blip_uploader.py 123456 alternate_format.ogg
-                    
       # Upload new video:
-      blip_uploader.py "" new_video.mpg
+      blip_uploader.py -f new_video.mpg -t "My Great Video"
+
+      # Upload alternate format to existing post:
+      blip_uploader.py -v 123456 -f alternate_format.ogg -n 1 -r Web 
+                    
     @endcode
+
+    A Blip Episode can be created from just a Title and 1 File - a thumbnail
+    will be generated and the default license applied. 
+    Everything else is optional: 
+        description, categories, additional formats, nsfw, topics
+
+    This script will let you create and update Episodes.
+    The creation requires a file, the script will create a Title 
+    from the filename.  After that all attributes replace the current values.
+
+
 """
 
 import optparse
@@ -60,9 +67,12 @@ import re
 import sys
 import urllib2
 import urlparse
-from xml.dom.minidom import parseString
-from xml.sax.saxutils import unescape
+# from xml.dom.minidom import parseString
+# import xml.etree.ElementTree
+
+# import xml.sax.saxutils
 import cgi
+from pprint import pprint 
 
 BLIP_UPLOAD_URL = "http://blip.tv/file/post"
 
@@ -70,6 +80,9 @@ MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
 def show_pct_done(current,total):
     sys.stdout.write('\r%3i%%  %s of %s bytes' % (100*current/total, current, total))
+
+def GetMimeType(filename):
+    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
 def PostMultipart(url, fields, files, progress):
     """@brief Send multi-part HTTP POST request
@@ -138,21 +151,17 @@ def PostMultipart(url, fields, files, progress):
     return response
     # return response.status, response.reason, response.read()    
 
-def GetMimeType(filename):
-    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-
-def Upload(video_id, username, password, filename, meta, thumbname=None):
+def Upload(video_id, username, password, files, meta, thumbname=None):
     """@brief Upload to blip.tv
     
     @param video_id Either the item ID of an existing post or None to upload
         a new video
     @param username, password
-    @param filename Filename of the video to upload (if a @a video_id is specified),
-        this file is uploaded as an additional format to the existing post)
-    @param meta['title'] New title of the post
-    @param meta['description'] New description of the post
-    @param meta['foo'] New foo of the post
+    @param files list of Filenames and Roles of videos to upload 
+    @param meta['foo'] New foo of the post (title, description, etc)
+    @thumbname New thumbnail filename    
     @return Response data
+    
     """
     fields = {
         "post": "1",
@@ -162,150 +171,68 @@ def Upload(video_id, username, password, filename, meta, thumbname=None):
         "item_type": "file",
         }
 
-    meta["title"] = meta["title"].encode("utf-8")
-    meta["description"] = meta["description"].encode("utf-8")
-    meta["description"] = cgi.escape(meta["description"])
-    
-    fields.update(meta)
-
     if video_id:    # update existing
         fields["id"] = "%s" % video_id
-        file_field = "file1"
-    else:           # new post
-        file_field = "file"
-    if filename:
-        fields[file_field + "_role"] = "Web"
-        files = [(file_field, filename)]
-    else:
-        files = []
+
+    # add in additional metadata
+    fields.update(meta)
+
+    # extract out the file number and roles
+    # example:
+    # files = [ ('','Source','foo.ogg'), ('1','Web','foo.flv') ]
+    # fields['file_role']='Source'
+    # fields['file1_role']='Web'
+    # files= [ ('file','foo.ogg'), ('file1','foo.flv') ]
     
+    print files
+
+    for no,role,filename in files:
+        fields["file%s" % no + "_role"] = role
+    files = [("file%s" % no, filename) for no,role,filename in files]
+
     if thumbname:
         files.append(("thumbnail",thumbname))
 
+    pprint(fields)
+    pprint(files )
+
     print "Posting to", BLIP_UPLOAD_URL
     print "Please wait..."
-    response = PostMultipart(BLIP_UPLOAD_URL, fields, files,show_pct_done)
+    response = PostMultipart(BLIP_UPLOAD_URL, fields, files, show_pct_done)
     print "Done."
 
     return response
-        
-def AskForVideoId():
-    video_id = None
-    while video_id is None:
-        video_url = raw_input("Enter blip.tv video ID or URL\n  (e.g., "
-                              "'123456' or 'http://blip.tv/file/123456'),\n"
-                              "  or press RETURN to upload a new video: ")
-        if not video_url:
-            return None
-        m = re.match(r"[^\d]*(\d+).*", video_url)
-        if m:
-            video_id = m.group(1)
-        else:
-            print "Invalid format"
-    return video_id
 
-def AskYesNo(question, default=True):
-    while True:
-        if default == True:
-            options = "[Y/n]"
-        else:
-            options = "[y/N]"
-        yes_no = raw_input(question + " " + options + " ")
-        if not yes_no:
-            return default
-        elif yes_no in ["Y", "y"]:
-            return True
-        elif yes_no in ["N", "n"]:
-            return False
-            
-def GetTextFromDomNode(node):
-    rc = ""
-    for n in node.childNodes:
-        if n.nodeType == node.TEXT_NODE or n.nodeType == node.CDATA_SECTION_NODE:
-            rc = rc + n.data
-    return rc
-
-def GetVideoInfo(video_id):
-    """@brief Return information about the video
-    
-    @param video_id blip.tv item ID
-    @return A tuple of
-        @a title (string),
-        @a description (string),
-        @a link (URL to video as a string),
-        @a embed_code (HTML <embed> code as a string),
-        @a embed_id (the part of the <embed> code that's used with the Drupal filter,
-            e.g., "AbCcKIuEBA"),
-        @a existing_mime_types (a dict of {mime_type: list_of_file_urls}
-            containing the URLs that are currently part of the post)
-    """
-    url = 'http://blip.tv/file/%(video_id)s?skin=rss' % locals()
-    print "Loading", url, "..."
+def List_Licenses():
+    url = 'http://www.blip.tv/?section=licenses&cmd=view&skin=api'
     xml_code = urllib2.urlopen(url).read()
-    rss = parseString(xml_code)
-    channel = rss.getElementsByTagName("channel")[0]
-    item = channel.getElementsByTagName("item")[0]
-    
-    meta = {}
-    meta['title'] = GetTextFromDomNode(item.getElementsByTagName("title")[0])
-    meta['description'] = unescape(
-        GetTextFromDomNode(item.getElementsByTagName("blip:puredescription")[0]))
-    meta['link'] = GetTextFromDomNode(item.getElementsByTagName("link")[0])
-
-    embed_code = GetTextFromDomNode(item.getElementsByTagName("media:player")[0])
-    m = re.search(r"http://blip.tv/play/(\w+)", embed_code)
-    meta['embed_id'] = m.group(1) if m else None
-
-    existing_mime_types = {}
-    media_group = item.getElementsByTagName("media:group")[0]
-    for content in media_group.getElementsByTagName("media:content"):
-        existing_mime_types.setdefault(content.attributes["type"].value, []).append( content.attributes["url"].value)
-
-    # return title, description, link, embed_code, embed_id, existing_mime_types
-    return meta, existing_mime_types
-
-def DisplayVideoInfo(meta,existing_mime_types):
-    print "Title           =", meta['title']
-    print "Link            =", meta['link']
-    if meta['embed_id']:
-        print "Embed ID        =", meta['embed_id']
-    else:
-        print "Embed ID        = <The video hasn't been converted to Flash yet>"
-    if existing_mime_types:
-        print "Files           ="
-        for urls in existing_mime_types.itervalues():
-            for url in urls:
-                print "    " + url
-
-def ConvertToOggTheora(filename):
-    out_filename = os.path.splitext(filename)[0] + os.extsep + "ogg"
-    cmd = 'ffmpeg2theora -o "%(out_filename)s" "%(filename)s"' % locals()
-    print "Running", cmd, "..."
-    exit_code = os.system(cmd)
-    if exit_code:
-        print "Error: Command returned with code %r" % (exit_code,)
-        sys.exit(1)
-    return out_filename
-
-def GetDescription(default):
-    if os.path.exists("description.txt"):
-        print ''
-        print 'Taking description from file "description.txt"...'
-        default = open("description.txt").read()
-    print "Current description:\n  {{{%s}}}" % default
-    print ""
-    desc = raw_input(
-        'Type a new one-line description or press RETURN to keep the current one\n'
-        '  (If you need more than one line, press Ctrl+C to abort,\n'
-        '  create a file named "description.txt" and run again): ')
-    return desc or default
+    print xml_code
+       
+def List_Categories():
+    url = 'http://www.blip.tv/?section=categories&cmd=view&skin=api'
+    xml_code = urllib2.urlopen(url).read()
+    print xml_code
 
 def parse_args():
     parser = optparse.OptionParser()
-    parser.add_option('-v', '--videoid', default=None)
-    parser.add_option('-f', '--filename')
+    parser.add_option('-f', '--filename', 
+        help = 'Filename of media to upload')
+    parser.add_option('-r', '--role', default='Source',
+        help = 'Role for this file.  examples: Source, Web, Cell Phone.')
+    parser.add_option('-n', '--fileno', default='',
+        help = 'format number - used when uploading alternative format.')
     parser.add_option('-t', '--title')
-    parser.add_option('-d', '--description')
+    parser.add_option('-d', '--description',
+        help='description, or @filename of description')
+    parser.add_option('-T', '--topics',
+        help="list of topics")
+    parser.add_option('-l', '--license',
+        help="13 is Creative Commons Attribution-NC-ShareAlike 3.0\n"
+        "--license list to see full list" )
+    parser.add_option('-c', '--category',
+        "--categories list to see full list" )
+    parser.add_option('-v', '--videoid',
+        help="ID of existing blip episode (for updating.)")
     parser.add_option('-u', '--username')
     parser.add_option('-p', '--password')
 
@@ -315,78 +242,60 @@ def parse_args():
 def Main():
 
     options, args = parse_args()
+
     meta={} # metadata about the post: title, licence...
 
-    video_id = options.videoid if options.videoid is not None \
-        else AskForVideoId()
+    video_id = options.videoid 
 
-    if video_id:
-        existing_mime_types, meta = GetVideoInfo(video_id)
-    
-        print "\nVideo Info:"
-        DisplayVideoInfo(meta)
-    
-        if not AskYesNo('\nIs this the video you want to modify?', True):
-            sys.exit(0)
+    # this gets messy because there is metadata about the episode,
+    # and also metadata about each file.
+    # the command line options only support one file at a time
+    # but the Upload func supports a list of files/roles.
+    # These next few lines make the list out of the single file/role.
+
+    if options.filename:
+        files = [(options.fileno, options.role, options.filename),]
     else:
-        meta['title'] = options.title if options.title \
-            else raw_input("\nTitle of your new post: ")
-        if options.description:
-            if options.description[0]=='@':
-                meta['description'] = open(options.description[1:]).read()
-            else:
-                meta['description'] = options.description
+        files = []
+
+    if options.title:
+        meta['title'] = cgi.escape(options.title.encode("utf-8"))
+
+    if options.description:
+        if options.description[0]=='@':
+            meta['description'] = open(options.description[1:]).read()
         else:
-            meta['description'] = ''
-        existing_mime_types = {}
+            meta['description'] = options.description
+        meta['description'] = cgi.escape(meta['description'].encode("utf-8"))
+    
+    if options.topics:
+        meta['topics'] = options.topics
 
-    filename = options.filename if options.filename is not None \
-        else raw_input( "Filename of video to upload "
-            "(leave blank if you want to change the description only): ")
+    if options.license:
+        if options.license=='list':
+            List_Licenses()
+            return 
+        else:
+            meta['license'] = options.license
 
-    if filename:
-        mime_type = GetMimeType(filename)
-        if mime_type not in ['audio/ogg', "application/ogg"]:
-            print ""
-            if AskYesNo('The file "%(filename)s" is of type "%(mime_type)s".\n'
-                        'Do you wish to convert it to Ogg Theora?' % locals(),
-                        True):
-                print ""
-                filename = ConvertToOggTheora(filename)
-                mime_type = "application/ogg"
-                print ""
-                
-        print ""
-        if mime_type in existing_mime_types:
-            if not AskYesNo('A video of type "%(mime_type)s" was already uploaded.\n'
-                            'Would you still like to upload the file "%(filename)s"?'
-                            % locals(),
-                            False):
-                filename = None
-    else:
-        filename = None
+    if options.category:
+        if options.category=='list':
+            List_Categories()
+            return 
+        else:
+            meta['categorie_id'] = options.category
 
-    meta['description'] = GetDescription(meta['description'])
-    meta["topics"]="pyohio, python, pycon, conference, ohio, 2009"
-    meta["license"]= "13"
-    meta["categories_id"]="10"
+    if not video_id and not files:
+        print "Must either supply video_id or filename"
+        return 
 
-    print ""
-    print "Ready to post."
-    print "- Upload file:", filename
-    print "- Set title to:", meta['title']
-    print "- Set description to:\n  {{{%s}}}" % meta['description']
-    print ""
-    if AskYesNo("Is this okay?", True):
-        print ""
-        username = options.username if options.username \
-            else raw_input("blip.tv Username: ")
-        pwd = options.password if options.password \
-            else getpass.getpass("blip.tv Password: ")
-        print ""
-        response = Upload(video_id, username, pwd, filename, meta)
-        print ""
-        print "Server response:\n  {{{%s}}}" % response.read()
+    username = options.username if options.username \
+        else raw_input("blip.tv Username: ")
+    pwd = options.password if options.password \
+        else getpass.getpass("blip.tv Password: ")
+
+    response = Upload(video_id, username, pwd, files, meta)
+    print "Server response:\n  %s" % response.read()
         
     return 0
 
