@@ -6,7 +6,6 @@ Getting started...
 veyepar/dj$ ./manage.py syncdb
 
 2. create a client, show, location and episodes records in the db
-Use the django admin UI for client and Show.  
 If you have many Episodes it might be worth the effort to import locaion and episodes from a .csv file using addeps.py.  
 Otherwise use the admin UI for location and episode too.
 
@@ -27,8 +26,9 @@ adddv.py: Raw_File.objects.get_or_create( filename=dv,)
 
 6.0 collect dv metadata  
 6.1 start/end
-This currently uses dvgrab to get the datetime from the file.  it has issues.
-dvdate.py:# dvdate.py - gets date of .dv file - shells out to dvgrab
+tsdv.py - timestamp dv
+Gets start from one of:
+the file name (assumes hh:mm:ss.dv format)
 
 6.2 ocr/thumbnail
 use ocr to find some text, which makes for a good thumnail.
@@ -36,11 +36,6 @@ ocrdv.py:# ocrdv - reads frames from a .dv untill it finds a bunch of words
 ocrdv.py:        # ocr the image
 ocrdv.py:            # score the text
 ocrdv.py:        frameno+=30*60  # bump on min
-
-If you find that the clock was screwed up, you can adjust the datetime in the db:
-
-fixdv.py:# tweaks the time in the other direction
-fixdv.py:timetweak = -3600  # seconds to adjust file timestamp to reality (like timezones)
 
 
 7. Associte dv files with Episodes.
@@ -63,14 +58,14 @@ If it belongs to some other event, mark "Cut List - Delete [x]"  This deletes th
 If a dv needs junk trimmed from the start or end, put the time offset in "Cut List - Start/End" 
 1 or 0:0:1 means trim 1 second from start.  1:2:3 means the clip ends 1 hour 2 min 3 seconds from the start of the file, so in this case 1h 2m 2 seconds would be used.
 
-Set Episode.state to 2 - not sure how this hapens :)
+Set Episode.state to 2 in admin UI
 
-10. encode dv to ogg.  for Episodes with only 1 .dv file, that file will be the source.  
-For more than one, the frames to be included will be copied into a .dv file, and that gets transcoded.  so have appropite amount of space.
-
+10. encode dv to ogg.  
 enc.py:# encodes to ogg
+adds titles too.
 
 11. post em:
 post.py:# posts to blip.tv, tweets it
-pw.py holds user/passwords
+pw.py holds user/passwords, not checked in, make one from pw_samp.py
+
 

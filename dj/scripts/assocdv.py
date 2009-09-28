@@ -14,15 +14,20 @@ class ass_dv(process):
 
     def one_dv(self, dv, seq ):
         print dv, dv.location
+        orph_name='orphans %s %s' % (
+            dv.location.name,
+            dv.start.strftime('%a_%d'),
+            )
+        orph_slug = process.fnify(orph_slug)
         # find Episodes this may be a part of, add a cutlist record
         eps = Episode.objects.filter(
             Q(start__lte=dv.end)|Q(start__isnull=True), 
             Q(end__gte=dv.start)|Q(end__isnull=True), 
-            location=dv.location).exclude(slug='orphans' )
+            location=dv.location).exclude(slug=orph_slug )
         if not eps:
             # if no episodes found, attach to the orphan bucket
             ep,created=Episode.objects.get_or_create(
-               name='orphans',slug='orphans',
+               name=orph_name,slug=orph_slug,
                location=dv.location)
             eps=[ep]
         for ep in eps:
