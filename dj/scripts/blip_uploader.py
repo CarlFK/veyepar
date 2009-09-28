@@ -74,17 +74,21 @@ BLIP_UPLOAD_URL = "http://blip.tv/file/post"
 MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
 def show_pct_done(current,total):
+    """
+    Displaies percent done, bytes sent, total bytes.
+    """
     sys.stdout.write('\r%3i%%  %s of %s bytes' % (100*current/total, current, total))
 
 def GetMimeType(filename):
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
-def PostMultipart(url, fields, files, progress):
+def PostMultipart(url, fields, files, progress=None):
     """@brief Send multi-part HTTP POST request
     
     @param url POST URL
     @param fields A dict of {field-name: value}
     @param files A list of [(field-name, filename)]
+    @param progress A callback to update progress - like percent done.
     @return Status, reason, response (see httplib.HTTPConnection.getresponse())
     """
     content_type = 'multipart/form-data; boundary=%s' % MULTIPART_BOUNDARY
@@ -144,15 +148,14 @@ def PostMultipart(url, fields, files, progress):
 
     response = h.getresponse()
     return response
-    # return response.status, response.reason, response.read()    
 
 def Upload(video_id, username, password, files, meta, thumbname=None):
     """@brief Upload to blip.tv
     
-    @param video_id Either the item ID of an existing post or None to upload
-        a new video
+    @param video_id Either the item ID of an existing post or None to create
+        a new Episode.
     @param username, password
-    @param files list of Filenames and Roles of videos to upload 
+    @param files List of Filenames and Roles of videos to upload 
     @param meta['foo'] New foo of the post (title, description, etc)
     @thumbname New thumbnail filename    
     @return Response data
