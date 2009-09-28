@@ -67,6 +67,7 @@ import re
 import sys
 import urllib2
 import urlparse
+import xml.etree.ElementTree
 # from xml.dom.minidom import parseString
 # import xml.etree.ElementTree
 
@@ -206,12 +207,18 @@ def Upload(video_id, username, password, files, meta, thumbname=None):
 def List_Licenses():
     url = 'http://www.blip.tv/?section=licenses&cmd=view&skin=api'
     xml_code = urllib2.urlopen(url).read()
-    print xml_code
+    tree = xml.etree.ElementTree.fromstring(xml_code)
+    for node in tree.findall('payload/license'):
+        print node.find('id').text, node.find('name').text
+    return
        
 def List_Categories():
     url = 'http://www.blip.tv/?section=categories&cmd=view&skin=api'
     xml_code = urllib2.urlopen(url).read()
-    print xml_code
+    tree = xml.etree.ElementTree.fromstring(xml_code)
+    for node in tree.findall('payload/category'):
+        print node.find('id').text, node.find('name').text
+    return
 
 def parse_args():
     parser = optparse.OptionParser()
