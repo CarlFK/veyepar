@@ -10,7 +10,10 @@
 
     <ul>
         {% for episode in episodes %}
-            <li><a href="E/{{episode.id}}/">{{ episode.name }}</a></li>
+            <li>
+            {{episode.start}} {{episode.end}}
+            <a href="E/{{episode.id}}/">{{ episode.name }}</a>
+            </li>
         {% endfor %}
     </ul>
 
