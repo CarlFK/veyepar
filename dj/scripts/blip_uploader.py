@@ -63,17 +63,11 @@ import getpass
 import httplib
 import mimetypes
 import os
-import re
 import sys
 import urllib2
 import urlparse
 import xml.etree.ElementTree
-# from xml.dom.minidom import parseString
-# import xml.etree.ElementTree
-
-# import xml.sax.saxutils
 import cgi
-from pprint import pprint 
 
 BLIP_UPLOAD_URL = "http://blip.tv/file/post"
 
@@ -194,9 +188,6 @@ def Upload(video_id, username, password, files, meta, thumbname=None):
     if thumbname:
         files.append(("thumbnail",thumbname))
 
-    pprint(fields)
-    pprint(files )
-
     print "Posting to", BLIP_UPLOAD_URL
     print "Please wait..."
     response = PostMultipart(BLIP_UPLOAD_URL, fields, files, show_pct_done)
@@ -205,6 +196,9 @@ def Upload(video_id, username, password, files, meta, thumbname=None):
     return response
 
 def List_Licenses():
+    """
+    Print the list of licenses blip crrently supports.
+    """
     url = 'http://www.blip.tv/?section=licenses&cmd=view&skin=api'
     xml_code = urllib2.urlopen(url).read()
     tree = xml.etree.ElementTree.fromstring(xml_code)
@@ -213,6 +207,9 @@ def List_Licenses():
     return
        
 def List_Categories():
+    """
+    Print the list of categories blip crrently supports.
+    """
     url = 'http://www.blip.tv/?section=categories&cmd=view&skin=api'
     xml_code = urllib2.urlopen(url).read()
     tree = xml.etree.ElementTree.fromstring(xml_code)
