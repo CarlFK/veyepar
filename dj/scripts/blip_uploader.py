@@ -228,7 +228,8 @@ def parse_args():
         help = 'Role for this file.  examples: Source, Web, Cell Phone.')
     parser.add_option('-n', '--fileno', default='',
         help = 'format number - used when uploading alternative format.')
-    parser.add_option('-t', '--title')
+    parser.add_option('-t', '--title',
+        help = "defaults to filename for new blip episodes (no video id.)")
     parser.add_option('-d', '--description',
         help='description, or @filename of description')
     parser.add_option('-T', '--topics',
@@ -292,9 +293,13 @@ def Main():
         else:
             meta['categorie_id'] = options.category
 
-    if not video_id and not files:
-        print "Must either supply video_id or filename"
-        return 
+    if not video_id:
+# no video_id = new Episode
+        if not files:
+            print "Must either supply video_id or filename"
+            return 
+        if not options.title:
+            meta['title'] = options.filename
 
     username = options.username if options.username \
         else raw_input("blip.tv Username: ")
