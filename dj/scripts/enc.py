@@ -15,8 +15,7 @@ FPS=29.98
 mlt="""
 <mlt>
 
-  <producer id="title" 
-    resource="title.png" in="0" out="149" />
+  <producer id="title" resource="title.png" in="0" out="149" />
   <producer id="producer0" resource="/home/juser/vid/t2.dv" />
 
   <playlist id="playlist0">
@@ -51,7 +50,7 @@ def run_cmd(cmd):
     return retcode
 
 
-def mktitle(name, authors):
+def mktitle(output_base, name, authors):
     """
     Make a title slide by filling in a pre-make svg with name/authors.
     librsvg doesn't support flow, wich is needed for long titles, 
@@ -64,9 +63,12 @@ def mktitle(name, authors):
     tree[1]['title'].text=name
     prefix = "Featuring" if "," in authors else "By"
     tree[1]['presenternames'].text="%s %s" % (prefix,authors)
-    open('x.svg','w').write(xml.etree.ElementTree.tostring(tree[0]))
-    cmd="inkscape x.svg --export-png title.png"
+    open('%s.svg'%output_base,'w').write(xml.etree.ElementTree.tostring(tree[0]))
+    png_name="%s.png"%output_base
+    cmd="inkscape x.svg --export-png %s" % png_name
     run_cmd(cmd)
+
+    return png_name
 
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
@@ -111,8 +113,16 @@ class enc(process):
     cls = Cut_List.objects.filter(episode=episode).order_by('sequence')
     if cls:
         rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
+        
+# make a title slide
+        title_base = os.path.join(self.show_dir, "tmp", episode.slug)
+        title_name=mktitle(title_base, episode.name, episode.authors)
 
         tree= xml.etree.ElementTree.XMLID(mlt)
+
+# set the title to the title slide we just made
+        title=tree[1]['title']
+        title.attrib['resource']=title_name
 
 # get the dvfile placeholder and remove it from the tree
         dvfile=tree[1]['producer0']
@@ -153,19 +163,22 @@ class enc(process):
 
         xml.etree.ElementTree.dump(tree[0])
 
-        open('x.mlt','w').write(xml.etree.ElementTree.tostring(tree[0]))
+        mlt_pathname = os.path.join(self.show_dir, "tmp", "%s.mlt"%episode.slug)
+        open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
 
-        mktitle(episode.name, episode.authors)
+        ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
+        cmd="melt -verbose -profile dv_ntsc %s -consumer avformat:%s acodec=vorbis ab=128k ar=44100 vcodec=libtheora minrate=0 b=900k progressive=1 deinterlace_method=onefield" % (mlt_pathname, ogg_pathname)
+        # ret = run_cmd(cmd)
 
-        oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
- 
-        cmd="melt -verbose -profile dv_ntsc x.mlt -consumer avformat:%s acodec=vorbis ab=128k ar=44100 vcodec=libtheora minrate=0 b=900k progressive=1 deinterlace_method=onefield" % oggpathname
-        ret = run_cmd(cmd)
+        flv_pathname = os.path.join(self.show_dir, "flv", "%s.flv"%episode.slug)
+        cmd="melt -verbose -profile dv_ntsc %s -consumer avformat:%s acodec=libmp3lame ab=128k ar=44100 vcodec=flv minrate=0 b=900k progressive=1 deinterlace_method=onefield" % (mlt_pathname, flv_pathname)
+        # ret = run_cmd(cmd)
 
-        flv_pathname = os.path.join(self.show_dir, "ogg", "%s.flv"%episode.slug)
- 
-        cmd="melt -verbose -profile dv_ntsc x.mlt -consumer avformat:%s acodec=libmp3lame ab=128k ar=44100 vcodec=flv minrate=0 b=900k progressive=1 deinterlace_method=onefield" % oggpathname
-        ret = run_cmd(cmd)
+        mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
+        cmd="melt -verbose -profile dv_ntsc %s -consumer avformat:%s acodec=libmp3lame ab=128k ar=44100 vcodec=mpeg4 minrate=0 b=900k progressive=1 deinterlace_method=onefield" % (mlt_pathname, mp4_pathname )
+        print cmd
+        # ret = run_cmd(cmd)
+
 
     else:
         print "No cutlist found."
