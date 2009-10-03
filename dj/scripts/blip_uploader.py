@@ -98,7 +98,7 @@ class Blip(object):
         @param progress A callback to update progress - like percent done.
         @return Status, reason, response (see httplib.HTTPConnection.getresponse())
         """
-        content_type = 'multipart/form-data; boundary=%s' % MULTIPART_BOUNDARY
+        content_type = 'multipart/form-data; boundary=%s' % self.MULTIPART_BOUNDARY
 
         # gather all the data (except for the actual file) into:
         # fieldsdata - string of "field1:value1\nfield2:value2\n..."
@@ -106,7 +106,7 @@ class Blip(object):
         # footdata - string, final "\n--file delimiter--\n"
         data = []
         for field_name, value in fields.iteritems():
-            data.append('--' + MULTIPART_BOUNDARY)
+            data.append('--' + self.MULTIPART_BOUNDARY)
             data.append('Content-Disposition: form-data; name="%s"' % field_name)
             data.append('')
             data.append(value)
@@ -114,14 +114,14 @@ class Blip(object):
         filedatas=[]
         for (field_name, filename) in files:
             data=['']
-            data.append('--' + MULTIPART_BOUNDARY)
+            data.append('--' + self.MULTIPART_BOUNDARY)
             data.append('Content-Disposition: form-data; name="%s"; filename="%s"'
                         % (field_name, filename))
             data.append('Content-Type: %s' % self.GetMimeType(filename))
             data.append('')
             data.append('')
             filedatas.append(['\r\n'.join(data),filename])
-        footdata='\r\n--' + MULTIPART_BOUNDARY + '--\r\n'
+        footdata='\r\n--' + self.MULTIPART_BOUNDARY + '--\r\n'
 
         # sum up the size of the 3 datas, including the file size
         datalen = len(fieldsdata)
@@ -198,7 +198,7 @@ class Blip(object):
 
         print "Posting to", self.BLIP_UPLOAD_URL
         print "Please wait..."
-        response = PostMultipart(self.BLIP_UPLOAD_URL, fields, files)
+        response = self.PostMultipart(self.BLIP_UPLOAD_URL, fields, files)
         print "Done."
 
         return response
@@ -414,10 +414,9 @@ class Blip_CLI(Blip):
         response_xml = response.read()
         tree = xml.etree.ElementTree.fromstring(response_xml)
         rep_node=tree.find('response')
+        print rep_node.text,
         posturl_node=rep_node.find('post_url')
-
-        print rep_node
-        print posturl_node
+        if posturl_node: print posturl_node.text
             
         return 0
 
