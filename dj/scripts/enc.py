@@ -166,19 +166,17 @@ class enc(process):
         mlt_pathname = os.path.join(self.show_dir, "tmp", "%s.mlt"%episode.slug)
         open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
 
+        cmd="melt -verbose -profile dv_ntsc %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
+        print cmd
+
         ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
-        cmd="melt -verbose -profile dv_ntsc %s -consumer avformat:%s acodec=vorbis ab=128k ar=44100 vcodec=libtheora minrate=0 b=900k progressive=1 deinterlace_method=onefield" % (mlt_pathname, ogg_pathname)
-        # ret = run_cmd(cmd)
+        # ret = run_cmd(cmd% (mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
 
         flv_pathname = os.path.join(self.show_dir, "flv", "%s.flv"%episode.slug)
-        cmd="melt -verbose -profile dv_ntsc %s -consumer avformat:%s acodec=libmp3lame ab=128k ar=44100 vcodec=flv minrate=0 b=900k progressive=1 deinterlace_method=onefield" % (mlt_pathname, flv_pathname)
-        # ret = run_cmd(cmd)
+        # ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
 
         mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
-        cmd="melt -verbose -profile dv_ntsc %s -consumer avformat:%s acodec=libmp3lame ab=128k ar=44100 vcodec=mpeg4 minrate=0 b=900k progressive=1 deinterlace_method=onefield" % (mlt_pathname, mp4_pathname )
-        print cmd
-        # ret = run_cmd(cmd)
-
+        ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
 
     else:
         print "No cutlist found."
