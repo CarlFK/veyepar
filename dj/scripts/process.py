@@ -11,7 +11,7 @@ sys.path.insert(0, '..' )
 import settings
 settings.DATABASE_NAME="../vp.db"
 
-from main.models import Client, Show, Location, Episode 
+from main.models import Client, Show, Location, Episode, State, Log
 
 def fnify(text):
     """
@@ -31,6 +31,23 @@ class process(object):
   promotes them to done_state.
   """
 
+  def log_in(self,episode):
+    state = State.objects.get(id=1)
+    self.log=Log(episode=episode,
+        state=state,
+        ready = datetime.datetime.now(),
+        start = datetime.datetime.now())
+    self.log.save()
+
+  def log_info(self,text):
+    print text
+    self.log.result += text + '\n'
+
+  def log_out(self):
+    self.log.end = datetime.datetime.now()
+    self.log.save()
+    del(self.log)
+    
   def process_ep(self, episode):
     print episode.id, episode.name
     return 
@@ -40,7 +57,9 @@ class process(object):
         if ep.state==self.ready_state or self.options.force:
             self.episode_dir=os.path.join( self.show_dir, 'dv', 
                 ep.location.slug )
+            self.log_in(ep)
             if self.process_ep(ep):
+                self.log_out(ep)
                 ep.state=self.done_state
                 ep.save()
         else:
