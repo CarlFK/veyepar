@@ -1,4 +1,6 @@
-#!/usr/bin/python # makes .ogg for all dv in a show
+#!/usr/bin/python 
+
+# makes .ogg for all dv in a show
 
 import  os
 import subprocess
