@@ -115,7 +115,7 @@ class State(models.Model):
 
 class Log(models.Model):
     episode = models.ForeignKey(Episode)
-    state = models.ForeignKey(State)
+    state = models.ForeignKey(State, null=True, blank=True)
     ready = models.DateTimeField()
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)

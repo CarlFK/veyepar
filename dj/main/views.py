@@ -69,7 +69,7 @@ def client_shows(request,client_slug=None,show_slug=None):
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
     locations=Location.objects.filter(show=show)
-    episodes=Episode.objects.filter(location__show=show)
+    episodes=Episode.objects.filter(location__show=show).order_by('start')
     return render_to_response('show.html',
         {'client':client,'show':show,
           'locations':locations,'episodes':episodes,
