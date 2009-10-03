@@ -69,7 +69,7 @@ def client_shows(request,client_slug=None,show_slug=None):
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
     locations=Location.objects.filter(show=show)
-    episodes=Episode.objects.filter(location__show=show).order_by('start')
+    episodes=Episode.objects.filter(location__show=show).order_by('start','location')
     return render_to_response('show.html',
         {'client':client,'show':show,
           'locations':locations,'episodes':episodes,
@@ -79,7 +79,7 @@ def client_shows(request,client_slug=None,show_slug=None):
 class clrfForm(forms.Form):
     clid = forms.IntegerField(widget=forms.HiddenInput())
     trash = forms.BooleanField(label="Trash",required=False)
-    delete = forms.BooleanField(label="Delete",required=False)
+    apply = forms.BooleanField(label="Apply",required=False)
     split = forms.BooleanField(label="Spilt",required=False)
     sequence = forms.IntegerField(label="Sequence",required=False,
       widget=forms.TextInput(attrs={'size':'3'}))
@@ -113,23 +113,25 @@ def episode(request,episode_no):
         if clrfformset.is_valid(): 
             for form in clrfformset.forms:
                 cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])
+
                 cl.raw_file.trash=form.cleaned_data['trash']
                 cl.raw_file.comment=form.cleaned_data['rf_comment']
                 cl.raw_file.save()
-                if form.cleaned_data['delete']:
-                    cl.delete()
-                else:
-                    cl.sequence=form.cleaned_data['sequence']
-                    cl.start=form.cleaned_data['start']
-                    cl.end=form.cleaned_data['end']
-                    cl.comment=form.cleaned_data['cl_comment']
-                    cl.save()
-                    if form.cleaned_data['split']:
-                        cl.id=None
-                        cl.sequence+=1
-                        cl.start = cl.end
-                        cl.end = ''
-                        cl.save(force_insert=True)
+
+                cl.sequence=form.cleaned_data['sequence']
+                cl.start=form.cleaned_data['start']
+                cl.end=form.cleaned_data['end']
+                cl.apply=form.cleaned_data['apply']
+                print cl.apply, form.cleaned_data['apply']
+
+                cl.comment=form.cleaned_data['cl_comment']
+                cl.save()
+                if form.cleaned_data['split']:
+                    cl.id=None
+                    cl.sequence+=1
+                    cl.start = cl.end
+                    cl.end = ''
+                    cl.save(force_insert=True)
 
             # if trash got touched, need to requery to get things in the right order.  I think.
             cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','raw_file__start')
@@ -137,6 +139,7 @@ def episode(request,episode_no):
                 'trash':cut.raw_file.trash,
                 'sequence':cut.sequence,
                 'start':cut.start, 'end':cut.end,
+                'apply':cut.apply,
                 'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
                  } for cut in cuts]
             clrfformset = clrfFormSet(initial=init)
@@ -150,6 +153,7 @@ def episode(request,episode_no):
                 'trash':cut.raw_file.trash,
                 'sequence':cut.sequence,
                 'start':cut.start, 'end':cut.end,
+                'apply':cut.apply,
                 'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
         } for cut in cuts]
         clrfformset = clrfFormSet(initial=init)

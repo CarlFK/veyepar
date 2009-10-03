@@ -1,5 +1,10 @@
 {# episode.html #}
 {% extends "base.html" %}
+
+{% block head %}
+<title>veyepar: {{episode.name}} </title>
+{% endblock %}
+
 {% block content %}
 
 <a href="/main/C/DjangoCon/S/djc09/">Up</a>
@@ -19,16 +24,7 @@
 <td>First Raw Start</td><td>{% if same_dates %}{{clrffs.0.0.raw_file.start|date:"H:i"}}{% else %}{{clrffs.0.0.faw_file.start}}{% endif %}</td></tr>
 <tr><td>Duration</td><td>{{episode.duration}}</td></tr>
 <tr><td>End</td><td> {% if same_dates %}{{episode.end|date:"H:i"}}{% else %}{{episode.end}}{% endif %} </td>
-<td>Last Raw End</td>
-{% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %}
-<td>{% if same_dates %}
-{{end|date:"H:i"}}
-{% else %}
-{{end}}
-{% endif %}</td>
-{% endwith %} {% endwith %}
-
-
+<td>Last Raw End</td> {% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %} <td>{% if same_dates %} {{end|date:"H:i"}} {% else %} {{end}} {% endif %}</td> {% endwith %} {% endwith %} 
 </tr>
 </tbody>
 </table>
@@ -39,6 +35,9 @@
 <table border=1>
 <tbody>
 {% for cl,clrfform in clrffs %}
+
+  <tr> <td> {% for field in clrfform %}{{ field.errors }}{% endfor %} </td></tr>
+
   <tr>
   <td>
   {{clrfform.clid}}
@@ -48,7 +47,7 @@
     <td>
     {{clrfform.clid}}
     <a href="S/{{show.slug}}/F/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a><br>
-    <a href="file:///media/pycon25wed/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a><br>
+    <a href="file:///home/carl/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a><br>
     {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}
     <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
     <img src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" width=200> </a>
@@ -64,7 +63,7 @@
 
       <tr><td></td>
         <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
-        <td>{{ clrfform.delete.label_tag }}{{ clrfform.delete }}
+        <td>{{ clrfform.apply.label_tag }}{{ clrfform.apply }}
          {{ clrfform.split.label_tag }}{{ clrfform.split }}</td>
       </tr>
       <tr> <td>Comments:</td> <td>{{clrfform.rf_comment}}</td> <td>{{clrfform.cl_comment}}</td> </tr>
@@ -83,7 +82,7 @@
   <tbody>
     <tr>
     <td>{{cl.raw_file.ocrtext}}</td>
-    <td> <video src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogg" controls='' ></video> </td> 
+    {# <td> <video src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogg" controls='' ></video> </td> #}
     </tr>
   </tbody>
   </table>

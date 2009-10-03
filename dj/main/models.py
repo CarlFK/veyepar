@@ -104,6 +104,7 @@ class Cut_List(models.Model):
         help_text='offset from start in HH:MM:SS.SS')
     end = models.CharField(max_length=11, blank=True,
         help_text='offset from start in HH:MM:SS.SS')
+    apply = models.BooleanField(default=1)
     comment = models.TextField(blank=True)
     def __unicode__(self):
         return "%s - %s" % (self.raw_file, self.episode)
