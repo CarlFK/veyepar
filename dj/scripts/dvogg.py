@@ -16,6 +16,7 @@ class mkpreview(process):
         dst = os.path.join(loc_dir,rf.basename()+'.ogg')
         if not os.path.exiests(dst):
             cmd="ffmpeg2theora --videoquality 1 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --height 240 --framerate 2 --keyint 256 --channels 1".split()
+            cmd="ffmpeg2theora --videoquality 10 --videobitrate  16778 --optimize --speedlevel 0 --audioquality 10 --audiobitrate 500 --keyint 8".split()
             cmd+=[ '-o', dst, src ]
             print ' '.join(cmd)
             p=subprocess.Popen(cmd).wait()

@@ -416,7 +416,8 @@ class Blip_CLI(Blip):
         rep_node=tree.find('response')
         print rep_node.text,
         posturl_node=rep_node.find('post_url')
-        if posturl_node: print posturl_node.text
+        if posturl_node.text: print posturl_node.text
+        print posturl_node.text
             
         return 0
 

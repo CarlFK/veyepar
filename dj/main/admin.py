@@ -41,6 +41,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_editable = ('sequence', 'state' )
     admin_order_field = ('sequence', 'name',)
     list_filter = ('state','location')
+    search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Episode, EpisodeAdmin)
 

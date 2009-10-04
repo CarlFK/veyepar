@@ -74,6 +74,7 @@ class Episode(models.Model):
     location = models.ForeignKey(Location, null=True)
     state = models.IntegerField(null=True,blank=True,
         help_text="current processing state" )
+    released = models.BooleanField(default=1)
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
     primary = models.CharField(max_length=135,blank=True,
@@ -95,6 +96,7 @@ class Episode(models.Model):
         return self.end-self.start
     def __unicode__(self):
         return "%s: %s" % ( self.location_name, self.name )
+        # return "%s: %s" % ( self.location_name, self.name.__repr__() )
 
 class Cut_List(models.Model):
     raw_file = models.ForeignKey(Raw_File)

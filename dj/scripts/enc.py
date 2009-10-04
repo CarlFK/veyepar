@@ -104,13 +104,17 @@ def time2b(time,fps,bpf,default):
 class enc(process):
 
   ready_state = 2
-  done_state = 3
-
 
   def process_ep(self,episode):
-    print 1, episode
+    # print episode
     ret = False
     cls = Cut_List.objects.filter(episode=episode).order_by('sequence')
+    # print len(cls), episode.name.__repr__()
+    print episode.name
+    for cl in cls:
+        print cl.start, cl.end
+    return False
+
     if cls:
         rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
         
@@ -170,13 +174,13 @@ class enc(process):
         print cmd
 
         ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
-        # ret = run_cmd(cmd% (mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
+        ret = run_cmd(cmd% (mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
 
         flv_pathname = os.path.join(self.show_dir, "flv", "%s.flv"%episode.slug)
-        # ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
+        ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
 
         mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
-        ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
+        # ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
 
     else:
         print "No cutlist found."

@@ -31,8 +31,10 @@ class process(object):
   promotes them to done_state.
   """
 
+  ready_state=2
+
   def log_in(self,episode):
-    state = State.objects.get(id=1)
+    state,create = State.objects.get_or_create(id=1)
     self.log=Log(episode=episode,
         state=state,
         ready = datetime.datetime.now(),
@@ -69,8 +71,15 @@ class process(object):
 
   def one_show(self, show):
     locs = Location.objects.filter(show=show)
+    if self.options.room:
+        loc=Location.objects.get(name=self.options.room)
+        locs=locs.filter(location=loc)
+    # for loc in Location.objects.filter(show=show):
     for loc in locs:
-        episodes = Episode.objects.filter(location=loc,state=self.ready_state)
+        episodes = Episode.objects.filter(
+            location=loc,state=self.ready_state).order_by('start','location')
+        if self.options.day:
+            episodes=episodes.filter(start__day=self.options.day)
         self.process_eps(episodes)
 
   def add_more_options(self, parser):
@@ -86,19 +95,22 @@ class process(object):
         for show in Show.objects.filter(client=client):
             print "\tName: %s  Slug: %s" %( show.name, show.slug )
             print "\t--client %s --show %s" %( client.slug, show.slug )
-            for ep in Episode.objects.filter(location__show=show):
-                print "\t\t id: %s state: %s %s" % ( 
-                    ep.id, ep.state, ep )
+            if self.options.verbose:
+                for ep in Episode.objects.filter(location__show=show):
+                    print "\t\t id: %s state: %s %s" % ( 
+                        ep.id, ep.state, ep )
     return
 
   def parse_args(self):
     parser = optparse.OptionParser()
-    parser.add_option('-r', '--rootdir', help="media files dir",
+    parser.add_option('-m', '--mediadir', help="media files dir",
         default= '/home/carl/Videos/veyepar' )
         # default= '/media/pycon25wed/Videos/veyepar' )
     parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
+    parser.add_option('-r', '--room',
+              help="Location")
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
     parser.add_option('--force', action="store_true",
@@ -121,7 +133,7 @@ class process(object):
     elif options.client and options.show:
         client = Client.objects.get(slug=options.client)
         show = Show.objects.get(client=client,slug=options.show)
-        self.show_dir = os.path.join(self.options.rootdir,client.slug,show.slug)
+        self.show_dir = os.path.join(self.options.mediadir,client.slug,show.slug)
         self.one_show(show)
 
     elif options.day:
@@ -133,7 +145,7 @@ class process(object):
         print episodes
         show = episodes[0].location.show
         client = show.client
-        self.show_dir = os.path.join(self.options.rootdir,client.slug,show.slug)
+        self.show_dir = os.path.join(self.options.mediadir,client.slug,show.slug)
         self.process_eps(episodes)
     
 

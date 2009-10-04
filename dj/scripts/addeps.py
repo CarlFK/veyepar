@@ -4,66 +4,56 @@
 
 import datetime 
 import urllib2,json
-from csv import DictReader
-from datetime import timedelta
+# from csv import DictReader
+# from datetime import timedelta
 from dateutil.parser import parse
 
-from process import process
+import process
 
 from main.models import Client, Show, Location, Episode
 
-DJANGOCON_START_DATE = datetime.date(2009, 9, 8)
-
-
-class process_csv(process):
+class process_csv(process.process):
    
     state_done=2
 
     def one_show(self, show):
-      seq=0
-      current_date = DJANGOCON_START_DATE
-      last_start = None
-      j=urllib2.urlopen(
-        'http://0.0.0.0:8080/main/C/DjangoCon/S/djc09.json').read()
+      seq=1
+      # j=urllib2.urlopen(
+      #  'http://0.0.0.0:8080/main/C/DjangoCon/S/djc09.json').read()
+      j = open('schedules/djangocon09.json').read()
       eps = l=json.loads(j)
       for ep in eps:
       # for row in DictReader(open(self.csv_pathname)):
-        row=ep['fields']
+        # print ep
+
+        room=ep['location']
+        # location,created = Location.objects.get_or_create(
+        #    show=show,name=room,slug=process.fnify(room))
+        
+        location = Location.objects.get(show=show,name=room)
+        
+        name = ep['name']
+        authors=ep['authors']
+        primary=''
+        start = parse(ep['start'])
+        end = parse(ep['end'])
+
+        episodes = Episode.objects.filter(name__iexact=name)
+        print len(episodes),
+        if not episodes: 
+            print name
+            ep = Episode(
+               sequence=seq,
+               location=location, 
+               name=name,
+               slug=process.fnify(name),
+               primary=primary,
+               authors=authors, 
+               start=start, end=end,
+               state=self.state_done)
+            # print ep.__dict__
+            # ep.save()
         seq+=1
-        print row
-# "ID","Talk Title","Speakers","Startime","Endtime","Room","Released"
-# "Multnomah/Holladay"
-        room=row['Room']
-        if room=="Multnomah/Holladay": room="Holladay"
-
-        location,created = Location.objects.get_or_create(
-            show=show,name=room,slug=process.fnify(room))
-        name = row['Talk Title'].strip()
-    
-        # Remove #N from the start of PhOhio talk titles:
-        # if name.startswith('#'): name = ' '.join(name.split()[1:])
-        start = datetime.time(*map(int, row['Startime'].split(':')))
-        end = datetime.time(*map(int, row['Endtime'].split(':')))
-
-        if last_start and last_start > start:
-            current_date = current_date + datetime.timedelta(days=1)
-
-        last_start = start
-
-        start_date = datetime.datetime.combine( current_date,start )
-        end_date = datetime.datetime.combine( current_date, end)
-
-        ep = Episode(
-           sequence=seq,
-           location=location, 
-           name=name,
-           slug=process.fnify(name),
-           primary=row['ID'],
-           authors=row['Speakers'], 
-           start=start_date, end=end_date,
-           state=self.state_done)
-        print ep.__dict__
-        # ep.save()
 
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
@@ -73,11 +63,7 @@ class process_csv(process):
       options, args = self.parse_args()
 
       if options.list:
-        for client in Client.objects.all():
-            print "\nName: %s  Slug: %s" %( client.name, client.slug )
-            for show in Show.objects.filter(client=client):
-                print "\tName: %s  Slug: %s" %( show.name, show.slug )
-                print "\t--client %s --show %s" %( client.slug, show.slug )
+          self.list()
       elif options.client and options.show:
         client,created = Client.objects.get_or_create(
             name=options.client, slug=options.client)
