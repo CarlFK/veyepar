@@ -1,17 +1,15 @@
 #!/usr/bin/python
 
-# tweets #client VIDEO - title url
-# url is shortend using bity
+# tweets prefix - title url
+# veyepar does: "#client VIDEO -" <episode title> <url>
+# if over 140 char, url is shortened using bity,
+# if still over, title is truncated.
+# TODO: pass in account name/pw
 
 import subprocess
 import urllib2
 import urllib
-import pw
-
-BITLY_USERNAME = 'cstejerean'
-BITLY_API_KEY = 'R_d2f2c394e54016d37bd8b340eebffe2a'
-
-
+import pw  # see pw_samp.py for sample.
 
 def post_to_twitter(message):
     cmd = ['curl', '-u', '%s:%s'%(pw.twit['user'], pw.twit['password']), '-d', 'status="%s"'%message, 'http://twitter.com/statuses/update.xml']
