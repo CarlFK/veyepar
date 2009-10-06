@@ -199,7 +199,7 @@ class Blip(object):
         print "Posting to", self.BLIP_UPLOAD_URL
         print "Please wait..."
         response = self.PostMultipart(self.BLIP_UPLOAD_URL, fields, files)
-        print "Done."
+        print "\nDone."
 
         return response
 
@@ -223,6 +223,24 @@ class Blip(object):
         """@brief Return information about the video
         
         @param video_id blip.tv item ID
+        @return xml of all the metadata.
+        """
+        url = 'http://blip.tv/file/%s?skin=rss' % video_id
+        print url
+        xml_code = urllib2.urlopen(url).read()
+        return xml_code
+
+    def Get_TextFromDomNode(self, node):
+        rc = ""
+        for n in node.childNodes:
+            if n.nodeType in [node.TEXT_NODE, node.CDATA_SECTION_NODE]:
+                rc += n.data
+        return rc
+
+    def Parse_VideoInfo(self, video_xml):
+        """@brief Return information about the video
+        
+        @param video_xml xml about an Episode from blip.tv 
         @return A dictionary with keys:
             @a title (string),
             @a description (string),
@@ -233,19 +251,6 @@ class Blip(object):
             @a existing_mime_types (a dict of {mime_type: list_of_file_urls}
                 containing the URLs that are currently part of the post)
         """
-        url = 'http://blip.tv/file/%s?skin=rss' % video_id
-        print url
-        xml_code = urllib2.urlopen(url).read()
-        return xml_code
-
-    def Get_TextFromDomNode(self, node):
-        rc = ""
-        for n in node.childNodes:
-            if n.nodeType == node.TEXT_NODE or n.nodeType == node.CDATA_SECTION_NODE:
-                rc = rc + n.data
-        return rc
-
-    def Parse_VideoInfo(self, video_xml):
         meta={}
         rss = xml.dom.minidom.parseString(video_xml)
         channel = rss.getElementsByTagName("channel")[0]
@@ -274,7 +279,8 @@ class Blip_CLI(Blip):
         """
         Displaies upload percent done, bytes sent, total bytes.
         """
-        sys.stdout.write('\r%3i%%  %s of %s bytes' % (100*current/total, current, total))
+        sys.stdout.write('\r%3i%%  %s of %s bytes' 
+            % (100*current/total, current, total))
 
     def List_Licenses():
         """
@@ -416,7 +422,6 @@ class Blip_CLI(Blip):
         rep_node=tree.find('response')
         print rep_node.text,
         posturl_node=rep_node.find('post_url')
-        if posturl_node.text: print posturl_node.text
         print posturl_node.text
             
         return 0
