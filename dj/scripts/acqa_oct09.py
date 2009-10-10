@@ -49,7 +49,7 @@ class process_sched(process.process):
                slug=process.fnify(row['name']),
                start=row['start'], end=row['end'],
                state=self.state_done)
-            if options.verbose:
+            if self.options.verbose:
                 print ep.__dict__
             ep.save()
 
@@ -69,7 +69,6 @@ class process_sched(process.process):
 # clear out previous runs for this show
             Episode.objects.filter(location__show=show).delete()
             Location.objects.filter(show=show).delete()
-        self.csv_pathname = options.filename
         self.one_show(show)
 
 if __name__ == '__main__':
