@@ -49,7 +49,8 @@ class process_sched(process.process):
                slug=process.fnify(row['name']),
                start=row['start'], end=row['end'],
                state=self.state_done)
-            print ep.__dict__
+            if options.verbose:
+                print ep.__dict__
             ep.save()
 
     def main(self):
@@ -62,6 +63,8 @@ class process_sched(process.process):
             name=options.client, slug=options.client)
         show,created = Show.objects.get_or_create(client=client,
             name=options.show, slug=options.show)
+        if options.verbose:
+            print client, show
         if options.whack:
 # clear out previous runs for this show
             Episode.objects.filter(location__show=show).delete()
