@@ -35,7 +35,8 @@ class add_dv(process):
 # get start from filesystem create timestamp
         # start=datetime.datetime.fromtimestamp( st.st_mtime )
         start=parse(dt)
-        start -= datetime.timedelta(hours=2,minutes=0)
+# use this to adjust for camera clock in wrong timezone
+        # start -= datetime.timedelta(hours=2,minutes=0)
         if False and start.day==8:
             if dv.location.slug=='Holladay':
                 print dv.location.slug
