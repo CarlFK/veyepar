@@ -104,8 +104,10 @@ class process(object):
   def parse_args(self):
     parser = optparse.OptionParser()
     parser.add_option('-m', '--mediadir', help="media files dir",
-        default= '/home/carl/Videos/veyepar' )
+        default= '/mnt/nfs/dhcp123/video/veyepar' )
+        # default= '/home/carl/Videos/veyepar' )
         # default= '/media/pycon25wed/Videos/veyepar' )
+# need to figure out how to do a local config file.
     parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
@@ -113,6 +115,8 @@ class process(object):
               help="Location")
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
+    parser.add_option('--test', action="store_true",
+              help="test mode - do not make changes to the db (not fully implemetned, for development use.")
     parser.add_option('--force', action="store_true",
               help="overfide ready state, use with care." )
     parser.add_option('--whack', action="store_true",
