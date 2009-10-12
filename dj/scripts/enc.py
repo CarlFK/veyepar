@@ -11,7 +11,10 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
 BPF=120000
 FPS=29.98
-
+"""
+    <filter mlt_service="channelcopy" from="1" to="0" />
+    <filter mlt_service="volume" max_gain="30" normalise="28" />
+"""
 mlt="""
 <mlt>
 
@@ -20,8 +23,6 @@ mlt="""
 
   <playlist id="playlist0">
     <entry id="clip" producer="producer2" in="500" out="690" />
-    <filter mlt_service="channelcopy" from="1" to="0" />
-    <filter mlt_service="volume" max_gain="30" normalise="28" />
   </playlist>
 
   <playlist id="playlist1">
