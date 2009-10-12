@@ -121,13 +121,14 @@ class enc(process):
         
 # make a title slide
         title_base = os.path.join(self.show_dir, "tmp", episode.slug)
-        title_name=mktitle(title_base, episode.name, episode.authors)
+        if False:
+             title_name=mktitle(title_base, episode.name, episode.authors)
 
-        tree= xml.etree.ElementTree.XMLID(mlt)
+             tree= xml.etree.ElementTree.XMLID(mlt)
 
 # set the title to the title slide we just made
-        title=tree[1]['title']
-        title.attrib['resource']=title_name
+             title=tree[1]['title']
+             title.attrib['resource']=title_name
 
 # get the dvfile placeholder and remove it from the tree
         dvfile=tree[1]['producer0']
