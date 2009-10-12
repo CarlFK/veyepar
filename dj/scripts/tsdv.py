@@ -17,7 +17,7 @@ last frame
 
 import  os
 import datetime
-from dateutil.parser import parse
+# from dateutil.parser import parse
 
 from process import process
 
@@ -29,12 +29,13 @@ class add_dv(process):
         
         pathname = os.path.join(dir,dv.filename)
         print pathname
-        dt = dv.filename[:-3]
-        dt.replace('/',' ')
+        start=datetime.datetime.strptime(dv.filename,'%Y-%m-%d/%H:%M:%S.dv')
+        # dt = dv.filename[:-3]
+        # dt.replace('/',' ')
         st = os.stat(pathname)    
 # get start from filesystem create timestamp
         # start=datetime.datetime.fromtimestamp( st.st_mtime )
-        start=parse(dt)
+        # start=parse(dt)
 # use this to adjust for camera clock in wrong timezone
         # start -= datetime.timedelta(hours=2,minutes=0)
         if False and start.day==8:
@@ -46,7 +47,8 @@ class add_dv(process):
 
         # calc duration based on filesize
         frames = st.st_size/120000
-        duration = frames/ 29.90 ## seconds
+        fps = float(self.options.fps)
+        duration = frames/ fps ## seconds
 
         end = start + datetime.timedelta(seconds=duration)
         
@@ -66,6 +68,10 @@ class add_dv(process):
         dir=os.path.join(self.show_dir,'dv',loc.slug)
         print show,loc,dir
         self.one_loc(loc, dir)
+
+    def add_more_options(self, parser):
+        parser.add_option('--fps', default="29.98",
+            help='fps 25 for PAL, 29.98 for NTSC, or whatever number you want.' )
 
 if __name__=='__main__': 
     p=add_dv()
