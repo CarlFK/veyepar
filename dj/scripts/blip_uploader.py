@@ -305,6 +305,7 @@ class Blip_CLI(Blip):
     def List_VideoInfo(self, video_id):
         print "Loading..."
         xml_code = self.Get_VideoInfo(video_id)
+        # print xml_code
         info = self.Parse_VideoInfo(xml_code)
         # print info
         print "Title           =", info['title']
@@ -339,6 +340,8 @@ class Blip_CLI(Blip):
             "--license list to see full list" )
         parser.add_option('-c', '--category',
             help = "--categories list to see full list" )
+        parser.add_option('--hidden',
+            help="availability on blip.tv, 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
         parser.add_option('-v', '--videoid',
             help="ID of existing blip episode (for updating.)")
         parser.add_option('-i', '--info', action="store_true",
@@ -410,6 +413,9 @@ class Blip_CLI(Blip):
             if not options.title:
                 # make a title from the filename (strip the path, leave the ext.)
                 meta['title'] = os.path.basename(options.filename)
+
+        if options.hidden:
+            meta['hidden']=options.hidden
 
         username = options.username if options.username \
             else raw_input("blip.tv Username: ")
