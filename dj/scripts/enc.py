@@ -179,7 +179,7 @@ class enc(process):
         ret = run_cmd(cmd% (mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
 
         flv_pathname = os.path.join(self.show_dir, "flv", "%s.flv"%episode.slug)
-        ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
+        # ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
 
         mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
         # ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
