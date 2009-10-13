@@ -117,13 +117,13 @@ class enc(process):
 
     if cls:
         rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
-        
+
+# parse the xml into a tree of nodes
+        tree= xml.etree.ElementTree.XMLID(mlt)
 # make a title slide
         title_base = os.path.join(self.show_dir, "tmp", episode.slug)
         if False:
              title_name=mktitle(title_base, episode.name, episode.authors)
-
-             tree= xml.etree.ElementTree.XMLID(mlt)
 
 # set the title to the title slide we just made
              title=tree[1]['title']
