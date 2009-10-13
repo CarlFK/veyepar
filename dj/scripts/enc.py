@@ -114,7 +114,6 @@ class enc(process):
     print episode.name
     for cl in cls:
         print cl.start, cl.end
-    return False
 
     if cls:
         rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
