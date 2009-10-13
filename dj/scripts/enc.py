@@ -171,11 +171,11 @@ class enc(process):
         mlt_pathname = os.path.join(self.show_dir, "tmp", "%s.mlt"%episode.slug)
         open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
 
-        cmd="melt -verbose -profile dv_ntsc %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
+        cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
         print cmd
 
         ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
-        ret = run_cmd(cmd% (mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
+        ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
 
         flv_pathname = os.path.join(self.show_dir, "flv", "%s.flv"%episode.slug)
         # ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
@@ -231,6 +231,10 @@ class enc(process):
         print "No cutlist found."
 
     return ret
+
+    def add_more_options(self, parser):
+        parser.add_option('--format', default="ntsc",
+            help='pal or ntsc' )
 
 if __name__ == '__main__':
     p=enc()
