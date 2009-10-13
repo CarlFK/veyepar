@@ -232,9 +232,9 @@ class enc(process):
 
     return ret
 
-    def add_more_options(self, parser):
-        parser.add_option('--format', default="ntsc",
-            help='pal or ntsc' )
+  def add_more_options(self, parser):
+     parser.add_option('--format', default="ntsc",
+        help='pal or ntsc' )
 
 if __name__ == '__main__':
     p=enc()
