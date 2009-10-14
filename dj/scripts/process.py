@@ -66,7 +66,7 @@ class process(object):
                 ep.save()
         else:
             if self.options.verbose:
-                print "#%s: "%s" is in state %s, ready is %s" % (
+                print '#%s: "%s" is in state %s, ready is %s' % (
                     ep.id, ep, ep.state, self.ready_state)
 
 
