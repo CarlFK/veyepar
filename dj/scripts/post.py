@@ -14,7 +14,7 @@ from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
-class Blip_Ep(Blip):
+class Blip_Ep(blip_uploader.Blip):
 
     def progress(self, current, total):
         """
