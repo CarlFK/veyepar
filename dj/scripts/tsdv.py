@@ -61,7 +61,8 @@ class add_dv(process):
         dv.end = end
 
         print dv,start,end
-        dv.save()
+        if not self.options.test:
+            dv.save()
 
 
     def one_loc(self,location,dir):
