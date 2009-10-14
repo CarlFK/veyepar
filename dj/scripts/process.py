@@ -65,8 +65,9 @@ class process(object):
                 ep.state=self.done_state
                 ep.save()
         else:
-            print "#%s: %s is in state %s, ready is %s" % (
-                ep.id, ep, ep.state, self.ready_state)
+            if self.options.verbose:
+                print "#%s: %s is in state %s, ready is %s" % (
+                    ep.id, ep, ep.state, self.ready_state)
 
 
   def one_show(self, show):
@@ -76,8 +77,10 @@ class process(object):
         locs=locs.filter(location=loc)
     # for loc in Location.objects.filter(show=show):
     for loc in locs:
+        if self.options.verbose: print loc.name
         episodes = Episode.objects.filter(
-            location=loc,state=self.ready_state).order_by('start','location')
+            location=loc).order_by('start','location')
+        #    location=loc,state=self.ready_state).order_by('start','location')
         if self.options.day:
             episodes=episodes.filter(start__day=self.options.day)
         self.process_eps(episodes)
