@@ -282,7 +282,7 @@ class Blip_CLI(Blip):
         sys.stdout.write('\r%3i%%  %s of %s bytes' 
             % (100*current/total, current, total))
 
-    def List_Licenses():
+    def List_Licenses(self):
         """
         Print the list of licenses blip crrently supports.
         """
@@ -333,13 +333,13 @@ class Blip_CLI(Blip):
             help = "defaults to filename for new blip episodes (no video id.)")
         parser.add_option('-d', '--description',
             help='description, or @filename of description')
-        parser.add_option('-T', '--topics',
-            help="list of topics")
-        parser.add_option('-l', '--license',
+        parser.add_option('-T', '--topics', 
+            help="list of topics (user defined)")
+        parser.add_option('-L', '--license', 
             help="13 is Creative Commons Attribution-NC-ShareAlike 3.0\n"
-            "--license list to see full list" )
-        parser.add_option('-c', '--category',
-            help = "--categories list to see full list" )
+            "'list' to see full list" )
+        parser.add_option('-C', '--category',
+            help = "'list' to see full list" )
         parser.add_option('--hidden',
             help="availability on blip.tv, 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
         parser.add_option('-v', '--videoid',
