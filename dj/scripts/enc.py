@@ -184,8 +184,9 @@ class enc(process):
 
     else:
         print "No cutlist found."
+        return False
 
-    return False
+    return ret
 
 
   def old_proc_ep(self):
