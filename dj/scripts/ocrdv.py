@@ -3,7 +3,10 @@
 # ocrdv - reads frames from a .dv untill it finds a bunch of words
 
 import subprocess
+
 import pyffmpeg
+# http://code.google.com/p/pyffmpeg/issues/detail?id=9#c4
+
 from cStringIO import StringIO
 from csv import DictReader
 from collections import defaultdict
