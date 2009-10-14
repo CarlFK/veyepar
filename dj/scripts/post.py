@@ -73,18 +73,19 @@ class post(process):
         meta['hidden'] = self.options.hidden
 
     print oggpathname, thumb
+    files = [(0,'Source',oggpathname)]
 
     # blip_ep=Blip_Ep()
     if self.options.test:
         print 'test mode:'
-        print 'blip_cli.Upload( "", user, pw, oggpathname, meta, thumb)'
-        print 'oggpathname %s' % oggpathname
+        print 'blip_cli.Upload( "", user, pw, files, meta, thumb)'
+        print 'files %s' % files
         print 'meta %s' % meta
         print 'thumb %s' % thumb
         print
     else:
         response = blip_cli.Upload(
-            "", pw.blip['user'], pw.blip['password'], oggpathname, meta, thumb)
+            "", pw.blip['user'], pw.blip['password'], files, meta, thumb)
         responsexml = response.read()
         blipurl = re.search("post_url>(.*)</post" ,responsexml).groups()[0]
         if blipurl:
