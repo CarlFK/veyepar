@@ -2,7 +2,7 @@
 
 # posts to blip.tv, tweets it
 
-from blip_uploader import Upload
+import blip_uploader
 
 import tweeter
 import optparse
@@ -13,6 +13,16 @@ import pw
 from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
+
+class Blip_Ep(Blip):
+
+    def progress(self, current, total):
+        """
+        Displaies upload percent done, bytes sent, total bytes.
+        """
+        sys.stdout.write('\r%3i%%  %s of %s bytes'
+            % (100*current/total, current, total))
+
 
 class post(process):
 
@@ -46,8 +56,9 @@ class post(process):
 
     print oggpathname, thumb
 
-    # blipurl = "http://carlfk.blip.tv/file/2558211"
-    response = Upload("", pw.blip['user'], pw.blip['password'], oggpathname, meta, thumb)
+    blip_ep=Blip_Ep()
+    response = blip_ep.Upload(
+        "", pw.blip['user'], pw.blip['password'], oggpathname, meta, thumb)
     responsexml = response.read()
     blipurl = re.search("post_url>(.*)</post" ,responsexml).groups()[0]
     if blipurl:
