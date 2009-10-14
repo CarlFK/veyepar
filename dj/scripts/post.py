@@ -66,7 +66,7 @@ class post(process):
     if self.options.license:
         meta['license'] = self.options.license
 
-    if options.category:
+    if self.options.category:
         meta['categorie_id'] = self.options.category
 
     print oggpathname, thumb
