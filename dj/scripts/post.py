@@ -61,22 +61,13 @@ class post(process):
     """
 
     if self.options.topics:
-        meta['topics'] = options.topics
+        meta['topics'] = self.options.topics
 
     if self.options.license:
-        if options.license=='list':
-            blip_cli.List_Licenses()
-            return
-        else:
-            meta['license'] = options.license
+        meta['license'] = self.options.license
 
     if options.category:
-        if options.category=='list':
-            self.List_Categories()
-            return
-        else:
-            meta['categorie_id'] = options.category
-
+        meta['categorie_id'] = self.options.category
 
     print oggpathname, thumb
 
@@ -108,7 +99,7 @@ class post(process):
             ep.comment += "upload failed\n"
         ep.save()
 
-    def add_more_options(self, parser):
+  def add_more_options(self, parser):
         parser.add_option('-T', '--topics',
             help="list of topics (user defined)")
         parser.add_option('-L', '--license',
