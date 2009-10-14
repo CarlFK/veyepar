@@ -69,6 +69,9 @@ class post(process):
     if self.options.category:
         meta['categorie_id'] = self.options.category
 
+    if self.options.hidden:
+        meta['hidden'] = self.options.hidden
+
     print oggpathname, thumb
 
     # blip_ep=Blip_Ep()
