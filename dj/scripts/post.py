@@ -83,7 +83,7 @@ class post(process):
         print 'thumb %s' % thumb
         print
     else:
-        response = blip_ep.Upload(
+        response = blip_cli.Upload(
             "", pw.blip['user'], pw.blip['password'], oggpathname, meta, thumb)
         responsexml = response.read()
         blipurl = re.search("post_url>(.*)</post" ,responsexml).groups()[0]
