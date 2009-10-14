@@ -66,7 +66,7 @@ class process(object):
                 ep.save()
         else:
             if self.options.verbose:
-                print "#%s: %s is in state %s, ready is %s" % (
+                print "#%s: "%s" is in state %s, ready is %s" % (
                     ep.id, ep, ep.state, self.ready_state)
 
 
@@ -79,7 +79,7 @@ class process(object):
     for loc in locs:
         if self.options.verbose: print loc.name
         episodes = Episode.objects.filter(
-            location=loc).order_by('start','location')
+            location=loc).order_by('sequence','start',)
         #    location=loc,state=self.ready_state).order_by('start','location')
         if self.options.day:
             episodes=episodes.filter(start__day=self.options.day)
