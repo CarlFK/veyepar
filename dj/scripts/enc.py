@@ -64,9 +64,10 @@ def mktitle(source, output_base, name, authors):
     tree[1]['title'].text=name
     prefix = "Featuring" if "," in authors else "By"
     tree[1]['presenternames'].text="%s %s" % (prefix,authors)
-    open('%s.svg'%output_base,'w').write(xml.etree.ElementTree.tostring(tree[0]))
+    cooked_svg_name='%s.svg'%output_base
+    open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))
     png_name="%s.png"%output_base
-    cmd="inkscape x.svg --export-png %s" % png_name
+    cmd="inkscape %s.svg --export-png %s" % (cooked_svg_name, png_name)
     run_cmd(cmd)
 
     return png_name
