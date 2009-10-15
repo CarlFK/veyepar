@@ -51,14 +51,14 @@ def run_cmd(cmd):
     return retcode
 
 
-def mktitle(output_base, name, authors):
+def mktitle(source, output_base, name, authors):
     """
     Make a title slide by filling in a pre-make svg with name/authors.
     librsvg doesn't support flow, wich is needed for long titles, 
     so render it to a .png using inkscape
     """
 
-    svg_in=open('/home/carl/dev/py/vid/djcon/djc09b.svg').read()
+    svg_in=open(source).read()
     tree=xml.etree.ElementTree.XMLID(svg_in)
     # print tree[1]
     tree[1]['title'].text=name
@@ -121,8 +121,10 @@ class enc(process):
 # parse the xml into a tree of nodes
         tree= xml.etree.ElementTree.XMLID(mlt)
 # make a title slide
+        template = os.path.join(self.show_dir, "bling", "title.svg")
         title_base = os.path.join(self.show_dir, "tmp", episode.slug)
-        title_name=mktitle(title_base, episode.name, episode.authors)
+        title_name=mktitle(template,
+            title_base, episode.name, episode.authors)
 
 # set the title to the title slide we just made
         title=tree[1]['title']
