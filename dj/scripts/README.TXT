@@ -32,11 +32,7 @@ the file name (assumes hh:mm:ss.dv format)
 
 6.2 ocr/thumbnail
 use ocr to find some text, which makes for a good thumnail.
-ocrdv.py:# ocrdv - reads frames from a .dv untill it finds a bunch of words
-ocrdv.py:        # ocr the image
-ocrdv.py:            # score the text
-ocrdv.py:        frameno+=30*60  # bump on min
-
+mkthumbs.py - find thumbs, ocr untill we find some text
 
 7. Associte dv files with Episodes.
 assocdv.py: # creates cutlist items for dv files that might belong to an episode
