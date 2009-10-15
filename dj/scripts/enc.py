@@ -67,7 +67,7 @@ def mktitle(source, output_base, name, authors):
     cooked_svg_name='%s.svg'%output_base
     open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))
     png_name="%s.png"%output_base
-    cmd="inkscape %s.svg --export-png %s" % (cooked_svg_name, png_name)
+    cmd="inkscape %s --export-png %s" % (cooked_svg_name, png_name)
     run_cmd(cmd)
 
     return png_name
