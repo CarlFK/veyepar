@@ -152,6 +152,8 @@ class Blip(object):
                 self.progress(bytes_sent,datalen)
                 block=f.read(10000)
         h.send(footdata)
+        bytes_sent = len(footdata)
+        self.progress(bytes_sent,datalen)
 
         response = h.getresponse()
         return response
