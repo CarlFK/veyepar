@@ -140,7 +140,10 @@ class enc(process):
         for rf in rfs:
             print rf
             dvfile.attrib['id']="producer%s"%rf.id
-            rawpathname = os.path.join(self.episode_dir,rf.filename)
+# hack to use .ogg instead of .dv
+            rawpathname = os.path.join(self.episode_dir,rf.basename()+".ogg")
+            # rawpathname = os.path.join(self.episode_dir,rf.filename)
+
             dvfile.attrib['resource']=rawpathname
             # new=xml.etree.ElementTree.SubElement(tree[0],'producer', dvfile.attrib )
             new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
@@ -173,6 +176,11 @@ class enc(process):
         mlt_pathname = os.path.join(self.show_dir, "tmp", "%s.mlt"%episode.slug)
         open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
 
+# f=dv pix_fmt=yuv411p 
+        cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s f-dv pix_fmt=yuv411p" 
+        dv_pathname = os.path.join(self.show_dir, "dv", "%s.dv"%episode.slug)
+        ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, dv_pathname))
+
         cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
         print cmd
 
@@ -180,10 +188,10 @@ class enc(process):
         ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
 
         flv_pathname = os.path.join(self.show_dir, "flv", "%s.flv"%episode.slug)
-        # ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
+        ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
 
         mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
-        # ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
+        ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
 
     else:
         print "No cutlist found."
