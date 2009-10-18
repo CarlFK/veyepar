@@ -180,12 +180,15 @@ class enc(process):
         cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s f-dv pix_fmt=yuv411p" 
         dv_pathname = os.path.join(self.show_dir, "dv", "%s.dv"%episode.slug)
         ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, dv_pathname))
+        ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
+        ret = run_cmd("ffmpeg2theora %s -o %s" % ( dv_pathname, ogg_pathname))
+
 
         cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
         print cmd
 
         ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
-        ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
+        # ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
 
         flv_pathname = os.path.join(self.show_dir, "flv", "%s.flv"%episode.slug)
         ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
