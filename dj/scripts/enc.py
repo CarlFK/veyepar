@@ -53,7 +53,7 @@ def run_cmd(cmd):
 
 def mktitle(source, output_base, name, authors):
     """
-    Make a title slide by filling in a pre-make svg with name/authors.
+    Make a title slide by filling in a pre-made svg with name/authors.
     librsvg doesn't support flow, wich is needed for long titles, 
     so render it to a .png using inkscape
     """
