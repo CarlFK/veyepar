@@ -86,9 +86,10 @@ class post(process):
     else:
         response = blip_cli.Upload(
             "", pw.blip['user'], pw.blip['password'], files, meta, thumb)
-        responsexml = response.read()
-        blipurl = re.search("post_url>(.*)</post" ,responsexml).groups()[0]
-        if blipurl:
+        response_xml = response.read()
+        blipurls = re.search("post_url>(.*)</post" ,response_xml).groups()
+        if blipurls:
+            blipurl=blipurls[0]
             print blipurl
             prefix = "#%s VIDEO -" % show.client.name
             tweet = tweeter.notify(prefix, ep.name, blipurl)
@@ -99,9 +100,14 @@ class post(process):
             print tweeturl
             ep.comment += blipurl
             ep.state = self.done_state
+            ret=True
         else:
-            ep.comment += "upload failed\n"
+            print response_xml
+            ep.comment += "upload failed\n%s\n" % response_xml
+            ret=False
         ep.save()
+
+        return ret
 
   def add_more_options(self, parser):
         parser.add_option('-T', '--topics',
