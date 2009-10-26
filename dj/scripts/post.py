@@ -92,14 +92,15 @@ class post(process):
         if blipurls:
             blipurl=blipurls[0]
             print blipurl
-            prefix = "#%s VIDEO -" % show.client.name
-            tweet = tweeter.notify(prefix, ep.name, blipurl)
-            print tweet
-            if "<id>" not in tweet: print tweet
-            tweetid=re.search("<id>(.*)</id>" ,tweet).groups()[0]
-            tweeturl="http://twitter.com/cfkarsten/status/%s"%(tweetid,)
-            print tweeturl
             ep.comment += blipurl
+            if pw.twit['user']:
+                prefix = "#%s VIDEO -" % show.client.name
+                tweet = tweeter.notify(prefix, ep.name, blipurl)
+                print tweet
+                if "<id>" not in tweet: print tweet
+                tweetid=re.search("<id>(.*)</id>" ,tweet).groups()[0]
+                tweeturl="http://twitter.com/cfkarsten/status/%s"%(tweetid,)
+                print tweeturl
             ep.state = self.done_state
             ret=True
         else:

@@ -436,6 +436,7 @@ class Blip_CLI(Blip):
 
         response = self.Upload(video_id, username, pwd, files, meta, options.thumb)
         response_xml = response.read()
+        if options.verbose: print response_xml
         tree = xml.etree.ElementTree.fromstring(response_xml)
         rep_node=tree.find('response')
         print rep_node.text,
