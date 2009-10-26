@@ -76,7 +76,7 @@ class post(process):
         print
     
         blipcmd = "./blip_uploader.py --fileno %s --role %s --filename %s" % (files[0])
-        blipcmd += " --thumb %(title)s" % thumb 
+        blipcmd += " --thumb %s" % thumb 
         # blipcmd += " --title %(title)s  --description %(description)s 
         for i in meta.items():
             blipcmd += " --%s %s" % i 
