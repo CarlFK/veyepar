@@ -355,6 +355,7 @@ class Blip_CLI(Blip):
             help="List info about an exising episode and exit (all update options are ignored.)")
         parser.add_option('-u', '--username')
         parser.add_option('-p', '--password')
+        parser.add_option('-v', '--verbose', action="store_true" )
 
         options, args = parser.parse_args()
         self.options = options
