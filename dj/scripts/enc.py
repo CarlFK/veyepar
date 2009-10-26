@@ -135,8 +135,9 @@ class enc(process):
             print rf
             dvfile.attrib['id']="producer%s"%rf.id
 # hack to use .ogg instead of .dv
-            rawpathname = os.path.join(self.episode_dir,rf.basename()+".ogg")
-            # rawpathname = os.path.join(self.episode_dir,rf.filename)
+            # rawpathname = os.path.join(self.episode_dir,rf.basename()+".ogg")
+# unhack to use .dv            
+            rawpathname = os.path.join(self.episode_dir,rf.filename)
 
             dvfile.attrib['resource']=rawpathname
             # new=xml.etree.ElementTree.SubElement(tree[0],'producer', dvfile.attrib )
@@ -191,12 +192,10 @@ class enc(process):
         mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
         # ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
 
-    ret = False
-    return ret
+        return ret
 
 
   def dv2theora(self):
-    if cl:
         oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
@@ -233,8 +232,6 @@ class enc(process):
             print episode.id, episode.name
             print "transcode failed"
             print retcode, os.path.exists(oggpathname)
-    else:
-        print "No cutlist found."
 
     return ret
 
