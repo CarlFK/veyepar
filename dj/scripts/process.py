@@ -61,7 +61,7 @@ class process(object):
                 ep.location.slug )
             self.log_in(ep)
             if self.process_ep(ep):
-                self.log_out(ep)
+                self.log_out()
                 ep.state=self.done_state
                 ep.save()
         else:
