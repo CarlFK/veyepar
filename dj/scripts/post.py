@@ -62,7 +62,7 @@ class post(process):
         meta['hidden'] = self.options.hidden
 
     print oggpathname, thumb
-    files = [(0,'Source',oggpathname)]
+    files = [('','Source',oggpathname)]
 
     blip_cli.debug = self.options.verbose
 
@@ -80,24 +80,8 @@ class post(process):
         # blipcmd += " --title %(title)s  --description %(description)s 
         for i in meta.items():
             blipcmd += " --%s %s" % i 
+            # -C CATEGORY, --category=CATEGORY
         print blipcmd 
-        """
-  -T TOPICS, --topics=TOPICS
-                        list of topics (user defined)
-  -L LICENSE, --license=LICENSE
-                        13 is Creative Commons Attribution-NC-ShareAlike 3.0
-                        'list' to see full list
-  -C CATEGORY, --category=CATEGORY
-                        'list' to see full list
-  --hidden=HIDDEN       availability on blip.tv, 0=Available, 1=Hidden,
-                        2=Available to family, 4=Available to friends/family.
-  -i VIDEOID, --videoid=VIDEOID
-                        ID of existing blip episode (for updating.)
-  -m, --meta            List metadata about an exising episode and exit (all
-                        update options are ignored.)
-  -u USERNAME, --username=USERNAME
-  -p PASSWORD, --password=PASSWORD
-        """
 
     else:
         response = blip_cli.Upload(
