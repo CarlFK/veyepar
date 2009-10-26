@@ -74,6 +74,31 @@ class post(process):
         print 'meta %s' % meta
         print 'thumb %s' % thumb
         print
+    
+        blipcmd = "./blip_uploader.py --fileno %s --role %s --filename %s" % (files[0])
+        blipcmd += " --thumb %(title)s" % thumb 
+        # blipcmd += " --title %(title)s  --description %(description)s 
+        for i in meta.items():
+            blipcmd += " --%s %s" % i 
+        print blipcmd 
+            """
+  -T TOPICS, --topics=TOPICS
+                        list of topics (user defined)
+  -L LICENSE, --license=LICENSE
+                        13 is Creative Commons Attribution-NC-ShareAlike 3.0
+                        'list' to see full list
+  -C CATEGORY, --category=CATEGORY
+                        'list' to see full list
+  --hidden=HIDDEN       availability on blip.tv, 0=Available, 1=Hidden,
+                        2=Available to family, 4=Available to friends/family.
+  -i VIDEOID, --videoid=VIDEOID
+                        ID of existing blip episode (for updating.)
+  -m, --meta            List metadata about an exising episode and exit (all
+                        update options are ignored.)
+  -u USERNAME, --username=USERNAME
+  -p PASSWORD, --password=PASSWORD
+            """
+
     else:
         response = blip_cli.Upload(
             "", pw.blip['user'], pw.blip['password'], files, meta, thumb)

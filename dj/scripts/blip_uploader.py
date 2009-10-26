@@ -336,6 +336,8 @@ class Blip_CLI(Blip):
             help = 'Role for this file.  examples: Source, Web, Cell Phone.')
         parser.add_option('-n', '--fileno', default='',
             help = 'format number - used when uploading alternative format.')
+        parser.add_option('-b', '--thumb',default=None,
+            help = 'Filename of thumbnail to upload')
         parser.add_option('-t', '--title',
             help = "defaults to filename for new blip episodes (no video id.)")
         parser.add_option('-d', '--description',
@@ -376,15 +378,14 @@ class Blip_CLI(Blip):
                 print "You must suply a video ID to get info about it."
                 return 1
 
+        # this gets messy because there is metadata about the episode,
+        # and also metadata about each file.
+        # the command line options only support one file at a time
+        # but the Upload func supports a list of files/roles.
+        # These next few lines make the list out of the single file/role.
+        files = []
         if options.filename:
-            # this gets messy because there is metadata about the episode,
-            # and also metadata about each file.
-            # the command line options only support one file at a time
-            # but the Upload func supports a list of files/roles.
-            # These next few lines make the list out of the single file/role.
-            files = [(options.fileno, options.role, options.filename),]
-        else:
-            files = []
+           files+= [(options.fileno, options.role, options.filename)]
 
         if options.title:
             meta['title'] = cgi.escape(options.title.encode("utf-8"))
@@ -433,7 +434,7 @@ class Blip_CLI(Blip):
 
         self.debug=options.verbose
 
-        response = self.Upload(video_id, username, pwd, files, meta)
+        response = self.Upload(video_id, username, pwd, files, meta, options.thumb)
         response_xml = response.read()
         tree = xml.etree.ElementTree.fromstring(response_xml)
         rep_node=tree.find('response')
