@@ -87,6 +87,7 @@ class post(process):
         response = blip_cli.Upload(
             "", pw.blip['user'], pw.blip['password'], files, meta, thumb)
         response_xml = response.read()
+        if self.options.verbose: print response_xml
         blipurls = re.search("post_url>(.*)</post" ,response_xml).groups()
         if blipurls:
             blipurl=blipurls[0]
@@ -102,7 +103,7 @@ class post(process):
             ep.state = self.done_state
             ret=True
         else:
-            print response_xml
+            if not self.options.verbose: print response_xml
             ep.comment += "upload failed\n%s\n" % response_xml
             ret=False
         ep.save()
