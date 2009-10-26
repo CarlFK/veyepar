@@ -254,8 +254,7 @@ class enc(process):
     if cls:
         rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
         dv_pathname = self.melt(episode,cls,rfs)
-        self.dv2theora(episode,dv_pathname,cls,rfs)
-
+        ret = self.dv2theora(episode,dv_pathname,cls,rfs)
     else:
         print "No cutlist found."
 
