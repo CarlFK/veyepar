@@ -351,7 +351,6 @@ class Blip_CLI(Blip):
         config.read(['blip_uploader.cfg', 
                     os.path.expanduser('~/blip_uploader.cfg')])
         d=dict(config.items('global')) 
-        print d
         parser.set_defaults(**d) 
 
         # command line options override config file
