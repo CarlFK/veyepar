@@ -59,6 +59,7 @@
 """
 
 import optparse
+import ConfigParser
 import getpass
 import httplib
 import mimetypes
@@ -329,14 +330,38 @@ class Blip_CLI(Blip):
                 print "\t%s" % url
 
     def parse_args(self):
+
+        # hardcoded defauts
         parser = optparse.OptionParser()
+        parser.set_defaults(role='Source')
+        parser.set_defaults(fileno='')
+        parser.set_defaults(thumb=None)
+        parser.set_defaults(license=13)
+
+        # read from config file, overrides hardcoded
+        """
+        >>> open('blip_uploader.cfg').read()
+        '[global]\ncategory=7\nlicense=13\ntopics=test\n'
+        >>> config.read('blip_uploader.cfg')
+        >>> config.items('global')
+        [('category', '7'), ('topics', 'test'), ('license', '13')]
+        """
+
+        config = ConfigParser.RawConfigParser()
+        config.read(['blip_uploader.cfg', 
+                    os.path.expanduser('~/blip_uploader.cfg')])
+        d=dict(config.items('global')) 
+        print d
+        parser.set_defaults(**d) 
+
+        # command line options override config file
         parser.add_option('-f', '--filename', 
             help = 'Filename of media to upload')
-        parser.add_option('-r', '--role', default='Source',
+        parser.add_option('-r', '--role', 
             help = 'Role for this file.  examples: Source, Web, Cell Phone.')
-        parser.add_option('-n', '--fileno', default='',
+        parser.add_option('-n', '--fileno', 
             help = 'format number - used when uploading alternative format.')
-        parser.add_option('-b', '--thumb',default=None,
+        parser.add_option('-b', '--thumb',
             help = 'Filename of thumbnail to upload')
         parser.add_option('-t', '--title',
             help = "defaults to filename for new blip episodes (no video id.)")
