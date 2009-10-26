@@ -70,6 +70,9 @@ def mktitle(source, output_base, name, authors):
     cmd="inkscape %s --export-png %s" % (cooked_svg_name, png_name)
     run_cmd(cmd)
 
+    # dv_name="%s.dv"%output_base
+    # cmd="melt %s %s" % (png_name,dv_name)
+
     return png_name
 
 def time2s(time):
@@ -107,17 +110,8 @@ class enc(process):
 
   ready_state = 2
 
-  def process_ep(self,episode):
-    # print episode
-    ret = False
-    cls = Cut_List.objects.filter(episode=episode).order_by('sequence')
-    # print len(cls), episode.name.__repr__()
-    print episode.name
-    for cl in cls:
-        print cl.start, cl.end
+  def melt(self,episode,cl,rfs):
 
-    if cls:
-        rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
 
 # parse the xml into a tree of nodes
         tree= xml.etree.ElementTree.XMLID(mlt)
@@ -177,11 +171,12 @@ class enc(process):
         open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
 
 # f=dv pix_fmt=yuv411p 
-        cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s f-dv pix_fmt=yuv411p" 
+        # cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s f-dv pix_fmt=yuv411p" 
+        cmd="melt -verbose -profile dv_%s %s in=0 out=149 -consumer avformat:%s f-dv pix_fmt=yuv411p" 
         dv_pathname = os.path.join(self.show_dir, "dv", "%s.dv"%episode.slug)
         ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, dv_pathname))
-        ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
-        ret = run_cmd("ffmpeg2theora %s -o %s" % ( dv_pathname, ogg_pathname))
+        # ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
+        # ret = run_cmd("ffmpeg2theora %s -o %s" % ( dv_pathname, ogg_pathname))
 
 
         cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
@@ -196,14 +191,11 @@ class enc(process):
         mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
         # ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
 
-    else:
-        print "No cutlist found."
-        return False
-
+    ret = False
     return ret
 
 
-  def old_proc_ep(self):
+  def dv2theora(self):
     if cl:
         oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
@@ -241,6 +233,23 @@ class enc(process):
             print episode.id, episode.name
             print "transcode failed"
             print retcode, os.path.exists(oggpathname)
+    else:
+        print "No cutlist found."
+
+    return ret
+
+  def process_ep(self,episode):
+    # print episode
+    ret = false
+    cls = cut_list.objects.filter(episode=episode).order_by('sequence')
+    # print len(cls), episode.name.__repr__()
+    print episode.name
+    for cl in cls:
+        print cl.start, cl.end
+
+    if cls:
+        rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
+        self.melt(episode,cls,rfs)
     else:
         print "No cutlist found."
 
