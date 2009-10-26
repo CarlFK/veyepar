@@ -238,7 +238,7 @@ class enc(process):
   def process_ep(self,episode):
     # print episode
     ret = False
-    cls = cut_list.objects.filter(episode=episode).order_by('sequence')
+    cls = Cut_List.objects.filter(episode=episode).order_by('sequence')
     # print len(cls), episode.name.__repr__()
     print episode.name
     for cl in cls:
