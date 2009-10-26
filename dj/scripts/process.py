@@ -32,6 +32,10 @@ class process(object):
   """
 
   ready_state=2
+  
+# defaults to ntsc stuff
+  fps=29.98
+  bpf=120000
 
   def log_in(self,episode):
     state,create = State.objects.get_or_create(id=1)
@@ -116,6 +120,8 @@ class process(object):
     parser.add_option('-d', '--day' )
     parser.add_option('-r', '--room',
               help="Location")
+    parser.add_option('--format', default="ntsc",
+              help='pal or ntsc' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
     parser.add_option('--test', action="store_true",
@@ -134,6 +140,10 @@ class process(object):
 
   def main(self):
     options, args = self.parse_args()
+
+    if options.format.lower()=='pal':
+        self.fps=25.0
+        self.bpf=144000 # hope this is right...
 
     if options.list:
         self.list()

@@ -9,8 +9,6 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
-BPF=120000
-FPS=29.98
 """
     <filter mlt_service="channelcopy" from="1" to="0" />
     <filter mlt_service="volume" max_gain="30" normalise="28" />
@@ -160,8 +158,8 @@ class enc(process):
             print cl
             clip.attrib['id']="clip%s"%cl.id
             clip.attrib['producer']="producer%s"%cl.raw_file.id
-            clip.attrib['in']=str(time2f(cl.start,FPS)) if cl.start else '0'
-            clip.attrib['out']=str(time2f(cl.end,FPS)) if cl.end else '999999'
+            clip.attrib['in']=str(time2f(cl.start,self.fps)) if cl.start else '0'
+            clip.attrib['out']=str(time2f(cl.end,self.fps)) if cl.end else '999999'
             new=xml.etree.ElementTree.Element('entry', clip.attrib )
             playlist.insert(pos,new)
             pos+=1
@@ -192,10 +190,11 @@ class enc(process):
         mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
         # ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
 
+        return dv_pathname
         return ret
 
 
-  def dv2theora(self,cls,rfs):
+  def dv2theora(self,title_dv,cls,rfs):
         oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
@@ -209,15 +208,23 @@ class enc(process):
             # make a new dv file using just the frames to encode
             dvpathname = os.path.join(self.episode_dir,episode.slug+".dv")
             outf=open(dvpathname,'wb')
+
+# hack to splice in the intro dv make by melt()
+            inf=open(title_dv,'rb')
+            outf.write(inf.read())
+            super_hack=150*self.bpf
+
             for c in cls:
                 print (c.raw_file.filename, c.start,c.end)
                 rawpathname = os.path.join(self.episode_dir,c.raw_file.filename)
                 inf=open(rawpathname,'rb')
-                inf.seek(time2b(c.start,29.9,BPF,0))
+                inf.seek(time2b(c.start,29.9,self.bpf,0))
+                inf.seek(super_hack)
+                super_hack=0
                 size=os.fstat(inf.fileno()).st_size
-                end = time2b(c.end,29.9,BPF,size)
+                end = time2b(c.end,29.9,self.bpf,size)
                 while inf.tell()<end:
-                    outf.write(inf.read(BPF))
+                    outf.write(inf.read(self.bpf))
                 inf.close()
             outf.close()
         
@@ -246,15 +253,13 @@ class enc(process):
 
     if cls:
         rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
-        self.melt(episode,cls,rfs)
+        dv_pathname = self.melt(episode,cls,rfs)
+        self.dv2theora(episode,dv_pathname,cls,rfs)
+
     else:
         print "No cutlist found."
 
     return ret
-
-  def add_more_options(self, parser):
-     parser.add_option('--format', default="ntsc",
-        help='pal or ntsc' )
 
 if __name__ == '__main__':
     p=enc()

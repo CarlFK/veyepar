@@ -45,15 +45,8 @@ class add_dv(process):
             else:
                 start -= datetime.timedelta(hours=2,minutes=37)
 
-        # calc duration based on filesize
-        if self.options.format.lower()=='ntsc':
-            frame_size = 120000
-            fps = 29.98
-        else:
-            frame_size = 144000
-            fps = 25
-        frames = st.st_size/frame_size
-        duration = frames/fps ## seconds
+        frames = st.st_size/self.bpf
+        duration = frames/self.fps ## seconds
 
         end = start + datetime.timedelta(seconds=duration)
         
@@ -74,10 +67,6 @@ class add_dv(process):
         dir=os.path.join(self.show_dir,'dv',loc.slug)
         print show,loc,dir
         self.one_loc(loc, dir)
-
-    def add_more_options(self, parser):
-        parser.add_option('--format', default="ntsc",
-            help='pal or ntsc' )
 
 if __name__=='__main__': 
     p=add_dv()
