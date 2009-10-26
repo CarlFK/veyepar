@@ -64,7 +64,7 @@ class post(process):
     print oggpathname, thumb
     files = [(0,'Source',oggpathname)]
 
-    blip_cli.debug = self.optoins.verbose
+    blip_cli.debug = self.options.verbose
 
     # blip_ep=Blip_Ep()
     if self.options.test:
