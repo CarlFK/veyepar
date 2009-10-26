@@ -80,7 +80,8 @@ class Blip(object):
     
     MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
-    options={'verbose':False}
+    # this doesn't do what is needed: self.options.verbose
+    options={'verbose':False} 
 
     def progress(self, current, total):
         """
@@ -226,7 +227,7 @@ class Blip(object):
         xml_code = urllib2.urlopen(url).read()
         return xml_code
 
-    def Get_VideoInfo(self, video_id):
+    def Get_VideoMeta(self, video_id):
         """@brief Return information about the video
         
         @param video_id blip.tv item ID
@@ -244,7 +245,7 @@ class Blip(object):
                 rc += n.data
         return rc
 
-    def Parse_VideoInfo(self, video_xml):
+    def Parse_VideoMeta(self, video_xml):
         """@brief Return information about the video
         
         @param video_xml xml about an Episode from blip.tv 
@@ -309,11 +310,11 @@ class Blip_CLI(Blip):
             print node.find('id').text, node.find('name').text
         return
 
-    def List_VideoInfo(self, video_id):
+    def List_VideoMeta(self, video_id):
         print "Loading..."
-        xml_code = self.Get_VideoInfo(video_id)
+        xml_code = self.Get_VideoMeta(video_id)
         # print xml_code
-        info = self.Parse_VideoInfo(xml_code)
+        info = self.Parse_VideoMeta(xml_code)
         # print info
         print "Title           =", info['title']
         print "Description     =", info['description']
@@ -349,10 +350,10 @@ class Blip_CLI(Blip):
             help = "'list' to see full list" )
         parser.add_option('--hidden',
             help="availability on blip.tv, 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
-        parser.add_option('-v', '--videoid',
+        parser.add_option('-i', '--videoid',
             help="ID of existing blip episode (for updating.)")
-        parser.add_option('-i', '--info', action="store_true",
-            help="List info about an exising episode and exit (all update options are ignored.)")
+        parser.add_option('-m', '--meta', action="store_true",
+            help="List metadata about an exising episode and exit (all update options are ignored.)")
         parser.add_option('-u', '--username')
         parser.add_option('-p', '--password')
         parser.add_option('-v', '--verbose', action="store_true" )
@@ -369,9 +370,9 @@ class Blip_CLI(Blip):
 
         video_id = options.videoid 
 
-        if options.info:
+        if options.meta:
             if video_id:
-                self.List_VideoInfo(video_id)
+                self.List_VideoMeta(video_id)
                 return 0
             else:
                 print "You must suply a video ID to get info about it."
