@@ -198,7 +198,8 @@ class enc(process):
         oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
-        if len(cls)==1:
+
+        if len(cls)==1 and not title_dv:
             # use the raw dv file and ffmpeg2theora params to trim
             c=cls[0]
             if c.start: cmd+=['--starttime',str(time2s(c.start))]
