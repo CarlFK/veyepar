@@ -81,7 +81,7 @@ class post(process):
         for i in meta.items():
             blipcmd += " --%s %s" % i 
         print blipcmd 
-            """
+        """
   -T TOPICS, --topics=TOPICS
                         list of topics (user defined)
   -L LICENSE, --license=LICENSE
@@ -97,7 +97,7 @@ class post(process):
                         update options are ignored.)
   -u USERNAME, --username=USERNAME
   -p PASSWORD, --password=PASSWORD
-            """
+        """
 
     else:
         response = blip_cli.Upload(
