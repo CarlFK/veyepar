@@ -194,7 +194,7 @@ class enc(process):
         return ret
 
 
-  def dv2theora(self,title_dv,cls,rfs):
+  def dv2theora(self,episode,title_dv,cls,rfs):
         oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
