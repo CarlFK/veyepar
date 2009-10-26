@@ -14,17 +14,6 @@ from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
-"""
-class Blip_Ep(blip_uploader.Blip):
-
-    def progress(self, current, total):
-        " ""
-        Displaies upload percent done, bytes sent, total bytes.
-        " ""
-        sys.stdout.write('\r%3i%%  %s of %s bytes'
-            % (100*current/total, current, total))
-"""
-
 class post(process):
 
   ready_state = 3
@@ -74,6 +63,8 @@ class post(process):
 
     print oggpathname, thumb
     files = [(0,'Source',oggpathname)]
+
+    blip_cli.debug = self.optoins.verbose
 
     # blip_ep=Blip_Ep()
     if self.options.test:

@@ -80,8 +80,7 @@ class Blip(object):
     
     MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
-    # this doesn't do what is needed: self.options.verbose
-    options={'verbose':False} 
+    debug=False
 
     def progress(self, current, total):
         """
@@ -142,11 +141,11 @@ class Blip(object):
         h.endheaders()
 
         # send the datas
-        if self.options.verbose: print fieldsdata
+        if self.debug: print fieldsdata
         h.send(fieldsdata)
         bytes_sent = len(fieldsdata)
         for filedata, filename in filedatas:
-            if self.options.verbose: print "%s (%s)" % (filedata, filename)
+            if self.debug: print "%s (%s)" % (filedata, filename)
             h.send(filedata)
             bytes_sent += len(filedata)
             f = open(filename,'rb')
@@ -156,7 +155,7 @@ class Blip(object):
                 bytes_sent += len(block)
                 self.progress(bytes_sent,datalen)
                 block=f.read(10000)
-        if self.options.verbose: print footdata
+        if self.debug: print footdata
         h.send(footdata)
         bytes_sent += len(footdata)
         self.progress(bytes_sent,datalen)
@@ -359,7 +358,6 @@ class Blip_CLI(Blip):
         parser.add_option('-v', '--verbose', action="store_true" )
 
         options, args = parser.parse_args()
-        self.options = options
         return options, args
 
     def Main(self):
@@ -427,10 +425,13 @@ class Blip_CLI(Blip):
         if options.hidden:
             meta['hidden']=options.hidden
 
+      
         username = options.username if options.username \
             else raw_input("blip.tv Username: ")
         pwd = options.password if options.password \
             else getpass.getpass("blip.tv Password: ")
+
+        self.debug=options.verbose
 
         response = self.Upload(video_id, username, pwd, files, meta)
         response_xml = response.read()
