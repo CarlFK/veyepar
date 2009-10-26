@@ -80,6 +80,8 @@ class Blip(object):
     
     MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
+    options={'verbose':False}
+
     def progress(self, current, total):
         """
         Hook method for letting the user see upload progress.
@@ -139,9 +141,11 @@ class Blip(object):
         h.endheaders()
 
         # send the datas
+        if self.options.verbose: print fieldsdata
         h.send(fieldsdata)
         bytes_sent = len(fieldsdata)
         for filedata, filename in filedatas:
+            if self.options.verbose: print "%s (%s)" % (filedata, filename)
             h.send(filedata)
             bytes_sent += len(filedata)
             f = open(filename,'rb')
@@ -151,6 +155,7 @@ class Blip(object):
                 bytes_sent += len(block)
                 self.progress(bytes_sent,datalen)
                 block=f.read(10000)
+        if self.options.verbose: print footdata
         h.send(footdata)
         bytes_sent += len(footdata)
         self.progress(bytes_sent,datalen)
@@ -352,6 +357,7 @@ class Blip_CLI(Blip):
         parser.add_option('-p', '--password')
 
         options, args = parser.parse_args()
+        self.options = options
         return options, args
 
     def Main(self):
