@@ -195,11 +195,11 @@ class enc(process):
         return ret
 
 
-  def dv2theora(self):
+  def dv2theora(self,cls,rfs):
         oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
-        if len(cl)==1:
+        if len(cls)==1:
             # use the raw dv file and ffmpeg2theora params to trim
             c=cl[0]
             if c.start: cmd+=['--starttime',str(time2s(c.start))]
@@ -209,7 +209,7 @@ class enc(process):
             # make a new dv file using just the frames to encode
             dvpathname = os.path.join(self.episode_dir,episode.slug+".dv")
             outf=open(dvpathname,'wb')
-            for c in cl:
+            for c in cls:
                 print (c.raw_file.filename, c.start,c.end)
                 rawpathname = os.path.join(self.episode_dir,c.raw_file.filename)
                 inf=open(rawpathname,'rb')
@@ -237,7 +237,7 @@ class enc(process):
 
   def process_ep(self,episode):
     # print episode
-    ret = false
+    ret = False
     cls = cut_list.objects.filter(episode=episode).order_by('sequence')
     # print len(cls), episode.name.__repr__()
     print episode.name
