@@ -110,7 +110,7 @@ class enc(process):
 
   ready_state = 2
 
-  def melt(self,episode,cl,rfs):
+  def melt(self,episode,cls,rfs):
 
 
 # parse the xml into a tree of nodes
@@ -201,7 +201,7 @@ class enc(process):
         cmd+=['--output',oggpathname]
         if len(cls)==1:
             # use the raw dv file and ffmpeg2theora params to trim
-            c=cl[0]
+            c=cls[0]
             if c.start: cmd+=['--starttime',str(time2s(c.start))]
             if c.end: cmd+=['--endtime',str(time2s(c.end))]
             dvpathname = os.path.join(self.episode_dir,c.raw_file.filename)
