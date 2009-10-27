@@ -6,6 +6,17 @@ Getting started...
 veyepar/dj$ ./manage.py syncdb
 
 2. create a client, show, location and episodes records in the db
+a. http://localhost:8080/main/clients/  
+b. enter 1 for Sequence, client Name and Slug, hit save.
+c. click on the client link
+d. enter 1 for Sequence, show Name and Slug - hit Save.
+e. click on show link
+f. enter 1 for Sequence, location Name and Slug, hit Save.
+e. click on location link
+g. enter 1 for Sequence, episode Name and Slug - hit Save.
+h. repeat for each Loction and Episode
+
+
 If you have many Episodes it might be worth the effort to import locaion and episodes from a .csv file using addeps.py.  
 Otherwise use the admin UI for location and episode too.
 
@@ -13,7 +24,7 @@ Otherwise use the admin UI for location and episode too.
 If you don't know when someting started or ended, leave it blank.  This will link all .dv files to the episode.  It is easier to remvoe links than add them.
 
 4. create the dirs for the .dv files:
-mkdirs.py:# Makes the dir tree to put files into
+mkdirs.py  # Makes the dir tree to put files into
 
 4.1. put the dv files into the dirs
 Use your mad file copy skilz to rsync, mv, whatever.  

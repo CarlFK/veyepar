@@ -16,5 +16,14 @@
             </li>
         {% endfor %}
     </ul>
+    {% if episode_form %}
+     <form action="" method="POST">
+     <table border=1>
+     {{ episode_form }}
+     </table>
+     <input type="submit" value="Save" />
+     </form>
+    {% endif %}
+
 
 {% endblock %}

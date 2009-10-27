@@ -1,0 +1,19 @@
+{# client_list.html #}
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Clients</h2>
+    <ul>
+        {% for client in clients %}
+            <li> {{client.sequence}} <a href="/main/C/{{client.slug}}/">{{ client.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <form action="" method="POST"> 
+    <table>
+    {{ client_form }}
+    </table>
+    <input type="submit" value="Save" />
+    </form>
+
+{% endblock %}
+

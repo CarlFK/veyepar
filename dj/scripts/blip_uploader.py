@@ -98,7 +98,6 @@ class Blip(object):
         @param url POST URL
         @param fields A dict of {field-name: value}
         @param files A list of [(field-name, filename)]
-        @param progress A callback to update progress - like percent done.
         @return Status, reason, response (see httplib.HTTPConnection.getresponse())
         """
         content_type = 'multipart/form-data; boundary=%s' % self.MULTIPART_BOUNDARY

@@ -45,37 +45,103 @@ def main(request):
     return render_to_response('main.html',
         context_instance=RequestContext(request) )
 
-def client(request,client_slug=None):
-    print client_slug
-    client=get_object_or_404(Client,slug=client_slug)
-    shows=Show.objects.filter(client=client)
-    return render_to_response('client.html',
-        {'client':client,'shows':shows},
+
+def former(request, Model, parents, inits={}):
+
+    class xForm(ModelForm):
+        class Meta:
+            model=Model
+
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form=xForm(request.POST)
+            if form.is_valid():
+                form.save()
+            else:
+                print form.errors
+        else:
+            # add parents to inits
+            inits.update(parents)
+            form=xForm(inits)
+    else:
+        form=None
+
+    objects=Model.objects.filter(**parents).order_by('sequence')
+    return form,objects
+
+def clients(request):
+    # list of clients and a blank to enter a new one
+    client_form, clients = former(
+        request, Client, {},{'sequence':1})
+
+    return render_to_response('clients.html',
+        {'clients':clients,
+        'client_form':client_form},
        context_instance=RequestContext(request) )
 
-def get_dv_files(path):
-    # files=get_dv_files('/home/juser/temp/clojure/2009-may-meeting/sullys/dv')
-    file_names=os.listdir(path)
-    files=[{'name':n} for n in file_names]
-    files=[]
-    for file_name in os.listdir(path):
-        d={'name':file_name,
-           'size':os.path.getsize("%s/%s"%(path,file_name))
-          }
-        files.append(d)
-    return files
+def client(request,client_slug=None):
+    # the selected client and
+    # list of client's shows and a blank to enter a new show
 
-def client_shows(request,client_slug=None,show_slug=None):
+    client=get_object_or_404(Client,slug=client_slug)
+
+    show_form, shows = former(
+        request, Show, {'client':client.id}, {'sequence':1})
+
+    return render_to_response('client.html',
+        {'client':client,
+        'show_form':show_form,
+        'shows':shows},
+       context_instance=RequestContext(request) )
+
+def locations(request, client_slug=None, show_slug=None):
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
-    locations=Location.objects.filter(show=show)
-    episodes=Episode.objects.filter(location__show=show).order_by('start','location')
-    return render_to_response('show.html',
+    location_form, locations = former(
+        request, Location, {'show':show.id},{'sequence':1})
+    return render_to_response('locations.html',
         {'client':client,'show':show,
-          'locations':locations,'episodes':episodes,
+          'locations':locations,
+          'location_form':location_form,
         },
 	context_instance=RequestContext(request) )
  
+def episodes(request,
+        client_slug=None,show_slug=None,location_slug=None):
+    # the selected client and show
+    # list of loctions (rooms) and episodes (talks)
+    # and blanks to enter a new location and episode.
+    client=get_object_or_404(Client,slug=client_slug)
+    show=get_object_or_404(Show,client=client,slug=show_slug)
+    if location_slug:
+        locations=Location.objects.filter(show=show, slug=location_slug)
+        location=Location.objects.get(show=show, slug=location_slug)
+        parents={'location':location.id}
+    else:
+        locations=Location.objects.filter(show=show)
+        location=locations[0]
+        parents={'location__show':show.id}
+    # episodes=Episode.objects.filter(location__show=show).order_by('start','location')
+    if locations:
+        episode_form, episodes = former(
+            request, Episode, parents,
+            {'sequence':1, 'location':location.id})
+        print len(episodes)
+    else:
+        episode_form, episodes = None,None
+
+    return render_to_response('show.html',
+        {'client':client,'show':show,
+          'locations':locations,
+          'episodes':episodes,
+          'episode_form':episode_form,
+        },
+	context_instance=RequestContext(request) )
+ 
+class Episode_Form(forms.Form):
+    state = forms.IntegerField(label="State",
+        widget=forms.TextInput(attrs={'size':':3'}))
+
 class clrfForm(forms.Form):
     clid = forms.IntegerField(widget=forms.HiddenInput())
     trash = forms.BooleanField(label="Trash",required=False)
@@ -105,12 +171,17 @@ def episode(request,episode_no):
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
 
-    cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','sequence','raw_file__start')
+    # cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','sequence','raw_file__start')
+    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
+        episode_form = Episode_Form(request.POST) 
         clrfformset = clrfFormSet(request.POST) 
-        if clrfformset.is_valid(): 
+        if episode_form.is_valid() and clrfformset.is_valid(): 
+            episode.state=episode_form.cleaned_data['state']
+            # print episode.state
+            episode.save()
             for form in clrfformset.forms:
                 cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])
 
@@ -122,7 +193,7 @@ def episode(request,episode_no):
                 cl.start=form.cleaned_data['start']
                 cl.end=form.cleaned_data['end']
                 cl.apply=form.cleaned_data['apply']
-                print cl.apply, form.cleaned_data['apply']
+                # print cl.apply, form.cleaned_data['apply']
 
                 cl.comment=form.cleaned_data['cl_comment']
                 cl.save()
@@ -133,8 +204,10 @@ def episode(request,episode_no):
                     cl.end = ''
                     cl.save(force_insert=True)
 
-            # if trash got touched, need to requery to get things in the right order.  I think.
-            cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','raw_file__start')
+            # if trash got touched, 
+            # need to requery to get things in the right order.  I think.
+            cuts = Cut_List.objects.filter(
+                episode=episode).order_by('raw_file__trash','raw_file__start')
             init = [{'clid':cut.id,
                 'trash':cut.raw_file.trash,
                 'sequence':cut.sequence,
@@ -145,8 +218,10 @@ def episode(request,episode_no):
             clrfformset = clrfFormSet(initial=init)
 
         else:
+            print "ep errors:", episode_form.errors
             print clrfformset.errors
     else:
+        episode_form = Episode_Form({'state':episode.state}) 
         # init data with things in the queryset that need editing
         # this part seems to work.
         init = [{'clid':cut.id,
@@ -175,6 +250,7 @@ def episode(request,episode_no):
         'client':client, 'show':show, 'location':location,
         'nextepisode':nextepisode,
         'same_dates':same_dates,
+        'episode_form':episode_form,
         'clrffs':zip(cuts,clrfformset.forms),
         'clrfformset':clrfformset,
         },

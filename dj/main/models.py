@@ -6,6 +6,7 @@ import datetime
 
 class Client(models.Model):
     sequence = models.IntegerField(default=1)
+    # active = models.BooleanField(help_text="Done for now.")
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
     description = models.TextField(blank=True)

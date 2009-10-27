@@ -17,7 +17,7 @@ class mkdirs(process):
          os.makedirs(dir)
 
   def one_show(self,show):
-    for d in "dv tmp ogg mp4 flv".split():
+    for d in "dv tmp bling ogg mp4 flv".split():
         self.mkdir(os.path.join(self.show_dir,d))
     for loc in Location.objects.filter(show=show):
          dir = os.path.join(self.show_dir,'dv',loc.slug)

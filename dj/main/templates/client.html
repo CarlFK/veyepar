@@ -4,8 +4,15 @@
 
     <ul>
         {% for show in shows%}
-            <li><a href="S/{{show.slug}}/">{{ show.name }}</a></li>
+            <li> {{show.sequence}} <a href="S/{{show.slug}}/">{{ show.name }}</a></li>
         {% endfor %}
     </ul>
+
+    <form action="" method="POST">
+    <table border=1>
+    {{ show_form }}
+    </table>
+    <input type="submit" value="Save" />
+    </form>
 
 {% endblock %}
