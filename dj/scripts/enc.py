@@ -305,8 +305,8 @@ class enc(process):
     return ret
 
 
-    def add_more_options(self, parser):
-        parser.add_option('-s', '--enc_script', 
+  def add_more_options(self, parser):
+        parser.add_option('--enc_script', 
           help='encode shell script' )
 
 
