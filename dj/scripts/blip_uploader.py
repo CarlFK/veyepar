@@ -349,10 +349,12 @@ class Blip_CLI(Blip):
         """
 
         config = ConfigParser.RawConfigParser()
-        config.read(['blip_uploader.cfg', 
+        files=config.read(['blip_uploader.cfg', 
                     os.path.expanduser('~/blip_uploader.cfg')])
-        d=dict(config.items('global')) 
-        parser.set_defaults(**d) 
+        if files:
+            d=dict(config.items('global')) 
+            parser.set_defaults(**d) 
+            if d.get('verbose'): print "using config file(s):", files
 
         # command line options override config file
         parser.add_option('-f', '--filename', 

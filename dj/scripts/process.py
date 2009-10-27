@@ -3,6 +3,7 @@
 # abstract class for processing episodes
 
 import optparse
+import ConfigParser
 import os,sys,subprocess
 import datetime
 
@@ -125,11 +126,13 @@ class process(object):
     """
 
     config = ConfigParser.RawConfigParser()
-    config.read(['veyepar.cfg',
+    files=config.read(['veyepar.cfg',
                 os.path.expanduser('~/veyepar.cfg')])
-    d=dict(config.items('global'))
-    d['whack']=False # don't want this somehow getting set in .conf
-    parser.set_defaults(**d)
+    if files:
+        d=dict(config.items('global'))
+        d['whack']=False # don't want this somehow getting set in .conf
+        parser.set_defaults(**d)
+        if d['verbose']: print "using config file(s):", files
 
 
     parser.add_option('-m', '--mediadir', 
