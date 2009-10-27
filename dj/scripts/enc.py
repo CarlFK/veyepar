@@ -109,7 +109,12 @@ class enc(process):
   ready_state = 2
 
   def melt(self,episode,cls,rfs):
-
+        """
+        assemble a mlt playlist, create a title screen, 
+        call melt to mix title with playlist
+        currenly just do the first few seconds that are related to the title
+        let something else encode the rest
+        """
 
 # parse the xml into a tree of nodes
         tree= xml.etree.ElementTree.XMLID(mlt)
@@ -179,7 +184,6 @@ class enc(process):
 
 
         cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
-        print cmd
 
         ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
         # ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
@@ -193,8 +197,42 @@ class enc(process):
         return dv_pathname
         return ret
 
+  def mkdv(self,episode,title_dv,cls,rfs):
+        """
+        assemble parts into a master .dv file
+        """
 
-  def dv2theora(self,episode,title_dv,cls,rfs):
+        if self.options.verbose: print "making temp.dv - may take awhile..."
+        # make a new dv file using just the frames to encode
+        dvpathname = os.path.join(self.episode_dir,episode.slug+".dv")
+        outf=open(dvpathname,'wb')
+
+# hack to splice in the intro dv make by melt()
+        inf=open(title_dv,'rb')
+        outf.write(inf.read())
+        super_hack=150*self.bpf
+
+        for c in cls:
+            print (c.raw_file.filename, c.start,c.end)
+            rawpathname = os.path.join(self.episode_dir,c.raw_file.filename)
+            inf=open(rawpathname,'rb')
+            inf.seek(time2b(c.start,29.9,self.bpf,0))
+            inf.seek(super_hack)
+            super_hack=0
+            size=os.fstat(inf.fileno()).st_size
+            end = time2b(c.end,29.9,self.bpf,size)
+            while inf.tell()<end:
+                outf.write(inf.read(self.bpf))
+            inf.close()
+        outf.close()
+    
+        return dvpathname
+
+
+  def dv2ogg(self,episode,title_dv,cls,rfs):
+        """
+        transcode dv ot ogg
+        """
         oggpathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
@@ -206,30 +244,8 @@ class enc(process):
             if c.end: cmd+=['--endtime',str(time2s(c.end))]
             dvpathname = os.path.join(self.episode_dir,c.raw_file.filename)
         else:
-            if self.options.verbose: print "making temp.dv - may take awhile..."
-            # make a new dv file using just the frames to encode
-            dvpathname = os.path.join(self.episode_dir,episode.slug+".dv")
-            outf=open(dvpathname,'wb')
-
-# hack to splice in the intro dv make by melt()
-            inf=open(title_dv,'rb')
-            outf.write(inf.read())
-            super_hack=150*self.bpf
-
-            for c in cls:
-                print (c.raw_file.filename, c.start,c.end)
-                rawpathname = os.path.join(self.episode_dir,c.raw_file.filename)
-                inf=open(rawpathname,'rb')
-                inf.seek(time2b(c.start,29.9,self.bpf,0))
-                inf.seek(super_hack)
-                super_hack=0
-                size=os.fstat(inf.fileno()).st_size
-                end = time2b(c.end,29.9,self.bpf,size)
-                while inf.tell()<end:
-                    outf.write(inf.read(self.bpf))
-                inf.close()
-            outf.close()
-        
+            dvpathname = self.mkdv(episode,title_dv,cls,rfs)
+                   
         cmd+=[dvpathname]
         print ' '.join(cmd)
         p=subprocess.Popen(cmd)
@@ -254,13 +270,45 @@ class enc(process):
         print cl.start, cl.end
 
     if cls:
+# get list of raw footage for this episode
         rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
-        dv_pathname = self.melt(episode,cls,rfs)
-        ret = self.dv2theora(episode,dv_pathname,cls,rfs)
+# for now, call melt to create the title part
+        title_dv = self.melt(episode,cls,rfs)
+# maybe call a script to do the final encoding:
+        if self.options.enc_script:
+            # consolidate all the dv files into one  
+            dvpathname = self.mkdv(episode,title_dv,cls,rfs)
+            # define where the script should put output and temp files
+            out_pathname = os.path.join(
+                self.show_dir, "mp4", "%s.mp4"%episode.slug)
+            temp_pathname = os.path.join(
+                self.show_dir, "tmp", "%s.mp4"%episode.slug)
+            cmd = [self.options.script, 
+                    dvpathname, out_pathname, temp_pathname ]
+
+        print ' '.join(cmd)
+        p=subprocess.Popen(cmd)
+        p.wait()
+        retcode=p.returncode
+        if not retcode and os.path.exists(oggpathname):
+            ret = True
+        else:
+            print episode.id, episode.name
+            print "transcode failed"
+            print retcode, os.path.exists(oggpathname)
+
+
+        ret = self.dv2theora(episode,title_dv,cls,rfs)
     else:
         print "No cutlist found."
 
     return ret
+
+
+    def add_more_options(self, parser):
+        parser.add_option('-s', '--enc_script', 
+          help='encode shell script' )
+
 
 if __name__ == '__main__':
     p=enc()
