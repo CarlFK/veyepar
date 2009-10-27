@@ -110,24 +110,44 @@ class process(object):
 
   def parse_args(self):
     parser = optparse.OptionParser()
-    parser.add_option('-m', '--mediadir', help="media files dir",
-        default= '/mnt/nfs/dhcp123/video/veyepar' )
-        # default= '/home/carl/Videos/veyepar' )
-        # default= '/media/pycon25wed/Videos/veyepar' )
-# need to figure out how to do a local config file.
+
+    # hardcoded defauts
+    parser.set_defaults(format='ntsc')
+    parser.set_defaults(mediadir=os.path.expanduser('~/Videos/veyepar'))
+
+    # read from config file, overrides hardcoded
+    """
+    >>> open('blip_uploader.cfg').read()
+    '[global]\ncategory=7\nlicense=13\ntopics=test\n'
+    >>> config.read('blip_uploader.cfg')
+    >>> config.items('global')
+    [('category', '7'), ('topics', 'test'), ('license', '13')]
+    """
+
+    config = ConfigParser.RawConfigParser()
+    config.read(['veyepar.cfg',
+                os.path.expanduser('~/veyepar.cfg')])
+    d=dict(config.items('global'))
+    d['whack']=False # don't want this somehow getting set in .conf
+    parser.set_defaults(**d)
+
+
+    parser.add_option('-m', '--mediadir', 
+        help="media files dir", )
     parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
     parser.add_option('-r', '--room',
               help="Location")
-    parser.add_option('--format', default="ntsc",
+    parser.add_option('--format', 
               help='pal or ntsc' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
     parser.add_option('--test', action="store_true",
-              help="test mode - do not make changes to the db (not fully implemetned, for development use.")
+              help="test mode - do not make changes to the db "
+                "(not fully implemetned, for development use.")
     parser.add_option('--force', action="store_true",
-              help="overfide ready state, use with care." )
+              help="override ready state, use with care." )
     parser.add_option('--whack', action="store_true",
               help="whack current episodes, use with care." )
 
@@ -143,7 +163,7 @@ class process(object):
 
     if options.format.lower()=='pal':
         self.fps=25.0
-        self.bpf=144000 # hope this is right...
+        self.bpf=144000 
 
     if options.list:
         self.list()

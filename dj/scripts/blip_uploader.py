@@ -331,8 +331,9 @@ class Blip_CLI(Blip):
 
     def parse_args(self):
 
-        # hardcoded defauts
         parser = optparse.OptionParser()
+
+        # hardcoded defauts
         parser.set_defaults(role='Source')
         parser.set_defaults(fileno='')
         parser.set_defaults(thumb=None)
