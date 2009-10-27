@@ -29,7 +29,8 @@ class process(object):
   Abstract class for processing.
   Provides basic options and itarators.
   Only operates on episodes in ready_state,
-  promotes them to done_state.
+  if processing returns True, 
+      state=ready_state+1
   """
 
   ready_state=2
@@ -67,7 +68,7 @@ class process(object):
             self.log_in(ep)
             if self.process_ep(ep):
                 self.log_out()
-                ep.state=self.done_state
+                ep.state=self.ready_state+1
                 ep.save()
         else:
             if self.options.verbose:

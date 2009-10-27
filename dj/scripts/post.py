@@ -17,7 +17,6 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 class post(process):
 
   ready_state = 3
-  done_state = 4
 
   def process_ep(self, ep):
     print ep.id, ep.name
