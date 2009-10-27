@@ -206,6 +206,7 @@ class enc(process):
             if c.end: cmd+=['--endtime',str(time2s(c.end))]
             dvpathname = os.path.join(self.episode_dir,c.raw_file.filename)
         else:
+            if self.options.verbose: print "making temp.dv - may take awhile..."
             # make a new dv file using just the frames to encode
             dvpathname = os.path.join(self.episode_dir,episode.slug+".dv")
             outf=open(dvpathname,'wb')
