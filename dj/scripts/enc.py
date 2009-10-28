@@ -283,7 +283,7 @@ class enc(process):
                 self.show_dir, "mp4", "%s.mp4"%episode.slug)
             temp_pathname = os.path.join(
                 self.show_dir, "tmp", "%s.mp4"%episode.slug)
-            cmd = [self.options.script, 
+            cmd = [self.options.enc_script, 
                     dvpathname, out_pathname, temp_pathname ]
 
         print ' '.join(cmd)
