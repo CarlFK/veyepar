@@ -84,7 +84,7 @@ class enc(process):
 
   ready_state = 2
   
-  def mktitle(source, output_base, name, authors):
+  def mktitle(self.source, output_base, name, authors):
     """
     Make a title slide by filling in a pre-made svg with name/authors.
     melt uses librsvg which doesn't support flow, 
@@ -123,7 +123,7 @@ class enc(process):
 # make a title slide
         template = os.path.join(self.show_dir, "bling", "title.svg")
         title_base = os.path.join(self.show_dir, "tmp", episode.slug)
-        title_name=mktitle(template,
+        title_name=self.mktitle(template,
             title_base, episode.name, episode.authors)
 
 # set the title to the title slide we just made
