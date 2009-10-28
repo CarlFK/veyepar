@@ -100,7 +100,6 @@ class post(process):
                 tweetid=re.search("<id>(.*)</id>" ,tweet).groups()[0]
                 tweeturl="http://twitter.com/cfkarsten/status/%s"%(tweetid,)
                 print tweeturl
-            ep.state = self.done_state
             ret=True
         else:
             if not self.options.verbose: print response_xml
