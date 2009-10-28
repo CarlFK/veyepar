@@ -177,8 +177,8 @@ class enc(process):
         open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
 
 # f=dv pix_fmt=yuv411p 
-        # cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s f-dv pix_fmt=yuv411p" 
-        cmd="melt -verbose -profile dv_%s %s in=0 out=149 -consumer avformat:%s f-dv pix_fmt=yuv411p" 
+        cmd="melt -verbose -profile dv_%s %s in=0 out=149 -consumer avformat:%s pix_fmt=yuv411p" 
+        # cmd="melt -verbose -profile dv_%s %s in=0 out=149 -consumer avformat:%s f=dv pix_fmt=yuv411p" 
         dv_pathname = os.path.join(self.show_dir, "dv", "%s.dv"%episode.slug)
         ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, dv_pathname))
         # ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
@@ -284,13 +284,12 @@ class enc(process):
         p=subprocess.Popen(cmd)
         p.wait()
         retcode=p.returncode
-        if not retcode and os.path.exists(oggpathname):
+        if not retcode:
             ret = True
         else:
             print episode.id, episode.name
             print "transcode failed"
-            print retcode, os.path.exists(oggpathname)
-
+            print retcode
 
     else:
         print "No cutlist found."
