@@ -133,7 +133,9 @@ class process(object):
         d=dict(config.items('global'))
         d['whack']=False # don't want this somehow getting set in .conf
         parser.set_defaults(**d)
-        if d['verbose']: print "using config file(s):", files
+        if d['verbose']: 
+            print "using config file(s):", files
+            print d
 
 
     parser.add_option('-m', '--mediadir', 

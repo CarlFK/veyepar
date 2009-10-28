@@ -9,10 +9,6 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
-"""
-    <filter mlt_service="channelcopy" from="1" to="0" />
-    <filter mlt_service="volume" max_gain="30" normalise="28" />
-"""
 mlt="""
 <mlt>
 
@@ -20,7 +16,7 @@ mlt="""
   <producer id="producer0" resource="/home/juser/vid/t2.dv" />
 
   <playlist id="playlist0">
-    <entry id="clip" producer="producer2" in="500" out="690" />
+    <entry id="clip" producer="producer0" in="500" out="690" />
   </playlist>
 
   <playlist id="playlist1">
@@ -84,7 +80,7 @@ class enc(process):
 
   ready_state = 2
   
-  def mktitle(self, source, output_base, name, authors):
+  def mktitle(self, source, output_base, client, name, authors):
     """
     Make a title slide by filling in a pre-made svg with name/authors.
     melt uses librsvg which doesn't support flow, 
@@ -94,6 +90,7 @@ class enc(process):
     svg_in=open(source).read()
     tree=xml.etree.ElementTree.XMLID(svg_in)
     # print tree[1]
+    tree[1]['client'].text=client
     tree[1]['title'].text=name
     prefix = "Featuring" if "," in authors else "By"
     tree[1]['presenternames'].text="%s %s" % (prefix,authors)
@@ -123,12 +120,13 @@ class enc(process):
 # make a title slide
         template = os.path.join(self.show_dir, "bling", "title.svg")
         title_base = os.path.join(self.show_dir, "tmp", episode.slug)
-        title_name=self.mktitle(template,
-            title_base, episode.name, episode.authors)
+        title_name=self.mktitle(template, title_base, 
+           episode.location.show.client.name, episode.name, episode.authors)
 
 # set the title to the title slide we just made
         title=tree[1]['title']
         title.attrib['resource']=title_name
+
 
 # get the dvfile placeholder and remove it from the tree
         dvfile=tree[1]['producer0']
@@ -149,6 +147,26 @@ class enc(process):
             new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
             tree[0].insert(pos,new)
             pos+=1
+
+# add volume tweeks
+            """
+    <filter mlt_service="channelcopy" from="1" to="0" />
+    <filter mlt_service="volume" max_gain="30" normalise="28" />
+            """
+        if self.options.normalize:
+            new=xml.etree.ElementTree.Element('filter', 
+                {'mlt_service':'volume', 
+                'max_gain':'30', 'normalise':self.options.normalize} )
+            tree[0].insert(pos,new)
+
+        if self.options.channelcopy:
+            # channelcopy should be 01 or 10.
+            fro,to=list(self.options.channelcopy)
+            new=xml.etree.ElementTree.Element('filter', 
+                {'mlt_service':'channelcopy', 
+                'from':fro, 'to':to} )
+            tree[0].insert(pos,new)
+
 
         xml.etree.ElementTree.dump(tree[0])
         print tree[1]
@@ -204,9 +222,10 @@ class enc(process):
         assemble parts into a master .dv file
         """
 
-        if self.options.verbose: print "making temp.dv - may take awhile..."
         # make a new dv file using just the frames to encode
         dvpathname = os.path.join(self.episode_dir,episode.slug+".dv")
+        if self.options.verbose: 
+            print "making %s - may take awhile..." % dvpathname
         outf=open(dvpathname,'wb')
 
 # hack to splice in the intro dv make by melt()
@@ -215,7 +234,8 @@ class enc(process):
         super_hack=150*self.bpf
 
         for c in cls:
-            print (c.raw_file.filename, c.start,c.end)
+            if self.options.verbose: 
+                print (c.raw_file.filename, c.start,c.end)
             rawpathname = os.path.join(self.episode_dir,c.raw_file.filename)
             inf=open(rawpathname,'rb')
             inf.seek(time2b(c.start,29.9,self.bpf,0))
@@ -255,7 +275,8 @@ class enc(process):
   def process_ep(self,episode):
     # print episode
     ret = False
-    cls = Cut_List.objects.filter(episode=episode).order_by('sequence')
+    cls = Cut_List.objects.filter(
+        episode=episode, apply=True).order_by('sequence')
     # print len(cls), episode.name.__repr__()
     print episode.name
     for cl in cls:
@@ -263,7 +284,8 @@ class enc(process):
 
     if cls:
 # get list of raw footage for this episode
-        rfs = Raw_File.objects.filter(cut_list__episode=episode).distinct()
+        rfs = Raw_File.objects.filter(
+            cut_list__episode=episode).exclude(trash=True).distinct()
 # for now, call melt to create the title part
         title_dv = self.melt(episode,cls,rfs)
 # maybe call a script to do the final encoding:
@@ -300,6 +322,10 @@ class enc(process):
   def add_more_options(self, parser):
         parser.add_option('--enc_script', 
           help='encode shell script' )
+        parser.add_option('--channelcopy', 
+          help='copy left to right (10) or right to left (01)' )
+        parser.add_option('--normalize', 
+          help='normalise audio' )
 
 
 if __name__ == '__main__':

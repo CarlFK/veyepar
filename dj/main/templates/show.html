@@ -13,6 +13,7 @@
             <li>
             {{episode.start|date:"b D d H:i"}} - {{episode.end|date:"H:i"}}
             {{episode.state}} <a href="E/{{episode.id}}/">{{ episode.name }}</a>
+            {{episode.authors}}
             </li>
         {% endfor %}
     </ul>
