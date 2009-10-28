@@ -231,7 +231,7 @@ class enc(process):
         return dvpathname
 
 
-  def dv2ogg(self,episode,title_dv,cls,rfs):
+  def dv2theora(self,episode,title_dv,cls,rfs):
         """
         transcode dv ot ogg
         """
