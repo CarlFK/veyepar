@@ -1,0 +1,18 @@
+{# client.html #}
+{% extends "base.html" %}
+{% block content %}
+
+    <ul>
+        <li><a href="E/">All</a></li>
+        {% for location in locations %}
+            <li><a href="L/{{location.slug}}/">{{ location.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <form action="" method="POST">
+    <table border=1>
+    {{ location_form }}
+    </table>
+    <input type="submit" value="Save" />
+    </form>
+
+{% endblock %}

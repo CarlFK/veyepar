@@ -12,7 +12,7 @@
         {% for episode in episodes %}
             <li>
             {{episode.start|date:"b D d H:i"}} - {{episode.end|date:"H:i"}}
-            <a href="E/{{episode.id}}/">{{ episode.name }}</a>
+            {{episode.state}} <a href="E/{{episode.id}}/">{{ episode.name }}</a>
             </li>
         {% endfor %}
     </ul>
