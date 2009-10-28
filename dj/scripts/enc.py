@@ -49,30 +49,6 @@ def run_cmd(cmd):
     return retcode
 
 
-def mktitle(source, output_base, name, authors):
-    """
-    Make a title slide by filling in a pre-made svg with name/authors.
-    melt uses librsvg which doesn't support flow, 
-    wich is needed for long titles, so render it to a .png using inkscape
-    """
-
-    svg_in=open(source).read()
-    tree=xml.etree.ElementTree.XMLID(svg_in)
-    # print tree[1]
-    tree[1]['title'].text=name
-    prefix = "Featuring" if "," in authors else "By"
-    tree[1]['presenternames'].text="%s %s" % (prefix,authors)
-    cooked_svg_name='%s.svg'%output_base
-    open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))
-    png_name="%s.png"%output_base
-    cmd="inkscape %s --export-png %s" % (cooked_svg_name, png_name)
-    run_cmd(cmd)
-
-    # dv_name="%s.dv"%output_base
-    # cmd="melt %s %s" % (png_name,dv_name)
-
-    return png_name
-
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
     if ':' in time:
@@ -107,6 +83,32 @@ def time2b(time,fps,bpf,default):
 class enc(process):
 
   ready_state = 2
+  
+  def mktitle(source, output_base, name, authors):
+    """
+    Make a title slide by filling in a pre-made svg with name/authors.
+    melt uses librsvg which doesn't support flow, 
+    wich is needed for long titles, so render it to a .png using inkscape
+    """
+
+    svg_in=open(source).read()
+    tree=xml.etree.ElementTree.XMLID(svg_in)
+    # print tree[1]
+    tree[1]['title'].text=name
+    prefix = "Featuring" if "," in authors else "By"
+    tree[1]['presenternames'].text="%s %s" % (prefix,authors)
+    cooked_svg_name='%s.svg'%output_base
+    open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))
+    png_name="%s.png"%output_base
+    if self.options.verbose: print png_name
+    cmd="inkscape %s --export-png %s" % (cooked_svg_name, png_name)
+    run_cmd(cmd)
+
+    # dv_name="%s.dv"%output_base
+    # cmd="melt %s %s" % (png_name,dv_name)
+
+    return png_name
+
 
   def melt(self,episode,cls,rfs):
         """
@@ -247,18 +249,8 @@ class enc(process):
             dvpathname = self.mkdv(episode,title_dv,cls,rfs)
                    
         cmd+=[dvpathname]
-        print ' '.join(cmd)
-        p=subprocess.Popen(cmd)
-        p.wait()
-        retcode=p.returncode
-        if not retcode and os.path.exists(oggpathname):
-            ret = True
-        else:
-            print episode.id, episode.name
-            print "transcode failed"
-            print retcode, os.path.exists(oggpathname)
 
-        return ret
+        return cmd
 
   def process_ep(self,episode):
     # print episode
@@ -285,6 +277,8 @@ class enc(process):
                 self.show_dir, "tmp", "%s.mp4"%episode.slug)
             cmd = [self.options.enc_script, 
                     dvpathname, out_pathname, temp_pathname ]
+        else:
+            cmd = self.dv2theora(episode,title_dv,cls,rfs)
 
         print ' '.join(cmd)
         p=subprocess.Popen(cmd)
@@ -298,7 +292,6 @@ class enc(process):
             print retcode, os.path.exists(oggpathname)
 
 
-        ret = self.dv2theora(episode,title_dv,cls,rfs)
     else:
         print "No cutlist found."
 
