@@ -285,7 +285,7 @@ class enc(process):
         Not much point in this now that the title side gets made
         because now there is never the case of one .dv file
         """
-        oggpathname = os.path.join(self.show_dir, "theora", "%s.ogg"%episode.slug)
+        oggpathname = os.path.join(self.show_dir, "ogv", "%s.ogv"%episode.slug)
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
 

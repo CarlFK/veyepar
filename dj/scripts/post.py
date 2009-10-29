@@ -30,7 +30,8 @@ class post(process):
         thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
         if os.path.exists(thumb): break
     
-    oggpathname = os.path.join( self.show_dir, "ogg", "%s.ogg"%(ep.slug) )
+    src_pathname = os.path.join( self.show_dir, 
+        self.optoins.src_dir, "%s.%s"%(ep.slug,self.optoins.src_dir))
     description = "%s</br>\n</br>\n%s" % (ep.description, client.description)
 
     print description 
@@ -76,10 +77,8 @@ class post(process):
     
         blipcmd = "./blip_uploader.py --fileno %s --role %s --filename %s" % (files[0])
         blipcmd += " --thumb %s" % thumb 
-        # blipcmd += " --title %(title)s  --description %(description)s 
         for i in meta.items():
             blipcmd += " --%s %s" % i 
-            # -C CATEGORY, --category=CATEGORY
         print blipcmd 
 
     else:
@@ -110,6 +109,8 @@ class post(process):
         return ret
 
   def add_more_options(self, parser):
+        parser.add_option('--src-dir',
+            help="source dir/ext")
         parser.add_option('-T', '--topics',
             help="list of topics (user defined)")
         parser.add_option('-L', '--license',
