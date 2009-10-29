@@ -80,20 +80,24 @@ class enc(process):
 
   ready_state = 2
   
-  def mktitle(self, source, output_base, client, name, authors):
+  def mktitle(self, source, output_base, text):
     """
     Make a title slide by filling in a pre-made svg with name/authors.
     melt uses librsvg which doesn't support flow, 
     wich is needed for long titles, so render it to a .png using inkscape
+    text is {'client':'PyCon', 'show':'', title, authors
     """
 
     svg_in=open(source).read()
     tree=xml.etree.ElementTree.XMLID(svg_in)
     # print tree[1]
-    tree[1]['client'].text=client
-    tree[1]['title'].text=name
-    prefix = "Featuring" if "," in authors else "By"
-    tree[1]['presenternames'].text="%s %s" % (prefix,authors)
+    # tree[1]['title'].text=name
+    for key in ['client', 'show', 'title']:
+        tree[1][key].text=text[key]
+
+    prefix = "Featuring" if "," in text['authors'] else "By"
+    tree[1]['presenternames'].text="%s %s" % (prefix,text['authors'])
+
     cooked_svg_name='%s.svg'%output_base
     open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))
     png_name="%s.png"%output_base
@@ -120,8 +124,13 @@ class enc(process):
 # make a title slide
         template = os.path.join(self.show_dir, "bling", "title.svg")
         title_base = os.path.join(self.show_dir, "tmp", episode.slug)
-        title_name=self.mktitle(template, title_base, 
-           episode.location.show.client.name, episode.name, episode.authors)
+        text={
+            'client': episode.location.show.client.name, 
+            'show': episode.location.show.name, 
+            'title': episode.name, 
+            'authors': episode.authors,
+        }
+        title_name=self.mktitle(template, title_base, text)
 
 # set the title to the title slide we just made
         title=tree[1]['title']
@@ -148,25 +157,6 @@ class enc(process):
             tree[0].insert(pos,new)
             pos+=1
 
-# add volume tweeks
-            """
-    <filter mlt_service="channelcopy" from="1" to="0" />
-    <filter mlt_service="volume" max_gain="30" normalise="28" />
-            """
-        if self.options.normalize:
-            new=xml.etree.ElementTree.Element('filter', 
-                {'mlt_service':'volume', 
-                'max_gain':'30', 'normalise':self.options.normalize} )
-            tree[0].insert(pos,new)
-
-        if self.options.channelcopy:
-            # channelcopy should be 01 or 10.
-            fro,to=list(self.options.channelcopy)
-            new=xml.etree.ElementTree.Element('filter', 
-                {'mlt_service':'channelcopy', 
-                'from':fro, 'to':to} )
-            tree[0].insert(pos,new)
-
 
         xml.etree.ElementTree.dump(tree[0])
         print tree[1]
@@ -189,12 +179,33 @@ class enc(process):
             playlist.insert(pos,new)
             pos+=1
 
+# add volume tweeks
+            """
+    <filter mlt_service="channelcopy" from="1" to="0" />
+    <filter mlt_service="volume" max_gain="30" normalise="28" />
+            """
+        if self.options.normalize:
+            new=xml.etree.ElementTree.Element('filter', 
+                {'mlt_service':'volume', 
+                'max_gain':'1', 
+                'limiter':'1',
+                'normalise':self.options.normalize} )
+            playlist.insert(pos,new)
+
+        if self.options.channelcopy:
+            # channelcopy should be 01 or 10.
+            fro,to=list(self.options.channelcopy)
+            new=xml.etree.ElementTree.Element('filter', 
+                {'mlt_service':'channelcopy', 
+                'from':fro, 'to':to} )
+            playlist.insert(pos,new)
+
         xml.etree.ElementTree.dump(tree[0])
 
         mlt_pathname = os.path.join(self.show_dir, "tmp", "%s.mlt"%episode.slug)
         open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
 
-# f=dv pix_fmt=yuv411p 
+        # make an intro .dv from title and audio
         cmd="melt -verbose -profile dv_%s %s in=0 out=149 -consumer avformat:%s pix_fmt=yuv411p" 
         # cmd="melt -verbose -profile dv_%s %s in=0 out=149 -consumer avformat:%s f=dv pix_fmt=yuv411p" 
         dv_pathname = os.path.join(self.show_dir, "dv", "%s.dv"%episode.slug)
@@ -203,16 +214,20 @@ class enc(process):
         # ret = run_cmd("ffmpeg2theora %s -o %s" % ( dv_pathname, ogg_pathname))
 
 
-        cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
+        # full lenght encodings
+        def one_format(ext, acodec, vcodec):
+            if ext in self.options.output_format:
+              cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
+              out_pathname = os.path.join(
+                self.show_dir, ext, "%s.%s"%(episode.slug,ext))
+              cmd = cmd % ( self.options.format.lower(), 
+                mlt_pathname, out_pathname, acodec, vcodec)
+              ret = run_cmd(cmd)
+              return ret
 
-        ogg_pathname = os.path.join(self.show_dir, "ogg", "%s.ogg"%episode.slug)
-        # ret = run_cmd(cmd% (self.options.format.lower(), mlt_pathname, ogg_pathname, "vorbis", "libtheora"))
-
-        flv_pathname = os.path.join(self.show_dir, "flv", "%s.flv"%episode.slug)
-        # ret = run_cmd(cmd% (mlt_pathname, flv_pathname, "libmp3lame", "flv"))
-
-        mp4_pathname = os.path.join(self.show_dir, "mp4", "%s.mp4"%episode.slug)
-        # ret = run_cmd(cmd% (mlt_pathname, mp4_pathname, "libmp3lame", "mpeg4"))
+        ret = one_format("ogg", "vorbis", "libtheora")
+        ret = one_format("flv", "libmp3lame", "flv")
+        ret = one_format("mp4", "libmp3lame", "mpeg4")
 
         return dv_pathname
         return ret
@@ -289,23 +304,26 @@ class enc(process):
 # for now, call melt to create the title part
         title_dv = self.melt(episode,cls,rfs)
 # maybe call a script to do the final encoding:
-        if self.options.enc_script:
-            # consolidate all the dv files into one  
-            dvpathname = self.mkdv(episode,title_dv,cls,rfs)
+        if self.options.enc_script or "theora" in self.options.output_format:
+          # consolidate all the dv files into one  
+          dvpathname = self.mkdv(episode,title_dv,cls,rfs)
+          if self.options.enc_script:
             # define where the script should put output and temp files
-            out_pathname = os.path.join(
-                self.show_dir, "mp4", "%s.mp4"%episode.slug)
-            temp_pathname = os.path.join(
-                self.show_dir, "tmp", "%s.mp4"%episode.slug)
+#             out_pathname = os.path.join(
+#                 self.show_dir, "mp4", "%s.mp4"%episode.slug)
+#             temp_pathname = os.path.join(
+#                 self.show_dir, "tmp", "%s.mp4"%episode.slug)
             cmd = [self.options.enc_script, 
-                    dvpathname, out_pathname, temp_pathname ]
-        else:
+                    dvpathname, self.show_dir, episode.slug]
+
+          if "theora" in self.options.output_format:
             cmd = self.dv2theora(episode,title_dv,cls,rfs)
 
-        print ' '.join(cmd)
-        p=subprocess.Popen(cmd)
-        p.wait()
-        retcode=p.returncode
+          print ' '.join(cmd)
+          p=subprocess.Popen(cmd)
+          p.wait()
+          retcode=p.returncode
+
         if not retcode:
             ret = True
         else:
@@ -320,6 +338,8 @@ class enc(process):
 
 
   def add_more_options(self, parser):
+        parser.add_option('--output-format', default='',
+          help='list of format(s) to output' )
         parser.add_option('--enc_script', 
           help='encode shell script' )
         parser.add_option('--channelcopy', 
