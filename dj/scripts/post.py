@@ -31,7 +31,7 @@ class post(process):
         if os.path.exists(thumb): break
     
     src_pathname = os.path.join( self.show_dir, 
-        self.optoins.src_dir, "%s.%s"%(ep.slug,self.optoins.src_dir))
+        self.options.src_dir, "%s.%s"%(ep.slug,self.options.src_dir))
     description = "%s</br>\n</br>\n%s" % (ep.description, client.description)
 
     print description 
