@@ -42,7 +42,7 @@ def time2s(time):
         sec = reduce(lambda x, i: x*60 + i, 
             map(float, time.split(':')))  
     else:
-        print time, len(time), [c for c in time]
+        # print time, len(time), [c for c in time]
         sec = float(time)
     return sec
 
@@ -162,10 +162,6 @@ class enc(process):
             tree[0].insert(pos,new)
             pos+=1
 
-
-        xml.etree.ElementTree.dump(tree[0])
-        print tree[1]
-
 # get the clip placeholder, the playlist and remove the clip from the playlist
         clip=tree[1]['clip']
         playlist=tree[1]['playlist0']
@@ -205,7 +201,7 @@ class enc(process):
                 'from':fro, 'to':to} )
             playlist.insert(pos,new)
 
-        xml.etree.ElementTree.dump(tree[0])
+        if self.options.verbose: xml.etree.ElementTree.dump(tree[0])
 
         mlt_pathname = os.path.join(self.show_dir, "tmp", "%s.mlt"%episode.slug)
         open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
