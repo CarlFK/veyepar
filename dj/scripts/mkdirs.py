@@ -12,12 +12,15 @@ class mkdirs(process):
 
   def mkdir(self,dir):
       """ makes the dir if it doesn't exist """
-      print dir
-      if not os.path.exists(dir):
+      print dir,
+      if os.path.exists(dir):
+         print '(exists)'
+      else:
          os.makedirs(dir)
+         print
 
   def one_show(self,show):
-    for d in "dv tmp bling ogg mp4 flv".split():
+    for d in "dv tmp bling ogg theora mp4 flv".split():
         self.mkdir(os.path.join(self.show_dir,d))
     for loc in Location.objects.filter(show=show):
          dir = os.path.join(self.show_dir,'dv',loc.slug)
