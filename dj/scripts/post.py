@@ -61,8 +61,8 @@ class post(process):
     if self.options.hidden:
         meta['hidden'] = self.options.hidden
 
-    print oggpathname, thumb
-    files = [('','Source',oggpathname)]
+    print src_pathname, thumb
+    files = [('','Source',src_pathname)]
 
     blip_cli.debug = self.options.verbose
 
