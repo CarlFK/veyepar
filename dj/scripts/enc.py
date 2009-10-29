@@ -253,8 +253,7 @@ class enc(process):
                 print (c.raw_file.filename, c.start,c.end)
             rawpathname = os.path.join(self.episode_dir,c.raw_file.filename)
             inf=open(rawpathname,'rb')
-            inf.seek(time2b(c.start,29.9,self.bpf,0))
-            inf.seek(super_hack)
+            inf.seek(time2b(c.start,self.fps,self.bpf,0)+super_hack)
             super_hack=0
             size=os.fstat(inf.fileno()).st_size
             end = time2b(c.end,29.9,self.bpf,size)
