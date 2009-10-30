@@ -235,6 +235,9 @@ class enc(process):
                       ret=False
 
               return ret
+            # this is the case where we don't do this format, 
+            # so don't flag as error
+            return True
 
         ret = True
         ret = ret and one_format("ogg", "vorbis", "libtheora")
