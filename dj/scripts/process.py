@@ -5,7 +5,7 @@
 import optparse
 import ConfigParser
 import os,sys,subprocess
-import datetime
+import datetime,time
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
@@ -160,6 +160,8 @@ class process(object):
               help="override ready state, use with care." )
     parser.add_option('--whack', action="store_true",
               help="whack current episodes, use with care." )
+    parser.add_option('--pole', 
+              help="pole every x seconds." )
 
     self.add_more_options(parser)
 
@@ -181,7 +183,14 @@ class process(object):
         client = Client.objects.get(slug=options.client)
         show = Show.objects.get(client=client,slug=options.show)
         self.show_dir = os.path.join(self.options.mediadir,client.slug,show.slug)
-        self.one_show(show)
+        done=False
+        while not done:
+            self.one_show(show)
+            if self.options.pole:
+                if self.options.verbose: print "sleeping...."
+                time.sleep(int(self.options.pole))
+            else:
+                done=True
 
     elif options.day:
         show = Show.objects.get(name='PyOhio09')

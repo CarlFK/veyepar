@@ -108,6 +108,9 @@ class post(process):
 
         return ret
 
+  def add_more_option_defaults(self, parser):
+      parser.set_defaults(src_dir='ogv')
+
   def add_more_options(self, parser):
         parser.add_option('--src-dir',
             help="source dir/ext")
