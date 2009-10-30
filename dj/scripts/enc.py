@@ -220,6 +220,8 @@ class enc(process):
 
   def run_melt(self, mlt_pathname, episode):
         def one_format(ext, acodec, vcodec):
+            if self.options.verbose: 
+                print "checking %s in %s" % (ext,self.options.output_format)
             if ext in self.options.output_format:
               cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
               out_pathname = os.path.join(
