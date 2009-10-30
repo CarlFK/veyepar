@@ -332,7 +332,7 @@ class enc(process):
         self.run_melt(mlt, episode)
   
 # using script or ffmpeg2theora
-        if self.options.enc_script or "theora" in self.options.output_format:
+        if self.options.enc_script or "ogv" in self.options.output_format:
           # consolidate all the dv files into one  
           dvpathname = self.mkdv(mlt,episode,cls)
           if self.options.enc_script:
@@ -340,9 +340,9 @@ class enc(process):
                     dvpathname, self.show_dir, episode.slug]
             ret = self.run_cmd(cmd)
 
-          if "theora" in self.options.output_format:
+          if "ogv" in self.options.output_format:
               oggpathname = os.path.join(
-                self.show_dir, "theora", "%s.ogg"%episode.slug)
+                self.show_dir, "ogv", "%s.ogv"%episode.slug)
               cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5" \
                 " --speedlevel 0 --optimize --keyint 256" \
                 " --channels 1".split()
