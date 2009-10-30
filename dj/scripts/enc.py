@@ -230,7 +230,7 @@ class enc(process):
                 mlt_pathname, out_pathname, acodec, vcodec)
               ret = self.run_cmd(cmd.split())
               if ret:
-                  if not os.exists(out_pathname):
+                  if not os.path.exists(out_pathname):
                       print "melt returned 0, but no output: %s" % out_pathname
                       ret=False
 
