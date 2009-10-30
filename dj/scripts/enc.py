@@ -85,7 +85,6 @@ class enc(process):
     retcode=p.returncode
     if retcode:
         if self.options.verbose:
-            print episode.id, episode.name
             print "transcode failed"
             print retcode
         ret = False
