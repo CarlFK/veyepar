@@ -359,8 +359,11 @@ class enc(process):
     return ret
 
 
+  def add_more_option_defaults(self, parser):
+    parser.set_defaults(output_format='ogv')
+
   def add_more_options(self, parser):
-        parser.add_option('--output-format', default='',
+        parser.add_option('--output-format', 
           help='list of format(s) to output' )
         parser.add_option('--enc_script', 
           help='encode shell script' )

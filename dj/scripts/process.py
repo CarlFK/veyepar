@@ -91,9 +91,6 @@ class process(object):
             episodes=episodes.filter(start__day=self.options.day)
         self.process_eps(episodes)
 
-  def add_more_options(self, parser):
-    pass
- 
   def list(self):
     """
     list clients and shows.
@@ -110,12 +107,19 @@ class process(object):
                         ep.id, ep.state, ep )
     return
 
+  def add_more_options(self, parser):
+    pass
+ 
+  def add_more_option_defaults(self, parser):
+    pass
+ 
   def parse_args(self):
     parser = optparse.OptionParser()
 
     # hardcoded defauts
     parser.set_defaults(format='ntsc')
     parser.set_defaults(mediadir=os.path.expanduser('~/Videos/veyepar'))
+    self.add_more_option_defaults(parser)
 
     # read from config file, overrides hardcoded
     """
