@@ -52,7 +52,9 @@ class csv(process):
   def one_show(self, show):
     """ Export all the episodes of a show. """
     
-    filename = "%s_%s.csv" % (show.client.slug,show.slug)
+    filename = os.path.join( self.show_dir, "txt", 
+        "%s_%s.csv" % (show.client.slug,show.slug)
+
     if self.options.verbose: print "filename: %s" % (filename)
     fields="id state name primary comment".split()
     if self.options.get_blip:
