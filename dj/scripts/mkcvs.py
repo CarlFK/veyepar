@@ -53,7 +53,7 @@ class csv(process):
     """ Export all the episodes of a show. """
     
     filename = os.path.join( self.show_dir, "txt", 
-        "%s_%s.csv" % (show.client.slug,show.slug)
+        "%s_%s.csv" % (show.client.slug,show.slug))
 
     if self.options.verbose: print "filename: %s" % (filename)
     fields="id state name primary comment".split()
