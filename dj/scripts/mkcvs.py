@@ -4,6 +4,8 @@
 
 import urllib2
 import xml.etree.ElementTree
+import os
+
 from csv import DictWriter
 
 from process import process
