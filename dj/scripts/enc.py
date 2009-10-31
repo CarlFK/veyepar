@@ -229,7 +229,7 @@ class enc(process):
               cmd = cmd % ( self.options.format.lower(), 
                 mlt_pathname, out_pathname, acodec, vcodec)
               # write melt command out to a script:
-              open("%s.sh"%out_pathname).write(cmd)
+              open("%s.sh"%out_pathname,'w').write(cmd)
               ret = self.run_cmd(cmd.split())
               if ret:
                   if not os.path.exists(out_pathname):
