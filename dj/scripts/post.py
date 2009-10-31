@@ -103,7 +103,7 @@ class post(process):
             print blipurl
             ep.comment += blipurl
             if pw.twit['user']:
-                prefix = "#%s VIDEO -" % show.client.name
+                prefix = "%s #VIDEO -" % show.client.name
                 tweet = tweeter.notify(prefix, ep.name, blipurl)
                 print tweet
                 if "<id>" not in tweet: print tweet
