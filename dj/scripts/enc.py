@@ -221,8 +221,8 @@ class enc(process):
   def run_melt(self, mlt_pathname, episode):
         def one_format(ext, acodec, vcodec):
             if self.options.verbose: 
-                print "checking %s in %s" % (ext,self.options.output_format)
-            if ext in self.options.output_format:
+                print "checking %s in %s" % (ext,self.options.upload_formats)
+            if ext in self.options.upload_formats:
               cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
@@ -336,7 +336,7 @@ class enc(process):
         self.run_melt(mlt, episode)
   
 # using script or ffmpeg2theora
-        if self.options.enc_script or "ogv" in self.options.output_format:
+        if self.options.enc_script or "ogv" in self.options.upload_formats:
           # consolidate all the dv files into one  
           dvpathname = self.mkdv(mlt,episode,cls)
           if self.options.enc_script:
@@ -344,7 +344,7 @@ class enc(process):
                     dvpathname, self.show_dir, episode.slug]
             ret = self.run_cmd(cmd)
 
-          if "ogv" in self.options.output_format:
+          if "ogv" in self.options.upload_formats:
               oggpathname = os.path.join(
                 self.show_dir, "ogv", "%s.ogv"%episode.slug)
               cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5" \
@@ -359,12 +359,7 @@ class enc(process):
     return ret
 
 
-  def add_more_option_defaults(self, parser):
-    parser.set_defaults(output_format='ogv')
-
   def add_more_options(self, parser):
-        parser.add_option('--output-format', 
-          help='list of format(s) to output' )
         parser.add_option('--enc_script', 
           help='encode shell script' )
         parser.add_option('--channelcopy', 

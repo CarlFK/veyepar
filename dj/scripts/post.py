@@ -24,17 +24,7 @@ class post(process):
     show = loc.show
     client = show.client
 
-    # look for a thumb
-    for cut in Cut_List.objects.filter(episode=ep).order_by('sequence'):
-        basename = cut.raw_file.basename()        
-        thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
-        if os.path.exists(thumb): break
-    
-    src_pathname = os.path.join( self.show_dir, 
-        self.options.src_dir, "%s.%s"%(ep.slug,self.options.src_dir))
     description = "%s</br>\n</br>\n%s" % (ep.description, client.description)
-
-    print description 
 
     blip_cli=blip_uploader.Blip_CLI()
 
@@ -61,8 +51,29 @@ class post(process):
     if self.options.hidden:
         meta['hidden'] = self.options.hidden
 
-    print src_pathname, thumb
-    files = [('','Source',src_pathname)]
+# look for a thumb
+# TODO: thumb filename to the db.
+    for cut in Cut_List.objects.filter(episode=ep).order_by('sequence'):
+        basename = cut.raw_file.basename()        
+        thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
+        if os.path.exists(thumb): break
+    
+# the blip api gets kinda funky around multiple uploads
+# so no surprise the code is kinda funky.
+    # files = [('','Source',src_pathname)]
+    roles={
+        'ogv':"Source", 
+        'ogg':"Source", 
+        'flv':"Web", 
+        'mp4':"dvd", 
+    }
+    files = []
+    exts = self.options.upload_formats.split()
+    for i,ext in enumerate(exts):
+        fileno=str(i) if i else ''
+        role=roles.get(ext,'extra')
+        src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
+        files.append((fileno,role,src_pathname))
 
     blip_cli.debug = self.options.verbose
 
@@ -108,12 +119,7 @@ class post(process):
 
         return ret
 
-  def add_more_option_defaults(self, parser):
-      parser.set_defaults(src_dir='ogv')
-
   def add_more_options(self, parser):
-        parser.add_option('--src-dir',
-            help="source dir/ext")
         parser.add_option('-T', '--topics',
             help="list of topics (user defined)")
         parser.add_option('-L', '--license',

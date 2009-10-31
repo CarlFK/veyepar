@@ -118,6 +118,7 @@ class process(object):
 
     # hardcoded defauts
     parser.set_defaults(format='ntsc')
+    parser.set_defaults(upload_formats="ogv")
     parser.set_defaults(mediadir=os.path.expanduser('~/Videos/veyepar'))
     self.add_more_option_defaults(parser)
 
@@ -150,7 +151,9 @@ class process(object):
     parser.add_option('-r', '--room',
               help="Location")
     parser.add_option('--format', 
-              help='pal or ntsc' )
+              help='pal, pal_wide, ntsc, ntsc_wide' )
+    parser.add_option('--upload-formats', 
+              help='ogg, ogv, mp4, flv' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
     parser.add_option('--test', action="store_true",
