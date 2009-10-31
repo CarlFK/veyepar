@@ -2,58 +2,86 @@
 
 # exports a cvs file of all epsides in a show
 
-import optparse
-import  os,sys
+import urllib2
+import xml.etree.ElementTree
 from csv import DictWriter
 
-sys.path.insert(0, '..' )
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-import settings
-print settings.DATABASE_NAME
-settings.DATABASE_NAME="../vp.db"
+from process import process
 
 from main.models import Client, Show, Location, Episode
 
-def exp_show(show, filename):
+class csv(process):
+
+  ready_state = 4
+
+
+  def blip_meta(self, video_id):
+        """@brief Return information about the video
+        
+        @param video_id blip.tv item ID
+        @return xml of all the metadata.
+        """
+        url = 'http://blip.tv/file/%s?skin=rss' % video_id
+        # print url
+        xml_code = urllib2.urlopen(url).read()
+        # open('foo.xml','w').write(xml_code)
+        return xml_code
+
+  def get_embed(self, blip_xml):
+     tree = xml.etree.ElementTree.fromstring(blip_xml)
+     chan=tree.findall('channel')[0]
+     item=chan.findall('item')[0]
+     g=item.findall('{http://search.yahoo.com/mrss/}player')[0]
+     embed=g.text
+     """
+     role="Web"
+     g=item.findall('{http://search.yahoo.com/mrss/}group')[0]
+     ms = g.findall('*')
+     roles=[dict(m.items())['{http://blip.tv/dtd/blip/1.0}role'] for m in ms]
+     # print roles
+     try:
+        ri=roles.index(role)
+     except ValueError:
+        ri=0
+     # print ms[ri]
+     embed=xml.etree.ElementTree.tostring(ms[ri])
+     # print embed
+     """
+     return embed
+
+  def one_show(self, show):
     """ Export all the episodes of a show. """
     
+    filename = "%s_%s.csv" % (show.client.slug,show.slug)
+    if self.options.verbose: print "filename: %s" % (filename)
     fields="id state name primary comment".split()
+    if self.options.get_blip:
+        fields+=['blip']
 
     writer = DictWriter(open(filename, "w"),fields, extrasaction='ignore')
     # write out field names
     writer.writerow(dict(zip(fields,fields)))
 
     # write out episode data
-    for ep in Episode.objects.filter(location__show=show).order_by('state'):
-        writer.writerow(ep.__dict__)
+    for ep in Episode.objects.filter(location__show=show).order_by('sequence'):
+        row=ep.__dict__
+        if self.options.get_blip:
+            comment=row['comment']
+            blip_id=comment[comment.find('/file/')+6:]
+            blip_xml=self.blip_meta(blip_id)
+            embed=self.get_embed(blip_xml)
+            row['blip']=embed
+            if self.options.verbose: 
+                print row['name']
+                print embed
+                print
+        writer.writerow(row)
 
-def parse_args():
-    parser = optparse.OptionParser()
-    parser.add_option('-f', '--file' )
-    parser.add_option('-s', '--show' )
-    parser.add_option('-c', '--client' )
-    parser.add_option('-l', '--list', action="store_true" )
-
-    options, args = parser.parse_args()
-    return options, args
-
-def main(options, args):
-
-    if options.list:
-        for client in Client.objects.all(): 
-            print "\nName: %s  Slug: %s" %( client.name, client.slug )
-            for show in Show.objects.filter(client=client):
-                print "\tName: %s  Slug: %s" %( show.name, show.slug )
-                print "\t--client %s --show %s" %( client.slug, show.slug )
-    else:    
-        client = Client.objects.get(slug=options.client)
-        show = Show.objects.get(client=client,slug=options.show)
-        filename = "%s.csv" % (optins.file if options.file 
-            else "%s_%s" % (client.slug,show.slug))
-        print client, show, filename
-        exp_show( show, filename )
+  def add_more_options(self, parser):
+    parser.add_option('--get-blip',action='store_true',
+        help='get the blip metadata' )
 
 
 if __name__ == '__main__':
-    main(parse_args())
-
+    p=csv()
+    p.main()
