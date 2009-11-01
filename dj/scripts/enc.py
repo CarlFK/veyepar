@@ -253,14 +253,16 @@ class enc(process):
   def mkdv(self, mlt_pathname, episode, cls ):
         """
         assemble parts into a master .dv file
+        so that something like ffmpeg2theora can encode it
         """
         title_dv=self.mk_title_dv(mlt_pathname, episode)
 
         # make a new dv file using just the frames to encode
-        dvpathname = os.path.join(self.episode_dir,episode.slug+".dv")
+        dv_pathname = os.path.join(self.episode_dir,
+            "dv",episode.slug+".dv")
         if self.options.verbose: 
-            print "making %s - may take awhile..." % dvpathname
-        outf=open(dvpathname,'wb')
+            print "making %s - may take awhile..." % dv_pathname
+        outf=open(dv_pathname,'wb')
 
         # splice in the intro dv make by melt()
         title=open(title_dv,'rb').read()
@@ -270,8 +272,8 @@ class enc(process):
         for c in cls:
             if self.options.verbose: 
                 print (c.raw_file.filename, c.start,c.end)
-            rawpathname = os.path.join(self.episode_dir,c.raw_file.filename)
-            inf=open(rawpathname,'rb')
+            raw_pathname = os.path.join(self.episode_dir,c.raw_file.filename)
+            inf=open(raw_pathname,'rb')
             inf.seek(time2b(c.start,self.fps,self.bpf,0)+title_bytes)
             # there is a problem if the first clip is shorter than the title.
 # the next clip will start at 0, 
