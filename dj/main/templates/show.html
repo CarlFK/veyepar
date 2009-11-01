@@ -4,13 +4,16 @@
 
     <ul>
         {% for location in locations %}
-            <li><a href="L/{{location.slug}}/">{{ location.name }}</a></li>
+            <li><a href="L/{{location.slug}}/">{{ location.name }}</a>
+<a href="/admin/main/episode/?location__id__exact={{location.id}}">admin</a>
+            </li>
         {% endfor %}
     </ul>
 
     <ul>
         {% for episode in episodes %}
             <li>
+            {{episode.sequence}}
             {{episode.start|date:"b D d H:i"}} - {{episode.end|date:"H:i"}}
             {{episode.state}} <a href="E/{{episode.id}}/">{{ episode.name }}</a>
             {{episode.authors}}
