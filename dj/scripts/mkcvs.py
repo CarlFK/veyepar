@@ -67,16 +67,22 @@ class csv(process):
     writer.writerow(dict(zip(fields,fields)))
 
     # write out episode data
-    for ep in Episode.objects.filter(location__show=show).order_by('sequence'):
+    for ep in Episode.objects.filter(
+		location__show=show, state=4).order_by('sequence'):
         row=ep.__dict__
         if self.options.get_blip:
-            comment=row['comment']
+            comment=row['comment'].strip()
+
             blip_id=comment[comment.find('/file/')+6:]
             blip_xml=self.blip_meta(blip_id)
             embed=self.get_embed(blip_xml)
             row['blip']=embed
             if self.options.verbose: 
+                print '<a href="'
+                print "http://carlfk.blip.tv/file/%s"%blip_id
+                print '">'
                 print row['name']
+                print '</a>'
                 print embed
                 print
         writer.writerow(row)
