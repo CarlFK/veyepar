@@ -4,11 +4,22 @@ from django.db import models
 import os
 import datetime
 
+def fnify(text):
+    """
+    file_name_ify - make a file name out of text, like a talk title.
+    convert spaces to _, remove junk like # and quotes.
+    like slugify, but more file name friendly.
+    """
+    fn = text.replace(' ','_')
+    fn = ''.join([c for c in fn if c.isalpha() or c.isdigit() or (c in '_') ])
+    return fn
+
 class Client(models.Model):
     sequence = models.IntegerField(default=1)
     # active = models.BooleanField(help_text="Done for now.")
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    # tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
     def __unicode__(self):
         return self.name
@@ -18,6 +29,7 @@ class Show(models.Model):
     sequence = models.IntegerField(default=1)
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    # tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
     @property
     def client_name(self):
@@ -73,6 +85,7 @@ class Quality(models.Model):
 
 class Episode(models.Model):
     location = models.ForeignKey(Location, null=True)
+    # show = models.ForeignKey(Show, null=True)
     state = models.IntegerField(null=True,blank=True,
         help_text="current processing state" )
     released = models.BooleanField(default=1)
@@ -84,6 +97,9 @@ class Episode(models.Model):
     slug = models.CharField(max_length=135,help_text="used for file name")
     authors = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True, help_text="(synced from primary source)")
+    # tags = models.TextField(null=True,blank=True,)
+    # target = models.TextField(null=True,blank=True,
+    #    help_text = "Blip.tv episode ID")
     start = models.DateTimeField(null=True, blank=True, 
         help_text="initially scheduled time from master, adjusted to match reality")
     end = models.DateTimeField(null=True, blank=True)
