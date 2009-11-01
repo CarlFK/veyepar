@@ -85,6 +85,7 @@ playlist.insert(1,new_node)
 
 print xml.etree.ElementTree.tostring(tree)
 
+#############
 # do it again, only using XMLID, wich relies on id attributes being unique across the whole xml file.
 # in this case, tree is (tree,{dic of id:node})
 
