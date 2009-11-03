@@ -336,7 +336,7 @@ class Blip_CLI(Blip):
         parser.set_defaults(role='Source')
         parser.set_defaults(fileno='')
         parser.set_defaults(thumb=None)
-        parser.set_defaults(license=13)
+        parser.set_defaults(license='13')
 
         # read from config file, overrides hardcoded
         """
@@ -421,7 +421,8 @@ class Blip_CLI(Blip):
                 meta['description'] = open(options.description[1:]).read()
             else:
                 meta['description'] = options.description
-            meta['description'] = cgi.escape(meta['description'].encode("utf-8"))
+            meta['description'] = cgi.escape(
+                meta['description'].encode("utf-8"))
         
         if options.topics:
             meta['topics'] = options.topics
@@ -459,6 +460,7 @@ class Blip_CLI(Blip):
             else getpass.getpass("blip.tv Password: ")
 
         self.debug=options.verbose
+        if options.verbose: print meta
 
         response = self.Upload(video_id, username, pwd, files, meta, options.thumb)
         response_xml = response.read()
