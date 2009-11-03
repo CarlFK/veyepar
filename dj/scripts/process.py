@@ -117,7 +117,7 @@ class process(object):
     parser = optparse.OptionParser()
 
     # hardcoded defauts
-    parser.set_defaults(format='ntsc')
+    parser.set_defaults(format='dv_ntsc')
     parser.set_defaults(upload_formats="ogv")
     parser.set_defaults(mediadir=os.path.expanduser('~/Videos/veyepar'))
     self.add_more_option_defaults(parser)
