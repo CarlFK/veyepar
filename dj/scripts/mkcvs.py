@@ -54,43 +54,48 @@ class csv(process):
   def one_show(self, show):
     """ Export all the episodes of a show. """
     
-    filename = os.path.join( self.show_dir, "txt", 
+    csv_pathname = os.path.join( self.show_dir, "txt", 
         "%s_%s.csv" % (show.client.slug,show.slug))
+    txt_pathname = os.path.join( self.show_dir, "txt", 
+        "%s_%s.txt" % (show.client.slug,show.slug))
+    html_pathname = os.path.join( self.show_dir, "txt", 
+        "%s_%s.html" % (show.client.slug,show.slug))
 
-    if self.options.verbose: print "filename: %s" % (filename)
-    fields="id state name primary comment".split()
-    if self.options.get_blip:
-        fields+=['blip']
+    if self.options.verbose: 
+        print "filenames:\n%s\n%s\n%s" % (
+            csv_pathname, txt_pathname, html_pathname )
+    fields="id state name primary comment blip".split()
 
-    writer = DictWriter(open(filename, "w"),fields, extrasaction='ignore')
+# setup csv 
+    csv = DictWriter(open(csv_pathname, "w"),fields, extrasaction='ignore')
     # write out field names
-    writer.writerow(dict(zip(fields,fields)))
+    csv.writerow(dict(zip(fields,fields)))
+
+# setup txt
+    txt=open(txt_pathname, "w")
+
+# setup html (not full html, just some snippits)
+    html=open(html_pathname, "w")
 
     # write out episode data
     for ep in Episode.objects.filter(
-		location__show=show, state=4).order_by('sequence'):
+    		location__show=show, state=4).order_by('sequence'):
         row=ep.__dict__
-        if self.options.get_blip:
-            comment=row['comment'].strip()
+        if self.options.verbose: print row
 
-            blip_id=comment[comment.find('/file/')+6:]
-            blip_xml=self.blip_meta(blip_id)
-            embed=self.get_embed(blip_xml)
-            row['blip']=embed
-            if self.options.verbose: 
-                print '<a href="'
-                print "http://carlfk.blip.tv/file/%s"%blip_id
-                print '">'
-                print row['name']
-                print '</a>'
-                print embed
-                print
-        writer.writerow(row)
+        comment=row['comment'].strip()
+        blip_id=comment[comment.find('/file/')+6:]
+        url = "http://carlfk.blip.tv/file/%s"%blip_id
 
-  def add_more_options(self, parser):
-    parser.add_option('--get-blip',action='store_true',
-        help='get the blip metadata' )
+        blip_xml=self.blip_meta(blip_id)
+        embed=self.get_embed(blip_xml)
+        row['blip']=embed
 
+        csv.writerow(row)
+        txt.write("%s %s\n" % (url,row['name']))
+        print("%s %s\n" % (url,row['name']))
+        html.write('<a href="%s">%s</a>\n%s\n'%(
+            url,row['name'],row['blip']))
 
 if __name__ == '__main__':
     p=csv()
