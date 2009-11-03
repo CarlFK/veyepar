@@ -98,6 +98,9 @@ class Episode(models.Model):
     authors = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     # tags = models.TextField(null=True,blank=True,)
+    # thumbnail = models.TextField(null=True,blank=True, 
+    #    max_length=135,help_text="filename.png"
+
     # target = models.TextField(null=True,blank=True,
     #    help_text = "Blip.tv episode ID")
     start = models.DateTimeField(null=True, blank=True, 
