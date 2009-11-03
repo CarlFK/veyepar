@@ -36,7 +36,7 @@ class post(process):
         # need to make a place for this stuff in the database.
         "topics": "%s, python, "%(client.name),
         "license": "13",
-        "categories_id": "10",
+        "category_id": "10",
     """
 
     if self.options.topics:
@@ -46,7 +46,7 @@ class post(process):
         meta['license'] = self.options.license
 
     if self.options.category:
-        meta['categorie_id'] = self.options.category
+        meta['category_id'] = self.options.category
 
     if self.options.hidden:
         meta['hidden'] = self.options.hidden
