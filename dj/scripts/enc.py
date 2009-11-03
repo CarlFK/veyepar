@@ -210,7 +210,7 @@ class enc(process):
   def mk_title_dv(self, mlt_pathname, episode):
 
         # make an intro .dv from title and audio
-        cmd="melt -verbose -profile dv_%s %s in=0 out=149 -consumer avformat:%s pix_fmt=yuv411p" 
+        cmd="melt -verbose -profile %s %s in=0 out=149 -consumer avformat:%s pix_fmt=yuv411p" 
         dv_pathname = os.path.join(
             self.show_dir, "tmp", "%s_title.dv"%episode.slug)
         cmd = cmd % ( self.options.format.lower(), mlt_pathname, dv_pathname)
@@ -223,7 +223,7 @@ class enc(process):
             if self.options.verbose: 
                 print "checking %s in %s" % (ext,self.options.upload_formats)
             if ext in self.options.upload_formats:
-              cmd="melt -verbose -profile dv_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
+              cmd="melt -verbose -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
               cmd = cmd % ( self.options.format.lower(), 
