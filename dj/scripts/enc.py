@@ -79,7 +79,7 @@ class enc(process):
     """
     if self.options.verbose:
         print cmd
-    print ' '.join(cmd)
+        print ' '.join(cmd)
     p=subprocess.Popen(cmd)
     p.wait()
     retcode=p.returncode
@@ -259,7 +259,7 @@ class enc(process):
 
         # make a new dv file using just the frames to encode
         dv_pathname = os.path.join(self.episode_dir,
-            "dv",episode.slug+".dv")
+            "tmp",episode.slug+".dv")
         if self.options.verbose: 
             print "making %s - may take awhile..." % dv_pathname
         outf=open(dv_pathname,'wb')
