@@ -170,6 +170,9 @@ class process(object):
 
     options, args = parser.parse_args()
     self.options = options
+    
+    if self.options.verbose:
+        print options, args
 
     return options, args
 
