@@ -69,6 +69,8 @@ class post(process):
     }
     files = []
     exts = self.options.upload_formats.split()
+# pull dv from the list
+    exts = [e for e in exts if e != 'dv']
     for i,ext in enumerate(exts):
         fileno=str(i) if i else ''
         role=roles.get(ext,'extra')

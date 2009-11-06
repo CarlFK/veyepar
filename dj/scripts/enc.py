@@ -289,19 +289,22 @@ class enc(process):
         return dvpathname
 
 
-  def dv2theora(self,episode,title_dv,cls,rfs):
+  def dv2theora(self,episode,dvpathname,cls,rfs):
         """
-        transcode dv ot ogg
-        Not much point in this now that the title side gets made
-        because now there is never the case of one .dv file
+        transcode dv to ogv
         """
         oggpathname = os.path.join(self.show_dir, "ogv", "%s.ogv"%episode.slug)
         # cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
+        cmd+=[dvpathname]
+        return cmd
 
-        if len(cls)==1 and not title_dv:
+# this code is useless
+        if len(cls)==1:
             # use the raw dv file and ffmpeg2theora params to trim
+            # Not much point in this now that the title side gets made
+            # because now there is never the case of one .dv file
             c=cls[0]
             if c.start: cmd+=['--starttime',str(time2s(c.start))]
             if c.end: cmd+=['--endtime',str(time2s(c.end))]
@@ -341,16 +344,13 @@ class enc(process):
 # using melt
         ret = self.run_melt(mlt, episode)
   
-# using script or ffmpeg2theora
-        if self.options.enc_script or "ogv" in self.options.upload_formats:
-          # consolidate all the dv files into one  
-          dvpathname = self.mkdv(mlt,episode,cls)
-          if self.options.enc_script:
-            cmd = [self.options.enc_script, 
-                    dvpathname, self.show_dir, episode.slug]
-            ret = ret and self.run_cmd(cmd)
-
-          if "ogv" in self.options.upload_formats:
+# using ogv requires dv, so roll that in
+        if "dv" in self.options.upload_formats or \
+                "ogv" in self.options.upload_formats:
+            # consolidate all the dv files into one  
+            dvpathname = self.mkdv(mlt,episode,cls)
+ 
+            if "ogv" in self.options.upload_formats:
               oggpathname = os.path.join(
                 self.show_dir, "ogv", "%s.ogv"%episode.slug)
               cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5" \
@@ -358,12 +358,18 @@ class enc(process):
                 " --channels 1".split()
               cmd+=[dvpathname,'--output',oggpathname]
 
-              # write melt command out to a script:
+              # write ogv command out to a script:
               script_pathname = os.path.join(
                 self.show_dir, "tmp", "%s_%s.sh"%(episode.slug,'ogv'))
               open(script_pathname,'w').write(' '.join(cmd))
 
               ret = ret and self.run_cmd(cmd)
+
+        if self.options.enc_script:
+            cmd = [self.options.enc_script, 
+                    self.show_dir, episode.slug]
+            ret = ret and self.run_cmd(cmd)
+
 
     else:
         print "No cutlist found."
