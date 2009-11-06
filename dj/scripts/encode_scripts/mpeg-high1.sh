@@ -1,3 +1,6 @@
+#!/bin/bash
+# melt command by bedlore
+
 # params: show_dir file_root
 echo show_dir: $1
 echo file_root: $2
