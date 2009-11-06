@@ -357,6 +357,12 @@ class enc(process):
                 " --speedlevel 0 --optimize --keyint 256" \
                 " --channels 1".split()
               cmd+=[dvpathname,'--output',oggpathname]
+
+              # write melt command out to a script:
+              script_pathname = os.path.join(
+                self.show_dir, "tmp", "%s_%s.sh"%(episode.slug,'ogv'))
+              open(script_pathname,'w').write(' '.join(cmd))
+
               ret = self.run_cmd(cmd)
 
     else:
