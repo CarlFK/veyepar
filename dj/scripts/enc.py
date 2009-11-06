@@ -339,7 +339,7 @@ class enc(process):
 
 # do the final encoding:
 # using melt
-        self.run_melt(mlt, episode)
+        ret = self.run_melt(mlt, episode)
   
 # using script or ffmpeg2theora
         if self.options.enc_script or "ogv" in self.options.upload_formats:
@@ -348,7 +348,7 @@ class enc(process):
           if self.options.enc_script:
             cmd = [self.options.enc_script, 
                     dvpathname, self.show_dir, episode.slug]
-            ret = self.run_cmd(cmd)
+            ret = ret and self.run_cmd(cmd)
 
           if "ogv" in self.options.upload_formats:
               oggpathname = os.path.join(
@@ -363,7 +363,7 @@ class enc(process):
                 self.show_dir, "tmp", "%s_%s.sh"%(episode.slug,'ogv'))
               open(script_pathname,'w').write(' '.join(cmd))
 
-              ret = self.run_cmd(cmd)
+              ret = ret and self.run_cmd(cmd)
 
     else:
         print "No cutlist found."
