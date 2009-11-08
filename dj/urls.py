@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     (r'^admin/(.*)', admin.site.root),
     (r'^databrowse/(.*)', databrowse.site.root),
     (r'^main/', include('main.urls')),
+    (r'^accounts/', include('accounts.urls')),
 )
 
 urlpatterns += patterns('',

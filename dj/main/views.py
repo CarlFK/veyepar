@@ -45,6 +45,17 @@ def main(request):
     return render_to_response('main.html',
         context_instance=RequestContext(request) )
 
+def meet_ann(request,location_id):
+    location=get_object_or_404(Location,id=location_id)
+    show=location.show
+    client=show.client
+    episodes=Episode.objects.filter(location__show=show).order_by('sequence')
+    return render_to_response('meeting_announcement.html',
+        {'client':client,'show':show,
+          'location':location,
+          'episodes':episodes,
+        },
+        context_instance=RequestContext(request) )
 
 def former(request, Model, parents, inits={}):
 

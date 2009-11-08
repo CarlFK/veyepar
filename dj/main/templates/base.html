@@ -2,6 +2,9 @@
 <head>{% block head %}{% endblock %}</head>
 <body>
 <p>
+{% if not user.is_authenticated %}
+<a href="{%url auth_login %}?next={{ current_page }}">login</a>
+{% endif %}
 <a href="..">up</a> (might work...)
 <a href="/main/">main</a> 
 <a href="/main/clients/">Clients</a>

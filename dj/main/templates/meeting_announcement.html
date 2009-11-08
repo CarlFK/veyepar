@@ -1,0 +1,34 @@
+{# meeting_announcement.html #}
+{% extends "base.html" %}
+{% block content %}
+
+<pre>
+{{client.name}}
+=========================
+
+Come join us for our best meeting ever!
+
+Topics
+------
+{% for episode in episodes %}
+ * {{forloop.counter}}. {{episode.start|date:"H:i"}} {{ episode.name }} ({{episode.authors}})
+{% endfor %}
+ 
+Details
+-------
+{% for episode in episodes %}
+{{forloop.counter}}. {{ episode.name }} 
+{{episode.authors}}
+{{episode.description}}
+{{episode.primary}}
+{% endfor %}
+
+Location
+--------
+{{location.description}}
+
+About the group
+---------------
+{{client.description}}
+
+{% endblock %}

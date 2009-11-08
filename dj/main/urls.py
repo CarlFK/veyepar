@@ -14,7 +14,15 @@ urlpatterns = patterns('',
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/E/$', episodes),
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/$', episodes),
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).json$', eps_xfer ),
-    (r'E/(?P<episode_no>\d+)/$', episode),)
+    (r'E/(?P<episode_no>\d+)/$', episode),
+
+)
+urlpatterns += patterns(
+    '',
+    url(r'meeting_announcement/(?P<location_id>\w+)/$', 
+        meet_ann, 
+        name='meet_ann'),
+)
 
 if False and settings.DEBUG:
     urlpatterns += patterns('',

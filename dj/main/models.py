@@ -21,6 +21,10 @@ class Client(models.Model):
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
     # tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
+    # preroll = models.CharField(max_length=135, blank=True, 
+    #     help="name of video to prepend")
+    # postroll = models.CharField(max_length=135, blank=True,
+    #     help="name of video to postpend")
     def __unicode__(self):
         return self.name
 

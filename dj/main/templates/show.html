@@ -6,6 +6,7 @@
         {% for location in locations %}
             <li><a href="L/{{location.slug}}/">{{ location.name }}</a>
 <a href="/admin/main/episode/?location__id__exact={{location.id}}">admin</a>
+<a href="{% url meet_ann location.id %}">meeting announcement</a>
             </li>
         {% endfor %}
     </ul>
@@ -21,7 +22,7 @@
         {% endfor %}
     </ul>
     {% if episode_form %}
-     <form action="" method="POST">
+     <form action="" method="POST">{% csrf_token %}
      <table border=1>
      {{ episode_form }}
      </table>

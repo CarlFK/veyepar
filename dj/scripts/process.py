@@ -153,7 +153,7 @@ class process(object):
     parser.add_option('--format', 
               help='pal, pal_wide, ntsc, ntsc_wide' )
     parser.add_option('--upload-formats', 
-              help='ogg, ogv, mp4, flv' )
+              help='ogg, ogv, mp4, flv, dv' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
     parser.add_option('--test', action="store_true",

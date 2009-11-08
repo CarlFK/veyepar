@@ -29,7 +29,7 @@
 </tbody>
 </table>
 
-<form action="" method="POST">
+<form action="" method="POST">{% csrf_token %}
 {{ episode_form }}  2=read to encode, 3=ready to post
 {{ clrfformset.management_form }}
 
