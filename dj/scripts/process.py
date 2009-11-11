@@ -12,6 +12,7 @@ sys.path.insert(0, '..' )
 import settings
 settings.DATABASE_NAME="../vp.db"
 
+import django
 from main.models import Client, Show, Location, Episode, State, Log
 
 def fnify(text):
@@ -63,6 +64,11 @@ class process(object):
   def process_eps(self, episodes):
     for ep in episodes:
         if ep.state==self.ready_state or self.options.force:
+            location = ep.location
+            show = location.show
+            client = show.client
+            self.show_dir = os.path.join(
+                self.options.mediadir,client.slug,show.slug)
             self.episode_dir=os.path.join( self.show_dir, 'dv', 
                 ep.location.slug )
             self.log_in(ep)
@@ -91,6 +97,34 @@ class process(object):
             episodes=episodes.filter(start__day=self.options.day)
         self.process_eps(episodes)
 
+  def work(self):
+        """
+        find and process episodes
+        """
+        episodes = Episode.objects
+        if self.options.client: 
+            clients = Client.objects.filter(slug=self.options.client)
+            episodes = episodes.filter(location__show__client__in=clients)
+        if self.options.show: 
+            shows = Show.objects.filter(slug=self.options.show)
+            episodes = episodes.filter(location__show__in=shows)
+        if self.options.day:
+            episodes = episodes.filter(start__day=options.day)
+        if self.args:
+            episodes = episodes.filter(id__in=args)
+
+        self.process_eps(episodes)
+
+        return
+
+  def poll(self):
+        done=False
+        while not done:
+            self.work()
+            if self.options.verbose: print "sleeping...."
+            time.sleep(int(self.options.poll))
+
+ 
   def list(self):
     """
     list clients and shows.
@@ -138,7 +172,7 @@ class process(object):
         d=dict(config.items('global'))
         d['whack']=False # don't want this somehow getting set in .conf
         parser.set_defaults(**d)
-        if d['verbose']: 
+        if 'verbose' in d: 
             print "using config file(s):", files
             print d
 
@@ -163,53 +197,31 @@ class process(object):
               help="override ready state, use with care." )
     parser.add_option('--whack', action="store_true",
               help="whack current episodes, use with care." )
-    parser.add_option('--pole', 
-              help="pole every x seconds." )
+    parser.add_option('--poll', 
+              help="poll every x seconds." )
 
     self.add_more_options(parser)
 
-    options, args = parser.parse_args()
-    self.options = options
+    self.options, self.args = parser.parse_args()
     
     if self.options.verbose:
-        print options, args
+        print self.options, self.args
 
-    return options, args
-
-  def main(self):
-    options, args = self.parse_args()
-
-    if options.format.lower()=='pal':
+    if "pal" in self.options.format.lower():
         self.fps=25.0
         self.bpf=144000 
 
-    if options.list:
-        self.list()
-    elif options.client and options.show:
-        client = Client.objects.get(slug=options.client)
-        show = Show.objects.get(client=client,slug=options.show)
-        self.show_dir = os.path.join(self.options.mediadir,client.slug,show.slug)
-        done=False
-        while not done:
-            self.one_show(show)
-            if self.options.pole:
-                if self.options.verbose: print "sleeping...."
-                time.sleep(int(self.options.pole))
-            else:
-                done=True
+    return 
 
-    elif options.day:
-        show = Show.objects.get(name='PyOhio09')
-        episodes = Episode.objects.filter(location__show=show,start__day=options.day)
-        enc_eps(episodes)
+  def main(self):
+    self.parse_args()
+
+    if self.options.list:
+        self.list()
+    elif self.options.poll:
+        self.poll()
     else:
-        episodes = Episode.objects.filter(id__in=args)
-        print episodes
-        show = episodes[0].location.show
-        client = show.client
-        self.show_dir = os.path.join(self.options.mediadir,client.slug,show.slug)
-        self.process_eps(episodes)
-    
+    	self.work()
 
 if __name__ == '__main__':
     p=process()

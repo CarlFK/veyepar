@@ -19,12 +19,23 @@ class mkdirs(process):
          os.makedirs(dir)
          print
 
-  def one_show(self,show):
-    for d in "dv tmp bling ogg ogv mp4 flv txt".split():
-        self.mkdir(os.path.join(self.show_dir,d))
-    for loc in Location.objects.filter(show=show):
-         dir = os.path.join(self.show_dir,'dv',loc.slug)
-         self.mkdir(dir)
+  def work(self):
+        """
+        find or create a client and show and the dirs
+        """
+        client = Client.objects.get(slug=self.options.client)
+        show = Show.objects.get(client=client,slug=self.options.show)
+        self.show_dir = os.path.join(
+            self.options.mediadir,client.slug,show.slug)
+
+        for d in "dv tmp/dv tmp/bling bling ogg ogv mp4 flv txt".split():
+            self.mkdir(os.path.join(self.show_dir,d))
+
+        for loc in Location.objects.filter(show=show):
+             dir = os.path.join(self.show_dir,'dv',loc.slug)
+             self.mkdir(dir)
+
+        return
 
 if __name__=='__main__': 
     p=mkdirs()

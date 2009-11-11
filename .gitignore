@@ -6,3 +6,5 @@ main.sql
 temp
 *.pyc
 *.bak
+blip_uploader.cfg
+veyepar.cfg
