@@ -258,7 +258,7 @@ class enc(process):
         title_dv=self.mk_title_dv(mlt_pathname, episode)
 
         # make a new dv file using just the frames to encode
-        dv_pathname = os.path.join(self.episode_dir,
+        dv_pathname = os.path.join(self.show_dir,
             "tmp",episode.slug+".dv")
         if self.options.verbose: 
             print "making %s - may take awhile..." % dv_pathname

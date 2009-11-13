@@ -41,6 +41,21 @@ class add_dv(process):
         print show,loc
         self.one_loc(loc)
 
+    def work(self):
+        """
+        find and process show
+        """
+        if self.options.client and self.options.show:
+            client = Client.objects.get(slug=self.options.client)
+            show = Show.objects.get(client=client, slug=self.options.show)
+
+            self.show_dir = os.path.join(
+                  self.options.mediadir,client.slug,show.slug)
+
+            self.one_show(show)
+
+        return
+
 if __name__=='__main__': 
     p=add_dv()
     p.main()

@@ -4,7 +4,7 @@
 
 import os, datetime
 import process
-from main.models import Location, Episode, Raw_File, Cut_List
+from main.models import Location, Episode, Raw_File, Cut_List, Client, Show
 
 from django.db.models import Q
 
@@ -12,14 +12,19 @@ class ass_dv(process.process):
 
     def one_dv(self, dv, seq ):
         print dv, dv.location
+        print dv.start, dv.end
         orph_name='orphans %s %s' % (
             dv.location.name,
             dv.start.strftime('%a_%d'),
             )
         orph_slug = process.fnify(orph_name)
         # find Episodes this may be a part of, add a cutlist record
+        
+        # for ep in Episode.objects.filter(location=dv.location):
+        #    print ep.start, ep.end
+
         eps = Episode.objects.filter(
-            Q(start__lte=dv.end)|Q(start__isnull=True), 
+            Q(start__lte=dv.end)|Q(start__isnull=True),
             Q(end__gte=dv.start)|Q(end__isnull=True), 
             location=dv.location)
         if not eps:
@@ -44,11 +49,13 @@ class ass_dv(process.process):
             if e: end = e[0].end
             else: end = date_end
 
+            """
             ep,created=Episode.objects.get_or_create(
                name=orph_name,slug=orph_slug,
                start=start, end=end,
                location=dv.location)
             eps=[ep]
+            """
 
         for ep in eps:
             print ep
@@ -59,6 +66,7 @@ class ass_dv(process.process):
                 cl.sequence=seq
                 cl.save()
 
+        print
 
     def one_loc(self,location):
       seq=0
@@ -75,6 +83,21 @@ class ass_dv(process.process):
       for loc in Location.objects.filter(show=show):
         print show,loc
         self.one_loc(loc)
+
+    def work(self):
+        """
+        find and process show
+        """
+        if self.options.client and self.options.show:
+            client = Client.objects.get(slug=self.options.client)
+            show = Show.objects.get(client=client, slug=self.options.show)
+
+            self.show_dir = os.path.join(
+                  self.options.mediadir,client.slug,show.slug)
+
+            self.one_show(show)
+
+        return
 
 if __name__=='__main__': 
     p=ass_dv()
