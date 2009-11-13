@@ -59,21 +59,14 @@ class process_csv(process.process):
         parser.add_option('-f', '--filename', default="talks.csv",
           help='csv file' )
 
-    def main(self):
-      options, args = self.parse_args()
-
-      if options.list:
-          self.list()
-      elif options.client and options.show:
-        client,created = Client.objects.get_or_create(
-            name=options.client, slug=options.client)
-        show,created = Show.objects.get_or_create(client=client,
-            name=options.show, slug=options.show)
+    def work(self):
+      if options.client and options.show:
+        client = Client.objects.get(slug=options.client)
+        show = Show.objects.get(client=client,slug=options.show)
         if options.whack:
 # clear out previous runs for this show
             Episode.objects.filter(location__show=show).delete()
             Location.objects.filter(show=show).delete()
-        self.csv_pathname = options.filename
         self.one_show(show)
 
 if __name__ == '__main__':

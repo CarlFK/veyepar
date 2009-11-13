@@ -286,7 +286,7 @@ class enc(process):
             inf.close()
         outf.close()
     
-        return dvpathname
+        return dv_pathname
 
 
   def dv2theora(self,episode,dvpathname,cls,rfs):

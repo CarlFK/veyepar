@@ -35,8 +35,11 @@ class csv(process):
      item=chan.findall('item')[0]
      g=item.findall('{http://search.yahoo.com/mrss/}player')[0]
      embed=g.text
-     """
-     role="Web"
+  
+  def get_media(self, blip_xml, role="Source"):
+     tree = xml.etree.ElementTree.fromstring(blip_xml)
+     chan=tree.findall('channel')[0]
+     item=chan.findall('item')[0]
      g=item.findall('{http://search.yahoo.com/mrss/}group')[0]
      ms = g.findall('*')
      roles=[dict(m.items())['{http://blip.tv/dtd/blip/1.0}role'] for m in ms]
@@ -45,28 +48,36 @@ class csv(process):
         ri=roles.index(role)
      except ValueError:
         ri=0
-     # print ms[ri]
-     embed=xml.etree.ElementTree.tostring(ms[ri])
-     # print embed
-     """
-     return embed
+     m=ms[ri]
+     url = m.attrib['url']
+     return url
 
-  def one_show(self, show):
-    """ Export all the episodes of a show. """
-    
-    csv_pathname = os.path.join( self.show_dir, "txt", 
-        "%s_%s.csv" % (show.client.slug,show.slug))
-    txt_pathname = os.path.join( self.show_dir, "txt", 
-        "%s_%s.txt" % (show.client.slug,show.slug))
-    html_pathname = os.path.join( self.show_dir, "txt", 
-        "%s_%s.html" % (show.client.slug,show.slug))
+
+  def process_eps(self,episodes):
+    """ Export episodes metadata. """
+
+    if self.options.basename:
+          basename = self.options.basename
+    else:
+# name the file after the client_show of the first episode
+# normaly a file will not span client or show
+          ep=episodes[0]
+          show=ep.location.show
+          client=show.client
+          self.show_dir = os.path.join(
+              self.options.mediadir,client.slug,show.slug)
+          basename = "%s_%s" % (client.slug,show.slug)
+
+    csv_pathname = os.path.join( self.show_dir, "txt", basename+".csv" )
+    txt_pathname = os.path.join( self.show_dir, "txt", basename+".txt" )
+    html_pathname = os.path.join( self.show_dir, "txt", basename+".html" )
 
     if self.options.verbose: 
         print "filenames:\n%s\n%s\n%s" % (
             csv_pathname, txt_pathname, html_pathname )
-    fields="id state name primary comment blip".split()
 
 # setup csv 
+    fields="id state name primary comment blip source".split()
     csv = DictWriter(open(csv_pathname, "w"),fields, extrasaction='ignore')
     # write out field names
     csv.writerow(dict(zip(fields,fields)))
@@ -78,8 +89,7 @@ class csv(process):
     html=open(html_pathname, "w")
 
     # write out episode data
-    for ep in Episode.objects.filter(
-    		location__show=show, state=4).order_by('sequence'):
+    for ep in episodes:
         row=ep.__dict__
         if self.options.verbose: print row
 
@@ -88,14 +98,22 @@ class csv(process):
         url = "http://carlfk.blip.tv/file/%s"%blip_id
 
         blip_xml=self.blip_meta(blip_id)
+
         embed=self.get_embed(blip_xml)
         row['blip']=embed
+
+        media=self.get_media(blip_xml)
+        row['source']=media
 
         csv.writerow(row)
         txt.write("%s %s\n" % (url,row['name']))
         print("%s %s\n" % (url,row['name']))
         html.write('<a href="%s">%s</a>\n%s\n'%(
             url,row['name'],row['blip']))
+
+  def add_more_options(self, parser):
+        parser.add_option('-f', '--basename', 
+            help='base of output filename' )
 
 if __name__ == '__main__':
     p=csv()
