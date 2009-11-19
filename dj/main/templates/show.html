@@ -11,25 +11,31 @@
 
 {% block content %}
 
-    <ul>
-        {% for location in locations %}
-            <li><a href="L/{{location.slug}}/">{{ location.name }}</a>
-<a href="/admin/main/episode/?location__id__exact={{location.id}}">admin</a>
-<a href="{% url meet_ann location.id %}">meeting announcement</a>
-            </li>
-        {% endfor %}
-    </ul>
 
-    <ul>
-        {% for episode in episodes %}
-            <li>
-            {{episode.sequence}}
-            {{episode.start|date:"b D d H:i"}} - {{episode.end|date:"H:i"}}
-            {{episode.state}} <a href="E/{{episode.id}}/">{{ episode.name }}</a>
-            {{episode.authors}}
-            </li>
+    <table>
+        {% for location in locations %}
+         <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" >
+         <td> {{location.sequence}} </td>
+         <td> <a href="L/{{location.slug}}/">{{ location.name }}</a> </td>
+<td><a href="/admin/main/episode/?location__id__exact={{location.id}}">admin</a></td>
+<td><a href="{% url meet_ann location.id %}">meeting announcement</a></td>
+         </tr>
         {% endfor %}
-    </ul>
+    </table>
+
+<hr />
+    <table>
+        {% for episode in episodes %}
+            <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" >
+            <td>{{episode.sequence}}</td>
+            <td>{{episode.start|date:"b D d H:i"}} - {{episode.end|date:"H:i"}}</td>
+            <td>{{episode.state}}</td>
+            <td><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+            <td>{{episode.authors}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
     {% if episode_form %}
      <form action="" method="POST">{% csrf_token %}
      <table border=1>

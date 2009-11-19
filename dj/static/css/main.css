@@ -1,0 +1,25 @@
+
+table {
+    border=1;
+    border-color:#CCCCCC;
+}
+
+td {
+    padding-left:8 solid;
+    padding-right:8 solid;
+    padding-bottom:8 solid;
+}
+
+td a {
+    display: block;
+    padding: 5;
+    margin: -8;
+}
+
+a:hover {
+    background: #279d27;
+    color: white;
+}
+
+}
+

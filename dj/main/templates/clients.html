@@ -3,11 +3,11 @@
 
 {% block content %}
     <h2>Clients</h2>
-    <ul>
+    <table>
         {% for client in clients %}
-            <li> {{client.sequence}} <a href="/main/C/{{client.slug}}/">{{ client.name }}</a></li>
+            <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" > <td> {{client.sequence}} </td><td><a href="/main/C/{{client.slug}}/">{{ client.name }}</a></td></tr>
         {% endfor %}
-    </ul>
+    </table>
     <form action="" method="POST"> 
     <table>
     {{ client_form }}

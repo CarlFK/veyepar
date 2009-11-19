@@ -1,5 +1,8 @@
 <html>
-<head>{% block head %}{% endblock %}</head>
+<head>
+{% block head %}{% endblock %}</head>
+<link rel="stylesheet" type="text/css" href="/media/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/main.css" />
 <body>
 <p>
 {% if not user.is_authenticated %}
