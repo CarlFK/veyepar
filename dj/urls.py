@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     (r'^databrowse/(.*)', databrowse.site.root),
     (r'^main/', include('main.urls')),
     (r'^accounts/', include('accounts.urls')),
+    (r'^my_admin/jsi18n', 'django.views.i18n.javascript_catalog'),
 )
 
 urlpatterns += patterns('',

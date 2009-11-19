@@ -20,6 +20,7 @@ from datetime import timedelta
 import os
 
 from main.models import Client,Show,Location,Episode,Cut_List
+from main.forms import EpisodeForm
 
 def eps_xfer(request,client_slug=None,show_slug=None):
     """
@@ -124,6 +125,9 @@ def episodes(request,
     # and blanks to enter a new location and episode.
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
+
+# show Episodes from all or one location
+# seed the 'new Episode' form with the location.
     if location_slug:
         locations=Location.objects.filter(show=show, slug=location_slug)
         location=Location.objects.get(show=show, slug=location_slug)
@@ -132,20 +136,30 @@ def episodes(request,
         locations=Location.objects.filter(show=show)
         location=locations[0]
         parents={'location__show':show.id}
-    # episodes=Episode.objects.filter(location__show=show).order_by('start','location')
+
+    form, episodes = None,None
     if locations:
-        episode_form, episodes = former(
-            request, Episode, parents,
-            {'sequence':1, 'location':location.id})
-        print len(episodes)
-    else:
-        episode_form, episodes = None,None
+        if request.user.is_authenticated():
+            if request.method == 'POST':
+                form=EpisodeForm(request.POST)
+                if form.is_valid():
+                    form.save()
+                else:
+                    print form.errors
+            else:
+                inits = {'sequence':1, 'location':location.id}
+                # add parents to inits
+                inits.update(parents)
+                form=EpisodeForm(inits)
+
+            episodes=Episode.objects.filter(**parents).order_by('sequence')
+
 
     return render_to_response('show.html',
         {'client':client,'show':show,
           'locations':locations,
           'episodes':episodes,
-          'episode_form':episode_form,
+          'episode_form':form,
         },
 	context_instance=RequestContext(request) )
  

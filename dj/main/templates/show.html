@@ -1,5 +1,14 @@
 {# client.html #}
 {% extends "base.html" %}
+
+{% block head %}
+<title>veyepar: {{show.name}} </title>
+
+<script type="text/javascript" src="/my_admin/jsi18n/"></script>
+<script type="text/javascript" src="/media/js/core.js"></script>
+{{ episode_form.media }}
+{% endblock %}
+
 {% block content %}
 
     <ul>
