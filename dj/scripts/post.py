@@ -38,6 +38,13 @@ class post(process):
         "license": "13",
         "category_id": "10",
     """
+    if self.options.update:
+        # http://blip.tv/file/2873957
+        video_id = ep.comment.replace('http://blip.tv/file/','')
+        print ep.name, video_id
+    else:
+        # create new episode
+        video_id = ''
 
     if self.options.topics:
         meta['topics'] = self.options.topics
@@ -82,7 +89,8 @@ class post(process):
     # blip_ep=Blip_Ep()
     if self.options.test:
         print 'test mode:'
-        print 'blip_cli.Upload( "", user, pw, files, meta, thumb)'
+        print 'blip_cli.Upload( video_id, user, pw, files, meta, thumb)'
+        print video_id
         print 'files %s' % files
         print 'meta %s' % meta
         print 'thumb %s' % thumb
@@ -96,7 +104,7 @@ class post(process):
 
     else:
         response = blip_cli.Upload(
-            "", pw.blip['user'], pw.blip['password'], files, meta, thumb)
+            video_id, pw.blip['user'], pw.blip['password'], files, meta, thumb)
         response_xml = response.read()
         if self.options.verbose: print response_xml
         blipurls = re.search("post_url>(.*)</post" ,response_xml).groups()
@@ -104,8 +112,10 @@ class post(process):
             blipurl=blipurls[0]
             print blipurl
             ep.comment += blipurl
-            if pw.twit['user']:
-                prefix = "%s #VIDEO -" % show.client.name
+            self.log_info(blipurl)
+            if pw.twit['user'] and not self.options.update:
+# don't tweet updates - once is enough.
+                prefix = "%s #VIDEO -" % show.client.slug
                 tweet = tweeter.notify(prefix, ep.name, blipurl)
                 print tweet
                 if "<id>" not in tweet: print tweet
@@ -122,6 +132,8 @@ class post(process):
         return ret
 
   def add_more_options(self, parser):
+        parser.add_option('-u', '--update',
+            help="update existing episode")
         parser.add_option('-T', '--topics',
             help="list of topics (user defined)")
         parser.add_option('-L', '--license',
