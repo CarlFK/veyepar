@@ -330,7 +330,7 @@ class enc(process):
 
 # make a title slide
         template = os.path.join(self.show_dir, "bling", "title.svg")
-        title_base = os.path.join(self.show_dir, "tmp", episode.slug)
+        title_base = os.path.join(self.show_dir, "bling", episode.slug)
         title_img=self.mktitle(template, title_base, episode)
 
 # get list of raw footage for this episode
