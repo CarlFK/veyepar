@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title>veyepar: {{show.name}} </title>
+<title>veyepar - Show: {{show.name}} </title>
 
 <script type="text/javascript" src="/my_admin/jsi18n/"></script>
 <script type="text/javascript" src="/media/js/core.js"></script>
@@ -27,6 +27,7 @@
     <table>
         {% for episode in episodes %}
             <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" >
+            <td>{{episode.id}}</td>
             <td>{{episode.sequence}}</td>
             <td>{{episode.start|date:"b D d H:i"}} - {{episode.end|date:"H:i"}}</td>
             <td>{{episode.state}}</td>
