@@ -6,18 +6,19 @@ $(function(){
 	
 	$('#login').submit(function(ev){
 		$.ajax({
-			url: "/login",
+			url: "/accounts/login",
 			type: "POST",
+            dataType: 'json',
 			data: {
 				username: $('#username').val(),
-                username: $('#password').val()
+                password: $('#password').val()
 			},
 			success: function(response){
-				if(response.error_text){
+				if(response.error_no){
 					$('#error_text').html(response.error_text)
 					return;
 				}
-				$('#login').html('Hi '+response.fullname)
+				$('#login').html('Hi '+ response.fullname )
 			}
 		})
 		ev.preventDefault();

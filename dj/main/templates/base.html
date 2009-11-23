@@ -1,14 +1,26 @@
 <html>
 <head>
-{% block head %}{% endblock %}</head>
+{% block head %}{% endblock %}
+
+<script type="text/javascript" src="/static/js/jquery.js"></script>
+<script type="text/javascript" src="/static/js/myscript.js"></script>
+
+</head>
 <link rel="stylesheet" type="text/css" href="/media/css/base.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
 <body>
 <p>
 {% if not user.is_authenticated %}
+
+        <form id='login'>
+            <div id='error_text'></div>
+            Username:<input id="username" type="text">
+            Password:<input id="password" type="password">
+            <input type="submit" value='Submit'>
+        </form>
+
 <a href="{%url auth_login %}?next={{ current_page }}">login</a>
 {% endif %}
-<a href="..">up</a> (might work...)
 <a href="/main/">main</a> 
 <a href="/main/clients/">Clients</a>
 </p>
