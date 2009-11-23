@@ -111,7 +111,7 @@ class process(object):
         if self.options.day:
             episodes = episodes.filter(start__day=options.day)
         if self.args:
-            episodes = episodes.filter(id__in=args)
+            episodes = episodes.filter(id__in=self.args)
 
         self.process_eps(episodes)
 

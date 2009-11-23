@@ -3,11 +3,11 @@
 {% block content %}
 
 <a href="/admin/main/client/{{client.id}}">admin</a>
-    <ul>
+    <table class=tpick>
         {% for show in shows%}
-            <li> {{show.sequence}} <a href="S/{{show.slug}}/">{{ show.name }}</a></li>
+            <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}><td> {{show.sequence}}</td><td> <a href="S/{{show.slug}}/">{{ show.name }}</a></td></tr>
         {% endfor %}
-    </ul>
+    </table>
 
     <form action="" method="POST">{% csrf_token %}
     <table border=1>

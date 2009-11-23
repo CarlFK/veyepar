@@ -117,7 +117,9 @@ class Episode(models.Model):
     def location_name(self):
         return self.location
     def duration(self):
-        return self.end-self.start
+        ret = self.end-self.start
+        # print ret
+        return ret
     def __unicode__(self):
         return "%s: %s" % ( self.location_name, self.name )
         # return "%s: %s" % ( self.location_name, self.name.__repr__() )

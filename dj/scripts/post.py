@@ -40,7 +40,8 @@ class post(process):
     """
     if self.options.update:
         # http://blip.tv/file/2873957
-        video_id = ep.comment.replace('http://blip.tv/file/','')
+        # video_id = ep.comment.replace('http://blip.tv/file/','')
+        video_id = ep.comment.strip(' \n')[-7:]
         print ep.name, video_id
     else:
         # create new episode

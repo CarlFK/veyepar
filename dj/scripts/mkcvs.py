@@ -42,15 +42,19 @@ class csv(process):
      item=chan.findall('item')[0]
      g=item.findall('{http://search.yahoo.com/mrss/}group')[0]
      ms = g.findall('*')
-     roles=[dict(m.items())['{http://blip.tv/dtd/blip/1.0}role'] for m in ms]
-     # print roles
-     try:
-        ri=roles.index(role)
-     except ValueError:
-        ri=0
-     m=ms[ri]
-     url = m.attrib['url']
-     return url
+     if role=='*':
+         ret = [ m.attrib['url'] for m in ms ]
+     else:
+         roles=[dict(m.items())['{http://blip.tv/dtd/blip/1.0}role'] for m in ms]
+         # print roles
+         try:
+            ri=roles.index(role)
+         except ValueError:
+            ri=0
+         m=ms[ri]
+         ret = m.attrib['url']
+
+     return ret
 
 
   def process_eps(self,episodes):
@@ -70,11 +74,12 @@ class csv(process):
 
     csv_pathname = os.path.join( self.show_dir, "txt", basename+".csv" )
     txt_pathname = os.path.join( self.show_dir, "txt", basename+".txt" )
+    wget_pathname = os.path.join( self.show_dir, "txt", basename+".wget" )
     html_pathname = os.path.join( self.show_dir, "txt", basename+".html" )
 
     if self.options.verbose: 
-        print "filenames:\n%s\n%s\n%s" % (
-            csv_pathname, txt_pathname, html_pathname )
+        print "filenames:" + "\n%s"*4 % (
+            csv_pathname, txt_pathname, wget_pathname, html_pathname )
 
 # setup csv 
     fields="id state name primary comment blip source".split()
@@ -84,6 +89,7 @@ class csv(process):
 
 # setup txt
     txt=open(txt_pathname, "w")
+    wget=open(wget_pathname, "w")
 
 # setup html (not full html, just some snippits)
     html=open(html_pathname, "w")
@@ -93,8 +99,10 @@ class csv(process):
         row=ep.__dict__
         if self.options.verbose: print row
 
-        comment=row['comment'].strip()
+        comment=row['comment'].strip().split('\n')[-1]
         blip_id=comment[comment.find('/file/')+6:]
+        blip_id=comment[-7:]
+        print blip_id
         url = "http://carlfk.blip.tv/file/%s"%blip_id
 
         blip_xml=self.blip_meta(blip_id)
@@ -110,6 +118,8 @@ class csv(process):
         print("%s %s\n" % (url,row['name']))
         html.write('<a href="%s">%s</a>\n%s\n'%(
             url,row['name'],row['blip']))
+        wget.writelines(["%s\n" % url for url in self.get_media(blip_xml,'*')])
+
 
   def add_more_options(self, parser):
         parser.add_option('-f', '--basename', 

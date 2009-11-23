@@ -27,6 +27,7 @@ class ass_dv(process.process):
             Q(start__lte=dv.end)|Q(start__isnull=True),
             Q(end__gte=dv.start)|Q(end__isnull=True), 
             location=dv.location)
+        """
         if not eps:
             # if no episodes found, it's an orphan
             # make a parent, 
@@ -49,13 +50,12 @@ class ass_dv(process.process):
             if e: end = e[0].end
             else: end = date_end
 
-            """
             ep,created=Episode.objects.get_or_create(
                name=orph_name,slug=orph_slug,
                start=start, end=end,
                location=dv.location)
             eps=[ep]
-            """
+        """
 
         for ep in eps:
             print ep
