@@ -2,12 +2,12 @@
 <head>
 {% block head %}{% endblock %}
 
-<script type="text/javascript" src="/static/js/jquery.js"></script>
-<script type="text/javascript" src="/static/js/myscript.js"></script>
+<script type="text/javascript" src="{{MEDIA_URL}}/js/jquery.js"></script>
+<script type="text/javascript" src="{{MEDIA_URL}}/js/myscript.js"></script>
 
 </head>
 <link rel="stylesheet" type="text/css" href="/media/css/base.css" />
-<link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/main.css" />
 <body>
 <p>
 {% if not user.is_authenticated %}
@@ -19,7 +19,6 @@
             <input type="submit" value='Submit'>
         </form>
 
-<a href="{%url auth_login %}?next={{ current_page }}">login</a>
 {% endif %}
 <a href="/main/">main</a> 
 <a href="/main/clients/">Clients</a>
