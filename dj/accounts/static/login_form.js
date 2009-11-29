@@ -1,8 +1,4 @@
 $(function(){
-	$('#id_name').keyup(function(){
-		var filename = $('#id_name').val().replace(/\s+/g, '_');
-		$('#id_slug').val(filename);
-	})
 	
 	$('#login').submit(function(ev){
 		$.ajax({
@@ -10,8 +6,8 @@ $(function(){
 			type: "POST",
             dataType: 'json',
 			data: {
-				username: $('#username').val(),
-                password: $('#password').val()
+				username: $('#id_username').val(),
+                password: $('#id_password').val()
 			},
 			success: function(response){
 				if(response.error_no){

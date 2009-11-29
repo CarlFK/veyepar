@@ -22,6 +22,8 @@ import os
 from main.models import Client,Show,Location,Episode,Cut_List
 from main.forms import EpisodeForm
 
+from accounts.forms import LoginForm
+
 def eps_xfer(request,client_slug=None,show_slug=None):
     """
     Returns all the episodes for a show as json.

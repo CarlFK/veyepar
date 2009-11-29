@@ -3,23 +3,28 @@
 {% block head %}{% endblock %}
 
 <script type="text/javascript" src="{{MEDIA_URL}}/js/jquery.js"></script>
-<script type="text/javascript" src="{{MEDIA_URL}}/js/myscript.js"></script>
+
+{% if not user.is_authenticated %}
+<script type="text/javascript" src="{{MEDIA_URL}}/js/login_form.js"></script>
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/login_form.css" />
+{% endif %}
 
 </head>
 <link rel="stylesheet" type="text/css" href="/media/css/base.css" />
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/main.css" />
 <body>
 <p>
-{% if not user.is_authenticated %}
 
-        <form id='login'>
-            <div id='error_text'></div>
-            Username:<input id="username" type="text">
-            Password:<input id="password" type="password">
-            <input type="submit" value='Submit'>
-        </form>
-
+{% if user.is_authenticated %}
+  {# this is kinda repeated in the js when the user logs in #}
+  Hi {{user}}
+  {# this does not show up until a page reload - not very ajaxy. #}
+  <a href="/admin/logout/?next=/main/">logout</a> 
+{% else %}
+  {% include "accounts/login_form.html" %}
 {% endif %}
+
+<p>
 <a href="/main/">main</a> 
 <a href="/main/clients/">Clients</a>
 </p>
