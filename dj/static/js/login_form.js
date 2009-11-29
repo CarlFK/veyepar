@@ -1,0 +1,1 @@
+../../accounts/static/login_form.js
