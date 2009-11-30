@@ -21,39 +21,39 @@ function hide_show_login_out() {
 
 
 $(function(){
-	
-	$('#login').submit(function(ev){
-		$.ajax({
-			url: "/accounts/login",
-			type: "POST",
+    
+    $('#login').submit(function(ev){
+        $.ajax({
+            url: "/accounts/login",
+            type: "POST",
             dataType: 'json',
-			data: {
-				username: $('#id_username').val(),
+            data: {
+                username: $('#id_username').val(),
                 password: $('#id_password').val()
-			},
-			success: function(response){
-				if(response.error_no){
-					$('#error_text').html(response.error_text)
-					return;
-				}
+            },
+            success: function(response){
+                if(response.error_no){
+                    $('#error_text').html(response.error_text)
+                    return;
+                }
                 auth_name=response.fullname;
                 hide_show_login_out();
-			}
-		})
-		ev.preventDefault();
-	})
+            }
+        })
+        ev.preventDefault();
+    })
 
-	$('#logout').submit(function(ev){
-		$.ajax({
-			url: "/admin/logout/",
-			type: "POST",
-			success: function(response){
+    $('#logout').submit(function(ev){
+        $.ajax({
+            url: "/admin/logout/",
+            type: "POST",
+            success: function(response){
                 auth_name=0;
                 hide_show_login_out();
-			}
-		})
-		ev.preventDefault();
-	})
+            }
+        })
+        ev.preventDefault();
+    })
 
 
 // init the page - both login/out is hidden, 
