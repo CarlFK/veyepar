@@ -4,18 +4,18 @@ function hide_show_login_out() {
 
     if (auth_name)
     {
-        // hide the login form, show logout, show username
-        $('#login_div').hide();
-        $('#logout_div').show();
-        $('#logged_in').show();
+        // hide the login form, 
+        // show logout, username, and any forms
+        $('.logged-out').hide();
+        $('.logged-in').show();
         $('#user_name').html(auth_name);
     }
     else
     {
-        // hide logout, show the login form
-        $('#logout_div').hide();
-        $('#logged_in').hide();
-        $('#login_div').show();
+        // hide logout and anything that needs to be logged in
+        // show the login form
+        $('.logged-in').hide();
+        $('.logged-out').show();
     }
 }
 

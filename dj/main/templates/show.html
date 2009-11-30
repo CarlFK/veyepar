@@ -7,7 +7,7 @@
 <script type="text/javascript" src="/my_admin/jsi18n/"></script>
 <script type="text/javascript" src="/media/js/core.js"></script>
 <script type="text/javascript" src="/static/js/jquery.js"></script>
-<script type="text/javascript" src="/static/js/myscript.js"></script>
+<script type="text/javascript" src="/static/js/fnitize.js"></script>
 {{ episode_form.media }}
 {% endblock %}
 
@@ -46,7 +46,7 @@
     </table>
 
     {% if episode_form %}
-        <div id=logged_in>
+     <div class=logged-in>
 
      <form action="" method="POST">{% csrf_token %}
      <table border=1>

@@ -5,12 +5,12 @@
 {% else %} var auth_name = 0; {% endif %}
 </script>
 
-<div id=logout_div>
+<div class=logged-in>
  Hi <div id=user_name>user</div>
  <form id='logout'><input type="submit" value='Logout'></form>
 </div>
 
-<div id=login_div>
+<div class=logged-out>
 <form id='login'>
     <div id='error_text'></div>
     <div class=login_form>

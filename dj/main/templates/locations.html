@@ -10,12 +10,14 @@
             <td><a href="L/{{location.slug}}/">{{ location.name }}</a></td>
             </tr>
         {% endfor %}
-    </ul>
+    </table>
+    <div class=logged-in>
     <form action="" method="POST">{% csrf_token %}
     <table border=1>
     {{ location_form }}
     </table>
     <input type="submit" value="Save" />
     </form>
+    </div>
 
 {% endblock %}

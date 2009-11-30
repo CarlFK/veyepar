@@ -10,13 +10,13 @@
     </table>
 
 
-    <div id=logged_in>
-    <form action="" method="POST">{% csrf_token %}
-    <table border=1>
-    {{ show_form }}
-    </table>
-    <input type="submit" value="Save" />
-    </form>
+    <div class=logged-in>
+     <form action="" method="POST">{% csrf_token %}
+     <table border=1>
+     {{ show_form }}
+     </table>
+     <input type="submit" value="Save" />
+     </form>
     </div>
 
 {% endblock %}
