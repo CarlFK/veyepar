@@ -6,7 +6,9 @@
     <table class=tpick>
         <tr class=row2><td><a href="E/">All</a></td></tr>
         {% for location in locations %}
-            <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}><td><a href="L/{{location.slug}}/">{{ location.name }}</a></td></tr>
+            <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+            <td><a href="L/{{location.slug}}/">{{ location.name }}</a></td>
+            </tr>
         {% endfor %}
     </ul>
     <form action="" method="POST">{% csrf_token %}

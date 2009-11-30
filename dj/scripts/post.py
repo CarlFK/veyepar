@@ -133,7 +133,7 @@ class post(process):
         return ret
 
   def add_more_options(self, parser):
-        parser.add_option('-u', '--update',
+        parser.add_option('-u', '--update', action='store_true',
             help="update existing episode")
         parser.add_option('-T', '--topics',
             help="list of topics (user defined)")

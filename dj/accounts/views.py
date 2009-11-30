@@ -33,7 +33,6 @@ def auth(username,password):
 def logax(request):
 
     if request.method == 'POST':
-        print request.POST
         form=forms.LoginForm(request.POST)
         if form.is_valid():
             username=form.cleaned_data['username']

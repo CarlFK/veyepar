@@ -183,12 +183,14 @@ class enc(process):
             """
     <filter mlt_service="channelcopy" from="1" to="0" />
     <filter mlt_service="volume" max_gain="30" normalise="28" />
+                {'mlt_service':'volume', 
+                'max_gain':'20', 
+                'limiter':'20',
+                'normalise':self.options.normalize} )
             """
         if self.options.normalize:
             new=xml.etree.ElementTree.Element('filter', 
                 {'mlt_service':'volume', 
-                'max_gain':'1', 
-                'limiter':'1',
                 'normalise':self.options.normalize} )
             playlist.insert(pos,new)
 

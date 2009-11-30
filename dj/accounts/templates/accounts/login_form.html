@@ -1,4 +1,16 @@
 {# "accounts/login_form.html" #}
+
+<script type="text/javascript" language="JavaScript"> 
+{% if user.is_authenticated %} var auth_name = '{{user}}';
+{% else %} var auth_name = 0; {% endif %}
+</script>
+
+<div id=logout_div>
+ Hi <div id=user_name>user</div>
+ <form id='logout'><input type="submit" value='Logout'></form>
+</div>
+
+<div id=login_div>
 <form id='login'>
     <div id='error_text'></div>
     <div class=login_form>
@@ -15,4 +27,5 @@
       </ul>
     </div>
 </form>
+</div>
 

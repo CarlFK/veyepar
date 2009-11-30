@@ -5,15 +5,17 @@
     <h2>Clients</h2>
     <table class=tpick>
         {% for client in clients %}
-            <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" > <td> {{client.sequence}} </td><td><a href="/main/C/{{client.slug}}/">{{ client.name }}</a></td></tr>
+            <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" > <td> {{client.sequence}} </td><td><a href="{% url client client.slug %}">{{ client.name }}</a></td></tr>
         {% endfor %}
     </table>
+    <div id=logged_in>
     <form action="" method="POST"> 
     <table>
     {{ client_form }}
     </table>
     <input type="submit" value="Save" />
     </form>
+    </div>
 
 {% endblock %}
 

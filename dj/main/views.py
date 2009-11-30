@@ -66,7 +66,7 @@ def former(request, Model, parents, inits={}):
         class Meta:
             model=Model
 
-    if request.user.is_authenticated():
+    if True or request.user.is_authenticated():
         if request.method == 'POST':
             form=xForm(request.POST)
             if form.is_valid():
