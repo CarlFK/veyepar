@@ -5,15 +5,14 @@
 <pre>
 {{client.name}}
 =========================
-
 Come join us for our best meeting ever!
 
-{{episodes.0.start|date:"l F j, Y fA"}}
+When: {{episodes.0.start|date:"f A l F j, Y"}}
+Where: {{location.name}}
 
 Topics
 ------
-{% for episode in episodes %}
- * {{forloop.counter}}. {{episode.start|date:"H:i"}} {{ episode.name }} ({{episode.authors}})
+{% for episode in episodes %} {{forloop.counter}}. {{episode.start|date:"g:i"}} {{ episode.name }} ({{episode.authors}})
 {% endfor %}
  
 Details
