@@ -5,7 +5,6 @@
 import blip_uploader
 
 import tweeter
-import optparse
 import re
 import os
 
@@ -114,8 +113,7 @@ class post(process):
             print blipurl
             ep.comment += blipurl
             self.log_info(blipurl)
-            if pw.twit['user'] and not self.options.update:
-# don't tweet updates - once is enough.
+            if self.options.tweet and pw.twit['user']:
                 prefix = "%s #VIDEO -" % show.client.slug
                 tweet = tweeter.notify(prefix, ep.name, blipurl)
                 print tweet
@@ -144,6 +142,8 @@ class post(process):
             help = "'./blip_uploader.py -C list' to see full list" )
         parser.add_option('--hidden',
             help="availability on blip.tv, 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
+        parser.add_option('-t', '--tweet', action='store_false', default=True,
+            help="tweet url when uploaded")
 
 
 if __name__ == '__main__':
