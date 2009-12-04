@@ -4,7 +4,6 @@
 
 import blip_uploader
 
-import tweeter
 import re
 import os
 
@@ -113,14 +112,6 @@ class post(process):
             print blipurl
             ep.comment += blipurl
             self.log_info(blipurl)
-            if self.options.tweet and pw.twit['user']:
-                prefix = "%s #VIDEO -" % show.client.slug
-                tweet = tweeter.notify(prefix, ep.name, blipurl)
-                print tweet
-                if "<id>" not in tweet: print tweet
-                tweetid=re.search("<id>(.*)</id>" ,tweet).groups()[0]
-                tweeturl="http://twitter.com/cfkarsten/status/%s"%(tweetid,)
-                print tweeturl
             ret=True
         else:
             if not self.options.verbose: print response_xml
@@ -142,8 +133,6 @@ class post(process):
             help = "'./blip_uploader.py -C list' to see full list" )
         parser.add_option('--hidden',
             help="availability on blip.tv, 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
-        parser.add_option('-t', '--tweet', action='store_false', default=True,
-            help="tweet url when uploaded")
 
 
 if __name__ == '__main__':
