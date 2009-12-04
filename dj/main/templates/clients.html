@@ -10,7 +10,7 @@
     </table>
 
     <div class=logged-in>
-    <form action="" method="POST"> 
+    <form action="" method="POST"> {% csrf_token %} 
     <table>
     {{ client_form }}
     </table>

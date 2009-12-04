@@ -11,4 +11,6 @@ $(function(){
         }
     })
     
+    $('#id_start').datepicker();
+
 })

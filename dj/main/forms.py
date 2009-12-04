@@ -12,6 +12,6 @@ class EpisodeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EpisodeForm, self).__init__(*args, **kwargs)
-        self.fields['start'].widget = widgets.AdminSplitDateTime()
-        self.fields['end'].widget = widgets.AdminSplitDateTime()
+        # self.fields['start'].widget = widgets.AdminSplitDateTime()
+        # self.fields['end'].widget = widgets.AdminSplitDateTime()
 

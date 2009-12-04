@@ -146,12 +146,24 @@ def episodes(request,
                 form=EpisodeForm(request.POST)
                 if form.is_valid():
                     form.save()
+# setup next time block to come after current one 
+                    saved=form.cleaned_data
+                    inits={
+                        'location':location.id,
+                        'sequence':saved["sequence"]+1,
+                        'start':saved["end"],
+                        'end':saved["end"]+(saved["end"]-saved["start"])}
+                    inits.update(parents)
+                    print inits
+                    form=EpisodeForm(inits)
                 else:
                     print form.errors
             else:
                 inits = {'sequence':1, 'location':location.id}
                 # add parents to inits
                 inits.update(parents)
+                # form=EpisodeForm(inits)
+                inits={'start': datetime(2009, 12, 3, 19, 12), 'end': datetime(2009, 12, 3, 19, 36), 'location': 19, 'sequence': 4}
                 form=EpisodeForm(inits)
 
             episodes=Episode.objects.filter(**parents).order_by('sequence')
