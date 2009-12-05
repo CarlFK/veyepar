@@ -56,18 +56,16 @@ class tweet(process):
         client = show.client
 
         video_id = ep.comment.strip(' \n')[-7:]
-        print ep.name, video_id
+        blip_url="http://carlfk.blip.tv/file/%s" % video_id
+        prefix = "%s #VIDEO -" % show.client.slug
 
         ret=False
         if self.options.test:
             print 'test mode:'
-            print '( video_id, user, pw)'
-            print video_id, pw.twit['user'], pw.twit['password']
+            print 'prefix, ep.name, blip_url'
+            print prefix, ep.name, blip_url
             print
-        
         else:
-            print blipurl
-            prefix = "%s #VIDEO -" % show.client.slug
             tweet = tweeter.notify(prefix, ep.name, blipurl)
             print tweet
             if "<id>" not in tweet: print tweet
