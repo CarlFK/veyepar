@@ -48,11 +48,11 @@ def main(request):
     return render_to_response('main.html',
         context_instance=RequestContext(request) )
 
-def meet_ann(request,location_id):
-    location=get_object_or_404(Location,id=location_id)
-    show=location.show
+def meet_ann(request,show_id):
+    show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(location__show=show).order_by('sequence')
+    episodes=Episode.objects.filter(show=show).order_by('sequence')
+    location=episodes[0].location
     return render_to_response('meeting_announcement.html',
         {'client':client,'show':show,
           'location':location,
@@ -108,13 +108,11 @@ def client(request,client_slug=None):
         'shows':shows},
        context_instance=RequestContext(request) )
 
-def locations(request, client_slug=None, show_slug=None):
-    client=get_object_or_404(Client,slug=client_slug)
-    show=get_object_or_404(Show,client=client,slug=show_slug)
+def locations(request):
     location_form, locations = former(
-        request, Location, {'show':show.id},{'sequence':1})
+        request, Location, {},{'sequence':1})
     return render_to_response('locations.html',
-        {'client':client,'show':show,
+        {
           'locations':locations,
           'location_form':location_form,
         },
@@ -135,9 +133,9 @@ def episodes(request,
         location=Location.objects.get(show=show, slug=location_slug)
         parents={'location':location.id}
     else:
-        locations=Location.objects.filter(show=show)
+        locations=Location.objects.all()
         location=locations[0]
-        parents={'location__show':show.id}
+        parents={'show':show.id, 'location':location.id}
 
     form, episodes = None,None
     if locations:
@@ -159,12 +157,15 @@ def episodes(request,
                 else:
                     print form.errors
             else:
-                inits = {'sequence':1, 'location':location.id}
+                inits = {'sequence':1, 
+                    'start': datetime.now()}
                 # add parents to inits
                 inits.update(parents)
-                # form=EpisodeForm(inits)
-                inits={'start': datetime(2009, 12, 3, 19, 12), 'end': datetime(2009, 12, 3, 19, 36), 'location': 19, 'sequence': 4}
-                form=EpisodeForm(inits)
+
+                form, shows = former(
+                  request, Episode, inits, {'sequence':1})
+                  # request, Episode, parents, {'sequence':1})
+
 
             episodes=Episode.objects.filter(**parents).order_by('sequence')
 
@@ -202,11 +203,11 @@ class clrfForm(forms.Form):
 def episode(request,episode_no):
 
     episode=get_object_or_404(Episode,id=episode_no)
+    show=episode.show
     location=episode.location
-    show=location.show
     client=show.client
 
-    episodes=Episode.objects.filter(id__gt=episode_no,location__show=episode.location.show).order_by('id')
+    episodes=Episode.objects.filter(id__gt=episode_no,show=show).order_by('id')
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
 

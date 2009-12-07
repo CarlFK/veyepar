@@ -4,28 +4,29 @@ from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_
 
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('sequence', 'name', 'description',)
+    list_display_links = ('name',)
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Client, ClientAdmin)
 
 class ShowAdmin(admin.ModelAdmin):
     list_display = ('sequence', 'client','name',)
+    list_display_links = ('name',)
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Show, ShowAdmin)
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('sequence', 'show', 'name',)
+    list_display = ('sequence', 'name',)
+    list_display_links = ('name',)
     admin_order_field = ('sequence', 'name',)
-    list_filter = ('show',)
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Location, LocationAdmin)
 
 class Raw_FileAdmin(admin.ModelAdmin):
-    list_display = ('filename', 'location', 'start', 'end', ) 
+    list_display = ('filename', 'show', 'location', 'start', 'end', ) 
+    list_display_links = ('filename',)
     list_filter = ('location',)
-    # list_display = ('filename', 'location', 'durationhms', 'start', 'end', ) 
-    # ordering = ('start',)
 admin.site.register(Raw_File, Raw_FileAdmin)
 
 class QualityAdmin(admin.ModelAdmin):
@@ -35,7 +36,8 @@ class QualityAdmin(admin.ModelAdmin):
 admin.site.register(Quality, QualityAdmin)
 
 class EpisodeAdmin(admin.ModelAdmin):
-    list_display = ('sequence', 'state', 'location_name', 'start','end','name',)
+    list_display = (
+	'sequence', 'name', 'state', 'show', 'location', 'start','end',)
     ordering = ('sequence', )
     list_display_links = ('name',)
     list_editable = ('sequence', 'state' )

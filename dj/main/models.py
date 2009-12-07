@@ -16,15 +16,15 @@ def fnify(text):
 
 class Client(models.Model):
     sequence = models.IntegerField(default=1)
-    # active = models.BooleanField(help_text="Done for now.")
+    active = models.BooleanField(help_text="Done for now.")
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
-    # tags = models.TextField(null=True,blank=True,)
+    tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
-    # preroll = models.CharField(max_length=135, blank=True, 
-    #     help="name of video to prepend")
-    # postroll = models.CharField(max_length=135, blank=True,
-    #     help="name of video to postpend")
+    preroll = models.CharField(max_length=135, blank=True, 
+        help_text="name of video to prepend")
+    postroll = models.CharField(max_length=135, blank=True,
+        help_text="name of video to postpend")
     def __unicode__(self):
         return self.name
 
@@ -33,7 +33,7 @@ class Show(models.Model):
     sequence = models.IntegerField(default=1)
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
-    # tags = models.TextField(null=True,blank=True,)
+    tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
     @property
     def client_name(self):
@@ -43,18 +43,16 @@ class Show(models.Model):
 
 class Location(models.Model):
     sequence = models.IntegerField(default=1)
-    show = models.ForeignKey(Show)
     name = models.CharField(max_length=135,help_text="room name")
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
     description = models.TextField(blank=True)
-    @property
-    def show_name(self):
-        return self.show
+    # @property
     def __unicode__(self):
-        return "%s: %s" % ( self.show_name, self.name )
+        return "%s" % ( self.name )
 
 class Raw_File(models.Model):
     location = models.ForeignKey(Location)
+    show = models.ForeignKey(Show)
     filename = models.CharField(max_length=135,help_text="filename.dv")
     start = models.DateTimeField(null=True, blank=True, 
         help_text='when recorded (should agree with file name and timestamp)')
@@ -88,41 +86,39 @@ class Quality(models.Model):
         return self.name
 
 class Episode(models.Model):
+    show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
-    # show = models.ForeignKey(Show, null=True)
     state = models.IntegerField(null=True,blank=True,
         help_text="current processing state" )
-    released = models.BooleanField(default=1)
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
-    primary = models.CharField(max_length=135,blank=True,
-        help_text="pointer to master version of event (name,desc,time,author,files,etc)")
     name = models.CharField(max_length=135, help_text="(synced from primary source)")
     slug = models.CharField(max_length=135,help_text="used for file name")
+    released = models.BooleanField(default=1)
+    primary = models.CharField(max_length=135,blank=True,
+        help_text="pointer to master version of event (name,desc,time,author,files,etc)")
     authors = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True, help_text="(synced from primary source)")
-    # tags = models.TextField(null=True,blank=True,)
-    # thumbnail = models.TextField(null=True,blank=True, 
-    #    max_length=135,help_text="filename.png"
-
-    # target = models.TextField(null=True,blank=True,
-    #    help_text = "Blip.tv episode ID")
+    tags = models.CharField(max_length=135,null=True,blank=True,)
+    thumbnail = models.CharField(max_length=135,null=True,blank=True, 
+        help_text="filename.png" )
+    target = models.CharField(max_length=135, null=True,blank=True,
+        help_text = "Blip.tv episode ID")
     start = models.DateTimeField(null=True, blank=True, 
         help_text="initially scheduled time from master, adjusted to match reality")
     end = models.DateTimeField(null=True, blank=True)
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
-    @property
-    def location_name(self):
-        return self.location
+    # @property
+    # def location_name(self):
+    #     return self.location
     def duration(self):
         ret = self.end-self.start
         # print ret
         return ret
     def __unicode__(self):
-        return "%s: %s" % ( self.location_name, self.name )
-        # return "%s: %s" % ( self.location_name, self.name.__repr__() )
+        return "%s: %s" % ( self.location.name, self.name )
 
 class Cut_List(models.Model):
     raw_file = models.ForeignKey(Raw_File)
