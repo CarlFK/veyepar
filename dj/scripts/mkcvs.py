@@ -16,7 +16,6 @@ class csv(process):
 
   ready_state = 4
 
-
   def blip_meta(self, video_id):
         """@brief Return information about the video
         
