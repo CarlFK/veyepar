@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
+from django.views.generic.simple import direct_to_template, redirect_to
 
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
@@ -18,6 +18,7 @@ databrowse.site.register(Cut_List)
 urlpatterns = patterns('',
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
+    ('^$', redirect_to, {'url': '/main/'}),
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     (r'^admin/(.*)', admin.site.root),
     (r'^databrowse/(.*)', databrowse.site.root),

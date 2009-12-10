@@ -2,12 +2,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title>veyepar - Show: {{show.name}} </title>
-
-<script type="text/javascript" src="/media/js/core.js"></script>
-
-{# { episode_form.media } #}
-<script type="text/javascript" src="http://jqueryui.com/latest/ui/ui.datepicker.js"></script>
+<title>veyepar - Show: {{client.name}} {{show.name}} </title>
 {% endblock %}
 
 {% block content %}
@@ -45,10 +40,14 @@
 
     {% if episode_form %}
      <div class=logged-in>
-
+     <h1>Enter Episode:</h1>
      <form action="" method="POST">{% csrf_token %}
-     <table border=1>
+      <a href="javascript: NewCssCal('id_start','yyyymmdd','arrow',true,24,false)">start</a>
+      <a href="javascript: NewCssCal('id_end','yyyymmdd','arrow',true,24,false)">end</a>
+     
+<table border=1>
      {{ episode_form }}
+
      </table>
      <input type="submit" value="Save" />
      </form>

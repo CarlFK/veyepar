@@ -1,5 +1,10 @@
 {# client.html #}
 {% extends "base.html" %}
+
+{% block head %}
+<title>veyepar - Client: {{client.name}} </title>
+{% endblock %}
+
 {% block content %}
 
 <a href="/admin/main/client/{{client.id}}">admin</a>
@@ -11,6 +16,7 @@
 
 
     <div class=logged-in>
+     <h2>Enter Show:</h2>
      <form action="" method="POST">{% csrf_token %}
      <table border=1>
      {{ show_form }}

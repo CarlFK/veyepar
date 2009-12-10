@@ -10,9 +10,10 @@ from views import *
 urlpatterns = patterns('main.views',
     url(r'^$', main, name='main'),
     url(r'clients/$', clients, name='clients'),
+    url(r'locations/$', 'locations', name='locations'),
     url(r'C/(?P<client_slug>\w+)/$', client, name='client'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$', 'locations'),
-    (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/E/$', episodes),
+    # (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$', 'show'),
+    (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$', episodes),
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/$', episodes),
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).json$', eps_xfer ),
     (r'E/(?P<episode_no>\d+)/$', episode),
@@ -20,7 +21,7 @@ urlpatterns = patterns('main.views',
 )
 urlpatterns += patterns(
     '',
-    url(r'meeting_announcement/(?P<location_id>\w+)/$', 
+    url(r'meeting_announcement/(?P<show_id>\w+)/$', 
         meet_ann, 
         name='meet_ann'),
 )

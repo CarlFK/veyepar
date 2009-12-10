@@ -1,0 +1,4 @@
+svn+http://code.djangoproject.com/svn/django/trunk/#egg=django
+vobject
+python-twitter
+# svn+http://pyffmpeg.googlecode.com/svn/trunk/#egg=pyffmpeg
