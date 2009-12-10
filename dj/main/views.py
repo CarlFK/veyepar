@@ -60,6 +60,19 @@ def meet_ann(request,show_id):
         },
         context_instance=RequestContext(request) )
 
+def meet_ical(request,location_id):
+    location=get_object_or_404(Location,id=location_id)
+    show=location.show
+    client=show.client
+    episodes=Episode.objects.filter(show=show).order_by('sequence')
+    location=episodes[0].location
+    return render_to_response('meeting_announcement.html',
+        {'client':client,'show':show,
+          'location':location,
+          'episodes':episodes,
+        },
+        context_instance=RequestContext(request) )
+
 def former(request, Model, parents, inits={}):
 
     class xForm(ModelForm):
