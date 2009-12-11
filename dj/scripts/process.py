@@ -65,7 +65,7 @@ class process(object):
     for ep in episodes:
         if ep.state==self.ready_state or self.options.force:
             location = ep.location
-            show = location.show
+            show = ep.show
             client = show.client
             self.show_dir = os.path.join(
                 self.options.mediadir,client.slug,show.slug)
@@ -104,10 +104,10 @@ class process(object):
         episodes = Episode.objects
         if self.options.client: 
             clients = Client.objects.filter(slug=self.options.client)
-            episodes = episodes.filter(location__show__client__in=clients)
+            episodes = episodes.filter(show__client__in=clients)
         if self.options.show: 
             shows = Show.objects.filter(slug=self.options.show)
-            episodes = episodes.filter(location__show__in=shows)
+            episodes = episodes.filter(show__in=shows)
         if self.options.day:
             episodes = episodes.filter(start__day=options.day)
         if self.args:
@@ -136,7 +136,7 @@ class process(object):
             print "\tName: %s  Slug: %s" %( show.name, show.slug )
             print "\t--client %s --show %s" %( client.slug, show.slug )
             if self.options.verbose:
-                for ep in Episode.objects.filter(location__show=show):
+                for ep in Episode.objects.filter(show=show):
                     print "\t\t id: %s state: %s %s" % ( 
                         ep.id, ep.state, ep )
     return
@@ -206,6 +206,8 @@ class process(object):
     
     if self.options.verbose:
         print self.options, self.args
+        from django.conf import settings
+        print settings.DATABASE_ENGINE, settings.DATABASE_NAME
 
     if "pal" in self.options.format.lower():
         self.fps=25.0

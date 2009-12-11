@@ -6,7 +6,7 @@ import  os,sys
 
 from process import process
 
-from main.models import Client, Show, Location
+from main.models import Client, Show, Location, Episode
 
 class mkdirs(process):
 
@@ -16,7 +16,10 @@ class mkdirs(process):
       if os.path.exists(dir):
          print '(exists)'
       else:
-         os.makedirs(dir)
+         if self.options.test:
+             print '(testing, skipped)'
+         else:
+             os.makedirs(dir)
          print
 
   def work(self):
@@ -31,7 +34,10 @@ class mkdirs(process):
         for d in "dv tmp/dv tmp/bling bling ogg ogv mp4 flv txt".split():
             self.mkdir(os.path.join(self.show_dir,d))
 
-        for loc in Location.objects.filter(show=show):
+# get episodes for this show
+        eps = Episode.objects.filter(show=show)
+# get locations of the episodes
+        for loc in Location.objects.filter(episode__in=eps):
              dir = os.path.join(self.show_dir,'dv',loc.slug)
              self.mkdir(dir)
 
