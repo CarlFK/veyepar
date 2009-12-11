@@ -5,16 +5,17 @@ Getting started...
 1. install django, create the database
 veyepar/dj$ ./manage.py syncdb
 
-2. create a client, show, location and episodes records in the db
-a. http://localhost:8080/main/clients/  
-b. enter 1 for Sequence, client Name and Slug, hit save.
-c. click on the client link
-d. enter 1 for Sequence, show Name and Slug - hit Save.
-e. click on show link
-f. enter 1 for Sequence, location Name and Slug, hit Save.
-e. click on location link
-g. enter 1 for Sequence, episode Name and Slug - hit Save.
-h. repeat for each Loction and Episode
+2. create a location, client, show, and episode records in the db
+http://localhost:8080 log in.
+a. click "Locations"
+b. enter Name, hit save.
+c. click "Clients"
+d. enter Name, hit save.
+e. click on the client link
+f. enter show Name, hit Save.
+g. click on show link
+h. enter episode Name, start/end - hit Save.
+i. repeat for each Episode
 
 
 If you have many Episodes it might be worth the effort to import locaion and episodes from a .csv file using addeps.py.  

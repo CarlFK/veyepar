@@ -80,7 +80,8 @@ class ass_dv(process.process):
           Cut_List.objects.filter(episode__location__show=show).delete()
           return
 
-      for loc in Location.objects.filter(show=show):
+      eps = Episode.objects.filter(show=show)
+      for loc in Location.objects.filter(episode__in=eps):
         print show,loc
         self.one_loc(loc)
 

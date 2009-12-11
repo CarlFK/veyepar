@@ -10,19 +10,22 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
 class add_dv(process):
 
-    def one_file(self,pathname,location,seq):
+    def one_file(self,pathname,show,location,seq):
         print pathname
         rf, created = Raw_File.objects.get_or_create(
-            location=location,
+            show=show, location=location,
             filename=pathname,)
         if created: 
             rf.sequence=seq
             rf.save()
    
-    def one_loc(self,location):
+    def one_loc(self,show,location):
       """
       finds dv files for this location
       """
+      if self.options.whack:
+          Raw_File.objects.filter(location=loc).delete()
+
       ep_dir=os.path.join(self.show_dir,'dv',location.slug)
       seq=0
       for dirpath, dirnames, filenames in os.walk(ep_dir):
@@ -31,15 +34,13 @@ class add_dv(process):
           for f in filenames:
               if f[-3:]=='.dv':
                   seq+=1
-                  self.one_file(os.path.join(d,f),location,seq)
+                  self.one_file(os.path.join(d,f),show,location,seq)
 
     def one_show(self, show):
-      if self.options.whack:
-          Raw_File.objects.filter(location__show=show).delete()
-
-      for loc in Location.objects.filter(show=show):
+      eps = Episode.objects.filter(show=show)
+      for loc in Location.objects.filter(episode__in=eps):
         print show,loc
-        self.one_loc(loc)
+        self.one_loc(show,loc)
 
     def work(self):
         """
