@@ -25,18 +25,24 @@ class add_dv(process):
         if img:
             imgname = os.path.join(dir,dv.basename()+".png")
             img.save(imgname,'png')
+            dv.thumbnail = imgname
+            dv.save()
 
         dv.ocrtext=ocrtext
         dv.save()
+	return imgname
 
     def process_eps(self,episodes):
       for ep in episodes:
-          show=ep.location.show
-          client=show.client
           print ep.location.slug
           dir=os.path.join(self.show_dir,'dv',ep.location.slug)
-          for dv in Raw_File.objects.filter(cut_list__episode=ep):
-              self.one_dv(dir,dv)
+          dvs = Raw_File.objects.filter(cut_list__episode=ep)
+          if dvs:
+              for dv in dvs:
+                  self.one_dv(dir,dv)
+              if not ep.thumbnail:
+                  ep.thumbnail = dvs[0].thumbnail
+          
 
     def one_loc(self,location,dir):
       for dv in Raw_File.objects.filter(location=location):

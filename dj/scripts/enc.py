@@ -99,8 +99,8 @@ class enc(process):
     wich is needed for long titles, so render it to a .png using inkscape
     """
     text={
-            'client': episode.location.show.client.name, 
-            'show': episode.location.show.name, 
+            'client': episode.show.client.name, 
+            'show': episode.show.name, 
             'title': episode.name, 
             'authors': episode.authors,
         }

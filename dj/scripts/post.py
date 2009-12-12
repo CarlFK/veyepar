@@ -19,7 +19,7 @@ class post(process):
   def process_ep(self, ep):
     print ep.id, ep.name
     loc = ep.location
-    show = loc.show
+    show = ep.show
     client = show.client
 
     description = "%s</br>\n</br>\n%s" % (ep.description, client.description)
@@ -57,12 +57,7 @@ class post(process):
     if self.options.hidden:
         meta['hidden'] = self.options.hidden
 
-# look for a thumb
-# TODO: thumb filename to the db.
-    for cut in Cut_List.objects.filter(episode=ep).order_by('sequence'):
-        basename = cut.raw_file.basename()        
-        thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
-        if os.path.exists(thumb): break
+    thumb = ep.thumbnail
     
 # the blip api gets kinda funky around multiple uploads
 # so no surprise the code is kinda funky.
@@ -106,12 +101,15 @@ class post(process):
             video_id, pw.blip['user'], pw.blip['password'], files, meta, thumb)
         response_xml = response.read()
         if self.options.verbose: print response_xml
-        blipurls = re.search("post_url>(.*)</post" ,response_xml).groups()
-        if blipurls:
-            blipurl=blipurls[0]
-            print blipurl
-            ep.comment += blipurl
-            self.log_info(blipurl)
+        blip_urls = re.search("post_url>(.*)</post" ,response_xml).groups()
+        if blip_urls:
+            blip_url=blip_urls[0]
+            blip_id=blip_url[-7:]
+            if self.options.verbose:
+                print blip_url, blip_id
+            ep.target = blip_id
+            ep.comment += blip_url
+            self.log_info(blip_url)
             ret=True
         else:
             if not self.options.verbose: print response_xml

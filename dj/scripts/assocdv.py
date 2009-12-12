@@ -76,8 +76,8 @@ class ass_dv(process.process):
 
     def one_show(self, show):
       if self.options.whack:
-          Cut_List.objects.filter(raw_file__location__show=show).delete()
-          Cut_List.objects.filter(episode__location__show=show).delete()
+          Cut_List.objects.filter(raw_file__show=show).delete()
+          Cut_List.objects.filter(episode__show=show).delete()
           return
 
       eps = Episode.objects.filter(show=show)

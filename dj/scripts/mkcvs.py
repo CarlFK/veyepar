@@ -65,7 +65,7 @@ class csv(process):
 # name the file after the client_show of the first episode
 # normaly a file will not span client or show
           ep=episodes[0]
-          show=ep.location.show
+          show=ep.show
           client=show.client
           self.show_dir = os.path.join(
               self.options.mediadir,client.slug,show.slug)
