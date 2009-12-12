@@ -28,12 +28,22 @@ class csv(process):
         # open('foo.xml','w').write(xml_code)
         return xml_code
 
+  def get_showpage(self, blip_xml):
+     tree = xml.etree.ElementTree.fromstring(blip_xml)
+     chan=tree.findall('channel')[0]
+     item=chan.findall('item')[0]
+     g=item.findall('{http://blip.tv/dtd/blip/1.0}showpage')[0]
+     showpage=g.text
+     return showpage
+ 
   def get_embed(self, blip_xml):
      tree = xml.etree.ElementTree.fromstring(blip_xml)
      chan=tree.findall('channel')[0]
      item=chan.findall('item')[0]
      g=item.findall('{http://search.yahoo.com/mrss/}player')[0]
      embed=g.text
+     embed=embed.strip(' \n')
+     return embed
   
   def get_media(self, blip_xml, role="Source"):
      tree = xml.etree.ElementTree.fromstring(blip_xml)
@@ -75,48 +85,46 @@ class csv(process):
     txt_pathname = os.path.join( self.show_dir, "txt", basename+".txt" )
     wget_pathname = os.path.join( self.show_dir, "txt", basename+".wget" )
     html_pathname = os.path.join( self.show_dir, "txt", basename+".html" )
+    blip_pathname = os.path.join( self.show_dir, "txt", basename+"_blip.xml" )
 
     if self.options.verbose: 
-        print "filenames:" + "\n%s"*4 % (
-            csv_pathname, txt_pathname, wget_pathname, html_pathname )
+        print "filenames:" + "\n%s"*5 % (
+            csv_pathname, txt_pathname, wget_pathname, 
+            html_pathname, blip_pathname )
 
 # setup csv 
-    fields="id state name primary comment blip source".split()
-    csv = DictWriter(open(csv_pathname, "w"),fields, extrasaction='ignore')
+    fields="id state name primary target blip source embed".split()
+    csv = DictWriter(open(csv_pathname, "w"),fields)
     # write out field names
     csv.writerow(dict(zip(fields,fields)))
 
 # setup txt
     txt=open(txt_pathname, "w")
     wget=open(wget_pathname, "w")
+    xml=open(blip_pathname, "w")
 
 # setup html (not full html, just some snippits)
     html=open(html_pathname, "w")
 
     # write out episode data
     for ep in episodes:
-        row=ep.__dict__
-        if self.options.verbose: print row
+        row = dict([(f,getattr(ep,f,None)) for f in fields])
+        # if self.options.verbose: print row
+        
+        blip_xml=self.blip_meta(ep.target)
+        show_page = self.get_showpage(blip_xml)
+        row['blip'] = "%sfile/%s"%(show_page,ep.target)
 
-        comment=row['comment'].strip().split('\n')[-1]
-        blip_id=comment[comment.find('/file/')+6:]
-        blip_id=comment[-7:]
-        print blip_id
-        url = "http://carlfk.blip.tv/file/%s"%blip_id
+        xml.write(blip_xml)
+        # if self.options.verbose: print blip_xml
 
-        blip_xml=self.blip_meta(blip_id)
+        row['embed']=self.get_embed(blip_xml)
+        row['source']=self.get_media(blip_xml)
 
-        embed=self.get_embed(blip_xml)
-        row['blip']=embed
-
-        media=self.get_media(blip_xml)
-        row['source']=media
-
+        # if self.options.verbose: print row
         csv.writerow(row)
-        txt.write("%s %s\n" % (url,row['name']))
-        print("%s %s\n" % (url,row['name']))
-        html.write('<a href="%s">%s</a>\n%s\n'%(
-            url,row['name'],row['blip']))
+        txt.write("%s %s\n" % (row['blip'],row['name']))
+        html.write('<a href="%(blip)s">%(name)s</a>\n%(blip)s\n'%row)
         wget.writelines(["%s\n" % url for url in self.get_media(blip_xml,'*')])
 
 
