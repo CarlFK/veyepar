@@ -30,26 +30,20 @@ class post(process):
         'title': ep.name,
         'description': description,
         }
-    """
-        # need to make a place for this stuff in the database.
-        "topics": "%s, python, "%(client.name),
-        "license": "13",
-        "category_id": "10",
-    """
-    if self.options.update:
-        # http://blip.tv/file/2873957
-        # video_id = ep.comment.replace('http://blip.tv/file/','')
-        video_id = ep.comment.strip(' \n')[-7:]
-        print ep.name, video_id
-    else:
-        # create new episode
-        video_id = ''
+
+# if .target is blank, a new episode will be created and .target set
+# else it will use the id of the episode from a previous run. 
+    video_id = ep.target
 
     if self.options.topics:
-        meta['topics'] = self.options.topics
+        meta['topics'] = ' '.join((self.options.topics,
+            ep.tags, client.slug))
 
     if self.options.license:
         meta['license'] = self.options.license
+
+    if self.options.rating:
+        meta['contentRating'] = self.options.rating
 
     if self.options.category:
         meta['category_id'] = self.options.category
@@ -57,14 +51,17 @@ class post(process):
     if self.options.hidden:
         meta['hidden'] = self.options.hidden
 
-    thumb = ep.thumbnail
+    if os.path.exists(ep.thumbnail):
+        thumb = ep.thumbnail
+    else:
+        thumb = os.path.join(self.show_dir,ep.thumbnail)
     
 # the blip api gets kinda funky around multiple uploads
 # so no surprise the code is kinda funky.
     # files = [('','Source',src_pathname)]
     roles={
-        'ogv':"Source", 
-        'ogg':"Source", 
+        'ogv':"Master", 
+        'ogg':"Portable", 
         'flv':"Web", 
         'mp4':"dvd", 
     }
@@ -120,8 +117,8 @@ class post(process):
         return ret
 
   def add_more_options(self, parser):
-        parser.add_option('-u', '--update', action='store_true',
-            help="update existing episode")
+        parser.add_option('--rating', 
+            help="TV rating")
         parser.add_option('-T', '--topics',
             help="list of topics (user defined)")
         parser.add_option('-L', '--license',

@@ -100,6 +100,8 @@ class Episode(models.Model):
     authors = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
+    # license = models.IntegerField(null=True,blank=True,default=13)
+    # hidden = models.BooleanField(null=True,blank=True,default=13)
     thumbnail = models.CharField(max_length=135,null=True,blank=True, 
         help_text="filename.png" )
     target = models.CharField(max_length=135, null=True,blank=True,
@@ -110,9 +112,6 @@ class Episode(models.Model):
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
-    # @property
-    # def location_name(self):
-    #     return self.location
     def duration(self):
         ret = self.end-self.start
         # print ret
