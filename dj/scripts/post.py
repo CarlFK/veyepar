@@ -35,11 +35,12 @@ class post(process):
 # else it will use the id of the episode from a previous run. 
     video_id = ep.target
 
-    if self.options.topics:
-        meta['topics'] = ' '.join((self.options.topics,
+    meta['topics'] = ' '.join((self.options.topics,
             ep.tags, client.slug))
 
-    if self.options.license:
+    if ep.license: 
+        meta['license'] = str(ep.license)
+    elif self.options.license:
         meta['license'] = self.options.license
 
     if self.options.rating:
