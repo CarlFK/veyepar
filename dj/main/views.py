@@ -20,7 +20,7 @@ from datetime import timedelta
 import os
 
 from main.models import Client,Show,Location,Episode,Cut_List
-from main.forms import EpisodeForm
+from main.forms import Episode_Form, Episode_Form_small, clrfForm
 
 from accounts.forms import LoginForm
 
@@ -154,7 +154,7 @@ def episodes(request,
     if locations:
         if request.user.is_authenticated():
             if request.method == 'POST':
-                form=EpisodeForm(request.POST)
+                form=Episode_Form(request.POST)
                 if form.is_valid():
                     form.save()
 # setup next time block to come after current one 
@@ -166,7 +166,7 @@ def episodes(request,
                         'end':saved["end"]+(saved["end"]-saved["start"])}
                     inits.update(parents)
                     print inits
-                    form=EpisodeForm(inits)
+                    form=Episode_Form(inits)
                 else:
                     print form.errors
             else:
@@ -175,9 +175,8 @@ def episodes(request,
                 # add parents to inits
                 inits.update(parents)
 
-                form, shows = former(
+                form, episodes = former(
                   request, Episode, inits, {'sequence':1})
-                  # request, Episode, parents, {'sequence':1})
 
 
             episodes=Episode.objects.filter(**parents).order_by('sequence')
@@ -191,28 +190,6 @@ def episodes(request,
         },
 	context_instance=RequestContext(request) )
  
-class Episode_Form(forms.Form):
-    state = forms.IntegerField(label="State",
-        widget=forms.TextInput(attrs={'size':':3'}))
-
-class clrfForm(forms.Form):
-    clid = forms.IntegerField(widget=forms.HiddenInput())
-    trash = forms.BooleanField(label="Trash",required=False)
-    apply = forms.BooleanField(label="Apply",required=False)
-    split = forms.BooleanField(label="Spilt",required=False)
-    sequence = forms.IntegerField(label="Sequence",required=False,
-      widget=forms.TextInput(attrs={'size':'3'}))
-    start = forms.CharField(max_length=12,label="Start",required=False,
-      help_text = "offset from start in h:m:s or frames, blank for start",
-      widget=forms.TextInput(attrs={'size':'9'}))
-    end = forms.CharField(max_length=12,label="End",required=False,
-      help_text = "offset from start in h:m:s or frames, blank for end",
-      widget=forms.TextInput(attrs={'size':'9'}))
-    rf_comment = forms.CharField(label="Raw_File comment",required=False,
-      widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
-    cl_comment = forms.CharField(label="Cut_List comment",required=False,
-      widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
-
 def episode(request,episode_no):
 
     episode=get_object_or_404(Episode,id=episode_no)
@@ -229,7 +206,7 @@ def episode(request,episode_no):
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
-        episode_form = Episode_Form(request.POST) 
+        episode_form = Episode_Form_small(request.POST) 
         clrfformset = clrfFormSet(request.POST) 
         if episode_form.is_valid() and clrfformset.is_valid(): 
             episode.state=episode_form.cleaned_data['state']
@@ -274,7 +251,7 @@ def episode(request,episode_no):
             print "ep errors:", episode_form.errors
             print clrfformset.errors
     else:
-        episode_form = Episode_Form({'state':episode.state}) 
+        episode_form = Episode_Form_small({'state':episode.state}) 
         # init data with things in the queryset that need editing
         # this part seems to work.
         init = [{'clid':cut.id,

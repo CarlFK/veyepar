@@ -34,7 +34,7 @@ class process(object):
       state=ready_state+1
   """
 
-  ready_state=2
+  ready_state=1
   
 # defaults to ntsc stuff
   fps=29.98

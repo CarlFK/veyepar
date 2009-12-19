@@ -14,7 +14,7 @@ from main.models import Client, Show, Location, Episode
 
 class csv(process):
 
-  ready_state = 4
+  ready_state = 6
 
   def blip_meta(self, video_id):
         """@brief Return information about the video

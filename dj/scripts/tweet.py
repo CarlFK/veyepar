@@ -18,7 +18,7 @@ from process import process
 
 class tweet(process):
 
-    ready_state = 4
+    ready_state = 5
 
     def post_to_twitter(message):
         cmd = ['curl', '-u', '%s:%s'%(pw.twit['user'], pw.twit['password']), '-d', 'status="%s"'%message, 'http://twitter.com/statuses/update.xml']

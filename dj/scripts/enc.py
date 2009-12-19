@@ -188,15 +188,15 @@ class enc(process):
                 'limiter':'20',
                 'normalise':self.options.normalize} )
             """
-        if self.options.normalize:
+        if episode.normalize:
             new=xml.etree.ElementTree.Element('filter', 
                 {'mlt_service':'volume', 
-                'normalise':self.options.normalize} )
+                'normalise':episode.normalize} )
             playlist.insert(pos,new)
 
-        if self.options.channelcopy:
+        if episode.channelcopy:
             # channelcopy should be 01 or 10.
-            fro,to=list(self.options.channelcopy)
+            fro,to=list(episode.channelcopy)
             new=xml.etree.ElementTree.Element('filter', 
                 {'mlt_service':'channelcopy', 
                 'from':fro, 'to':to} )
@@ -382,11 +382,6 @@ class enc(process):
   def add_more_options(self, parser):
         parser.add_option('--enc_script', 
           help='encode shell script' )
-        parser.add_option('--channelcopy', 
-          help='copy left to right (10) or right to left (01)' )
-        parser.add_option('--normalize', 
-          help='normalise audio' )
-
 
 if __name__ == '__main__':
     p=enc()

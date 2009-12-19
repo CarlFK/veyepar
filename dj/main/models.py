@@ -89,19 +89,23 @@ class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
     state = models.IntegerField(null=True,blank=True,
-        help_text="current processing state" )
+        help_text="2=ready to encode, 4=ready to post, 5=tweet" )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
     name = models.CharField(max_length=135, help_text="(synced from primary source)")
     slug = models.CharField(max_length=135,help_text="used for file name")
-    released = models.BooleanField(default=1)
+    released = models.NullBooleanField()
     primary = models.CharField(max_length=135,blank=True,
         help_text="pointer to master version of event (name,desc,time,author,files,etc)")
     authors = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
-    # license = models.IntegerField(null=True,blank=True,default=13)
-    # hidden = models.BooleanField(null=True,blank=True,default=13)
+    normalize = models.CharField(max_length=5,null=True,blank=True, )
+
+    channelcopy = models.CharField(max_length=2,null=True,blank=True,
+          help_text='copy left to right (10) or right to left (01)' )
+    license = models.IntegerField(null=True,blank=True,default=13)
+    hidden = models.NullBooleanField(null=True,blank=True)
     thumbnail = models.CharField(max_length=135,null=True,blank=True, 
         help_text="filename.png" )
     target = models.CharField(max_length=135, null=True,blank=True,
