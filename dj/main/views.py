@@ -201,7 +201,6 @@ def episode(request,episode_no):
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
 
-    # cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__trash','sequence','raw_file__start')
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
@@ -209,6 +208,7 @@ def episode(request,episode_no):
         episode_form = Episode_Form(request.POST) 
         clrfformset = clrfFormSet(request.POST) 
         if episode_form.is_valid() and clrfformset.is_valid(): 
+            print episode_form
             episode_form.save()
             for form in clrfformset.forms:
                 cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])

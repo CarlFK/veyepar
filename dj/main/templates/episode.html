@@ -29,13 +29,14 @@
 </table>
 
 <form action="" method="POST">{% csrf_token %}
+<input type="submit" value="Save" />
 <table border=1>
 <tbody>
 {{ episode_form }}  
 </tbody>
 </table>
+<input type="submit" value="Save" />
 {{ clrfformset.management_form }}
-
 <table border=1>
 <tbody>
 {% for cl,clrfform in clrffs %}
