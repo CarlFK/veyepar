@@ -11,14 +11,15 @@ class Episode_Form(forms.ModelForm):
         model = Episode
 
     def __init__(self, *args, **kwargs):
-        super(EpisodeForm, self).__init__(*args, **kwargs)
+        super(Episode_Form, self).__init__(*args, **kwargs)
         # self.fields['start'].widget = widgets.AdminSplitDateTime()
         # self.fields['end'].widget = widgets.AdminSplitDateTime()
 
 class Episode_Form_small(forms.ModelForm):
     class Meta:
 	model = Episode
-        fields = ('state', 'normalize', 'channelcopy')
+        fields = ('state', 'normalize', 'channelcopy',
+                  'thumbnail')
 
 
 class old_Episode_Form(forms.Form):

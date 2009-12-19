@@ -195,6 +195,7 @@ class enc(process):
             playlist.insert(pos,new)
 
         if episode.channelcopy:
+            if self.options.verbose: print 'channelcopy:', episode.channelcopy
             # channelcopy should be 01 or 10.
             fro,to=list(episode.channelcopy)
             new=xml.etree.ElementTree.Element('filter', 
