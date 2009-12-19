@@ -205,7 +205,7 @@ def episode(request,episode_no):
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
-        episode_form = Episode_Form(request.POST) 
+        episode_form = Episode_Form(request.POST, instance=episode) 
         clrfformset = clrfFormSet(request.POST) 
         if episode_form.is_valid() and clrfformset.is_valid(): 
             print episode_form
