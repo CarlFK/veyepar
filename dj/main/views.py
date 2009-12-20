@@ -20,7 +20,7 @@ from datetime import timedelta
 import os
 
 from main.models import Client,Show,Location,Episode,Cut_List
-from main.forms import Episode_Form, clrfForm
+from main.forms import Episode_Form_small, Episode_Form, clrfForm
 
 from accounts.forms import LoginForm
 
@@ -205,10 +205,9 @@ def episode(request,episode_no):
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
-        episode_form = Episode_Form(request.POST, instance=episode) 
+        episode_form = Episode_Form_small(request.POST, instance=episode) 
         clrfformset = clrfFormSet(request.POST) 
         if episode_form.is_valid() and clrfformset.is_valid(): 
-            print episode_form
             episode_form.save()
             for form in clrfformset.forms:
                 cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])
@@ -248,7 +247,7 @@ def episode(request,episode_no):
             print "ep errors:", episode_form.errors
             print clrfformset.errors
     else:
-        episode_form = Episode_Form(instance=episode) 
+        episode_form = Episode_Form_small(instance=episode) 
         # init data with things in the queryset that need editing
         # this part seems to work.
         init = [{'clid':cut.id,

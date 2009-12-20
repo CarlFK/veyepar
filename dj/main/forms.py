@@ -14,7 +14,7 @@ class Episode_Form_small(forms.ModelForm):
     class Meta:
 	model = Episode
         fields = ('state', 'normalize', 'channelcopy',
-                  'thumbnail')
+                  'thumbnail', 'description')
 
 
 class clrfForm(forms.Form):
