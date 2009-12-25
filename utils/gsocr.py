@@ -16,6 +16,24 @@ import gst
 
 import gtk
 
+def one_frame(sink,buffer,pad):
+    if len(buffer) == 15:
+        print buffer.__repr__()
+    else:
+        f=open('foo.pnm','wb')
+        f.write('P3\n720 480\n255\n')
+        f.write(buffer)
+        f.close()
+
+        sink.set_state(gst.STATE_NULL )
+
+    return
+    
+    p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
+        stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    ocrtext, stderrdata = p.communicate(buffer)
+    print ocrtext
+    
 class Main:
 
     def next_file(self):
@@ -49,10 +67,22 @@ class Main:
         pipeline.add(ffmpegcolorspace)
         self.ffmpegcolorspace=ffmpegcolorspace
 
+        pnmenc = gst.element_factory_make("pnmenc", "pnmenc")
+        pnmenc.set_property('ascii',True)
+        pipeline.add(pnmenc)
+        self.pnmenc = pnmenc
+        ffmpegcolorspace.link(pnmenc)
+        
+        sink = gst.element_factory_make("fakesink", "sink")
+        sink.set_property('signal-handoffs',True)
+        sink.connect('handoff',one_frame)
+        pipeline.add(sink)
+        pnmenc.link(sink)
+
 # Output images as GdkPixbuf objects in bus messages
-        gdkpixbufsink = gst.element_factory_make("gdkpixbufsink", "gdkpixbufsink")
-        pipeline.add(gdkpixbufsink)
-        ffmpegcolorspace.link(gdkpixbufsink)
+        # gdkpixbufsink = gst.element_factory_make("gdkpixbufsink", "gdkpixbufsink")
+        # pipeline.add(gdkpixbufsink)
+        # ffmpegcolorspace.link(gdkpixbufsink)
 
 # keep refernce to pipleline so it doesn't get destroyed 
         self.pipeline=pipeline
@@ -67,6 +97,7 @@ class Main:
         print pad.get_caps()[0].get_name()
         if pad.get_caps()[0].get_name().startswith('video'):
             pad.link(self.ffmpegcolorspace.get_pad("sink"))
+            # pad.link(self.pnmenc.get_pad("sink"))
 
     def on_message(self, bus, message):
         print message
@@ -76,13 +107,10 @@ class Main:
                 and message.structure.get_name()=='pixbuf':
             pixbuf=message.structure['pixbuf']
             lst=[]
-            pixbuf.save_to_callback(lambda b,l: l.append(b), 'png', user_data=lst)
-            png=''.join(lst)
-            # open('foo.png','wb').write(png)
-            p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
-                stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-            ocrtext, stderrdata = p.communicate(png)
-            print ocrtext
+            pixbuf.save_to_callback(
+                lambda b,l: l.append(b), 'bmp', user_data=lst)
+            img=''.join(lst)
+            open('foo.bmp','wb').write(img)
 
 
         elif t == gst.MESSAGE_EOS:
@@ -97,5 +125,6 @@ def parse_args():
 if __name__=='__main__':
     options,args = parse_args()
     gobject.threads_init()
+    if not args: args=['foo.dv']
     p=Main(args)
     gtk.main()

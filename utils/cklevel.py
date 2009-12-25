@@ -107,10 +107,8 @@ def parse_args():
     options, args = parser.parse_args()
     return options,args
 
-options,args = parse_args()
-
-gobject.threads_init()
-
-p=Main(args)
-
-gtk.main()
+if __name__=='__main__':
+    options,args = parse_args()
+    gobject.threads_init()
+    p=Main(args)
+    gtk.main()

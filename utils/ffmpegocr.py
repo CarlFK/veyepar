@@ -33,8 +33,8 @@ def ocrdv(dvfn):
         buffer.close()
 
         # ocr the image
-        p = subprocess.Popen(['gocr', '-'],
-          stdin=subprocess.PIPE, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
+            stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         ocrtext, stderrdata = p.communicate(img)
         if stderrdata: print "ERR:", stderrdata
         if ocrtext: print "OUT:", ocrtext
