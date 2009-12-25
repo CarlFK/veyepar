@@ -21,7 +21,7 @@ def one_frame(sink,buffer,pad):
         print buffer.__repr__()
     else:
         f=open('foo.pnm','wb')
-        f.write('P3\n720 480\n255\n')
+        f.write('P3\n720 480\n255\n')  # these are the 15 chars from above
         f.write(buffer)
         f.close()
 
