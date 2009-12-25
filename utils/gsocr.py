@@ -15,33 +15,24 @@ pygst.require ("0.10")
 import gst
 
 import gtk
-
-def ocr(img):
-    p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
-        stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    p.stdin.write('P3\n720 480\n255\n')  
-    ocrtext, stderrdata = p.communicate(img)
-    print ocrtext
-
-
-def one_frame(sink,buffer,pad):
+ 
+def one_frame(sink,buffer,pad,it):
     if len(buffer) == 15:
-        print buffer.__repr__()
+        it.p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
+          stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        it.p.stdin.write(buffer)  
+        it.f=open('foo.pnm','wb')
+        it.f.write(buffer)  
     else:
-        f=open('foo.pnm','wb')
-        f.write('P3\n720 480\n255\n')  # these are the 15 chars from above
-        f.write(buffer)
-        f.close()
+        it.f.write(buffer)
+        it.f.close()
 
-        # img = 'P3\n720 480\n255\n'+buffer 
-        # TypeError: cannot concatenate 'str' and 'gst.Buffer' objects
+        ocrtext, stderrdata = it.p.communicate(buffer)
+        print ocrtext
 
-        ocr(buffer)
+        # sink.set_state(gst.STATE_NULL )
 
-        sink.set_state(gst.STATE_NULL )
-
-    return
-    
+    return   
     
 class Main:
 
@@ -84,7 +75,7 @@ class Main:
         
         sink = gst.element_factory_make("fakesink", "sink")
         sink.set_property('signal-handoffs',True)
-        sink.connect('handoff',one_frame)
+        sink.connect('handoff',one_frame,self)
         pipeline.add(sink)
         pnmenc.link(sink)
 
