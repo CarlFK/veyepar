@@ -16,6 +16,14 @@ import gst
 
 import gtk
 
+def ocr(img):
+    p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
+        stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    p.stdin.write('P3\n720 480\n255\n')  
+    ocrtext, stderrdata = p.communicate(img)
+    print ocrtext
+
+
 def one_frame(sink,buffer,pad):
     if len(buffer) == 15:
         print buffer.__repr__()
@@ -25,14 +33,15 @@ def one_frame(sink,buffer,pad):
         f.write(buffer)
         f.close()
 
+        # img = 'P3\n720 480\n255\n'+buffer 
+        # TypeError: cannot concatenate 'str' and 'gst.Buffer' objects
+
+        ocr(buffer)
+
         sink.set_state(gst.STATE_NULL )
 
     return
     
-    p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
-        stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    ocrtext, stderrdata = p.communicate(buffer)
-    print ocrtext
     
 class Main:
 
