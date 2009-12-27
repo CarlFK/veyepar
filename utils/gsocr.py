@@ -17,7 +17,7 @@ import gst
 import gtk
  
 def Dictionary():
-    dictionary = [w for w in open('dictionary.txt').read().split() if len(w)>3]
+    dictionary = [w.upper() for w in open('dictionary.txt').read().split() if len(w)>3]
     return dictionary
 
 def one_frame( sink,buffer,pad, it):
@@ -26,14 +26,14 @@ def one_frame( sink,buffer,pad, it):
         it.p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
           stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         it.p.stdin.write(buffer)  
-        it.f=open('foo.pnm','wb')
-        it.f.write(buffer)  
+        # it.f=open('foo.pnm','wb')
+        # it.f.write(buffer)  
 
         it.skip=False ## don't seek yet, need to get the 2nd part below
 
     else:
-        it.f.write(buffer)
-        it.f.close()
+        # it.f.write(buffer)
+        # it.f.close()
 
         ocrtext, stderrdata = it.p.communicate(buffer)
 
@@ -48,6 +48,7 @@ def one_frame( sink,buffer,pad, it):
                 print words[:10]
 
         it.skip=True ## flag to seek
+        gobject.idle_add( skip_forward, p, priority=gobject.PRIORITY_HIGH )
 
     return   
     
@@ -58,10 +59,10 @@ def skip_forward(it):
         it.skip=False
         pos_int = it.pipeline.query_position(it.time_format, None)[0]
         # print "starting at", pos_int
-        seek_ns = pos_int + (100 * 1000000000)
+        seek_ns = pos_int + (10 * 1000000000)
         it.pipeline.seek_simple(it.time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
 
-    return True
+    return False
 
 class Main:
 
