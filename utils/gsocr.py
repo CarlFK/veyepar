@@ -29,8 +29,6 @@ def one_frame( sink,buffer,pad, it):
         # it.f=open('foo.pnm','wb')
         # it.f.write(buffer)  
 
-        it.skip=False ## don't seek yet, need to get the 2nd part below
-
     else:
         # it.f.write(buffer)
         # it.f.close()
@@ -47,20 +45,15 @@ def one_frame( sink,buffer,pad, it):
                 it.last_words = words
                 print words[:10]
 
-        it.skip=True ## flag to seek
         gobject.idle_add( skip_forward, p, priority=gobject.PRIORITY_HIGH )
 
     return   
     
 def skip_forward(it):
 
-    if it.skip:
-        # print "in skip_forward..."
-        it.skip=False
-        pos_int = it.pipeline.query_position(it.time_format, None)[0]
-        # print "starting at", pos_int
-        seek_ns = pos_int + (10 * 1000000000)
-        it.pipeline.seek_simple(it.time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
+    pos_int = it.pipeline.query_position(it.time_format, None)[0]
+    seek_ns = pos_int + (10 * 1000000000)
+    it.pipeline.seek_simple(it.time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
 
     return False
 
@@ -68,7 +61,6 @@ class Main:
 
     def __init__(self, filename):
 
-        self.skip = False
         self.last_ocr=''
         self.last_words=[]
         self.dictionary=Dictionary()
@@ -116,8 +108,8 @@ class Main:
         print
 
         bus = pipeline.get_bus()
-        bus.add_signal_watch()
-        bus.connect("message", self.on_message)
+        # bus.add_signal_watch()
+        # bus.connect("message", self.on_message)
 
         pipeline.set_state(gst.STATE_PLAYING)
 
@@ -147,5 +139,4 @@ if __name__=='__main__':
     gobject.threads_init()
     if not args: args=['foo.dv']
     p=Main(args[0])
-    gobject.idle_add( skip_forward, p, priority=gobject.PRIORITY_HIGH )
     gtk.main()
