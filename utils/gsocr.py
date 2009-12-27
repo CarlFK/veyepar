@@ -108,8 +108,8 @@ class Main:
         print
 
         bus = pipeline.get_bus()
-        # bus.add_signal_watch()
-        # bus.connect("message", self.on_message)
+        bus.add_signal_watch()
+        bus.connect("message", self.on_message)
 
         pipeline.set_state(gst.STATE_PLAYING)
 
@@ -120,9 +120,9 @@ class Main:
             pad.link(self.ffmpegcolorspace.get_pad("sink"))
 
     def on_message(self, bus, message):
-        print message
+        # print message
         t = message.type
-        print t
+        # print t
         # if t == gst.MESSAGE_ELEMENT:
         #     pass
         if t == gst.MESSAGE_EOS:
