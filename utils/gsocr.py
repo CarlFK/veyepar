@@ -58,7 +58,7 @@ def skip_forward(it):
         it.skip=False
         pos_int = it.pipeline.query_position(it.time_format, None)[0]
         # print "starting at", pos_int
-        seek_ns = pos_int + (10 * 1000000000)
+        seek_ns = pos_int + (100 * 1000000000)
         it.pipeline.seek_simple(it.time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
 
     return True
@@ -66,6 +66,11 @@ def skip_forward(it):
 class Main:
 
     def __init__(self, filename):
+
+        self.skip = False
+        self.last_ocr=''
+        self.last_words=[]
+        self.dictionary=Dictionary()
         
         pipeline = gst.Pipeline("mypipeline")
         self.pipeline=pipeline
@@ -100,7 +105,6 @@ class Main:
 
 # keep refernce to pipleline so it doesn't get destroyed 
         self.pipeline=pipeline
-        pipeline.set_state(gst.STATE_PLAYING)
 
         self.time_format = gst.Format(gst.FORMAT_TIME)
 
@@ -112,29 +116,25 @@ class Main:
 
         bus = pipeline.get_bus()
         bus.add_signal_watch()
-        # bus.connect("message", self.on_message)
+        bus.connect("message", self.on_message)
 
-        self.skip = False
-        self.last_ocr=''
-        self.last_words=[]
-        self.dictionary=Dictionary()
+        pipeline.set_state(gst.STATE_PLAYING)
 
     def OnDynamicPad(self, dbin, pad, islast):
         print "OnDynamicPad Called!"
         print pad.get_caps()[0].get_name()
         if pad.get_caps()[0].get_name().startswith('video'):
             pad.link(self.ffmpegcolorspace.get_pad("sink"))
-            # pad.link(self.pnmenc.get_pad("sink"))
 
     def on_message(self, bus, message):
         print message
         t = message.type
         print t
-        if t == gst.MESSAGE_ELEMENT:
-            pass
-        elif t == gst.MESSAGE_EOS:
+        # if t == gst.MESSAGE_ELEMENT:
+        #     pass
+        if t == gst.MESSAGE_EOS:
             # self.player.set_state(gst.STATE_NULL)
-            self.next_file()
+            gtk.main_quit()
 
 def parse_args():
     parser = optparse.OptionParser()
