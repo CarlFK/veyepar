@@ -49,8 +49,6 @@ def one_frame( sink,buffer,pad, it):
 
         it.skip=True ## flag to seek
 
-        # sink.set_state(gst.STATE_NULL )
-
     return   
     
 def skip_forward(it):
@@ -146,6 +144,7 @@ def parse_args():
 if __name__=='__main__':
     options,args = parse_args()
     gobject.threads_init()
-    p=Main('foo.dv')
+    if not args: args=['foo.dv']
+    p=Main(args[0])
     gobject.idle_add( skip_forward, p, priority=gobject.PRIORITY_HIGH )
     gtk.main()
