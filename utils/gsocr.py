@@ -25,7 +25,7 @@ def ckocr(it,ocrtext):
         it.last_ocr=ocrtext
         words = [w for w in ocrtext.split() if w.upper() in dictionary]
         print ocrtext.__repr__()[:70]
-        if len(it.words) < len(words):
+        if it.words is None or len(it.words) < len(words):
             it.words = words
             print words
             ret = True
@@ -69,7 +69,7 @@ class Main:
     def __init__(self, filename):
 
         self.last_ocr=''
-        self.words=[]
+        self.words=None
         self.frame=0
         
         self.base_name=os.path.splitext(filename)[0]
@@ -137,6 +137,7 @@ class Main:
         #     pass
         if t == gst.MESSAGE_EOS:
             # self.player.set_state(gst.STATE_NULL)
+            print self.frame, self.words
             gtk.main_quit()
 
 def parse_args():
