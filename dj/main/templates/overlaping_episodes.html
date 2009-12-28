@@ -1,0 +1,22 @@
+{# client.html #}
+{% extends "base.html" %}
+
+{% block head %}
+<title>veyepar - Show: {{client.name}} {{show.name}} - overlapping episodes </title>
+{% endblock %}
+
+{% block content %}
+    <table>
+        {% for episode in episodes %}
+            <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+            <td>{{episode.id}}</td>
+            <td>{{episode.sequence}}</td>
+<td style="padding-left: {{episode.start_px}}px;">
+<div style="background: black;width:{{episode.width_px}}">.</div></td>
+            <td>{{episode.start|date:"H:i"}} - {{episode.end|date:"H:i"}}</td>
+            <td><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

@@ -190,6 +190,35 @@ def episodes(request,
         },
 	context_instance=RequestContext(request) )
  
+def overlaping_episodes(request,show_id):
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+    episodes=Episode.objects.raw('select e1.* from main_episode e1, main_episode e2 where e1.id != e2.id and e1.start <=e2.end and e1.end>=e2.end and e1.location_id=e2.location_id order by e1.start')
+    elist=list(episodes)
+    elist=[e.__dict__ for e in episodes]
+    start,end=24*60,0
+    for e in elist:
+        e['start_min']=e['start'].hour*60+e['start'].minute
+        e['end_min']=e['end'].hour*60+e['end'].minute
+        if e['start_min'] < start: start = e['start_min']
+        if e['end_min'] > end: end = e['start_min']
+    width_min = end-start
+
+    width_px=300.0
+    x=width_min/width_px ## this here to do float math
+    for e in elist:
+        e['start_px']=int((e['start_min']-start)/x)
+        e['end_px']=int((e['end_min']-start)/x)
+        e['width_px']=(e['end_px']-e['start_px'])
+
+    return render_to_response('overlaping_episodes.html',
+        {
+          'episodes':elist,
+	},
+        context_instance=RequestContext(request) )
+
+
+
 def episode(request,episode_no):
 
     episode=get_object_or_404(Episode,id=episode_no)
