@@ -4,6 +4,7 @@
 # uses gstreamer to send frames to gocr
 
 import subprocess
+import os
 import optparse
 
 import pygtk
@@ -16,36 +17,42 @@ import gst
 
 import gtk
  
-def Dictionary():
-    dictionary = [w.upper() for w in open('dictionary.txt').read().split() if len(w)>3]
-    return dictionary
+dictionary = [w.upper() for w in open('dictionary.txt').read().split() if len(w)>3]
+
+def ckocr(it,ocrtext):
+    ret = False
+    if it.last_ocr != ocrtext:
+        it.last_ocr=ocrtext
+        words = [w for w in ocrtext.split() if w.upper() in dictionary]
+        print ocrtext.__repr__()[:70]
+        if len(it.words) < len(words):
+            it.words = words
+            print words
+            ret = True
+
+    return ret
 
 def one_frame( sink,buffer,pad, it):
     # print len(buffer)
     if len(buffer) == 15:
-        it.p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
-          stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        it.p.stdin.write(buffer)  
-        # it.f=open('foo.pnm','wb')
-        # it.f.write(buffer)  
+        it.buffer = buffer
 
     else:
-        # it.f.write(buffer)
-        # it.f.close()
 
-        ocrtext, stderrdata = it.p.communicate(buffer)
+        p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], stdin=subprocess.PIPE, 
+          stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        p.stdin.write(it.buffer)  
+        ocrtext, stderrdata = p.communicate(buffer)
 
-        if it.last_ocr != ocrtext:
-            it.last_ocr=ocrtext
-            words = [w for w in ocrtext.split() if w.upper() in it.dictionary]
-            print ocrtext.__repr__()[:70]
-            # print "last", it.last_words
-            # print "cur", words
-            if it.last_words != words:
-                it.last_words = words
-                print words[:10]
+        if ckocr(it,ocrtext):
+            it.frame = it.pipeline.query_position(it.time_format, None)[0]
+       
+            f=open("%s.pnm" % it.base_name,'wb')
+            f.write(it.buffer)  
+            f.write(buffer)
+            f.close()
 
-        gobject.idle_add( skip_forward, p, priority=gobject.PRIORITY_HIGH )
+        gobject.idle_add( skip_forward, it, priority=gobject.PRIORITY_HIGH )
 
     return   
     
@@ -62,9 +69,12 @@ class Main:
     def __init__(self, filename):
 
         self.last_ocr=''
-        self.last_words=[]
-        self.dictionary=Dictionary()
+        self.words=[]
+        self.frame=0
         
+        self.base_name=os.path.splitext(filename)[0]
+        print self.base_name
+
         pipeline = gst.Pipeline("mypipeline")
         self.pipeline=pipeline
 
