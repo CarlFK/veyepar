@@ -191,9 +191,10 @@ def episodes(request,
 	context_instance=RequestContext(request) )
  
 def overlaping_episodes(request,show_id):
+
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.raw('select e1.* from main_episode e1, main_episode e2 where e1.id != e2.id and e1.start <=e2.end and e1.end>=e2.end and e1.location_id=e2.location_id order by e1.start')
+    episodes=Episode.objects.raw('select e1.* from main_episode e1, main_episode e2 where e1.id != e2.id and e1.start<e2.end and e1.end>e2.start and e1.location_id=e2.location_id order by e1.location_id, e1.start')
     elist=list(episodes)
     elist=[e.__dict__ for e in episodes]
     start,end=24*60,0
