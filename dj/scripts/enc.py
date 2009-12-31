@@ -222,15 +222,17 @@ class enc(process):
         return dv_pathname
 
   def run_melt(self, mlt_pathname, episode):
-        def one_format(ext, acodec, vcodec):
+        def one_format(ext, acodec=None, vcodec=None):
             if self.options.verbose: 
                 print "checking %s in %s" % (ext,self.options.upload_formats)
             if ext in self.options.upload_formats:
-              cmd="melt -verbose -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" 
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
-              cmd = cmd % ( self.options.format.lower(), 
-                mlt_pathname, out_pathname, acodec, vcodec)
+
+              cmd="melt -verbose -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
+              if ext=='dv': cmd="melt -verbose -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1 deinterlace_method=onefield" % ( self.options.format.lower(), mlt_pathname, out_pathname)
+# f=dv pix_fmt=yuv411p s=720x480
+
               # write melt command out to a script:
               script_pathname = os.path.join(
                 self.show_dir, "tmp", "%s_%s.sh"%(episode.slug,ext))
@@ -250,13 +252,16 @@ class enc(process):
         ret = ret and one_format("ogg", "vorbis", "libtheora")
         ret = ret and one_format("flv", "libmp3lame", "flv")
         ret = ret and one_format("mp4", "libmp3lame", "mpeg4")
+        ret = ret and one_format("dv")
 
         return ret
 
   def mkdv(self, mlt_pathname, episode, cls ):
         """
         assemble parts into a master .dv file
-        so that something like ffmpeg2theora can encode it
+        so that something like ffmpeg2theora can encode it.
+        it is different from run_melt-one_format("dv") because it does not 
+        re-encode - it just copies chunks of files.
         """
         title_dv=self.mk_title_dv(mlt_pathname, episode)
 
@@ -281,6 +286,7 @@ class enc(process):
             # there is a problem if the first clip is shorter than the title.
 # the next clip will start at 0, 
 # which is part of the title, so it will play twice.  oh well.
+# it also does't pick up the volume adjustments. 
             title_bytes=0 
             size=os.fstat(inf.fileno()).st_size
             end = time2b(c.end,self.fps,self.bpf,size)
@@ -348,25 +354,30 @@ class enc(process):
         ret = self.run_melt(mlt, episode)
   
 # using ogv requires dv, so roll that in
-        if "dv" in self.options.upload_formats or \
-                "ogv" in self.options.upload_formats:
-            # consolidate all the dv files into one  
-            dvpathname = self.mkdv(mlt,episode,cls)
+        if "ogv" in self.options.upload_formats:
+            
+            if "dv" in self.options.upload_formats:
+                # use the dv created with melt
+                dvpathname = os.path.join(
+                    self.show_dir, "dv", "%s.dv"%episode.slug )
+            else:
+                # create the dv (mktitle+copy frames)
+                dvpathname = self.mkdv(mlt,episode,cls)
  
-            if "ogv" in self.options.upload_formats:
-              oggpathname = os.path.join(
+            oggpathname = os.path.join(
                 self.show_dir, "ogv", "%s.ogv"%episode.slug)
-              cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5" \
-                " --speedlevel 0 --optimize --keyint 256" \
+            cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5" \
                 " --channels 1".split()
-              cmd+=[dvpathname,'--output',oggpathname]
+            cmd+=[dvpathname,'--output',oggpathname]
+            
+            #    " --speedlevel 0 --optimize --keyint 256" \
 
-              # write ogv command out to a script:
-              script_pathname = os.path.join(
+            # write ogv command out to a script:
+            script_pathname = os.path.join(
                 self.show_dir, "tmp", "%s_%s.sh"%(episode.slug,'ogv'))
-              open(script_pathname,'w').write(' '.join(cmd))
+            open(script_pathname,'w').write(' '.join(cmd))
 
-              ret = ret and self.run_cmd(cmd)
+            ret = ret and self.run_cmd(cmd)
 
         if self.options.enc_script:
             cmd = [self.options.enc_script, 
