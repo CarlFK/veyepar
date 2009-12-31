@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,7 +14,7 @@
    height="600"
    id="titlepage"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.47pre4 r22446"
    version="1.0"
    sodipodi:docname="title.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
@@ -133,7 +134,8 @@
      inkscape:window-width="988"
      inkscape:window-height="989"
      inkscape:window-x="20"
-     inkscape:window-y="121" />
+     inkscape:window-y="121"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -168,30 +170,30 @@
          x="64.395706"
          y="547.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
     <image
-       y="475.13971"
-       x="369.95288"
-       id="image2842"
-       height="41.901447"
-       width="53.049335"
-       sodipodi:absref="/home/carl/Videos/veyepar/titm/doc/bling/pscLogo.png"
+       sodipodi:absref="/mnt/nfs/greg/juser/veyepar/dj/scripts/bling/pscLogo.png"
        xlink:href="pscLogo.png"
-       transform="matrix(0.9999165,-1.2920749e-2,7.1658428e-3,0.9999743,0,0)" />
+       transform="matrix(0.9999165,-1.2920749e-2,7.1658428e-3,0.9999743,0,0)"
+       width="53.049335"
+       height="41.901447"
+       id="image2842"
+       x="369.95288"
+       y="475.13971" />
     <image
-       y="470.32825"
-       x="517.04639"
-       id="image2690"
-       height="41.255398"
+       sodipodi:absref="/mnt/nfs/greg/juser/veyepar/dj/scripts/bling/saucelabs.medium.logo.png"
+       xlink:href="saucelabs.medium.logo.png"
        width="159.40587"
-       sodipodi:absref="/home/carl/Videos/veyepar/titm/doc/bling/saucelabs.medium.logo.png"
-       xlink:href="saucelabs.medium.logo.png" />
+       height="41.255398"
+       id="image2690"
+       x="517.04639"
+       y="470.32825" />
     <image
-       y="475.49438"
-       x="81.65654"
-       id="image2695"
-       height="30.923077"
+       sodipodi:absref="/mnt/nfs/greg/juser/veyepar/dj/scripts/bling/rackspace_cloud-white_high_alpha.png"
+       xlink:href="rackspace_cloud-white_high_alpha.png"
        width="197.76387"
-       sodipodi:absref="/home/carl/Videos/veyepar/titm/doc/bling/rackspace_cloud-white_high_alpha.png"
-       xlink:href="rackspace_cloud-white_high_alpha.png" />
+       height="30.923077"
+       id="image2695"
+       x="81.65654"
+       y="475.49438" />
     <flowRoot
        xml:space="preserve"
        id="titlebox"
@@ -263,7 +265,6 @@
          sodipodi:role="line"
          id="show"
          x="316.79199"
-         y="362.70398"
-         transform="translate(-39.946289,0)">October Meeting</tspan></text>
+         y="362.70398">October Meeting</tspan></text>
   </g>
 </svg>
