@@ -10,7 +10,7 @@ import numpy
 import pygtk
 pygtk.require ("2.0")
 import gobject
-gobject.threads_init ()
+gobject.threads_init()
 import pygst
 pygst.require ("0.10")
 import gst
@@ -20,11 +20,12 @@ import gtk
 
 class Main:
 
-    def __init__(self, file_name):
+    def __init__(self, file_name, start_sec=None, samples=None):
         
         self.min,self.max = None,None
         self.totals = numpy.array([[0,0],[0,0],[0,0]])
         self.count = 0
+        self.samples = samples
 
         pipeline = gst.Pipeline("mypipeline")
         self.pipeline=pipeline
@@ -63,14 +64,21 @@ class Main:
 
 # keep refernce to pipleline so it doesn't get destroyed 
         self.pipeline=pipeline
-        pipeline.set_state(gst.STATE_PLAYING)
 
         bus = pipeline.get_bus()
         bus.add_signal_watch()
         bus.connect("message", self.on_message)
 
+        if start_sec:
+        # skip first bit (get into the 'normal sounding' part of the talk)
+            time_format = gst.Format(gst.FORMAT_TIME)
+            seek_ns = (start_sec * 1000000000)
+            pipeline.seek_simple(time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
+
+        pipeline.set_state(gst.STATE_PLAYING)
 
     def OnDynamicPad(self, dbin, pad, islast):
+
         if pad.get_caps()[0].get_name().startswith('audio'):
             pad.link(self.convert.get_pad("sink"))
 
@@ -84,12 +92,15 @@ class Main:
             # self.totals = [[self.totals[i][j]+int(levs[i][j]) for j in [0,1]] for i in [0,1,2] ]
             self.totals += levs
             self.count += 1
+            if self.count == self.samples:
+            	self.quit()
 
         elif t == gst.MESSAGE_EOS:
-            self.pipeline.set_state(gst.STATE_NULL)
-            print self.totals/self.count
-            gtk.main_quit()
+            self.quit()
 
+    def quit(self):
+            self.pipeline.set_state(gst.STATE_NULL)
+            gtk.main_quit()
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -99,6 +110,6 @@ def parse_args():
 if __name__=='__main__':
     options,args = parse_args()
     file_names= args or ['foo.dv']
-    gobject.threads_init()
-    p=Main(file_names[0])
+    p=Main(file_names[0],5*60,500)
     gtk.main()
+    print p.count, p.totals/p.count
