@@ -6,6 +6,7 @@
 # (now just tring to play a file - first pygst code ever)
 
 import optparse
+import numpy
 
 import pygtk
 pygtk.require ("2.0")
@@ -17,11 +18,14 @@ import gst
 
 import gtk
 
+
 class Main:
 
     def __init__(self, file_name):
         
         self.min,self.max = None,None
+        self.totals = numpy.array([[0,0],[0,0],[0,0]])
+        self.count = 0
 
         pipeline = gst.Pipeline("mypipeline")
         self.pipeline=pipeline
@@ -50,10 +54,10 @@ class Main:
         convert.link(level)
         
 # send it to alsa        
-# might be faster to send to fakesink
         # alsa = gst.element_factory_make("alsasink", "alsa")
         # pipeline.add(alsa)
         # level.link(alsa)
+# faster to send to fakesink
         sink = gst.element_factory_make("fakesink", "sink")
         pipeline.add(sink)
         level.link(sink)
@@ -76,25 +80,15 @@ class Main:
         if t == gst.MESSAGE_ELEMENT \
                 and message.structure.get_name()=='level':
 
-            levs = [message.structure[type] for type in ("rms","peak","decay")]
-            print levs
-            levs = [int(l[0]) for l in levs]
-            lev = levs[1]
-            # rms = 10.0**(lev / 20.0)
-            # print lev, "*"* int(-lev/2)
-            if self.min is None or lev < self.min:
-                self.min = lev
-            if self.max is None or lev > self.max:
-                self.max = lev
-            dif= self.max-self.min
-            print levs, self.min, self.max, dif
-            if levs[1]>-10:
-                pass
-                # self.next_file()
+            levs = [[int(i) for i in message.structure[type]]
+                for type in ("rms","peak","decay")]
+            # self.totals = [[self.totals[i][j]+int(levs[i][j]) for j in [0,1]] for i in [0,1,2] ]
+            self.totals += levs
+            self.count += 1
 
         elif t == gst.MESSAGE_EOS:
-            self.player.set_state(gst.STATE_NULL)
-            # self.next_file()
+            self.pipeline.set_state(gst.STATE_NULL)
+            print self.totals/self.count
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -103,7 +97,7 @@ def parse_args():
 
 if __name__=='__main__':
     options,args = parse_args()
-    file_names= args or ['/home/juser/Videos/veyepar/DjangoCon/djc09/dv/Holladay/2009-09-08/11:02:46.dv']
+    file_names= args or ['foo.dv']
     gobject.threads_init()
     p=Main(file_names[0])
     gtk.main()
