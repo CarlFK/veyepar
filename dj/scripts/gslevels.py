@@ -88,6 +88,8 @@ class Main:
         elif t == gst.MESSAGE_EOS:
             self.pipeline.set_state(gst.STATE_NULL)
             print self.totals/self.count
+            gtk.main_quit()
+
 
 def parse_args():
     parser = optparse.OptionParser()
