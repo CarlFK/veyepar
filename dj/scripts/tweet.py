@@ -54,8 +54,7 @@ class tweet(process):
         show = loc.show
         client = show.client
 
-        video_id = ep.comment.strip(' \n')[-7:]
-        blip_url="http://carlfk.blip.tv/file/%s" % video_id
+        blip_url="http://carlfk.blip.tv/file/%s" % ep.target
         prefix = "#%s #VIDEO" % show.client.slug
         tweet = self.mk_tweet(prefix, ep.name, blip_url)
 

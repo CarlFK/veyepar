@@ -73,9 +73,9 @@ class process(object):
                 ep.location.slug )
             self.log_in(ep)
             if self.process_ep(ep):
-                self.log_out()
                 ep.state=self.ready_state+1
-                ep.save()
+            self.log_out()
+            ep.save()
         else:
             if self.options.verbose:
                 print '#%s: "%s" is in state %s, ready is %s' % (
