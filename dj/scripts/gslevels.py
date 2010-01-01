@@ -20,7 +20,7 @@ import gtk
 
 class Main:
 
-    def __init__(self, file_name, start_sec=None, samples=None):
+    def __init__(self, file_name, start_sec, samples):
         
         self.min,self.max = None,None
         self.totals = numpy.array([[0,0],[0,0],[0,0]])
@@ -102,6 +102,13 @@ class Main:
             self.pipeline.set_state(gst.STATE_NULL)
             gtk.main_quit()
 
+def cklev(file_name, start_sec=None, samples=None):
+    p=Main(file_name,start_sec, samples)
+    gtk.main()
+    return (p.totals/p.count).tolist()
+
+#         levs = gslevels.cklev(rawpathname, 5*60, 500)
+
 def parse_args():
     parser = optparse.OptionParser()
     options, args = parser.parse_args()
@@ -110,6 +117,5 @@ def parse_args():
 if __name__=='__main__':
     options,args = parse_args()
     file_names= args or ['foo.dv']
-    p=Main(file_names[0],5*60,500)
-    gtk.main()
-    print p.count, p.totals/p.count
+    levs = cklev(file_names[0], 5*60, 500)
+    print levs

@@ -4,23 +4,32 @@
 # logs the average level of the first .dv file
 # (appends it to comments, cuz I don't have a better place)
 
-from process import process
-
+import os
 import gslevels
 
+from process import process
 
 class cklev(process):
 
     ready_state = 3
 
-
     def process_ep(self, ep):
         print ep.id, ep.name
-        print ep.cut_list.objects.all()
+        cls = ep.cut_list_set.all()
+        if cls:
+            rf=cls[0].raw_file.filename
+            rawpathname = os.path.join(self.episode_dir,rf)
+            print rawpathname
 
-        filename = ''
-        # levs = gslevels.cklev(file_name,5*60,500)
-        # ep.comment = levs.tolist().__str__() + '\n' + ep.comment
+        levs = gslevels.cklev(rawpathname, 5*60, 500)
+        powers=levs[0]
+        if powers[0]>powers[1]:
+            x='01'
+        else:
+            x='10'
+        print x,levs
+        
+        ep.comment = "\n".join([x,levs.__str__(), ep.comment])
 
         return False ## don't bump state
 
