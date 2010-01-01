@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
-# cklevel.py
-# check level - look for audio
+# gslevel.py
+# report audio levels
 # to figure out what files are messed up
-# (now just tring to play a file - first pygst code ever)
 
 import optparse
 
@@ -103,7 +102,7 @@ def parse_args():
 
 if __name__=='__main__':
     options,args = parse_args()
-    file_names= args or ['/home/juser/Videos/veyepar/DjangoCon/djc09/dv/Holladay/2009-09-08/11:02:46.dv']
+    file_names= args or ['/home/carl/Videos/veyepar/DjangoCon/djc09/dv/Holladay/2009-09-08/11:02:46.dv']
     gobject.threads_init()
     p=Main(file_names[0])
     gtk.main()
