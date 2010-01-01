@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
-# cklevel.py
-# check level - look for audio
+# gslevel.py
+# report audio levels
 # to figure out what files are messed up
-# (now just tring to play a file - first pygst code ever)
 
 import optparse
 import numpy
