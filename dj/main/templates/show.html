@@ -16,7 +16,8 @@
         {% endfor %}
 <tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
 <tr><td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td></tr>
-<tr><td><a href="{% url play_list show.id %}">play_list</a></td></tr>
+<tr><td><a href="{% url play_list show.id %}{{show.slug}}.pls">play_list</a></td></tr>
+<tr><td><a href="{% url client client.slug %}">client</a></td></tr>
     </table>
 <hr />
 <hr />
@@ -30,7 +31,7 @@
             <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
             <td>{{episode.id}}</td>
             <td>{{episode.sequence}}</td>
-            <td>{{episode.start|date:"b D d H:i"}} - {{episode.end|date:"H:i"}}</td>
+            <td>{{episode.start|date:"D d H:i"}} - {{episode.end|date:"H:i"}}</td>
             <td>{{episode.start|timesince:episode.end}}</td>
             <td>{{episode.state}}</td>
             <td><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>

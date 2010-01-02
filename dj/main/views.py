@@ -63,7 +63,7 @@ def meet_ann(request,show_id):
 
 def play_list(request,show_id):
     show=get_object_or_404(Show,id=show_id)
-    episodes=Episode.objects.filter(show=show).order_by('sequence')
+    episodes=Episode.objects.filter(show=show,state=3).order_by('sequence')
 
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename=playlist.pls'
@@ -158,11 +158,11 @@ def episodes(request,
     if location_slug:
         locations=Location.objects.filter(show=show, slug=location_slug)
         location=Location.objects.get(show=show, slug=location_slug)
-        parents={'location':location.id}
+        parents={'show':show.id, 'location':location.id}
     else:
         locations=Location.objects.all()
         location=locations[0]
-        parents={'show':show.id, 'location':location.id}
+        parents={'show':show.id}
 
     form, episodes = None,None
     if locations:
@@ -192,7 +192,7 @@ def episodes(request,
                 form, episodes = former(
                   request, Episode, inits, {'sequence':1})
 
-
+            print parents, location_slug
             episodes=Episode.objects.filter(**parents).order_by('sequence')
 
 
@@ -241,7 +241,9 @@ def episode(request,episode_no):
     location=episode.location
     client=show.client
 
-    episodes=Episode.objects.filter(sequence__gte=episode.sequence,id__gt=episode.id,show=show).order_by('sequence')
+    episodes=Episode.objects.filter(
+        sequence__gt=episode.sequence,
+        state=3,show=show).order_by('sequence')
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
 
@@ -252,6 +254,8 @@ def episode(request,episode_no):
         episode_form = Episode_Form_small(request.POST, instance=episode) 
         clrfformset = clrfFormSet(request.POST) 
         if episode_form.is_valid() and clrfformset.is_valid(): 
+            # if the state got bumpped, move to the next episode
+            bump_ep =  episode.state+1 == episode_form.cleaned_data['state']
             episode_form.save()
             for form in clrfformset.forms:
                 cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])
@@ -276,6 +280,9 @@ def episode(request,episode_no):
 
             # if trash got touched, 
             # need to requery to get things in the right order.  I think.
+            if bump_ep:
+               episode = nextepisode
+               episode_form = Episode_Form_small(instance=episode) 
             cuts = Cut_List.objects.filter(
                 episode=episode).order_by('raw_file__trash','raw_file__start')
             init = [{'clid':cut.id,

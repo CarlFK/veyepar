@@ -112,8 +112,13 @@ class enc(process):
     for key in ['client', 'show', 'title']:
         tree[1][key].text=text[key]
 
-    prefix = "Featuring" if "," in text['authors'] else "By"
-    tree[1]['presenternames'].text="%s %s" % (prefix,text['authors'])
+    if text['authors']:
+        prefix = "Featuring" if "," in text['authors'] else "By"
+        tree[1]['presenternames'].text="%s %s" % (prefix,text['authors'])
+    else:
+        # remove the text (there is a placholder to make editing sane)
+        tree[1]['presenternames'].text=""
+
 
     cooked_svg_name='%s.svg'%output_base
     open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))

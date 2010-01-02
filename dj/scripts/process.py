@@ -41,19 +41,20 @@ class process(object):
   bpf=120000
 
   def log_in(self,episode):
+    hostname=socket.gethostname()
+    what_where = "%s@%s" % (self.__class__.__name__, hostname)
     episode.locked = datetime.datetime.now()
-    episode.locked_by = "%s@%s" % (
-	self.__class__.__name__, socket.gethostname())
-    episode.save()
+    episode.locked_by = what_where
     state,create = State.objects.get_or_create(id=1)
     self.log=Log(episode=episode,
         state=state,
         ready = datetime.datetime.now(),
-        start = datetime.datetime.now())
+        start = datetime.datetime.now(),
+        result = what_where)
     self.log.save()
+    episode.save()
 
   def log_info(self,text):
-    print text
     self.log.result += text + '\n'
 
   def log_out(self):
