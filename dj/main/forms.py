@@ -13,7 +13,7 @@ class Episode_Form(forms.ModelForm):
 class Episode_Form_small(forms.ModelForm):
     class Meta:
 	model = Episode
-        fields = ('state', 'normalize', 'channelcopy',
+        fields = ('state', 'locked', 'locked_by', 'normalize', 'channelcopy',
                   'thumbnail', 'description', 'comment')
 
 

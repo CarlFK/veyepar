@@ -90,6 +90,9 @@ class Episode(models.Model):
     location = models.ForeignKey(Location, null=True)
     state = models.IntegerField(null=True,blank=True,
         help_text="2=ready to encode, 4=ready to post, 5=tweet" )
+    locked = models.DateTimeField(null=True, blank=True)
+    locked_by = models.CharField(max_length=35, blank=True,
+	 help_text="user/process that locked." )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
     name = models.CharField(max_length=135, help_text="(synced from primary source)")

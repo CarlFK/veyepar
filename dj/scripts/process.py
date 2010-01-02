@@ -4,7 +4,7 @@
 
 import optparse
 import ConfigParser
-import os,sys,subprocess
+import os,sys,subprocess,socket
 import datetime,time
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
@@ -41,6 +41,10 @@ class process(object):
   bpf=120000
 
   def log_in(self,episode):
+    episode.locked = datetime.datetime.now()
+    episode.locked_by = "%s@%s" % (
+	self.__class__.__name__, socket.gethostname())
+    episode.save()
     state,create = State.objects.get_or_create(id=1)
     self.log=Log(episode=episode,
         state=state,
@@ -55,6 +59,10 @@ class process(object):
   def log_out(self):
     self.log.end = datetime.datetime.now()
     self.log.save()
+    ep=self.log.episode
+    ep.locked = None
+    ep.locked_by = ''
+    ep.save()
     del(self.log)
     
   def process_ep(self, episode):
@@ -62,8 +70,14 @@ class process(object):
     return 
 
   def process_eps(self, episodes):
-    for ep in episodes:
+    for e in episodes:
+      ep=Episode.objects.get(pk=e.id)
+      if ep.locked:
+        print '#%s: "%s" locked on %s by %s' % (
+                    ep.id, ep, ep.locked, ep.locked_by)
+      else:
         if ep.state==self.ready_state or self.options.force:
+
             location = ep.location
             show = ep.show
             client = show.client
