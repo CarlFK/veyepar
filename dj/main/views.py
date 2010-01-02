@@ -241,7 +241,7 @@ def episode(request,episode_no):
     location=episode.location
     client=show.client
 
-    episodes=Episode.objects.filter(sequence__gt=episode.sequence,show=show).order_by('sequence')
+    episodes=Episode.objects.filter(sequence__gte=episode.sequence,id__gt=episode.id,show=show).order_by('sequence')
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
 
