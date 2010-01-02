@@ -23,6 +23,9 @@ urlpatterns += patterns(
     url(r'meeting_announcement/(?P<show_id>\w+)/$', 
         meet_ann, 
         name='meet_ann'),
+    url(r'play_list/(?P<show_id>\w+)/$', 
+        play_list, 
+        name='play_list'),
     url(r'overlaping_episodes/(?P<show_id>\w+)/$', overlaping_episodes,
         name='overlaping_episodes'),
 )

@@ -14,22 +14,24 @@ class cklev(process):
     ready_state = 3
 
     def process_ep(self, ep):
-        print ep.id, ep.name
         cls = ep.cut_list_set.all()
         if cls:
             rf=cls[0].raw_file.filename
             rawpathname = os.path.join(self.episode_dir,rf)
-            print rawpathname
+            # print rawpathname
 
-        levs = gslevels.cklev(rawpathname, 5*60, 500)
-        powers=levs[0]
-        if powers[0]>powers[1]:
-            x='01'
-        else:
-            x='10'
-        print x,levs
+            levs = gslevels.cklev(rawpathname, 5*60, 500)
+            powers=levs[0]
+            if powers[0]>powers[1]:
+                x='01'
+            else:
+                x='10'
+
+            if [1 for l in levs if l[0]<l[1]]:
+                print ep.id, ep.name
+                print x,levs
         
-        ep.comment = "\n".join([x,levs.__str__(), ep.comment])
+            # ep.comment = "\n".join([x,levs.__str__(), ep.comment])
 
         return False ## don't bump state
 

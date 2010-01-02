@@ -18,6 +18,7 @@ from django.core import serializers
 from datetime import datetime
 from datetime import timedelta
 import os
+import csv
 
 from main.models import Client,Show,Location,Episode,Cut_List
 from main.forms import Episode_Form_small, Episode_Form, clrfForm
@@ -59,6 +60,19 @@ def meet_ann(request,show_id):
           'episodes':episodes,
         },
         context_instance=RequestContext(request) )
+
+def play_list(request,show_id):
+    show=get_object_or_404(Show,id=show_id)
+    episodes=Episode.objects.filter(show=show).order_by('sequence')
+
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=playlist.pls'
+
+    writer = csv.writer(response)
+    for ep in episodes:
+        writer.writerow(["%s.flv"%ep.slug])
+
+    return response
 
 def meet_ical(request,location_id):
     location=get_object_or_404(Location,id=location_id)
@@ -227,7 +241,7 @@ def episode(request,episode_no):
     location=episode.location
     client=show.client
 
-    episodes=Episode.objects.filter(id__gt=episode_no,show=show).order_by('id')
+    episodes=Episode.objects.filter(sequence__gt=episode.sequence,show=show).order_by('sequence')
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
 

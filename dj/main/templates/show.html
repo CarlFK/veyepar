@@ -12,12 +12,13 @@
          <td> {{location.sequence}} </td>
          <td> <a href="L/{{location.slug}}/">{{ location.name }}</a> </td>
 <td><a href="/admin/main/episode/?location__id__exact={{location.id}}">admin</a></td>
-<td><a href="{% url meet_ann location.id %}">meeting announcement</a></td>
          </tr>
         {% endfor %}
+<tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
+<tr><td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td></tr>
+<tr><td><a href="{% url play_list show.id %}">play_list</a></td></tr>
     </table>
 <hr />
-<a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a>
 <hr />
     <table>
     <thead><tr>
