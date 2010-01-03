@@ -35,8 +35,9 @@ class post(process):
 # else it will use the id of the episode from a previous run. 
     video_id = ep.target
 
-    meta['topics'] = ' '.join((self.options.topics,
-            ep.tags, client.slug))
+    tags = [self.options.topics, client.slug]
+    if ep.tags: tags.append(ep.tags)
+    meta['topics'] = ' '.join(tags)
 
     if ep.license: 
         meta['license'] = str(ep.license)
@@ -52,10 +53,18 @@ class post(process):
     if self.options.hidden:
         meta['hidden'] = self.options.hidden
 
-    if os.path.exists(ep.thumbnail):
-        thumb = ep.thumbnail
+    # find a thumbnail
+    if ep.thumbnail:
+        if os.path.exists(ep.thumbnail):
+            thumb = ep.thumbnail
+        else:
+            thumb = os.path.join(self.show_dir,ep.thumbnail)
     else:
-        thumb = os.path.join(self.show_dir,ep.thumbnail)
+         for cut in Cut_List.objects.filter(episode=ep).order_by('sequence'):
+             basename = cut.raw_file.basename()        
+             thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
+             if os.path.exists(thumb): break
+
     
 # the blip api gets kinda funky around multiple uploads
 # so no surprise the code is kinda funky.

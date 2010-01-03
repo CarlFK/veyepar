@@ -50,11 +50,11 @@ class tweet(process):
 
     def process_ep(self, ep):
         print ep.id, ep.name
-        loc = ep.location
-        show = loc.show
+        show = ep.show
         client = show.client
 
-        blip_url="http://carlfk.blip.tv/file/%s" % ep.target
+        # blip_url="http://carlfk.blip.tv/file/%s" % ep.target
+        blip_url="http://djangocon.blip.tv/file/%s" % ep.target
         prefix = "#%s #VIDEO" % show.client.slug
         tweet = self.mk_tweet(prefix, ep.name, blip_url)
 
