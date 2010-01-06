@@ -10,6 +10,8 @@ import twitter
 
 import urllib2
 import urllib
+import time
+
 import pw  # see pw_samp.py for sample.
 
 from process import process
@@ -30,6 +32,9 @@ class tweet(process):
         return out
 
     def shorten(self, url):
+        return url # hack because auth broke:
+        ## Out[15]: '{\n    "errorCode": 203, \n    "errorMessage": "You must be authenticated to access shorten", \n    "statusCode": "ERROR"\n}'
+
         d=dict(version='2.0.1',login=pw.bitly['user'], apikey=pw.bitly['password'], longurl=url)
         q = urllib.urlencode(d)
         print q
