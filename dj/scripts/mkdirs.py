@@ -24,7 +24,7 @@ class mkdirs(process):
 
   def work(self):
         """
-        find or create a client and show and the dirs
+        find client and show, create the dirs
         """
         client = Client.objects.get(slug=self.options.client)
         show = Show.objects.get(client=client,slug=self.options.show)

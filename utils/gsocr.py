@@ -17,7 +17,10 @@ import gst
 
 import gtk
  
-dictionary = [w.upper() for w in open('dictionary.txt').read().split() if len(w)>3]
+import pkg_resources
+
+dict_loc =  pkg_resources.resource_filename('gsocr', 'static/dictionary.txt')
+dictionary = [w.upper() for w in open(dict_loc).read().split() if len(w)>3]
 
 def ckocr(it,ocrtext):
     ret = False
