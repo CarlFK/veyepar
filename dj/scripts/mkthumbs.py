@@ -7,7 +7,8 @@ ocr untill we find some text
 
 import  os
 
-import ocrdv
+import gsocr
+# import ocrdv
 
 from process import process
 
@@ -20,6 +21,11 @@ class add_dv(process):
         pathname = os.path.join(dir,dv.filename)
         print pathname
 
+        p=gsocr.Main(pathname)
+        gsocr.gtk.main()
+
+        """
+        # code from py-ffmpeg
         ocrtext,img=ocrdv.ocrdv(pathname)
 
         if img:
@@ -27,6 +33,7 @@ class add_dv(process):
             img.save(imgname,'png')
             dv.thumbnail = imgname
             dv.save()
+        """
 
         dv.ocrtext=ocrtext
         dv.save()
