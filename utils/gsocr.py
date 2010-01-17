@@ -42,7 +42,8 @@ def one_frame( sink,buffer,pad, it):
 
     else:
 
-        p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], stdin=subprocess.PIPE, 
+        p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], 
+          stdin=subprocess.PIPE, 
           stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         p.stdin.write(it.buffer)  
         ocrtext, stderrdata = p.communicate(buffer)
@@ -50,7 +51,8 @@ def one_frame( sink,buffer,pad, it):
         if ckocr(it,ocrtext):
             it.frame = it.pipeline.query_position(it.time_format, None)[0]
        
-            f=open("%s.pnm" % it.base_name,'wb')
+            # write image out to a file
+            f=open(it.imgname,'wb')
             f.write(it.buffer)  
             f.write(buffer)
             f.close()
@@ -62,7 +64,7 @@ def one_frame( sink,buffer,pad, it):
 def skip_forward(it):
 
     pos_int = it.pipeline.query_position(it.time_format, None)[0]
-    seek_ns = pos_int + (10 * 1000000000)
+    seek_ns = pos_int + (2000 * 1000000000)
     it.pipeline.seek_simple(it.time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
 
     return False
@@ -74,6 +76,9 @@ class Main:
         self.last_ocr=''
         self.words=None
         self.frame=0
+        self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
+
+        filename
         
         self.base_name=os.path.splitext(filename)[0]
         print self.base_name

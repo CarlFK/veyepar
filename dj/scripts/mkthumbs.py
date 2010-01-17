@@ -23,6 +23,11 @@ class add_dv(process):
 
         p=gsocr.Main(pathname)
         gsocr.gtk.main()
+        if p.words:
+            dv.ocrtext=p.words
+            # dv.thumbnail=p.imgname
+            dv.save()
+
 
         """
         # code from py-ffmpeg
@@ -34,26 +39,28 @@ class add_dv(process):
             dv.thumbnail = imgname
             dv.save()
         """
-
-        dv.ocrtext=ocrtext
-        dv.save()
-	return imgname
+	return p.imgname
 
     def process_eps(self,episodes):
+      # this never gets called...
       for ep in episodes:
           print ep.location.slug
           dir=os.path.join(self.show_dir,'dv',ep.location.slug)
           dvs = Raw_File.objects.filter(cut_list__episode=ep)
-          if dvs:
-              for dv in dvs:
-                  self.one_dv(dir,dv)
-              if not ep.thumbnail:
-                  ep.thumbnail = dvs[0].thumbnail
+          for dv in dvs:
+              imgname=self.one_dv(dir,dv)
+              print imgname
+              ep.thumbnail = imgname
+              ep.save()
+              return
           
 
     def one_loc(self,location,dir):
       for dv in Raw_File.objects.filter(location=location):
-        self.one_dv(dir,dv)
+          imgname=self.one_dv(dir,dv)
+          print imgname
+          ep.thumbnail = imgname
+          ep.save()
 
     def one_show(self, show):
       eps = Episode.objects.filter(show=show)
