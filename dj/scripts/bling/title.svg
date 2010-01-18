@@ -18,7 +18,7 @@
    version="1.0"
    sodipodi:docname="title.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/carl/a/djc09b.png"
+   inkscape:export-filename="/home/carl/a/chipyt1.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -114,6 +114,27 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 526.18109 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2955"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3008"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3061"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -144,6 +165,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -160,45 +182,28 @@
        y="0" />
     <text
        xml:space="preserve"
-       style="font-size:20.176651px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       style="font-size:20.176651px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
        x="64.395706"
-       y="547.07855"
+       y="555.07855"
        id="text2556"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan2558"
          x="64.395706"
-         y="547.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
+         y="555.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
     <image
-       sodipodi:absref="/mnt/nfs/greg/juser/veyepar/dj/scripts/bling/pscLogo.png"
-       xlink:href="pscLogo.png"
-       transform="matrix(0.9999165,-1.2920749e-2,7.1658428e-3,0.9999743,0,0)"
-       width="53.049335"
-       height="41.901447"
-       id="image2842"
-       x="369.95288"
-       y="475.13971" />
-    <image
-       sodipodi:absref="/mnt/nfs/greg/juser/veyepar/dj/scripts/bling/saucelabs.medium.logo.png"
+       sodipodi:absref="/home/carl/src/vid/veyepar/dj/scripts/bling/saucelabs.medium.logo.png"
        xlink:href="saucelabs.medium.logo.png"
-       width="159.40587"
-       height="41.255398"
-       id="image2690"
+       y="470.32825"
        x="517.04639"
-       y="470.32825" />
-    <image
-       sodipodi:absref="/mnt/nfs/greg/juser/veyepar/dj/scripts/bling/rackspace_cloud-white_high_alpha.png"
-       xlink:href="rackspace_cloud-white_high_alpha.png"
-       width="197.76387"
-       height="30.923077"
-       id="image2695"
-       x="81.65654"
-       y="475.49438" />
+       id="image2690"
+       height="41.255398"
+       width="159.40587" />
     <flowRoot
        xml:space="preserve"
        id="titlebox"
-       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="matrix(1,0,0,1.1970692,-12.421875,15.990602)"><flowRegion
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="matrix(1,0,0,1.1970692,-12.421875,5.990602)"><flowRegion
          id="flowRegion2776"><rect
            id="rect2778"
            width="684.7511"
@@ -221,8 +226,8 @@
          id="presenternames">By:  James Bennett</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot2802"
-       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="translate(17.664063,118)"><flowRegion
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="translate(17.664063,104)"><flowRegion
          id="flowRegion2804"><rect
            id="rect2806"
            width="587.64703"
@@ -245,8 +250,8 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot2576"
-       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="matrix(1,0,0,1.1970692,-12.421875,-107.50301)"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="matrix(1,0,0,1.1970692,-12.421875,-111.50301)"
        inkscape:label="#flowRoot2414"><flowRegion
          id="flowRegion2416"><rect
            id="rect2418"
@@ -266,5 +271,19 @@
          id="show"
          x="316.79199"
          y="362.70398">October Meeting</tspan></text>
+    <image
+       y="453.5513"
+       x="324.5"
+       id="image2957"
+       height="72.452911"
+       width="151"
+       xlink:href="file:///home/carl/src/vid/veyepar/dj/scripts/bling/ita.png" />
+    <image
+       y="458.54037"
+       x="120.88887"
+       id="image3063"
+       height="71.36364"
+       width="139.55556"
+       xlink:href="file:///home/carl/src/vid/veyepar/dj/scripts/bling/imagescape-web.gif" />
   </g>
 </svg>
