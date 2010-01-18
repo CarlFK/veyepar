@@ -14,8 +14,8 @@
 <h2>Author(s): {{episode.authors}}</h2>
 <a href="/admin/main/episode/{{episode.id}}/">admin</a> 
 <a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a> 
+<a href="{% url foo_list episode.id %}{{episode.slug}}.pls"">playlist</a> 
 </br>
-
 <table>
 <tbody>
 <tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>
@@ -54,8 +54,8 @@
     {# <a href="S/{{show.slug}}/F/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a><br> #}
     <a href="file:///home/carl/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a><br>
     {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}
-    <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.pnm">
-    <img src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.pnm" width=200> </a>
+    <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
+    <img src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" width=200> </a>
     </td>
 
     <td>
