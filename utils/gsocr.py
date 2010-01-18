@@ -5,6 +5,9 @@
 
 import subprocess
 import os
+from cStringIO import StringIO
+import ImageFile
+
 import optparse
 
 import pygtk
@@ -17,7 +20,10 @@ import gst
 
 import gtk
  
-dictionary = [w.upper() for w in open('dictionary.txt').read().split() if len(w)>3]
+import pkg_resources
+
+dict_loc =  pkg_resources.resource_filename('gsocr', 'static/dictionary.txt')
+dictionary = [w.upper() for w in open(dict_loc).read().split() if len(w)>3]
 
 def ckocr(it,ocrtext):
     ret = False
@@ -33,13 +39,17 @@ def ckocr(it,ocrtext):
     return ret
 
 def one_frame( sink,buffer,pad, it):
-    # print len(buffer)
+    # frames come in 2 parts: header + image
+    # the header is 15 bytes, save it for when the 2nd part comes in.
+  
     if len(buffer) == 15:
         it.buffer = buffer
 
     else:
+        # 2nd part has arrived in buffer, the first is in it.buffer.
 
-        p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], stdin=subprocess.PIPE, 
+        p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], 
+          stdin=subprocess.PIPE, 
           stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         p.stdin.write(it.buffer)  
         ocrtext, stderrdata = p.communicate(buffer)
@@ -47,10 +57,34 @@ def one_frame( sink,buffer,pad, it):
         if ckocr(it,ocrtext):
             it.frame = it.pipeline.query_position(it.time_format, None)[0]
        
-            f=open("%s.pnm" % it.base_name,'wb')
+            # write image out to a pnm file (not sure why, nothing else uses it)
+            # f=open(it.imgname,'wb')
+            f=open(it.basename+'.pnm','wb')
             f.write(it.buffer)  
             f.write(buffer)
             f.close()
+ 
+            subprocess.Popen(
+                ['convert', it.basename+'.pnm', it.basename+'.png'])
+
+            # convert it to a png (for firefox and uploading as thumb)
+            # buffin = StringIO()
+            # buffin.write(it.buffer)
+            # buffin.write(buffer)
+            # buffout = StringIO()
+            # Image.open(buffin).save(it.basename+'.png', 'png')
+            # Image.open(it.basename+'.pnm','ppm').save(it.basename+'.png', 'png')
+            # img = buffout.getvalue()
+            # fp = open(it.basename+'.pnm', "rb")
+            # p = ImageFile.Parser()
+            # while 1:
+            #     s = fp.read(1024)
+            #     if not s:
+# 		    break
+#                 p.feed(s)
+#             im = p.close()
+#             im.save(it.basename+'.png')
+            
 
         gobject.idle_add( skip_forward, it, priority=gobject.PRIORITY_HIGH )
 
@@ -59,7 +93,7 @@ def one_frame( sink,buffer,pad, it):
 def skip_forward(it):
 
     pos_int = it.pipeline.query_position(it.time_format, None)[0]
-    seek_ns = pos_int + (10 * 1000000000)
+    seek_ns = pos_int + (2000 * 1000000000)
     it.pipeline.seek_simple(it.time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
 
     return False
@@ -71,6 +105,10 @@ class Main:
         self.last_ocr=''
         self.words=None
         self.frame=0
+        # self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
+        self.basename=os.path.splitext(filename)[0] 
+
+        filename
         
         self.base_name=os.path.splitext(filename)[0]
         print self.base_name

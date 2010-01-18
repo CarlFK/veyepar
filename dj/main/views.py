@@ -61,6 +61,21 @@ def meet_ann(request,show_id):
         },
         context_instance=RequestContext(request) )
 
+def raw_play_list(request,episode_id):
+    episode=get_object_or_404(Episode,id=episode_id)
+    cuts = Cut_List.objects.filter(
+                episode=episode).order_by('raw_file__trash','raw_file__start')
+
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=playlist.pls'
+
+    writer = csv.writer(response)
+    for cut in cuts:
+        writer.writerow([cut.raw_file.filename])
+
+    return response
+
+
 def play_list(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     episodes=Episode.objects.filter(show=show,state=3).order_by('sequence')
@@ -255,7 +270,10 @@ def episode(request,episode_no):
         clrfformset = clrfFormSet(request.POST) 
         if episode_form.is_valid() and clrfformset.is_valid(): 
             # if the state got bumpped, move to the next episode
-            bump_ep =  episode.state+1 == episode_form.cleaned_data['state']
+            if episode.state:
+                bump_ep = episode.state+1 == episode_form.cleaned_data['state']
+            else:
+                bump_ep = None
             episode_form.save()
             for form in clrfformset.forms:
                 cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])
