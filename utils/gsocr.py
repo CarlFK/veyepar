@@ -5,6 +5,9 @@
 
 import subprocess
 import os
+from cStringIO import StringIO
+import ImageFile
+
 import optparse
 
 import pygtk
@@ -36,11 +39,14 @@ def ckocr(it,ocrtext):
     return ret
 
 def one_frame( sink,buffer,pad, it):
-    # print len(buffer)
+    # frames come in 2 parts: header + image
+    # the header is 15 bytes, save it for when the 2nd part comes in.
+  
     if len(buffer) == 15:
         it.buffer = buffer
 
     else:
+        # 2nd part has arrived in buffer, the first is in it.buffer.
 
         p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], 
           stdin=subprocess.PIPE, 
@@ -51,11 +57,34 @@ def one_frame( sink,buffer,pad, it):
         if ckocr(it,ocrtext):
             it.frame = it.pipeline.query_position(it.time_format, None)[0]
        
-            # write image out to a file
-            f=open(it.imgname,'wb')
+            # write image out to a pnm file (not sure why, nothing else uses it)
+            # f=open(it.imgname,'wb')
+            f=open(it.basename+'.pnm','wb')
             f.write(it.buffer)  
             f.write(buffer)
             f.close()
+ 
+            subprocess.Popen(
+                ['convert', it.basename+'.pnm', it.basename+'.png'])
+
+            # convert it to a png (for firefox and uploading as thumb)
+            # buffin = StringIO()
+            # buffin.write(it.buffer)
+            # buffin.write(buffer)
+            # buffout = StringIO()
+            # Image.open(buffin).save(it.basename+'.png', 'png')
+            # Image.open(it.basename+'.pnm','ppm').save(it.basename+'.png', 'png')
+            # img = buffout.getvalue()
+            # fp = open(it.basename+'.pnm', "rb")
+            # p = ImageFile.Parser()
+            # while 1:
+            #     s = fp.read(1024)
+            #     if not s:
+# 		    break
+#                 p.feed(s)
+#             im = p.close()
+#             im.save(it.basename+'.png')
+            
 
         gobject.idle_add( skip_forward, it, priority=gobject.PRIORITY_HIGH )
 
@@ -76,7 +105,8 @@ class Main:
         self.last_ocr=''
         self.words=None
         self.frame=0
-        self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
+        # self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
+        self.basename=os.path.splitext(filename)[0] 
 
         filename
         

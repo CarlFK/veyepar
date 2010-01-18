@@ -39,10 +39,11 @@ class add_dv(process):
             dv.thumbnail = imgname
             dv.save()
         """
-	return p.imgname
+
+	return p.basename
 
     def process_eps(self,episodes):
-      # this never gets called...
+      # this never gets called because this processes files, not episodes.
       for ep in episodes:
           print ep.location.slug
           dir=os.path.join(self.show_dir,'dv',ep.location.slug)
@@ -50,8 +51,8 @@ class add_dv(process):
           for dv in dvs:
               imgname=self.one_dv(dir,dv)
               print imgname
-              ep.thumbnail = imgname
-              ep.save()
+              # ep.thumbnail = imgname
+              # ep.save()
               return
           
 
@@ -59,8 +60,7 @@ class add_dv(process):
       for dv in Raw_File.objects.filter(location=location):
           imgname=self.one_dv(dir,dv)
           print imgname
-          ep.thumbnail = imgname
-          ep.save()
+
 
     def one_show(self, show):
       eps = Episode.objects.filter(show=show)
