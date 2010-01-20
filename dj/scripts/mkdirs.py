@@ -31,7 +31,7 @@ class mkdirs(process):
         self.show_dir = os.path.join(
             self.options.mediadir,client.slug,show.slug)
 
-        for d in "dv tmp/dv tmp/bling bling ogg ogv mp4 flv txt".split():
+        for d in "dv tmp/dv tmp/bling bling ogg ogv mp4 flv txt thumb".split():
             self.mkdir(os.path.join(self.show_dir,d))
 
 # get episodes for this show

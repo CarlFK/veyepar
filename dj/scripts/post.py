@@ -35,9 +35,8 @@ class post(process):
 # else it will use the id of the episode from a previous run. 
     video_id = ep.target
 
-    tags = [self.options.topics, client.slug]
-    if ep.tags: tags.append(ep.tags)
-    meta['topics'] = ' '.join(tags)
+    tags = [self.options.topics, client.slug, client.tags, ep.tags ]
+    meta['topics'] = ' '.join([tag for tag in tags if tag] )
 
     if ep.license: 
         meta['license'] = str(ep.license)
@@ -54,25 +53,38 @@ class post(process):
         meta['hidden'] = self.options.hidden
 
     # find a thumbnail
-    if ep.thumbnail:
-        if os.path.exists(ep.thumbnail):
-            thumb = ep.thumbnail
-        else:
-            thumb = os.path.join(self.show_dir,ep.thumbnail)
-    else:
-         for cut in Cut_List.objects.filter(episode=ep).order_by('sequence'):
+    # check for episode.tumb used in the following:
+    # 1. absololute path (dumb?)
+    # 2. in tumb dir (smart)
+    # 3. relitive to show dir (not completely wonky)
+    # 4. in tumb dir, same name as episode.png (smart)
+    # if none of those, then grab the thumb from the first cut list file
+    found=False
+    for thumb in [ 
+          ep.thumbnail,
+          os.path.join(self.show_dir,'thumb',ep.thumbnail),
+          os.path.join(self.show_dir,ep.thumbnail),
+          os.path.join(self.show_dir,'thumb',ep.slug+".png"),]:
+          if os.path.isfile(thumb): 
+              found=True
+              break
+    if not found:
+         for cut in Cut_List.objects.filter(
+                 episode=ep,apply=True).order_by('sequence'):
              basename = cut.raw_file.basename()        
              thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
-             if os.path.exists(thumb): break
+             if os.path.exists(thumb): 
+                 found=True
+                 break
 
     
 # the blip api gets kinda funky around multiple uploads
 # so no surprise the code is kinda funky.
     # files = [('','Source',src_pathname)]
     roles={
-        'ogv':"Master", 
+        'ogv':"Web", 
         'ogg':"Portable", 
-        'flv':"Web", 
+        'flv':"Main", 
         'mp4':"dvd", 
     }
     files = []
