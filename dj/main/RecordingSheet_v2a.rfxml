@@ -29,7 +29,7 @@
 
 	<Groups>
 		<Group>
-			<expr>(self.conf_date, self.room_name)</expr>
+		<expr>(self.episode_date, self.location_name)</expr>
 			<ReprintHeaderOnNewPage>True</ReprintHeaderOnNewPage>
 			<StartOnNewPage>True</StartOnNewPage>
 			<GroupHeader>
@@ -98,7 +98,7 @@
 						<y>'87.0 pt'</y>
 					</String>
 					<String>
-						<expr>self.room_name</expr>
+						<expr>self.location_name</expr>
 						<FontName>'Helvetica'</FontName>
 						<FontSize>13</FontSize>
 						<width>'76.0 pt'</width>
@@ -122,7 +122,7 @@
 						<y>'62.0 pt'</y>
 					</Line>
 					<String>
-						<expr>self.conf_date.strftime("%b %d %a")</expr>
+						<expr>self.date.strftime("%b %d %a")</expr>
 						<FontName>'Helvetica-Bold'</FontName>
 						<FontSize>13</FontSize>
 						<width>'91.0 pt'</width>
@@ -204,7 +204,7 @@
 						<y>'7.0 pt'</y>
 					</String>
 					<String>
-						<expr>"Rec Beg. Time"</expr>
+						<expr>"Rec Start Time"</expr>
 						<FontName>'Helvetica-Bold'</FontName>
 						<FontSize>10</FontSize>
 						<width>'74.0 pt'</width>
@@ -272,7 +272,7 @@
 				<y>'19.0 pt'</y>
 			</Rectangle>
 			<String>
-				<expr>"PyCon 2010 video"</expr>
+				<expr>self.show_name</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>15</FontSize>
 				<width>'240.0 pt'</width>
@@ -324,7 +324,7 @@
 				<y>'60.0 pt'</y>
 			</String>
 			<String>
-				<expr>self.session_id</expr>
+				<expr>self.episode_id</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>10</FontSize>
 				<width>'17.0 pt'</width>
@@ -338,7 +338,7 @@
 				<y>'53.7 pt'</y>
 				<Objects>
 					<Paragraph>
-						<expr>'[  ]' + self.session_name</expr>
+						<expr>'[  ]' + self.episode_name</expr>
 						<FontSize>9</FontSize>
 						<Height>24</Height>
 					</Paragraph>
@@ -351,7 +351,7 @@
 				<y>'3.7 pt'</y>
 				<Objects>
 					<Paragraph>
-						<expr>'[  ]' + self.session_presenters.split('\n[  ]')</expr>
+						<expr>'[  ]' + self.episode_authors.split('\n[  ]')</expr>
 						<FontSize>9</FontSize>
 						<Height>24</Height>
 					</Paragraph>
@@ -374,7 +374,7 @@
 				<y>'13.0 pt'</y>
 			</String>
 			<String>
-				<expr>self.session_beg_time</expr>
+				<expr>self.episode_start</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
 				<width>'58.0 pt'</width>
@@ -382,7 +382,7 @@
 				<y>'60.0 pt'</y>
 			</String>
 			<String>
-				<expr>self.session_end_time</expr>
+				<expr>self.episode_end</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
 				<width>'58.0 pt'</width>
@@ -439,7 +439,7 @@
 				<y>'4.0 pt'</y>
 			</Rectangle>
 			<String>
-				<expr>"PyCon 2010 video"</expr>
+				<expr>self.show_name</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>11</FontSize>
 				<width>'240.0 pt'</width>
@@ -461,5 +461,18 @@
 	<PageForeground>
 		<Objects></Objects>
 	</PageForeground>
+
+    <TestCursor>
+    <record 
+        show_name="u&apos;PyCon 2010&apos;" 
+        episode_date="datetime.date(2005, 9, 27)" 
+        location_name="u&apos;Hollister&apos;" 
+        episode_id="101"
+        episode_name="u&apos;Dabo for Desktops&apos;" 
+        episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" 
+        episode_start="datetime.datetime(2005, 9, 27, 10, 0)" 
+        episode_end="datetime.datetime(2005, 9, 27, 14, 0)" 
+    />
+    </TestCursor>
 
 </Report>
