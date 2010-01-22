@@ -29,227 +29,15 @@
 
 	<Groups>
 		<Group>
-		<expr>(self.episode_date, self.location_name)</expr>
+			<expr>(self.episode_date, self.location_name)</expr>
 			<ReprintHeaderOnNewPage>True</ReprintHeaderOnNewPage>
 			<StartOnNewPage>True</StartOnNewPage>
 			<GroupHeader>
-				<Height>112.9</Height>
-				<Objects>
-					<SpanningRectangle>
-						<x>'0.0 pt'</x>
-						<xFooter>'540.0 pt'</xFooter>
-						<y>'45.0 pt'</y>
-						<yFooter>'2.0 pt'</yFooter>
-					</SpanningRectangle>
-					<Rectangle>
-						<FillColor>(0.749, 0.749, 0.749)</FillColor>
-						<height>'40.0 pt'</height>
-						<width>'135.0 pt'</width>
-						<x>'405.0 pt'</x>
-						<y>'63.0 pt'</y>
-					</Rectangle>
-					<Rectangle>
-						<height>'42.0 pt'</height>
-						<Width>self.Bands["pageHeader"]["width"]</Width>
-						<y>'62.0 pt'</y>
-					</Rectangle>
-					<String>
-						<expr>"Room:"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<width>'71.0 pt'</width>
-						<x>'136.0 pt'</x>
-						<y>'87.0 pt'</y>
-					</String>
-					<Line>
-						<hAnchor>'center'</hAnchor>
-						<height>'42.0 pt'</height>
-						<LineSlant>'|'</LineSlant>
-						<width>'13.0 pt'</width>
-						<x>self.Bands["pageHeader"]["Width"]/4</x>
-						<y>'62.0 pt'</y>
-					</Line>
-					<Line>
-						<hAnchor>'center'</hAnchor>
-						<height>'42.0 pt'</height>
-						<LineSlant>'|'</LineSlant>
-						<width>'13.0 pt'</width>
-						<x>self.Bands["pageHeader"]["Width"]/4*2</x>
-						<y>'62.0 pt'</y>
-					</Line>
-					<Line>
-						<Width>self.Bands["pageHeader"]["Width"]</Width>
-						<y>'74.0 pt'</y>
-					</Line>
-					<String>
-						<expr>"[ ]"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<Width>25</Width>
-						<x>'14.0 pt'</x>
-						<y>'87.0 pt'</y>
-					</String>
-					<String>
-						<expr>"[ ]"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<Width>25</Width>
-						<x>'178.0 pt'</x>
-						<y>'87.0 pt'</y>
-					</String>
-					<String>
-						<expr>self.location_name</expr>
-						<FontName>'Helvetica'</FontName>
-						<FontSize>13</FontSize>
-						<width>'76.0 pt'</width>
-						<x>'193.0 pt'</x>
-						<y>'87.0 pt'</y>
-					</String>
-					<String>
-						<expr>"Kit Number:"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<Width>80</Width>
-						<x>'300.0 pt'</x>
-						<y>'87.0 pt'</y>
-					</String>
-					<Line>
-						<hAnchor>'center'</hAnchor>
-						<height>'42.0 pt'</height>
-						<LineSlant>'|'</LineSlant>
-						<width>'13.0 pt'</width>
-						<x>self.Bands["pageHeader"]["Width"]/4*3</x>
-						<y>'62.0 pt'</y>
-					</Line>
-					<String>
-						<expr>self.date.strftime("%b %d %a")</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<width>'91.0 pt'</width>
-						<x>'41.0 pt'</x>
-						<y>'87.0 pt'</y>
-					</String>
-					<String>
-						<expr>"Kit Number:"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<Width>80</Width>
-						<x>'300.0 pt'</x>
-						<y>'87.0 pt'</y>
-					</String>
-					<String>
-						<expr>"QA'd by (Name)"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<width>'121.0 pt'</width>
-						<x>'419.0 pt'</x>
-						<y>'87.0 pt'</y>
-					</String>
-					<String>
-						<expr>"ENCODING TEAM USE"</expr>
-						<FontName>'Helvetica-BOLD'</FontName>
-						<FontSize>8</FontSize>
-						<height>'9.0 pt'</height>
-						<width>'94.0 pt'</width>
-						<x>'446.0 pt'</x>
-						<y>'47.0 pt'</y>
-					</String>
-					<SpanningLine>
-						<x>'29.0 pt'</x>
-						<xFooter>'29.0 pt'</xFooter>
-						<y>'45.0 pt'</y>
-					</SpanningLine>
-					<SpanningLine>
-						<x>'157.0 pt'</x>
-						<xFooter>'157.0 pt'</xFooter>
-						<y>'45.0 pt'</y>
-					</SpanningLine>
-					<SpanningLine>
-						<x>'231.0 pt'</x>
-						<xFooter>'231.0 pt'</xFooter>
-						<y>'45.0 pt'</y>
-					</SpanningLine>
-					<SpanningLine>
-						<x>'247.0 pt'</x>
-						<xFooter>'247.0 pt'</xFooter>
-						<y>'45.0 pt'</y>
-					</SpanningLine>
-					<SpanningLine>
-						<x>'462.0 pt'</x>
-						<xFooter>'462.0 pt'</xFooter>
-						<y>'45.0 pt'</y>
-					</SpanningLine>
-					<String>
-						<expr>"ID"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<width>'20.0 pt'</width>
-						<x>'5.0 pt'</x>
-						<y>'20.0 pt'</y>
-					</String>
-					<String>
-						<expr>"SESSION NAME"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>10</FontSize>
-						<width>'119.0 pt'</width>
-						<x>'32.0 pt'</x>
-						<y>'30.0 pt'</y>
-					</String>
-					<String>
-						<expr>"Presenter Name(s)"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>10</FontSize>
-						<width>'119.0 pt'</width>
-						<x>'32.0 pt'</x>
-						<y>'7.0 pt'</y>
-					</String>
-					<String>
-						<expr>"Rec Start Time"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>10</FontSize>
-						<width>'74.0 pt'</width>
-						<x>'157.0 pt'</x>
-						<y>'30.0 pt'</y>
-					</String>
-					<String>
-						<expr>"End"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>10</FontSize>
-						<width>'74.0 pt'</width>
-						<x>'157.0 pt'</x>
-						<y>'7.0 pt'</y>
-					</String>
-					<String>
-						<expr>"Notes/Problems"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>10</FontSize>
-						<width>'101.0 pt'</width>
-						<x>'254.0 pt'</x>
-						<y>'30.0 pt'</y>
-					</String>
-					<SpanningRectangle>
-						<FillColor>(0.749, 0.749, 0.749)</FillColor>
-						<x>'462.0 pt'</x>
-						<xFooter>'540.0 pt'</xFooter>
-						<y>'45.0 pt'</y>
-					</SpanningRectangle>
-					<String>
-						<expr>"QA'd (tick)"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>10</FontSize>
-						<width>'64.0 pt'</width>
-						<x>'471.0 pt'</x>
-						<y>'29.0 pt'</y>
-					</String>
-					<Line>
-						<width>'203.0 pt'</width>
-						<x>'28.0 pt'</x>
-						<y>'12.0 pt'</y>
-					</Line>
-				</Objects>
+				<Height>0.7</Height>
+				<Objects></Objects>
 			</GroupHeader>
 			<GroupFooter>
-				<Height>4.6</Height>
+				<Height>0</Height>
 				<Objects></Objects>
 			</GroupFooter>
 		</Group>
@@ -260,8 +48,191 @@
 	</PageBackground>
 
 	<PageHeader>
-		<Height>41.6</Height>
+		<Height>146.6</Height>
 		<Objects>
+			<SpanningRectangle>
+				<x>'0.0 pt'</x>
+				<xFooter>'540.0 pt'</xFooter>
+				<y>'157.3 pt'</y>
+				<yFooter>'2.0 pt'</yFooter>
+			</SpanningRectangle>
+			<Rectangle>
+				<height>'42.0 pt'</height>
+				<Width>self.Bands["pageHeader"]["width"]</Width>
+				<x>'0.0 pt'</x>
+				<y>'39.0 pt'</y>
+			</Rectangle>
+			<String>
+				<expr>"Room:"</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>10</FontSize>
+				<width>'32.0 pt'</width>
+				<x>'128.0 pt'</x>
+				<y>'70.0 pt'</y>
+			</String>
+			<Line>
+				<hAnchor>'center'</hAnchor>
+				<height>'42.0 pt'</height>
+				<LineSlant>'|'</LineSlant>
+				<width>'13.0 pt'</width>
+				<x>'126.0 pt'</x>
+				<y>'39.0 pt'</y>
+			</Line>
+			<Line>
+				<hAnchor>'center'</hAnchor>
+				<height>'42.0 pt'</height>
+				<LineSlant>'|'</LineSlant>
+				<width>'13.0 pt'</width>
+				<x>self.Bands["pageHeader"]["Width"]/4*2</x>
+				<y>'39.0 pt'</y>
+			</Line>
+			<Line>
+				<width>'270.0 pt'</width>
+				<x>'270.0 pt'</x>
+				<y>'52.0 pt'</y>
+			</Line>
+			<String>
+				<expr>"[  ]"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'21.0 pt'</width>
+				<x>'7.0 pt'</x>
+				<y>'65.0 pt'</y>
+			</String>
+			<String>
+				<expr>"[  ]"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'18.0 pt'</width>
+				<x>'160.0 pt'</x>
+				<y>'69.0 pt'</y>
+			</String>
+			<String>
+				<expr>self.location_name</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>13</FontSize>
+				<width>'85.0 pt'</width>
+				<x>'180.0 pt'</x>
+				<y>'68.0 pt'</y>
+			</String>
+			<Line>
+				<hAnchor>'center'</hAnchor>
+				<height>'42.0 pt'</height>
+				<LineSlant>'|'</LineSlant>
+				<width>'13.0 pt'</width>
+				<x>'420.0 pt'</x>
+				<y>'39.0 pt'</y>
+			</Line>
+			<String>
+				<expr>self.episode_date.strftime("%b %d %a")</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'91.0 pt'</width>
+				<x>'31.0 pt'</x>
+				<y>'65.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Kit Number:"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<Width>80</Width>
+				<x>'429.0 pt'</x>
+				<y>'65.0 pt'</y>
+			</String>
+			<SpanningLine>
+				<x>'29.0 pt'</x>
+				<xFooter>'29.0 pt'</xFooter>
+				<y>'39.0 pt'</y>
+			</SpanningLine>
+			<SpanningLine>
+				<x>'104.0 pt'</x>
+				<xFooter>'104.0 pt'</xFooter>
+				<y>'39.0 pt'</y>
+			</SpanningLine>
+			<SpanningLine>
+				<x>'451.0 pt'</x>
+				<xFooter>'451.0 pt'</xFooter>
+				<y>'39.0 pt'</y>
+			</SpanningLine>
+			<SpanningLine>
+				<x>'457.0 pt'</x>
+				<xFooter>'457.0 pt'</xFooter>
+				<y>'39.0 pt'</y>
+			</SpanningLine>
+			<SpanningLine>
+				<x>'462.0 pt'</x>
+				<xFooter>'462.0 pt'</xFooter>
+				<y>'39.0 pt'</y>
+			</SpanningLine>
+			<String>
+				<expr>"ID"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'20.0 pt'</width>
+				<x>'4.0 pt'</x>
+				<y>'16.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Episode Name"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<width>'119.0 pt'</width>
+				<x>'114.0 pt'</x>
+				<y>'26.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Presenter Name(s)"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<width>'119.0 pt'</width>
+				<x>'114.0 pt'</x>
+				<y>'6.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Start Time"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<width>'58.0 pt'</width>
+				<x>'35.0 pt'</x>
+				<y>'26.0 pt'</y>
+			</String>
+			<String>
+				<expr>"End"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<width>'60.0 pt'</width>
+				<x>'34.0 pt'</x>
+				<y>'5.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Notes/Problems"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<width>'101.0 pt'</width>
+				<x>'314.0 pt'</x>
+				<y>'16.0 pt'</y>
+			</String>
+			<SpanningRectangle>
+				<FillColor>(0.749, 0.749, 0.749)</FillColor>
+				<x>'462.0 pt'</x>
+				<xFooter>'540.0 pt'</xFooter>
+				<y>'39.0 pt'</y>
+				<yFooter>'0.0 pt'</yFooter>
+			</SpanningRectangle>
+			<String>
+				<expr>"Audio by:"</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>7</FontSize>
+				<height>'11.0 pt'</height>
+				<width>'44.0 pt'</width>
+				<x>'273.4 pt'</x>
+				<y>'70.6 pt'</y>
+			</String>
+			<Line>
+				<width>'163.0 pt'</width>
+				<x>'28.0 pt'</x>
+				<y>'12.0 pt'</y>
+			</Line>
 			<Rectangle>
 				<FillColor>(0.902, 0.902, 0.980)</FillColor>
 				<Height>20</Height>
@@ -269,54 +240,81 @@
 				<StrokeWidth>.5</StrokeWidth>
 				<vAnchor>'bottom'</vAnchor>
 				<Width>self.Bands["pageHeader"]["Width"]</Width>
-				<y>'19.0 pt'</y>
+				<x>'-1.0 pt'</x>
+				<y>'113.0 pt'</y>
 			</Rectangle>
 			<String>
 				<expr>self.show_name</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>15</FontSize>
 				<width>'240.0 pt'</width>
-				<x>'3.0 pt'</x>
-				<y>'23.0 pt'</y>
+				<x>'2.0 pt'</x>
+				<y>'117.0 pt'</y>
 			</String>
 			<String>
 				<Align>'right'</Align>
-				<expr>"recording sheet v2.0"</expr>
+				<expr>"Recording Sheet v2.0"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>15</FontSize>
 				<width>'240.0 pt'</width>
-				<x>'297.0 pt'</x>
-				<y>'23.0 pt'</y>
+				<x>'296.0 pt'</x>
+				<y>'117.0 pt'</y>
 			</String>
 			<String>
 				<expr>"[X]"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>15</FontSize>
 				<Width>25</Width>
-				<x>'99.0 pt'</x>
-				<y>'2.0 pt'</y>
+				<x>'98.0 pt'</x>
+				<y>'95.0 pt'</y>
 			</String>
 			<String>
 				<expr>"Items that are correct, else make corrections"</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>15</FontSize>
 				<Width>400</Width>
-				<x>'131.0 pt'</x>
-				<y>'2.0 pt'</y>
+				<x>'130.0 pt'</x>
+				<y>'96.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Video by:"</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>7</FontSize>
+				<height>'8.0 pt'</height>
+				<width>'61.0 pt'</width>
+				<x>'274.0 pt'</x>
+				<y>'53.0 pt'</y>
+			</String>
+			<String>
+				<expr>"QA'd by:"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'61.0 pt'</width>
+				<x>'464.0 pt'</x>
+				<y>'25.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Cam Op:"</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>7</FontSize>
+				<height>'8.0 pt'</height>
+				<width>'61.0 pt'</width>
+				<x>'428.0 pt'</x>
+				<y>'53.0 pt'</y>
 			</String>
 		</Objects>
 	</PageHeader>
 
 	<Detail>
-		<Height>81.9</Height>
+		<Height>90.5</Height>
 		<Objects>
 			<Line>
-				<width>'203.0 pt'</width>
+				<width>'163.0 pt'</width>
 				<x>'28.0 pt'</x>
 				<y>'31.0 pt'</y>
 			</Line>
 			<String>
-				<expr>"[ ]"</expr>
+				<expr>"[  ]"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'17.0 pt'</width>
@@ -333,12 +331,12 @@
 			</String>
 			<Frameset>
 				<height>'24.0 pt'</height>
-				<width>'123.0 pt'</width>
-				<x>'31.8 pt'</x>
+				<width>'315.0 pt'</width>
+				<x>'131.8 pt'</x>
 				<y>'53.7 pt'</y>
 				<Objects>
 					<Paragraph>
-						<expr>'[  ]' + self.episode_name</expr>
+						<expr>self.episode_name</expr>
 						<FontSize>9</FontSize>
 						<Height>24</Height>
 					</Paragraph>
@@ -346,51 +344,51 @@
 			</Frameset>
 			<Frameset>
 				<height>'24.0 pt'</height>
-				<width>'123.0 pt'</width>
-				<x>'31.8 pt'</x>
-				<y>'3.7 pt'</y>
+				<width>'315.0 pt'</width>
+				<x>'131.8 pt'</x>
+				<y>'11.7 pt'</y>
 				<Objects>
 					<Paragraph>
-						<expr>'[  ]' + self.episode_authors.split('\n[  ]')</expr>
+						<expr>self.episode_authors</expr>
 						<FontSize>9</FontSize>
 						<Height>24</Height>
 					</Paragraph>
 				</Objects>
 			</Frameset>
 			<String>
-				<expr>"[ ]"</expr>
+				<expr>"[  ]"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'17.0 pt'</width>
-				<x>'157.0 pt'</x>
-				<y>'60.0 pt'</y>
+				<x>'34.0 pt'</x>
+				<y>'69.0 pt'</y>
 			</String>
 			<String>
-				<expr>"[ ]"</expr>
+				<expr>"[  ]"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'17.0 pt'</width>
-				<x>'157.0 pt'</x>
-				<y>'13.0 pt'</y>
+				<x>'34.0 pt'</x>
+				<y>'27.0 pt'</y>
 			</String>
 			<String>
-				<expr>self.episode_start</expr>
+				<expr>self.episode_start.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
-				<width>'58.0 pt'</width>
-				<x>'171.0 pt'</x>
-				<y>'60.0 pt'</y>
+				<width>'49.0 pt'</width>
+				<x>'54.0 pt'</x>
+				<y>'68.0 pt'</y>
 			</String>
 			<String>
-				<expr>self.episode_end</expr>
+				<expr>self.episode_end.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
-				<width>'58.0 pt'</width>
-				<x>'171.0 pt'</x>
-				<y>'13.0 pt'</y>
+				<width>'49.0 pt'</width>
+				<x>'53.0 pt'</x>
+				<y>'27.0 pt'</y>
 			</String>
 			<String>
-				<expr>"[ ]"</expr>
+				<expr>"[  ]"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'17.0 pt'</width>
@@ -411,7 +409,7 @@
 				<y>'51.0 pt'</y>
 			</String>
 			<String>
-				<expr>"[ ] QA"</expr>
+				<expr>"[   ] QA"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'50.0 pt'</width>
@@ -423,6 +421,27 @@
 				<Width>self.Bands["pageHeader"]["width"]</Width>
 				<y>'78.0 pt'</y>
 			</Line>
+			<Line>
+				<width>'539.0 pt'</width>
+				<x>'1.0 pt'</x>
+				<y>'-8.0 pt'</y>
+			</Line>
+			<String>
+				<expr>"[  ]"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'17.0 pt'</width>
+				<x>'109.0 pt'</x>
+				<y>'69.0 pt'</y>
+			</String>
+			<String>
+				<expr>"[  ]"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'24.0 pt'</width>
+				<x>'108.0 pt'</x>
+				<y>'27.0 pt'</y>
+			</String>
 		</Objects>
 	</Detail>
 
@@ -462,17 +481,9 @@
 		<Objects></Objects>
 	</PageForeground>
 
-    <TestCursor>
-    <record 
-        show_name="u&apos;PyCon 2010&apos;" 
-        episode_date="datetime.date(2005, 9, 27)" 
-        location_name="u&apos;Hollister&apos;" 
-        episode_id="101"
-        episode_name="u&apos;Dabo for Desktops&apos;" 
-        episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" 
-        episode_start="datetime.datetime(2005, 9, 27, 10, 0)" 
-        episode_end="datetime.datetime(2005, 9, 27, 14, 0)" 
-    />
-    </TestCursor>
+	<TestCursor>
+		<record location_name="u&apos;Hollister&apos;" show_name="u&apos;PyCon 2010&apos;" episode_date="datetime.date(2005, 9, 27)" episode_name="u&apos;Dabo for Desktops&apos;" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_id="101" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" />
+		<record location_name="u&apos;Hollister&apos;" show_name="u&apos;PyCon 2010&apos;" episode_date="datetime.date(2005, 9, 27)" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_id="123" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" />
+	</TestCursor>
 
 </Report>
