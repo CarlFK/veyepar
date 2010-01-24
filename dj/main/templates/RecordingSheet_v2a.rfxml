@@ -29,7 +29,7 @@
 
 	<Groups>
 		<Group>
-			<expr>(self.episode_date, self.location_name)</expr>
+			<expr>(self.episode_start.date(), self.location_name)</expr>
 			<ReprintHeaderOnNewPage>True</ReprintHeaderOnNewPage>
 			<StartOnNewPage>True</StartOnNewPage>
 			<GroupHeader>
@@ -124,7 +124,7 @@
 				<y>'39.0 pt'</y>
 			</Line>
 			<String>
-				<expr>self.episode_date.strftime("%b %d %a")</expr>
+				<expr>self.episode_start.strftime("%b %d %a")</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'91.0 pt'</width>
@@ -170,7 +170,7 @@
 				<FontSize>13</FontSize>
 				<width>'20.0 pt'</width>
 				<x>'4.0 pt'</x>
-				<y>'16.0 pt'</y>
+				<y>'22.0 pt'</y>
 			</String>
 			<String>
 				<expr>"Episode Name"</expr>
@@ -228,11 +228,6 @@
 				<x>'273.4 pt'</x>
 				<y>'70.6 pt'</y>
 			</String>
-			<Line>
-				<width>'163.0 pt'</width>
-				<x>'28.0 pt'</x>
-				<y>'12.0 pt'</y>
-			</Line>
 			<Rectangle>
 				<FillColor>(0.902, 0.902, 0.980)</FillColor>
 				<Height>20</Height>
@@ -240,7 +235,7 @@
 				<StrokeWidth>.5</StrokeWidth>
 				<vAnchor>'bottom'</vAnchor>
 				<Width>self.Bands["pageHeader"]["Width"]</Width>
-				<x>'-1.0 pt'</x>
+				<x>'0.0 pt'</x>
 				<y>'113.0 pt'</y>
 			</Rectangle>
 			<String>
@@ -306,20 +301,15 @@
 	</PageHeader>
 
 	<Detail>
-		<Height>90.5</Height>
+		<Height>106.3</Height>
 		<Objects>
-			<Line>
-				<width>'163.0 pt'</width>
-				<x>'28.0 pt'</x>
-				<y>'31.0 pt'</y>
-			</Line>
 			<String>
 				<expr>"[  ]"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'17.0 pt'</width>
-				<x>'7.0 pt'</x>
-				<y>'60.0 pt'</y>
+				<x>'108.0 pt'</x>
+				<y>'46.7 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_id</expr>
@@ -327,13 +317,13 @@
 				<FontSize>10</FontSize>
 				<width>'17.0 pt'</width>
 				<x>'7.0 pt'</x>
-				<y>'43.0 pt'</y>
+				<y>'70.0 pt'</y>
 			</String>
 			<Frameset>
-				<height>'24.0 pt'</height>
+				<height>'33.0 pt'</height>
 				<width>'315.0 pt'</width>
 				<x>'131.8 pt'</x>
-				<y>'53.7 pt'</y>
+				<y>'62.7 pt'</y>
 				<Objects>
 					<Paragraph>
 						<expr>self.episode_name</expr>
@@ -361,7 +351,7 @@
 				<FontSize>13</FontSize>
 				<width>'17.0 pt'</width>
 				<x>'34.0 pt'</x>
-				<y>'69.0 pt'</y>
+				<y>'86.0 pt'</y>
 			</String>
 			<String>
 				<expr>"[  ]"</expr>
@@ -377,7 +367,7 @@
 				<FontSize>13</FontSize>
 				<width>'49.0 pt'</width>
 				<x>'54.0 pt'</x>
-				<y>'68.0 pt'</y>
+				<y>'85.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_end.strftime("%H:%M")</expr>
@@ -392,8 +382,8 @@
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'17.0 pt'</width>
-				<x>'489.0 pt'</x>
-				<y>'66.0 pt'</y>
+				<x>'466.0 pt'</x>
+				<y>'83.0 pt'</y>
 			</String>
 			<Line>
 				<width>'76.0 pt'</width>
@@ -404,9 +394,9 @@
 				<expr>"Entered"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
-				<width>'57.0 pt'</width>
-				<x>'472.0 pt'</x>
-				<y>'51.0 pt'</y>
+				<width>'53.0 pt'</width>
+				<x>'486.0 pt'</x>
+				<y>'82.0 pt'</y>
 			</String>
 			<String>
 				<expr>"[   ] QA"</expr>
@@ -419,7 +409,7 @@
 			<Line>
 				<height>'6.0 pt'</height>
 				<Width>self.Bands["pageHeader"]["width"]</Width>
-				<y>'78.0 pt'</y>
+				<y>'95.0 pt'</y>
 			</Line>
 			<Line>
 				<width>'539.0 pt'</width>
@@ -432,7 +422,7 @@
 				<FontSize>13</FontSize>
 				<width>'17.0 pt'</width>
 				<x>'109.0 pt'</x>
-				<y>'69.0 pt'</y>
+				<y>'86.0 pt'</y>
 			</String>
 			<String>
 				<expr>"[  ]"</expr>
@@ -441,6 +431,14 @@
 				<width>'24.0 pt'</width>
 				<x>'108.0 pt'</x>
 				<y>'27.0 pt'</y>
+			</String>
+			<String>
+				<expr>self.episode_primary</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>10</FontSize>
+				<width>'257.0 pt'</width>
+				<x>'132.0 pt'</x>
+				<y>'47.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
@@ -482,8 +480,8 @@
 	</PageForeground>
 
 	<TestCursor>
-		<record location_name="u&apos;Hollister&apos;" show_name="u&apos;PyCon 2010&apos;" episode_date="datetime.date(2005, 9, 27)" episode_name="u&apos;Dabo for Desktops&apos;" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_id="101" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" />
-		<record location_name="u&apos;Hollister&apos;" show_name="u&apos;PyCon 2010&apos;" episode_date="datetime.date(2005, 9, 27)" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_id="123" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" />
+		<record episode_primary="201" location_name="u&apos;Hollister&apos;" show_name="u&apos;PyCon 2010&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_id="101" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" />
+		<record episode_primary="202" location_name="u&apos;Hollister&apos;" show_name="u&apos;PyCon 2010&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_id="123" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" />
 	</TestCursor>
 
 </Report>

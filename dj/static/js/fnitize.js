@@ -11,9 +11,4 @@ $(function(){
         }
     })
     
-    $('#id_start').html( '<a href="javascript: NewCssCal(\'id_start\',\'yyyymmdd\',\'arrow\',true,24,false)">X</a>' + $('#id_start').html() );
-
-    // $('#id_end').datepicker();
-    $('#id_end').html( $('#id_end').html() + 'foo' );
-
 })

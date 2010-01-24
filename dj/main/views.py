@@ -19,6 +19,8 @@ from datetime import datetime
 from datetime import timedelta
 import os
 import csv
+from cStringIO import StringIO
+from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List
 from main.forms import Episode_Form_small, Episode_Form, clrfForm
@@ -60,6 +62,50 @@ def meet_ann(request,show_id):
           'episodes':episodes,
         },
         context_instance=RequestContext(request) )
+
+def recording_sheets(request,show_id):
+    show=get_object_or_404(Show,id=show_id)
+    episodes=Episode.objects.filter(show=show).order_by('location','start')
+
+    base  = os.path.dirname(__file__)
+    print base
+    rfxmlfile  = os.path.join(base,'templates','RecordingSheet_v2a.rfxml')
+    # fontfile = get_templete_abspath('badges/fonts/FreeSans.ttf')
+     
+    # buffer to create pdf in
+    buffer = StringIO()
+
+    # nonstandard font.  (not sure what standard is.)
+    # pdfmetrics.registerFont(TTFont("FreeSans", fontfile))
+    
+    ds=[]
+    for ep in episodes:
+        if ep.location:
+            location_name=ep.location.name
+        else:
+            location_name='None'
+        ds.append({'episode_id':ep.id,
+          'episode_name':ep.name,
+          'episode_authors':ep.authors,
+          'episode_primary':ep.primary,
+          'episode_start':ep.start,
+          'episode_end':ep.end,
+          'location_name':location_name,
+          'show_name':show.name })
+        
+    # generate the pdf in the buffer, using the layout and data
+    print ds[0]
+    rw = dReportWriter(OutputFile=buffer, ReportFormFile=rfxmlfile, Cursor=ds)
+    rw.write()
+
+    # get the pdf out of the buffer
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(mimetype='application/pdf')
+    response['Content-Disposition'] = 'filename=recording_sheets.pdf'
+    response.write(pdf)
+    return response
 
 def raw_play_list(request,episode_id):
     episode=get_object_or_404(Episode,id=episode_id)
