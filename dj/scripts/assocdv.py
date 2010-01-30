@@ -81,7 +81,7 @@ class ass_dv(process.process):
           return
 
       eps = Episode.objects.filter(show=show)
-      for loc in Location.objects.filter(episode__in=eps):
+      for loc in Location.objects.filter(episode__in=eps).distinct():
         print show,loc
         self.one_loc(loc)
 

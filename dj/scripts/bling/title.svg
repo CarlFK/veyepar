@@ -14,7 +14,7 @@
    height="600"
    id="titlepage"
    sodipodi:version="0.32"
-   inkscape:version="0.47pre4 r22446"
+   inkscape:version="0.47 r22583"
    version="1.0"
    sodipodi:docname="title.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
@@ -192,13 +192,13 @@
          x="64.395706"
          y="555.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
     <image
-       sodipodi:absref="/home/carl/src/vid/veyepar/dj/scripts/bling/sauce_masthead.png"
+       sodipodi:absref="/home/juser/veyepar/dj/scripts/bling/sauce_masthead.png"
        xlink:href="sauce_masthead.png"
-       width="116.62791"
-       height="56.666668"
-       id="logo3"
+       y="467.66159"
        x="548.16766"
-       y="467.66159" />
+       id="logo3"
+       height="56.666668"
+       width="116.62791" />
     <flowRoot
        xml:space="preserve"
        id="titlebox"
@@ -272,18 +272,20 @@
          x="316.79199"
          y="362.70398">October Meeting</tspan></text>
     <image
-       y="476.66238"
-       x="315.61111"
-       id="image2957"
-       height="34.230686"
+       sodipodi:absref="/home/juser/veyepar/dj/scripts/bling/Enova_financial_logo.png"
+       xlink:href="Enova_financial_logo.png"
        width="168.77777"
-       xlink:href="file:///home/carl/src/vid/veyepar/dj/scripts/bling/Enova_financial_logo.png" />
+       height="34.230686"
+       id="image2957"
+       x="315.61111"
+       y="476.66238" />
     <image
-       y="464.7626"
-       x="120.88887"
-       id="logo1"
-       height="58.919197"
+       sodipodi:absref="/home/juser/veyepar/dj/scripts/bling/JupiterIT.png"
+       xlink:href="JupiterIT.png"
        width="139.55556"
-       xlink:href="file:///home/carl/src/vid/veyepar/dj/scripts/bling/JupiterIT.png" />
+       height="58.919197"
+       id="logo1"
+       x="120.88887"
+       y="464.7626" />
   </g>
 </svg>

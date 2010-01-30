@@ -35,14 +35,15 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
-    eps = Episode.objects.filter(location__show=show)
+    eps = Episode.objects.filter(show=show)
 
     fields=('id','location','sequence','primary',
         'name','authors','description','start','end')
 
-    response = HttpResponse(mimetype="text/javascript")
-    response['Content-Disposition'] = \
-        'attachment; filename=%s.json' % show_slug
+    # response = HttpResponse(mimetype="text/javascript")
+    response = HttpResponse(mimetype="application/json")
+    # response['Content-Disposition'] = \
+    #    'attachment; filename=%s.json' % show_slug
     serializers.serialize("json", eps, fields=fields,  stream=response)
 
     return response
@@ -86,8 +87,8 @@ def recording_sheets(request,show_id):
             location_name='None'
         ds.append({'episode_id':ep.id,
           'episode_name':ep.name,
-          'episode_authors':ep.authors,
-          'episode_primary':ep.primary,
+          'episode_authors':'ep.authors',
+          'episode_primary':'ep.primary',
           'episode_start':ep.start,
           'episode_end':ep.end,
           'location_name':location_name,

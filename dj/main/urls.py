@@ -14,7 +14,6 @@ urlpatterns = patterns('main.views',
     url(r'C/(?P<client_slug>\w+)/$', client, name='client'),
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$', episodes),
     (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/$', episodes),
-    (r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).json$', eps_xfer ),
     (r'E/(?P<episode_no>\d+)/$', episode),
 
 )
@@ -29,6 +28,9 @@ urlpatterns += patterns(
     url(r'foo_list/(?P<episode_id>\w+)/.*$', 
         raw_play_list, 
         name='foo_list'),
+    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).json$', 
+        eps_xfer,
+        name='eps_xfer'),
 
     url(r'overlaping_episodes/(?P<show_id>\w+)/$', overlaping_episodes,
         name='overlaping_episodes'),
