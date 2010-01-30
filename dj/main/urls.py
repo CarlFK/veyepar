@@ -32,6 +32,8 @@ urlpatterns += patterns(
 
     url(r'overlaping_episodes/(?P<show_id>\w+)/$', overlaping_episodes,
         name='overlaping_episodes'),
+    url(r'recording_sheets/(?P<show_id>\w+)/.*$', recording_sheets,
+        name='recording_sheets'),
 )
 
 if False and settings.DEBUG:

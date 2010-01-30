@@ -6,67 +6,88 @@ import datetime
 import urllib2,json
 # from csv import DictReader
 # from datetime import timedelta
-from dateutil.parser import parse
+# from dateutil.parser import parse
 
 import process
 
-from main.models import Client, Show, Location, Episode
+from main.models import fnify, Client, Show, Location, Episode
 
 class process_csv(process.process):
    
-    state_done=2
+    state_done=1
 
     def one_show(self, show):
-      seq=1
-      # j=urllib2.urlopen(
-      #  'http://0.0.0.0:8080/main/C/DjangoCon/S/djc09.json').read()
-      j = open('schedules/djangocon09.json').read()
-      eps = l=json.loads(j)
-      for ep in eps:
-      # for row in DictReader(open(self.csv_pathname)):
-        # print ep
+      # url='http://0.0.0.0:8080/main/C/DjangoCon/S/djc09.json'
+      # url='http://us.pycon.org/2010/conference/schedule/events.json'
+      # j=urllib2.urlopen(url).read()
+      j=open('events.json').read()
+      d = json.loads(j)
 
-        room=ep['location']
-        # location,created = Location.objects.get_or_create(
-        #    show=show,name=room,slug=process.fnify(room))
-        
-        location = Location.objects.get(show=show,name=room)
-        
-        name = ep['name']
-        authors=ep['authors']
-        primary=''
-        start = parse(ep['start'])
-        end = parse(ep['end'])
-
-        episodes = Episode.objects.filter(name__iexact=name)
-        print len(episodes),
-        if not episodes: 
-            print name
-            ep = Episode(
-               sequence=seq,
-               location=location, 
-               name=name,
-               slug=process.fnify(name),
-               primary=primary,
-               authors=authors, 
-               start=start, end=end,
-               state=self.state_done)
-            # print ep.__dict__
-            # ep.save()
+      seq=0
+      locs=d['rooms']
+      for l_id in locs:
+          l = locs[l_id]
+          seq+=1
+          name = l['name']
+          slug=fnify(name)
+          print name, slug
+          loc,created = Location.objects.get_or_create(
+              name=name, slug=slug)
+          if created: 
+              loc.sequence=seq
+              loc.save()
+          # save the loc object into the dict
+          # so that it can be used for the FK object for episodes
+          l['loc']=loc
+          
+      seq=0
+      eps = d['events']
+      for ep_id in eps:
+        ep=eps[ep_id]
         seq+=1
+        print ep
+
+        room = ep['room']
+        if room is not None:
+            location = locs[str(room)]['loc']
+        else:
+            location = None
+        
+        name = ep['title']
+        slug=fnify(name)
+        authors=ep['presenters']
+        primary=str(ep['id'])
+        start = datetime.datetime(*ep['start'])
+        end = start + datetime.timedelta(minutes=ep['duration'])
+
+        episode,created = Episode.objects.get_or_create(
+            show=show,
+            primary=primary)
+        if created:
+            episode.sequence=seq
+        episode.location=location 
+        episode.name=name
+        episode.slug=fnify(name)
+        episode.primary=primary
+        episode.authors=authors
+        episode.start=start
+        episode.end=end
+        episode.state=self.state_done
+        episode.save()
 
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
           help='csv file' )
 
     def work(self):
-      if options.client and options.show:
-        client = Client.objects.get(slug=options.client)
-        show = Show.objects.get(client=client,slug=options.show)
-        if options.whack:
+      if self.options.client and self.options.show:
+        client = Client.objects.get(slug=self.options.client)
+        show = Show.objects.get(client=client,slug=self.options.show)
+        
+        if self.options.whack:
 # clear out previous runs for this show
-            Episode.objects.filter(location__show=show).delete()
-            Location.objects.filter(show=show).delete()
+            Episode.objects.filter(show=show).delete()
+            # Location.objects.filter(show=show).delete()
         self.one_show(show)
 
 if __name__ == '__main__':
