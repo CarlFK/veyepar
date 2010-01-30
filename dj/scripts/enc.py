@@ -193,10 +193,11 @@ class enc(process):
                 'limiter':'20',
                 'normalise':self.options.normalize} )
             """
-        if episode.normalize:
+        normalize = episode.normalize or self.options.normalize
+        if normalize:
             new=xml.etree.ElementTree.Element('filter', 
                 {'mlt_service':'volume', 
-                'normalise':episode.normalize} )
+                'normalise':normalize} )
             playlist.insert(pos,new)
 
         if episode.channelcopy:
