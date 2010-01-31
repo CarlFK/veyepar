@@ -22,7 +22,9 @@ class post(process):
     show = ep.show
     client = show.client
 
-    description = "%s</br>\n</br>\n%s" % (ep.description, client.description)
+    descriptions = [ep.description, show.description, client.description]
+    descriptions = [d for d in descriptions if d]
+    description = "%s</br>\n".join(descriptions)
 
     blip_cli=blip_uploader.Blip_CLI()
 
@@ -76,6 +78,7 @@ class post(process):
              if os.path.exists(thumb): 
                  found=True
                  break
+    if not found: thumb=''
 
     
 # the blip api gets kinda funky around multiple uploads

@@ -393,6 +393,7 @@ class Blip_CLI(Blip):
         options, args = self.parse_args()
 
         meta={} # metadata about the post: title, licence...
+        # keys defined http://wiki.blip.tv/index.php/REST_Upload_API
 
         video_id = options.videoid 
 
@@ -439,7 +440,7 @@ class Blip_CLI(Blip):
                 self.List_Categories()
                 return 
             else:
-                meta['categorie_id'] = options.category
+                meta['categories_id'] = options.category
 
         if not video_id:
             # no video_id = new Episode
