@@ -42,6 +42,7 @@ class Show(models.Model):
         return "%s: %s" % ( self.client_name, self.name )
 
 class Location(models.Model):
+    shows = models.ManyToManyField(Show)
     sequence = models.IntegerField(default=1)
     name = models.CharField(max_length=135,help_text="room name")
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
