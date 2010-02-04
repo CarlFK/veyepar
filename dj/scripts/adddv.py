@@ -27,10 +27,12 @@ class add_dv(process):
           Raw_File.objects.filter(location=loc).delete()
 
       ep_dir=os.path.join(self.show_dir,'dv',location.slug)
+      if self.options.verbose:  print "episode dir:", ep_dir
       seq=0
       for dirpath, dirnames, filenames in os.walk(ep_dir):
           d=dirpath[len(ep_dir)+1:]
-          # print dirpath, d, dirnames, filenames 
+          if self.options.verbose: 
+              print "checking...", dirpath, d, dirnames, filenames 
           for f in filenames:
               if f[-3:]=='.dv':
                   seq+=1
