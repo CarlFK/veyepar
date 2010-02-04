@@ -95,7 +95,7 @@ def recording_sheets(request,show_id):
           'show_name':show.name })
         
     # generate the pdf in the buffer, using the layout and data
-    print ds[0]
+    print ds
     rw = dReportWriter(OutputFile=buffer, ReportFormFile=rfxmlfile, Cursor=ds)
     rw.write()
 
