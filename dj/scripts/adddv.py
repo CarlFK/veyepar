@@ -38,7 +38,7 @@ class add_dv(process):
 
     def one_show(self, show):
       eps = Episode.objects.filter(show=show)
-      for loc in Location.objects.filter(episode__in=eps):
+      for loc in Location.objects.filter(episode__in=eps).distinct():
         print show,loc
         self.one_loc(show,loc)
 
