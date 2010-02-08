@@ -194,7 +194,7 @@ class enc(process):
                 'normalise':self.options.normalise} )
             """
         normalise = episode.normalize or self.options.normalise
-        if normalise and int(normaise):
+        if normalise and int(normalise):
             new=xml.etree.ElementTree.Element('filter', 
                 {'mlt_service':'volume', 
                 'normalise':normalise} )
