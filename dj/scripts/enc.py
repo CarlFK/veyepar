@@ -179,6 +179,8 @@ class enc(process):
             clip.attrib['id']="clip%s"%cl.id
             clip.attrib['producer']="producer%s"%cl.raw_file.id
             clip.attrib['in']=str(time2f(cl.start,self.fps)) if cl.start else '0'
+            # end not needed anymore 
+            # (as of 2/9/10, will take out 9999 once melt version bumps)
             clip.attrib['out']=str(time2f(cl.end,self.fps)) if cl.end else '999999'
             new=xml.etree.ElementTree.Element('entry', clip.attrib )
             playlist.insert(pos,new)
