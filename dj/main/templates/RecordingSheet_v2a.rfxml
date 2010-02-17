@@ -197,7 +197,7 @@
 				<y>'26.0 pt'</y>
 			</String>
 			<String>
-				<expr>"End"</expr>
+				<expr>"End Time"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>10</FontSize>
 				<width>'60.0 pt'</width>
@@ -425,20 +425,12 @@
 				<y>'86.0 pt'</y>
 			</String>
 			<String>
-				<expr>"[  ]"</expr>
+				<expr>"[ x ]"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'24.0 pt'</width>
 				<x>'108.0 pt'</x>
 				<y>'27.0 pt'</y>
-			</String>
-			<String>
-				<expr>self.episode_primary</expr>
-				<FontName>'Helvetica'</FontName>
-				<FontSize>10</FontSize>
-				<width>'257.0 pt'</width>
-				<x>'132.0 pt'</x>
-				<y>'47.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
