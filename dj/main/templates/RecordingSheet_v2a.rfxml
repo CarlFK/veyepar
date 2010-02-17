@@ -304,14 +304,6 @@
 		<Height>106.3</Height>
 		<Objects>
 			<String>
-				<expr>"[  ]"</expr>
-				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>13</FontSize>
-				<width>'17.0 pt'</width>
-				<x>'108.0 pt'</x>
-				<y>'46.7 pt'</y>
-			</String>
-			<String>
 				<expr>self.episode_id</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>10</FontSize>
@@ -425,7 +417,7 @@
 				<y>'86.0 pt'</y>
 			</String>
 			<String>
-				<expr>"[ x ]"</expr>
+				<expr>"[  ]"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'24.0 pt'</width>

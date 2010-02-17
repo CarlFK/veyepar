@@ -66,7 +66,7 @@ def meet_ann(request,show_id):
 
 def recording_sheets(request,show_id):
     show=get_object_or_404(Show,id=show_id)
-    episodes=Episode.objects.filter(show=show).order_by('location','start')
+    episodes=Episode.objects.filter(show=show,start__day=17).order_by('location','start')
 
     base  = os.path.dirname(__file__)
     print base
@@ -87,8 +87,8 @@ def recording_sheets(request,show_id):
             location_name='None'
         ds.append({'episode_id':ep.id,
           'episode_name':ep.name,
-          'episode_authors':'ep.authors',
-          'episode_primary':'ep.primary',
+          'episode_authors':ep.authors,
+          'episode_primary':ep.primary,
           'episode_start':ep.start,
           'episode_end':ep.end,
           'location_name':location_name,
