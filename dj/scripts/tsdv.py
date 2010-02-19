@@ -29,7 +29,9 @@ class add_dv(process):
         
         pathname = os.path.join(dir,dv.filename)
         print pathname
-        start=datetime.datetime.strptime(dv.filename,'%Y-%m-%d/%H:%M:%S.dv')
+        filename = dv.filename
+        if filename[-5]=='-': filename = filename[:-5] + filename[-3:] 
+        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
         # dt = dv.filename[:-3]
         # dt.replace('/',' ')
         st = os.stat(pathname)    
@@ -38,12 +40,9 @@ class add_dv(process):
         # start=parse(dt)
 # use this to adjust for camera clock in wrong timezone
         # start -= datetime.timedelta(hours=2,minutes=0)
-        if False and start.day==8:
-            if dv.location.slug=='Holladay':
+        if start.day in [17,18] and  dv.location.slug=='HanoverD':
                 print dv.location.slug
-                start -= datetime.timedelta(hours=2,minutes=0)
-            else:
-                start -= datetime.timedelta(hours=2,minutes=37)
+                start += datetime.timedelta(hours=1,minutes=0)
 
         frames = st.st_size/self.bpf
         duration = frames/self.fps ## seconds

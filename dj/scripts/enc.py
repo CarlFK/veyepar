@@ -109,7 +109,7 @@ class enc(process):
     tree=xml.etree.ElementTree.XMLID(svg_in)
     # print tree[1]
     # tree[1]['title'].text=name
-    for key in ['client', 'show', 'title']:
+    for key in ['client', 'title']:
         tree[1][key].text=text[key]
 
     if text['authors']:
@@ -195,7 +195,7 @@ class enc(process):
                 'limiter':'20',
                 'normalise':self.options.normalise} )
             """
-        normalise = episode.normalize or self.options.normalise
+        normalise = self.options.normalise
         if normalise and normalise!='0':
             new=xml.etree.ElementTree.Element('filter', 
                 {'mlt_service':'volume', 

@@ -66,7 +66,7 @@ def meet_ann(request,show_id):
 
 def recording_sheets(request,show_id):
     show=get_object_or_404(Show,id=show_id)
-    episodes=Episode.objects.filter(show=show,start__day=17).order_by('location','start')
+    episodes=Episode.objects.filter(show=show,start__day=20).order_by('location','start')
 
     base  = os.path.dirname(__file__)
     print base
@@ -111,14 +111,17 @@ def recording_sheets(request,show_id):
 def raw_play_list(request,episode_id):
     episode=get_object_or_404(Episode,id=episode_id)
     cuts = Cut_List.objects.filter(
-                episode=episode).order_by('raw_file__trash','raw_file__start')
+                episode=episode).order_by('raw_file__start')
 
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=playlist.pls'
+    response = HttpResponse(mimetype='audio/mpegurl')
+    response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
     for cut in cuts:
-        writer.writerow([cut.raw_file.filename])
+        mediadir='/video/data0/'
+        pathname='%s/%s/%s' % (
+            mediadir, cut.raw_file.location.slug, cut.raw_file.filename)
+        writer.writerow([pathname])
 
     return response
 
@@ -255,7 +258,7 @@ def episodes(request,
                   request, Episode, inits, {'sequence':1})
 
             print parents, location_slug
-            episodes=Episode.objects.filter(**parents).order_by('sequence')
+            episodes=Episode.objects.filter(**parents).order_by('location','start')
 
 
     return render_to_response('show.html',

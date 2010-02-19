@@ -47,10 +47,9 @@ class process_csv(process.process):
         print ep
 
         room = ep['room']
-        if room not in [ None, 'None' ]:
-            location = locs[str(room)]['loc']
-        else:
-            location = None
+        if room in [ None, 'None' ]:
+            room='6'
+        location = locs[str(room)]['loc']
         
         name = ep['title']
         slug=fnify(name)

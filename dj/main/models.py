@@ -104,7 +104,7 @@ class Episode(models.Model):
     authors = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
-    normalize = models.CharField(max_length=5,null=True,blank=True, )
+    normalise = models.CharField(max_length=5,null=True,blank=True, )
 
     channelcopy = models.CharField(max_length=2,null=True,blank=True,
           help_text='copy left to right (10) or right to left (01)' )

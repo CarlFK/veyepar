@@ -17,8 +17,9 @@ class ShowAdmin(admin.ModelAdmin):
 admin.site.register(Show, ShowAdmin)
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('sequence', 'name',)
-    list_display_links = ('name',)
+    list_display = ('id','sequence', 'name','slug')
+    list_display_links = ('id',)
+    list_editable = ('name','slug')
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Location, LocationAdmin)

@@ -9,8 +9,8 @@ import datetime,time
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
-import settings
-settings.DATABASE_NAME="../vp.db"
+# import settings
+# settings.DATABASE_NAME="../vp.db"
 
 import django
 from main.models import Client, Show, Location, Episode, State, Log
@@ -71,8 +71,8 @@ class process(object):
     return 
 
   def process_eps(self, episodes):
-    for e in episodes:
-      ep=Episode.objects.get(pk=e.id)
+    for ep in episodes:
+      # ep=Episode.objects.get(pk=e.id)
       if ep.locked:
         print '#%s: "%s" locked on %s by %s' % (
                     ep.id, ep, ep.locked, ep.locked_by)
@@ -84,8 +84,9 @@ class process(object):
             client = show.client
             self.show_dir = os.path.join(
                 self.options.mediadir,client.slug,show.slug)
-            self.episode_dir=os.path.join( self.show_dir, 'dv', 
-                ep.location.slug )
+            if self.options.verbose: print ep.name
+            self.episode_dir=os.path.join( 
+                self.show_dir, 'dv', ep.location.slug )
             self.log_in(ep)
             if self.process_ep(ep):
                 ep.state=self.ready_state+1
