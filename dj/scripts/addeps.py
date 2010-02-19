@@ -17,10 +17,9 @@ class process_csv(process.process):
     state_done=1
 
     def one_show(self, show):
-      # url='http://0.0.0.0:8080/main/C/DjangoCon/S/djc09.json'
-      # url='http://us.pycon.org/2010/conference/schedule/events.json'
-      # j=urllib2.urlopen(url).read()
-      j=open('events.json').read()
+      url='http://us.pycon.org/2010/conference/schedule/events.json'
+      j=urllib2.urlopen(url).read()
+      # j=open('events.json').read()
       d = json.loads(j)
 
       seq=0
@@ -48,7 +47,7 @@ class process_csv(process.process):
         print ep
 
         room = ep['room']
-        if room is not None:
+        if room not in [ None, 'None' ]:
             location = locs[str(room)]['loc']
         else:
             location = None
