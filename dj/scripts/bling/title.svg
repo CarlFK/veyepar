@@ -14,7 +14,7 @@
    height="600"
    id="titlepage"
    sodipodi:version="0.32"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.47pre4 r22446"
    version="1.0"
    sodipodi:docname="title.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
@@ -146,17 +146,17 @@
      objecttolerance="10"
      inkscape:pageopacity="0.94117647"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.125"
-     inkscape:cx="440.06861"
-     inkscape:cy="306.96833"
+     inkscape:zoom="0.84880128"
+     inkscape:cx="424.60882"
+     inkscape:cy="224.26378"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="988"
-     inkscape:window-height="989"
-     inkscape:window-x="20"
-     inkscape:window-y="121"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1280"
+     inkscape:window-height="950"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -174,6 +174,20 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
+       style="fill:#ffffff"
+       id="rect2895"
+       width="803.19147"
+       height="292.02576"
+       x="0"
+       y="109.57447" />
+    <rect
+       style="fill:#666666"
+       id="rect2893"
+       width="804.25531"
+       height="111.70213"
+       x="0"
+       y="0" />
+    <rect
        style="opacity:1;fill:#000000;fill-opacity:0"
        id="rect2398"
        width="800"
@@ -184,21 +198,21 @@
        xml:space="preserve"
        style="font-size:20.176651px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
        x="64.395706"
-       y="555.07855"
+       y="575.07855"
        id="text2556"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan2558"
          x="64.395706"
-         y="555.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
+         y="575.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
     <image
-       sodipodi:absref="/home/juser/veyepar/dj/scripts/bling/sauce_masthead.png"
+       sodipodi:absref="/home/carl/src/vid/veyepar/dj/scripts/bling/sauce_masthead.png"
        xlink:href="sauce_masthead.png"
-       y="467.66159"
-       x="548.16766"
-       id="logo3"
+       width="116.62791"
        height="56.666668"
-       width="116.62791" />
+       id="logo3"
+       x="130.38989"
+       y="485.66159" />
     <flowRoot
        xml:space="preserve"
        id="titlebox"
@@ -211,9 +225,10 @@
            x="68.642532"
            y="121.71946"
            style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
-         id="title">UR DOING IT WRONG for god sake, you really need to please RTFM, RTFM!</flowPara></flowRoot>    <flowRoot
-       transform="matrix(1,0,0,1.1970692,-12.210938,39.990602)"
-       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="title"
+         style="font-weight:normal">UR DOING IT WRONG for god sake, you really need to please RTFM, RTFM!</flowPara></flowRoot>    <flowRoot
+       transform="matrix(1,0,0,1.1970692,-12.210938,71.9906)"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
        id="presenterbox"
        xml:space="preserve"><flowRegion
          id="flowRegion2830"><rect
@@ -223,11 +238,12 @@
            height="80"
            width="684.7511"
            id="rect2832" /></flowRegion><flowPara
-         id="presenternames">By:  James Bennett</flowPara></flowRoot>    <flowRoot
+         id="presenternames"
+         style="font-weight:normal">By: Carl &quot;Speedy&quot; Karsten</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot2802"
        style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="translate(17.664063,104)"><flowRegion
+       transform="translate(17.664063,136)"><flowRegion
          id="flowRegion2804"><rect
            id="rect2806"
            width="587.64703"
@@ -235,23 +251,23 @@
            x="88.733032"
            y="292.48868"
            style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
-         id="flowPara2816">Video produced by Carl Karsten </flowPara><flowPara
+         id="flowPara2816">Video produced by Carl Karsten &amp; a team </flowPara><flowPara
          id="flowPara2818">in conjunction with the PSF and support from:</flowPara></flowRoot>    <text
        xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       x="356.73828"
-       y="106.44446"
+       style="font-size:26.56643677px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       x="342.53442"
+       y="100.96093"
        id="text2538"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
          id="tspan2540"
-         x="356.73828"
-         y="106.44446">Presents</tspan></text>
+         x="342.53442"
+         y="100.96093">Presents</tspan></text>
     <flowRoot
        xml:space="preserve"
        id="flowRoot2576"
-       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="matrix(1,0,0,1.1970692,-12.421875,-111.50301)"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="matrix(1.5228736,0,0,1.8229844,-227.39661,-198.13437)"
        inkscape:label="#flowRoot2414"><flowRegion
          id="flowRegion2416"><rect
            id="rect2418"
@@ -259,33 +275,22 @@
            height="95.016434"
            x="68.642532"
            y="121.71946"
-           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
-         id="client">Chicago Java Users Group</flowPara></flowRoot>    <text
-       xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       x="316.79199"
-       y="362.70398"
-       id="text2416"
-       sodipodi:linespacing="100%"><tspan
-         sodipodi:role="line"
-         id="show"
-         x="316.79199"
-         y="362.70398">October Meeting</tspan></text>
-    <image
-       sodipodi:absref="/home/juser/veyepar/dj/scripts/bling/Enova_financial_logo.png"
-       xlink:href="Enova_financial_logo.png"
-       width="168.77777"
-       height="34.230686"
-       id="image2957"
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="client">PyCon 2010 Atlanta</flowPara></flowRoot>    <image
+       sodipodi:absref="/home/carl/src/vid/veyepar/dj/scripts/bling/orbitz.png"
+       xlink:href="orbitz.png"
+       y="494.66238"
        x="315.61111"
-       y="476.66238" />
+       id="image2957"
+       height="34.230686"
+       width="168.77777" />
     <image
-       sodipodi:absref="/home/juser/veyepar/dj/scripts/bling/JupiterIT.png"
-       xlink:href="JupiterIT.png"
-       width="139.55556"
-       height="58.919197"
+       sodipodi:absref="/home/carl/src/vid/veyepar/dj/scripts/bling/imagescape-web.gif"
+       xlink:href="imagescape-web.gif"
+       y="484.54037"
+       x="516.66663"
        id="logo1"
-       x="120.88887"
-       y="464.7626" />
+       height="58.919197"
+       width="139.55556" />
   </g>
 </svg>
