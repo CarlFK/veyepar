@@ -21,13 +21,13 @@ class add_dv(process):
         pathname = os.path.join(dir,dv.filename)
         print pathname
 
-        p=gsocr.Main(pathname)
-        gsocr.gtk.main()
-        if p.words:
-            dv.ocrtext=p.words
-            # dv.thumbnail=p.imgname
-            dv.save()
-
+        if not os.path.exists("%s.png" % dv.basename ):
+            p=gsocr.Main(pathname)
+            gsocr.gtk.main()
+            if p.words:
+                dv.ocrtext=p.words
+                # dv.thumbnail=p.imgname
+                dv.save()
 
         """
         # code from py-ffmpeg

@@ -195,8 +195,9 @@ class enc(process):
                 'limiter':'20',
                 'normalise':self.options.normalise} )
             """
-        normalise = self.options.normalise
+        normalise = episode.normalise or '-12db'
         if normalise and normalise!='0':
+            if self.options.verbose: print "normalise:", normalise
             new=xml.etree.ElementTree.Element('filter', 
                 {'mlt_service':'volume', 
                 'normalise':normalise} )
