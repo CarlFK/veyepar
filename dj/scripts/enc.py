@@ -234,12 +234,15 @@ class enc(process):
         def one_format(ext, acodec=None, vcodec=None):
             if self.options.verbose: 
                 print "checking %s in %s" % (ext,self.options.upload_formats)
+
             if ext in self.options.upload_formats:
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
               cmd="melt -verbose -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
-              if ext=='dv': cmd="melt -verbose -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1 deinterlace_method=onefield" % ( self.options.format.lower(), mlt_pathname, out_pathname)
+              if ext=='dv': 
+                  out_pathname = '/tmp/'+episode.slug+'.dv'
+                  cmd="melt -verbose -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1 deinterlace_method=onefield" % ( self.options.format.lower(), mlt_pathname, out_pathname)
 # f=dv pix_fmt=yuv411p s=720x480
 
               # write melt command out to a script:
@@ -367,8 +370,10 @@ class enc(process):
             
             if "dv" in self.options.upload_formats:
                 # use the dv created with melt
-                dvpathname = os.path.join(
-                    self.show_dir, "dv", "%s.dv"%episode.slug )
+                # which is now in /tmp/
+                # dvpathname = os.path.join(
+                #     self.show_dir, "dv", "%s.dv"%episode.slug )
+                dvpathname = '/tmp/'+episode.slug+'.dv'
             else:
                 # create the dv (mktitle+copy frames)
                 dvpathname = self.mkdv(mlt,episode,cls)
