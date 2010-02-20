@@ -32,8 +32,12 @@
       <tr>
         <td>id</td>
         <td>loc name</td>
-        <td>start-end</td><td>duration</td>
-        <td>state</td><td>episode.name</td><td>episode.authors</td>
+        <td>start-end</td>
+        <td>duration</td>
+        <td>state</td>
+        <td>episode.name</td>
+        <td>episode.authors</td>
+        <td></td>
       </tr>
     </thead>
 
@@ -46,6 +50,7 @@
         <td>{{episode.state}}</td>
         <td><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
         <td>{{episode.authors}}</td>
+        <td><a href="E/{{episode.id}}/claim_lock">[LOCK]</a></td>
       </tr>
     {% endfor %}
   </table>
