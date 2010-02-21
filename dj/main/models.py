@@ -79,6 +79,12 @@ class Raw_File(models.Model):
     def __unicode__(self):
         return self.filename
 
+    class Meta:
+        ordering = ["filename"]
+
+
+
+
 class Quality(models.Model):
     level = models.IntegerField()
     name = models.CharField(max_length=35)
@@ -139,6 +145,9 @@ class Cut_List(models.Model):
     comment = models.TextField(blank=True)
     def __unicode__(self):
         return "%s - %s" % (self.raw_file, self.episode)
+    
+    #raw_file.admin_order_field = 'filename'
+
 
 class State(models.Model):
     sequence = models.IntegerField(default=1)

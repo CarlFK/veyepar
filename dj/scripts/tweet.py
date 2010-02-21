@@ -58,15 +58,16 @@ class tweet(process):
         show = ep.show
         client = show.client
 
-        blip_url="http://carlfk.blip.tv/file/%s" % ep.target
-        prefix = "#%s #VIDEO" % show.client.slug
+        blip_url="http://pycon.blip.tv/file/%s" % ep.target
+        # prefix = "#%s #VIDEO" % show.client.slug
+        prefix = "#PyCon #VIDEO"
         tweet = self.mk_tweet(prefix, ep.name, blip_url)
 
         ret=False
         if self.options.test:
             print 'test mode:'
             print 'prefix, ep.name, blip_url'
-            print 1, prefix, ep.name, blip_url
+            # print 1, prefix, ep.name, blip_url
             print 2, tweet
             print
         else:

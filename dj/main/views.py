@@ -66,7 +66,7 @@ def meet_ann(request,show_id):
 
 def recording_sheets(request,show_id):
     show=get_object_or_404(Show,id=show_id)
-    episodes=Episode.objects.filter(show=show,start__day=20).order_by('location','start')
+    episodes=Episode.objects.filter(show=show,start__day=21).order_by('location','start')
 
     base  = os.path.dirname(__file__)
     print base

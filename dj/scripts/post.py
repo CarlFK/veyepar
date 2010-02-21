@@ -29,7 +29,7 @@ class post(process):
     blip_cli=blip_uploader.Blip_CLI()
 
     meta = {
-        'title': ep.name,
+        'title': 'PyCon 2010:' + ep.name,
         'description': description,
         }
 
@@ -37,7 +37,7 @@ class post(process):
 # else it will use the id of the episode from a previous run. 
     video_id = ep.target
 
-    tags = [self.options.topics, client.slug, client.tags, ep.tags ]
+    tags = ['PyCon2010 Python', self.options.topics, client.slug, client.tags, ep.tags ]
     meta['topics'] = ' '.join([tag for tag in tags if tag] )
 
     if ep.license: 

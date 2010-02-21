@@ -28,6 +28,7 @@ class Raw_FileAdmin(admin.ModelAdmin):
     list_display = ('filename', 'show', 'location', 'start', 'end', ) 
     list_display_links = ('filename',)
     list_filter = ('location',)
+    search_fields = ['filename']
 admin.site.register(Raw_File, Raw_FileAdmin)
 
 class QualityAdmin(admin.ModelAdmin):
@@ -42,7 +43,7 @@ class EpisodeAdmin(admin.ModelAdmin):
         'locked','locked_by','start','end',)
     ordering = ('sequence', )
     list_display_links = ('name',)
-    list_editable = ('sequence', 'state','locked','locked_by')
+    list_editable = ('location', 'state','locked','locked_by')
     admin_order_field = ('sequence', 'name',)
     list_filter = ('state','location')
     search_fields = ['name']
