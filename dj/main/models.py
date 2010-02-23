@@ -120,7 +120,7 @@ class Episode(models.Model):
         help_text="filename.png" )
     target = models.CharField(max_length=135, null=True,blank=True,
         help_text = "Blip.tv episode ID")
-    start = models.DateTimeField(null=True, blank=True, 
+    start = models.DateTimeField(blank=True, 
         help_text="initially scheduled time from master, adjusted to match reality")
     end = models.DateTimeField(null=True, blank=True)
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
@@ -160,7 +160,7 @@ class Log(models.Model):
     ready = models.DateTimeField()
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
-    result = models.CharField(max_length=130)
+    result = models.CharField(max_length=250)
 
 
 

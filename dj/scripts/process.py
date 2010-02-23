@@ -125,7 +125,7 @@ class process(object):
             shows = Show.objects.filter(slug=self.options.show)
             episodes = episodes.filter(show__in=shows)
         if self.options.day:
-            episodes = episodes.filter(start__day=options.day)
+            episodes = episodes.filter(start__day=self.options.day)
         if self.args:
             episodes = episodes.filter(id__in=self.args)
 

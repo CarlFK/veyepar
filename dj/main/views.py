@@ -118,7 +118,7 @@ def raw_play_list(request,episode_id):
 
     writer = csv.writer(response)
     for cut in cuts:
-        mediadir='/video/data0/'
+        mediadir='/home/videoteam/veyepar/psf/pycon2010/'
         pathname='%s/%s/%s' % (
             mediadir, cut.raw_file.location.slug, cut.raw_file.filename)
         writer.writerow([pathname])
@@ -130,12 +130,13 @@ def play_list(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     episodes=Episode.objects.filter(show=show,state=3).order_by('sequence')
 
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=playlist.pls'
+    response = HttpResponse(mimetype='audio/mpegurl')
+    response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
     for ep in episodes:
-        writer.writerow(["%s.flv"%ep.slug])
+        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010/'
+        writer.writerow(["%s/ogv/%s.ogv"%(mediadir,ep.slug)])
 
     return response
 
@@ -311,6 +312,7 @@ def episode(request,episode_no):
         state=3,show=show).order_by('sequence')
     if episodes: nextepisode=episodes[0]
     else: nextepisode=episode
+    nextepisode = episode.get_next_by_start()
 
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
 

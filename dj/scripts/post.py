@@ -83,7 +83,6 @@ class post(process):
     
 # the blip api gets kinda funky around multiple uploads
 # so no surprise the code is kinda funky.
-    # files = [('','Source',src_pathname)]
     roles={
         'ogv':"Web", 
         'ogg':"Portable", 
@@ -102,7 +101,6 @@ class post(process):
 
     blip_cli.debug = self.options.verbose
 
-    # blip_ep=Blip_Ep()
     if self.options.test:
         print 'test mode:'
         print 'blip_cli.Upload( video_id, user, pw, files, meta, thumb)'
@@ -119,6 +117,9 @@ class post(process):
         print blipcmd 
 
     else:
+        
+        src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
+
         response = blip_cli.Upload(
             video_id, pw.blip['user'], pw.blip['password'], files, meta, thumb)
         response_xml = response.read()

@@ -48,6 +48,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_filter = ('state','location')
     search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
+    save_on_top=True
 admin.site.register(Episode, EpisodeAdmin)
 
 class Cut_ListAdmin(admin.ModelAdmin):
