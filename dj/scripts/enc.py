@@ -178,10 +178,16 @@ class enc(process):
             print cl
             clip.attrib['id']="clip%s"%cl.id
             clip.attrib['producer']="producer%s"%cl.raw_file.id
-            clip.attrib['in']=str(time2f(cl.start,self.fps)) if cl.start else '0'
+
+            in_frame=time2f(cl.start,self.fps) if cl.start else 0
+            out_frame=time2f(cl.end,self.fps) if cl.end else 999999
+
             # end not needed anymore 
             # (as of 2/9/10, will take out 9999 once melt version bumps)
-            clip.attrib['out']=str(time2f(cl.end,self.fps)) if cl.end else '999999'
+
+            clip.attrib['in']=str(in_frame)
+            clip.attrib['out']=str(out_frame)
+
             new=xml.etree.ElementTree.Element('entry', clip.attrib )
             playlist.insert(pos,new)
             pos+=1
@@ -392,6 +398,9 @@ class enc(process):
             open(script_pathname,'w').write(' '.join(cmd))
 
             ret = ret and self.run_cmd(cmd)
+
+            # delete /tmp/foo.dv 
+            os.remove(dvpathname)
 
         if self.options.enc_script:
             cmd = [self.options.enc_script, 

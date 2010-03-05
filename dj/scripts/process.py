@@ -71,11 +71,13 @@ class process(object):
     return 
 
   def process_eps(self, episodes):
-    for ep in episodes:
-      # ep=Episode.objects.get(pk=e.id)
+    for e in episodes:
+      # next line requeries the db to make sure the lock field is fresh
+      ep=Episode.objects.get(pk=e.id)
+      print ep.id, ep.locked, ep.locked_by
       if ep.locked:
-        print '#%s: "%s" locked on %s by %s' % (
-                    ep.id, ep, ep.locked, ep.locked_by)
+	x='#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
+        print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
       else:
         if ep.state==self.ready_state or self.options.force:
 

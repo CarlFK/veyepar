@@ -78,7 +78,7 @@ class tweet(process):
             d=status.AsDict()
             print 2, d
             ret=True
-            self.log_info(d.__str__())
+            # self.log_info(d.__str__())
 
         return ret
 

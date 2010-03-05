@@ -118,7 +118,8 @@ def raw_play_list(request,episode_id):
 
     writer = csv.writer(response)
     for cut in cuts:
-        mediadir='/home/videoteam/veyepar/psf/pycon2010/'
+        mediadir='/home/Videos/videoteam/veyepar/psf/pycon2010/'
+        mediadir='/video/data0/'
         pathname='%s/%s/%s' % (
             mediadir, cut.raw_file.location.slug, cut.raw_file.filename)
         writer.writerow([pathname])

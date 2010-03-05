@@ -59,6 +59,9 @@ class ass_dv(process.process):
 
         for ep in eps:
             print ep
+            
+            cls = Cut_List.objects.filter( episode=ep, raw_file=dv )
+            # if len(cls)>1: print [c.id for c in cls]
             cl, created = Cut_List.objects.get_or_create(
                 episode=ep,
                 raw_file=dv )

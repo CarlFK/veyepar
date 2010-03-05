@@ -1,0 +1,16 @@
+# Veyepar instalation notes
+
+Figure out how to get the binaries installed to satify:
+
+import ImageFile # PIL
+
+import pygtk
+pygtk.require ("2.0")
+import gobject
+import pygst
+pygst.require ("0.10")
+import gst
+import gtk
+
+import pkg_resources
+
