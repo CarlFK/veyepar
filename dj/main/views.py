@@ -323,11 +323,6 @@ def episode(request,episode_no):
     location=episode.location
     client=show.client
 
-    episodes=Episode.objects.filter(
-        sequence__gt=episode.sequence,
-        state=3,show=show).order_by('sequence')
-    if episodes: nextepisode=episodes[0]
-    else: nextepisode=episode
     # prev_episode = episode.get_previous_by_start(state=episode.state)
     # next_episode = episode.get_next_by_start(state=episode.state)
     prev_episode = episode.get_previous_by_start()
