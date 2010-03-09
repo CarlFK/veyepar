@@ -7,14 +7,16 @@
 
 {% block content %}
 
-<a href="/main/E/{{ nextepisode.id }}">Next: {{nextepisode.name }}</a>
+<a href="/main/E/{{ prev_episode.id }}">Prev: {{prev_episode.state }} {{prev_episode.name }}</a></br>
+<a href="/main/E/{{ next_episode.id }}">Next: {{next_episode.state }} {{next_episode.name }}</a>
 
 <h2>ID: {{episode.id}} Location: {{episode.location}}</h2>
 <h2>Title: {{episode.name}}</h2>
 <h2>Author(s): {{episode.authors}}</h2>
 <a href="/admin/main/episode/{{episode.id}}/">admin</a> 
 <a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a> 
-<a href="{% url foo_list episode.id %}{{episode.slug}}.m3u">playlist</a> 
+<a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a> 
+<a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a> 
 </br>
 <table>
 <tbody>

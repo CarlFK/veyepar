@@ -34,7 +34,7 @@ class process(object):
       state=ready_state+1
   """
 
-  ready_state=1
+  ready_state=None
   
 # defaults to ntsc stuff
   fps=29.98
@@ -79,7 +79,12 @@ class process(object):
 	x='#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
         print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
       else:
-        if ep.state==self.ready_state or self.options.force:
+        # None means "don't care", 
+        # ready means ready, 
+        # force is dangerous and will likely mess tings up.
+        if self.ready_state is None \
+           or ep.state==self.ready_state \
+           or self.options.force:
 
             location = ep.location
             show = ep.show
@@ -91,7 +96,12 @@ class process(object):
                 self.show_dir, 'dv', ep.location.slug )
             self.log_in(ep)
             if self.process_ep(ep):
-                ep.state=self.ready_state+1
+                # if the process doesn't fail,
+                # and it was part of the normal process, 
+                if self.ready_state is not None and not self.options.force:
+                    # bump state
+                    ep.state += 1
+                    # ep.state=self.ready_state+1
             self.log_out()
             ep.save()
         else:
