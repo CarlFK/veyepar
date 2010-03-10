@@ -126,6 +126,21 @@ def raw_play_list(request,episode_id):
 
     return response
 
+def enc_play_list(request,episode_id):
+    episode=get_object_or_404(Episode,id=episode_id)
+
+    response = HttpResponse(mimetype='audio/mpegurl')
+    response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
+
+    writer = csv.writer(response)
+    for ext in ['ogv']:
+        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010/'
+        pathname='%s/%s/%s.%s' % (
+            mediadir, ext, episode.slug, ext)
+        writer.writerow([pathname])
+
+    return response
+
 
 def play_list(request,show_id):
     show=get_object_or_404(Show,id=show_id)
@@ -308,12 +323,10 @@ def episode(request,episode_no):
     location=episode.location
     client=show.client
 
-    episodes=Episode.objects.filter(
-        sequence__gt=episode.sequence,
-        state=3,show=show).order_by('sequence')
-    if episodes: nextepisode=episodes[0]
-    else: nextepisode=episode
-    nextepisode = episode.get_next_by_start()
+    # prev_episode = episode.get_previous_by_start(state=episode.state)
+    # next_episode = episode.get_next_by_start(state=episode.state)
+    prev_episode = episode.get_previous_by_start()
+    next_episode = episode.get_next_by_start()
 
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
 
@@ -396,7 +409,8 @@ def episode(request,episode_no):
     return render_to_response('episode.html',
         {'episode':episode,
         'client':client, 'show':show, 'location':location,
-        'nextepisode':nextepisode,
+        'prev_episode':prev_episode,
+        'next_episode':next_episode,
         'same_dates':same_dates,
         'episode_form':episode_form,
         'clrffs':zip(cuts,clrfformset.forms),
