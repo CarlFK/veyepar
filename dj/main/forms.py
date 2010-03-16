@@ -23,7 +23,7 @@ class clrfForm(forms.Form):
     apply = forms.BooleanField(label="Apply",required=False)
     split = forms.BooleanField(label="Spilt",required=False)
     sequence = forms.IntegerField(label="Sequence",required=False,
-      widget=forms.TextInput(attrs={'size':'3'}))
+      widget=forms.TextInput(attrs={'size':'3','class':'suSpinButton'}))
     start = forms.CharField(max_length=12,label="Start",required=False,
       help_text = "offset from start in h:m:s or frames, blank for start",
       widget=forms.TextInput(attrs={'size':'9'}))

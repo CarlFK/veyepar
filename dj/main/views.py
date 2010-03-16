@@ -323,12 +323,20 @@ def episode(request,episode_no):
     location=episode.location
     client=show.client
 
-    # prev_episode = episode.get_previous_by_start(state=episode.state)
-    # next_episode = episode.get_next_by_start(state=episode.state)
-    prev_episode = episode.get_previous_by_start()
-    next_episode = episode.get_next_by_start()
+    try:
+        prev_episode = episode.get_previous_by_start(state=episode.state)
+    except Episode.DoesNotExist:
+        prev_episode = ''
 
-    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
+    try:
+        next_episode = episode.get_next_by_start(state=episode.state)
+    except Episode.DoesNotExist:
+        next_episode = ''
+
+    # prev_episode = episode.get_previous_by_start()
+    # next_episode = episode.get_next_by_start()
+
+    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
@@ -358,8 +366,6 @@ def episode(request,episode_no):
                 if form.cleaned_data['split']:
                     cl.id=None
                     cl.sequence+=1
-                    cl.start = cl.end
-                    cl.end = ''
                     cl.save(force_insert=True)
 
             # if trash got touched, 

@@ -1,1 +1,11 @@
-../../accounts/static/login_form.css
+
+/*
+    Login Form style
+*/
+
+.login_form li {   
+    float:left; 
+    list-style-type:none; 
+    padding: 0 5 0 0; 
+}
+

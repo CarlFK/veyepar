@@ -83,8 +83,6 @@ class Raw_File(models.Model):
         ordering = ["filename"]
 
 
-
-
 class Quality(models.Model):
     level = models.IntegerField()
     name = models.CharField(max_length=35)
@@ -92,10 +90,11 @@ class Quality(models.Model):
     def __unicode__(self):
         return self.name
 
+STATES=((1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'))
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
-    state = models.IntegerField(null=True,blank=True,
+    state = models.IntegerField(null=True,blank=True,choices=STATES,
         help_text="2=ready to encode, 4=ready to post, 5=tweet" )
     locked = models.DateTimeField(null=True, blank=True)
     locked_by = models.CharField(max_length=35, blank=True,

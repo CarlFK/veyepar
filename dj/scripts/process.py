@@ -76,7 +76,6 @@ class process(object):
       ep=Episode.objects.get(pk=e.id)
       print ep.id, ep.locked, ep.locked_by
       if ep.locked:
-	x='#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
         print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
       else:
         # None means "don't care", 
@@ -98,10 +97,13 @@ class process(object):
             if self.process_ep(ep):
                 # if the process doesn't fail,
                 # and it was part of the normal process, 
+                # so don't bump if the process was forced, 
+                # even if it would have been had it not been forced.
+                # if you force, you know better than the process,
+                # so the process is going to let you bump.
                 if self.ready_state is not None and not self.options.force:
                     # bump state
                     ep.state += 1
-                    # ep.state=self.ready_state+1
             self.log_out()
             ep.save()
         else:
@@ -118,12 +120,15 @@ class process(object):
     # for loc in Location.objects.filter(show=show):
     for loc in locs:
         if self.options.verbose: print loc.name
-        episodes = Episode.objects.filter(
-            location=loc).order_by('sequence','start',)
-        #    location=loc,state=self.ready_state).order_by('start','location')
+        episodes = Episode.objects.filter( location=loc).order_by(
+            'sequence','start',)
         if self.options.day:
             episodes=episodes.filter(start__day=self.options.day)
-        self.process_eps(episodes)
+        # self.process_eps(episodes)
+        for day in [17,18,19,20,21]:
+            # self.process_eps(episodes.filter(start__day=day))
+            es=episodes.filter(start__day=day)
+            self.process_eps(es)
 
   def work(self):
         """
@@ -141,7 +146,9 @@ class process(object):
         if self.args:
             episodes = episodes.filter(id__in=self.args)
 
-        self.process_eps(episodes)
+        # self.process_eps(episodes)
+        for day in [11,17,18,19,20,21]:
+            self.process_eps(episodes.filter(start__day=day))
 
         return
 

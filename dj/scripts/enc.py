@@ -153,7 +153,8 @@ class enc(process):
 # add in the dv files
         pos = 1
         for rf in rfs:
-            print rf
+          print rf
+          if rf.duration():
             dvfile.attrib['id']="producer%s"%rf.id
 # hack to use .ogg instead of .dv
             # rawpathname = os.path.join(self.episode_dir,rf.basename()+".ogg")
@@ -173,9 +174,9 @@ class enc(process):
 
 # add in the clips
         pos = 0
-        # for id,start,end in [(1,'500','690'),(2,'1000',None)]:
         for cl in cls:
-            print cl
+          print cl
+          if cl.raw_file.duration():
             clip.attrib['id']="clip%s"%cl.id
             clip.attrib['producer']="producer%s"%cl.raw_file.id
 
@@ -245,10 +246,10 @@ class enc(process):
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
-              cmd="melt -verbose -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1 deinterlace_method=onefield" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
+              cmd="melt -verbose -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
               if ext=='dv': 
                   out_pathname = '/tmp/'+episode.slug+'.dv'
-                  cmd="melt -verbose -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1 deinterlace_method=onefield" % ( self.options.format.lower(), mlt_pathname, out_pathname)
+                  cmd="melt -verbose -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)
 # f=dv pix_fmt=yuv411p s=720x480
 
               # write melt command out to a script:

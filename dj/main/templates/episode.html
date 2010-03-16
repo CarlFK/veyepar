@@ -3,9 +3,20 @@
 
 {% block head %}
 <title>veyepar: {{episode.name}}</title>
+
+<script type="text/javascript" src="/static/js/spinner/JQuerySpinBtn.js"></script>
+
+<script type="text/javascript" language="JavaScript"> 
+$(document).ready(function(){
+// Initialise INPUT element(s) as SpinButtons: (passing options if desired)
+ $('INPUT.suSpinButton').SpinButton();
+});
+</script>
+ 
 {% endblock %}
 
 {% block content %}
+<link type="text/css" rel="stylesheet" href="/static/js/spinner/JQuerySpinBtn.css" />
 
 <a href="/main/E/{{ prev_episode.id }}">Prev: {{prev_episode.state }} {{prev_episode.name }}</a></br>
 <a href="/main/E/{{ next_episode.id }}">Next: {{next_episode.state }} {{next_episode.name }}</a>
