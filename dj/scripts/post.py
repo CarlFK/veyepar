@@ -124,6 +124,8 @@ class post(process):
             video_id, pw.blip['user'], pw.blip['password'], files, meta, thumb)
         response_xml = response.read()
         if self.options.verbose: print response_xml
+        # self.log_info(response_xml)
+        ep.comment += "\n%s\n" % response_xml
         blip_urls = re.search("post_url>(.*)</post" ,response_xml).groups()
         if blip_urls:
             blip_url=blip_urls[0]

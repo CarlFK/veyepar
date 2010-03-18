@@ -85,7 +85,7 @@ class enc(process):
     retcode=p.returncode
     if retcode:
         if self.options.verbose:
-            print "transcode failed"
+            print "command failed"
             print retcode
         ret = False
     else:
@@ -203,6 +203,7 @@ class enc(process):
                 'normalise':self.options.normalise} )
             """
         normalise = episode.normalise or '-12db'
+        if self.options.upload_formats=='flac': normalise=''
         if normalise and normalise!='0':
             if self.options.verbose: print "normalise:", normalise
             new=xml.etree.ElementTree.Element('filter', 
@@ -218,6 +219,16 @@ class enc(process):
                 {'mlt_service':'channelcopy', 
                 'from':fro, 'to':to} )
             playlist.insert(pos,new)
+
+
+        if self.options.upload_formats=='flac':
+            # super hack: remove a bunch of stuff that messes up flac
+            tree[0].remove(title)
+            x=tree[1]['playlist1']
+            print x
+            tree[0].remove(x)
+            x=tree[1]['tractor0']
+            tree[0].remove(x)
 
         if self.options.verbose: xml.etree.ElementTree.dump(tree[0])
 
@@ -246,10 +257,14 @@ class enc(process):
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
-              cmd="melt -verbose -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
+              cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
+              if ext=='flac': 
+                  cmd="melt -verbose -progress %s -consumer avformat:%s " % ( mlt_pathname, out_pathname)
+              if ext=='m4v': 
+                  cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=aac ar=44100 ab=128k vcodec=libx264 b=700k vpre=/usr/share/ffmpeg/libx264-ipod640.ffpreset" % ( self.options.format.lower(), mlt_pathname, out_pathname, )
               if ext=='dv': 
                   out_pathname = '/tmp/'+episode.slug+'.dv'
-                  cmd="melt -verbose -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)
+                  cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)
 # f=dv pix_fmt=yuv411p s=720x480
 
               # write melt command out to a script:
@@ -271,6 +286,8 @@ class enc(process):
         ret = ret and one_format("ogg", "vorbis", "libtheora")
         ret = ret and one_format("flv", "libmp3lame", "flv")
         ret = ret and one_format("mp4", "libmp3lame", "mpeg4")
+        ret = ret and one_format("flac")
+        ret = ret and one_format("m4v")
         ret = ret and one_format("dv")
 
         return ret

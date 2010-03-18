@@ -67,16 +67,16 @@ class process(object):
     del(self.log)
     
   def process_ep(self, episode):
-    print episode.id, episode.name
+    print "stubby process_ep", episode.id, episode.name
     return 
 
   def process_eps(self, episodes):
     for e in episodes:
       # next line requeries the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
-      print ep.id, ep.locked, ep.locked_by
       if ep.locked:
-        print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
+        if self.options.verbose:
+          print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
       else:
         # None means "don't care", 
         # ready means ready, 
@@ -146,9 +146,9 @@ class process(object):
         if self.args:
             episodes = episodes.filter(id__in=self.args)
 
-        # self.process_eps(episodes)
-        for day in [11,17,18,19,20,21]:
-            self.process_eps(episodes.filter(start__day=day))
+        self.process_eps(episodes)
+        # for day in [11,17,18,19,20,21]:
+        #    self.process_eps(episodes.filter(start__day=day))
 
         return
 
