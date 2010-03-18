@@ -74,7 +74,7 @@ class process(object):
     for e in episodes:
       # next line requeries the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
-      if ep.locked:
+      if ep.locked and not self.options.force:
         if self.options.verbose:
           print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
       else:

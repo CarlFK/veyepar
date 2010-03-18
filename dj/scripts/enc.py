@@ -50,7 +50,7 @@ def time2f(time,fps):
     if time[-1]=='f':
         return int(time[:-1])
     else:
-        return time2s(time)*fps
+        return int(time2s(time)*fps)
 
 def time2b(time,fps,bpf,default):
     """
@@ -220,6 +220,13 @@ class enc(process):
                 'from':fro, 'to':to} )
             playlist.insert(pos,new)
 
+        if self.options.upload_formats=='flac': 
+            new=xml.etree.ElementTree.Element('filter', 
+                {'mlt_service':'mono', 'channels':'2'} )
+            # this should be 1, but 
+            # "service=mono channels=1" lowers pitch
+            # https://sourceforge.net/tracker/?func=detail&aid=2972735
+            playlist.insert(pos,new)
 
         if self.options.upload_formats=='flac':
             # super hack: remove a bunch of stuff that messes up flac
@@ -259,11 +266,14 @@ class enc(process):
 
               cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
               if ext=='flac': 
-                  cmd="melt -verbose -progress %s -consumer avformat:%s " % ( mlt_pathname, out_pathname)
+                  # 16kHz/mono 
+                  cmd="melt -verbose -progress %s -consumer avformat:%s ar=16000  " % ( mlt_pathname, out_pathname)
               if ext=='m4v': 
-                  cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=aac ar=44100 ab=128k vcodec=libx264 b=700k vpre=/usr/share/ffmpeg/libx264-ipod640.ffpreset" % ( self.options.format.lower(), mlt_pathname, out_pathname, )
+                  out_pathname = '/tmp/%s.%s' %(episode.slug,ext)
+                  # acodec=aac or libfaac
+                  cmd="melt -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k vpre=/usr/share/ffmpeg/libx264-ipod640.ffpreset" % ( self.options.format.lower(), mlt_pathname, out_pathname, )
               if ext=='dv': 
-                  out_pathname = '/tmp/'+episode.slug+'.dv'
+                  out_pathname = '/tmp/%s.%s' %(episode.slug,ext)
                   cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)
 # f=dv pix_fmt=yuv411p s=720x480
 
@@ -419,6 +429,17 @@ class enc(process):
 
             # delete /tmp/foo.dv 
             os.remove(dvpathname)
+
+        if "m4v" in self.options.upload_formats:
+            ext="m4v"
+            tmp_pathname = '/tmp/%s.%s' % (episode.slug,ext)
+            dst_pathname = os.path.join(
+                self.show_dir, ext, "%s.%s"%(episode.slug,ext))
+            cmd = ["qt-faststart", tmp_pathname, dst_pathname]
+            ret = ret and self.run_cmd(cmd)
+
+            # delete /tmp/foo.m4v 
+            # os.remove(tmp_pathname)
 
         if self.options.enc_script:
             cmd = [self.options.enc_script, 

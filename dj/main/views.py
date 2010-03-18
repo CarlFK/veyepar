@@ -37,7 +37,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     show=get_object_or_404(Show,client=client,slug=show_slug)
     eps = Episode.objects.filter(show=show)
 
-    fields=('id','location','sequence','primary',
+    fields=('id','location','sequence','primary','target',
         'name','authors','description','start','end')
 
     # response = HttpResponse(mimetype="text/javascript")

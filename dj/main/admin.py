@@ -43,7 +43,7 @@ class EpisodeAdmin(admin.ModelAdmin):
         'locked','locked_by','start','end',)
     ordering = ('sequence', )
     list_display_links = ('name',)
-    list_editable = ('location', 'state','locked','locked_by')
+    list_editable = ('location', 'state','locked','locked_by', )
     admin_order_field = ('sequence', 'name',)
     list_filter = ('state','location')
     search_fields = ['name']
