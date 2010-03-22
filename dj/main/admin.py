@@ -39,13 +39,15 @@ admin.site.register(Quality, QualityAdmin)
 
 class EpisodeAdmin(admin.ModelAdmin):
     list_display = (
-	'sequence', 'name', 'state', 'show', 'location', 
-        'locked','locked_by','start','end',)
+	'sequence', 'name', 'state', 
+        'locked','locked_by',
+        'show', 'location', 
+        'start','end',)
     ordering = ('sequence', )
     list_display_links = ('name',)
     list_editable = ('location', 'state','locked','locked_by', )
     admin_order_field = ('sequence', 'name',)
-    list_filter = ('state','location')
+    list_filter = ('state','location','locked','locked_by')
     search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True

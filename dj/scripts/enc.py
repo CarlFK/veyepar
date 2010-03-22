@@ -69,7 +69,8 @@ def time2b(time,fps,bpf,default):
 
 class enc(process):
 
-  ready_state = 2
+  # ready_state = 2
+  ready_state = 7
  
   def run_cmd(self,cmd):
     """

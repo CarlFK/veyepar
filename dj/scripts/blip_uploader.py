@@ -233,7 +233,7 @@ class Blip(object):
         @return xml of all the metadata.
         """
         url = 'http://blip.tv/file/%s?skin=rss' % video_id
-        print url
+        if self.debug: print url
         xml_code = urllib2.urlopen(url).read()
         return xml_code
 
@@ -267,12 +267,24 @@ class Blip(object):
             self.Get_TextFromDomNode(item.getElementsByTagName("blip:puredescription")[0]))
         meta['link'] = self.Get_TextFromDomNode(item.getElementsByTagName("link")[0])
         meta['embed_code'] = self.Get_TextFromDomNode(item.getElementsByTagName("media:player")[0])
+        
         existing_mime_types = {}
+        contents = []
         media_group = item.getElementsByTagName("media:group")[0]
         for content in media_group.getElementsByTagName("media:content"):
-            existing_mime_types.setdefault(content.attributes["type"].value, []).append(
-                content.attributes["url"].value)
+            existing_mime_types.setdefault(content.attributes["type"].value, []).append( content.attributes["url"].value)
+            contents.append({
+               'url': content.attributes["url"].value,
+               'type': content.attributes["type"].value,
+               'fileSize': content.attributes["fileSize"].value,
+               'isDefault': content.attributes["isDefault"].value,
+               'expression': content.attributes["expression"].value,
+               'role': content.attributes["blip:role"].value,
+               # 'acodec': content.attributes["blip:acodec"].value,
+               })
+
         meta['existing_mime_types']=existing_mime_types
+        meta['contents']=contents
             
         return meta
 
@@ -327,6 +339,7 @@ class Blip_CLI(Blip):
             print role
             for url in urls:
                 print "\t%s" % url
+        print info['contents']
 
     def parse_args(self):
 
