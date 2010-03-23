@@ -69,8 +69,7 @@ def time2b(time,fps,bpf,default):
 
 class enc(process):
 
-  # ready_state = 2
-  ready_state = 7
+  ready_state = 2
  
   def run_cmd(self,cmd):
     """
@@ -222,6 +221,7 @@ class enc(process):
             playlist.insert(pos,new)
 
         if self.options.upload_formats=='flac': 
+            # mix channels to mono
             new=xml.etree.ElementTree.Element('filter', 
                 {'mlt_service':'mono', 'channels':'2'} )
             # this should be 1, but 
@@ -229,7 +229,6 @@ class enc(process):
             # https://sourceforge.net/tracker/?func=detail&aid=2972735
             playlist.insert(pos,new)
 
-        if self.options.upload_formats=='flac':
             # super hack: remove a bunch of stuff that messes up flac
             tree[0].remove(title)
             x=tree[1]['playlist1']
@@ -270,7 +269,9 @@ class enc(process):
                   # 16kHz/mono 
                   cmd="melt -verbose -progress %s -consumer avformat:%s ar=16000  " % ( mlt_pathname, out_pathname)
               if ext=='m4v': 
-                  out_pathname = '/tmp/%s.%s' %(episode.slug,ext)
+                  out_pathname = os.path.join(
+                      self.show_dir, "tmp", "%s.%s"%(episode.slug,ext))
+                  # out_pathname = '/tmp/%s.%s' %(episode.slug,ext)
                   # acodec=aac or libfaac
                   cmd="melt -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k vpre=/usr/share/ffmpeg/libx264-ipod640.ffpreset" % ( self.options.format.lower(), mlt_pathname, out_pathname, )
               if ext=='dv': 
@@ -433,10 +434,13 @@ class enc(process):
 
         if "m4v" in self.options.upload_formats:
             ext="m4v"
-            tmp_pathname = '/tmp/%s.%s' % (episode.slug,ext)
+            # tmp_pathname = '/tmp/%s.%s' % (episode.slug,ext)
+            tmp_pathname = os.path.join(
+                self.show_dir, "tmp", "%s.%s"%(episode.slug,ext))
             dst_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
             cmd = ["qt-faststart", tmp_pathname, dst_pathname]
+            print cmd
             ret = ret and self.run_cmd(cmd)
 
             # delete /tmp/foo.m4v 

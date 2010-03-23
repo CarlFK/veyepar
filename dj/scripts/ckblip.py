@@ -4,12 +4,12 @@
 # checks metadata on blib
 # like 'is there a flash version?'
 
+import os
+
 import blip_uploader
 
-# import pw
 from process import process
 
-# from main.models import Show, Location, Episode
 from main.models import Episode
 
 class ckblip(process):
@@ -18,6 +18,15 @@ class ckblip(process):
 
   def process_ep(self, ep):
     # if self.options.verbose: print ep.id, ep.name
+
+
+    """
+    ext='flac'
+    out_pathname = os.path.join(
+        self.show_dir, ext, "%s.%s"%(ep.slug,ext))
+    if ep.state>2 and not os.path.exists(out_pathname): print ep.id, 
+    return True
+    """
 
     blip_cli=blip_uploader.Blip_CLI()
 
@@ -37,7 +46,8 @@ class ckblip(process):
             if content['type'] == 'video/x-flv':
                 flv=True
         if not flv: 
-            print ep.target, "http://blip.tv/file/%s" % ep.target, ep.name, ep.id
+            print ep.id,
+            # print ep.target, "http://blip.tv/file/%s" % ep.target, ep.name, ep.id
 
     # ep.save()
 

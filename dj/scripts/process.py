@@ -145,7 +145,10 @@ class process(object):
             episodes = episodes.filter(start__day=self.options.day)
         if self.args:
             episodes = episodes.filter(id__in=self.args)
-
+        
+        # missing flv on blip
+        # noflv = [int(i) for i in "87 35 88 91 94 92 108 76 86 85 97 19 115 110 89 104 67 80 77 144 114 113 112 111 109 107 93 90 78".split()] 
+        
         self.process_eps(episodes)
         # for day in [11,17,18,19,20,21]:
         #    self.process_eps(episodes.filter(start__day=day))

@@ -90,7 +90,7 @@ class Quality(models.Model):
     def __unicode__(self):
         return self.name
 
-STATES=((-2,'no flv'),(-1,'special'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'flac'),(7,'mv4'),(8,'done'))
+STATES=((-2,'no flv'),(-1,'special'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'flac'),(7,'mv4'),(8,'flv?'),(9,'done'))
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
