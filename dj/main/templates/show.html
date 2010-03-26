@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{% comment %}
     <table>
         {% for location in locations %}
          <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" >
@@ -15,6 +16,7 @@
          </tr>
         {% endfor %}
     </table>
+{% endcomment %}
     <table>
 <tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
 <tr><td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td></tr>

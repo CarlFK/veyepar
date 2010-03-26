@@ -3,6 +3,8 @@
 Figure out how to get the binaries installed to satify:
 
 pip install -r requirements.txt
+# fix broken dabo installer
+mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 
 import ImageFile # PIL
 
