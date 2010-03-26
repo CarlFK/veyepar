@@ -38,19 +38,32 @@ class QualityAdmin(admin.ModelAdmin):
 admin.site.register(Quality, QualityAdmin)
 
 class EpisodeAdmin(admin.ModelAdmin):
+
+    def state_bumper(self,obj):
+        # return '<input type="text" size="3" id="id_form-0-state" value="%s" > <input type="submit" value="+" class=pb>' % (obj.state)
+        return '<input type="submit" value="+" class=pb>' 
+    state_bumper.allow_tags = True
+    state_bumper.short_description = 'bump'
+
     list_display = (
-	'sequence', 'name', 'state', 
+	'sequence', 'name', 'state', 'state_bumper', 
         'locked','locked_by',
         'show', 'location', 
-        'start','end',)
+        'start','end','target')
+    list_display = ( 'sequence', 'name', 'state', 'state_bumper',  )
     ordering = ('sequence', )
+    date_hierarchy = 'start'
     list_display_links = ('name',)
-    list_editable = ('location', 'state','locked','locked_by', )
+    # list_editable = ('state','locked','locked_by', )
+    list_editable = ('state',)
     admin_order_field = ('sequence', 'name',)
     list_filter = ('state','location','locked','locked_by')
     search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True
+    class Media:
+        js = ("/static/js/jquery.js","/static/js/bumpbut.js",)
+
 admin.site.register(Episode, EpisodeAdmin)
 
 class Cut_ListAdmin(admin.ModelAdmin):
