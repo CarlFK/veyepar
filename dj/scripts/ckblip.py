@@ -19,7 +19,6 @@ class ckblip(process):
   def process_ep(self, ep):
     # if self.options.verbose: print ep.id, ep.name
 
-
     """
     ext='flac'
     out_pathname = os.path.join(

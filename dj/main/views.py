@@ -133,7 +133,7 @@ def enc_play_list(request,episode_id):
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
-    for ext in ['ogv']:
+    for ext in ['flv']:
         mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010/'
         pathname='%s/%s/%s.%s' % (
             mediadir, ext, episode.slug, ext)
@@ -151,8 +151,10 @@ def play_list(request,show_id):
 
     writer = csv.writer(response)
     for ep in episodes:
-        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010/'
-        writer.writerow(["%s/ogv/%s.ogv"%(mediadir,ep.slug)])
+        ext='flv'
+        mediadir='/home/tristan/Videos/veyepar/psf/pycon2010/'
+        writer.writerow(["%(mediadir)s/%(ext)s/%(epslug)s.%(ext)s"%(
+              {'mediadir':mediadir,'ext':ext,'epslug':ep.slug})])
 
     return response
 

@@ -2,6 +2,8 @@
 
 Figure out how to get the binaries installed to satify:
 
+pip install -r requirements.txt
+
 import ImageFile # PIL
 
 import pygtk
