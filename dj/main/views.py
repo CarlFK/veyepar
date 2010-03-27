@@ -12,8 +12,9 @@ from django.forms.formsets import formset_factory
 
 from django.db.models import Q
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
+from django.core.urlresolvers import reverse
 
 from datetime import datetime
 from datetime import timedelta
@@ -229,16 +230,15 @@ def locations(request):
         },
 	context_instance=RequestContext(request) )
  
-def episodes(request,
-        client_slug=None,show_slug=None,location_slug=None):
+def episodes(request, client_slug=None, show_slug=None, location_slug=None):
     # the selected client and show
     # list of loctions (rooms) and episodes (talks)
     # and blanks to enter a new location and episode.
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
 
-# show Episodes from all or one location
-# seed the 'new Episode' form with the location.
+    # show Episodes from all or one location
+    # seed the 'new Episode' form with the location.
     if location_slug:
         locations=Location.objects.filter(show=show, slug=location_slug)
         location=Location.objects.get(show=show, slug=location_slug)
@@ -255,7 +255,7 @@ def episodes(request,
                 form=Episode_Form(request.POST)
                 if form.is_valid():
                     form.save()
-# setup next time block to come after current one 
+                    # setup next time block to come after current one 
                     saved=form.cleaned_data
                     inits={
                         'location':location.id,
@@ -279,7 +279,6 @@ def episodes(request,
             print parents, location_slug
             episodes=Episode.objects.filter(**parents).order_by('location','start')
 
-
     return render_to_response('show.html',
         {'client':client,'show':show,
           'locations':locations,
@@ -288,6 +287,7 @@ def episodes(request,
         },
 	context_instance=RequestContext(request) )
  
+
 def overlaping_episodes(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
@@ -318,7 +318,7 @@ def overlaping_episodes(request,show_id):
 
 
 
-def episode(request,episode_no):
+def episode(request, episode_no):
 
     episode=get_object_or_404(Episode,id=episode_no)
     show=episode.show
@@ -426,3 +426,19 @@ def episode(request,episode_no):
         },
     	context_instance=RequestContext(request) )
     	
+
+def claim_episode_lock(request, episode_no):
+    assert request.user.is_authenticated()
+
+    episode = get_object_or_404(Episode, id=episode_no)
+
+    episode.locked = datetime.now()
+    episode.locked_by = request.user.username
+    episode.save()
+
+    return HttpResponseRedirect(
+        reverse(
+            'episode_list',
+            kwargs={
+                'client_slug': episode.show.client.slug,
+                'show_slug': episode.show.slug}))
