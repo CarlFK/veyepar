@@ -40,7 +40,6 @@ admin.site.register(Quality, QualityAdmin)
 class EpisodeAdmin(admin.ModelAdmin):
 
     def state_bumper(self,obj):
-        # return '<input type="text" size="3" id="id_form-0-state" value="%s" > <input type="submit" value="+" class=pb>' % (obj.state)
         return '<input type="submit" value="+" class=pb>' 
     state_bumper.allow_tags = True
     state_bumper.short_description = 'bump'
@@ -63,7 +62,6 @@ class EpisodeAdmin(admin.ModelAdmin):
     save_on_top=True
     class Media:
         js = ("/static/js/jquery.js","/static/js/bumpbut.js",)
-
 admin.site.register(Episode, EpisodeAdmin)
 
 class Cut_ListAdmin(admin.ModelAdmin):
