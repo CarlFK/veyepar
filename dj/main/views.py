@@ -118,7 +118,7 @@ def raw_play_list(request,episode_id):
 
     writer = csv.writer(response)
     for cut in cuts:
-        mediadir='/home/Videos/videoteam/veyepar/psf/pycon2010/'
+        mediadir='/home/Videos/videoteam/veyepar/psf/pycon2010'
         mediadir='/video/data0/'
         pathname='%s/%s/%s' % (
             mediadir, cut.raw_file.location.slug, cut.raw_file.filename)
@@ -134,7 +134,7 @@ def enc_play_list(request,episode_id):
 
     writer = csv.writer(response)
     for ext in ['flv']:
-        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010/'
+        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010'
         pathname='%s/%s/%s.%s' % (
             mediadir, ext, episode.slug, ext)
         writer.writerow([pathname])
@@ -152,7 +152,7 @@ def play_list(request,show_id):
     writer = csv.writer(response)
     for ep in episodes:
         ext='flv'
-        mediadir='/home/tristan/Videos/veyepar/psf/pycon2010/'
+        mediadir='/home/tristan/Videos/veyepar/psf/pycon2010'
         writer.writerow(["%(mediadir)s/%(ext)s/%(epslug)s.%(ext)s"%(
               {'mediadir':mediadir,'ext':ext,'epslug':ep.slug})])
 
