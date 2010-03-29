@@ -267,7 +267,9 @@ class enc(process):
               cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
               if ext=='flac': 
                   # 16kHz/mono 
-                  cmd="melt -verbose -progress %s -consumer avformat:%s ar=16000  " % ( mlt_pathname, out_pathname)
+                  cmd="melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)
+              if ext=='mp3': 
+                  cmd="melt -verbose -progress %s -consumer avformat:%s" % ( mlt_pathname, out_pathname)
               if ext=='m4v': 
                   out_pathname = os.path.join(
                       self.show_dir, "tmp", "%s.%s"%(episode.slug,ext))
@@ -298,6 +300,7 @@ class enc(process):
         ret = ret and one_format("ogg", "vorbis", "libtheora")
         ret = ret and one_format("flv", "libmp3lame", "flv")
         ret = ret and one_format("mp4", "libmp3lame", "mpeg4")
+        ret = ret and one_format("mp3")
         ret = ret and one_format("flac")
         ret = ret and one_format("m4v")
         ret = ret and one_format("dv")

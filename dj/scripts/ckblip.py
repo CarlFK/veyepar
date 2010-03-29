@@ -3,6 +3,9 @@
 # ckblip.py
 # checks metadata on blib
 # like 'is there a flash version?'
+# or 'if a format is not on blip, is it local?'
+# and maybe upload it.
+
 
 import os
 
@@ -14,11 +17,10 @@ from main.models import Episode
 
 class ckblip(process):
 
-  ready_state = None # check all episodes, don't bump state
-
   def process_ep(self, ep):
-    # if self.options.verbose: print ep.id, ep.name
+    if self.options.verbose: print ep.id, ep.name, ep.target
 
+    if ep.state == -1: return 
     """
     ext='flac'
     out_pathname = os.path.join(
@@ -27,44 +29,41 @@ class ckblip(process):
     return True
     """
 
-    blip_cli=blip_uploader.Blip_CLI()
+    types = (('ogv','video/ogg'),
+             ('flv','video/x-flv'),
+             ('m4v','video/x-m4v'),
+             ('mp3','audio/mpeg'),)
 
     if ep.target:
-        video_id = ep.target
-        if self.options.verbose: print ep.id, ep.name, ep.target
-
+        
+        blip_cli=blip_uploader.Blip_CLI()
         blip_cli.debug = self.options.verbose
-        # blip_cli.List_VideoMeta(video_id)
-        xml_code = blip_cli.Get_VideoMeta(video_id)
+
+        xml_code = blip_cli.Get_VideoMeta(ep.target)
         if self.options.verbose: print xml_code
-        info = blip_cli.Parse_VideoMeta(xml_code)
-        flv=None
-        for content in info['contents']:
-            if self.options.verbose: 
-                print content['role'], content['type'],
-            if content['type'] == 'video/x-flv':
-                flv=True
-        if not flv: 
-            print ep.id,
-            # print ep.target, "http://blip.tv/file/%s" % ep.target, ep.name, ep.id
+        meta = blip_cli.Parse_VideoMeta(xml_code)
+        types_on_blip = [ content['type'] for content in meta['contents']]
+
+    else:
+        types_on_blip = []
+        
+    if self.options.verbose: 
+        print types_on_blip
+# [u'video/ogg', u'audio/mpeg', u'video/x-flv', u'video/x-m4v']
+        
+    for t in types:
+        if t[1] not in types_on_blip:
+            pathname = os.path.join(
+                    self.show_dir, t[0], "%s.%s"%(ep.slug,t[0]))
+            if not os.path.exists(pathname):
+                print ep.id, t, pathname
+
+        # print ep.target, "http://blip.tv/file/%s" % ep.target, ep.name, ep.id
 
     # ep.save()
 
     ret = True
     return ret
-
-  def add_more_options(self, parser):
-        parser.add_option('--rating', 
-            help="TV rating")
-        parser.add_option('-T', '--topics',
-            help="list of topics (user defined)")
-        parser.add_option('-L', '--license',
-            help="13 is Creative Commons Attribution-NC-ShareAlike 3.0\n"
-            "'./blip_uploader.py -L list' to see full list" )
-        parser.add_option('-C', '--category',
-            help = "'./blip_uploader.py -C list' to see full list" )
-        parser.add_option('--hidden',
-            help="availability on blip.tv, 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
 
 
 if __name__ == '__main__':

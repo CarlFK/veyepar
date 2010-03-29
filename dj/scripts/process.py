@@ -74,6 +74,7 @@ class process(object):
     for e in episodes:
       # next line requeries the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
+      if self.options.unlock: ep.locked=None
       if ep.locked and not self.options.force:
         if self.options.verbose:
           print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
@@ -232,7 +233,9 @@ class process(object):
               help="test mode - do not make changes to the db "
                 "(not fully implemetned, for development use.")
     parser.add_option('--force', action="store_true",
-              help="override ready state, use with care." )
+              help="override ready state and lock, use with care." )
+    parser.add_option('--unlock', action="store_true",
+              help="clear locked status, use with care." )
     parser.add_option('--whack', action="store_true",
               help="whack current episodes, use with care." )
     parser.add_option('--poll', 
