@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title>veyepar - Show: {{client.name}} {{show.name}} </title>
+  <title>veyepar - Show: {{client.name}} {{show.name}} </title>
 {% endblock %}
 
 {% block content %}
@@ -26,43 +26,44 @@
 <tr><td><a href="{% url client client.slug %}">client</a></td></tr>
     </table>
 <hr />
-<hr />
-    <table>
-    <thead><tr>
-    <td>id</td>
-    <td>loc name</td>
-    <td>start-end</td><td>duration</td>
-    <td>state</td><td>episode.name</td><td>episode.authors</td>
-    </tr></thead>
 
-        {% for episode in episodes %}
-            <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
-            <td>{{episode.id}}</td>
-            <td>{{episode.location}}</td>
-            <td>{{episode.start|date:"D d H:i"}} - {{episode.end|date:"H:i"}}</td>
-            <td>{{episode.start|timesince:episode.end}}</td>
-            <td>{{episode.state}}</td>
-            <td><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
-            <td>{{episode.authors}}</td>
-            </tr>
-        {% endfor %}
-    </table>
+  <table>
+    <thead>
+      <tr>
+        <td>id</td>
+        <td>loc name</td>
+        <td>start-end</td>
+        <td>duration</td>
+        <td>state</td>
+        <td>episode.name</td>
+        <td>episode.authors</td>
+        <td></td>
+      </tr>
+    </thead>
 
-    {% if episode_form %}
-     <div class=logged-in>
-     <h1>Enter Episode:</h1>
-     <form action="" method="POST">{% csrf_token %}
-      <a href="javascript: NewCssCal('id_start','yyyymmdd','arrow',true,24,false)">start</a>
-      <a href="javascript: NewCssCal('id_end','yyyymmdd','arrow',true,24,false)">end</a>
-     
-     <input type="text" name="start" value="2009-12-03" id="foo" />  
-     <table border=1>
-     {{ episode_form }}
+    {% for episode in episodes %}
+      <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+        <td>{{episode.id}}</td>
+        <td>{{episode.location}}</td>
+        <td>{{episode.start|date:"D d H:i"}} - {{episode.end|date:"H:i"}}</td>
+        <td>{{episode.start|timesince:episode.end}}</td>
+        <td>{{episode.state}}</td>
+        <td><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+        <td>{{episode.authors}}</td>
+        <td><a href="E/{{episode.id}}/claim_lock">[LOCK]</a></td>
+      </tr>
+    {% endfor %}
+  </table>
 
-     </table>
-     <input type="submit" value="Save" />
-     </form>
-     </div>
-    {% endif %}
-
+  {% if episode_form %}
+    <div class=logged-in>
+      <h1>Enter Episode:</h1>
+      <form action="" method="POST">{% csrf_token %}
+        <table border=1>
+          {{ episode_form }}
+        </table>
+        <input type="submit" value="Save" />
+      </form>
+    </div>
+  {% endif %}
 {% endblock %}
