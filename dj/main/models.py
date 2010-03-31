@@ -27,6 +27,8 @@ class Client(models.Model):
         help_text="name of video to postpend")
     def __unicode__(self):
         return self.name
+    class Meta:
+        ordering = ["sequence"]
 
 class Show(models.Model):
     client = models.ForeignKey(Client)
@@ -40,6 +42,8 @@ class Show(models.Model):
         return self.client
     def __unicode__(self):
         return "%s: %s" % ( self.client_name, self.name )
+    class Meta:
+        ordering = ["sequence"]
 
 class Location(models.Model):
     shows = models.ManyToManyField(Show)
@@ -50,6 +54,8 @@ class Location(models.Model):
     # @property
     def __unicode__(self):
         return "%s" % ( self.name )
+    class Meta:
+        ordering = ["sequence"]
 
 class Raw_File(models.Model):
     location = models.ForeignKey(Location)
@@ -131,6 +137,8 @@ class Episode(models.Model):
         return ret
     def __unicode__(self):
         return "%s: %s" % ( self.location.name, self.name )
+    class Meta:
+        ordering = ["sequence"]
 
 class Cut_List(models.Model):
     raw_file = models.ForeignKey(Raw_File)
@@ -144,6 +152,8 @@ class Cut_List(models.Model):
     comment = models.TextField(blank=True)
     def __unicode__(self):
         return "%s - %s" % (self.raw_file, self.episode)
+    class Meta:
+        ordering = ["sequence"]
     
     #raw_file.admin_order_field = 'filename'
 
