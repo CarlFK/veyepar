@@ -163,7 +163,7 @@ class Blip(object):
         response = h.getresponse()
         return response
 
-    def Upload(self, video_id, username, password, files, meta, thumbname=None):
+    def Upload(self, video_id, username, password, files, meta={}, thumbname=None):
         """@brief Upload to blip.tv
         
         @param video_id Either the item ID of an existing post or None to create

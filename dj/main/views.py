@@ -56,7 +56,7 @@ def main(request):
 def meet_ann(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show).order_by('sequence')
+    episodes=Episode.objects.filter(show=show).order_by('start')
     location=episodes[0].location
     return render_to_response('meeting_announcement.html',
         {'client':client,'show':show,

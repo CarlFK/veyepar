@@ -10,12 +10,39 @@
 import os
 
 import blip_uploader
+import pw
 
 from process import process
 
 from main.models import Episode
 
 class ckblip(process):
+
+  def post(self, ep, file_types_to_upload):
+
+    blip_cli=blip_uploader.Blip_CLI()
+
+    roles={
+        'ogv':"Web",
+        'ogg':"Portable",
+        'flv':"Main",
+        'mp4':"dvd",
+    }
+    files = []
+    for i,ext in enumerate(file_types_to_upload):
+        fileno=str(i) if i else ''
+        role=roles.get(ext,'extra')
+        src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
+        files.append((fileno,role,src_pathname))
+
+    src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
+
+    response = blip_cli.Upload(
+            ep.target, pw.blip['user'], pw.blip['password'], files)
+
+    print response
+    ep.comment += "\n%s\n" % response_xml
+
 
   def process_ep(self, ep):
     if self.options.verbose: print ep.id, ep.name, ep.target
@@ -50,15 +77,24 @@ class ckblip(process):
     if self.options.verbose: 
         print types_on_blip
 # [u'video/ogg', u'audio/mpeg', u'video/x-flv', u'video/x-m4v']
-        
+    
+    file_types_to_upload=[]    
     for t in types:
         if t[1] not in types_on_blip:
             pathname = os.path.join(
                     self.show_dir, t[0], "%s.%s"%(ep.slug,t[0]))
             if not os.path.exists(pathname):
                 print ep.id, t, pathname
+            else:
+                file_types_to_upload.append(t[0])
 
-        # print ep.target, "http://blip.tv/file/%s" % ep.target, ep.name, ep.id
+    if file_types_to_upload: 
+        if self.options.verbose: print file_types_to_upload    
+        
+        if ep.target:
+            self.post(ep,file_types_to_upload)
+        else:
+            print "post %s" % ep.id
 
     # ep.save()
 
