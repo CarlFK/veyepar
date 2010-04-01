@@ -118,8 +118,6 @@ class post(process):
 
     else:
         
-        src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
-
         response = blip_cli.Upload(
             video_id, pw.blip['user'], pw.blip['password'], files, meta, thumb)
         response_xml = response.read()
