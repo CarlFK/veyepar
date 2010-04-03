@@ -2,6 +2,12 @@
 
 Figure out how to get the binaries installed to satify:
 
+sudo apt-get install python-virtualenv
+sudo apt-get install mercurial
+hg clone http://bitbucket.org/ianb/pip/
+cd pip/
+python setup.py install
+
 pip install -r requirements.txt
 # fix broken dabo installer
 mv dabo/locale/ ./lib/python2.5/site-packages/dabo

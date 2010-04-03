@@ -57,14 +57,14 @@ class ckblip(process):
     return True
     """
 
-    type_map = (
-             {'ext':'flv','mime':'video/x-flv'},
-            )
-
     type_map = ({'ext':'ogv','mime':'video/ogg'},
              {'ext':'flv','mime':'video/x-flv'},
              {'ext':'m4v','mime':'video/x-m4v'},
              {'ext':'mp3','mime':'audio/mpeg'},)
+
+    type_map = (
+             {'ext':'flv','mime':'video/x-flv'},
+            )
 
     if ep.target:
         
@@ -106,7 +106,7 @@ class ckblip(process):
                         print "local:", local_size
                         print " blip:", blip_size
                         print
-                        file_types_to_upload.append(t['ext'])
+                        # file_types_to_upload.append(t['ext'])
             else:
                 # expected type not on blip
                 # check for local copy

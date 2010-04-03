@@ -64,6 +64,7 @@ import getpass
 import httplib
 import mimetypes
 import os
+import datetime
 import re
 import sys
 import urllib2
@@ -142,6 +143,7 @@ class Blip(object):
 
         # send the datas
         if self.debug: print fieldsdata.__repr__()
+        self.start_time = datetime.datetime.now()
         h.send(fieldsdata)
         bytes_sent = len(fieldsdata)
         for filedata, filename in filedatas:
@@ -298,8 +300,11 @@ class Blip_CLI(Blip):
         """
         Displaies upload percent done, bytes sent, total bytes.
         """
-        sys.stdout.write('\r%3i%%  %s of %s bytes' 
-            % (100*current/total, current, total))
+        elasped = datetime.datetime.now() - self.start_time 
+        if elasped.seconds: kbps = (current/elasped.seconds)/1024
+        else: kbps = None
+        sys.stdout.write('\r%3i%%  %s of %s bytes: %s kbps' 
+            % (100*current/total, current, total, kbps))
 
     def List_Licenses(self):
         """
