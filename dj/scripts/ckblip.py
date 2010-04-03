@@ -40,7 +40,8 @@ class ckblip(process):
     response = blip_cli.Upload(
             ep.target, pw.blip['user'], pw.blip['password'], files)
 
-    print response
+    response_xml = response.read()
+    print response_xml
     ep.comment += "\n%s\n" % response_xml
 
 
@@ -56,45 +57,76 @@ class ckblip(process):
     return True
     """
 
-    types = (('ogv','video/ogg'),
-             ('flv','video/x-flv'),
-             ('m4v','video/x-m4v'),
-             ('mp3','audio/mpeg'),)
+    type_map = (
+             {'ext':'flv','mime':'video/x-flv'},
+            )
+
+    type_map = ({'ext':'ogv','mime':'video/ogg'},
+             {'ext':'flv','mime':'video/x-flv'},
+             {'ext':'m4v','mime':'video/x-m4v'},
+             {'ext':'mp3','mime':'audio/mpeg'},)
 
     if ep.target:
         
+        # Episode in veypar has been uploaded to blip,
+        # use the local blip id and fetch the blip metadata.
         blip_cli=blip_uploader.Blip_CLI()
         blip_cli.debug = self.options.verbose
 
         xml_code = blip_cli.Get_VideoMeta(ep.target)
         if self.options.verbose: print xml_code
-        meta = blip_cli.Parse_VideoMeta(xml_code)
-        types_on_blip = [ content['type'] for content in meta['contents']]
 
-    else:
-        types_on_blip = []
-        
-    if self.options.verbose: 
-        print types_on_blip
+        blip_meta = blip_cli.Parse_VideoMeta(xml_code)
+        files_on_blip = {}
+        for content in blip_meta['contents']:
+            files_on_blip[content['type']] = content
+     
+        if self.options.verbose: 
+            print blip_meta['contents']
+            print files_on_blip
 # [u'video/ogg', u'audio/mpeg', u'video/x-flv', u'video/x-m4v']
     
-    file_types_to_upload=[]    
-    for t in types:
-        if t[1] not in types_on_blip:
+        file_types_to_upload=[]    
+        for t in type_map:
             pathname = os.path.join(
-                    self.show_dir, t[0], "%s.%s"%(ep.slug,t[0]))
-            if not os.path.exists(pathname):
-                print ep.id, t, pathname
+                    self.show_dir, t['ext'], "%s.%s"%(ep.slug,t['ext']))
+            if t['mime'] in files_on_blip.keys():
+                # there is somthing on blib
+                # see if it is the same size as local copy
+                if os.path.exists(pathname):
+                    st = os.stat(pathname)
+                    local_size = st.st_size
+                    blip_size = int(files_on_blip[t['mime']]['fileSize'])
+                    if local_size != blip_size:
+                        print "file size mismatch."
+                        # this can happen when a file needed to be re-encoded, 
+                        # like when the cutlist is updated,
+                        # or when blip gets happy whacking the .flv version 
+                        print t
+                        print "local:", local_size
+                        print " blip:", blip_size
+                        print
+                        file_types_to_upload.append(t['ext'])
             else:
-                file_types_to_upload.append(t[0])
+                # expected type not on blip
+                # check for local copy
+                if os.path.exists(pathname):
+                    # local copy found, queue for upload
+                    file_types_to_upload.append(t['ext'])
+                else:
+                    print "missing on blip and local",
+                    print ep.id, t, pathname
 
-    if file_types_to_upload: 
-        if self.options.verbose: print file_types_to_upload    
+        if file_types_to_upload: 
+            if self.options.verbose: print file_types_to_upload    
         
-        if ep.target:
-            self.post(ep,file_types_to_upload)
-        else:
-            print "post %s" % ep.id
+            if self.options.test:
+               print "self.post(%s,%s)"%(ep,file_types_to_upload)
+            else:
+               self.post(ep,file_types_to_upload)
+    else:
+        # episode not on blip, use post.py to set title, thumb, etc.
+        print "post %s" % ep.id
 
     # ep.save()
 
