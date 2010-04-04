@@ -156,6 +156,7 @@ class Blip(object):
                 h.send(block)
                 bytes_sent += len(block)
                 self.progress(bytes_sent,datalen)
+                time.sleep(.01)
                 block=f.read(10000)
         if self.debug: print footdata.__repr__()
         h.send(footdata)
@@ -301,8 +302,13 @@ class Blip_CLI(Blip):
         Displaies upload percent done, bytes sent, total bytes.
         """
         elasped = datetime.datetime.now() - self.start_time 
-        if elasped.seconds: kbps = (current/elasped.seconds)/1024
-        else: kbps = None
+        if elasped.seconds: 
+            kbps = (current/elasped.seconds)/1024
+            eta = datetime.datetime.now() + \
+                    datetime.timedelta(
+                    microseconds=elasped.microseconds * (total-current)/total)
+
+        else: kbps,eta = None,None
         sys.stdout.write('\r%3i%%  %s of %s bytes: %s kbps' 
             % (100*current/total, current, total, kbps))
 
