@@ -10,7 +10,8 @@ import datetime,time
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
 import settings
-settings.DATABASE_NAME="../veyepar"
+# settings.DATABASE_NAME="../veyepar"
+# settings.DATABASE_NAME="../vp.db"
 
 import django
 from main.models import Client, Show, Location, Episode, State, Log

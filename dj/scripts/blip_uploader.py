@@ -64,7 +64,7 @@ import getpass
 import httplib
 import mimetypes
 import os
-import datetime
+import datetime,time
 import re
 import sys
 import urllib2
@@ -156,7 +156,7 @@ class Blip(object):
                 h.send(block)
                 bytes_sent += len(block)
                 self.progress(bytes_sent,datalen)
-                time.sleep(.01)
+                # time.sleep(.01)
                 block=f.read(10000)
         if self.debug: print footdata.__repr__()
         h.send(footdata)
@@ -302,15 +302,17 @@ class Blip_CLI(Blip):
         Displaies upload percent done, bytes sent, total bytes.
         """
         elasped = datetime.datetime.now() - self.start_time 
+        remaining_bytes = total-current
         if elasped.seconds: 
-            kbps = (current/elasped.seconds)/1024
-            eta = datetime.datetime.now() + \
-                    datetime.timedelta(
-                    microseconds=elasped.microseconds * (total-current)/total)
+            bps = current/elasped.seconds
+            remaining_seconds = remaining_bytes / bps
+            eta = datetime.datetime.now() + datetime.timedelta(seconds=remaining_seconds)
 
-        else: kbps,eta = None,None
-        sys.stdout.write('\r%3i%%  %s of %s bytes: %s kbps' 
-            % (100*current/total, current, total, kbps))
+            sys.stdout.write('\r%3i%%  %s of %s bytes: %s kbps remaining: %s eta: %s' 
+              % (100*current/total, current, total, bps/1024, remaining_seconds, eta))
+        else: 
+            sys.stdout.write('\r%3i%%  %s of %s bytes: remaining: %s' 
+              % (100*current/total, current, total, remaining_bytes, ))
 
     def List_Licenses(self):
         """
@@ -408,6 +410,7 @@ class Blip_CLI(Blip):
         parser.add_option('-u', '--username')
         parser.add_option('-p', '--password')
         parser.add_option('-v', '--verbose', action="store_true" )
+        parser.add_option('--test', action="store_true" )
 
         options, args = parser.parse_args()
         return options, args
@@ -415,7 +418,7 @@ class Blip_CLI(Blip):
     def Main(self):
 
         options, args = self.parse_args()
-
+     
         meta={} # metadata about the post: title, licence...
         # keys defined http://wiki.blip.tv/index.php/REST_Upload_API
 
@@ -487,14 +490,23 @@ class Blip_CLI(Blip):
         self.debug=options.verbose
         if options.verbose: print meta
 
-        response = self.Upload(video_id, username, pwd, files, meta, options.thumb)
-        response_xml = response.read()
-        if options.verbose: print response_xml
-        tree = xml.etree.ElementTree.fromstring(response_xml)
-        rep_node=tree.find('response')
-        print rep_node.text,
-        posturl_node=rep_node.find('post_url')
-        print posturl_node.text
+        if options.test:
+            print "Upload(video_id, username, pwd, files, meta, options.thumb)"
+            print "video_id:", video_id
+            print "username:", username 
+            print "pwd", pwd, 
+            print "files", files, 
+            print "meta", meta 
+            print "options.thumb", options.thumb
+        else:
+            response = self.Upload(video_id, username, pwd, files, meta, options.thumb)
+            response_xml = response.read()
+            if options.verbose: print response_xml
+            tree = xml.etree.ElementTree.fromstring(response_xml)
+            rep_node=tree.find('response')
+            print rep_node.text,
+            posturl_node=rep_node.find('post_url')
+            print posturl_node.text
             
         return 0
 
