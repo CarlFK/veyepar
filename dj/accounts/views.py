@@ -37,7 +37,9 @@ def logax(request):
         if form.is_valid():
             username=form.cleaned_data['username']
             password=form.cleaned_data['password']
+            # check for valid login:
             ret,user = auth(username,password)
+            # if it is valid, log them in.
             if not ret['error_no']:
                 l = login(request,user)
         else:
