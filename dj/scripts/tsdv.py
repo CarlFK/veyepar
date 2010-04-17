@@ -38,8 +38,9 @@ class add_dv(process):
 # get start from filesystem create timestamp
         # start=datetime.datetime.fromtimestamp( st.st_mtime )
         # start=parse(dt)
-# use this to adjust for camera clock in wrong timezone
-        # start -= datetime.timedelta(hours=2,minutes=0)
+# use this to adjust for clock in wrong timezone
+
+        start += datetime.timedelta(hours=self.options.offset_hours,minutes=0)
         if start.day in [17,18] and  dv.location.slug=='HanoverD':
                 print dv.location.slug
                 start += datetime.timedelta(hours=1,minutes=0)
@@ -82,6 +83,9 @@ class add_dv(process):
             self.one_show(show)
 
         return
+
+    def add_more_options(self, parser):
+        parser.add_option('--offset_hours', help="adjust time to deal with clock in wrong time zone.")
 
 if __name__=='__main__': 
     p=add_dv()
