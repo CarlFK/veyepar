@@ -38,8 +38,10 @@ class add_dv(process):
 # get start from filesystem create timestamp
         # start=datetime.datetime.fromtimestamp( st.st_mtime )
         # start=parse(dt)
-# use this to adjust for camera clock in wrong timezone
-        # start -= datetime.timedelta(hours=2,minutes=0)
+# use this to adjust for clock in wrong timezone
+        print "start pre", start
+        start += datetime.timedelta(hours=-1,minutes=0)
+        print "start pst", start
         if start.day in [17,18] and  dv.location.slug=='HanoverD':
                 print dv.location.slug
                 start += datetime.timedelta(hours=1,minutes=0)
