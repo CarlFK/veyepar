@@ -94,13 +94,18 @@ class enc(process):
     return ret
 
   def run_cmds(self, episode, cmds):
-      # given a list of commands
-      # append them to the episodes shell script
-      # then run each
-      # abort and return False if any fail.
+      """
+      given a list of commands
+      append them to the episode's shell script
+      then run each
+      abort and return False if any fail.
+      """
+      
+      # script goes in show's tmp dir
       script_pathname = os.path.join(
           self.show_dir, "tmp", episode.slug+".sh")
       sh = open(script_pathname,'a')
+
       for cmd in cmds: 
           if type(cmd)==list:
               sh.writelines(' '.join(cmd))
@@ -133,8 +138,12 @@ class enc(process):
     tree=xml.etree.ElementTree.XMLID(svg_in)
     # print tree[1]
     # tree[1]['title'].text=name
-    for key in ['client', 'title']:
-        tree[1][key].text=text[key]
+    # for key in ['client', 'title']:
+
+    for key,value in text:
+        # tollerate template where tokens have been removed
+        if tree[1].has_key(key):
+            tree[1][key].text=value
 
     if text['authors']:
         prefix = "Featuring" if "," in text['authors'] else "By"
