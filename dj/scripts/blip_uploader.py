@@ -82,7 +82,7 @@ class Blip(object):
     
     MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
-    debug=False
+    debug=True
 
     def progress(self, current, total):
         """
@@ -206,10 +206,7 @@ class Blip(object):
         if thumbname:
             files.append(("thumbnail",thumbname))
 
-        print "Posting to", self.BLIP_UPLOAD_URL
-        print "Please wait..."
         response = self.PostMultipart(self.BLIP_UPLOAD_URL, fields, files)
-        print "\nDone."
 
         return response
 
@@ -308,8 +305,8 @@ class Blip_CLI(Blip):
             remaining_seconds = remaining_bytes / bps
             eta = datetime.datetime.now() + datetime.timedelta(seconds=remaining_seconds)
 
-            sys.stdout.write('\r%3i%%  %s of %s bytes: %s kbps remaining: %s eta: %s' 
-              % (100*current/total, current, total, bps/1024, remaining_seconds, eta))
+            sys.stdout.write('\r%3i%%  %s of %s bytes, %s kbps, remaining: %s min, eta: %s' 
+              % (100*current/total, current, total, bps/1024, remaining_seconds/60, eta.strftime('%H:%M:%S')))
         else: 
             sys.stdout.write('\r%3i%%  %s of %s bytes: remaining: %s' 
               % (100*current/total, current, total, remaining_bytes, ))

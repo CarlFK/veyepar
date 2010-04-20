@@ -10,6 +10,7 @@
 import os
 
 import blip_uploader
+from post import roles
 import pw
 
 from process import process
@@ -22,23 +23,19 @@ class ckblip(process):
 
     blip_cli=blip_uploader.Blip_CLI()
 
-    roles={
-        'ogv':"Web",
-        'ogg':"Portable",
-        'flv':"Main",
-        'mp4':"dvd",
-    }
     files = []
     for i,ext in enumerate(file_types_to_upload):
+        i+=10
         fileno=str(i) if i else ''
         role=roles.get(ext,'extra')
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
+        print (fileno,role,src_pathname)
         files.append((fileno,role,src_pathname))
 
     src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
 
     response = blip_cli.Upload(
-            ep.target, pw.blip['user'], pw.blip['password'], files)
+            ep.target, pw.blip['user'], pw.blip['password'], files, {'title':"test2"})
 
     response_xml = response.read()
     print response_xml
@@ -60,7 +57,6 @@ class ckblip(process):
     type_map = (
              {'ext':'flv','mime':'video/x-flv'},
             )
-
     type_map = ({'ext':'ogv','mime':'video/ogg'},
              {'ext':'flv','mime':'video/x-flv'},
              {'ext':'m4v','mime':'video/x-m4v'},

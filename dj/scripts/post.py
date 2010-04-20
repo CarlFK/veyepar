@@ -12,6 +12,17 @@ from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
+# this is here so ckblip can import roles
+# http://wiki.blip.tv/index.php/Roles
+    # old, works.. but Source looks better:    'ogv':"Web", 
+roles={
+        'ogv':"Source", 
+        'flv':"Web", 
+        'mp4':"dvd", 
+        'm4v':"Portable (iPod)", 
+        'ogg':"Portable (other)", 
+    }
+
 class post(process):
 
   ready_state = 4
@@ -83,12 +94,6 @@ class post(process):
     
 # the blip api gets kinda funky around multiple uploads
 # so no surprise the code is kinda funky.
-    roles={
-        'ogv':"Web", 
-        'ogg':"Portable", 
-        'flv':"Main", 
-        'mp4':"dvd", 
-    }
     files = []
     exts = self.options.upload_formats.split()
 # pull dv from the list
