@@ -16,17 +16,55 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.core.urlresolvers import reverse
 
+from django.utils import simplejson
+
 from datetime import datetime
 from datetime import timedelta
 import os
 import csv
 from cStringIO import StringIO
+
 from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List
 from main.forms import Episode_Form_small, Episode_Form, clrfForm
 
 from accounts.forms import LoginForm
+
+def ajax_user_lookup(request):
+    """
+    looks up a username.
+    returns an error code, username and human name
+    """
+
+    username = request.POST.get('username', False)
+    users = User.objects.filter(username=username)
+
+    ret = {}
+    if users:
+        user=users[0]
+        # existing username
+        ret['error_no']=0
+        ret['id']=user.id
+        ret['username']=user.username
+        # if the first/last is blank, use username
+        fn = user.get_full_name()
+        ret['fullname'] = fn if fn else user.username
+    else:
+        # not found
+        ret['error_no']=3
+        ret['error_text']="not found."
+
+    print ret
+
+    response = HttpResponse(simplejson.dumps(ret,indent=1))
+    response['Content-Type'] = 'application/json'
+
+    return response
+
+def ajax_user_lookup_form(request):
+    return render_to_response('test.html',
+        context_instance=RequestContext(request) )
 
 def eps_xfer(request,client_slug=None,show_slug=None):
     """

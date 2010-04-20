@@ -12,10 +12,8 @@ import process
 
 from main.models import fnify, Client, Show, Location, Episode
 
-class process_csv(process.process):
+class add_eps(process.process):
    
-    state_done=1
-
     def one_show(self, show):
       url='http://us.pycon.org/2010/conference/schedule/events.json'
       j=urllib2.urlopen(url).read()
@@ -110,6 +108,6 @@ class process_csv(process.process):
         self.one_show(show)
 
 if __name__ == '__main__':
-    p=process_csv()
+    p=add_eps()
     p.main()
 

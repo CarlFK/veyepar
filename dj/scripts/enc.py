@@ -73,13 +73,14 @@ class enc(process):
  
   def run_cmd(self,cmd):
     """
-    given command list, 
+    given command list
     if verbose prints stuff,
     runs it, returns pass/fail.
     """
     if self.options.verbose:
         print cmd
         print ' '.join(cmd)
+
     p=subprocess.Popen(cmd)
     p.wait()
     retcode=p.returncode
@@ -91,6 +92,34 @@ class enc(process):
     else:
         ret = True
     return ret
+
+  def run_cmds(self, episode, cmds):
+      """
+      given a list of commands
+      append them to the episode's shell script
+      then run each
+      abort and return False if any fail.
+      """
+      
+      # script goes in show's tmp dir
+      script_pathname = os.path.join(
+          self.show_dir, "tmp", episode.slug+".sh")
+      sh = open(script_pathname,'a')
+
+      for cmd in cmds: 
+          if type(cmd)==list:
+              sh.writelines(' '.join(cmd))
+          else:
+              sh.writelines(cmd)
+              cmd=cmd.split()
+          sh.write('\n')
+          if not self.run_cmd(cmd):
+              return False
+
+      sh.write('\n')
+      sh.close()
+
+      return True
  
   def mktitle(self, source, output_base, episode):
     """
@@ -109,8 +138,12 @@ class enc(process):
     tree=xml.etree.ElementTree.XMLID(svg_in)
     # print tree[1]
     # tree[1]['title'].text=name
-    for key in ['client', 'title']:
-        tree[1][key].text=text[key]
+    # for key in ['client', 'title']:
+
+    for key,value in text:
+        # tollerate template where tokens have been removed
+        if tree[1].has_key(key):
+            tree[1][key].text=value
 
     if text['authors']:
         prefix = "Featuring" if "," in text['authors'] else "By"
@@ -125,7 +158,7 @@ class enc(process):
     png_name="%s.png"%output_base
     if self.options.verbose: print png_name
     cmd=["inkscape", cooked_svg_name, "--export-png", png_name]
-    self.run_cmd(cmd)
+    self.run_cmds(episode,[cmd])
 
     return png_name
 
@@ -251,41 +284,38 @@ class enc(process):
         dv_pathname = os.path.join(
             self.show_dir, "tmp", "%s_title.dv"%episode.slug)
         cmd = cmd % ( self.options.format.lower(), mlt_pathname, dv_pathname)
-        ret = self.run_cmd(cmd.split())
-# if not ret: raise something
+        ret = self.run_cmds(episode,[cmd])
+        # if not ret: raise something
         return dv_pathname
 
   def run_melt(self, mlt_pathname, episode):
         def one_format(ext, acodec=None, vcodec=None):
             if self.options.verbose: 
-                print "checking %s in %s" % (ext,self.options.upload_formats)
+                print "checking %s in [%s]" % (ext,self.options.upload_formats)
 
             if ext in self.options.upload_formats:
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
-              cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)
+              cmds=["melt -verbose -progress -profile %s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname, acodec, vcodec)]
               if ext=='flac': 
                   # 16kHz/mono 
-                  cmd="melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)
+                  cmds=["melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)]
               if ext=='mp3': 
-                  cmd="melt -verbose -progress %s -consumer avformat:%s" % ( mlt_pathname, out_pathname)
+                  cmds=["melt -verbose -progress %s -consumer avformat:%s" % ( mlt_pathname, out_pathname)]
               if ext=='m4v': 
-                  out_pathname = os.path.join(
+                  tmp_pathname = os.path.join(
                       self.show_dir, "tmp", "%s.%s"%(episode.slug,ext))
                   # out_pathname = '/tmp/%s.%s' %(episode.slug,ext)
                   # acodec=aac or libfaac
-                  cmd="melt -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k vpre=/usr/share/ffmpeg/libx264-ipod640.ffpreset" % ( self.options.format.lower(), mlt_pathname, out_pathname, )
+                  cmds=["melt -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k vpre=/usr/share/ffmpeg/libx264-ipod640.ffpreset" % ( self.options.format.lower(), mlt_pathname, tmp_pathname, )]
+                  cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
               if ext=='dv': 
                   out_pathname = '/tmp/%s.%s' %(episode.slug,ext)
-                  cmd="melt -verbose -progress -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)
+                  cmds=["melt -verbose -progress -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)]
 # f=dv pix_fmt=yuv411p s=720x480
 
-              # write melt command out to a script:
-              script_pathname = os.path.join(
-                self.show_dir, "tmp", "%s_%s.sh"%(episode.slug,ext))
-              open(script_pathname,'w').write(cmd)
-              ret = self.run_cmd(cmd.split())
+              ret = self.run_cmds(episode, cmds)
               if ret:
                   if not os.path.exists(out_pathname):
                       print "melt returned 0, but no output: %s" % out_pathname
@@ -422,15 +452,7 @@ class enc(process):
             cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5" \
                 " --channels 1".split()
             cmd+=[dvpathname,'--output',oggpathname]
-            
-            #    " --speedlevel 0 --optimize --keyint 256" \
-
-            # write ogv command out to a script:
-            script_pathname = os.path.join(
-                self.show_dir, "tmp", "%s_%s.sh"%(episode.slug,'ogv'))
-            open(script_pathname,'w').write(' '.join(cmd))
-
-            ret = ret and self.run_cmd(cmd)
+            ret = ret and self.run_cmds(episode, [cmd])
 
             # delete /tmp/foo.dv 
             os.remove(dvpathname)
@@ -440,19 +462,13 @@ class enc(process):
             # tmp_pathname = '/tmp/%s.%s' % (episode.slug,ext)
             tmp_pathname = os.path.join(
                 self.show_dir, "tmp", "%s.%s"%(episode.slug,ext))
-            dst_pathname = os.path.join(
-                self.show_dir, ext, "%s.%s"%(episode.slug,ext))
-            cmd = ["qt-faststart", tmp_pathname, dst_pathname]
-            print cmd
-            ret = ret and self.run_cmd(cmd)
-
             # delete /tmp/foo.m4v 
-            # os.remove(tmp_pathname)
+            os.remove(tmp_pathname)
 
         if self.options.enc_script:
             cmd = [self.options.enc_script, 
                     self.show_dir, episode.slug]
-            ret = ret and self.run_cmd(cmd)
+            ret = ret and self.run_cmds(episode,[cmd])
 
 
     else:

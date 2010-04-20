@@ -19,7 +19,7 @@ class add_dv(process):
     def one_dv(self, dir, dv ):
         
         pathname = os.path.join(dir,dv.filename)
-        print pathname
+        print "dv:", pathname
 
         if not os.path.exists("%s.png" % dv.basename ):
             p=gsocr.Main(pathname)
@@ -64,7 +64,7 @@ class add_dv(process):
 
     def one_show(self, show):
       eps = Episode.objects.filter(show=show)
-      for loc in Location.objects.filter(episode__in=eps):
+      for loc in Location.objects.filter(episode__in=eps).distinct():
         dir=os.path.join(self.show_dir,'dv',loc.slug)
         print show,loc,dir
         self.one_loc(loc, dir)

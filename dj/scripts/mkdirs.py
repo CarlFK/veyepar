@@ -31,13 +31,13 @@ class mkdirs(process):
         self.show_dir = os.path.join(
             self.options.mediadir,client.slug,show.slug)
 
-        for d in "dv tmp/dv tmp/bling bling ogg ogv mp4 flv txt thumb".split():
+        for d in "dv tmp/dv tmp/bling bling ogg ogv mp4 m4v flv txt thumb".split():
             self.mkdir(os.path.join(self.show_dir,d))
 
 # get episodes for this show
         eps = Episode.objects.filter(show=show)
 # get locations of the episodes
-        for loc in Location.objects.filter(episode__in=eps):
+        for loc in Location.objects.filter(episode__in=eps).distinct():
              dir = os.path.join(self.show_dir,'dv',loc.slug)
              self.mkdir(dir)
 

@@ -93,7 +93,7 @@ def one_frame( sink,buffer,pad, it):
 def skip_forward(it):
 
     pos_int = it.pipeline.query_position(it.time_format, None)[0]
-    seek_ns = pos_int + (2000 * 1000000000)
+    seek_ns = pos_int + (20 * 1000000000)
     it.pipeline.seek_simple(it.time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
 
     return False
@@ -173,9 +173,13 @@ class Main:
         # print t
         # if t == gst.MESSAGE_ELEMENT:
         #     pass
+        if t == gst.MESSAGE_ERROR:
+            print "error:", message, dir(message), message.parse_error()
+            self.pipeline.set_state(gst.STATE_NULL)  
+            gtk.main_quit()
         if t == gst.MESSAGE_EOS:
-            # self.player.set_state(gst.STATE_NULL)
             print self.frame, self.words
+            self.pipeline.set_state(gst.STATE_NULL)  
             gtk.main_quit()
 
 def parse_args():
