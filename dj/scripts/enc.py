@@ -81,6 +81,10 @@ class enc(process):
         print cmd
         print ' '.join(cmd)
 
+    if self.options.test:
+        print "TEST: not running command"
+        return True
+
     p=subprocess.Popen(cmd)
     p.wait()
     retcode=p.returncode
