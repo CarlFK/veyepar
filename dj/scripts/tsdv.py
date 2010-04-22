@@ -57,8 +57,8 @@ class add_dv(process):
             dv.save()
 
 
-    def one_loc(self,location,dir):
-      for dv in Raw_File.objects.filter(location=location):
+    def one_loc(self,show, location,dir):
+      for dv in Raw_File.objects.filter(show=show, location=location):
         self.one_dv(dir,dv)
 
     def one_show(self, show):
@@ -66,7 +66,7 @@ class add_dv(process):
       for loc in Location.objects.filter(episode__in=eps):
         dir=os.path.join(self.show_dir,'dv',loc.slug)
         print show,loc,dir
-        self.one_loc(loc, dir)
+        self.one_loc(show, loc, dir)
 
     def work(self):
         """
