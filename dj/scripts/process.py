@@ -10,7 +10,6 @@ import datetime,time
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
 import settings
-settings.DATABASE_NAME="../vp.db"
 
 import django
 from main.models import Client, Show, Location, Episode, State, Log
@@ -67,17 +66,17 @@ class process(object):
     del(self.log)
     
   def process_ep(self, episode):
-    print episode.id, episode.name
+    print "stubby process_ep", episode.id, episode.name
     return 
 
   def process_eps(self, episodes):
     for e in episodes:
       # next line requeries the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
-      print ep.id, ep.locked, ep.locked_by
-      if ep.locked:
-	x='#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
-        print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
+      if self.options.unlock: ep.locked=None
+      if ep.locked and not self.options.force:
+        if self.options.verbose:
+          print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
       else:
         # None means "don't care", 
         # ready means ready, 
@@ -98,10 +97,13 @@ class process(object):
             if self.process_ep(ep):
                 # if the process doesn't fail,
                 # and it was part of the normal process, 
+                # so don't bump if the process was forced, 
+                # even if it would have been had it not been forced.
+                # if you force, you know better than the process,
+                # so the process is going to let you bump.
                 if self.ready_state is not None and not self.options.force:
                     # bump state
                     ep.state += 1
-                    # ep.state=self.ready_state+1
             self.log_out()
             ep.save()
         else:
@@ -118,12 +120,15 @@ class process(object):
     # for loc in Location.objects.filter(show=show):
     for loc in locs:
         if self.options.verbose: print loc.name
-        episodes = Episode.objects.filter(
-            location=loc).order_by('sequence','start',)
-        #    location=loc,state=self.ready_state).order_by('start','location')
+        episodes = Episode.objects.filter( location=loc).order_by(
+            'sequence','start',)
         if self.options.day:
             episodes=episodes.filter(start__day=self.options.day)
-        self.process_eps(episodes)
+        # self.process_eps(episodes)
+        for day in [17,18,19,20,21]:
+            # self.process_eps(episodes.filter(start__day=day))
+            es=episodes.filter(start__day=day)
+            self.process_eps(es)
 
   def work(self):
         """
@@ -140,8 +145,13 @@ class process(object):
             episodes = episodes.filter(start__day=self.options.day)
         if self.args:
             episodes = episodes.filter(id__in=self.args)
-
+        
+        # missing flv on blip
+        # noflv = [int(i) for i in "87 35 88 91 94 92 108 76 86 85 97 19 115 110 89 104 67 80 77 144 114 113 112 111 109 107 93 90 78".split()] 
+        
         self.process_eps(episodes)
+        # for day in [11,17,18,19,20,21]:
+        #    self.process_eps(episodes.filter(start__day=day))
 
         return
 
@@ -222,7 +232,9 @@ class process(object):
               help="test mode - do not make changes to the db "
                 "(not fully implemetned, for development use.")
     parser.add_option('--force', action="store_true",
-              help="override ready state, use with care." )
+              help="override ready state and lock, use with care." )
+    parser.add_option('--unlock', action="store_true",
+              help="clear locked status, use with care." )
     parser.add_option('--whack', action="store_true",
               help="whack current episodes, use with care." )
     parser.add_option('--poll', 

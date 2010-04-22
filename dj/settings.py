@@ -101,3 +101,7 @@ INSTALLED_APPS = (
     'main',
     'accounts',
 )
+
+try:    from local_settings import *
+except ImportError:    pass
+

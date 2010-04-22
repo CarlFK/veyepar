@@ -12,10 +12,8 @@ import process
 
 from main.models import fnify, Client, Show, Location, Episode
 
-class process_csv(process.process):
+class add_eps(process.process):
    
-    state_done=1
-
     def one_show(self, show):
       url='http://us.pycon.org/2010/conference/schedule/events.json'
       j=urllib2.urlopen(url).read()
@@ -29,12 +27,22 @@ class process_csv(process.process):
           seq+=1
           name = l['name']
           slug=fnify(name)
-          print name, slug
-          loc,created = Location.objects.get_or_create(
-              name=name, slug=slug)
-          if created: 
-              loc.sequence=seq
-              loc.save()
+          slug=slug.replace('_','')
+          if slug in ["Centennial","Hanover F+G"]: 
+              continue
+          if slug =="RegencyV":
+              slug="RegencyVI"
+          if self.options.verbose: print name, slug
+          if self.options.test:
+              # hacked to verify database after cat made some changes.
+              loc = Location.objects.get(
+                  name=name, slug=slug)
+          else:
+              loc,created = Location.objects.get_or_create(
+                  name=name, slug=slug)
+              if created: 
+                  loc.sequence=seq
+                  loc.save()
           # save the loc object into the dict
           # so that it can be used for the FK object for episodes
           l['loc']=loc
@@ -44,11 +52,13 @@ class process_csv(process.process):
       for ep_id in eps:
         ep=eps[ep_id]
         seq+=1
-        print ep
+        if self.options.verbose: print ep
 
         room = ep['room']
-        if room in [ None, 'None' ]:
+        if room in [ None, 'None', '1' ]:
             room='6'
+        if room == '57': 
+            room='47'
         location = locs[str(room)]['loc']
         
         name = ep['title']
@@ -62,20 +72,29 @@ class process_csv(process.process):
         print end
         print ep['duration']
 
-        episode,created = Episode.objects.get_or_create(
-            show=show,
-            primary=primary)
-        if created:
-            episode.sequence=seq
-        episode.location=location 
-        episode.name=name
-        episode.slug=fnify(name)
-        episode.primary=primary
-        episode.authors=authors
-        episode.start=start
-        episode.end=end
-        episode.state=self.state_done
-        episode.save()
+        if self.options.test:
+            episode = Episode.objects.get(
+                show=show, primary=primary)
+            if episode.location != location:
+                print  episode.name, episode.location, location
+                if self.options.force:
+                    episode.location = location
+                    episode.state = 2
+                    episode.save()
+        else:
+            episode,created = Episode.objects.get_or_create(
+                show=show, primary=primary)
+            if created:
+                episode.sequence=seq
+            episode.location=location 
+            episode.name=name
+            episode.slug=fnify(name)
+            episode.primary=primary
+            episode.authors=authors
+            episode.start=start
+            episode.end=end
+            episode.state=self.state_done
+            episode.save()
 
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
@@ -93,6 +112,6 @@ class process_csv(process.process):
         self.one_show(show)
 
 if __name__ == '__main__':
-    p=process_csv()
+    p=add_eps()
     p.main()
 

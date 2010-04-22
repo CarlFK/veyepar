@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# posts to blip.tv, tweets it
+# posts to blip.tv
 
 import blip_uploader
 
@@ -11,6 +11,17 @@ import pw
 from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
+
+# this is here so ckblip can import roles
+# http://wiki.blip.tv/index.php/Roles
+    # old, works.. but Source looks better:    'ogv':"Web", 
+roles={
+        'ogv':"Source", 
+        'flv':"Web", 
+        'mp4':"dvd", 
+        'm4v':"Portable (iPod)", 
+        'ogg':"Portable (other)", 
+    }
 
 class post(process):
 
@@ -29,7 +40,7 @@ class post(process):
     blip_cli=blip_uploader.Blip_CLI()
 
     meta = {
-        'title': 'PyCon 2010:' + ep.name,
+        'title': ep.name,
         'description': description,
         }
 
@@ -37,7 +48,7 @@ class post(process):
 # else it will use the id of the episode from a previous run. 
     video_id = ep.target
 
-    tags = ['PyCon2010 Python', self.options.topics, client.slug, client.tags, ep.tags ]
+    tags = [ self.options.topics, client.slug, client.tags, ep.tags ]
     meta['topics'] = ' '.join([tag for tag in tags if tag] )
 
     if ep.license: 
@@ -83,12 +94,6 @@ class post(process):
     
 # the blip api gets kinda funky around multiple uploads
 # so no surprise the code is kinda funky.
-    roles={
-        'ogv':"Web", 
-        'ogg':"Portable", 
-        'flv':"Main", 
-        'mp4':"dvd", 
-    }
     files = []
     exts = self.options.upload_formats.split()
 # pull dv from the list
@@ -118,12 +123,12 @@ class post(process):
 
     else:
         
-        src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
-
         response = blip_cli.Upload(
             video_id, pw.blip['user'], pw.blip['password'], files, meta, thumb)
         response_xml = response.read()
         if self.options.verbose: print response_xml
+        # self.log_info(response_xml)
+        ep.comment += "\n%s\n" % response_xml
         blip_urls = re.search("post_url>(.*)</post" ,response_xml).groups()
         if blip_urls:
             blip_url=blip_urls[0]

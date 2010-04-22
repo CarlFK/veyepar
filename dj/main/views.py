@@ -12,20 +12,59 @@ from django.forms.formsets import formset_factory
 
 from django.db.models import Q
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
+from django.core.urlresolvers import reverse
+
+from django.utils import simplejson
 
 from datetime import datetime
 from datetime import timedelta
 import os
 import csv
 from cStringIO import StringIO
+
 from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List
 from main.forms import Episode_Form_small, Episode_Form, clrfForm
 
 from accounts.forms import LoginForm
+
+def ajax_user_lookup(request):
+    """
+    looks up a username.
+    returns an error code, username and human name
+    """
+
+    username = request.POST.get('username', False)
+    users = User.objects.filter(username=username)
+
+    ret = {}
+    if users:
+        user=users[0]
+        # existing username
+        ret['error_no']=0
+        ret['id']=user.id
+        ret['username']=user.username
+        # if the first/last is blank, use username
+        fn = user.get_full_name()
+        ret['fullname'] = fn if fn else user.username
+    else:
+        # not found
+        ret['error_no']=3
+        ret['error_text']="not found."
+
+    print ret
+
+    response = HttpResponse(simplejson.dumps(ret,indent=1))
+    response['Content-Type'] = 'application/json'
+
+    return response
+
+def ajax_user_lookup_form(request):
+    return render_to_response('test.html',
+        context_instance=RequestContext(request) )
 
 def eps_xfer(request,client_slug=None,show_slug=None):
     """
@@ -55,7 +94,7 @@ def main(request):
 def meet_ann(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show).order_by('sequence')
+    episodes=Episode.objects.filter(show=show).order_by('start')
     location=episodes[0].location
     return render_to_response('meeting_announcement.html',
         {'client':client,'show':show,
@@ -118,7 +157,7 @@ def raw_play_list(request,episode_id):
 
     writer = csv.writer(response)
     for cut in cuts:
-        mediadir='/home/Videos/videoteam/veyepar/psf/pycon2010/'
+        mediadir='/home/Videos/videoteam/veyepar/psf/pycon2010'
         mediadir='/video/data0/'
         pathname='%s/%s/%s' % (
             mediadir, cut.raw_file.location.slug, cut.raw_file.filename)
@@ -133,8 +172,8 @@ def enc_play_list(request,episode_id):
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
-    for ext in ['ogv']:
-        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010/'
+    for ext in ['flv']:
+        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010'
         pathname='%s/%s/%s.%s' % (
             mediadir, ext, episode.slug, ext)
         writer.writerow([pathname])
@@ -151,8 +190,10 @@ def play_list(request,show_id):
 
     writer = csv.writer(response)
     for ep in episodes:
-        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010/'
-        writer.writerow(["%s/ogv/%s.ogv"%(mediadir,ep.slug)])
+        ext='flv'
+        mediadir='/home/tristan/Videos/veyepar/psf/pycon2010'
+        writer.writerow(["%(mediadir)s/%(ext)s/%(epslug)s.%(ext)s"%(
+              {'mediadir':mediadir,'ext':ext,'epslug':ep.slug})])
 
     return response
 
@@ -227,16 +268,15 @@ def locations(request):
         },
 	context_instance=RequestContext(request) )
  
-def episodes(request,
-        client_slug=None,show_slug=None,location_slug=None):
+def episodes(request, client_slug=None, show_slug=None, location_slug=None):
     # the selected client and show
     # list of loctions (rooms) and episodes (talks)
     # and blanks to enter a new location and episode.
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
 
-# show Episodes from all or one location
-# seed the 'new Episode' form with the location.
+    # show Episodes from all or one location
+    # seed the 'new Episode' form with the location.
     if location_slug:
         locations=Location.objects.filter(show=show, slug=location_slug)
         location=Location.objects.get(show=show, slug=location_slug)
@@ -253,7 +293,7 @@ def episodes(request,
                 form=Episode_Form(request.POST)
                 if form.is_valid():
                     form.save()
-# setup next time block to come after current one 
+                    # setup next time block to come after current one 
                     saved=form.cleaned_data
                     inits={
                         'location':location.id,
@@ -277,7 +317,6 @@ def episodes(request,
             print parents, location_slug
             episodes=Episode.objects.filter(**parents).order_by('location','start')
 
-
     return render_to_response('show.html',
         {'client':client,'show':show,
           'locations':locations,
@@ -286,6 +325,7 @@ def episodes(request,
         },
 	context_instance=RequestContext(request) )
  
+
 def overlaping_episodes(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
@@ -316,19 +356,27 @@ def overlaping_episodes(request,show_id):
 
 
 
-def episode(request,episode_no):
+def episode(request, episode_no):
 
     episode=get_object_or_404(Episode,id=episode_no)
     show=episode.show
     location=episode.location
     client=show.client
 
-    # prev_episode = episode.get_previous_by_start(state=episode.state)
-    # next_episode = episode.get_next_by_start(state=episode.state)
-    prev_episode = episode.get_previous_by_start()
-    next_episode = episode.get_next_by_start()
+    try:
+        prev_episode = episode.get_previous_by_start(state=episode.state)
+    except Episode.DoesNotExist:
+        prev_episode = ''
 
-    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
+    try:
+        next_episode = episode.get_next_by_start(state=episode.state)
+    except Episode.DoesNotExist:
+        next_episode = ''
+
+    # prev_episode = episode.get_previous_by_start()
+    # next_episode = episode.get_next_by_start()
+
+    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
@@ -358,8 +406,6 @@ def episode(request,episode_no):
                 if form.cleaned_data['split']:
                     cl.id=None
                     cl.sequence+=1
-                    cl.start = cl.end
-                    cl.end = ''
                     cl.save(force_insert=True)
 
             # if trash got touched, 
@@ -418,3 +464,19 @@ def episode(request,episode_no):
         },
     	context_instance=RequestContext(request) )
     	
+
+def claim_episode_lock(request, episode_no):
+    assert request.user.is_authenticated()
+
+    episode = get_object_or_404(Episode, id=episode_no)
+
+    episode.locked = datetime.now()
+    episode.locked_by = request.user.username
+    episode.save()
+
+    return HttpResponseRedirect(
+        reverse(
+            'episode_list',
+            kwargs={
+                'client_slug': episode.show.client.slug,
+                'show_slug': episode.show.slug}))

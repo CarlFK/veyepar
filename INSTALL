@@ -3,9 +3,19 @@
 Figure out how to get the binaries installed to satify:
 
 pip install -r requirements.txt
+sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging
 
-#!/usr/bin/python
-import ImageFile # PIL
+sudo apt-get install python-virtualenv
+sudo apt-get install mercurial
+hg clone http://bitbucket.org/ianb/pip/
+cd pip/
+python setup.py install
+cd ..
+
+pip install -r requirements.txt
+# fix broken dabo installer
+mv dabo/locale/ ./lib/python2.5/site-packages/dabo
+
 import pygtk
 pygtk.require ("2.0")
 import gobject

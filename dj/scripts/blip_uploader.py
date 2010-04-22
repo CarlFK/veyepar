@@ -64,6 +64,7 @@ import getpass
 import httplib
 import mimetypes
 import os
+import datetime,time
 import re
 import sys
 import urllib2
@@ -81,7 +82,7 @@ class Blip(object):
     
     MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
-    debug=False
+    debug=True
 
     def progress(self, current, total):
         """
@@ -142,6 +143,7 @@ class Blip(object):
 
         # send the datas
         if self.debug: print fieldsdata.__repr__()
+        self.start_time = datetime.datetime.now()
         h.send(fieldsdata)
         bytes_sent = len(fieldsdata)
         for filedata, filename in filedatas:
@@ -154,6 +156,7 @@ class Blip(object):
                 h.send(block)
                 bytes_sent += len(block)
                 self.progress(bytes_sent,datalen)
+                # time.sleep(.01)
                 block=f.read(10000)
         if self.debug: print footdata.__repr__()
         h.send(footdata)
@@ -163,7 +166,7 @@ class Blip(object):
         response = h.getresponse()
         return response
 
-    def Upload(self, video_id, username, password, files, meta, thumbname=None):
+    def Upload(self, video_id, username, password, files, meta={}, thumbname=None):
         """@brief Upload to blip.tv
         
         @param video_id Either the item ID of an existing post or None to create
@@ -203,10 +206,7 @@ class Blip(object):
         if thumbname:
             files.append(("thumbnail",thumbname))
 
-        print "Posting to", self.BLIP_UPLOAD_URL
-        print "Please wait..."
         response = self.PostMultipart(self.BLIP_UPLOAD_URL, fields, files)
-        print "\nDone."
 
         return response
 
@@ -233,7 +233,7 @@ class Blip(object):
         @return xml of all the metadata.
         """
         url = 'http://blip.tv/file/%s?skin=rss' % video_id
-        print url
+        if self.debug: print url
         xml_code = urllib2.urlopen(url).read()
         return xml_code
 
@@ -267,12 +267,24 @@ class Blip(object):
             self.Get_TextFromDomNode(item.getElementsByTagName("blip:puredescription")[0]))
         meta['link'] = self.Get_TextFromDomNode(item.getElementsByTagName("link")[0])
         meta['embed_code'] = self.Get_TextFromDomNode(item.getElementsByTagName("media:player")[0])
+        
         existing_mime_types = {}
+        contents = []
         media_group = item.getElementsByTagName("media:group")[0]
         for content in media_group.getElementsByTagName("media:content"):
-            existing_mime_types.setdefault(content.attributes["type"].value, []).append(
-                content.attributes["url"].value)
+            existing_mime_types.setdefault(content.attributes["type"].value, []).append( content.attributes["url"].value)
+            contents.append({
+               'url': content.attributes["url"].value,
+               'type': content.attributes["type"].value,
+               'fileSize': content.attributes["fileSize"].value,
+               'isDefault': content.attributes["isDefault"].value,
+               'expression': content.attributes["expression"].value,
+               'role': content.attributes["blip:role"].value,
+               # 'acodec': content.attributes["blip:acodec"].value,
+               })
+
         meta['existing_mime_types']=existing_mime_types
+        meta['contents']=contents
             
         return meta
 
@@ -286,8 +298,18 @@ class Blip_CLI(Blip):
         """
         Displaies upload percent done, bytes sent, total bytes.
         """
-        sys.stdout.write('\r%3i%%  %s of %s bytes' 
-            % (100*current/total, current, total))
+        elasped = datetime.datetime.now() - self.start_time 
+        remaining_bytes = total-current
+        if elasped.seconds: 
+            bps = current/elasped.seconds
+            remaining_seconds = remaining_bytes / bps
+            eta = datetime.datetime.now() + datetime.timedelta(seconds=remaining_seconds)
+
+            sys.stdout.write('\r%3i%%  %s of %s bytes, %s kbps, remaining: %s min, eta: %s' 
+              % (100*current/total, current, total, bps/1024, remaining_seconds/60, eta.strftime('%H:%M:%S')))
+        else: 
+            sys.stdout.write('\r%3i%%  %s of %s bytes: remaining: %s' 
+              % (100*current/total, current, total, remaining_bytes, ))
 
     def List_Licenses(self):
         """
@@ -327,6 +349,7 @@ class Blip_CLI(Blip):
             print role
             for url in urls:
                 print "\t%s" % url
+        print info['contents']
 
     def parse_args(self):
 
@@ -384,6 +407,7 @@ class Blip_CLI(Blip):
         parser.add_option('-u', '--username')
         parser.add_option('-p', '--password')
         parser.add_option('-v', '--verbose', action="store_true" )
+        parser.add_option('--test', action="store_true" )
 
         options, args = parser.parse_args()
         return options, args
@@ -391,7 +415,7 @@ class Blip_CLI(Blip):
     def Main(self):
 
         options, args = self.parse_args()
-
+     
         meta={} # metadata about the post: title, licence...
         # keys defined http://wiki.blip.tv/index.php/REST_Upload_API
 
@@ -463,14 +487,23 @@ class Blip_CLI(Blip):
         self.debug=options.verbose
         if options.verbose: print meta
 
-        response = self.Upload(video_id, username, pwd, files, meta, options.thumb)
-        response_xml = response.read()
-        if options.verbose: print response_xml
-        tree = xml.etree.ElementTree.fromstring(response_xml)
-        rep_node=tree.find('response')
-        print rep_node.text,
-        posturl_node=rep_node.find('post_url')
-        print posturl_node.text
+        if options.test:
+            print "Upload(video_id, username, pwd, files, meta, options.thumb)"
+            print "video_id:", video_id
+            print "username:", username 
+            print "pwd", pwd, 
+            print "files", files, 
+            print "meta", meta 
+            print "options.thumb", options.thumb
+        else:
+            response = self.Upload(video_id, username, pwd, files, meta, options.thumb)
+            response_xml = response.read()
+            if options.verbose: print response_xml
+            tree = xml.etree.ElementTree.fromstring(response_xml)
+            rep_node=tree.find('response')
+            print rep_node.text,
+            posturl_node=rep_node.find('post_url')
+            print posturl_node.text
             
         return 0
 

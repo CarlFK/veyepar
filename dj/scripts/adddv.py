@@ -40,6 +40,8 @@ class add_dv(process):
 
     def one_show(self, show):
       if self.options.verbose:  print "show:", show.slug
+      if self.options.whack:
+          Raw_File.objects.filter(show=show).delete()
       eps = Episode.objects.filter(show=show)
       for loc in Location.objects.filter(episode__in=eps).distinct():
         print show,loc
