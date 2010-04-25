@@ -57,18 +57,13 @@
     <td>
     {{clrfform.clid}}
     <a href="file:///{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a><br>
-    <video src ="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" ></video>
-    <tr><td><a href="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a>
+    <a href="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a>
     {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}
-    <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
-    <img src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" width=200></a>
-    <a href="file://{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
-    <img src="file://{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" width=200> </a>
+    <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></br>
+    <video src ="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
+    poster ="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" 
+    ></video>
     </td>
-    <br>
-    </td>
-    </tr>
-
     <td>
     <table border=1>
     <tbody>
