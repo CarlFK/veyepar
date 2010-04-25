@@ -35,7 +35,7 @@ class ckblip(process):
     src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
 
     response = blip_cli.Upload(
-            ep.target, pw.blip['user'], pw.blip['password'], files, {'title':"test2"})
+            ep.target, pw.blip['user'], pw.blip['password'], files, {'title':ep.title})
 
     response_xml = response.read()
     print response_xml
@@ -61,7 +61,6 @@ class ckblip(process):
              {'ext':'flv','mime':'video/x-flv'},
              {'ext':'m4v','mime':'video/x-m4v'},
              {'ext':'mp3','mime':'audio/mpeg'},)
-
 
     if ep.target:
         
@@ -95,6 +94,8 @@ class ckblip(process):
                     local_size = st.st_size
                     blip_size = int(files_on_blip[t['mime']]['fileSize'])
                     if local_size != blip_size:
+                      file_types_to_upload.append(t['ext'])
+                      if self.options.verbose:
                         print "file size mismatch."
                         # this can happen when a file needed to be re-encoded, 
                         # like when the cutlist is updated,
@@ -103,7 +104,6 @@ class ckblip(process):
                         print "local:", local_size
                         print " blip:", blip_size
                         print
-                        # file_types_to_upload.append(t['ext'])
             else:
                 # expected type not on blip
                 # check for local copy

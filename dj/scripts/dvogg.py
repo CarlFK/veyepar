@@ -1,6 +1,6 @@
 #!/usr/bin/python 
 
-# makes .ogg for all dv in a show
+# makes .ogv for all dv in a show
 
 import  os
 import subprocess
@@ -13,7 +13,7 @@ class mkpreview(process):
 
     def one_dv(self,loc_dir,dv):
         src = os.path.join(loc_dir,dv.filename)
-        dst = os.path.join(loc_dir,dv.basename()+'.ogg')
+        dst = os.path.join(loc_dir,dv.basename()+'.ogv')
         if not os.path.exists(dst):
             cmd="ffmpeg2theora --videoquality 1 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --height 240 --framerate 2 --keyint 256 --channels 1".split()
             # cmd="ffmpeg2theora --videoquality 10 --videobitrate  16778 --optimize --audioquality 10 --audiobitrate 500 --keyint 1".split()

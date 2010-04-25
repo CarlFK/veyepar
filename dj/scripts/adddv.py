@@ -23,6 +23,8 @@ class add_dv(process):
       """
       finds dv files for this location
       """
+      if self.options.whack:
+          Raw_File.objects.filter(show=show,location=loc).delete()
 
       ep_dir=os.path.join(self.show_dir,'dv',location.slug)
       if self.options.verbose:  print "episode dir:", ep_dir
@@ -37,6 +39,7 @@ class add_dv(process):
                   self.one_file(os.path.join(d,f),show,location,seq)
 
     def one_show(self, show):
+      if self.options.verbose:  print "show:", show.slug
       if self.options.whack:
           Raw_File.objects.filter(show=show).delete()
       eps = Episode.objects.filter(show=show)

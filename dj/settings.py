@@ -1,7 +1,11 @@
 # Django settings for veyepar project.
 
+import os
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -9,17 +13,12 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-# DATABASE_NAME = '/home/juser/dev/veyepar/dj/vp.db'             # Or path to database file if using sqlite3.
-DATABASE_NAME = 'veyepar'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'juser'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'useme'         # Not used with sqlite3.
-DATABASE_HOST = '192.168.1.3'             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = os.path.join(BASE_DIR,'veyepar.db')             # Or path to database file if using sqlite3.
+DATABASE_USER = ''             # Not used with sqlite3.
+DATABASE_PASSWORD = ''         # Not used with sqlite3.
+DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
-
-#DATABASE_OPTIONS = {
-#   "init_command": "SET storage_engine=INNODB",
-#}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -40,7 +39,7 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.expanduser('~/Videos/veyepar')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).

@@ -67,6 +67,10 @@ class add_eps(process.process):
         primary=str(ep['id'])
         start = datetime.datetime(*ep['start'])
         end = start + datetime.timedelta(minutes=ep['duration'])
+        print ep['name']
+        print start
+        print end
+        print ep['duration']
 
         if self.options.test:
             episode = Episode.objects.get(
