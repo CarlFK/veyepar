@@ -87,6 +87,10 @@ class add_dv(process):
     def add_more_options(self, parser):
         parser.add_option('--offset_hours', help="adjust time to deal with clock in wrong time zone.")
 
+    def add_more_option_defaults(self, parser):
+        parser.set_defaults(offset_hours=0)
+
+
 if __name__=='__main__': 
     p=add_dv()
     p.main()

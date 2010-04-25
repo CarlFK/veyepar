@@ -9,7 +9,8 @@ import datetime,time
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
-import settings
+from django.conf import settings
+# import settings
 
 import django
 from main.models import Client, Show, Location, Episode, State, Log

@@ -1,4 +1,7 @@
+# veyepar/dj/urls.py
+
 from django.conf.urls.defaults import *
+from django.conf import settings
 from django.views.generic.simple import direct_to_template, redirect_to
 
 from django.contrib import admin
@@ -34,5 +37,5 @@ urlpatterns += patterns('',
 
 urlpatterns += patterns('',
 (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': '/home/videoteam/Videos/veyepar/','show_indexes': True}))
+        {'document_root': settings.MEDIA_ROOT,'show_indexes': True}))
 

@@ -35,7 +35,7 @@ class ckblip(process):
     src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
 
     response = blip_cli.Upload(
-            ep.target, pw.blip['user'], pw.blip['password'], files, {'title':"test2"})
+            ep.target, pw.blip['user'], pw.blip['password'], files, {'title':ep.title})
 
     response_xml = response.read()
     print response_xml

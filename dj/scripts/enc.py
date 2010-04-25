@@ -140,10 +140,10 @@ class enc(process):
     # tree[1]['title'].text=name
     # for key in ['client', 'title']:
 
-    for key,value in text:
+    for key in text:
         # tollerate template where tokens have been removed
         if tree[1].has_key(key):
-            tree[1][key].text=value
+            tree[1][key].text=text[key]
 
     if text['authors']:
         prefix = "Featuring" if "," in text['authors'] else "By"
