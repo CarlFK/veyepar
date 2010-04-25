@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 
 from django.core.paginator import Paginator, InvalidPage
+from django.conf import settings
 
 from django import forms
 from django.forms import ModelForm
@@ -149,18 +150,17 @@ def recording_sheets(request,show_id):
 
 def raw_play_list(request,episode_id):
     episode=get_object_or_404(Episode,id=episode_id)
+    show=episode.show
+    client=show.client
     cuts = Cut_List.objects.filter(
-                episode=episode).order_by('raw_file__start')
+                episode=episode,apply=True).order_by('raw_file__start')
 
     response = HttpResponse(mimetype='audio/mpegurl')
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
     for cut in cuts:
-        mediadir='/home/Videos/videoteam/veyepar/psf/pycon2010'
-        mediadir='/video/data0/'
-        pathname='%s/%s/%s' % (
-            mediadir, cut.raw_file.location.slug, cut.raw_file.filename)
+        pathname = os.path.join(settings.MEDIA_ROOT,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )
         writer.writerow([pathname])
 
     return response
@@ -172,10 +172,9 @@ def enc_play_list(request,episode_id):
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
-    for ext in ['flv']:
-        mediadir='/home/videoteam/Videos/veyepar/psf/pycon2010'
-        pathname='%s/%s/%s.%s' % (
-            mediadir, ext, episode.slug, ext)
+    for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
+        pathname = os.path.join( settings.MEDIA_ROOT,client.slug,show.slug,ext,
+            '%s.%s' % (episode.slug, ext) )
         writer.writerow([pathname])
 
     return response
@@ -191,9 +190,9 @@ def play_list(request,show_id):
     writer = csv.writer(response)
     for ep in episodes:
         ext='flv'
-        mediadir='/home/tristan/Videos/veyepar/psf/pycon2010'
-        writer.writerow(["%(mediadir)s/%(ext)s/%(epslug)s.%(ext)s"%(
-              {'mediadir':mediadir,'ext':ext,'epslug':ep.slug})])
+        pathname = os.path.join( settings.MEDIA_ROOT,client.slug,show.slug,ext,
+            '%s.%s' % (ep.slug, ext) )
+        writer.writerow([pathname])
 
     return response
 
@@ -461,6 +460,7 @@ def episode(request, episode_no):
         'episode_form':episode_form,
         'clrffs':zip(cuts,clrfformset.forms),
         'clrfformset':clrfformset,
+        'MEDIA_ROOT':settings.MEDIA_ROOT,
         },
     	context_instance=RequestContext(request) )
     	

@@ -16,11 +16,12 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 # http://wiki.blip.tv/index.php/Roles
     # old, works.. but Source looks better:    'ogv':"Web", 
 roles={
-        'ogv':"Source", 
+        'ogv':"Master", 
         'flv':"Web", 
         'mp4':"dvd", 
         'm4v':"Portable (iPod)", 
         'ogg':"Portable (other)", 
+        'mp3':"Audio-only", 
     }
 
 class post(process):

@@ -9,7 +9,8 @@ import datetime,time
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
-import settings
+from django.conf import settings
+# import settings
 
 import django
 from main.models import Client, Show, Location, Episode, State, Log
@@ -173,6 +174,7 @@ class process(object):
         for show in Show.objects.filter(client=client):
             print "\tName: %s  Slug: %s" %( show.name, show.slug )
             print "\t--client %s --show %s" %( client.slug, show.slug )
+            print "client=%s\nshow=%s" %( client.slug, show.slug )
             if self.options.verbose:
                 for ep in Episode.objects.filter(show=show):
                     print "\t\t id: %s state: %s %s" % ( 

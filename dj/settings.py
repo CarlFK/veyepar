@@ -1,7 +1,11 @@
 # Django settings for veyepar project.
 
+import os
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -10,8 +14,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-# DATABASE_NAME = '/home/juser/dev/veyepar/dj/vp.db'             # Or path to database file if using sqlite3.
-DATABASE_NAME = 'vp.db'             # Or path to database file if using sqlite3.
+DATABASE_NAME = os.path.join(BASE_DIR,'veyepar.db')             # Or path to database file if using sqlite3.
 DATABASE_USER = ''             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
@@ -36,7 +39,7 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.expanduser('~/Videos/veyepar')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
