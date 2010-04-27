@@ -77,8 +77,7 @@ class csv(process):
           ep=episodes[0]
           show=ep.show
           client=show.client
-          self.show_dir = os.path.join(
-              self.options.mediadir,client.slug,show.slug)
+          self.set_dirs(show)
           basename = "%s_%s" % (client.slug,show.slug)
 
     csv_pathname = os.path.join( self.show_dir, "txt", basename+".csv" )

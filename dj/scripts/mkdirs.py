@@ -28,9 +28,7 @@ class mkdirs(process):
         """
         client = Client.objects.get(slug=self.options.client)
         show = Show.objects.get(client=client,slug=self.options.show)
-        self.show_dir = os.path.join(
-            self.options.mediadir,client.slug,show.slug)
-
+        self.set_dirs(show)
         for d in "dv tmp/dv tmp/bling bling ogg ogv mp4 m4v mp3 flv txt thumb".split():
             self.mkdir(os.path.join(self.show_dir,d))
 

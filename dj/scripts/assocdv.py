@@ -73,7 +73,10 @@ class ass_dv(process.process):
 
     def one_loc(self,location):
       seq=0
-      for dv in Raw_File.objects.filter(location=location).order_by('start'):
+      rfs=Raw_File.objects.filter(location=location).order_by('start')
+      if self.options.day:
+          rfs = rfs.filter(start__day=self.options.day)
+      for dv in rfs:
         seq+=1
         self.one_dv(dv,seq)
 
@@ -83,6 +86,7 @@ class ass_dv(process.process):
           Cut_List.objects.filter(episode__show=show).delete()
           return
 
+      self.set_dirs(show)
       eps = Episode.objects.filter(show=show)
       for loc in Location.objects.filter(episode__in=eps).distinct():
         print show,loc
@@ -95,10 +99,6 @@ class ass_dv(process.process):
         if self.options.client and self.options.show:
             client = Client.objects.get(slug=self.options.client)
             show = Show.objects.get(client=client, slug=self.options.show)
-
-            self.show_dir = os.path.join(
-                  self.options.mediadir,client.slug,show.slug)
-
             self.one_show(show)
 
         return
