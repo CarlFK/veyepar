@@ -26,11 +26,11 @@ import gtk
 import pkg_resources
 
 
-
 # either install apache or some other http server and figure out how to enable seeking in ogv, or allow file:// access to the local files:
 http://kb.mozillazine.org/Links_to_local_pages_do_not_work#Firefox_1.5.2C_SeaMonkey_1.0_and_newer  "Disabling the Security Check" 
 
 # use set_ff_prefs.py to add these lines to FireFox config 
+
 user_pref("capability.policy.policynames", "localfilelinks");
 user_pref("capability.policy.localfilelinks.sites", "http://localhost:8080");
 user_pref("capability.policy.localfilelinks.checkloaduri.enabled", "allAccess");

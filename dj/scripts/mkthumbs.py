@@ -18,29 +18,20 @@ class add_dv(process):
 
     def one_dv(self, dir, dv ):
         
-        pathname = os.path.join(dir,dv.filename)
-        print "dv:", pathname
+        dv_pathname = os.path.join(dir,dv.filename)
+        png_pathname = os.path.join(dir,"%s.png"%dv.basename())
+        print "dv:", dv_pathname
+        print "png:", png_pathname
 
-        if not os.path.exists("%s.png" % dv.basename ):
-            p=gsocr.Main(pathname)
+        if not os.path.exists(png_pathname):
+            p=gsocr.Main(dv_pathname)
             gsocr.gtk.main()
             if p.words:
                 dv.ocrtext=p.words
                 # dv.thumbnail=p.imgname
                 dv.save()
-
-        """
-        # code from py-ffmpeg
-        ocrtext,img=ocrdv.ocrdv(pathname)
-
-        if img:
-            imgname = os.path.join(dir,dv.basename()+".png")
-            img.save(imgname,'png')
-            dv.thumbnail = imgname
-            dv.save()
-        """
-
-	return p.basename
+	    return p.basename
+        return None
 
     def process_eps(self,episodes):
       # this never gets called because this processes files, not episodes.
@@ -63,6 +54,7 @@ class add_dv(process):
 
 
     def one_show(self, show):
+      self.set_dirs(show)
       eps = Episode.objects.filter(show=show)
       for loc in Location.objects.filter(episode__in=eps).distinct():
         dir=os.path.join(self.show_dir,'dv',loc.slug)
@@ -76,10 +68,6 @@ class add_dv(process):
         if self.options.client and self.options.show:
             client = Client.objects.get(slug=self.options.client)
             show = Show.objects.get(client=client, slug=self.options.show)
-
-            self.show_dir = os.path.join(
-                  self.options.mediadir,client.slug,show.slug)
-
             self.one_show(show)
 
         return

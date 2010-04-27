@@ -81,6 +81,10 @@ class enc(process):
         print cmd
         print ' '.join(cmd)
 
+    if self.options.test:
+        print "TEST: not running command"
+        return True
+
     p=subprocess.Popen(cmd)
     p.wait()
     retcode=p.returncode
@@ -101,9 +105,7 @@ class enc(process):
       abort and return False if any fail.
       """
       
-      # script goes in show's tmp dir
-      script_pathname = os.path.join(
-          self.show_dir, "tmp", episode.slug+".sh")
+      script_pathname = os.path.join(self.work_dir, episode.slug+".sh")
       sh = open(script_pathname,'a')
 
       for cmd in cmds: 
@@ -189,13 +191,8 @@ class enc(process):
           print rf
           if rf.duration():
             dvfile.attrib['id']="producer%s"%rf.id
-# hack to use .ogg instead of .dv
-            # rawpathname = os.path.join(self.episode_dir,rf.basename()+".ogg")
-# unhack to use .dv            
             rawpathname = os.path.join(self.episode_dir,rf.filename)
-
             dvfile.attrib['resource']=rawpathname
-            # new=xml.etree.ElementTree.SubElement(tree[0],'producer', dvfile.attrib )
             new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
             tree[0].insert(pos,new)
             pos+=1
@@ -272,7 +269,7 @@ class enc(process):
 
         if self.options.verbose: xml.etree.ElementTree.dump(tree[0])
 
-        mlt_pathname = os.path.join(self.show_dir, "tmp", "%s.mlt"%episode.slug)
+        mlt_pathname = os.path.join(self.work_dir,"%s.mlt"%episode.slug)
         open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
 
         return mlt_pathname
@@ -282,7 +279,7 @@ class enc(process):
         # make an intro .dv from title and audio
         cmd="melt -verbose -profile %s %s in=0 out=149 -consumer avformat:%s pix_fmt=yuv411p" 
         dv_pathname = os.path.join(
-            self.show_dir, "tmp", "%s_title.dv"%episode.slug)
+            self.work_dir,"%s_title.dv"%episode.slug)
         cmd = cmd % ( self.options.format.lower(), mlt_pathname, dv_pathname)
         ret = self.run_cmds(episode,[cmd])
         # if not ret: raise something
@@ -304,24 +301,33 @@ class enc(process):
               if ext=='mp3': 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s" % ( mlt_pathname, out_pathname)]
               if ext=='m4v': 
-                  tmp_pathname = os.path.join(
-                      self.show_dir, "tmp", "%s.%s"%(episode.slug,ext))
-                  # out_pathname = '/tmp/%s.%s' %(episode.slug,ext)
-                  # acodec=aac or libfaac
+                  tmp_pathname = os.path.join( 
+                      self.tmp_dir,"%s.%s"%(episode.slug,ext))
                   cmds=["melt -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k vpre=/usr/share/ffmpeg/libx264-ipod640.ffpreset" % ( self.options.format.lower(), mlt_pathname, tmp_pathname, )]
                   cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
+                  cmds.append( ["rm", tmp_pathname] )
               if ext=='dv': 
-                  out_pathname = '/tmp/%s.%s' %(episode.slug,ext)
+                  out_pathname = os.path.join( 
+                      self.tmp_dir,"%s.%s"%(episode.slug,ext))
                   cmds=["melt -verbose -progress -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)]
-# f=dv pix_fmt=yuv411p s=720x480
+              if ext=='ogv': 
+                  # melts ogv cnecoder is loopy, 
+                  # so make a .dv and pass it to ffmpeg2theora
+                  ret = one_format("dv")
+                  dv_pathname = os.path.join( 
+                      self.tmp_dir,"%s.dv"%(episode.slug))
+                  cmds=["ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --channels 1 %s -o %s" % (dv_pathname, out_pathname)]
+                  cmds.append( ["rm", dv_pathname] )
 
               ret = self.run_cmds(episode, cmds)
-              if ret:
-                  if not os.path.exists(out_pathname):
-                      print "melt returned 0, but no output: %s" % out_pathname
-                      ret=False
+              if ret and not os.path.exists(out_pathname) \
+                     and not self.options.test:
+                   print "melt returned %ret, but no output: %s" % \
+                       ( ret, out_pathname )
+                   ret=False
 
               return ret
+
             # this is the case where we don't do this format, 
             # so don't flag as error
             return True
@@ -334,6 +340,7 @@ class enc(process):
         ret = ret and one_format("flac")
         ret = ret and one_format("m4v")
         ret = ret and one_format("dv")
+        ret = ret and one_format("ogv")
 
         return ret
 
@@ -343,12 +350,12 @@ class enc(process):
         so that something like ffmpeg2theora can encode it.
         it is different from run_melt-one_format("dv") because it does not 
         re-encode - it just copies chunks of files.
+        use it if melt is having problems and you don't have time to fix it.
         """
         title_dv=self.mk_title_dv(mlt_pathname, episode)
 
         # make a new dv file using just the frames to encode
-        dv_pathname = os.path.join(self.show_dir,
-            "tmp",episode.slug+".dv")
+        dv_pathname = os.path.join(self.tmp_dir, episode.slug+".dv")
         if self.options.verbose: 
             print "making %s - may take awhile..." % dv_pathname
         outf=open(dv_pathname,'wb')
@@ -390,22 +397,6 @@ class enc(process):
         cmd+=[dvpathname]
         return cmd
 
-# this code is useless
-        if len(cls)==1:
-            # use the raw dv file and ffmpeg2theora params to trim
-            # Not much point in this now that the title side gets made
-            # because now there is never the case of one .dv file
-            c=cls[0]
-            if c.start: cmd+=['--starttime',str(time2s(c.start))]
-            if c.end: cmd+=['--endtime',str(time2s(c.end))]
-            dvpathname = os.path.join(self.episode_dir,c.raw_file.filename)
-        else:
-            dvpathname = self.mkdv(episode,title_dv,cls,rfs)
-                   
-        cmd+=[dvpathname]
-
-        return cmd
-
   def process_ep(self,episode):
     # print episode
     ret = False
@@ -433,43 +424,11 @@ class enc(process):
 # do the final encoding:
 # using melt
         ret = self.run_melt(mlt, episode)
-  
-# using ogv requires dv, so roll that in
-        if "ogv" in self.options.upload_formats:
-            
-            if "dv" in self.options.upload_formats:
-                # use the dv created with melt
-                # which is now in /tmp/
-                # dvpathname = os.path.join(
-                #     self.show_dir, "dv", "%s.dv"%episode.slug )
-                dvpathname = '/tmp/'+episode.slug+'.dv'
-            else:
-                # create the dv (mktitle+copy frames)
-                dvpathname = self.mkdv(mlt,episode,cls)
- 
-            oggpathname = os.path.join(
-                self.show_dir, "ogv", "%s.ogv"%episode.slug)
-            cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5" \
-                " --channels 1".split()
-            cmd+=[dvpathname,'--output',oggpathname]
-            ret = ret and self.run_cmds(episode, [cmd])
-
-            # delete /tmp/foo.dv 
-            os.remove(dvpathname)
-
-        if "m4v" in self.options.upload_formats:
-            ext="m4v"
-            # tmp_pathname = '/tmp/%s.%s' % (episode.slug,ext)
-            tmp_pathname = os.path.join(
-                self.show_dir, "tmp", "%s.%s"%(episode.slug,ext))
-            # delete /tmp/foo.m4v 
-            os.remove(tmp_pathname)
 
         if self.options.enc_script:
             cmd = [self.options.enc_script, 
                     self.show_dir, episode.slug]
             ret = ret and self.run_cmds(episode,[cmd])
-
 
     else:
         print "No cutlist found."

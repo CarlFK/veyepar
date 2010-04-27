@@ -63,6 +63,7 @@ class add_dv(process):
         self.one_dv(dir,dv)
 
     def one_show(self, show):
+      self.set_dirs(show)
       eps = Episode.objects.filter(show=show)
       for loc in Location.objects.filter(episode__in=eps).distinct():
         dir=os.path.join(self.show_dir,'dv',loc.slug)
@@ -76,16 +77,13 @@ class add_dv(process):
         if self.options.client and self.options.show:
             client = Client.objects.get(slug=self.options.client)
             show = Show.objects.get(client=client, slug=self.options.show)
-
-            self.show_dir = os.path.join(
-                  self.options.mediadir,client.slug,show.slug)
-
             self.one_show(show)
 
         return
 
     def add_more_options(self, parser):
-        parser.add_option('--offset_hours', help="adjust time to deal with clock in wrong time zone.")
+        parser.add_option('--offset_hours', type="int",
+           help="adjust time to deal with clock in wrong time zone.")
 
     def add_more_option_defaults(self, parser):
         parser.set_defaults(offset_hours=0)

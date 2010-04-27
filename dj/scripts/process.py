@@ -40,6 +40,20 @@ class process(object):
   fps=29.98
   bpf=120000
 
+  def set_dirs(self,show):
+      client = show.client
+      self.show_dir = os.path.join(
+          self.options.media_dir,client.slug,show.slug)
+      if self.options.tmp_dir:
+          self.tmp_dir = self.options.tmp_dir
+      else:
+          self.tmp_dir = os.path.join(self.show_dir,"tmp")
+      # change me to "cmd" or something beofre the next show
+      self.work_dir = os.path.join(self.show_dir,"tmp")
+
+      return
+
+
   def log_in(self,episode):
     hostname=socket.gethostname()
     what_where = "%s@%s" % (self.__class__.__name__, hostname)
@@ -74,6 +88,9 @@ class process(object):
     for e in episodes:
       # next line requeries the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
+      if ep.locked and self.options.show_locks: 
+          print "locked: ", ep
+          print ep.locked, ep.locked_by
       if self.options.unlock: ep.locked=None
       if ep.locked and not self.options.force:
         if self.options.verbose:
@@ -86,14 +103,11 @@ class process(object):
            or ep.state==self.ready_state \
            or self.options.force:
 
-            location = ep.location
-            show = ep.show
-            client = show.client
-            self.show_dir = os.path.join(
-                self.options.mediadir,client.slug,show.slug)
-            if self.options.verbose: print ep.name
+            self.set_dirs(ep.show)
             self.episode_dir=os.path.join( 
                 self.show_dir, 'dv', ep.location.slug )
+
+            if self.options.verbose: print ep.name
             self.log_in(ep)
             if self.process_ep(ep):
                 # if the process doesn't fail,
@@ -114,11 +128,14 @@ class process(object):
 
 
   def one_show(self, show):
+
+    self.set_dirs(show)
+
     locs = Location.objects.filter(show=show)
     if self.options.room:
         loc=Location.objects.get(name=self.options.room)
         locs=locs.filter(location=loc)
-    # for loc in Location.objects.filter(show=show):
+
     for loc in locs:
         if self.options.verbose: print loc.name
         episodes = Episode.objects.filter( location=loc).order_by(
@@ -146,9 +163,6 @@ class process(object):
             episodes = episodes.filter(start__day=self.options.day)
         if self.args:
             episodes = episodes.filter(id__in=self.args)
-        
-        # missing flv on blip
-        # noflv = [int(i) for i in "87 35 88 91 94 92 108 76 86 85 97 19 115 110 89 104 67 80 77 144 114 113 112 111 109 107 93 90 78".split()] 
         
         self.process_eps(episodes)
         # for day in [11,17,18,19,20,21]:
@@ -193,7 +207,7 @@ class process(object):
     # hardcoded defauts
     parser.set_defaults(format='dv_ntsc')
     parser.set_defaults(upload_formats="ogv")
-    parser.set_defaults(mediadir=os.path.expanduser('~/Videos/veyepar'))
+    parser.set_defaults(media_dir=os.path.expanduser('~/Videos/veyepar'))
     self.add_more_option_defaults(parser)
 
     # read from config file, overrides hardcoded
@@ -217,8 +231,10 @@ class process(object):
             print d
 
 
-    parser.add_option('-m', '--mediadir', 
+    parser.add_option('-m', '--media-dir', 
         help="media files dir", )
+    parser.add_option('--tmp-dir', 
+        help="temp files dir (should be local)", )
     parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
@@ -235,6 +251,8 @@ class process(object):
                 "(not fully implemetned, for development use.")
     parser.add_option('--force', action="store_true",
               help="override ready state and lock, use with care." )
+    parser.add_option('--show-locks', action="store_true",
+              help="show locked status." )
     parser.add_option('--unlock', action="store_true",
               help="clear locked status, use with care." )
     parser.add_option('--whack', action="store_true",

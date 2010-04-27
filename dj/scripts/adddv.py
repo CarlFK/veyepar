@@ -12,12 +12,19 @@ class add_dv(process):
 
     def one_file(self,pathname,show,location,seq):
         print pathname
-        rf, created = Raw_File.objects.get_or_create(
-            show=show, location=location,
-            filename=pathname,)
-        if created: 
-            rf.sequence=seq
-            rf.save()
+        if self.options.test:
+            rfs = Raw_File.objects.filter(
+                show=show, location=location,
+                filename=pathname,)
+            if rfs: print "in db:", rfs
+            else: print "not in db"
+        else:
+            rf, created = Raw_File.objects.get_or_create(
+                show=show, location=location,
+                filename=pathname,)
+            if created: 
+               rf.sequence=seq
+               rf.save()
    
     def one_loc(self,show,location):
       """
@@ -29,7 +36,7 @@ class add_dv(process):
       ep_dir=os.path.join(self.show_dir,'dv',location.slug)
       if self.options.verbose:  print "episode dir:", ep_dir
       seq=0
-      for dirpath, dirnames, filenames in os.walk(ep_dir):
+      for dirpath, dirnames, filenames in os.walk(ep_dir,followlinks=True):
           d=dirpath[len(ep_dir)+1:]
           if self.options.verbose: 
               print "checking...", dirpath, d, dirnames, filenames 
@@ -42,9 +49,10 @@ class add_dv(process):
       if self.options.verbose:  print "show:", show.slug
       if self.options.whack:
           Raw_File.objects.filter(show=show).delete()
+      self.set_dirs(show)
       eps = Episode.objects.filter(show=show)
       for loc in Location.objects.filter(episode__in=eps).distinct():
-        print show,loc
+        print loc
         self.one_loc(show,loc)
 
     def work(self):
@@ -54,10 +62,6 @@ class add_dv(process):
         if self.options.client and self.options.show:
             client = Client.objects.get(slug=self.options.client)
             show = Show.objects.get(client=client, slug=self.options.show)
-
-            self.show_dir = os.path.join(
-                  self.options.mediadir,client.slug,show.slug)
-
             self.one_show(show)
 
         return
