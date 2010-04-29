@@ -285,12 +285,9 @@ class enc(process):
         # if not ret: raise something
         return dv_pathname
 
-  def run_melt(self, mlt_pathname, episode):
-        def one_format(ext, acodec=None, vcodec=None):
-            if self.options.verbose: 
-                print "checking %s in [%s]" % (ext,self.options.upload_formats)
+  def enc_all(self, mlt_pathname, episode):
 
-            if ext in self.options.upload_formats:
+        def enc_one(ext, acodec=None, vcodec=None):
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
@@ -311,9 +308,9 @@ class enc(process):
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
                   cmds=["melt -verbose -progress -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)]
               if ext=='ogv': 
-                  # melts ogv cnecoder is loopy, 
+                  # melts ogv encoder is loopy, 
                   # so make a .dv and pass it to ffmpeg2theora
-                  ret = one_format("dv")
+                  ret = enc_one("dv")
                   dv_pathname = os.path.join( 
                       self.tmp_dir,"%s.dv"%(episode.slug))
                   cmds=["ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --channels 1 %s -o %s" % (dv_pathname, out_pathname)]
@@ -328,9 +325,23 @@ class enc(process):
 
               return ret
 
-            # this is the case where we don't do this format, 
-            # so don't flag as error
-            return True
+
+        def one_format(ext, acodec=None, vcodec=None):
+            """
+            check the passed format against the list of formats to encode
+            if it is on the list, encode that format.
+            """
+            if self.options.verbose: 
+                print "checking %s in [%s]" % (ext,self.options.upload_formats)
+            if ext in self.options.upload_formats:
+                ret = enc_one(ext, acodec, vcodec)
+            else:
+                # this is the case where we don't do this format, 
+                # so don't flag as error
+                ret = True
+
+            return ret
+
 
         ret = True
         ret = ret and one_format("ogg", "vorbis", "libtheora")
@@ -423,7 +434,7 @@ class enc(process):
 
 # do the final encoding:
 # using melt
-        ret = self.run_melt(mlt, episode)
+        ret = self.enc_all(mlt, episode)
 
         if self.options.enc_script:
             cmd = [self.options.enc_script, 
