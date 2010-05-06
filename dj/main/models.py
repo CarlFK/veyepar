@@ -25,6 +25,7 @@ class Client(models.Model):
         help_text="name of video to prepend")
     postroll = models.CharField(max_length=135, blank=True,
         help_text="name of video to postpend")
+    # blip_acct_name = models.CharField(max_length=30, blank=True, )
     def __unicode__(self):
         return self.name
     class Meta:
@@ -127,6 +128,7 @@ class Episode(models.Model):
         help_text = "Blip.tv episode ID")
     start = models.DateTimeField(blank=True, 
         help_text="initially scheduled time from master, adjusted to match reality")
+    # length = models.IntegerField(null=True,blank=True)
     end = models.DateTimeField(null=True, blank=True)
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
