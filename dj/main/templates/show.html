@@ -31,6 +31,7 @@
     <thead>
       <tr>
         <td>id</td>
+        <td>seq</td>
         <td>loc name</td>
         <td>start-end</td>
         <td>duration</td>
@@ -44,6 +45,7 @@
     {% for episode in episodes %}
       <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
         <td>{{episode.id}}</td>
+        <td>{{episode.sequence}}</td>
         <td>{{episode.location}}</td>
         <td>{{episode.start|date:"D d H:i"}} - {{episode.end|date:"H:i"}}</td>
         <td>{{episode.start|timesince:episode.end}}</td>

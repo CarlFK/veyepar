@@ -25,7 +25,7 @@ class Client(models.Model):
         help_text="name of video to prepend")
     postroll = models.CharField(max_length=135, blank=True,
         help_text="name of video to postpend")
-    # blip_acct_name = models.CharField(max_length=30, blank=True, )
+    blip_acct_name = models.CharField(max_length=30, blank=True, )
     def __unicode__(self):
         return self.name
     class Meta:
@@ -157,8 +157,6 @@ class Cut_List(models.Model):
     class Meta:
         ordering = ["sequence"]
     
-    #raw_file.admin_order_field = 'filename'
-
 
 class State(models.Model):
     sequence = models.IntegerField(default=1)

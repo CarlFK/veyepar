@@ -10,6 +10,14 @@ class Episode_Form(forms.ModelForm):
     class Meta:
         model = Episode
 
+class Episode_Form_Preshow(forms.ModelForm):
+    class Meta:
+        model = Episode
+        fields = ('show','location', 
+                  'sequence', 'start', 'end', 
+                  'name', 'slug', 
+                  'authors', 'description', 'tags')
+
 class Episode_Form_small(forms.ModelForm):
     class Meta:
 	model = Episode

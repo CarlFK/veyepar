@@ -289,7 +289,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
     if locations:
         if request.user.is_authenticated():
             if request.method == 'POST':
-                form=Episode_Form(request.POST)
+                form=Episode_Form_Preshow(request.POST)
                 if form.is_valid():
                     form.save()
                     # setup next time block to come after current one 
@@ -301,7 +301,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
                         'end':saved["end"]+(saved["end"]-saved["start"])}
                     inits.update(parents)
                     print inits
-                    form=Episode_Form(inits)
+                    form=Episode_Form_Preshow(inits)
                 else:
                     print form.errors
             else:
@@ -310,8 +310,8 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
                 # add parents to inits
                 inits.update(parents)
 
-                form, episodes = former(
-                  request, Episode, inits, {'sequence':1})
+                episodes=Model.objects.filter(**parents).order_by('sequence')
+                form=Episode_Form_Preshow(inits)
 
             print parents, location_slug
             episodes=Episode.objects.filter(**parents).order_by('location','start')
