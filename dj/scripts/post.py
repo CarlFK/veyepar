@@ -39,6 +39,7 @@ class post(process):
     description = "%s</br>\n".join(descriptions)
 
     blip_cli=blip_uploader.Blip_CLI()
+    blip_cli.debug = self.options.verbose
 
     meta = {
         'title': ep.name,
@@ -105,7 +106,10 @@ class post(process):
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
         files.append((fileno,role,src_pathname))
 
-    blip_cli.debug = self.options.verbose
+    # use the username for the client, else use the first user in pw.py
+    blip_user =  client.blip_user if client.blip_user \
+                    else blip.keys()[0]
+    blip_pw = pw.blip[blip_user]
 
     if self.options.test:
         print 'test mode:'
