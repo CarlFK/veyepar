@@ -28,7 +28,7 @@ from cStringIO import StringIO
 from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List
-from main.forms import Episode_Form_small, Episode_Form, clrfForm
+from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm
 
 from accounts.forms import LoginForm
 
@@ -95,7 +95,7 @@ def main(request):
 def meet_ann(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show).order_by('start')
+    episodes=Episode.objects.filter(show=show).order_by('sequence')
     location=episodes[0].location
     return render_to_response('meeting_announcement.html',
         {'client':client,'show':show,
@@ -310,11 +310,10 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
                 # add parents to inits
                 inits.update(parents)
 
-                episodes=Model.objects.filter(**parents).order_by('sequence')
                 form=Episode_Form_Preshow(inits)
 
             print parents, location_slug
-            episodes=Episode.objects.filter(**parents).order_by('location','start')
+            episodes=Episode.objects.filter(**parents).order_by('sequence')
 
     return render_to_response('show.html',
         {'client':client,'show':show,

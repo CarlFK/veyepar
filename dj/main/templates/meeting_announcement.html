@@ -1,11 +1,10 @@
-{# meeting_announcement.html #}
-{% extends "base.html" %}
-{% block content %}
+{#Meeting  meeting_announcement.html #}
 
+{{client.name}} at  {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
 <pre>
+
 {{client.name}}
 =========================
-Come join us for our best meeting ever!
 
 When: {{episodes.0.start|date:"f A l F j, Y"}}
 Where: {{location.name}}
@@ -37,4 +36,4 @@ About the group
 ---------------
 {{client.description}}
 
-{% endblock %}
+</pre>

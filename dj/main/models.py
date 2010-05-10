@@ -110,7 +110,7 @@ class Episode(models.Model):
         help_text="process order")
     name = models.CharField(max_length=135, help_text="(synced from primary source)")
     slug = models.CharField(max_length=135,help_text="used for file name")
-    released = models.NullBooleanField()
+    released = models.NullBooleanField(null=True,blank=True,)
     primary = models.CharField(max_length=135,blank=True,
         help_text="pointer to master version of event (name,desc,time,author,files,etc)")
     authors = models.TextField(null=True,blank=True,)
