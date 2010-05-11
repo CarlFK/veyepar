@@ -31,8 +31,19 @@ class Client(models.Model):
     class Meta:
         ordering = ["sequence"]
 
+class Location(models.Model):
+    sequence = models.IntegerField(default=1)
+    name = models.CharField(max_length=135,help_text="room name")
+    slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    description = models.TextField(blank=True)
+    def __unicode__(self):
+        return "%s" % ( self.name )
+    class Meta:
+        ordering = ["sequence"]
+
 class Show(models.Model):
     client = models.ForeignKey(Client)
+    locations = models.ManyToManyField(Location)
     sequence = models.IntegerField(default=1)
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
@@ -43,18 +54,6 @@ class Show(models.Model):
         return self.client
     def __unicode__(self):
         return "%s: %s" % ( self.client_name, self.name )
-    class Meta:
-        ordering = ["sequence"]
-
-class Location(models.Model):
-    shows = models.ManyToManyField(Show)
-    sequence = models.IntegerField(default=1)
-    name = models.CharField(max_length=135,help_text="room name")
-    slug = models.CharField(max_length=135,help_text="dir name to store input files")
-    description = models.TextField(blank=True)
-    # @property
-    def __unicode__(self):
-        return "%s" % ( self.name )
     class Meta:
         ordering = ["sequence"]
 
@@ -128,15 +127,18 @@ class Episode(models.Model):
         help_text = "Blip.tv episode ID")
     start = models.DateTimeField(blank=True, 
         help_text="initially scheduled time from master, adjusted to match reality")
-    # length = models.IntegerField(null=True,blank=True)
-    end = models.DateTimeField(null=True, blank=True)
+    duration = models.IntegerField(null=True,blank=True,
+        help_text="Lenght in minutes")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
-    def duration(self):
-        ret = self.end-self.start
-        # print ret
-        return ret
+    def end(self):
+       if self.start and self.duration:
+           ret = self.start + datetime.timedelta(self.duration)
+       else:
+           ret = None
+       return ret
+           
     def __unicode__(self):
         return "%s: %s" % ( self.location.name, self.name )
     class Meta:

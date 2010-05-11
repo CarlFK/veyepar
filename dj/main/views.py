@@ -19,8 +19,8 @@ from django.core.urlresolvers import reverse
 
 from django.utils import simplejson
 
-from datetime import datetime
-from datetime import timedelta
+import datetime
+# from datetime import timedelta
 import os
 import csv
 from cStringIO import StringIO
@@ -78,7 +78,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     eps = Episode.objects.filter(show=show)
 
     fields=('id','location','sequence','primary','target',
-        'name','authors','description','start','end')
+        'name','authors','description','start','duration')
 
     # response = HttpResponse(mimetype="text/javascript")
     response = HttpResponse(mimetype="application/json")
@@ -130,7 +130,8 @@ def recording_sheets(request,show_id):
           'episode_authors':ep.authors,
           'episode_primary':ep.primary,
           'episode_start':ep.start,
-          'episode_end':ep.end,
+          'episode_duration':ep.duration(),
+          'episode_end':ep.end(),
           'location_name':location_name,
           'show_name':show.name })
         
@@ -225,7 +226,7 @@ def former(request, Model, parents, inits={}):
         else:
             # add parents to inits
             inits.update(parents)
-            form=xForm(inits)
+            form=xForm(initial=inits)
     else:
         form=None
 
@@ -267,53 +268,53 @@ def locations(request):
         },
 	context_instance=RequestContext(request) )
  
-def episodes(request, client_slug=None, show_slug=None, location_slug=None):
+def episodes(request, client_slug=None, show_slug=None):
     # the selected client and show
-    # list of loctions (rooms) and episodes (talks)
     # and blanks to enter a new location and episode.
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
+    locations=show.locations.all()
+    episodes=Episode.objects.filter(show=show).order_by('sequence')
 
-    # show Episodes from all or one location
-    # seed the 'new Episode' form with the location.
-    if location_slug:
-        locations=Location.objects.filter(show=show, slug=location_slug)
-        location=Location.objects.get(show=show, slug=location_slug)
-        parents={'show':show.id, 'location':location.id}
-    else:
-        locations=Location.objects.all()
-        location=locations[0]
-        parents={'show':show.id}
-
-    form, episodes = None,None
-    if locations:
-        if request.user.is_authenticated():
-            if request.method == 'POST':
-                form=Episode_Form_Preshow(request.POST)
-                if form.is_valid():
-                    form.save()
-                    # setup next time block to come after current one 
-                    saved=form.cleaned_data
-                    inits={
-                        'location':location.id,
-                        'sequence':saved["sequence"]+1,
-                        'start':saved["end"],
-                        'end':saved["end"]+(saved["end"]-saved["start"])}
-                    inits.update(parents)
-                    print inits
-                    form=Episode_Form_Preshow(inits)
-                else:
-                    print form.errors
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form=Episode_Form_Preshow(request.POST)
+            if form.is_valid():
+                episode = form.save()
+                # setup next form
+                # use saved Episode as a base for defaults
+                inits={
+                    'show':show.id,
+                    'location':episode.location.id,
+                    'sequence':episode.sequence+1,
+                    'start':episode.end(),
+                    'duration':episode.duration}
+        else:
+            if episodes:
+                # use last Episode as a base for defaults
+                episode = episodes[len(episodes)-1]
+                location = episode.location.id
+                sequence = episode.sequence+1
+                start = episode.end()
             else:
-                inits = {'sequence':1, 
-                    'start': datetime.now()}
-                # add parents to inits
-                inits.update(parents)
-
-                form=Episode_Form_Preshow(inits)
-
-            print parents, location_slug
-            episodes=Episode.objects.filter(**parents).order_by('sequence')
+                # firt Episode of the show
+                location = locations[0].id
+                sequence = 1
+                # today at 6pm
+                start = datetime.datetime.combine(
+                            datetime.date.today(),datetime.time(18))
+            inits = {
+                'show':show.id,
+                'location':location,
+                'sequence':sequence, 
+                'start': start,
+                'duration':45,
+            }
+        form=Episode_Form_Preshow(initial=inits)
+    else:
+        # set this so 'episode_form':form doesn't blow up
+        # there are other ways of doing this, they suck too.
+        form = None
 
     return render_to_response('show.html',
         {'client':client,'show':show,
@@ -321,7 +322,8 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
           'episodes':episodes,
           'episode_form':form,
         },
-	context_instance=RequestContext(request) )
+        context_instance=RequestContext(request) )
+
  
 
 def overlaping_episodes(request,show_id):
@@ -439,16 +441,16 @@ def episode(request, episode_no):
         clrfformset = clrfFormSet(initial=init)
 
 # If all the dates are the same, don't bother displaying them
-    if episode.start is None or episode.end is None:
+    if episode.start is None or episode.end() is None:
       same_dates = False
     else:
       talkdate = episode.start.date()
-      same_dates = talkdate==episode.end.date()
+      same_dates = talkdate==episode.end().date()
       if same_dates:
         for cut in cuts:
             # cut.raw_file.dur=cut.raw_file.durationhms()
             same_dates = same_dates and \
-               talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
+               talkdate==cut.raw_file.start.date()==cut.raw_file.end().date()
 
     return render_to_response('episode.html',
         {'episode':episode,
