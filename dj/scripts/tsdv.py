@@ -51,6 +51,7 @@ class add_dv(process):
         end = start + datetime.timedelta(seconds=duration)
         
         dv.start = start
+        dv.duration = duration
         dv.end = end
 
         print dv,start,end

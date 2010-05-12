@@ -23,40 +23,11 @@ class ass_dv(process.process):
         # for ep in Episode.objects.filter(location=dv.location):
         #    print ep.start, ep.end
 
+        #    Q(end__gte=dv.start)|Q(end__isnull=True), 
         eps = Episode.objects.filter(
             Q(start__lte=dv.end)|Q(start__isnull=True),
-            Q(end__gte=dv.start)|Q(end__isnull=True), 
             location=dv.location)
-        """
-        if not eps:
-            # if no episodes found, it's an orphan
-            # make a parent, 
-            # calc the start/end to take up whatever gap is in the schedule
-
-            # find the Episodes before and after it in the same location
-            # if none found, use the start/end of the day as the boundry.
-
-            dvdate=dv.start.date()  # date the clip started on 
-            date_start = datetime.datetime.combine(dvdate,datetime.time(0))
-            date_end = datetime.datetime.combine(dvdate,datetime.time(23,59,59))
-
-            e=Episode.objects.filter( location=dv.location,
-                start__range=(date_start,dv.start)).order_by('-start')
-            if e: start = e[0].start
-            else: start = date_start
-
-            e=Episode.objects.filter( location=dv.location,
-                end__range=(dv.end,date_end)).order_by('end')
-            if e: end = e[0].end
-            else: end = date_end
-
-            ep,created=Episode.objects.get_or_create(
-               name=orph_name,slug=orph_slug,
-               start=start, end=end,
-               location=dv.location)
-            eps=[ep]
-        """
-
+        
         for ep in eps:
             print ep
             

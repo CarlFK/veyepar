@@ -189,7 +189,7 @@ class enc(process):
         pos = 1
         for rf in rfs:
           print rf
-          if rf.duration():
+          if rf.duration:
             dvfile.attrib['id']="producer%s"%rf.id
             rawpathname = os.path.join(self.episode_dir,rf.filename)
             dvfile.attrib['resource']=rawpathname
@@ -206,7 +206,7 @@ class enc(process):
         pos = 0
         for cl in cls:
           print cl
-          if cl.raw_file.duration():
+          if cl.raw_file.duration:
             clip.attrib['id']="clip%s"%cl.id
             clip.attrib['producer']="producer%s"%cl.raw_file.id
 

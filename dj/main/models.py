@@ -63,25 +63,20 @@ class Raw_File(models.Model):
     filename = models.CharField(max_length=135,help_text="filename.dv")
     start = models.DateTimeField(null=True, blank=True, 
         help_text='when recorded (should agree with file name and timestamp)')
+    duration = models.IntegerField(null=True,blank=True,)
     end = models.DateTimeField(null=True, blank=True)
     trash = models.BooleanField(help_text="This clip is trash")
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
     def basename(self):
         return os.path.splitext(self.filename)[0]
-    def duration(self):
-        """ returns the lenth in seconds """
-        duration = (self.end - self.start).seconds
-        return duration
-    duration.short_description = 'Duration (seconds)'
     def durationhms(self):
-        """ returns the lenth in h:m:s """
+        """ returns the lenth in h:m """
         duration = self.duration()
-        hours = duration / 3600
-        minutes = (duration - hours*3600)/60
-        seconds = (duration - hours*3600 - minutes*60)
-        return "%02d:%02d:%02d" % (hours, minutes, seconds)
-    durationhms.short_description = 'Duration (h:m:s)'
+        hours = duration / 60
+        minutes = duration - hours*60
+        return "%02d:%02d" % (hours, minutes, )
+    durationhms.short_description = 'Duration (h:m)'
     def __unicode__(self):
         return self.filename
 
