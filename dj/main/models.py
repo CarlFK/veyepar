@@ -1,6 +1,8 @@
 # models.py
 
 from django.db import models
+from django.db.models.signals import pre_save
+
 import os
 import datetime
 
@@ -25,7 +27,7 @@ class Client(models.Model):
         help_text="name of video to prepend")
     postroll = models.CharField(max_length=135, blank=True,
         help_text="name of video to postpend")
-    blip_acct_name = models.CharField(max_length=30, blank=True, )
+    blip_user = models.CharField(max_length=30, blank=True, null=True)
     def __unicode__(self):
         return self.name
     class Meta:
@@ -69,14 +71,16 @@ class Raw_File(models.Model):
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
     def basename(self):
+        # strip the extension
+        # good for making foo.png from foo.dv
         return os.path.splitext(self.filename)[0]
-    def durationhms(self):
+    def durationhm(self):
         """ returns the lenth in h:m """
-        duration = self.duration()
+        duration = self.duration
         hours = duration / 60
         minutes = duration - hours*60
-        return "%02d:%02d" % (hours, minutes, )
-    durationhms.short_description = 'Duration (h:m)'
+        return "%02d:%02d" % (hours, minutes)
+    durationhm.short_description = 'Duration (h:m)'
     def __unicode__(self):
         return self.filename
 
@@ -91,7 +95,7 @@ class Quality(models.Model):
     def __unicode__(self):
         return self.name
 
-STATES=((-2,'no flv'),(-1,'special'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'flac'),(7,'mv4'),(8,'flv?'),(9,'done'))
+STATES=((1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
@@ -102,6 +106,11 @@ class Episode(models.Model):
 	 help_text="user/process that locked." )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
+    start = models.DateTimeField(blank=True, 
+        help_text="initially scheduled time from master, adjusted to match reality")
+    duration = models.IntegerField(null=True,blank=True,
+        help_text="Lenght in minutes")
+    end = models.DateTimeField(blank=True, )
     name = models.CharField(max_length=135, help_text="(synced from primary source)")
     slug = models.CharField(max_length=135,help_text="used for file name")
     released = models.NullBooleanField(null=True,blank=True,)
@@ -120,19 +129,9 @@ class Episode(models.Model):
         help_text="filename.png" )
     target = models.CharField(max_length=135, null=True,blank=True,
         help_text = "Blip.tv episode ID")
-    start = models.DateTimeField(blank=True, 
-        help_text="initially scheduled time from master, adjusted to match reality")
-    duration = models.IntegerField(null=True,blank=True,
-        help_text="Lenght in minutes")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
-    def end(self):
-       if self.start and self.duration:
-           ret = self.start + datetime.timedelta(self.duration)
-       else:
-           ret = None
-       return ret
            
     def __unicode__(self):
         return "%s: %s" % ( self.location.name, self.name )
@@ -169,4 +168,13 @@ class Log(models.Model):
     result = models.CharField(max_length=250)
 
 
+def set_end(sender, instance, **kwargs):
+    if instance.start and instance.duration:
+       instance.end = instance.start + \
+           datetime.timedelta(minutes=instance.duration)
+    else:
+       instance.end = None
+
+pre_save.connect(set_end,sender=Episode)
+pre_save.connect(set_end,sender=Raw_File)
 

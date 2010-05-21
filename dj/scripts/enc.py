@@ -110,6 +110,7 @@ class enc(process):
 
       for cmd in cmds: 
           if type(cmd)==list:
+              print cmd
               sh.writelines(' '.join(cmd))
           else:
               sh.writelines(cmd)
@@ -300,9 +301,17 @@ class enc(process):
               if ext=='m4v': 
                   tmp_pathname = os.path.join( 
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
-                  cmds=["melt -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k vpre=/usr/share/ffmpeg/libx264-ipod640.ffpreset" % ( self.options.format.lower(), mlt_pathname, tmp_pathname, )]
+                  # combine settings from 2 files
+                  ffpreset=open('/usr/share/ffmpeg/libx264-default.ffpreset').read().split('\n')
+                  ffpreset.extend(open('/usr/share/ffmpeg/libx264-ipod640.ffpreset').read().split('\n'))
+                  ffpreset = [i for i in ffpreset if i]
+                  cmd="melt -progress -profile %s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k" % ( self.options.format, mlt_pathname, tmp_pathname, )
+                  cmd = cmd.split()
+                  cmd.extend(ffpreset)
+                  cmds=[cmd]
                   cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
-                  cmds.append( ["rm", tmp_pathname] )
+                  cmds.append( ["mv", tmp_pathname, '/tmp'] )
+                  # cmds.append( ["rm", tmp_pathname] )
               if ext=='dv': 
                   out_pathname = os.path.join( 
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))

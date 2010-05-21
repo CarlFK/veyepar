@@ -35,7 +35,7 @@ class mkdirs(process):
 # get episodes for this show
         eps = Episode.objects.filter(show=show)
 # get locations of the episodes
-        for loc in Location.objects.filter(episode__in=eps).distinct():
+        for loc in Location.objects.filter(show=show):
              dir = os.path.join(self.show_dir,'dv',loc.slug)
              self.mkdir(dir)
 

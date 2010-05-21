@@ -130,8 +130,8 @@ def recording_sheets(request,show_id):
           'episode_authors':ep.authors,
           'episode_primary':ep.primary,
           'episode_start':ep.start,
-          'episode_duration':ep.duration(),
-          'episode_end':ep.end(),
+          'episode_duration':ep.duration,
+          'episode_end':ep.end,
           'location_name':location_name,
           'show_name':show.name })
         
@@ -287,7 +287,7 @@ def episodes(request, client_slug=None, show_slug=None):
                     'show':show.id,
                     'location':episode.location.id,
                     'sequence':episode.sequence+1,
-                    'start':episode.end(),
+                    'start':episode.end,
                     'duration':episode.duration}
         else:
             if episodes:
@@ -295,7 +295,7 @@ def episodes(request, client_slug=None, show_slug=None):
                 episode = episodes[len(episodes)-1]
                 location = episode.location.id
                 sequence = episode.sequence+1
-                start = episode.end()
+                start = episode.end
             else:
                 # firt Episode of the show
                 location = locations[0].id
@@ -441,16 +441,16 @@ def episode(request, episode_no):
         clrfformset = clrfFormSet(initial=init)
 
 # If all the dates are the same, don't bother displaying them
-    if episode.start is None or episode.end() is None:
+    if episode.start is None or episode.end is None:
       same_dates = False
     else:
       talkdate = episode.start.date()
-      same_dates = talkdate==episode.end().date()
+      same_dates = talkdate==episode.end.date()
       if same_dates:
         for cut in cuts:
             # cut.raw_file.dur=cut.raw_file.durationhms()
             same_dates = same_dates and \
-               talkdate==cut.raw_file.start.date()==cut.raw_file.end().date()
+               talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
 
     return render_to_response('episode.html',
         {'episode':episode,

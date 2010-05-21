@@ -143,11 +143,13 @@ class Blip(object):
 
         # send the datas
         if self.debug: print fieldsdata.__repr__()
+        if self.debug: print fieldsdata
         self.start_time = datetime.datetime.now()
         h.send(fieldsdata)
         bytes_sent = len(fieldsdata)
         for filedata, filename in filedatas:
             if self.debug: print "%s (%s)" % (filedata.__repr__(), filename)
+            if self.debug: print "%s (%s)" % (filedata, filename)
             h.send(filedata)
             bytes_sent += len(filedata)
             f = open(filename,'rb')

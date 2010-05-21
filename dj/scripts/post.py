@@ -108,7 +108,7 @@ class post(process):
 
     # use the username for the client, else use the first user in pw.py
     blip_user =  client.blip_user if client.blip_user \
-                    else blip.keys()[0]
+                    else pw.blip.keys()[0]
     blip_pw = pw.blip[blip_user]
 
     if self.options.test:
@@ -129,7 +129,7 @@ class post(process):
     else:
         
         response = blip_cli.Upload(
-            video_id, pw.blip['user'], pw.blip['password'], files, meta, thumb)
+            video_id, blip_user, blip_pw, files, meta, thumb)
         response_xml = response.read()
         if self.options.verbose: print response_xml
         # self.log_info(response_xml)
