@@ -59,10 +59,10 @@ class post(process):
         meta['license'] = self.options.license
 
     if self.options.rating:
-        meta['contentRating'] = self.options.rating
+        meta['content_rating'] = self.options.rating
 
     if self.options.category:
-        meta['category_id'] = self.options.category
+        meta['categories_id'] = self.options.category
 
     if self.options.hidden:
         meta['hidden'] = self.options.hidden

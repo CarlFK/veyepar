@@ -399,7 +399,7 @@ class Blip_CLI(Blip):
             help="13 is Creative Commons Attribution-NC-ShareAlike 3.0\n"
             "'list' to see full list" )
         parser.add_option('-C', '--category',
-            help = "'list' to see full list" )
+            help = "7 Technology, 10 Conferences\n'list' to see full list" )
         parser.add_option('--hidden',
             help="availability on blip.tv, 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
         parser.add_option('-i', '--videoid',
