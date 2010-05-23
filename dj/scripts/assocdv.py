@@ -23,9 +23,9 @@ class ass_dv(process.process):
         # for ep in Episode.objects.filter(location=dv.location):
         #    print ep.start, ep.end
 
-        #    Q(end__gte=dv.start)|Q(end__isnull=True), 
         eps = Episode.objects.filter(
             Q(start__lte=dv.end)|Q(start__isnull=True),
+            Q(end__gte=dv.start)|Q(end__isnull=True), 
             location=dv.location)
         
         for ep in eps:

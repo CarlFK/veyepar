@@ -9,8 +9,7 @@ the file system time stamp,
 the first frame of the dv
 the file name (assumes hh:mm:ss.dv format)
 
-Gets end from:
-start + duration based on file size / BBF*FPS
+duration (in seconds) based on file size / BBF*FPS 
 last frame
 
 """
@@ -46,15 +45,17 @@ class add_dv(process):
                 start += datetime.timedelta(hours=1,minutes=0)
 
         frames = st.st_size/self.bpf
-        duration = frames/self.fps ## seconds
+        seconds = frames/self.fps 
+        duration = seconds
 
-        end = start + datetime.timedelta(seconds=duration)
-        
+        hours = int(duration / 3600)
+        minutes = int((duration - hours*60)/60)
+        seconds = duration - (hours*60 + minutes*60)
+        duration = "%02d:%02d:%02d" % (hours, minutes,seconds)
+
         dv.start = start
         dv.duration = duration
-        dv.end = end
 
-        print dv,start,end
         if not self.options.test:
             dv.save()
 

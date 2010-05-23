@@ -25,7 +25,7 @@ class LocationAdmin(admin.ModelAdmin):
 admin.site.register(Location, LocationAdmin)
 
 class Raw_FileAdmin(admin.ModelAdmin):
-    list_display = ('filename', 'show', 'location', 'start', 'end', ) 
+    list_display = ('filename', 'show', 'location', 'start', 'duration', 'end', ) 
     list_display_links = ('filename',)
     list_filter = ('location',)
     search_fields = ['filename']

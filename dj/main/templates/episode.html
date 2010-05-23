@@ -69,7 +69,7 @@
     <tbody>
       <tr> <th></th> <th>Raw File</th> <th>Cut List</th> </tr>
       <tr> <td>Start</td><td>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</td> <td>{{ clrfform.start }}</td> </tr>
-      <tr> <td>Duration:</td> <td>{{cl.raw_file.durationhm}}</td> </tr>
+      <tr> <td>Duration:</td> <td>{{cl.raw_file.duration}}</td> </tr>
       <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}</td> </tr>
 
       <tr><td></td>

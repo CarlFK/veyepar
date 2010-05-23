@@ -308,7 +308,7 @@ def episodes(request, client_slug=None, show_slug=None):
                 'location':location,
                 'sequence':sequence, 
                 'start': start,
-                'duration':45,
+                'duration':'00:45:00',
             }
         form=Episode_Form_Preshow(initial=inits)
     else:
@@ -448,7 +448,6 @@ def episode(request, episode_no):
       same_dates = talkdate==episode.end.date()
       if same_dates:
         for cut in cuts:
-            # cut.raw_file.dur=cut.raw_file.durationhms()
             same_dates = same_dates and \
                talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
 

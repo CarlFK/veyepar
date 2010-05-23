@@ -16,6 +16,7 @@ def fnify(text):
     fn = ''.join([c for c in fn if c.isalpha() or c.isdigit() or (c in '_') ])
     return fn
 
+
 class Client(models.Model):
     sequence = models.IntegerField(default=1)
     active = models.BooleanField(help_text="Done for now.")
@@ -63,9 +64,9 @@ class Raw_File(models.Model):
     location = models.ForeignKey(Location)
     show = models.ForeignKey(Show)
     filename = models.CharField(max_length=135,help_text="filename.dv")
-    start = models.DateTimeField(null=True, blank=True, 
+    start = models.DateTimeField(null=True, blank=True,
         help_text='when recorded (should agree with file name and timestamp)')
-    duration = models.IntegerField(null=True,blank=True,)
+    duration = models.CharField(max_length=11, blank=True, )
     end = models.DateTimeField(null=True, blank=True)
     trash = models.BooleanField(help_text="This clip is trash")
     ocrtext = models.TextField(null=True,blank=True)
@@ -74,13 +75,6 @@ class Raw_File(models.Model):
         # strip the extension
         # good for making foo.png from foo.dv
         return os.path.splitext(self.filename)[0]
-    def durationhm(self):
-        """ returns the lenth in h:m """
-        duration = self.duration
-        hours = duration / 60
-        minutes = duration - hours*60
-        return "%02d:%02d" % (hours, minutes)
-    durationhm.short_description = 'Duration (h:m)'
     def __unicode__(self):
         return self.filename
 
@@ -106,11 +100,10 @@ class Episode(models.Model):
 	 help_text="user/process that locked." )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
-    start = models.DateTimeField(blank=True, 
+    start = models.DateTimeField(blank=True, null=True,
         help_text="initially scheduled time from master, adjusted to match reality")
-    duration = models.IntegerField(null=True,blank=True,
-        help_text="Lenght in minutes")
-    end = models.DateTimeField(blank=True, )
+    duration = models.CharField(max_length=15,null=True,blank=True,)
+    end = models.DateTimeField(blank=True, null=True,)
     name = models.CharField(max_length=135, help_text="(synced from primary source)")
     slug = models.CharField(max_length=135,help_text="used for file name")
     released = models.NullBooleanField(null=True,blank=True,)
@@ -125,7 +118,7 @@ class Episode(models.Model):
           help_text='copy left to right (10) or right to left (01)' )
     license = models.IntegerField(null=True,blank=True,default=13)
     hidden = models.NullBooleanField(null=True,blank=True)
-    thumbnail = models.CharField(max_length=135,null=True,blank=True, 
+    thumbnail = models.CharField(max_length=135,blank=True, 
         help_text="filename.png" )
     target = models.CharField(max_length=135, null=True,blank=True,
         help_text = "Blip.tv episode ID")
@@ -170,10 +163,12 @@ class Log(models.Model):
 
 def set_end(sender, instance, **kwargs):
     if instance.start and instance.duration:
-       instance.end = instance.start + \
-           datetime.timedelta(minutes=instance.duration)
+        seconds = reduce(lambda x, i: x*60 + i,
+            map(float, instance.duration.split(':')))
+        instance.end = instance.start + \
+           datetime.timedelta(seconds=seconds)
     else:
-       instance.end = None
+        instance.end = None
 
 pre_save.connect(set_end,sender=Episode)
 pre_save.connect(set_end,sender=Raw_File)
