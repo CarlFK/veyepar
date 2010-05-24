@@ -1,12 +1,6 @@
 # Veyepar instalation notes
 
-Figure out how to get the binaries installed to satify:
-
-pip install -r requirements.txt
-sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging
-
-sudo apt-get install python-virtualenv
-sudo apt-get install mercurial
+sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-virtualenv mercurial
 hg clone http://bitbucket.org/ianb/pip/
 cd pip/
 python setup.py install
@@ -16,6 +10,7 @@ pip install -r requirements.txt
 # fix broken dabo installer
 mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 
+# these lines need to run:
 import pygtk
 pygtk.require ("2.0")
 import gobject
