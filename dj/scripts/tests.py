@@ -38,6 +38,7 @@ ep = Episode.objects.create(name='test episode',slug='test_episode',show=show,lo
 t=[datetime.datetime(2010,5,21,18,0)+datetime.timedelta(minutes=i) for i in range(8) ]
 
 ep.description = desc
+ep.authors = 'test author'
 ep.start = t[2]
 ep.duration = "00:03:00"
 ep.save()

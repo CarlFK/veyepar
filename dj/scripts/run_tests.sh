@@ -38,6 +38,9 @@ if [ ! -e $DIR/18:00:00.png ]; then
 fi
 python assocdv.py --client test_client --show test_show
 python enc.py --client test_client --show test_show --force
+
+mplayer -osdlevel=3 $DIR/ogv/test_episode.ogv
+
 python post.py --client test_client --show test_show --force --hidden=1
 python tweet.py --client test_client --show test_show --force --test
 
