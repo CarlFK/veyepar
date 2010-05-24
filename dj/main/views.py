@@ -363,19 +363,39 @@ def episode(request, episode_no):
     location=episode.location
     client=show.client
 
+
     try:
         prev_episode = episode.get_previous_by_start(state=episode.state)
     except Episode.DoesNotExist:
-        prev_episode = ''
-
+        # at edge of the set of nulls or values.  
+        # In this app, *nulls come before values*.
+        if episode.start is not None:
+            # we are at the first value, try to go to the last null
+            try:
+                prev_episode = Episode.objects.filter(start__isnull=True).order_by('id').reverse()[0]
+            except Episode.DoesNotExist:
+                # There are no nulls
+                prev_episode = None
+        else:
+            # there is no privious null, we have nowhere to go.
+            prev_episode = None
+           
     try:
         next_episode = episode.get_next_by_start(state=episode.state)
     except Episode.DoesNotExist:
-        next_episode = ''
-
-    # prev_episode = episode.get_previous_by_start()
-    # next_episode = episode.get_next_by_start()
-
+        # at edge of the set of nulls or values.  
+        # In this app, *values come after nulls*.
+        if episode.start is None:
+            # we are at the *last null*, so go to the *first value*
+            try:
+                next_episode = Episode.objects.filter(start__isnull=False).order_by('id')[0]
+            except Episode.DoesNotExist:
+                # There are no values
+                next_episode = None
+        else:
+            # there is no *next value*, we have nowhere to go.
+            next_episode = None
+            
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
