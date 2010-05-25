@@ -59,8 +59,7 @@ class tweet(process):
         client = show.client
 
         blip_url="http://pycon.blip.tv/file/%s" % ep.target
-        # prefix = "#%s #VIDEO" % show.client.slug
-        prefix = "#PyCon #VIDEO"
+        prefix = "#%s #VIDEO" % show.client.slug
         tweet = self.mk_tweet(prefix, ep.name, blip_url)
 
         ret=False

@@ -51,21 +51,3 @@ if ep.end != t[5]:
     print t[5]
 
 
-e1=ep
-e2=Episode.objects.create(name='episode 2',show=show,location=loc )
-e2.save()
-e3=Episode.objects.create(name='episode 3',show=show,location=loc )
-e3.save()
-
-# e1.get_previous_by_start()
-# e1.get_next_by_start()
-e2.get_next_by_start()
-# e2.get_previous_by_start()
-# e3.get_next_by_start()
-e3.get_previous_by_start()
-
-prev_episode = Episode.objects.filter(start__isnull=True).order_by('id').reverse()[0]
-print prev_episode
-
-prev_episode = Episode.objects.filter(start__isnull=False).order_by('id').reverse()[0]
-print prev_episode
