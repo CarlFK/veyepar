@@ -22,15 +22,6 @@ class tweet(process):
 
     ready_state = 5
 
-    def post_to_twitter(message):
-        cmd = ['curl', '-u', '%s:%s'%(pw.twit['user'], pw.twit['password']), '-d', 'status="%s"'%message, 'http://twitter.com/statuses/update.xml']
-        print cmd
-        p = subprocess.popen(cmd, stdout=subprocess.pipe, stderr=subprocess.pipe )
-        p.wait()
-        out,err = p.communicate()
-        print 'e', err
-        return out
-
     def shorten(self, url):
         return url # hack because auth broke:
         ## Out[15]: '{\n    "errorCode": 203, \n    "errorMessage": "You must be authenticated to access shorten", \n    "statusCode": "ERROR"\n}'
@@ -58,7 +49,7 @@ class tweet(process):
         show = ep.show
         client = show.client
 
-        blip_url="http://pycon.blip.tv/file/%s" % ep.target
+        blip_url="http://carlfk.blip.tv/file/%s" % ep.target
         prefix = "#%s #VIDEO" % show.client.slug
         tweet = self.mk_tweet(prefix, ep.name, blip_url)
 
@@ -70,14 +61,14 @@ class tweet(process):
             print 2, tweet
             print
         else:
-            api = twitter.Api(
-                username=pw.twit['user'], password=pw.twit['password'])
-            # print 1, api.AsDict()
+            # use the username for the client, else use the first user in pw.py
+            user =  client.blip_user if client.blip_user \
+                        else pw.twit.keys()[0]
+            password = pw.twit[user]
+            api = twitter.Api(username=user, password=password)
             status = api.PostUpdate(tweet)
             d=status.AsDict()
-            print 2, d
             ret=True
-            # self.log_info(d.__str__())
 
         return ret
 
