@@ -310,7 +310,7 @@ def episodes(request, client_slug=None, show_slug=None):
                 'start': start,
                 'duration':'00:45:00',
             }
-        form=Episode_Form_Preshow(initial=inits)
+        form=Episode_Form_Preshow(initial=inits, locations=locations)
     else:
         # set this so 'episode_form':form doesn't blow up
         # there are other ways of doing this, they suck too.

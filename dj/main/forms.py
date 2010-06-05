@@ -2,7 +2,7 @@
 # forms.py
 
 from django import forms
-from main.models import Episode
+from main.models import Episode, Location
 from django.contrib.admin import widgets                                       
 
 
@@ -11,6 +11,13 @@ class Episode_Form(forms.ModelForm):
         model = Episode
 
 class Episode_Form_Preshow(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        locations = kwargs.get('locations', Location.objects.all())
+        if kwargs.has_key('locations'):
+           del kwargs['locations']
+        super(Episode_Form_Preshow, self).__init__(*args, **kwargs)
+        self.fields['location']._set_choices([(l.id, l.name) for l in locations])
+
     class Meta:
         model = Episode
         fields = ('show','location', 
