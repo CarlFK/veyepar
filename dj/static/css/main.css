@@ -1,23 +1,24 @@
 
+body {
+    margin-left: 5px;
+}
+
 .tpick {
-    width:90%;
+    width: 90%;
 }
 
 table {
-    border=1;
-    border-color:#CCCCCC;
-}
-
-td {
-    padding-left:8 solid;
-    padding-right:8 solid;
-    padding-bottom:8 solid;
+    border: 1px solid #CCCCCC;
 }
 
 td a {
     display: block;
-    padding: 5;
-    margin: -8;
+    padding: 6px;
+}
+
+td, th {
+    border: 0px;
+    padding: 0px;
 }
 
 a:hover {
@@ -25,5 +26,7 @@ a:hover {
     color: white;
 }
 
+.shortcuts a {
+    padding: 6px;
 }
 

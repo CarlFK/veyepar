@@ -7,21 +7,24 @@
 
 {% block content %}
 
-<a href="/admin/main/client/{{client.id}}">admin</a>
+  <table class="shortcuts">
+    <a href="/admin/main/client/{{client.id}}">admin</a>
+  </table>
+
     <table class=tpick>
         {% for show in shows%}
             <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}><td> {{show.sequence}}</td><td> <a href="S/{{show.slug}}/">{{ show.name }}</a></td></tr>
         {% endfor %}
     </table>
 
-
     <div class=logged-in>
      <h2>Enter Show:</h2>
      <form action="" method="POST">{% csrf_token %}
      <table border=1>
-     {{ show_form }}
+       <tr><td colspan="2"><input type="submit" value="Save" /></td></tr>
+       {{ show_form }}
+       <tr><td colspan="2"><input type="submit" value="Save" /></td></tr>
      </table>
-     <input type="submit" value="Save" />
      </form>
     </div>
 

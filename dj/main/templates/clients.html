@@ -13,9 +13,10 @@
     <h1>Enter Client:</h1>
     <form action="" method="POST"> {% csrf_token %} 
     <table>
-    {{ client_form }}
+       <tr><td colspan="2"><input type="submit" value="Save" /></td></tr>
+       {{ client_form }}
+       <tr><td colspan="2"><input type="submit" value="Save" /></td></tr>
     </table>
-    <input type="submit" value="Save" />
     </form>
     </div>
 

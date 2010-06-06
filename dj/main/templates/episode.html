@@ -46,7 +46,9 @@
 <tbody>
 {% for cl,clrfform in clrffs %}
 
+  {% if clrfform.errors %}
   <tr> <td> {% for field in clrfform %}{{ field.errors }}{% endfor %} </td></tr>
+  {% endif %}
 
   <tr>
   <td>
@@ -91,6 +93,7 @@
   </table>
   </tr>
 
+  {% if cl.raw_file.ocrtext %}
   <tr>
   <td>
   <table border=1>
@@ -105,6 +108,8 @@
   </table>
   </td>
   </tr>
+  {% endif %}
+
 {% endfor %}
 </tbody>
 </table>
