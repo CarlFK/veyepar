@@ -16,9 +16,13 @@ td a {
     padding: 6px;
 }
 
+td {
+    vertical-align: middle;
+    padding: 0px 6px;
+}
+
 td, th {
     border: 0px;
-    padding: 0px;
 }
 
 a:hover {

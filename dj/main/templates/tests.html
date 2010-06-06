@@ -1,10 +1,14 @@
 {# tests.html #}
 {% extends "base.html" %}
 {% block content %}
-<table class=tpick>
-<tr class=row1><td> <a href="{% url tests_create_data %}">Create data</a> </td></tr>
-<tr class=row2><td> <a href="{% url tests_delete_data %}">Delete data</a> </td></tr>
-</table>
+
+<form action="" method="POST"> {% csrf_token %}
+  <span id=command_buttons>
+  <input type="submit" name="create" value="Create Test Data" />
+  <input type="submit" name="delete" value="Delete Test Data" />
+  </span>
+</form>
+
 <p>Current test data:</p>
 <h3>Clients:</h3>
 <ul>

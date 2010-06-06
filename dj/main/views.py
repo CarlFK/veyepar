@@ -45,11 +45,7 @@ episode:     00000000
 """
 
     loc,create = Location.objects.get_or_create(name='test loc',slug='test_loc')
-
-    # goofy code to remove all child recs
     client,create = Client.objects.get_or_create(name='test client',slug='test_client')
-    client.delete()
-    client = Client.objects.create(name='test client',slug='test_client')
 
     show = Show.objects.create(name='test show',slug='test_show',client=client)
     show.locations.add(loc)
@@ -64,23 +60,26 @@ episode:     00000000
     ep.duration = "00:03:00"
     ep.save()
 
+def del_test_data():
+    clients = Client.objects.filter(slug='test_client')
+    if clients: clients[0].delete()
+
 def tests(request):
+
+    if request.method == 'POST': 
+        if request.POST.has_key('create'):
+            make_test_data()
+        if request.POST.has_key('delete'):
+            del_test_data()
+
     locations=Location.objects.filter(slug__contains="test")
     clients=Client.objects.filter(slug__contains="test")
     shows=Show.objects.filter(slug__contains="test")
     episodes=Episode.objects.filter(slug__contains="test")
+
     return render_to_response('tests.html',
        locals(),
        context_instance=RequestContext(request) )
-
-def tests_create_data(request):
-    return render_to_response('tests.html',
-       context_instance=RequestContext(request) )
-
-def tests_delete_data(request):
-    return render_to_response('tests.html',
-       context_instance=RequestContext(request) )
-
 
 def ajax_user_lookup(request):
     """
