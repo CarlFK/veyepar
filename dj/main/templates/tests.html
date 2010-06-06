@@ -1,0 +1,58 @@
+{# tests.html #}
+{% extends "base.html" %}
+{% block content %}
+<table class=tpick>
+<tr class=row1><td> <a href="{% url tests_create_data %}">Create data</a> </td></tr>
+<tr class=row2><td> <a href="{% url tests_delete_data %}">Delete data</a> </td></tr>
+</table>
+<p>Current test data:</p>
+<h3>Clients:</h3>
+<ul>
+{% for client in clients %}
+  <li><a href="/admin/main/client/{{client.id}}/">{{client.name}}</a> </li>
+  <ul> 
+  {% for show in client.show_set.all %}
+    <li><a href="/admin/main/show/{{show.id}}/">{{show.name}}</a> </li>
+    <ul> 
+    {% for episode in show.episode_set.all %}
+      <li><a href="/admin/main/episode/{{episode.id}}/">{{episode.name}}</a>
+          - <a href="/admin/main/location/{{episode.location.id}}/">{{episode.location.name}}</a>
+      <ul> 
+      {% for cut_list in episode.cut_list_set.all %}
+        <li><a href="/admin/main/cut_list/{{cut_list.id}}/">{{cut_list.id}}</a>
+            - <a href="/admin/main/raw_file/{{cut_list.raw_file.id}}/">{{cut_list.raw_file.filename}}</a>
+          {{cut_list.apply}}
+        </li>
+      {% endfor %}
+      </ul>
+      </li>
+    {% endfor %}
+    </ul>
+  {% endfor %}
+  </ul>
+{% endfor %}
+</ul>
+<h3>Shows:</h3>
+  <ul> 
+  {% for show in shows %}
+    <li><a href="/admin/main/show/{{show.id}}/">{{show.name}}</a>
+     - <a href="/admin/main/client/{{show.client.id}}/">{{show.client.name}}</a>
+    </li>
+  {% endfor %}
+  </ul>
+<h3>Locations:</h3>
+<ul> 
+{% for location in locations %}
+  <li> <a href="/admin/main/location/{{location.id}}/">{{location.name}}</a>
+  {% for raw_file in location.raw_file_set.all %}
+    <li><a href="/admin/main/raw_file/{{raw_file.id}}/">{{raw_file.filename}}</a>
+    - <a href="/admin/main/show/{{raw_file.show.id}}/">{{raw_file.show.name}}</a>
+    </li>
+  {% endfor %}
+  {% endfor %}
+  </ul>
+
+
+<a href="{% url tests %}">Tests</a>
+
+{% endblock %}

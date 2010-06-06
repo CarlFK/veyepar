@@ -1,5 +1,7 @@
 #!/bin/bash -xe
 
+. ../../bin/activate
+
 # rm ../veyepar.db
 if [ ! -e ../veyepar.db ]; then
   ../manage.py syncdb --noinput

@@ -5,6 +5,7 @@ vp.json
 main.sql
 temp
 *.pyc
+*.swp
 *.bak
 blip_uploader.cfg
 veyepar.cfg

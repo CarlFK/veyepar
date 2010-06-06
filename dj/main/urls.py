@@ -47,6 +47,13 @@ urlpatterns += patterns(
         name='overlaping_episodes'),
     url(r'recording_sheets/(?P<show_id>\w+)/.*$', recording_sheets,
         name='recording_sheets'),
+
+    url(r'tests', tests, name='tests'),
+    url(r'tests_create_data', tests_create_data,
+        name='tests_create_data'),
+    url(r'tests_delete_data', tests_delete_data,
+        name='tests_delete_data'),
+
 )
 
 if False and settings.DEBUG:
