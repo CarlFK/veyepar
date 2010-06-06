@@ -10,33 +10,16 @@ pip install -r requirements.txt
 # fix broken dabo installer
 mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 
-# these lines need to run:
-import pygtk
-pygtk.require ("2.0")
-import gobject
-import pygst
-pygst.require ("0.10")
-import gst
-import gtk
-import pkg_resources
-
+# grab some text files I don't want to check into the repo
+cd dj/scripts/static
+wget -N http://0x80.org/wordlist/webster-dictionary.txt
+ln -s webster-dictionary.txt dictionary.txt
 
 # either install apache or some other http server and figure out how to enable seeking in ogv, or allow file:// access to the local files:
 http://kb.mozillazine.org/Links_to_local_pages_do_not_work#Firefox_1.5.2C_SeaMonkey_1.0_and_newer  "Disabling the Security Check" 
 
 # use set_ff_prefs.py to add these lines to FireFox config 
-
 user_pref("capability.policy.policynames", "localfilelinks");
 user_pref("capability.policy.localfilelinks.sites", "http://localhost:8080");
 user_pref("capability.policy.localfilelinks.checkloaduri.enabled", "allAccess");
 
-# this is lame...
-# and untested.
-cd utils
-mkdir static
-cd static
-wget -N http://0x80.org/wordlist/webster-dictionary.txt
-ln -s webster-dictionary.txt dictionary.txt
-cd ../../dj/scripts
-ln -s ../../utils/gsocr.py 
-ln -s ../../utils/static 
