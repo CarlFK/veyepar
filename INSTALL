@@ -1,6 +1,6 @@
 # Veyepar instalation notes
 
-sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-virtualenv mercurial subversion
+sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-virtualenv mercurial subversion inkscape
 
 virtualenv veyepar
 cd veyepar
