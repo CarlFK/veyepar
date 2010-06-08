@@ -1,6 +1,11 @@
 # Veyepar instalation notes
 
-sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-virtualenv mercurial
+sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-virtualenv mercurial subversion
+
+virtualenv veyepar
+cd veyepar
+. bin/activate
+
 hg clone http://bitbucket.org/ianb/pip/
 cd pip/
 python setup.py install
@@ -9,9 +14,12 @@ cd ..
 pip install -r requirements.txt
 # fix broken dabo installer
 mv dabo/locale/ ./lib/python2.5/site-packages/dabo
+mv dabo/locale/ ./lib/python2.6/site-packages/dabo
 
 # grab some text files I don't want to check into the repo
-cd dj/scripts/static
+cd dj/scripts
+mkdir static
+cd static
 wget -N http://0x80.org/wordlist/webster-dictionary.txt
 ln -s webster-dictionary.txt dictionary.txt
 
