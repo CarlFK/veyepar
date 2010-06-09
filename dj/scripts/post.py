@@ -6,6 +6,7 @@ import blip_uploader
 
 import re
 import os
+import xml.etree.ElementTree
 
 import pw
 from process import process
@@ -132,11 +133,26 @@ class post(process):
             video_id, blip_user, blip_pw, files, meta, thumb)
         response_xml = response.read()
         if self.options.verbose: print response_xml
+
+        """
+<otterResponses>
+<response>
+Your file called Test Episode #0 has been successfully posted.
+<post_url>http://blip.tv/file/3734423</post_url>
+</response>
+
+</otterResponses>
+"""
+# (02:37:51 PM) Juhaz: CarlFK, no. tree is the root element, it can't find itself, only children.
+        tree = xml.etree.ElementTree.fromstring(response_xml)
+
         # self.log_info(response_xml)
         ep.comment += "\n%s\n" % response_xml
-        blip_urls = re.search("post_url>(.*)</post" ,response_xml).groups()
+        blip_urls=tree.findall('response/post_url')
+        # blip_urls = re.search("post_url>(.*)</post" ,response_xml).groups()
+
         if blip_urls:
-            blip_url=blip_urls[0]
+            blip_url=blip_urls[0].text
             blip_id=blip_url[-7:]
             if self.options.verbose:
                 print blip_url, blip_id
@@ -145,6 +161,7 @@ class post(process):
             self.log_info(blip_url)
             ret=True
         else:
+            # don't print it again if it was just printed 
             if not self.options.verbose: print response_xml
             ep.comment += "upload failed\n%s\n" % response_xml
             ret=False

@@ -28,6 +28,7 @@ from cStringIO import StringIO
 # from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List
+from main.models import fnify
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm
 
 from accounts.forms import LoginForm
@@ -44,21 +45,42 @@ raws:  00 11111 22 33333 44
 episode:     00000000
 """
 
+    # get/create a location, client and show.
+    # append additional episodes 
+
     loc,create = Location.objects.get_or_create(name='test loc',slug='test_loc')
     client,create = Client.objects.get_or_create(name='test client',slug='test_client')
 
-    show = Show.objects.create(name='test show',slug='test_show',client=client)
-    show.locations.add(loc)
+    show,create = Show.objects.get_or_create(name='test show',slug='test_show',client=client)
+    if create:
+        show.locations.add(loc)
 
-    ep = Episode.objects.create(name='test episode',slug='test_episode',show=show,location=loc, sequence=1)
+    # eps = Episode.objects.filter(show=show)
+    ep_count=Episode.objects.filter(show=show).count() 
+    
+    # ep_name = "Test Episode #%s" % (ep_count)
+    # ep_slug = fnify(ep_name)
 
-    t=[datetime.datetime(2010,5,21,18,0)+datetime.timedelta(minutes=i) for i in range(8) ]
+    # ep = Episode.objects.create(name='test episode',slug='test_episode',show=show,location=loc, sequence=1)
+
+    ep = Episode.objects.create(show=show,location=loc,
+             sequence=ep_count)
+
+    ep.name = "Test Episode #%s" % (ep_count)
+    ep.slug = fnify(ep.name)
+
+    t=[datetime.datetime(2010,5,21,0,0)+datetime.timedelta(
+         hours=ep_count,minutes=i) for i in range(8) ]
 
     ep.description = desc
     ep.authors = 'test author'
     ep.start = t[2]
     ep.duration = "00:03:00"
     ep.save()
+
+    # send the count back so that the scrip that makes .dv files 
+    # are alinged with the episode start/end time.
+    return ep_count
 
 def del_test_data():
     clients = Client.objects.filter(slug='test_client')
