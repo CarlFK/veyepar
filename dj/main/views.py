@@ -436,7 +436,11 @@ def episode(request, episode_no):
 
 
     try:
-        prev_episode = episode.get_previous_by_start(state=episode.state)
+        prev_episode = episode.get_previous_by_start(show=show)
+    except AttributeError:
+        # current django does not support this:
+        # http://code.djangoproject.com/ticket/13611
+        prev_episode = ''
     except Episode.DoesNotExist:
         # at edge of the set of nulls or values.  
         # In this app, *nulls come before values*.
@@ -452,7 +456,11 @@ def episode(request, episode_no):
             prev_episode = None
            
     try:
-        next_episode = episode.get_next_by_start(state=episode.state)
+        next_episode = episode.get_next_by_start(show=show)
+    except AttributeError:
+        # current django does not support this:
+        # http://code.djangoproject.com/ticket/13611
+        next_episode = ''
     except Episode.DoesNotExist:
         # at edge of the set of nulls or values.  
         # In this app, *values come after nulls*.
