@@ -129,12 +129,13 @@ class post(process):
 
     else:
         
-        response = blip_cli.Upload(
+        response_obj = blip_cli.Upload(
             video_id, blip_user, blip_pw, files, meta, thumb)
-        response_xml = response.read()
+        response_xml = response_obj.read()
         if self.options.verbose: print response_xml
+        ep.comment += "\n%s\n" % response_xml
 
-        """
+        """<?xml version="1.0" encoding="UTF-8"?>
 <otterResponses>
 <response>
 Your file called Test Episode #0 has been successfully posted.
@@ -143,27 +144,44 @@ Your file called Test Episode #0 has been successfully posted.
 
 </otterResponses>
 """
+
+        """<?xml version="1.0" encoding="UTF-8"?>
+<otterResponses>
+<response>
+	<notice>You are not authorized to edit this file.  If you believe you have reached this notice in error please contact your community administrator for assistance.</notice>
+</response>
+
+</otterResponses>
+"""
 # (02:37:51 PM) Juhaz: CarlFK, no. tree is the root element, it can't find itself, only children.
+
+# there is no blip spec, but by looking at various returns:
+# all have <otterResponses/response>
+# if that has <post_url>, it was successfull
+# otherwise look for the error message in <notice>
+
         tree = xml.etree.ElementTree.fromstring(response_xml)
 
-        # self.log_info(response_xml)
-        ep.comment += "\n%s\n" % response_xml
-        blip_urls=tree.findall('response/post_url')
-        # blip_urls = re.search("post_url>(.*)</post" ,response_xml).groups()
-
-        if blip_urls:
-            blip_url=blip_urls[0].text
-            blip_id=blip_url[-7:]
+        response = tree.find('response')
+        post_url=response.find('post_url')
+        if post_url:
+# <post_url>http://blip.tv/file/3734423</post_url>
+            blip_id=post_url.text.split('/')[-1]
             if self.options.verbose:
-                print blip_url, blip_id
+                print post_url, blip_id
             ep.target = blip_id
-            ep.comment += blip_url
-            self.log_info(blip_url)
+            ep.comment += post_url
+            self.log_info(post_url)
             ret=True
         else:
             # don't print it again if it was just printed 
             if not self.options.verbose: print response_xml
             ep.comment += "upload failed\n%s\n" % response_xml
+            # look for the error message
+            notice=response.find('notice')
+            if xml.etree.ElementTree.iselement(notice):
+                print "blip notice:", notice.text
+                self.log_info(notice.text)
             ret=False
         ep.save()
 
