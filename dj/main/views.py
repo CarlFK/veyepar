@@ -493,7 +493,7 @@ def episode(request, episode_no):
             # we are at the first value, try to go to the last null
             try:
                 prev_episode = Episode.objects.filter(start__isnull=True).order_by('id').reverse()[0]
-            except Episode.DoesNotExist:
+            except IndexError:
                 # There are no nulls
                 prev_episode = None
         else:
@@ -513,7 +513,7 @@ def episode(request, episode_no):
             # we are at the *last null*, so go to the *first value*
             try:
                 next_episode = Episode.objects.filter(start__isnull=False).order_by('id')[0]
-            except Episode.DoesNotExist:
+            except IndexError:
                 # There are no values
                 next_episode = None
         else:

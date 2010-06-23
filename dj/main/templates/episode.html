@@ -7,8 +7,17 @@
 
 {% block content %}
 
-<a href="/main/E/{{ prev_episode.id }}">Prev: {{prev_episode.state }} {{prev_episode.name }}</a></br>
+{% if prev_episode %}
+  <a href="/main/E/{{ prev_episode.id }}">Prev: {{prev_episode.state }} {{prev_episode.name }}</a>
+{% else %}
+  Prev: (none, at start of list)
+{% endif %}
+</br>
+{% if next_episode %}
 <a href="/main/E/{{ next_episode.id }}">Next: {{next_episode.state }} {{next_episode.name }}</a>
+{% else %}
+  Next: (none, at end of list)
+{% endif %}
 
 <h2>ID: {{episode.id}} Location: {{episode.location}}</h2>
 <h2>Title: {{episode.name}}</h2>
