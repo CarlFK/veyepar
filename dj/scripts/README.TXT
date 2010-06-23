@@ -8,11 +8,12 @@ veyepar/dj$ ./manage.py syncdb
 2. create a location, client, show, and episode records in the db
 http://localhost:8080 log in.
 a. click "Locations"
-b. enter Name, hit save.
+b. enter Location Name, hit save. 
+ tip: use hostname of box dvs-mon is run on.
+ tip: tab over default to set slug.
 c. click "Clients"
-d. enter Name, hit save.
-e. click on the client link
-f. enter show Name, hit Save.
+d. enter Client Name, hit save.
+f. enter Show Name, select Location from step b, hit Save.
 g. click on show link
 h. enter episode Name, start/end - hit Save.
 i. repeat for each Episode

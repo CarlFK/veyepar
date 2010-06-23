@@ -306,13 +306,35 @@ def former(request, Model, parents, inits={}):
 
 def clients(request):
     # list of clients and a blank to enter a new one
-    client_form, clients = former(
-        request, Client, {},{'sequence':1})
+
+    class Client_Form(ModelForm):
+        class Meta:
+            model=Client
+            fields=('name','slug','tags','description')
+
+
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            # client=Client(sequence=1)
+            # form=Client_Form(request.POST,instance=client)
+            form=Client_Form(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect(reverse(client, args=(form.cleaned_data['slug'],)))
+            else:
+                print form.errors
+        else:
+            form=Client_Form(initial={'sequence':1})
+    else:
+        form=None
+
+    clients=Client.objects.all().order_by('sequence')
 
     return render_to_response('clients.html',
         {'clients':clients,
-        'client_form':client_form},
+        'client_form':form},
        context_instance=RequestContext(request) )
+
 
 def client(request,client_slug=None):
     # the selected client and
@@ -320,12 +342,34 @@ def client(request,client_slug=None):
 
     client=get_object_or_404(Client,slug=client_slug)
 
-    show_form, shows = former(
-        request, Show, {'client':client.id}, {'sequence':1})
+    class Show_Form(ModelForm):
+        class Meta:
+            model=Show
+            fields=('name','slug','locations','tags','description')
+
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            show=Show(client=client,sequence=1,)
+            form=Show_Form(request.POST,instance=show)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect(reverse(episodes, args=(client_slug, form.cleaned_data['slug'])))
+            else:
+                print form.errors
+        else:
+            locations=Location.objects.filter(default=True).order_by('sequence')
+            print locations
+            form=Show_Form(
+                initial={'client':client.id, 'sequence':1,
+                         'locations': [o.pk for o in locations] })
+    else:
+        form=None
+
+    shows=Show.objects.filter(client=client).order_by('sequence')
 
     return render_to_response('client.html',
         {'client':client,
-        'show_form':show_form,
+        'show_form':form,
         'shows':shows},
        context_instance=RequestContext(request) )
 
@@ -344,7 +388,8 @@ def episodes(request, client_slug=None, show_slug=None):
     # and blanks to enter a new location and episode.
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
-    locations=show.locations.all()
+    # locations=show.locations.all()
+    locations=show.locations.filter(default=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show).order_by('sequence')
 
     if request.user.is_authenticated():

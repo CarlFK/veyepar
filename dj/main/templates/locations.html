@@ -8,12 +8,14 @@
         {% for location in locations %}
             <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
             <td><a href="L/{{location.slug}}/">{{ location.name }}</a></td>
+            <td><a href="/admin/main/location/{{location.id}}/">admin</a></td>
             </tr>
         {% endfor %}
     </table>
     <div class=logged-in>
     <h1>Enter Loation:</h1>
     <form action="" method="POST">{% csrf_token %}
+    <input type="submit" value="Save" />
     <table border=1>
     {{ location_form }}
     </table>
