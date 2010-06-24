@@ -39,7 +39,7 @@ if [ ! -e $DV_DIR/18:00:00.png ]; then
   python dvogg.py --client test_client --show test_show
 fi
 python assocdv.py --client test_client --show test_show
-python enc.py --client test_client --show test_show --force
+python enc.py -v --client test_client --show test_show --force
 
 mplayer -speed 4 -osdlevel 3 $BASE_DIR/ogv/test_episode.ogv
 
