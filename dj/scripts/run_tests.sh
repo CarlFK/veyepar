@@ -1,6 +1,8 @@
 #!/bin/bash -xe
 
-. ../../bin/activate
+if [ -e ../../bin/activate ]; then
+ . ../../bin/activate
+fi
 
 # rm ../veyepar.db
 if [ ! -e ../veyepar.db ]; then
