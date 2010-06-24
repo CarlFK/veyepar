@@ -42,7 +42,8 @@ python enc.py -v --client test_client --show test_show --force
 
 mplayer -speed 4 -osdlevel 3 $BASE_DIR/ogv/test_episode.ogv
 
-python post.py -v --client test_client --show test_show --force 
+python post.py -v --client test_client --show test_show --force \
+ --blip_user veyepar_test
 # --hidden=1
 python tweet.py --client test_client --show test_show --force --test
 
