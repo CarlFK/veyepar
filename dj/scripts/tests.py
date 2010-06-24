@@ -2,10 +2,9 @@
 
 import datetime
 
-
 import process
 from main.models import fnify, Client, Show, Location, Episode, Raw_File, Cut_List 
-from main.views import make_test_data
+from main.views import make_test_data, del_test_data
 
 from django.contrib.auth.models import User
 
@@ -16,4 +15,9 @@ if not users:
     user.is_staff=True
     user.save()
 
-make_test_data()
+del_test_data()
+ep_count=make_test_data()
+
+# send to bash script
+print ep_count
+

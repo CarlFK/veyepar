@@ -14,7 +14,7 @@
    height="600"
    id="titlepage"
    sodipodi:version="0.32"
-   inkscape:version="0.47pre4 r22446"
+   inkscape:version="0.47 r22583"
    version="1.0"
    sodipodi:docname="title.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
@@ -148,14 +148,14 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.84880128"
      inkscape:cx="424.60882"
-     inkscape:cy="224.26378"
+     inkscape:cy="347.62165"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1280"
-     inkscape:window-height="950"
+     inkscape:window-height="722"
      inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -206,13 +206,13 @@
          x="64.395706"
          y="575.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
     <image
-       sodipodi:absref="/home/carl/src/vid/veyepar/dj/scripts/bling/sauce_masthead.png"
+       sodipodi:absref="/home/carl/veyepar/dj/scripts/bling/sauce_masthead.png"
        xlink:href="sauce_masthead.png"
-       width="116.62791"
-       height="56.666668"
-       id="logo3"
+       y="485.66159"
        x="130.38989"
-       y="485.66159" />
+       id="logo3"
+       height="56.666668"
+       width="116.62791" />
     <flowRoot
        xml:space="preserve"
        id="titlebox"
@@ -251,7 +251,9 @@
            x="88.733032"
            y="292.48868"
            style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
-         id="flowPara2816">Video produced by Carl Karsten &amp; a team </flowPara><flowPara
+         id="flowPara2816">Video produced by <flowSpan
+   style="font-weight:bold;-inkscape-font-specification:Bitstream Charter Bold"
+   id="flowSpan2854">Next Day Video</flowSpan> productions </flowPara><flowPara
          id="flowPara2818">in conjunction with the PSF and support from:</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:26.56643677px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
@@ -277,20 +279,20 @@
            y="121.71946"
            style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
          id="client">PyCon 2010 Atlanta</flowPara></flowRoot>    <image
-       sodipodi:absref="/home/carl/src/vid/veyepar/dj/scripts/bling/orbitz.png"
+       sodipodi:absref="/home/carl/veyepar/dj/scripts/bling/orbitz.png"
        xlink:href="orbitz.png"
-       y="494.66238"
-       x="315.61111"
-       id="image2957"
+       width="168.77777"
        height="34.230686"
-       width="168.77777" />
+       id="image2957"
+       x="315.61111"
+       y="494.66238" />
     <image
-       sodipodi:absref="/home/carl/src/vid/veyepar/dj/scripts/bling/imagescape-web.gif"
+       sodipodi:absref="/home/carl/veyepar/dj/scripts/bling/imagescape-web.gif"
        xlink:href="imagescape-web.gif"
-       y="484.54037"
-       x="516.66663"
-       id="logo1"
+       width="139.55556"
        height="58.919197"
-       width="139.55556" />
+       id="logo1"
+       x="516.66663"
+       y="484.54037" />
   </g>
 </svg>
