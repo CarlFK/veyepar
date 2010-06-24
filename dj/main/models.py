@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 
 import os
+import socket
 import datetime
 
 def fnify(text):
@@ -19,7 +20,7 @@ def fnify(text):
 
 class Client(models.Model):
     sequence = models.IntegerField(default=1)
-    active = models.BooleanField(help_text="Done for now.")
+    active = models.BooleanField(help_text="Turn off to hide from UI.")
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
     tags = models.TextField(null=True,blank=True,)
@@ -36,8 +37,15 @@ class Client(models.Model):
 
 class Location(models.Model):
     sequence = models.IntegerField(default=1)
-    name = models.CharField(max_length=135,help_text="room name")
-    slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    ## hostname because dvs-mon defaults to saving data in the same dirname
+    # active = models.BooleanField(help_text="Turn off to hide from UI.")
+    default = models.BooleanField(default=True,
+        help_text="Adds this loc to new Clients.")
+    name = models.CharField(max_length=135, 
+        default=socket.gethostname(),
+        help_text="room name")
+    slug = models.CharField(max_length=135,
+        help_text="dir name to store input files")
     description = models.TextField(blank=True)
     def __unicode__(self):
         return "%s" % ( self.name )
@@ -160,6 +168,9 @@ class Log(models.Model):
     end = models.DateTimeField(null=True, blank=True)
     result = models.CharField(max_length=250)
 
+def set_slug(sender, instance, **kwargs):
+    if not instance.slug and instance.name:
+        instance.slug = fnify(instance.name)
 
 def set_end(sender, instance, **kwargs):
     if instance.start and instance.duration:
@@ -170,6 +181,7 @@ def set_end(sender, instance, **kwargs):
     else:
         instance.end = None
 
+pre_save.connect(set_slug,sender=Location)
 pre_save.connect(set_end,sender=Episode)
 pre_save.connect(set_end,sender=Raw_File)
 

@@ -28,6 +28,7 @@ from cStringIO import StringIO
 # from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List
+from main.models import fnify
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm
 
 from accounts.forms import LoginForm
@@ -44,21 +45,42 @@ raws:  00 11111 22 33333 44
 episode:     00000000
 """
 
+    # get/create a location, client and show.
+    # append additional episodes 
+
     loc,create = Location.objects.get_or_create(name='test loc',slug='test_loc')
     client,create = Client.objects.get_or_create(name='test client',slug='test_client')
 
-    show = Show.objects.create(name='test show',slug='test_show',client=client)
-    show.locations.add(loc)
+    show,create = Show.objects.get_or_create(name='test show',slug='test_show',client=client)
+    if create:
+        show.locations.add(loc)
 
-    ep = Episode.objects.create(name='test episode',slug='test_episode',show=show,location=loc, sequence=1)
+    # eps = Episode.objects.filter(show=show)
+    ep_count=Episode.objects.filter(show=show).count() 
+    
+    # ep_name = "Test Episode #%s" % (ep_count)
+    # ep_slug = fnify(ep_name)
 
-    t=[datetime.datetime(2010,5,21,18,0)+datetime.timedelta(minutes=i) for i in range(8) ]
+    # ep = Episode.objects.create(name='test episode',slug='test_episode',show=show,location=loc, sequence=1)
+
+    ep = Episode.objects.create(show=show,location=loc,
+             sequence=ep_count)
+
+    ep.name = "Test Episode #%s" % (ep_count)
+    ep.slug = fnify(ep.name)
+
+    t=[datetime.datetime(2010,5,21,0,0)+datetime.timedelta(
+         hours=ep_count,minutes=i) for i in range(8) ]
 
     ep.description = desc
     ep.authors = 'test author'
     ep.start = t[2]
     ep.duration = "00:03:00"
     ep.save()
+
+    # send the count back so that the scrip that makes .dv files 
+    # are alinged with the episode start/end time.
+    return ep_count
 
 def del_test_data():
     clients = Client.objects.filter(slug='test_client')
@@ -284,13 +306,35 @@ def former(request, Model, parents, inits={}):
 
 def clients(request):
     # list of clients and a blank to enter a new one
-    client_form, clients = former(
-        request, Client, {},{'sequence':1})
+
+    class Client_Form(ModelForm):
+        class Meta:
+            model=Client
+            fields=('name','slug','tags','description')
+
+
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            # client=Client(sequence=1)
+            # form=Client_Form(request.POST,instance=client)
+            form=Client_Form(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect(reverse(client, args=(form.cleaned_data['slug'],)))
+            else:
+                print form.errors
+        else:
+            form=Client_Form(initial={'sequence':1})
+    else:
+        form=None
+
+    clients=Client.objects.all().order_by('sequence')
 
     return render_to_response('clients.html',
         {'clients':clients,
-        'client_form':client_form},
+        'client_form':form},
        context_instance=RequestContext(request) )
+
 
 def client(request,client_slug=None):
     # the selected client and
@@ -298,12 +342,34 @@ def client(request,client_slug=None):
 
     client=get_object_or_404(Client,slug=client_slug)
 
-    show_form, shows = former(
-        request, Show, {'client':client.id}, {'sequence':1})
+    class Show_Form(ModelForm):
+        class Meta:
+            model=Show
+            fields=('name','slug','locations','tags','description')
+
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            show=Show(client=client,sequence=1,)
+            form=Show_Form(request.POST,instance=show)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect(reverse(episodes, args=(client_slug, form.cleaned_data['slug'])))
+            else:
+                print form.errors
+        else:
+            locations=Location.objects.filter(default=True).order_by('sequence')
+            print locations
+            form=Show_Form(
+                initial={'client':client.id, 'sequence':1,
+                         'locations': [o.pk for o in locations] })
+    else:
+        form=None
+
+    shows=Show.objects.filter(client=client).order_by('sequence')
 
     return render_to_response('client.html',
         {'client':client,
-        'show_form':show_form,
+        'show_form':form,
         'shows':shows},
        context_instance=RequestContext(request) )
 
@@ -322,7 +388,8 @@ def episodes(request, client_slug=None, show_slug=None):
     # and blanks to enter a new location and episode.
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
-    locations=show.locations.all()
+    # locations=show.locations.all()
+    locations=show.locations.filter(default=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show).order_by('sequence')
 
     if request.user.is_authenticated():
@@ -414,7 +481,11 @@ def episode(request, episode_no):
 
 
     try:
-        prev_episode = episode.get_previous_by_start(state=episode.state)
+        prev_episode = episode.get_previous_by_start(show=show)
+    except AttributeError:
+        # current django does not support this:
+        # http://code.djangoproject.com/ticket/13611
+        prev_episode = ''
     except Episode.DoesNotExist:
         # at edge of the set of nulls or values.  
         # In this app, *nulls come before values*.
@@ -422,7 +493,7 @@ def episode(request, episode_no):
             # we are at the first value, try to go to the last null
             try:
                 prev_episode = Episode.objects.filter(start__isnull=True).order_by('id').reverse()[0]
-            except Episode.DoesNotExist:
+            except IndexError:
                 # There are no nulls
                 prev_episode = None
         else:
@@ -430,7 +501,11 @@ def episode(request, episode_no):
             prev_episode = None
            
     try:
-        next_episode = episode.get_next_by_start(state=episode.state)
+        next_episode = episode.get_next_by_start(show=show)
+    except AttributeError:
+        # current django does not support this:
+        # http://code.djangoproject.com/ticket/13611
+        next_episode = ''
     except Episode.DoesNotExist:
         # at edge of the set of nulls or values.  
         # In this app, *values come after nulls*.
@@ -438,7 +513,7 @@ def episode(request, episode_no):
             # we are at the *last null*, so go to the *first value*
             try:
                 next_episode = Episode.objects.filter(start__isnull=False).order_by('id')[0]
-            except Episode.DoesNotExist:
+            except IndexError:
                 # There are no values
                 next_episode = None
         else:
