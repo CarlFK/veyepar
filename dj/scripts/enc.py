@@ -245,10 +245,15 @@ class enc(process):
         if episode.channelcopy:
             if self.options.verbose: print 'channelcopy:', episode.channelcopy
             # channelcopy should be 01 or 10.
-            fro,to=list(episode.channelcopy)
-            new=xml.etree.ElementTree.Element('filter', 
-                {'mlt_service':'channelcopy', 
-                'from':fro, 'to':to} )
+            # or 'mono' to kick in this hack
+            if episode.channelcopy=='m':
+                new=xml.etree.ElementTree.Element('filter', 
+                    {'mlt_service':'mono', 'channels':'2'} )
+            else:
+                fro,to=list(episode.channelcopy)
+                new=xml.etree.ElementTree.Element('filter', 
+                    {'mlt_service':'channelcopy', 
+                    'from':fro, 'to':to} )
             playlist.insert(pos,new)
 
         if self.options.upload_formats=='flac': 
