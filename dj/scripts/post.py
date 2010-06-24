@@ -107,8 +107,11 @@ class post(process):
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
         files.append((fileno,role,src_pathname))
 
-    # use the username for the client, else use the first user in pw.py
-    blip_user =  client.blip_user if client.blip_user \
+    # username comes from options, client, first in pw.py
+    # password always comes from pw.py
+   
+    blip_user =  self.options.blip_user if self.options.blip_user \
+                    else client.blip_user if client.blip_user \
                     else pw.blip.keys()[0]
     blip_pw = pw.blip[blip_user]
 
@@ -164,14 +167,14 @@ Your file called Test Episode #0 has been successfully posted.
 
         response = tree.find('response')
         post_url=response.find('post_url')
-        if post_url:
+        if xml.etree.ElementTree.iselement(post_url):
 # <post_url>http://blip.tv/file/3734423</post_url>
             blip_id=post_url.text.split('/')[-1]
             if self.options.verbose:
-                print post_url, blip_id
+                print "blip id:", blip_id
             ep.target = blip_id
-            ep.comment += post_url
-            self.log_info(post_url)
+            ep.comment += post_url.text
+            self.log_info(response.text)
             ret=True
         else:
             # don't print it again if it was just printed 
@@ -188,6 +191,8 @@ Your file called Test Episode #0 has been successfully posted.
         return ret
 
   def add_more_options(self, parser):
+        parser.add_option('--blip-user', 
+            help='blip.tv account name (pass stored in pw.py)')
         parser.add_option('--rating', 
             help="TV rating")
         parser.add_option('-T', '--topics',
