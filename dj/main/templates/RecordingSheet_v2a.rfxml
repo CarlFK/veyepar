@@ -75,7 +75,7 @@
 				<height>'42.0 pt'</height>
 				<LineSlant>'|'</LineSlant>
 				<width>'13.0 pt'</width>
-				<x>'126.0 pt'</x>
+				<x>'123.0 pt'</x>
 				<y>'39.0 pt'</y>
 			</Line>
 			<Line>
@@ -140,8 +140,8 @@
 				<y>'65.0 pt'</y>
 			</String>
 			<SpanningLine>
-				<x>'29.0 pt'</x>
-				<xFooter>'29.0 pt'</xFooter>
+				<x>'25.0 pt'</x>
+				<xFooter>'25.0 pt'</xFooter>
 				<y>'39.0 pt'</y>
 			</SpanningLine>
 			<SpanningLine>
@@ -308,8 +308,8 @@
 				<FontName>'Helvetica'</FontName>
 				<FontSize>10</FontSize>
 				<width>'17.0 pt'</width>
-				<x>'7.0 pt'</x>
-				<y>'70.0 pt'</y>
+				<x>'4.0 pt'</x>
+				<y>'74.0 pt'</y>
 			</String>
 			<Frameset>
 				<height>'33.0 pt'</height>
@@ -328,7 +328,7 @@
 				<height>'24.0 pt'</height>
 				<width>'315.0 pt'</width>
 				<x>'131.8 pt'</x>
-				<y>'11.7 pt'</y>
+				<y>'8.7 pt'</y>
 				<Objects>
 					<Paragraph>
 						<expr>self.episode_authors</expr>
@@ -338,36 +338,20 @@
 				</Objects>
 			</Frameset>
 			<String>
-				<expr>"[  ]"</expr>
-				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>13</FontSize>
-				<width>'17.0 pt'</width>
-				<x>'34.0 pt'</x>
-				<y>'86.0 pt'</y>
-			</String>
-			<String>
-				<expr>"[  ]"</expr>
-				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>13</FontSize>
-				<width>'17.0 pt'</width>
-				<x>'34.0 pt'</x>
-				<y>'27.0 pt'</y>
-			</String>
-			<String>
-				<expr>self.episode_start.strftime("%H:%M")</expr>
+				<expr>self.episode_start.strftime("%H:%M:00")</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
-				<width>'49.0 pt'</width>
-				<x>'54.0 pt'</x>
+				<width>'75.0 pt'</width>
+				<x>'32.0 pt'</x>
 				<y>'85.0 pt'</y>
 			</String>
 			<String>
-				<expr>self.episode_end.strftime("%H:%M")</expr>
+				<expr>self.episode_end.strftime("%H:%M:00")</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
-				<width>'49.0 pt'</width>
-				<x>'53.0 pt'</x>
-				<y>'27.0 pt'</y>
+				<width>'75.0 pt'</width>
+				<x>'31.0 pt'</x>
+				<y>'6.0 pt'</y>
 			</String>
 			<String>
 				<expr>"[  ]"</expr>
@@ -422,7 +406,7 @@
 				<FontSize>13</FontSize>
 				<width>'24.0 pt'</width>
 				<x>'108.0 pt'</x>
-				<y>'27.0 pt'</y>
+				<y>'13.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
