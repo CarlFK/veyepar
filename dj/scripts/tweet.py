@@ -65,6 +65,7 @@ class tweet(process):
             user =  client.blip_user if client.blip_user \
                         else pw.twit.keys()[0]
             password = pw.twit[user]
+            print user,password
             api = twitter.Api(username=user, password=password)
             status = api.PostUpdate(tweet)
             d=status.AsDict()

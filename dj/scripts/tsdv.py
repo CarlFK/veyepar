@@ -29,7 +29,19 @@ class add_dv(process):
         pathname = os.path.join(dir,dv.filename)
         print pathname
         filename = dv.filename
+
+        # time-n gets used to avoid name colisions. 
+        # for start/end, dupe time is fine, so drop the -n for parsing 
         if filename[-5]=='-': filename = filename[:-5] + filename[-3:] 
+  
+        # find a dir that looks like a date: 
+        # shoud use os.split, but it is weird
+        # for d in filename.split('/'):
+        # make this work when really needed.
+          
+        # for now, the last dir is the date, and the file is time:
+        filename='/'.join(filename.split('/')[-2:])
+
         start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
         # dt = dv.filename[:-3]
         # dt.replace('/',' ')

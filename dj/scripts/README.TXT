@@ -18,6 +18,7 @@ g. click on show link
 h. enter episode Name, start/end - hit Save.
 i. repeat for each Episode
 
+setup veyepar.cfg with at least the client and show.
 
 If you have many Episodes it might be worth the effort to import locaion and episodes from a .csv file using addeps.py.  
 Otherwise use the admin UI for location and episode too.

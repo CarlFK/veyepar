@@ -135,6 +135,7 @@ class Episode(models.Model):
     comment = models.TextField(blank=True, help_text="production notes")
            
     def __unicode__(self):
+        return "%s: %s" % ( self.id, self.name )
         return "%s: %s" % ( self.location.name, self.name )
     class Meta:
         ordering = ["sequence"]

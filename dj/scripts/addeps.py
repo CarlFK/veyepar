@@ -13,13 +13,9 @@ import process
 from main.models import fnify, Client, Show, Location, Episode
 
 class add_eps(process.process):
-   
-    def one_show(self, show):
-      url='http://us.pycon.org/2010/conference/schedule/events.json'
-      j=urllib2.urlopen(url).read()
-      # j=open('events.json').read()
-      d = json.loads(j)
 
+    def addlocs(self, schedule):
+      """ pycon 2010 
       seq=0
       locs=d['rooms']
       for l_id in locs:
@@ -46,7 +42,69 @@ class add_eps(process.process):
           # save the loc object into the dict
           # so that it can be used for the FK object for episodes
           l['loc']=loc
+       """
           
+      seq=0
+      locs=[]
+      for row in schedule:
+          # print row
+          room = row['Room']
+          if room not in locs: 
+              print room
+              loc,created = Location.objects.get_or_create(
+                  name=room)
+              if created: 
+                  seq+=1
+                  loc.sequence=seq
+                  loc.save()
+
+  
+    def addeps(self, schedule, show):
+      seq=0
+      locs=[]
+      for row in schedule:
+          # print row
+          location = Location.objects.get(name=row['Room'])
+          name = row['Title']
+          primary = row['URL']
+          start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
+          authors=row['Author(s)']
+          minutes = row['Duration']
+          if not minutes: minutes = '60'
+          # if minutes: duration = "00:%s:00" % minutes
+          # else: duration = "01:00:00"
+          # hours = int(int(minutes)/60)
+          # minutes = int(minutes) % 60
+          # duration="0%s:%s:00" % ( hours, minutes) 
+          duration="00:%s:00" % ( minutes) 
+          description = row['Description']
+          if self.options.test:
+              print location
+              print name
+              print primary
+              print start
+              print authors
+              print row['Duration'], hours, minutes
+              print duration
+              # print description
+              print
+          else:
+              episode,created = Episode.objects.get_or_create(
+                  show=show, primary=primary)
+              if created:
+                  episode.sequence=seq
+              episode.location=location 
+              episode.name=name
+              episode.primary=primary
+              episode.authors=authors
+              episode.start=start
+              episode.duration=duration
+              episode.state=1
+              print duration
+              episode.save()
+
+
+      """ pycon 2010
       seq=0
       eps = d['events']
       for ep_id in eps:
@@ -56,9 +114,12 @@ class add_eps(process.process):
 
         room = ep['room']
         if room in [ None, 'None', '1' ]:
-            room='6'
-        if room == '57': 
-            room='47'
+            room='1'
+        #if room == '57': 
+        #    room='47'
+        
+        print  str(room)
+        print  locs[str(room)]
         location = locs[str(room)]['loc']
         
         name = ep['title']
@@ -67,7 +128,7 @@ class add_eps(process.process):
         primary=str(ep['id'])
         start = datetime.datetime(*ep['start'])
         end = start + datetime.timedelta(minutes=ep['duration'])
-        print ep['name']
+        print name
         print start
         print end
         print ep['duration']
@@ -95,6 +156,19 @@ class add_eps(process.process):
             episode.end=end
             episode.state=self.state_done
             episode.save()
+       """
+
+
+
+    def one_show(self, show):
+      # url='http://us.pycon.org/2010/conference/schedule/events.json'
+      # url='http://pycon-au.org/2010/conference/schedule/events.json'
+      # j=urllib2.urlopen(url).read()
+      j=open('schedule.json').read()
+      schedule = json.loads(j)
+
+      self.addlocs(schedule)
+      self.addeps(schedule, show)
 
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
