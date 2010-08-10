@@ -52,17 +52,17 @@ class add_dv(process):
 
         # use this to adjust for clock in wrong timezone
         start += datetime.timedelta(hours=self.options.offset_hours,minutes=0)
-        if start.day in [17,18] and  dv.location.slug=='HanoverD':
-                print dv.location.slug
-                start += datetime.timedelta(hours=1,minutes=0)
+        # if start.day in [17,18] and  dv.location.slug=='HanoverD':
+        if dv.location.slug=='Classroom_2':
+            print dv.location.slug
+            start += datetime.timedelta(hours=1,minutes=0)
 
         frames = st.st_size/self.bpf
         seconds = frames/self.fps 
-        duration = seconds
 
-        hours = int(duration / 3600)
-        minutes = int((duration - hours*60)/60)
-        seconds = duration - (hours*60 + minutes*60)
+        hours = int(seconds / 3600)
+        minutes = int((seconds - hours*3600)/60)
+        seconds = seconds - (hours*3600 + minutes*60)
         duration = "%02d:%02d:%02d" % (hours, minutes,seconds)
 
         dv.start = start

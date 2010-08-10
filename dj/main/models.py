@@ -108,7 +108,7 @@ class Episode(models.Model):
 	 help_text="user/process that locked." )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
-    start = models.DateTimeField(blank=True, null=True,
+    start = models.DateTimeField(blank=True, null=False,
         help_text="initially scheduled time from master, adjusted to match reality")
     duration = models.CharField(max_length=15,null=True,blank=True,)
     end = models.DateTimeField(blank=True, null=True,)
@@ -183,6 +183,7 @@ def set_end(sender, instance, **kwargs):
         instance.end = None
 
 pre_save.connect(set_slug,sender=Location)
+pre_save.connect(set_slug,sender=Episode)
 pre_save.connect(set_end,sender=Episode)
 pre_save.connect(set_end,sender=Raw_File)
 

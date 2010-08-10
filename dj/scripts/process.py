@@ -14,8 +14,9 @@ from django.conf import settings
 
 import django
 from main.models import Client, Show, Location, Episode, State, Log
+from main.models import fnify
 
-def fnify(text):
+def xfnify(text):
     """
     file_name_ify - make a file name out of text, like a talk title.
     convert spaces to _, remove junk like # and quotes.
@@ -60,6 +61,7 @@ class process(object):
     episode.locked = datetime.datetime.now()
     episode.locked_by = what_where
     state,create = State.objects.get_or_create(id=1)
+    self.start=datetime.datetime.now()
     self.log=Log(episode=episode,
         state=state,
         ready = datetime.datetime.now(),
@@ -119,6 +121,7 @@ class process(object):
                 if self.ready_state is not None and not self.options.force:
                     # bump state
                     ep.state += 1
+            self.end = datetime.datetime.now()
             self.log_out()
             ep.save()
         else:
@@ -164,7 +167,11 @@ class process(object):
         if self.args:
             episodes = episodes.filter(id__in=self.args)
         
+        self.start=datetime.datetime.now()
         self.process_eps(episodes)
+        self.end=datetime.datetime.now()
+        work_time = self.end-self.start
+        print "run time: %s minutes" % (work_time.seconds/60)
         # for day in [11,17,18,19,20,21]:
         #    self.process_eps(episodes.filter(start__day=day))
 

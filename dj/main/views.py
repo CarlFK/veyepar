@@ -254,6 +254,7 @@ def enc_play_list(request,episode_id):
 
 def play_list(request,show_id):
     show=get_object_or_404(Show,id=show_id)
+    client=show.client
     episodes=Episode.objects.filter(show=show,state=3).order_by('sequence')
 
     response = HttpResponse(mimetype='audio/mpegurl')
