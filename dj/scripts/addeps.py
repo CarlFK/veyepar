@@ -1,6 +1,19 @@
 #!/usr/bin/python
 
-# adds episodes from an external source, like a csv
+# adds episodes from an external source, like a json file or url.
+
+"""
+fields:
+Room Name 
+Start - datetime 
+Duration in minutes, or HH:MM:SS 
+Title
+Presenters - comma seperated list of people's names.
+Description - used as the description of the video
+ID of item in source database
+URL of talk page
+tags - comma seperated list 
+"""
 
 import datetime 
 import urllib2,json
