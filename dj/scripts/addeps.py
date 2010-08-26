@@ -99,6 +99,7 @@ class add_eps(process.process):
               episode.authors=authors
               episode.start=start
               episode.duration=duration
+              episode.description=description
               episode.state=1
               print duration
               episode.save()
