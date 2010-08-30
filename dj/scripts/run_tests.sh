@@ -15,12 +15,14 @@ python mkdirs.py --client test_client --show test_show
 
 BASE_DIR=~/Videos/veyepar/test_client/test_show 
 DV_DIR=$BASE_DIR/dv/test_loc/2010-05-21
+mkdir -p $DV_DIR
 if [ ! -e $DIR/$HOUR:00:00.dv ]; then
  # put make some dv files in the source dir
  # mkdir $DV_DIR
  for i in {1..5} ; do 
    echo test $i >t$i.txt; 
    date >> t$i.txt
+   melt --version 2>&1 | grep MLT >> t$i.txt
  done 
  melt -profile dv_ntsc t1.txt out=180 -consumer avformat:$DV_DIR/$HOUR:00:00.dv pix_fmt=yuv411p
  melt -profile dv_ntsc t2.txt out=180 -consumer avformat:$DV_DIR/$HOUR:01:58.dv pix_fmt=yuv411p
@@ -42,10 +44,10 @@ fi
 python assocdv.py --client test_client --show test_show
 python enc.py -v --client test_client --show test_show --force
 
-mplayer -speed 4 -osdlevel 3 $BASE_DIR/ogv/test_episode.ogv
+mplayer -speed 4 -osdlevel 3 $BASE_DIR/ogv/Test_Episode_0.ogv
 
 python post.py -v --client test_client --show test_show --force \
- --blip_user veyepar_test
+ --blip-user veyepar_test
 # --hidden=1
 python tweet.py --client test_client --show test_show --force --test
 

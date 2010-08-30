@@ -153,7 +153,7 @@
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1280"
-     inkscape:window-height="722"
+     inkscape:window-height="727"
      inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="1" />
@@ -206,7 +206,7 @@
          x="64.395706"
          y="575.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
     <image
-       sodipodi:absref="/home/carl/veyepar/dj/scripts/bling/sauce_masthead.png"
+       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/sauce_masthead.png"
        xlink:href="sauce_masthead.png"
        y="485.66159"
        x="130.38989"
@@ -279,7 +279,7 @@
            y="121.71946"
            style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
          id="client">PyCon 2010 Atlanta</flowPara></flowRoot>    <image
-       sodipodi:absref="/home/carl/veyepar/dj/scripts/bling/orbitz.png"
+       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/orbitz.png"
        xlink:href="orbitz.png"
        width="168.77777"
        height="34.230686"
@@ -287,7 +287,7 @@
        x="315.61111"
        y="494.66238" />
     <image
-       sodipodi:absref="/home/carl/veyepar/dj/scripts/bling/imagescape-web.gif"
+       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/imagescape-web.gif"
        xlink:href="imagescape-web.gif"
        width="139.55556"
        height="58.919197"

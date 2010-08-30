@@ -148,12 +148,13 @@ class enc(process):
         if tree[1].has_key(key):
             tree[1][key].text=text[key]
 
-    if text['authors']:
-        prefix = "Featuring" if "," in text['authors'] else "By"
-        tree[1]['presenternames'].text="%s %s" % (prefix,text['authors'])
-    else:
-        # remove the text (there is a placholder to make editing sane)
-        tree[1]['presenternames'].text=""
+    if tree[1].has_key('presenternames'):
+        if text['authors']:
+            prefix = "Featuring" if "," in text['authors'] else "By"
+            tree[1]['presenternames'].text="%s %s" % (prefix,text['authors'])
+        else:
+            # remove the text (there is a placholder to make editing sane)
+            tree[1]['presenternames'].text=""
 
 
     cooked_svg_name='%s.svg'%output_base
@@ -320,15 +321,20 @@ class enc(process):
               if ext=='dv': 
                   out_pathname = os.path.join( 
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
-                  cmds=["melt -verbose -progress -profile %s %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( self.options.format.lower(), mlt_pathname, out_pathname)]
+                  # note: removed -profile cuz it was causing this error:
+# [dvvideo @ 0x997640]Found no DV profile for 640x480 yuv411p video
+                  cmds=["melt -verbose -progress %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( mlt_pathname, out_pathname)]
               if ext=='ogv': 
                   # melts ogv encoder is loopy, 
                   # so make a .dv and pass it to ffmpeg2theora
                   ret = enc_one("dv")
-                  dv_pathname = os.path.join( 
-                      self.tmp_dir,"%s.dv"%(episode.slug))
-                  cmds=["ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --channels 1 %s -o %s" % (dv_pathname, out_pathname)]
-                  cmds.append( ["rm", dv_pathname] )
+                  if ret:
+                      dv_pathname = os.path.join( 
+                          self.tmp_dir,"%s.dv"%(episode.slug))
+                      cmds=["ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --channels 1 %s -o %s" % (dv_pathname, out_pathname)]
+                      # cmds.append( ["rm", dv_pathname] )
+                  else:
+                      return ret
 
               ret = self.run_cmds(episode, cmds)
               if ret and not os.path.exists(out_pathname) \
@@ -435,7 +441,10 @@ class enc(process):
     if cls:
 
 # make a title slide
-        template = os.path.join(self.show_dir, "bling", "title.svg")
+        svg_name = episode.show.client.title_svg if episode.show.client.title_svg \
+                    else "title.svg"
+
+        template = os.path.join(self.show_dir, "bling", svg_name)
         title_base = os.path.join(self.show_dir, "bling", episode.slug)
         title_img=self.mktitle(template, title_base, episode)
 

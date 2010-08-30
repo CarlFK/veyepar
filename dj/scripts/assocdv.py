@@ -42,9 +42,9 @@ class ass_dv(process.process):
 
         print
 
-    def one_loc(self,location):
+    def one_loc(self,location,show):
       seq=0
-      rfs=Raw_File.objects.filter(location=location).order_by('start')
+      rfs=Raw_File.objects.filter(location=location,show=show).order_by('start')
       if self.options.day:
           rfs = rfs.filter(start__day=self.options.day)
       for dv in rfs:
@@ -61,7 +61,7 @@ class ass_dv(process.process):
       eps = Episode.objects.filter(show=show)
       for loc in Location.objects.filter(episode__in=eps).distinct():
         print show,loc
-        self.one_loc(loc)
+        self.one_loc(loc,show)
 
     def work(self):
         """

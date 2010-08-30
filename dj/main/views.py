@@ -49,7 +49,7 @@ episode:     00000000
     # append additional episodes 
 
     loc,create = Location.objects.get_or_create(name='test loc',slug='test_loc')
-    client,create = Client.objects.get_or_create(name='test client',slug='test_client')
+    client,create = Client.objects.get_or_create(name='test client',slug='test_client', title_svg='test_pattern_1.svg')
 
     show,create = Show.objects.get_or_create(name='test show',slug='test_show',client=client)
     if create:
@@ -405,7 +405,11 @@ def episodes(request, client_slug=None, show_slug=None):
                     'location':episode.location.id,
                     'sequence':episode.sequence+1,
                     'start':episode.end,
-                    'duration':episode.duration}
+                    'duration':episode.duration,
+                    'state':1,
+                    }
+            else:
+                inits=None # (prevents form from being created below)
         else:
             if episodes:
                 # use last Episode as a base for defaults
@@ -426,8 +430,10 @@ def episodes(request, client_slug=None, show_slug=None):
                 'sequence':sequence, 
                 'start': start,
                 'duration':'00:45:00',
+                'state':1,
             }
-        form=Episode_Form_Preshow(initial=inits, locations=locations)
+        if inits: 
+            form=Episode_Form_Preshow(initial=inits, locations=locations)
     else:
         # set this so 'episode_form':form doesn't blow up
         # there are other ways of doing this, they suck too.
@@ -482,7 +488,8 @@ def episode(request, episode_no):
 
 
     try:
-        prev_episode = episode.get_previous_by_start(show=show)
+        # prev_episode = episode.get_previous_by_start(show=show)
+        prev_episode = episode.my_get_previous_by_start(show=show)
     except AttributeError:
         # current django does not support this:
         # http://code.djangoproject.com/ticket/13611
@@ -502,24 +509,29 @@ def episode(request, episode_no):
             prev_episode = None
            
     try:
-        next_episode = episode.get_next_by_start(show=show)
-    except AttributeError:
+        # next_episode = episode.get_next_by_start(show=show)
+        next_episode = episode.my_get_next_by_start(show=show)
+        print 5
+    # except AttributeError:
         # current django does not support this:
         # http://code.djangoproject.com/ticket/13611
-        next_episode = ''
+    #    next_episode = 'AttributeError'
     except Episode.DoesNotExist:
         # at edge of the set of nulls or values.  
         # In this app, *values come after nulls*.
         if episode.start is None:
             # we are at the *last null*, so go to the *first value*
             try:
+                print 4
                 next_episode = Episode.objects.filter(start__isnull=False).order_by('id')[0]
+                
             except IndexError:
                 # There are no values
-                next_episode = None
+                next_episode = 'IndexError'
         else:
             # there is no *next value*, we have nowhere to go.
-            next_episode = None
+            next_episode = 'no next value'
+    print 3, next_episode
 
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
 

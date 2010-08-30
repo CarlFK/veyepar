@@ -1,6 +1,15 @@
 # Veyepar instalation notes
 
-sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-virtualenv mercurial subversion inkscape
+sudo vim /etc/apt/sources.list
+# add these lines:
+deb http://ppa.launchpad.net/gstreamer-developers/ppa/ubuntu lucid main 
+deb-src http://ppa.launchpad.net/gstreamer-developers/ppa/ubuntu lucid main 
+deb http://ppa.launchpad.net/sunab/sunab2/ubuntu lucid main 
+deb-src http://ppa.launchpad.net/sunab/sunab2/ubuntu lucid main 
+deb http://ppa.launchpad.net/j/ppa/ubuntu karmic main 
+deb-src http://ppa.launchpad.net/j/ppa/ubuntu karmic main 
+
+sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-virtualenv mercurial subversion inkscape melt ffmpeg2theora
 
 virtualenv veyepar
 cd veyepar

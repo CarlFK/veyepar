@@ -27,7 +27,7 @@ class mkpreview(process):
         dvs = Raw_File.objects.filter(cut_list__episode=ep)
         for dv in dvs:
             self.one_dv(dir,dv)
-        return
+        return True
 
 
 if __name__=='__main__': 

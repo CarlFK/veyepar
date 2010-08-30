@@ -3,6 +3,10 @@
 """
 mkthumbs.py - find thumbs
 ocr untill we find some text
+
+Start with every 5 seconds until we find more than 5 words
+then check less and less as we get farther into the file, and even less if we find more workds.
+
 """
 
 import  os
@@ -30,7 +34,7 @@ class add_dv(process):
                 dv.ocrtext=p.words
                 # dv.thumbnail=p.imgname
                 dv.save()
-	    return p.basename
+	    return p.base_name
         return None
 
     def process_eps(self,episodes):

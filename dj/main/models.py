@@ -30,6 +30,7 @@ class Client(models.Model):
     postroll = models.CharField(max_length=135, blank=True,
         help_text="name of video to postpend")
     blip_user = models.CharField(max_length=30, blank=True, null=True)
+    title_svg = models.CharField(max_length=30, blank=True, null=True)
     def __unicode__(self):
         return self.name
     class Meta:
@@ -108,7 +109,7 @@ class Episode(models.Model):
 	 help_text="user/process that locked." )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
-    start = models.DateTimeField(blank=True, null=False,
+    start = models.DateTimeField(blank=True, null=True,
         help_text="initially scheduled time from master, adjusted to match reality")
     duration = models.CharField(max_length=15,null=True,blank=True,)
     end = models.DateTimeField(blank=True, null=True,)
@@ -133,12 +134,39 @@ class Episode(models.Model):
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
+
+    def _get_next_or_previous_by_FIELD(self, field, is_next, **kwargs):
+        from django.utils.encoding import smart_str
+        from django.db.models.query import Q
+        print 2, kwargs
+        op = is_next and 'gt' or 'lt'
+        order = not is_next and '-' or ''
+        # current_field_value = getattr(self, field.attname)
+        current_field_value = self.start
+        if current_field_value is None:
+            # q = Q(**{ "%s__isnull" % field.name: True, 'pk__%s' % op: self.pk})
+            q = Q(**{ "%s__isnull" % 'start': True, 'pk__%s' % op: self.pk})
+        else:
+            param = smart_str(current_field_value)
+            # q = Q(**{'%s__%s' % (field.name, op): param})
+            q = Q(**{'%s__%s' % ('start', op): param})
+            # q = q|Q(**{field.name: param, 'pk__%s' % op: self.pk})
+            q = q|Q(**{'start': param, 'pk__%s' % op: self.pk})
+ 
+    def my_get_previous_by_start(self,**kwargs):
+        self._get_next_or_previous_by_FIELD('start', is_next=False, **kwargs)
+    def my_get_next_by_start(self,**kwargs):
+        print 1, kwargs
+        self._get_next_or_previous_by_FIELD('start', is_next=True, **kwargs)
+ 
            
     def __unicode__(self):
         return "%s: %s" % ( self.id, self.name )
         return "%s: %s" % ( self.location.name, self.name )
     class Meta:
         ordering = ["sequence"]
+
+  
 
 class Cut_List(models.Model):
     raw_file = models.ForeignKey(Raw_File)

@@ -3,6 +3,11 @@
 # gsocr.py
 # uses gstreamer to send frames to gocr
 
+"""
+Start with every 5 seconds until we find more than 5 words
+then check less and less as we get farther into the file, and even less if we find more workds.
+"""
+
 import subprocess
 import os
 from cStringIO import StringIO
@@ -31,7 +36,13 @@ def ckocr(it,ocrtext):
         it.last_ocr=ocrtext
         words = [w for w in ocrtext.split() if w.upper() in dictionary]
         print ocrtext.__repr__()[:70]
-        if it.words is None or len(it.words) < len(words):
+        # it.words = words found so far
+        # None = no words have been found, so anything is better.
+        # sec/100 = few words near the front of the file are better than
+        #  more words later
+
+        if it.words is None or \
+                len(it.words) < (len(words)-it.seek_sec/100):
             it.words = words
             print words
             ret = True
@@ -59,21 +70,21 @@ def one_frame( sink,buffer,pad, it):
        
             # write image out to a pnm file (not sure why, nothing else uses it)
             # f=open(it.imgname,'wb')
-            f=open(it.basename+'.pnm','wb')
+            f=open(it.base_name+'.pnm','wb')
             f.write(it.buffer)  
             f.write(buffer)
             f.close()
  
             subprocess.Popen(
-                ['convert', it.basename+'.pnm', it.basename+'.png'])
+                ['convert', it.base_name+'.pnm', it.base_name+'.png'])
 
             # convert it to a png (for firefox and uploading as thumb)
             # buffin = StringIO()
             # buffin.write(it.buffer)
             # buffin.write(buffer)
             # buffout = StringIO()
-            # Image.open(buffin).save(it.basename+'.png', 'png')
-            # Image.open(it.basename+'.pnm','ppm').save(it.basename+'.png', 'png')
+            # Image.open(buffin).save(it.base_name+'.png', 'png')
+            # Image.open(it.base_name+'.pnm','ppm').save(it.base_name+'.png', 'png')
             # img = buffout.getvalue()
             # fp = open(it.basename+'.pnm', "rb")
             # p = ImageFile.Parser()
@@ -83,17 +94,22 @@ def one_frame( sink,buffer,pad, it):
 # 		    break
 #                 p.feed(s)
 #             im = p.close()
-#             im.save(it.basename+'.png')
+#             im.save(it.base_name+'.png')
             
 
         gobject.idle_add( skip_forward, it, priority=gobject.PRIORITY_HIGH )
+        
+        # skip more as we get farther into the file.
+        # this make it look harder at the begining
+        # which is where we hope to fine a good thumb`
+        it.seek_sec = it.seek_sec*1.1
 
     return   
     
 def skip_forward(it):
 
     pos_int = it.pipeline.query_position(it.time_format, None)[0]
-    seek_ns = pos_int + (20 * 1000000000)
+    seek_ns = pos_int + (it.seek_sec * 1000000000)
     it.pipeline.seek_simple(it.time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
 
     return False
@@ -105,11 +121,9 @@ class Main:
         self.last_ocr=''
         self.words=None
         self.frame=0
-        # self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
-        self.basename=os.path.splitext(filename)[0] 
+        self.seek_sec = 10
 
-        filename
-        
+        # self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
         self.base_name=os.path.splitext(filename)[0]
         print self.base_name
 
