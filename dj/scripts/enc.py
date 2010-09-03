@@ -316,8 +316,8 @@ class enc(process):
                   cmd.extend(ffpreset)
                   cmds=[cmd]
                   cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
-                  cmds.append( ["mv", tmp_pathname, '/tmp'] )
-                  # cmds.append( ["rm", tmp_pathname] )
+                  # cmds.append( ["mv", tmp_pathname, '/tmp'] )
+                  cmds.append( ["rm", tmp_pathname] )
               if ext=='dv': 
                   out_pathname = os.path.join( 
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))

@@ -153,13 +153,14 @@ class Blip(object):
             h.send(filedata)
             bytes_sent += len(filedata)
             f = open(filename,'rb')
-            block=f.read(10000)
+            block_size=10000
+            block=f.read(block_size)
             while block:
                 h.send(block)
                 bytes_sent += len(block)
                 self.progress(bytes_sent,datalen)
-                # time.sleep(.01)
-                block=f.read(10000)
+                #    time.sleep(5)
+                block=f.read(block_size)
         if self.debug: print footdata.__repr__()
         h.send(footdata)
         bytes_sent += len(footdata)
