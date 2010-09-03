@@ -191,6 +191,7 @@ class enc(process):
         pos = 1
         for rf in rfs:
           print rf
+          # don't include clips of 0 length
           if rf.duration:
             dvfile.attrib['id']="producer%s"%rf.id
             rawpathname = os.path.join(self.episode_dir,rf.filename)
@@ -212,14 +213,21 @@ class enc(process):
             clip.attrib['id']="clip%s"%cl.id
             clip.attrib['producer']="producer%s"%cl.raw_file.id
 
-            in_frame=time2f(cl.start,self.fps) if cl.start else 0
-            out_frame=time2f(cl.end,self.fps) if cl.end else 999999
-
             # end not needed anymore 
             # (as of 2/9/10, will take out 9999 once melt version bumps)
 
-            clip.attrib['in']=str(in_frame)
-            clip.attrib['out']=str(out_frame)
+            # in_frame=time2f(cl.start,self.fps) if cl.start else 0
+            # out_frame=time2f(cl.end,self.fps) if cl.end else 999999
+            # clip.attrib['in']=str(in_frame)
+            # clip.attrib['out']=str(out_frame)
+
+            if cl.start:
+                in_frame=time2f(cl.start,self.fps)
+		clip.attrib['in']=str(in_frame)
+
+            if cl.end:
+                out_frame=time2f(cl.end,self.fps) 
+                clip.attrib['out']=str(out_frame)
 
             new=xml.etree.ElementTree.Element('entry', clip.attrib )
             playlist.insert(pos,new)
@@ -267,9 +275,10 @@ class enc(process):
             playlist.insert(pos,new)
 
             # super hack: remove a bunch of stuff that messes up flac
+            # like the title and transistion from title to cut
             tree[0].remove(title)
             x=tree[1]['playlist1']
-            print x
+            # print x
             tree[0].remove(x)
             x=tree[1]['tractor0']
             tree[0].remove(x)

@@ -190,7 +190,7 @@ class Blip(object):
             }
 
         if video_id:    # update existing
-            fields["id"] = "%s" % video_id
+            fields["id"] = video_id
 
         # add in additional metadata
         fields.update(meta)
