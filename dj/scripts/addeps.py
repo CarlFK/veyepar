@@ -58,48 +58,52 @@ class add_eps(process.process):
        """
           
       seq=0
-      locs=[]
       for row in schedule:
-          # print row
-          room = row['Room']
-          if room not in locs: 
-              print room
-              loc,created = Location.objects.get_or_create(
-                  name=room)
-              if created: 
-                  seq+=1
-                  loc.sequence=seq
-                  loc.save()
+          room = row['room']
+          loc,created = Location.objects.get_or_create(name=room)
+          if created: 
+              seq+=1
+              loc.sequence=seq
+              loc.save()
 
   
     def addeps(self, schedule, show):
       seq=0
-      locs=[]
       for row in schedule:
-          # print row
-          location = Location.objects.get(name=row['Room'])
-          name = row['Title']
-          primary = row['URL']
-          start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
-          authors=row['Author(s)']
-          minutes = row['Duration']
-          if not minutes: minutes = '60'
+          location = Location.objects.get(name=row['room'])
+          name = row['title']
+          primary = row['url']
+          start=datetime.datetime(*row['start'])
+          # start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
+          authors=row['presenters']
+          minutes = row['duration']
+          if not minutes: minutes = '50'
           # if minutes: duration = "00:%s:00" % minutes
           # else: duration = "01:00:00"
           # hours = int(int(minutes)/60)
           # minutes = int(minutes) % 60
           # duration="0%s:%s:00" % ( hours, minutes) 
           duration="00:%s:00" % ( minutes) 
-          description = row['Description']
+          description = row['description']
+          tags = row['tags']
+
+          print row
+          if name in ['Registration','Lunch']:
+              continue
+
+          if name in ["Welcome and Chairman's Address",
+                'Keynote', 'Lightning Talks','Sprints Kickoff']:
+              primary=''
+
           if self.options.test:
               print location
               print name
               print primary
               print start
               print authors
-              print row['Duration'], hours, minutes
               print duration
-              # print description
+              print description
+              print tags
               print
           else:
               episode,created = Episode.objects.get_or_create(
@@ -114,7 +118,6 @@ class add_eps(process.process):
               episode.duration=duration
               episode.description=description
               episode.state=1
-              print duration
               episode.save()
 
 
@@ -177,8 +180,9 @@ class add_eps(process.process):
     def one_show(self, show):
       # url='http://us.pycon.org/2010/conference/schedule/events.json'
       # url='http://pycon-au.org/2010/conference/schedule/events.json'
-      # j=urllib2.urlopen(url).read()
-      j=open('schedule.json').read()
+      url='http://djangocon.us/schedule/json/'
+      j=urllib2.urlopen(url).read()
+      # j=open('schedule.json').read()
       schedule = json.loads(j)
 
       self.addlocs(schedule)

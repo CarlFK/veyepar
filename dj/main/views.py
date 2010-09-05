@@ -49,26 +49,20 @@ episode:     00000000
     # append additional episodes 
 
     loc,create = Location.objects.get_or_create(name='test loc',slug='test_loc')
-    client,create = Client.objects.get_or_create(name='test client',slug='test_client', title_svg='test_pattern_1.svg')
+    client,create = Client.objects.get_or_create(name='test client',slug='test_client', blip_user='veyepar_test', title_svg='test_pattern_1.svg')
 
     show,create = Show.objects.get_or_create(name='test show',slug='test_show',client=client)
     if create:
         show.locations.add(loc)
 
-    # eps = Episode.objects.filter(show=show)
     ep_count=Episode.objects.filter(show=show).count() 
-    
-    # ep_name = "Test Episode #%s" % (ep_count)
-    # ep_slug = fnify(ep_name)
-
-    # ep = Episode.objects.create(name='test episode',slug='test_episode',show=show,location=loc, sequence=1)
-
     ep = Episode.objects.create(show=show,location=loc,
              sequence=ep_count)
 
-    ep.name = "Test Episode #%s" % (ep_count)
-    ep.slug = fnify(ep.name)
+    ep.name = "Test Episode #%s %s" % (ep_count,
+        datetime.datetime.now().ctime())
 
+    # datetime matches what run_tests.sh uses to create files.
     t=[datetime.datetime(2010,5,21,0,0)+datetime.timedelta(
          hours=ep_count,minutes=i) for i in range(8) ]
 
@@ -262,7 +256,7 @@ def play_list(request,show_id):
 
     writer = csv.writer(response)
     for ep in episodes:
-        ext='flv'
+        ext='ogv'
         pathname = os.path.join( settings.MEDIA_ROOT,client.slug,show.slug,ext,
             '%s.%s' % (ep.slug, ext) )
         writer.writerow([pathname])
@@ -453,7 +447,7 @@ def overlaping_episodes(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.raw('select e1.* from main_episode e1, main_episode e2 where e1.id != e2.id and e1.start<e2.end and e1.end>e2.start and e1.location_id=e2.location_id order by e1.location_id, e1.start')
+    episodes=Episode.objects.raw('select e1.* from main_episode e1, main_episode e2 where e1.id != e2.id and e1.start<e2.end and e1.end>e2.start and e1.location_id=e2.location_id and e1.show_id=%s and e2.show_id=%s order by e1.location_id, e1.start', [show.id,show.id])
     elist=list(episodes)
     elist=[e.__dict__ for e in episodes]
     start,end=24*60,0
@@ -465,7 +459,7 @@ def overlaping_episodes(request,show_id):
     width_min = end-start
 
     width_px=300.0
-    x=width_min/width_px ## this here to do float math
+    x=width_min/width_px +1 ## this here to do float math
     for e in elist:
         e['start_px']=int((e['start_min']-start)/x)
         e['end_px']=int((e['end_min']-start)/x)

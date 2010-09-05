@@ -59,7 +59,7 @@ python enc.py -v --client test_client --show test_show --force
 # show the user what was made (speed up, we don't have all day)
 mplayer -speed 1 -osdlevel 3 $BASE_DIR/ogv/Test_Episode_0.ogv
 
-exit
+# exit
 # post it to blip test account (password is in pw.py)
 python post.py -v --client test_client --show test_show --force \
  --blip-user veyepar_test

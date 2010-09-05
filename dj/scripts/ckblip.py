@@ -6,8 +6,12 @@
 # or 'if a format is not on blip, is it local?'
 # and maybe upload it.
 
+# and maybe delete it:
+# if the .fvl is not the same file size as the local copy on disk,
+# delete the one on blip.
 
 import os
+import xml.etree.ElementTree
 
 import blip_uploader
 from post import roles
@@ -41,7 +45,42 @@ class ckblip(process):
     print response_xml
     ep.comment += "\n%s\n" % response_xml
 
+  def delete_from_blip(self, file_id, user, password, reason):
+# http://blip.tv/file/delete/Pyohio-GettingToKnowMongoDBUsingPythonAndIronPython664.flv?reason="just cuz."
+#http://blip.tv/?cmd=delete;id=Veyepar_test-TestEpisode0760.ogv;s=file;undelete=
+    print "will delete:", file_id
+    return 
 
+    # user,password = ('veyepar_test','bdff6680')
+    fields = {
+            # "post": "1",
+            "cmd":"delete",
+            "skin": "xmlhttprequest",
+            "userlogin": user,
+            "password": password,
+            "item_type": "file",
+            "reason": reason,
+            "id": file_id
+            }
+
+    blip_cli=blip_uploader.Blip_CLI()
+    # blip_delete_url="http://blip.tv/file/delete/%s" % file_id
+    blip_delete_url="http://blip.tv/"
+    print blip_delete_url
+    response = blip_cli.PostMultipart(blip_delete_url, fields)
+ 
+    response_xml = response.read()
+    if self.options.verbose: print response_xml
+    tree = xml.etree.ElementTree.fromstring(response_xml)
+    response = tree.find('response')
+    if self.options.verbose: print "response.txt", response.text
+    notice=response.find('notice')
+    if xml.etree.ElementTree.iselement(notice):
+        print "notice.text", notice.text
+
+    return response
+
+ 
   def process_ep(self, ep):
     if self.options.verbose: print ep.id, ep.name, ep.target
 
@@ -55,24 +94,50 @@ class ckblip(process):
     """
 
     type_map = (
+             {'ext':'ogv','mime':'video/ogg'},
              {'ext':'flv','mime':'video/x-flv'},
+            # {'ext':'m4v','mime':'video/x-m4v'},
+            # {'ext':'mp3','mime':'audio/mpeg'},)
             )
-    type_map = ({'ext':'ogv','mime':'video/ogg'},
-             {'ext':'flv','mime':'video/x-flv'},
-             {'ext':'m4v','mime':'video/x-m4v'},
-             {'ext':'mp3','mime':'audio/mpeg'},)
 
     if ep.target:
+        print "http://blip.tv/file/" + ep.target
         
         # Episode in veypar has been uploaded to blip,
         # use the local blip id and fetch the blip metadata.
         blip_cli=blip_uploader.Blip_CLI()
         blip_cli.debug = self.options.verbose
-
+        
         xml_code = blip_cli.Get_VideoMeta(ep.target)
         if self.options.verbose: print xml_code
 
         blip_meta = blip_cli.Parse_VideoMeta(xml_code)
+
+        for t in type_map:
+            pathname = os.path.join(
+                    self.show_dir, t['ext'], "%s.%s"%(ep.slug,t['ext']))
+            if os.path.exists(pathname):
+                st = os.stat(pathname)
+                local_size = st.st_size
+                for content in blip_meta['contents']:
+                    if self.options.verbose: print content
+                    if content['type']==t['mime']:
+                        blip_size = int(content['fileSize'])
+                        if local_size != blip_size:
+                            file_id = os.path.basename(content['url'])
+                            user= \
+  ep.show.client.blip_user if ep.show.client.blip_user \
+  else self.options.blip_user
+                            password= pw.blip[user]
+                            ret=self.delete_from_blip(file_id,
+                                user, password, 'old version')
+                        else:
+                            if self.options.verbose: print t['ext'], "right size"
+    ret = True
+    return ret
+    """
+
+        # code left over from PyCon10 audit.
         files_on_blip = {}
         for content in blip_meta['contents']:
             files_on_blip[content['type']] = content
@@ -129,6 +194,7 @@ class ckblip(process):
 
     ret = True
     return ret
+    """
 
 
 if __name__ == '__main__':

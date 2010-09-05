@@ -93,7 +93,7 @@ class Blip(object):
     def GetMimeType(self, filename):
         return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
-    def PostMultipart(self, url, fields, files):
+    def PostMultipart(self, url, fields, files=[]):
         """@brief Send multi-part HTTP POST request
         
         @param url POST URL
@@ -184,8 +184,8 @@ class Blip(object):
         fields = {
             "post": "1",
             "skin": "xmlhttprequest",
-            "userlogin": "%s" % username,
-            "password": "%s" % password,
+            "userlogin": username,
+            "password": password,
             "item_type": "file",
             }
 
