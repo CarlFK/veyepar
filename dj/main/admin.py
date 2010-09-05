@@ -45,16 +45,17 @@ class EpisodeAdmin(admin.ModelAdmin):
     state_bumper.short_description = 'bump'
 
     list_display = (
+        'location', 
 	'sequence', 'name', 'state', 'state_bumper', 
         'locked','locked_by',
-        'show', 'location', 
+        'show', 
         'start','end','target')
-    list_display = ( 'sequence', 'name', 'state', 'state_bumper', 'duration' )
+    # list_display = ( 'sequence', 'name', 'state', 'state_bumper', 'duration' )
     ordering = ('sequence', )
     date_hierarchy = 'start'
     list_display_links = ('name',)
-    # list_editable = ('state','locked','locked_by', )
-    list_editable = ('state','duration')
+    list_editable = ('state','locked','locked_by', )
+    # list_editable = ('state','duration')
     admin_order_field = ('sequence', 'name',)
     list_filter = ('state','location','locked','locked_by')
     search_fields = ['name']

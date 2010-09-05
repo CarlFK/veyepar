@@ -378,14 +378,18 @@ def locations(request):
         },
 	context_instance=RequestContext(request) )
  
-def episodes(request, client_slug=None, show_slug=None):
-    # the selected client and show
-    # and blanks to enter a new location and episode.
+def episodes(request, client_slug=None, show_slug=None, location_slug=None):
+    # the selected client, show and episodes
+    # episode entry form
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
     # locations=show.locations.all()
     locations=show.locations.filter(default=True).order_by('sequence')
-    episodes=Episode.objects.filter(show=show).order_by('sequence')
+    if location_slug:
+        location=get_object_or_404(Location,slug=location_slug)
+        episodes=Episode.objects.filter(show=show,location=location).order_by('sequence')
+    else:
+        episodes=Episode.objects.filter(show=show).order_by('sequence')
 
     if request.user.is_authenticated():
         if request.method == 'POST':
@@ -436,6 +440,7 @@ def episodes(request, client_slug=None, show_slug=None):
     return render_to_response('show.html',
         {'client':client,'show':show,
           'locations':locations,
+          'location_slug':location_slug,
           'episodes':episodes,
           'episode_form':form,
         },
@@ -459,7 +464,7 @@ def overlaping_episodes(request,show_id):
     width_min = end-start
 
     width_px=300.0
-    x=width_min/width_px +1 ## this here to do float math
+    x=width_min/width_px +1 ## float math so that x isn't an int
     for e in elist:
         e['start_px']=int((e['start_min']-start)/x)
         e['end_px']=int((e['end_min']-start)/x)

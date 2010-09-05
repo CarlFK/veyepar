@@ -14,7 +14,7 @@ urlpatterns = patterns('main.views',
     url(r'C/(?P<client_slug>\w+)/$', client, name='client'),
     url(r'^C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$',
         episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/$', episodes),
+    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/$', episodes, name='episode_list_loc'),
     url(r'E/(?P<episode_no>\d+)/$', episode),
     url(r'E/(?P<episode_no>\d+)/claim_lock/$', claim_episode_lock),
 )

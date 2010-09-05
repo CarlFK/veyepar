@@ -13,16 +13,22 @@ table {
 
 td a {
     display: block;
-    padding: 6px;
+    padding: 4px;
+}
+
+td, th {
+    border: 0px;
+    border-left:1px solid #DDDDDD;
+    white-space: nowrap;
+}
+
+th {
+    font-weight:bold;
 }
 
 td {
     vertical-align: middle;
     padding: 0px 6px;
-}
-
-td, th {
-    border: 0px;
 }
 
 a:hover {
@@ -31,6 +37,6 @@ a:hover {
 }
 
 .shortcuts a {
-    padding: 6px;
+    padding: 4px;
 }
 

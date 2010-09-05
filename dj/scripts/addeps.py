@@ -70,8 +70,16 @@ class add_eps(process.process):
     def addeps(self, schedule, show):
       seq=0
       for row in schedule:
-          location = Location.objects.get(name=row['room'])
           name = row['title']
+          if name in ["Topics of Interest",
+                "Why Django Sucks, and How We Can Fix It",
+                "Technical Design Panel",
+                "NoSQL and Django Panel",
+                ]:
+             room = 'Plenary'
+          else:
+             room = row['room']
+          location = Location.objects.get(name=room)
           primary = row['url']
           start=datetime.datetime(*row['start'])
           # start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
@@ -92,9 +100,9 @@ class add_eps(process.process):
               continue
 
           if name in ["Welcome and Chairman's Address",
-                'Keynote', 'Lightning Talks','Sprints Kickoff']:
+                'Keynote', 'Lightning Talks', 'Sprints Kickoff']:
               primary=''
-
+          
           if self.options.test:
               print location
               print name
@@ -110,6 +118,7 @@ class add_eps(process.process):
                   show=show, primary=primary)
               if created:
                   episode.sequence=seq
+                  seq+=1
               episode.location=location 
               episode.name=name
               episode.primary=primary
