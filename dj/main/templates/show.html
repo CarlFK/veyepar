@@ -53,8 +53,9 @@
         {%if location_slug %}
          {% url episode_list client.slug show.slug %}
         {% else %}
-         {% url episode_list_loc client.slug show.slug episode.location.slug %}
-        {% endif %}">{{episode.location}}</a></td>
+         {% url episode_list client.slug show.slug episode.location.slug %}
+        {% endif %}
+         ">{{episode.location}}</a></td>
 
         <td>{{episode.start|date:"D d H:i"}} - {{episode.end|date:"H:i"}}</td>
         <td>{{episode.start|timesince:episode.end}}</td>
