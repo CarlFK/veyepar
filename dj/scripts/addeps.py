@@ -69,7 +69,15 @@ class add_eps(process.process):
   
     def addeps(self, schedule, show):
       seq=0
+
+      for i in [1, 2, 10, 23, 14, 26, 27, 31, 32, ]:
+        for row in schedule:
+          if i == row['id']: print row
+        print
+
+      return
       for row in schedule:
+
           name = row['title']
           if name in ["Topics of Interest",
                 "Why Django Sucks, and How We Can Fix It",
@@ -81,8 +89,9 @@ class add_eps(process.process):
              room = row['room']
           location = Location.objects.get(name=room)
           primary = row['url']
-          start=datetime.datetime(*row['start'])
           # start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
+          start = datetime.datetime(*row['start'])
+          start += datetime.timedelta(hours=-7,minutes=0)
           authors=row['presenters']
           minutes = row['duration']
           if not minutes: minutes = '50'
@@ -95,7 +104,7 @@ class add_eps(process.process):
           description = row['description']
           tags = row['tags']
 
-          print row
+          # print row
           if name in ['Registration','Lunch']:
               continue
 
