@@ -70,12 +70,15 @@ class add_eps(process.process):
     def addeps(self, schedule, show):
       seq=0
 
+      """
       for i in [1, 2, 10, 23, 14, 26, 27, 31, 32, ]:
         for row in schedule:
           if i == row['id']: print row
         print
 
       return
+      """
+
       for row in schedule:
 
           name = row['title']
@@ -109,7 +112,10 @@ class add_eps(process.process):
               continue
 
           if name in ["Welcome and Chairman's Address",
-                'Keynote', 'Lightning Talks', 'Sprints Kickoff']:
+                'Keynote', 
+                'Lightning Talks', 
+                'Distinguished Guest Speaker', 
+                'Sprints Kickoff']:
               primary=''
           
           if self.options.test:
@@ -124,7 +130,7 @@ class add_eps(process.process):
               print
           else:
               episode,created = Episode.objects.get_or_create(
-                  show=show, primary=primary)
+                  show=show, primary=primary, name=name)
               if created:
                   episode.sequence=seq
                   seq+=1

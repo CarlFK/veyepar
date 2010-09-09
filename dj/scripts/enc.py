@@ -144,8 +144,10 @@ class enc(process):
     # for key in ['client', 'title']:
 
     for key in text:
+        # print key
         # tollerate template where tokens have been removed
         if tree[1].has_key(key):
+            # print tree[1][key].text
             tree[1][key].text=text[key]
 
     if tree[1].has_key('presenternames'):
@@ -182,7 +184,6 @@ class enc(process):
         title=tree[1]['title']
         title.attrib['resource']=title_img
 
-
 # get the dvfile placeholder and remove it from the tree
         dvfile=tree[1]['producer0']
         tree[0].remove(dvfile)
@@ -204,14 +205,34 @@ class enc(process):
         clip=tree[1]['clip']
         playlist=tree[1]['playlist0']
         playlist.remove(clip)
+        # remvoe the start end, will add them if needed.
 
 # add in the clips
         pos = 0
         for cl in cls:
           print cl
           if cl.raw_file.duration:
+            print "duration:", cl.raw_file.duration
             clip.attrib['id']="clip%s"%cl.id
             clip.attrib['producer']="producer%s"%cl.raw_file.id
+
+            if cl.start:
+                in_frame=time2f(cl.start,self.fps)
+		clip.attrib['in']=str(in_frame)
+            else:
+                try:
+                    del( clip.attrib['in'] )
+                except KeyError:
+                    pass
+
+            if cl.end:
+                out_frame=time2f(cl.end,self.fps) 
+                clip.attrib['out']=str(out_frame)
+            else:
+                try:
+                    del( clip.attrib['out'] )
+                except KeyError:
+                    pass
 
             # end not needed anymore 
             # (as of 2/9/10, will take out 9999 once melt version bumps)
@@ -221,14 +242,7 @@ class enc(process):
             # clip.attrib['in']=str(in_frame)
             # clip.attrib['out']=str(out_frame)
 
-            if cl.start:
-                in_frame=time2f(cl.start,self.fps)
-		clip.attrib['in']=str(in_frame)
-
-            if cl.end:
-                out_frame=time2f(cl.end,self.fps) 
-                clip.attrib['out']=str(out_frame)
-
+            print clip.attrib
             new=xml.etree.ElementTree.Element('entry', clip.attrib )
             playlist.insert(pos,new)
             pos+=1
@@ -458,8 +472,9 @@ class enc(process):
         title_img=self.mktitle(template, title_base, episode)
 
 # get list of raw footage for this episode
-        rfs = Raw_File.objects.filter(
-            cut_list__episode=episode).exclude(trash=True).distinct()
+        rfs = Raw_File.objects. \
+            filter(cut_list__episode=episode).\
+            exclude(trash=True).distinct()
 
 # make a .mlt file for this episode
         mlt = self.mkmlt(title_img,episode,cls,rfs)
