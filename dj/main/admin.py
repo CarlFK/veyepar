@@ -57,7 +57,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_editable = ('state','locked','locked_by', )
     # list_editable = ('state','duration')
     admin_order_field = ('sequence', 'name',)
-    list_filter = ('state','location','locked','locked_by')
+    list_filter = ('state','location','locked','locked_by', 'show')
     search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True

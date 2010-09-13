@@ -50,7 +50,7 @@ def ckocr(it,ocrtext):
     return ret
 
 def one_frame( sink,buffer,pad, it):
-    # frames come in 2 parts: header + image
+    # gstreamer sends frames in 2 parts: header + image
     # the header is 15 bytes, save it for when the 2nd part comes in.
   
     if len(buffer) == 15:
@@ -62,6 +62,7 @@ def one_frame( sink,buffer,pad, it):
         p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], 
           stdin=subprocess.PIPE, 
           stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        # send the 2 parts to gocr:
         p.stdin.write(it.buffer)  
         ocrtext, stderrdata = p.communicate(buffer)
 

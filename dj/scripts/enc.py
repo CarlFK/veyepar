@@ -355,7 +355,7 @@ class enc(process):
                       dv_pathname = os.path.join( 
                           self.tmp_dir,"%s.dv"%(episode.slug))
                       cmds=["ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --channels 1 %s -o %s" % (dv_pathname, out_pathname)]
-                      # cmds.append( ["rm", dv_pathname] )
+                      cmds.append( ["rm", dv_pathname] )
                   else:
                       return ret
 

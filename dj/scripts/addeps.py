@@ -134,6 +134,7 @@ class add_eps(process.process):
               if created:
                   episode.sequence=seq
                   seq+=1
+                  episode.state=1
               episode.location=location 
               episode.name=name
               episode.primary=primary
@@ -141,7 +142,6 @@ class add_eps(process.process):
               episode.start=start
               episode.duration=duration
               episode.description=description
-              episode.state=1
               episode.save()
 
 

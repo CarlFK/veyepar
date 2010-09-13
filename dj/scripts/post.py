@@ -110,9 +110,11 @@ class post(process):
     # username comes from options, client, first in pw.py
     # password always comes from pw.py
    
+    # print "client blip_user", client.blip_user
     blip_user =  self.options.blip_user if self.options.blip_user \
                     else client.blip_user if client.blip_user \
                     else pw.blip.keys()[0]
+    # print "user", blip_user
     blip_pw = pw.blip[blip_user]
 
     if self.options.test:
