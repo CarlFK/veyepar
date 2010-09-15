@@ -1,6 +1,6 @@
 # Veyepar instalation notes
 
-sudo vim /etc/apt/sources.list
+sudo vi /etc/apt/sources.list
 # add these lines:
 deb http://ppa.launchpad.net/gstreamer-developers/ppa/ubuntu lucid main 
 deb-src http://ppa.launchpad.net/gstreamer-developers/ppa/ubuntu lucid main 
