@@ -9,7 +9,7 @@ deb-src http://ppa.launchpad.net/sunab/sunab2/ubuntu lucid main
 deb http://ppa.launchpad.net/j/ppa/ubuntu karmic main 
 deb-src http://ppa.launchpad.net/j/ppa/ubuntu karmic main 
 
-sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-virtualenv mercurial subversion inkscape melt ffmpeg2theora
+sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-virtualenv mercurial subversion inkscape melt ffmpeg2theora mplayer vlc
 
 virtualenv veyepar
 cd veyepar
@@ -31,6 +31,9 @@ mkdir static
 cd static
 wget -N http://0x80.org/wordlist/webster-dictionary.txt
 ln -s webster-dictionary.txt dictionary.txt
+
+cd ..
+cp pw_samp.py pw.py
 
 # either install apache or some other http server and figure out how to enable seeking in ogv, or allow file:// access to the local files:
 http://kb.mozillazine.org/Links_to_local_pages_do_not_work#Firefox_1.5.2C_SeaMonkey_1.0_and_newer  "Disabling the Security Check" 

@@ -33,7 +33,7 @@ class ckblip(process):
         fileno=str(i) if i else ''
         role=roles.get(ext,'extra')
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
-        print (fileno,role,src_pathname)
+        # print (fileno,role,src_pathname)
         files.append((fileno,role,src_pathname))
 
     src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
@@ -42,13 +42,14 @@ class ckblip(process):
             ep.target, pw.blip['user'], pw.blip['password'], files, {'title':ep.title})
 
     response_xml = response.read()
-    print response_xml
+    # print response_xml
     ep.comment += "\n%s\n" % response_xml
 
-  def delete_from_blip(self, file_id, user, password, reason):
+  def delete_from_blip(self, episode_id, file_id, user, password, reason):
 # http://blip.tv/file/delete/Pyohio-GettingToKnowMongoDBUsingPythonAndIronPython664.flv?reason="just cuz."
 #http://blip.tv/?cmd=delete;id=Veyepar_test-TestEpisode0760.ogv;s=file;undelete=
-    print "will delete:", file_id
+    print "http://blip.tv/file/" + episode_id
+    print "delete:", file_id
     return 
 
     # user,password = ('veyepar_test','bdff6680')
@@ -66,7 +67,7 @@ class ckblip(process):
     blip_cli=blip_uploader.Blip_CLI()
     # blip_delete_url="http://blip.tv/file/delete/%s" % file_id
     blip_delete_url="http://blip.tv/"
-    print blip_delete_url
+    # print blip_delete_url
     response = blip_cli.PostMultipart(blip_delete_url, fields)
  
     response_xml = response.read()
@@ -101,7 +102,6 @@ class ckblip(process):
             )
 
     if ep.target:
-        print "http://blip.tv/file/" + ep.target
         
         # Episode in veypar has been uploaded to blip,
         # use the local blip id and fetch the blip metadata.
@@ -129,9 +129,11 @@ class ckblip(process):
   ep.show.client.blip_user if ep.show.client.blip_user \
   else self.options.blip_user
                             password= pw.blip[user]
-                            ret=self.delete_from_blip(file_id,
+                            ret=self.delete_from_blip(ep.target, file_id,
                                 user, password, 'old version')
                         else:
+                            ep.state=5
+                            ep.save()
                             if self.options.verbose: print t['ext'], "right size"
     ret = True
     return ret
