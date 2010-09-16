@@ -24,9 +24,9 @@
 <tr><td><a href="{% url play_list show.id %}{{show.slug}}.m3u">play_list <span style="color: #000; text-decoration: none;">state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
 <tr><td><a href="{% url recording_sheets show.id %}{{show.slug}}.pdf">recording_sheets.pdf</a></td></tr>
 <tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td><tr>
-<tr><td><a href="/admin/main/show/{{show.id}}/">show admin</a></td></tr>
-<tr><td><a href="/admin/main/episode/?show__id__exact={{show.id}}">episodes admin</a></td></tr>
-<tr><td><a href="/admin/main/client/{{client.id}}/">client admin</a></td></tr>
+<tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>
+<tr><td><a href="{% url admin:main_episode_changelist %}?show__id__exact={{show.id}}">episodes admin</a></td></tr>
+<tr><td><a href="{% url admin:main_client_change client.id %}">client admin</a></td></tr>
 </table>
 <hr />
 

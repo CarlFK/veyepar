@@ -33,6 +33,9 @@ class Client(models.Model):
     title_svg = models.CharField(max_length=30, blank=True, null=True)
     def __unicode__(self):
         return self.name
+    @models.permalink
+    def get_absolute_url(self):
+        return ('client', [self.slug,])
     class Meta:
         ordering = ["sequence"]
 
@@ -66,6 +69,9 @@ class Show(models.Model):
         return self.client
     def __unicode__(self):
         return "%s: %s" % ( self.client_name, self.name )
+    @models.permalink
+    def get_absolute_url(self):
+        return ('episode_list', [self.client.slug,self.slug,])
     class Meta:
         ordering = ["sequence"]
 
@@ -134,6 +140,9 @@ class Episode(models.Model):
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
+    @models.permalink
+    def get_absolute_url(self):
+        return ('episode', [self.id])
 
     def _get_next_or_previous_by_FIELD(self, field, is_next, **kwargs):
         from django.utils.encoding import smart_str
@@ -178,6 +187,9 @@ class Cut_List(models.Model):
         help_text='offset from start in HH:MM:SS.SS')
     apply = models.BooleanField(default=1)
     comment = models.TextField(blank=True)
+    @models.permalink
+    def get_absolute_url(self):
+        return ('episode', [self.episode.id])
     def __unicode__(self):
         return "%s - %s" % (self.raw_file, self.episode)
     class Meta:

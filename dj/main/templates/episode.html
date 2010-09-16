@@ -22,7 +22,7 @@
 <h2>ID: {{episode.id}} Location: {{episode.location}}</h2>
 <h2>Title: {{episode.name}}</h2>
 <h2>Author(s): {{episode.authors}}</h2>
-<a href="/admin/main/episode/{{episode.id}}/">admin</a> 
+<a href="{% url admin:main_episode_change episode.id%}">admin</a> 
 <a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a> 
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a> 
 <a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a> 
@@ -91,8 +91,8 @@
       </tr>
       <tr> <td>Comments:</td> <td>{{clrfform.rf_comment}}</td> <td>{{clrfform.cl_comment}}</td> </tr>
       <tr> <td></td> 
-      <td><a href="/admin/main/raw_file/{{cl.raw_file.id}}">admin</a></td> 
-      <td><a href="/admin/main/cut_list/{{cl.id}}">admin</a></td> 
+      <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">admin</a></td> 
+      <td><a href="{% url admin:main_cut_list_change cl.id%}">admin</a></td> 
       </tr>
 
     </tbody>
