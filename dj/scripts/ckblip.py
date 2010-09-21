@@ -114,6 +114,7 @@ class ckblip(process):
         blip_meta = blip_cli.Parse_VideoMeta(xml_code)
 
         for t in type_map:
+            # for each format, construct local file name
             pathname = os.path.join(
                     self.show_dir, t['ext'], "%s.%s"%(ep.slug,t['ext']))
             if os.path.exists(pathname):
@@ -123,7 +124,15 @@ class ckblip(process):
                     if self.options.verbose: print content
                     if content['type']==t['mime']:
                         blip_size = int(content['fileSize'])
-                        if local_size != blip_size:
+                        if local_size == blip_size:
+                            # ep.state=5
+                            # ep.save()
+                            if self.options.verbose: print t['ext'], "right size"
+                        else:
+                            # file size mismatch
+                            # probably blip file is out of date
+                            # and needs to be deleted.
+                            # too bad I can't figure ou the blip api for this.
                             file_id = os.path.basename(content['url'])
                             user= \
   ep.show.client.blip_user if ep.show.client.blip_user \
@@ -131,10 +140,18 @@ class ckblip(process):
                             password= pw.blip[user]
                             ret=self.delete_from_blip(ep.target, file_id,
                                 user, password, 'old version')
-                        else:
-                            ep.state=5
-                            ep.save()
-                            if self.options.verbose: print t['ext'], "right size"
+            else:
+                # Something on blip, 
+                # no local copy of this format
+                # (this format may be on blip.)
+                print "no %s version on local drive of: %s - %s" % \
+                    (t['ext'], ep.id, ep.name)
+    else:
+        # episode not on blip, 
+        # This code doens't post new episodes,
+        # use post.py to set title, thumb, etc.
+        print "Not on blip: %s - %s" % (ep.id, ep.name)
+
     ret = True
     return ret
     """
@@ -188,9 +205,6 @@ class ckblip(process):
                print "self.post(%s,%s)"%(ep,file_types_to_upload)
             else:
                self.post(ep,file_types_to_upload)
-    else:
-        # episode not on blip, use post.py to set title, thumb, etc.
-        print "post %s" % ep.id
 
     # ep.save()
 
