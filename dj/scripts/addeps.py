@@ -4,13 +4,14 @@
 
 """
 fields:
-Room Name 
-Start - datetime 
+ID - uniquie ID of item (used to update item if details change)
+Title - of talk
+Room Name - "room1" if there is only one room.
+Start - datetime in some parsable format 
 Duration in minutes, or HH:MM:SS 
-Title
 Presenters - comma seperated list of people's names.
-Description - used as the description of the video
-ID of item in source database
+Description - used as the description of the video (paragraphs are fine)
+ in source database - should be uniquie 
 URL of talk page
 tags - comma seperated list 
 """
