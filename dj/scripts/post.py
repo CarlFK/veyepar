@@ -139,6 +139,7 @@ class post(process):
         response_xml = response_obj.read()
         if self.options.verbose: print response_xml
         ep.comment += "\n%s\n" % response_xml
+        ep.save()
 
         """<?xml version="1.0" encoding="UTF-8"?>
 <otterResponses>
