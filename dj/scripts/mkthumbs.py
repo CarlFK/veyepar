@@ -10,6 +10,7 @@ then check less and less as we get farther into the file, and even less if we fi
 """
 
 import  os
+# import pkg_resources
 
 import gsocr
 # import ocrdv
@@ -17,6 +18,13 @@ import gsocr
 from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
+
+
+# dict_loc =  pkg_resources.resource_filename('mkthumbs', 'static/dictionary.txt')
+# dict_loc =  pkg_resources.resource_filename(__file__, 'static/dictionary.txt')
+dict_loc = 'static/dictionary.txt'
+# make a list, exclude words 1 or 2 chars.
+dictionary = [w.upper() for w in open(dict_loc).read().split() if len(w)>3]
 
 class add_dv(process):
 
@@ -29,6 +37,7 @@ class add_dv(process):
 
         if not os.path.exists(png_pathname):
             p=gsocr.Main(dv_pathname)
+            p.dictionaries=[dictionary]
             gsocr.gtk.main()
             if p.words:
                 dv.ocrtext=p.words

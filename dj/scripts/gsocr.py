@@ -5,7 +5,9 @@
 
 """
 Start with every 5 seconds until we find more than 5 words
-then check less and less as we get farther into the file, and even less if we find more workds.
+then check less and less as we get farther into the file, 
+and even less if we find more words.
+(opposite of: spent more time if we can't find anything)
 """
 
 import subprocess
@@ -27,27 +29,11 @@ import gtk
  
 import pkg_resources
 
-dict_loc =  pkg_resources.resource_filename('gsocr', 'static/dictionary.txt')
-dictionary = [w.upper() for w in open(dict_loc).read().split() if len(w)>3]
-
-def ckocr(it,ocrtext):
-    ret = False
-    if it.last_ocr != ocrtext:
-        it.last_ocr=ocrtext
-        words = [w for w in ocrtext.split() if w.upper() in dictionary]
-        print ocrtext.__repr__()[:70]
-        # it.words = words found so far
-        # None = no words have been found, so anything is better.
-        # sec/100 = few words near the front of the file are better than
-        #  more words later
-
-        if it.words is None or \
-                len(it.words) < (len(words)-it.seek_sec/100):
-            it.words = words
-            print words
-            ret = True
-
-    return ret
+"""
+Huh, I wonder why one_frame and skip_forward are functions 
+and not methods of class Main: ?
+My guess is needing the object ref at the end of the parameters.
+"""
 
 def one_frame( sink,buffer,pad, it):
     # gstreamer sends frames in 2 parts: header + image
@@ -58,15 +44,18 @@ def one_frame( sink,buffer,pad, it):
 
     else:
         # 2nd part has arrived in buffer, the first is in it.buffer.
-
-        p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], 
+        
+        # p = subprocess.Popen(['gocr', '-', '-d', '0', '-a', '95'], 
+        p = subprocess.Popen(it.gocr_cmd,
           stdin=subprocess.PIPE, 
           stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         # send the 2 parts to gocr:
+        # 1. write 15 byte header
         p.stdin.write(it.buffer)  
+        # 2. write rest of image and get return values
         ocrtext, stderrdata = p.communicate(buffer)
 
-        if ckocr(it,ocrtext):
+        if it.ckocr(ocrtext):
             it.frame = it.pipeline.query_position(it.time_format, None)[0]
        
             # write image out to a pnm file (not sure why, nothing else uses it)
@@ -123,6 +112,9 @@ class Main:
         self.words=None
         self.frame=0
         self.seek_sec = 10
+        self.gocr_cmd = ['gocr', '-', '-d', '0', '-a', '95'] 
+
+        # gocr -s 40 -C A-Z ~/shot0001.png INVALID 
 
         # self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
         self.base_name=os.path.splitext(filename)[0]
@@ -164,8 +156,10 @@ class Main:
 
         self.time_format = gst.Format(gst.FORMAT_TIME)
 
+        # print the pipeline 
         elements=list(pipeline.elements())
         elements.reverse()
+        print "pipeline elements:",
         for e in elements:
             print e.get_factory().get_name(),
         print
@@ -196,6 +190,33 @@ class Main:
             print self.frame, self.words
             self.pipeline.set_state(gst.STATE_NULL)  
             gtk.main_quit()
+
+    def ckocr(self,ocrtext):
+      """
+      check the ocr text
+      see if it has changed from the last call
+      see if there are real words in it
+      """
+      ret = False
+      if self.last_ocr != ocrtext:
+        self.last_ocr=ocrtext
+        # TODO: support a list of dictionaries
+        # like jargon, sorce code syntax, presenters notes.
+        dictionary=self.dictionaries[0]
+        words = [w for w in ocrtext.split() if w.upper() in dictionary]
+        print ocrtext.__repr__()[:70]
+        # self.words = words found so far
+        # None = no words have been found, so anything is better.
+        # sec/100 = few words near the front of the file are better than
+        #  more words later
+
+        if self.words is None or \
+                len(self.words) < (len(words)-self.seek_sec/100):
+            self.words = words
+            print words
+            ret = True
+
+      return ret
 
 def parse_args():
     parser = optparse.OptionParser()

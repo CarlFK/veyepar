@@ -12,6 +12,7 @@ if [ ! -e ../veyepar.db ]; then
 fi
 # make sample data: location, client, show, episode
 HOUR=$(python tests.py --client test_client --show test_show) 
+# HOUR="00"
 # make dirs
 python mkdirs.py --client test_client --show test_show
 
@@ -43,10 +44,8 @@ python tsdv.py --client test_client --show test_show
 cp -a bling $BASE_DIR
 
 # make thumbnails and preview ogv
-if [ ! -e $DV_DIR/$HOUR:00:00.png ]; then
-  python mkthumbs.py --client test_client --show test_show
-  python dvogg.py --client test_client --show test_show
-fi
+python mkthumbs.py --client test_client --show test_show
+python dvogg.py --client test_client --show test_show
 
 # make cut list
 # this should associate clips2,3,4 with the test episode
@@ -54,7 +53,8 @@ python assocdv.py --client test_client --show test_show
 
 # encode the test episode 
 # create a title, use clips 2,3,4 as source, maybe a credits trailer 
-python enc.py -v --client test_client --show test_show --force
+python enc.py -v --client test_client --show test_show --force 
+#  --upload-formats "flv ogv"
 
 # show the user what was made (speed up, we don't have all day)
 mplayer -speed 1 -osdlevel 3 $BASE_DIR/ogv/Test_Episode_0.ogv

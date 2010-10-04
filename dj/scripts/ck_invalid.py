@@ -1,0 +1,49 @@
+#!/usr/bin/python
+
+# ck_invalid.py
+# looks for a big "INVALID" video 
+# which is what melt does when things are broken
+
+# todo: look for silence too.  
+# not sure what that algorithem will look like, 
+# so this can wait till I have a problem
+
+import os
+import gslevels, gsocr
+
+from process import process
+
+class ckbroke(process):
+
+    ready_state = 3
+
+    def process_ep(self, ep):
+        exts = self.options.upload_formats.split()
+        for ext in exts:
+            src_pathname = os.path.join( self.show_dir, ext, 
+                "%s.%s"%(ep.slug,ext))
+
+            p=gsocr.Main(src_pathname)
+            # gocr -s 40 -C A-Z ~/shot0001.png INVALID 
+            p.gocr_cmd = ['gocr', '-', '-s', '40', '-C', 'A-Z']
+            dictionary = ["INVALID"]
+            p.dictionaries=[dictionary]
+            # p.frame=30*5 # start 5 seconds into it (past the title)
+            # p.seek_sec = 10
+            
+            if self.options.verbose: print "checking ", ext
+
+            gsocr.gtk.main()
+            print p.words
+            if p.words: ## ["INVALID"] is kinda the only thing it can be
+                print ep.id, ep.name
+                print p.words
+        
+            # ep.comment = "\n".join([x,levs.__str__(), ep.comment])
+
+        return False ## don't bump state
+
+if __name__ == '__main__':
+    p=ckbroke()
+    p.main()
+

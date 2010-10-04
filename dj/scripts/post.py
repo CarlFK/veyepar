@@ -137,6 +137,13 @@ class post(process):
         response_obj = blip_cli.Upload(
             video_id, blip_user, blip_pw, files, meta, thumb)
         response_xml = response_obj.read()
+
+        if 'Guru Meditation' in response_xml:
+            # buggy xml, prolly going to crash, 
+            # so blurt whatever might help.
+            # xml bugged Sep 22 2010: http://support.blip.tv/requests/17356
+            self.options.verbose=True
+
         if self.options.verbose: print response_xml
         ep.comment += "\n%s\n" % response_xml
 
@@ -158,7 +165,7 @@ Your file called Test Episode #0 has been successfully posted.
 
 </otterResponses>
 
-'\n<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"\n "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html>\n  <head>\n    <title>503 Service Unavailable</title>\n  </head>\n  <body>\n    <h1>Error 503 Service Unavailable</h1>\n    <p>Service Unavailable</p>\n    <h3>Guru Meditation:</h3>\n    <p>XID: 1112821342</p>\n    <hr>\n    <p>Varnish cache server</p>\n  </body>\n</html>\n\n'
+'<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"\n "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html>\n  <head>\n    <title>503 Service Unavailable</title>\n  </head>\n  <body>\n    <h1>Error 503 Service Unavailable</h1>\n    <p>Service Unavailable</p>\n    <h3>Guru Meditation:</h3>\n    <p>XID: 1112821342</p>\n    <hr>\n    <p>Varnish cache server</p>\n  </body>\n</html>\n'
 
 """
 # (02:37:51 PM) Juhaz: CarlFK, no. tree is the root element, it can't find itself, only children.
