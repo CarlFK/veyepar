@@ -6,10 +6,11 @@ if [ -e ../../bin/activate ]; then
  . ../../bin/activate
 fi
 
-# rm ../veyepar.db
+rm ../veyepar.db
 if [ ! -e ../veyepar.db ]; then
   ../manage.py syncdb --noinput
 fi
+
 # make sample data: location, client, show, episode
 HOUR=$(python tests.py --client test_client --show test_show) 
 # HOUR="00"
@@ -56,13 +57,17 @@ python assocdv.py --client test_client --show test_show
 python enc.py -v --client test_client --show test_show --force 
 #  --upload-formats "flv ogv"
 
+# check for encoding errors
+python ck_invalid.py -v --client test_client --show test_show --push
+
 # show the user what was made (speed up, we don't have all day)
 mplayer -speed 1 -osdlevel 3 $BASE_DIR/ogv/Test_Episode_0.ogv
 
 # exit
 # post it to blip test account (password is in pw.py)
-python post.py -v --client test_client --show test_show --force \
+python post.py -v --client test_client --show test_show \
  --blip-user veyepar_test
+# --force \
 # --hidden=1
 
 # tell the world (test account)

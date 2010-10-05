@@ -71,8 +71,8 @@ class Cut_ListAdmin(admin.ModelAdmin):
 admin.site.register(Cut_List, Cut_ListAdmin)
 
 class StateAdmin(admin.ModelAdmin):
-    list_display = ('slug', 'description',)
-    admin_order_field = ('slug', )
+    list_display = ('sequence','slug', 'description',)
+    admin_order_field = ('sequence', )
 admin.site.register(State, StateAdmin)
 
 class LogAdmin(admin.ModelAdmin):

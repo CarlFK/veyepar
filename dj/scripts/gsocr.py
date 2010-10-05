@@ -56,19 +56,28 @@ def one_frame( sink,buffer,pad, it):
         ocrtext, stderrdata = p.communicate(buffer)
 
         if it.ckocr(ocrtext):
+            # this frame is better that previous better.    
+            
+            # save a pointer to the frame  
             it.frame = it.pipeline.query_position(it.time_format, None)[0]
        
-            # write image out to a pnm file (not sure why, nothing else uses it)
-            # f=open(it.imgname,'wb')
-            f=open(it.base_name+'.pnm','wb')
-            f.write(it.buffer)  
-            f.write(buffer)
-            f.close()
- 
-            subprocess.Popen(
-                ['convert', it.base_name+'.pnm', it.base_name+'.png'])
-
+            # write image out to a pnm file
+            # f=open(it.base_name+'.pnm','wb')
+            # f.write(it.buffer)  
+            # f.write(buffer)
+            # f.close()
+            # subprocess.Popen(
+            #     ['convert', it.base_name+'.pnm', it.base_name+'.png'])
+       
             # convert it to a png (for firefox and uploading as thumb)
+            p = subprocess.Popen(
+                ['convert', '-', it.base_name+'.png'],
+                stdin=subprocess.PIPE, 
+                stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            p.stdin.write(it.buffer)  
+            sout, serr = p.communicate(buffer)
+            if it.debug: print sout, serr
+
             # buffin = StringIO()
             # buffin.write(it.buffer)
             # buffin.write(buffer)
@@ -108,6 +117,7 @@ class Main:
 
     def __init__(self, filename):
 
+        self.debug=False
         self.last_ocr=''
         self.words=None
         self.frame=0
@@ -118,7 +128,7 @@ class Main:
 
         # self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
         self.base_name=os.path.splitext(filename)[0]
-        print self.base_name
+        if self.debug: print self.base_name
 
         pipeline = gst.Pipeline("mypipeline")
         self.pipeline=pipeline
@@ -156,13 +166,14 @@ class Main:
 
         self.time_format = gst.Format(gst.FORMAT_TIME)
 
-        # print the pipeline 
-        elements=list(pipeline.elements())
-        elements.reverse()
-        print "pipeline elements:",
-        for e in elements:
-            print e.get_factory().get_name(),
-        print
+        if self.debug: 
+            # print the pipeline 
+            elements=list(pipeline.elements())
+            elements.reverse()
+            print "pipeline elements:",
+            for e in elements:
+                print e.get_factory().get_name(),
+            print
 
         bus = pipeline.get_bus()
         bus.add_signal_watch()
@@ -171,8 +182,8 @@ class Main:
         pipeline.set_state(gst.STATE_PLAYING)
 
     def OnDynamicPad(self, dbin, pad, islast):
-        print "OnDynamicPad Called!"
-        print pad.get_caps()[0].get_name()
+        # print "OnDynamicPad Called!"
+        # print pad.get_caps()[0].get_name()
         if pad.get_caps()[0].get_name().startswith('video'):
             pad.link(self.ffmpegcolorspace.get_pad("sink"))
 
@@ -187,7 +198,7 @@ class Main:
             self.pipeline.set_state(gst.STATE_NULL)  
             gtk.main_quit()
         if t == gst.MESSAGE_EOS:
-            print self.frame, self.words
+            if self.debug: print self.frame, self.words
             self.pipeline.set_state(gst.STATE_NULL)  
             gtk.main_quit()
 
@@ -204,7 +215,7 @@ class Main:
         # like jargon, sorce code syntax, presenters notes.
         dictionary=self.dictionaries[0]
         words = [w for w in ocrtext.split() if w.upper() in dictionary]
-        print ocrtext.__repr__()[:70]
+        if self.debug: print ocrtext.__repr__()[:70]
         # self.words = words found so far
         # None = no words have been found, so anything is better.
         # sec/100 = few words near the front of the file are better than
@@ -213,7 +224,7 @@ class Main:
         if self.words is None or \
                 len(self.words) < (len(words)-self.seek_sec/100):
             self.words = words
-            print words
+            if self.debug: print words
             ret = True
 
       return ret
@@ -228,4 +239,5 @@ if __name__=='__main__':
     gobject.threads_init()
     if not args: args=['foo.dv']
     p=Main(args[0])
+    p.debug=True
     gtk.main()

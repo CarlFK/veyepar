@@ -38,10 +38,21 @@ class ckbroke(process):
             if p.words: ## ["INVALID"] is kinda the only thing it can be
                 print ep.id, ep.name
                 print p.words
-        
-            # ep.comment = "\n".join([x,levs.__str__(), ep.comment])
+                ep.name = "INVALID " + ep.name
+                ep.state = -1
+                ep.save()
+                ret=False
+            else:
+                # return True to bump state
+                # assuming we are not --force-ing the check 
+                ret=self.options.push
 
-        return False ## don't bump state
+        return ret
+
+    def add_more_options(self, parser):
+        parser.add_option('--push', 
+            help="Push episode past review step if it passes check.")
+
 
 if __name__ == '__main__':
     p=ckbroke()
