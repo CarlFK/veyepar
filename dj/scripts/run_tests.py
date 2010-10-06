@@ -6,10 +6,31 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
 from django.conf import settings
 
+from datetime import datetime
 
 class Run_Tests(object):
 
- def mk_test_user(self):
+ def run_cmd(self,cmd, get_out=False):
+        # print cmd
+        print ' '.join(cmd)
+        if get_out:
+          p = subprocess.Popen(cmd,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+          sout, serr = p.communicate()
+          ret = dict( sout=sout, serr=serr, returncode=p.returncode)
+        else:
+          p = subprocess.Popen(cmd)
+          p.wait()
+          ret = dict( returncode=p.returncode)
+        # p.stdin.write(it.buffer)
+        # 2. write rest of image and get return values
+        print ret
+        if ret['returncode']: raise
+        return ret
+
+
+ def make_test_user(self):
   from django.contrib.auth.models import User
   users=User.objects.all()
   if not users:
@@ -17,6 +38,7 @@ class Run_Tests(object):
     user.is_superuser=True
     user.is_staff=True
     user.save()
+    print user
 
   return
 
@@ -35,12 +57,39 @@ class Run_Tests(object):
   self.show_dir = p.show_dir
   return
 
+ def make_source_dvs(self):
+   """ 
+ ` make a set of .dv files
+   similar to what dvswitch creates (dir/filename date/time.dv)
+   """
+   # get melt version to stick into video
+   melt_outs = self.run_cmd(['melt', '--version'], True )
+   melt_ver = melt_outs['serr'].split('\n')[0]
+   print melt_ver
 
-def f():
- # MLT_VER=$(melt --version 2>&1 | grep MLT)
- BASE_DIR='~/Videos/veyepar/test_client/test_show '
+   dv_dir = self.show_dir + '/dv/test_loc/2010-05-21'
+   if not os.path.exists(dv_dir): os.makedirs(dv_dir)
+
+   # for i,l in enumerate([180,180,30,180,30]):
+   
+   start,length = 0,0
+   for i,l in enumerate(
+         [('180','00:00'),
+          ('180','01:58'),
+          ('30','03:00'),
+          ('180','04:58'),
+          ('30','06:00'),]):
+
+       text = ["test %s" % i, melt_ver, datetime.now().ctime()]
+       tf = open('source.txt','wa')
+       tf.write('\n'.join(text))
+       tf.close()
+       
+       cmd = "melt -profile dv_ntsc source.txt out=%s -consumer avformat:%s/00:%s.dv pix_fmt=yuv411p" % (l[0],dv_dir,l[1])
+       self.run_cmd(cmd.split())
+
+ 
  """
- DV_DIR=$BASE_DIR/dv/test_loc/2010-05-21
  mkdir -p $DV_DIR
  if [ ! -e $DIR/$HOUR:00:00.dv ]; then
   # put make some dv files in the source dir
@@ -97,5 +146,8 @@ def f():
 
 if __name__=='__main__':
     t=Run_Tests() 
+    t.make_test_user()
+    t.setup_test_data()
     t.make_dirs()
+    t.make_source_dvs()
 
