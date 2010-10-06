@@ -10,7 +10,6 @@ import datetime,time
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
 from django.conf import settings
-# import settings
 
 import django
 from main.models import Client, Show, Location, Episode, State, Log
@@ -60,7 +59,7 @@ class process(object):
     what_where = "%s@%s" % (self.__class__.__name__, hostname)
     episode.locked = datetime.datetime.now()
     episode.locked_by = what_where
-    state,create = State.objects.get_or_create(id=1)
+    state = State.objects.get(id=episode.state)
     self.start=datetime.datetime.now()
     self.log=Log(episode=episode,
         state=state,

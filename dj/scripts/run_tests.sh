@@ -6,7 +6,7 @@ if [ -e ../../bin/activate ]; then
  . ../../bin/activate
 fi
 
-rm ../veyepar.db
+# rm ../veyepar.db
 if [ ! -e ../veyepar.db ]; then
   ../manage.py syncdb --noinput
 fi
