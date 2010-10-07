@@ -47,6 +47,7 @@ class Run_Tests(object):
   from main.views import make_test_data, del_test_data
   del_test_data()
   ep_count=make_test_data()
+
   return
 
  def make_dirs(self):
@@ -55,6 +56,7 @@ class Run_Tests(object):
   p=mkdirs.mkdirs()
   p.main()
   self.show_dir = p.show_dir
+
   return
 
  def make_source_dvs(self):
@@ -70,9 +72,9 @@ class Run_Tests(object):
    dv_dir = self.show_dir + '/dv/test_loc/2010-05-21'
    if not os.path.exists(dv_dir): os.makedirs(dv_dir)
 
-   # for i,l in enumerate([180,180,30,180,30]):
+   # MELT_PARMS="-attach lines width=80 num=1 -attach lines width=2 num=10"
+   text_file="source.txt"
    
-   start,length = 0,0
    for i,l in enumerate(
          [('180','00:00'),
           ('180','01:58'),
@@ -81,73 +83,113 @@ class Run_Tests(object):
           ('30','06:00'),]):
 
        text = ["test %s" % i, melt_ver, datetime.now().ctime()]
-       tf = open('source.txt','wa')
+       tf = open(text_file,'wa')
        tf.write('\n'.join(text))
        tf.close()
        
-       cmd = "melt -profile dv_ntsc source.txt out=%s -consumer avformat:%s/00:%s.dv pix_fmt=yuv411p" % (l[0],dv_dir,l[1])
+       cmd = "melt -profile dv_ntsc %s out=%s -consumer avformat:%s/00:%s.dv pix_fmt=yuv411p" % (text_file,l[0],dv_dir,l[1])
        self.run_cmd(cmd.split())
 
+   self.run_cmd(['rm',text_file])
+   cmd = ['cp', '-a', 'bling', self.show_dir ]
+   self.run_cmd(cmd)
+
+   return
  
- """
- mkdir -p $DV_DIR
- if [ ! -e $DIR/$HOUR:00:00.dv ]; then
-  # put make some dv files in the source dir
-  # mkdir $DV_DIR
-  for i in {1..5} ; do 
-   echo clip $i >t$i.txt; 
-   date >> t$i.txt  
-   echo $MLT_VER>>t$i.txt
+ def add_dv(self):
+  # add the dv files to the db
+  import adddv
+  p=adddv.add_dv()
+  p.main()
 
- MELT_PARMS="-attach lines width=80 num=1 -attach lines width=2 num=10"
- MELT_PARMS=""
- melt -profile dv_ntsc t1.txt $MELT_PARMS out=180 -consumer avformat:$DV_DIR/$HOUR:00:00.dv pix_fmt=yuv411p
- melt -profile dv_ntsc t2.txt $MELT_PARMS out=180 -consumer avformat:$DV_DIR/$HOUR:01:58.dv pix_fmt=yuv411p
- melt -profile dv_ntsc t3.txt $MELT_PARMS out=30 -consumer avformat:$DV_DIR/$HOUR:03:00.dv pix_fmt=yuv411p
- melt -profile dv_ntsc t4.txt $MELT_PARMS out=180 -consumer avformat:$DV_DIR/$HOUR:04:58.dv pix_fmt=yuv411p
- melt -profile dv_ntsc t5.txt $MELT_PARMS out=30 -consumer avformat:$DV_DIR/$HOUR:06:00.dv pix_fmt=yuv411p
- rm t?.txt
- 
- # add the dv files to the db
- python adddv.py --client test_client --show test_show
- python tsdv.py --client test_client --show test_show
- cp -a bling $BASE_DIR
+  import tsdv
+  p=tsdv.add_dv()
+  p.main()
 
- # make thumbnails and preview ogv
- python mkthumbs.py --client test_client --show test_show
- python dvogg.py --client test_client --show test_show
- 
- # make cut list
- # this should associate clips2,3,4 with the test episode
- python assocdv.py --client test_client --show test_show
+  return
 
- # encode the test episode 
- # create a title, use clips 2,3,4 as source, maybe a credits trailer 
- python enc.py -v --client test_client --show test_show --force 
- #  --upload-formats "flv ogv"
 
- # check for encoding errors
- python ck_invalid.py -v --client test_client --show test_show --push
+ def make_thumbs(self):
+  # make thumbnails and preview ogv
+  import mkthumbs
+  p=mkthumbs.add_dv()
+  p.main()
 
-# show the user what was made (speed up, we don't have all day)
- mplayer -speed 1 -osdlevel 3 $BASE_DIR/ogv/Test_Episode_0.ogv
+  import dvogg
+  p=dvogg.mkpreview()
+  p.main()
 
-# exit
-# post it to blip test account (password is in pw.py)
+  return
+
+
+ def make_cut_list(self):
+  # make cut list
+  # this should associate clips2,3,4 with the test episode
+  import assocdv
+  p=assocdv.ass_dv()
+  p.main()
+  return
+
+
+ def encode(self):
+  # encode the test episode 
+  # create a title, use clips 2,3,4 as source, maybe a credits trailer 
+  # python enc.py -v --client test_client --show test_show --force 
+  #  --upload-formats "flv ogv"
+  import enc
+  p=enc.enc()
+  p.main()
+  return
+
+ def ck_errors(self):
+  # check for encoding errors
+  # python ck_invalid.py -v --client test_client --show test_show --push
+  import ck_invalid
+  p=ck_invalid.ckbroke()
+  p.main()
+  return
+
+ def play_vid(self):
+  # show the user what was made (speed up, we don't have all day)
+  cmd = \
+   "mplayer -speed 1 -osdlevel 3 %s/ogv/Test_Episode_0.ogv" % (self.show_dir)
+  self.run_cmd(cmd.split())
+
+ def post(self):
+  # post it to blip test account (password is in pw.py)
+  """
  python post.py -v --client test_client --show test_show \
  --blip-user veyepar_test
 # --force \
 # --hidden=1
+  """
+  import post
+  p=post.post()
+  p.main()
+  return
 
-# tell the world (test account)
- python tweet.py --client test_client --show test_show --force --test
+ def tweet(self):
+  # tell the world (test account)
+  import tweet
+  p=tweet.tweet()
+  p.main()
+  return
 
- """
 
 if __name__=='__main__':
     t=Run_Tests() 
+
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs()
     t.make_source_dvs()
+    t.add_dv()
+    t.make_thumbs()
+    t.make_cut_list()
+    t.encode()
+    t.ck_errors()
+    t.play_vid()
+    t.post()
+    t.tweet()
+
 

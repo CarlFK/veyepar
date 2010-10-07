@@ -56,8 +56,11 @@ episode:     00000000
         show.locations.add(loc)
 
     ep_count=Episode.objects.filter(show=show).count() 
-    ep = Episode.objects.create(show=show,location=loc,
-             sequence=ep_count)
+    ep = Episode.objects.create(
+        show=show,
+        location=loc,
+        state=1,
+        sequence=ep_count)
 
     ep.name = "Test Episode #%s %s" % (ep_count,
         datetime.datetime.now().ctime())
