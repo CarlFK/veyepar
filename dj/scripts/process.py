@@ -34,6 +34,8 @@ class process(object):
       state=ready_state+1
   """
 
+  extra_options={} 
+
   ready_state=None
   
 # defaults to ntsc stuff
@@ -208,6 +210,14 @@ class process(object):
   def add_more_option_defaults(self, parser):
     pass
  
+  def set_options(self,*bar,**extra_options):
+    # hook for test runner
+    self.extra_options=extra_options
+
+  def get_options(self):
+    for k,v in self.extra_options.iteritems():
+      self.options.ensure_value(k,v)
+
   def parse_args(self):
     parser = optparse.OptionParser()
 
@@ -270,6 +280,7 @@ class process(object):
     self.add_more_options(parser)
 
     self.options, self.args = parser.parse_args()
+    self.get_options()
     
     if self.options.verbose:
         print self.options, self.args
@@ -282,6 +293,8 @@ class process(object):
 
     return 
 
+    
+ 
   def main(self):
     self.parse_args()
 

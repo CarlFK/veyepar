@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
+from datetime import datetime
+
 # copied from process.py
 import os, sys, subprocess
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
 from django.conf import settings
 
-from datetime import datetime
+from main.models import Show, Episode
 
 class Run_Tests(object):
 
@@ -55,7 +57,10 @@ class Run_Tests(object):
   import mkdirs
   p=mkdirs.mkdirs()
   p.main()
+ 
+  # hack to save some of these values for other tests
   self.show_dir = p.show_dir
+  self.show=Show.objects.get(slug=p.options.show)
 
   return
 
@@ -138,6 +143,7 @@ class Run_Tests(object):
   #  --upload-formats "flv ogv"
   import enc
   p=enc.enc()
+  p.set_options(force=True, verbose=True, rm_temp=False)
   p.main()
   return
 
@@ -151,8 +157,14 @@ class Run_Tests(object):
 
  def play_vid(self):
   # show the user what was made (speed up, we don't have all day)
-  cmd = \
-   "mplayer -speed 1 -osdlevel 3 %s/ogv/Test_Episode_0.ogv" % (self.show_dir)
+  episodes=Episode.objects.filter(show=self.options.show,
+    state=3).order_by('sequence')
+  for ep in episodes:
+    for ext in self.options.upload_formats:
+      pathname = os.path.join( self.show_dir,ext, '%s.%s' % (ep.slug, ext) )
+      if self.options.verbose: print pathname
+      cmd = \
+        "mplayer -speed 1 -osdlevel 3 %s"  % (pathname)
   self.run_cmd(cmd.split())
 
  def post(self):
@@ -178,7 +190,9 @@ class Run_Tests(object):
 
 if __name__=='__main__':
     t=Run_Tests() 
-
+    t.make_dirs()
+    t.play_vid()
+    """
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs()
@@ -191,5 +205,6 @@ if __name__=='__main__':
     t.play_vid()
     t.post()
     t.tweet()
+    """
 
 

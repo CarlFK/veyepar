@@ -340,7 +340,8 @@ class enc(process):
                   cmds=[cmd]
                   cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
                   # cmds.append( ["mv", tmp_pathname, '/tmp'] )
-                  cmds.append( ["rm", tmp_pathname] )
+                  if self.options.rm_temp:
+                      cmds.append( ["rm", tmp_pathname] )
               if ext=='dv': 
                   out_pathname = os.path.join( 
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
@@ -355,7 +356,8 @@ class enc(process):
                       dv_pathname = os.path.join( 
                           self.tmp_dir,"%s.dv"%(episode.slug))
                       cmds=["ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --channels 1 %s -o %s" % (dv_pathname, out_pathname)]
-                      cmds.append( ["rm", dv_pathname] )
+                      if self.options.rm_temp:
+                          cmds.append( ["rm", dv_pathname] )
                   else:
                       return ret
 
@@ -495,8 +497,10 @@ class enc(process):
 
 
   def add_more_options(self, parser):
-        parser.add_option('--enc_script', 
+        parser.add_option('--enc-script', 
           help='encode shell script' )
+        parser.add_option('--rm-temp', 
+          help='remove large temp files' )
 
 if __name__ == '__main__':
     p=enc()
