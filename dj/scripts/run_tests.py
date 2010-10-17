@@ -49,7 +49,6 @@ class Run_Tests(object):
   from main.views import make_test_data, del_test_data
   del_test_data()
   ep_count=make_test_data()
-
   return
 
  def make_dirs(self):
@@ -57,11 +56,12 @@ class Run_Tests(object):
   import mkdirs
   p=mkdirs.mkdirs()
   p.main()
- 
+
   # hack to save some of these values for other tests
+  # import process
+  # p=process.process()
   self.show_dir = p.show_dir
   self.show=Show.objects.get(slug=p.options.show)
-
   return
 
  def make_source_dvs(self):
@@ -87,12 +87,24 @@ class Run_Tests(object):
           ('180','04:58'),
           ('30','06:00'),]):
 
+       # make a text file to use as encoder input
        text = ["test %s" % i, melt_ver, datetime.now().ctime()]
        tf = open(text_file,'wa')
        tf.write('\n'.join(text))
        tf.close()
        
-       cmd = "melt -profile dv_ntsc %s out=%s -consumer avformat:%s/00:%s.dv pix_fmt=yuv411p" % (text_file,l[0],dv_dir,l[1])
+       # encode the text file into .dv
+       # this takes the place of using dvswitch to record an event.
+       parms={'input_file':text_file, 
+           'output_file':'%s/00:%s.dv' % (dv_dir,l[1]),
+           'frames':l[0]}
+       print parms
+       cmd = "melt -profile dv_ntsc %(input_file)s \
+out=%(frames)s \
+meta.attr.titles=1 \
+meta.attr.titles.markup=#timecode# \
+-attach data_show dynamic=1 \
+-consumer avformat:%(output_file)s pix_fmt=yuv411p" % parms
        self.run_cmd(cmd.split())
 
    self.run_cmd(['rm',text_file])
@@ -156,16 +168,11 @@ class Run_Tests(object):
   return
 
  def play_vid(self):
-  # show the user what was made (speed up, we don't have all day)
-  episodes=Episode.objects.filter(show=self.options.show,
-    state=3).order_by('sequence')
-  for ep in episodes:
-    for ext in self.options.upload_formats:
-      pathname = os.path.join( self.show_dir,ext, '%s.%s' % (ep.slug, ext) )
-      if self.options.verbose: print pathname
-      cmd = \
-        "mplayer -speed 1 -osdlevel 3 %s"  % (pathname)
-  self.run_cmd(cmd.split())
+    # show the user what was made 
+    # todo: (speed up, we don't have all day)
+    import play_vids
+    p=play_vids.play_vids()
+    p.main()
 
  def post(self):
   # post it to blip test account (password is in pw.py)
@@ -190,19 +197,19 @@ class Run_Tests(object):
 
 if __name__=='__main__':
     t=Run_Tests() 
+
+    # t.make_test_user()
+    # t.setup_test_data()
     t.make_dirs()
+    # t.make_source_dvs()
+    # t.add_dv()
+    # t.make_thumbs()
+    #t.make_cut_list()
+    # t.encode()
+    # t.ck_errors()
     t.play_vid()
     """
-    t.make_test_user()
-    t.setup_test_data()
-    t.make_dirs()
-    t.make_source_dvs()
-    t.add_dv()
-    t.make_thumbs()
-    t.make_cut_list()
-    t.encode()
-    t.ck_errors()
-    t.play_vid()
+    t.tweet()
     t.post()
     t.tweet()
     """

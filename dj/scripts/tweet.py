@@ -66,7 +66,11 @@ class tweet(process):
                         else pw.twit.keys()[0]
             password = pw.twit[user]
             print user,password
-            api = twitter.Api(username=user, password=password)
+            # api = twitter.Api(username=user, password=password)
+            api = twitter.Api(consumer_key=t['consumer_key'], 
+                     consumer_secret=t['consumer_secret'],
+                     access_token_key=t['access_key'], 
+                     access_token_secret=t['access_secret'] )
             status = api.PostUpdate(tweet)
             d=status.AsDict()
             ret=True

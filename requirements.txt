@@ -1,4 +1,5 @@
 svn+http://code.djangoproject.com/svn/django/trunk/#egg=django
 vobject
+oauth2
 python-twitter
 svn+http://svn.dabodev.com/dabo/trunk/#egg=dabo
