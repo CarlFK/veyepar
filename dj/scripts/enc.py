@@ -169,7 +169,7 @@ class enc(process):
     return png_name
 
 
-  def mkmlt(self,title_img,episode,cls,rfs):
+  def mkmlt(self,title_img,postroll,episode,cls,rfs):
         """
         assemble a mlt playlist from:
         mlt template, title screen image, 
@@ -200,6 +200,16 @@ class enc(process):
             new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
             tree[0].insert(pos,new)
             pos+=1
+
+# add footer file
+        dvfile.attrib['id']="footer"
+        # rawpathname = os.path.join(self.episode_dir,rf.filename)
+        # dvfile.attrib['resource']=rawpathname
+        dvfile.attrib['resource']=postroll
+        new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
+        tree[0].insert(pos,new)
+        pos+=1
+
 
 # get the clip placeholder, the playlist and remove the clip from the playlist
         clip=tree[1]['clip']
@@ -247,8 +257,17 @@ class enc(process):
             playlist.insert(pos,new)
             pos+=1
 
+# add footer file
+        clip.attrib['id']="clip_footer"
+        clip.attrib['producer']="footer"
+        clip.attrib['in']='0'
+        clip.attrib['out']='150'
+        new=xml.etree.ElementTree.Element('entry', clip.attrib )
+        playlist.insert(pos,new)
+        pos+=1
+
 # add volume tweeks
-            """
+        """
     <filter mlt_service="channelcopy" from="1" to="0" />
     <filter mlt_service="volume" max_gain="30" normalise="28" />
                 {'mlt_service':'volume', 
@@ -473,13 +492,16 @@ class enc(process):
         title_base = os.path.join(self.show_dir, "bling", episode.slug)
         title_img=self.mktitle(template, title_base, episode)
 
+# define postroll
+        postroll = os.path.join(self.show_dir, "bling", 'nvd.png')
+
 # get list of raw footage for this episode
         rfs = Raw_File.objects. \
             filter(cut_list__episode=episode).\
             exclude(trash=True).distinct()
 
 # make a .mlt file for this episode
-        mlt = self.mkmlt(title_img,episode,cls,rfs)
+        mlt = self.mkmlt(title_img,postroll,episode,cls,rfs)
 
 # do the final encoding:
 # using melt
