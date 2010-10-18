@@ -29,7 +29,7 @@ class ckbroke(process):
             dictionary = ["INVALID"]
             p.dictionaries=[dictionary]
             # p.frame=30*5 # start 5 seconds into it (past the title)
-            # p.seek_sec = 10
+            p.seek_sec = 1
             
             if self.options.verbose: print "checking ", ext
 
