@@ -10,7 +10,6 @@ import datetime,time
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
 from django.conf import settings
-# import settings
 
 import django
 from main.models import Client, Show, Location, Episode, State, Log
@@ -34,6 +33,8 @@ class process(object):
   if processing returns True, 
       state=ready_state+1
   """
+
+  extra_options={} 
 
   ready_state=None
   
@@ -60,7 +61,8 @@ class process(object):
     what_where = "%s@%s" % (self.__class__.__name__, hostname)
     episode.locked = datetime.datetime.now()
     episode.locked_by = what_where
-    state,create = State.objects.get_or_create(id=1)
+    print episode.state
+    state = State.objects.get(id=episode.state)
     self.start=datetime.datetime.now()
     self.log=Log(episode=episode,
         state=state,
@@ -208,6 +210,14 @@ class process(object):
   def add_more_option_defaults(self, parser):
     pass
  
+  def set_options(self,*bar,**extra_options):
+    # hook for test runner
+    self.extra_options=extra_options
+
+  def get_options(self):
+    for k,v in self.extra_options.iteritems():
+      self.options.ensure_value(k,v)
+
   def parse_args(self):
     parser = optparse.OptionParser()
 
@@ -270,6 +280,7 @@ class process(object):
     self.add_more_options(parser)
 
     self.options, self.args = parser.parse_args()
+    self.get_options()
     
     if self.options.verbose:
         print self.options, self.args
@@ -282,6 +293,8 @@ class process(object):
 
     return 
 
+    
+ 
   def main(self):
     self.parse_args()
 

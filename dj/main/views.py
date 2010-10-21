@@ -56,11 +56,21 @@ episode:     00000000
         show.locations.add(loc)
 
     ep_count=Episode.objects.filter(show=show).count() 
-    ep = Episode.objects.create(show=show,location=loc,
-             sequence=ep_count)
+    ep = Episode.objects.create(
+        show=show,
+        location=loc,
+        state=1,
+        sequence=ep_count)
 
     ep.name = "Test Episode #%s %s" % (ep_count,
         datetime.datetime.now().ctime())
+
+    # this whole dynamic episode slug thing isn't working.
+    # too hard to keep the python and bash scrips in sync
+    # and I am no sure the value in it anyway.
+    # the 2 hardcoded values below seem to put everthing back.
+    ep_count=0
+    ep.name = "Test Episode" 
 
     # datetime matches what run_tests.sh uses to create files.
     t=[datetime.datetime(2010,5,21,0,0)+datetime.timedelta(

@@ -1,0 +1,56 @@
+[
+  {
+    "pk": 1, 
+    "model": "main.state", 
+    "fields": {
+      "description": "review sources, assemble cutlist", 
+      "slug": "edit", 
+      "sequence": 1
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "main.state", 
+    "fields": {
+      "description": "create final video files", 
+      "slug": "encode", 
+      "sequence": 2
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "main.state", 
+    "fields": {
+      "description": "spot check files, make sure start/end are sane", 
+      "slug": "spot_check", 
+      "sequence": 3
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "main.state", 
+    "fields": {
+      "description": "upload to blip.tv", 
+      "slug": "post", 
+      "sequence": 4
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "main.state", 
+    "fields": {
+      "description": "tweet URL ", 
+      "slug": "tweet", 
+      "sequence": 5
+    }
+  }, 
+  {
+    "pk": 7, 
+    "model": "main.state", 
+    "fields": {
+      "description": "in the can.", 
+      "slug": "done", 
+      "sequence": 6
+    }
+  }
+]

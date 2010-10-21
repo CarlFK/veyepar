@@ -8,9 +8,9 @@ sys.path.insert(0, '..' )
 
 from main.models import Episode, Raw_File, Cut_List
 
-ep = Episode.objects.get(id=90)
+ep = Episode.objects.get(id=2)
 
-date_dir='2010-02-18'
+date_dir='2010-10-10'
 
 file_names="""08:52:47.dv
 08:59:44.dv
@@ -21,6 +21,9 @@ file_names="""08:52:47.dv
 11:10:05.dv
 11:12:40.dv
 12:16:51.dv"""
+
+file_names="2010-10-10/sacwedding/sacwedding003.dv"
+file_names="sacwedding/sacwedding003.dv"
 
 seq=0
 for fn in file_names.split('\n'): 

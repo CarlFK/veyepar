@@ -10,6 +10,7 @@ then check less and less as we get farther into the file, and even less if we fi
 """
 
 import  os
+# import pkg_resources
 
 import gsocr
 # import ocrdv
@@ -18,17 +19,27 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
+
+# dict_loc =  pkg_resources.resource_filename('mkthumbs', 'static/dictionary.txt')
+# dict_loc =  pkg_resources.resource_filename(__file__, 'static/dictionary.txt')
+dict_loc = 'static/dictionary.txt'
+# make a list, exclude words 1 or 2 chars.
+dictionary = [w.upper() for w in open(dict_loc).read().split() if len(w)>3]
+
 class add_dv(process):
 
     def one_dv(self, dir, dv ):
         
         dv_pathname = os.path.join(dir,dv.filename)
         png_pathname = os.path.join(dir,"%s.png"%dv.basename())
-        print "dv:", dv_pathname
-        print "png:", png_pathname
+        if self.options.verbose: 
+            print "dv:", dv_pathname
+            print "png:", png_pathname
 
         if not os.path.exists(png_pathname):
             p=gsocr.Main(dv_pathname)
+            p.debug=self.options.verbose
+            p.dictionaries=[dictionary]
             gsocr.gtk.main()
             if p.words:
                 dv.ocrtext=p.words
@@ -39,6 +50,7 @@ class add_dv(process):
 
     def process_eps(self,episodes):
       # this never gets called because this processes files, not episodes.
+      raise
       for ep in episodes:
           print ep.location.slug
           dir=os.path.join(self.show_dir,'dv',ep.location.slug)
@@ -54,14 +66,14 @@ class add_dv(process):
     def one_loc(self,location,dir):
       for dv in Raw_File.objects.filter(location=location):
           imgname=self.one_dv(dir,dv)
-          print imgname
+          if self.options.verbose: print imgname
 
 
     def one_show(self, show):
       self.set_dirs(show)
       for loc in Location.objects.filter(show=show):
         dir=os.path.join(self.show_dir,'dv',loc.slug)
-        print show,loc,dir
+        if self.options.verbose: print show,loc,dir
         self.one_loc(loc, dir)
 
     def work(self):
