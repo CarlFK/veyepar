@@ -248,7 +248,8 @@ def enc_play_list(request,episode_id):
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
-    for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
+    # for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
+    for ext in [ 'flv' ]:
         pathname = os.path.join( settings.MEDIA_ROOT,client.slug,show.slug,ext,
             '%s.%s' % (episode.slug, ext) )
         writer.writerow([pathname])
@@ -266,7 +267,7 @@ def play_list(request,show_id):
 
     writer = csv.writer(response)
     for ep in episodes:
-        ext='ogv'
+        ext='flv'
         pathname = os.path.join( settings.MEDIA_ROOT,client.slug,show.slug,ext,
             '%s.%s' % (ep.slug, ext) )
         writer.writerow([pathname])

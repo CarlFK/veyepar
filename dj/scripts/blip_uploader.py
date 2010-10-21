@@ -61,7 +61,7 @@
 import optparse
 import ConfigParser
 import getpass
-import httplib
+import httplib, socket
 import mimetypes
 import os
 import datetime,time
@@ -74,6 +74,14 @@ import xml.dom.minidom
 import xml.sax.saxutils 
 
 import cgi
+
+def stot(seconds):
+    # convert numeric seconds to hh:mm:ss time string
+    s=seconds
+    h,s=divmod(s,3600)
+    m,s=divmod(s,60)
+    t="%02i:%02i:%02i" % (h,m,s)
+    return t
 
 
 class Blip(object):
@@ -153,7 +161,7 @@ class Blip(object):
             h.send(filedata)
             bytes_sent += len(filedata)
             f = open(filename,'rb')
-            block_size=100000
+            block_size=20000
             block=f.read(block_size)
             while block:
                 h.send(block)
@@ -209,7 +217,32 @@ class Blip(object):
         if thumbname:
             files.append(("thumbnail",thumbname))
 
-        response = self.PostMultipart(self.BLIP_UPLOAD_URL, fields, files)
+        done=False
+        while not done:
+          try:
+            response = self.PostMultipart(self.BLIP_UPLOAD_URL, fields, files)
+            done=True
+
+          except socket.error, e:
+            print e
+            # and try again...
+            """
+r/lib/python2.6/httplib.py", line 759, in send
+    self.sock.sendall(str)
+  File "<string>", line 1, in sendall
+socket.error: [Errno 104] Connection reset by peer
+"""
+
+          except httplib.BadStatusLine:
+            print e
+            # and try again...
+            """
+  File "/usr/lib/python2.6/httplib.py", line 391, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.6/httplib.py", line 355, in _read_status
+    raise BadStatusLine(line)
+httplib.BadStatusLine
+"""
 
         return response
 
@@ -301,15 +334,14 @@ class Blip_CLI(Blip):
         """
         Displaies upload percent done, bytes sent, total bytes.
         """
-        elasped = datetime.datetime.now() - self.start_time 
+        elapsed = datetime.datetime.now() - self.start_time 
         remaining_bytes = total-current
-        if elasped.seconds: 
-            bps = current/elasped.seconds
+        if elapsed.seconds: 
+            bps = current/elapsed.seconds
             remaining_seconds = remaining_bytes / bps
             eta = datetime.datetime.now() + datetime.timedelta(seconds=remaining_seconds)
-
-            sys.stdout.write('\r%3i%%  %s of %s MB, %s kbps, remaining: %s min, eta: %s' 
-              % (100*current/total, current/(1024**2), total/(1024**2), bps/1024, remaining_seconds/60, eta.strftime('%H:%M:%S')))
+            sys.stdout.write('\r%3i%%  %s of %s MB, %s kbps, elap/remain: %s/%s, eta: %s' 
+              % (100*current/total, current/(1024**2), total/(1024**2), bps/1024, stot(elapsed.seconds), stot(remaining_seconds), eta.strftime('%H:%M:%S')))
         else: 
             sys.stdout.write('\r%3i%%  %s of %s bytes: remaining: %s' 
               % (100*current/total, current, total, remaining_bytes, ))

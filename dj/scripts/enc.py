@@ -266,7 +266,7 @@ class enc(process):
         clip.attrib['in']='0'
         clip.attrib['out']='150'
         new=xml.etree.ElementTree.Element('entry', clip.attrib )
-        playlist.insert(pos,new)
+        # playlist.insert(pos,new)
         pos+=1
 
 # add volume tweeks

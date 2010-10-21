@@ -28,6 +28,7 @@ roles={
 class post(process):
 
   ready_state = 4
+  ready_state = 3
 
   def process_ep(self, ep):
     print ep.id, ep.name
@@ -35,7 +36,7 @@ class post(process):
     show = ep.show
     client = show.client
 
-    descriptions = [ep.description, show.description, client.description]
+    descriptions = [ep.authors, ep.description, show.description, client.description]
     descriptions = [d for d in descriptions if d]
     description = "%s</br>\n".join(descriptions)
 
@@ -51,7 +52,7 @@ class post(process):
 # else it will use the id of the episode from a previous run. 
     video_id = ep.target
 
-    tags = [ self.options.topics, client.slug, client.tags, ep.tags ]
+    tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
     meta['topics'] = ' '.join([tag for tag in tags if tag] )
 
     if ep.license: 
