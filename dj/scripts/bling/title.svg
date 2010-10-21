@@ -14,7 +14,7 @@
    height="600"
    id="titlepage"
    sodipodi:version="0.32"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.0 r9654"
    version="1.0"
    sodipodi:docname="title.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
@@ -147,16 +147,16 @@
      inkscape:pageopacity="0.94117647"
      inkscape:pageshadow="2"
      inkscape:zoom="0.84880128"
-     inkscape:cx="424.60882"
+     inkscape:cx="277.34231"
      inkscape:cy="347.62165"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1280"
-     inkscape:window-height="727"
-     inkscape:window-x="0"
-     inkscape:window-y="24"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="1267"
+     inkscape:window-height="1001"
+     inkscape:window-x="1"
+     inkscape:window-y="53"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -206,7 +206,7 @@
          x="64.395706"
          y="575.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
     <image
-       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/sauce_masthead.png"
+       sodipodi:absref="/home/juser/src/veyepar/dj/scripts/bling/sauce_masthead.png"
        xlink:href="sauce_masthead.png"
        y="485.66159"
        x="130.38989"
@@ -227,7 +227,7 @@
            style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
          id="title"
          style="font-weight:normal">UR DOING IT WRONG for god sake, you really need to please RTFM, RTFM!</flowPara></flowRoot>    <flowRoot
-       transform="matrix(1,0,0,1.1970692,-12.210938,71.9906)"
+       transform="matrix(1,0,0,1.1970692,-12.210938,53.9906)"
        style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
        id="presenterbox"
        xml:space="preserve"><flowRegion
@@ -279,7 +279,7 @@
            y="121.71946"
            style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
          id="client">PyCon 2010 Atlanta</flowPara></flowRoot>    <image
-       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/orbitz.png"
+       sodipodi:absref="/home/juser/src/veyepar/dj/scripts/bling/orbitz.png"
        xlink:href="orbitz.png"
        width="168.77777"
        height="34.230686"
@@ -287,12 +287,25 @@
        x="315.61111"
        y="494.66238" />
     <image
-       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/imagescape-web.gif"
+       sodipodi:absref="/home/juser/src/veyepar/dj/scripts/bling/imagescape-web.gif"
        xlink:href="imagescape-web.gif"
        width="139.55556"
        height="58.919197"
        id="logo1"
        x="516.66663"
        y="484.54037" />
-  </g>
+    <flowRoot
+       transform="matrix(1,0,0,1.1970692,-11.226563,93.523298)"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       id="presenterbox-5"
+       xml:space="preserve"><flowRegion
+         id="flowRegion2830-9"><rect
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+           y="191.71947"
+           x="68.642532"
+           height="80"
+           width="684.7511"
+           id="rect2832-4" /></flowRegion><flowPara
+         id="presentertitle"
+         style="font-weight:normal">Video MaD Man</flowPara></flowRoot>  </g>
 </svg>

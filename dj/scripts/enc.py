@@ -135,6 +135,7 @@ class enc(process):
             'show': episode.show.name, 
             'title': episode.name, 
             'authors': episode.authors,
+            'presentertitle': episode.description,
         }
  
     svg_in=open(source).read()
@@ -144,10 +145,12 @@ class enc(process):
     # for key in ['client', 'title']:
 
     for key in text:
-        # print key
+        if self.options.verbose: print key
         # tollerate template where tokens have been removed
         if tree[1].has_key(key):
-            # print tree[1][key].text
+            if self.options.verbose: 
+                print tree[1][key].text
+                print text[key]
             tree[1][key].text=text[key]
 
     if tree[1].has_key('presenternames'):
