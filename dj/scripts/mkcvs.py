@@ -151,7 +151,10 @@ class csv(process):
         # wget.writelines(["%s\n" % url for url in self.get_media(blip_xml,'*')])
         wget.writelines(["%s\n" % c['url'] for c in blip_meta['contents']])
 
-        json.dumps(json_data,open(json_pathname, "w"))
+        if self.options.verbose: 
+            json.dump(json_data,open(json_pathname, "w"),indent=2)
+        else:
+            json.dump(json_data,open(json_pathname, "w"))
         pprint.pprint(json_data)
 
   def add_more_options(self, parser):
