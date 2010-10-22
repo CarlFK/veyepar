@@ -5,8 +5,12 @@
 import urllib2
 import xml.etree.ElementTree
 import os
+import pprint
 
 from csv import DictWriter
+import json
+
+import blip_uploader
 
 from process import process
 
@@ -80,6 +84,7 @@ class csv(process):
           self.set_dirs(show)
           basename = "%s_%s" % (client.slug,show.slug)
 
+    json_pathname = os.path.join( self.show_dir, "txt", basename+".json" )
     csv_pathname = os.path.join( self.show_dir, "txt", basename+".csv" )
     txt_pathname = os.path.join( self.show_dir, "txt", basename+".txt" )
     wget_pathname = os.path.join( self.show_dir, "txt", basename+".wget" )
@@ -105,27 +110,49 @@ class csv(process):
 # setup html (not full html, just some snippits)
     html=open(html_pathname, "w")
 
+# setup json (list written to file at end.)
+    json_data=[]
+
     # write out episode data
     for ep in episodes:
         row = dict([(f,getattr(ep,f,None)) for f in fields])
-        # if self.options.verbose: print row
+        if self.options.verbose: print row
         
-        blip_xml=self.blip_meta(ep.target)
-        show_page = self.get_showpage(blip_xml)
-        row['blip'] = "%sfile/%s"%(show_page,ep.target)
+        blip_cli=blip_uploader.Blip_CLI()
+        blip_cli.debug = self.options.verbose
 
-        xml.write(blip_xml)
+        xml_code = blip_cli.Get_VideoMeta(ep.target)
+        if self.options.verbose: print xml_code
+        blip_meta = blip_cli.Parse_VideoMeta(xml_code)
+        # if self.options.verbose: print blip_meta
+        if self.options.verbose: print pprint.pprint(blip_meta)
+
+        # blip_xml=self.blip_meta(ep.target)
+        # show_page = self.get_showpage(blip_xml)
+        # row['blip'] = "%sfile/%s"%(show_page,ep.target)
+        row['blip'] = "http://%s.blip.tv/file/%s"%('carlfk',ep.target)
+
+        # xml.write(blip_xml)
         # if self.options.verbose: print blip_xml
 
-        row['embed']=self.get_embed(blip_xml)
-        row['source']=self.get_media(blip_xml)
+        # row['embed']=self.get_embed(blip_xml)
+        # row['source']=self.get_media(blip_xml)
+
+        row['embed']=blip_meta['embed_code']
+        oggs = [i for i in blip_meta['contents'] if i['type']=='video/ogg']
+        if self.options.verbose: print pprint.pprint(oggs)
+        row['source']=oggs[0]
 
         # if self.options.verbose: print row
+        json_data.append(row)
         csv.writerow(row)
         txt.write("%s %s\n" % (row['blip'],row['name']))
         html.write('<a href="%(blip)s">%(name)s</a>\n%(blip)s\n'%row)
-        wget.writelines(["%s\n" % url for url in self.get_media(blip_xml,'*')])
+        # wget.writelines(["%s\n" % url for url in self.get_media(blip_xml,'*')])
+        wget.writelines(["%s\n" % c['url'] for c in blip_meta['contents']])
 
+        json.dumps(json_data,open(json_pathname, "w"))
+        pprint.pprint(json_data)
 
   def add_more_options(self, parser):
         parser.add_option('-f', '--basename', 
