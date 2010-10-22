@@ -37,15 +37,19 @@ class add_dv(process):
             print "png:", png_pathname
 
         if not os.path.exists(png_pathname):
-            p=gsocr.Main(dv_pathname)
-            p.debug=self.options.verbose
-            p.dictionaries=[dictionary]
-            gsocr.gtk.main()
-            if p.words:
+            if self.options.test: 
+              p=gsocr.Main(dv_pathname)
+              p.debug=self.options.verbose
+              p.dictionaries=[dictionary]
+              gsocr.gtk.main()
+              if p.words:
                 dv.ocrtext=p.words
                 # dv.thumbnail=p.imgname
                 dv.save()
-	    return p.base_name
+	      return p.base_name
+            else:
+              print "test mode, gsocr not called."
+
         return None
 
     def process_eps(self,episodes):
