@@ -38,7 +38,7 @@ class post(process):
 
     descriptions = [ep.authors, ep.description, show.description, client.description]
     descriptions = [d for d in descriptions if d]
-    description = "</br>\n".join(descriptions)
+    description = "<br/>\n".join(descriptions)
 
     blip_cli=blip_uploader.Blip_CLI()
     blip_cli.debug = self.options.verbose
