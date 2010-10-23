@@ -184,6 +184,7 @@ meta.attr.titles.markup=#timecode# \
   """
   import post
   p=post.post()
+  p.set_options(force=True, verbose=True, )
   p.main()
   return
 
@@ -191,6 +192,7 @@ meta.attr.titles.markup=#timecode# \
   # tell the world (test account)
   import tweet
   p=tweet.tweet()
+  p.set_options(force=True, verbose=True, )
   p.main()
   return
 
@@ -198,20 +200,17 @@ meta.attr.titles.markup=#timecode# \
 if __name__=='__main__':
     t=Run_Tests() 
 
-    # t.make_test_user()
-    # t.setup_test_data()
-    # t.make_dirs()
-    # t.make_source_dvs()
-    # t.add_dv()
-    # t.make_thumbs()
-    #t.make_cut_list()
+    t.make_test_user()
+    t.setup_test_data()
+    t.make_dirs()
+    t.make_source_dvs()
+    t.add_dv()
+    t.make_thumbs()
+    t.make_cut_list()
     t.encode()
-    # t.ck_errors()
+    t.ck_errors()
     t.play_vid()
-    """
-    t.tweet()
     t.post()
     t.tweet()
-    """
 
 

@@ -3,3 +3,5 @@ vobject
 oauth2
 python-twitter
 svn+http://svn.dabodev.com/dabo/trunk/#egg=dabo
+hg+https://python-twitter.googlecode.com/hg/#egg=twitter
+

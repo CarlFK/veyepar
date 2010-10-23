@@ -64,9 +64,10 @@ class tweet(process):
             # use the username for the client, else use the first user in pw.py
             user =  client.blip_user if client.blip_user \
                         else pw.twit.keys()[0]
-            password = pw.twit[user]
-            print user,password
+            # password = pw.twit[user]
+            # print user,password
             # api = twitter.Api(username=user, password=password)
+            t = pw.twit[user]
             api = twitter.Api(consumer_key=t['consumer_key'], 
                      consumer_secret=t['consumer_secret'],
                      access_token_key=t['access_key'], 

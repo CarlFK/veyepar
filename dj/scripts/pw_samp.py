@@ -1,10 +1,11 @@
 blip = {'veyepar_test':'bdff6680'} # dict of user:pw 
-twit = {'veyepar_test':
+twit = {
+'veyepar_test':
   { 'password':'bdff6680',
-  'consumer_key':'098PKRVYvxjVmoyixoaw',
-  'consumer_secret':'awe5CkfpGCZhOisGEMHVA5Q0kJY7Ej6jEF7Paz7vto',
-  'access_key':'203869946-txvdu2xDhiv8KaIKxYWN8fMRIYQqBr99wY1W3vou',
-  'access_secret':'x9fycYxxyEuQXK8ENyClxVV2kIeVKx8ABWxZgCY',
+  'consumer_key':'SOcOAwXDhMnarlzhkE2z8Q',
+  'consumer_secret':'32tcLcSK9ECqW2FEejla1uNBfFreT9GpGoQ0ingcE8s',
+  'access_key':'203869946-mzeDwKHi5Akx84zENZuaA7MLnrCqrlH98mgTlZFh',
+  'access_secret':'tnyn6YsZz3vpasUEnxEco20hCdwYxZM5mwMciDzfaU',
 } 
    }
 bitly = {'user':'fred', 'password':'R_longstringofstuff'}
