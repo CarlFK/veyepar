@@ -95,8 +95,8 @@ class ckblip(process):
     """
 
     type_map = (
-             {'ext':'ogv','mime':'video/ogg'},
-             {'ext':'flv','mime':'video/x-flv'},
+            # {'ext':'ogv','mime':'video/ogg'},
+            {'ext':'flv','mime':'video/x-flv'},
             # {'ext':'m4v','mime':'video/x-m4v'},
             # {'ext':'mp3','mime':'audio/mpeg'},)
             )
@@ -144,7 +144,7 @@ class ckblip(process):
                 # Something on blip, 
                 # no local copy of this format
                 # (this format may be on blip.)
-                print "no %s version on local drive of: %s - %s" % \
+                print "no %s version of #%s-%s on local drive." % \
                     (t['ext'], ep.id, ep.name)
     else:
         # episode not on blip, 

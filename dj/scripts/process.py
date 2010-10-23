@@ -61,8 +61,10 @@ class process(object):
     what_where = "%s@%s" % (self.__class__.__name__, hostname)
     episode.locked = datetime.datetime.now()
     episode.locked_by = what_where
-    print episode.state
-    state = State.objects.get(id=episode.state)
+    try:
+        state = State.objects.get(id=episode.state)
+    except State.DoesNotExist:
+        state = None
     self.start=datetime.datetime.now()
     self.log=Log(episode=episode,
         state=state,
