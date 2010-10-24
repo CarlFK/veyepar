@@ -23,27 +23,29 @@ from main.models import Episode
 
 class ckblip(process):
 
-  def post(self, ep, file_types_to_upload):
+  def post(self, ep, file_types_to_upload, user, password ):
 
     blip_cli=blip_uploader.Blip_CLI()
 
     files = []
-    for i,ext in enumerate(file_types_to_upload):
-        i+=10
-        fileno=str(i) if i else ''
-        role=roles.get(ext,'extra')
+    for ext in file_types_to_upload:
+        role=roles.get(ext, {'description':"extra",'num':'9'})
+        fileno=role['num']
+        role_desc = role['description']
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
-        # print (fileno,role,src_pathname)
-        files.append((fileno,role,src_pathname))
+        files.append((fileno,role_desc,src_pathname))
 
     src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
 
-    response = blip_cli.Upload(
-            ep.target, pw.blip['user'], pw.blip['password'], files, {'title':ep.title})
+    if self.options.test:
+        print "Test mode, not uploading:", files 
+    else:
+        response = blip_cli.Upload(
+            ep.target, user, password, files, {'title':ep.name})
 
-    response_xml = response.read()
-    # print response_xml
-    ep.comment += "\n%s\n" % response_xml
+        response_xml = response.read()
+        if self.options.verbose: print response_xml
+        ep.comment += "\n%s\n" % response_xml
 
   def delete_from_blip(self, episode_id, file_id, user, password, reason):
 # http://blip.tv/file/delete/Pyohio-GettingToKnowMongoDBUsingPythonAndIronPython664.flv?reason="just cuz."
@@ -96,8 +98,8 @@ class ckblip(process):
 
     type_map = (
             # {'ext':'ogv','mime':'video/ogg'},
-            {'ext':'flv','mime':'video/x-flv'},
-            # {'ext':'m4v','mime':'video/x-m4v'},
+            # {'ext':'flv','mime':'video/x-flv'},
+            {'ext':'m4v','mime':'video/x-m4v'},
             # {'ext':'mp3','mime':'audio/mpeg'},)
             )
 
@@ -107,16 +109,20 @@ class ckblip(process):
         # use the local blip id and fetch the blip metadata.
         blip_cli=blip_uploader.Blip_CLI()
         blip_cli.debug = self.options.verbose
-        
         xml_code = blip_cli.Get_VideoMeta(ep.target)
         if self.options.verbose: print xml_code
-
         blip_meta = blip_cli.Parse_VideoMeta(xml_code)
+
+        file_types_to_upload=[]    
+        user = ep.show.client.blip_user if ep.show.client.blip_user \
+            else self.options.blip_user
+        password= pw.blip[user]
 
         for t in type_map:
             # for each format, construct local file name
             pathname = os.path.join(
                     self.show_dir, t['ext'], "%s.%s"%(ep.slug,t['ext']))
+            match=False                
             if os.path.exists(pathname):
                 st = os.stat(pathname)
                 local_size = st.st_size
@@ -125,6 +131,7 @@ class ckblip(process):
                     if content['type']==t['mime']:
                         blip_size = int(content['fileSize'])
                         if local_size == blip_size:
+                            match = True
                             # ep.state=5
                             # ep.save()
                             if self.options.verbose: print t['ext'], "right size"
@@ -134,18 +141,25 @@ class ckblip(process):
                             # and needs to be deleted.
                             # too bad I can't figure ou the blip api for this.
                             file_id = os.path.basename(content['url'])
-                            user= \
-  ep.show.client.blip_user if ep.show.client.blip_user \
-  else self.options.blip_user
-                            password= pw.blip[user]
                             ret=self.delete_from_blip(ep.target, file_id,
                                 user, password, 'old version')
+                if not match:
+                    file_types_to_upload.append(t['ext'])
             else:
-                # Something on blip, 
-                # no local copy of this format
-                # (this format may be on blip.)
-                print "no %s version of #%s-%s on local drive." % \
-                    (t['ext'], ep.id, ep.name)
+                # no local file, see what's on blip 
+                matches = [c for c in blip_meta['contents'] 
+                    if c['type']==t['mime']]
+                if matches: 
+                    if self.options.verbose: 
+                        print "On blip but not local", matches
+                else:
+                    print t['ext'], "missing from blip:", ep
+                   
+
+        if file_types_to_upload: 
+            if self.options.verbose: print file_types_to_upload    
+            self.post(ep,file_types_to_upload,user,password)
+
     else:
         # episode not on blip, 
         # This code doens't post new episodes,

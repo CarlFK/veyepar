@@ -17,12 +17,12 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 # http://wiki.blip.tv/index.php/Roles
     # old, works.. but Source looks better:    'ogv':"Web", 
 roles={
-        'ogv':"Master", 
-        'flv':"Web", 
-        'mp4':"dvd", 
-        'm4v':"Portable (iPod)", 
-        'ogg':"Portable (other)", 
-        'mp3':"Audio-only", 
+        'ogv':{'description':"Master",'num':'1'},
+        'flv':{'description':"Web",'num':'2'},
+        'mp4':{'description':"dvd",'num':'3'},
+        'm4v':{'description':"Portable (iPod)",'num':'4'},
+        'ogg':{'description':"Portable (other)",'num':'5'},
+        'mp3':{'description':"Audio-only",'num':'6'}
     }
 
 class post(process):
@@ -102,11 +102,12 @@ class post(process):
     exts = self.options.upload_formats.split()
 # pull dv from the list
     exts = [e for e in exts if e != 'dv']
-    for i,ext in enumerate(exts):
-        fileno=str(i) if i else ''
-        role=roles.get(ext,'extra')
+    for ext in exts:
+        role=roles.get(ext, {'description':"extra",'num':'9'})
+        fileno=role['num']
+        role_desc = role['description']
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
-        files.append((fileno,role,src_pathname))
+        files.append((fileno,role_desc,src_pathname))
 
     # username comes from options, client, first in pw.py
     # password always comes from pw.py

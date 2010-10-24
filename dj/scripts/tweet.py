@@ -21,6 +21,7 @@ from process import process
 class tweet(process):
 
     ready_state = 5
+    ready_state = 4
 
     def shorten(self, url):
         return url # hack because auth broke:
@@ -63,7 +64,7 @@ class tweet(process):
         else:
             # use the username for the client, else use the first user in pw.py
             user =  client.blip_user if client.blip_user \
-                        else pw.twit.keys()[0]
+                        else 'cfkarsten'
             # password = pw.twit[user]
             # print user,password
             # api = twitter.Api(username=user, password=password)
@@ -72,6 +73,7 @@ class tweet(process):
                      consumer_secret=t['consumer_secret'],
                      access_token_key=t['access_key'], 
                      access_token_secret=t['access_secret'] )
+            if self.options.verbose: print api.VerifyCredentials()
             status = api.PostUpdate(tweet)
             d=status.AsDict()
             ret=True
