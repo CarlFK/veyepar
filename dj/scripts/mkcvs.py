@@ -115,6 +115,10 @@ class csv(process):
 
     # write out episode data
     for ep in episodes:
+        if not ep.target: 
+            # skip episodes that have not been uploaded yet.
+            continue
+
         row = dict([(f,getattr(ep,f,None)) for f in fields])
         if self.options.verbose: print row
         

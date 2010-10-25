@@ -46,7 +46,7 @@ class tweet(process):
         return message
 
     def process_ep(self, ep):
-        print ep.id, ep.name
+        if self.options.verbose: print ep.id, ep.name
         show = ep.show
         client = show.client
 
@@ -56,12 +56,9 @@ class tweet(process):
 
         ret=False
         if self.options.test:
-            print 'test mode:'
-            print 'prefix, ep.name, blip_url'
-            # print 1, prefix, ep.name, blip_url
-            print 2, tweet
-            print
+            print 'test mode:', tweet
         else:
+            print 'tweeting:', tweet
             # use the username for the client, else use the first user in pw.py
             user =  client.blip_user if client.blip_user \
                         else 'cfkarsten'

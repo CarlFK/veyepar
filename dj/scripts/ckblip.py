@@ -153,7 +153,7 @@ class ckblip(process):
                     if self.options.verbose: 
                         print "On blip but not local", matches
                 else:
-                    print t['ext'], "missing from blip:", ep
+                    print t['ext'], "missing from http://blip.tv/file/%s" % ep.target , ep
                    
 
         if file_types_to_upload: 
