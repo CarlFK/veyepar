@@ -10,6 +10,9 @@ from django.db.models import Q
 
 class ass_dv(process.process):
 
+    # hook for run_tests to hack some values into
+    cuts=[]
+    
     def one_dv(self, dv, seq ):
         print dv, dv.location
         print dv.start, dv.end
@@ -39,7 +42,7 @@ class ass_dv(process.process):
             if created:
                 cl.sequence=seq
                 cl.save()
-
+                self.cuts.append(cl)
         print
 
     def one_loc(self,location,show):

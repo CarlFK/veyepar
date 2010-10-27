@@ -145,6 +145,12 @@ meta.attr.titles.markup=#timecode# \
   import assocdv
   p=assocdv.ass_dv()
   p.main()
+  print p.cuts
+  cut=p.cuts[1]
+  print cut
+  cut.start="0:0:5"
+  cut.end="0:0:10"
+  cut.save()
   return
 
 
