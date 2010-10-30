@@ -2,13 +2,24 @@
 
 sudo apt-add-repository ppa:gstreamer-developers/ppa
 sudo apt-add-repository ppa:sunab/kdenlive-svn
-sudo apt-add-repository ppa:j/ppa
+# sudo apt-add-repository ppa:j/ppa
+# sudo apt-add-repository ppa:freshmedia/ppa
 
-sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-virtualenv mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim
+sudo apt-get update
 
-virtualenv veyepar
+sudo apt-get install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab virtualenvwrapper python-pip mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim
+
+if [ ! -d ~/.virtualenvs ]; then
+  mkdir ~/.virtualenvs
+fi
+
+mkvirtualenv veyepar
+# workon veyepar
+
+git clone https://CarlFK@github.com/CarlFK/veyepar.git
+# git clone git@github.com:CarlFK/veyepar.git
+
 cd veyepar
-. bin/activate
 
 hg clone http://bitbucket.org/ianb/pip/
 cd pip/

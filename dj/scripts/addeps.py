@@ -10,6 +10,7 @@ Room Name - "room1" if there is only one room.
 Start - datetime in some parsable format 
 Duration in minutes, or HH:MM:SS 
 Presenters - comma seperated list of people's names.
+Released - permission to release.
 Description - used as the description of the video (paragraphs are fine)
  in source database - should be uniquie 
 URL of talk page
@@ -97,6 +98,7 @@ class add_eps(process.process):
           start = datetime.datetime(*row['start'])
           start += datetime.timedelta(hours=-7,minutes=0)
           authors=row['presenters']
+          released=row['released']
           minutes = row['duration']
           if not minutes: minutes = '50'
           # if minutes: duration = "00:%s:00" % minutes
@@ -125,6 +127,7 @@ class add_eps(process.process):
               print primary
               print start
               print authors
+              print released
               print duration
               print description
               print tags
@@ -132,14 +135,17 @@ class add_eps(process.process):
           else:
               episode,created = Episode.objects.get_or_create(
                   show=show, primary=primary, name=name)
+
               if created:
                   episode.sequence=seq
                   seq+=1
                   episode.state=1
+
               episode.location=location 
               episode.name=name
               episode.primary=primary
               episode.authors=authors
+              episode.released=released
               episode.start=start
               episode.duration=duration
               episode.description=description
