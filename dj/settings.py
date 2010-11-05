@@ -12,14 +12,20 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
-MANAGERS = ADMINS
+STATICFILES_URL='foo'
+# STATICFILES_ROOT='foo'
 
-DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = os.path.join(BASE_DIR,'veyepar.db')             # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+MANAGERS = ADMINS
+DATABASES =  {'default': {'ENGINE': 'django.db.backends.sqlite3',
+ 'HOST': '',
+ 'NAME': os.path.join(BASE_DIR,'veyepar.db'),
+ 'OPTIONS': {},
+ 'PASSWORD': '',
+ 'PORT': '',
+ 'TEST_CHARSET': None,
+ 'TEST_COLLATION': None,
+ 'TEST_NAME': None,
+ 'USER': ''} }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

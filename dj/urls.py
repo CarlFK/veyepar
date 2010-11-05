@@ -31,10 +31,11 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('',
-(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+(r'^static/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve',
         {'document_root': 'static/','show_indexes': True}))
 
 urlpatterns += patterns('',
-(r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
+# (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
+(r'^site_media/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve',
         {'document_root': settings.MEDIA_ROOT,'show_indexes': True}))
 
