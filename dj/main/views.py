@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
+from django.template import Context, loader
 
 from django.core.paginator import Paginator, InvalidPage
 from django.conf import settings
@@ -16,6 +17,7 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.core.urlresolvers import reverse
+from django.core.mail import get_connection, EmailMessage
 
 from django.utils import simplejson
 
@@ -172,13 +174,48 @@ def meet_ann(request,show_id):
     client=show.client
     episodes=Episode.objects.filter(show=show).order_by('sequence')
     location=episodes[0].location
-    return render_to_response('meeting_announcement.html',
+    t = loader.get_template('meeting_announcement.html')
+    c = Context(
         {'client':client,'show':show,
           'location':location,
           'episodes':episodes,
-        },
-        context_instance=RequestContext(request) )
+    })
+    r = t.render(c)
+    if request:
+        return HttpResponse(r)
+    else:
+        # called from emailer
+        r=r.split('\n')
+        subject = r[1]
+        body = '\n'.join(r[3:])
+        return subject,body
 
+def emailer(show_id):
+    tos = [
+ '"ChiPy" <chicago@python.org>', '"ChiPy Announce" <ChiPy-announce@python.org>',
+ '"PS1" <pumping-station-one-public@googlegroups.com>',
+ '"ACM Chicago" <mtemkin@speakeasy.net>',
+ '"Linux Users Of Northern Illinois" <luni@luni.org>', 
+ '"Chicago Linux Discuss" <chicagolinux-discuss@chicagolug.org>', 
+ '<genluglist@codlug.info>',
+ '<chicagotechcal@gmail.com>']
+
+    subject,body=meet_ann(None,show_id)
+    
+    # connect to the smtp server
+    connection = get_connection()
+    sender = '"Carl Karsten" <carl@nextdayvideo.com>"'
+    headers = {
+        'Reply-To': "ChiPy <chicago@python.org>"
+        }
+    for to in tos:
+        email = EmailMessage(subject, body, sender, [to] ) 
+        ret = connection.send_messages([email])
+        print to, ret
+
+    return
+
+    
 def recording_sheets(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     episodes=Episode.objects.filter(show=show).order_by('location','start')
