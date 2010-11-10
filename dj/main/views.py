@@ -26,6 +26,7 @@ import datetime
 import os
 import csv
 from cStringIO import StringIO
+from pprint import pprint
 
 from dabo.dReportWriter import dReportWriter
 
@@ -133,8 +134,6 @@ def ajax_user_lookup(request):
         ret['error_no']=3
         ret['error_text']="not found."
 
-    print ret
-
     response = HttpResponse(simplejson.dumps(ret,indent=1))
     response['Content-Type'] = 'application/json'
 
@@ -172,7 +171,8 @@ def main(request):
 def meet_ann(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show).order_by('sequence')
+    # episodes=Episode.objects.filter(show=show).order_by('sequence')
+    episodes=Episode.objects.filter(show=show)
     location=episodes[0].location
     t = loader.get_template('meeting_announcement.html')
     c = Context(
@@ -214,6 +214,46 @@ def emailer(show_id):
         print to, ret
 
     return
+
+def schedule(request, show_id):
+    show=get_object_or_404(Show,id=show_id)
+    locations=show.locations.all().order_by('sequence')
+    episodes=Episode.objects.filter(show=show)
+
+    # order_by to override Meta: ordering = ["sequence"]
+    # which will get included in the field list and break the .distinct().
+    times=episodes.order_by('start').values('start','end').distinct()
+    # starts=[ s['start'] for s in starts]
+
+    dates = list(set(t['start'].date() for t in times))
+    dates.sort()
+
+    # `pprint([s for s in starts if s.date()==dates[1]])
+        
+    # [[d1,[[t1,[e1,e2,e3]],
+    #       [t2,[e4,e5,e6]]],
+    #  [d2,[[t3,[e7,e8,e9]]]]]]
+    days=[]
+    for d in dates:
+        rows=[]
+        for t in times:
+            if t['start'].date() == d:
+                slots=[]
+                for loc in locations: 
+                    i=None
+                    for ep in episodes:
+                        if ep.location == loc and \
+                            ep.start == t['start'] and  ep.end == t['end']: 
+                            i = ep
+                    slots.append(i)
+                rows.append([t,slots])
+        days.append([d,rows])
+
+    return render_to_response('schedule.html',
+        {'show':show, 
+        'locations':locations,
+        'days':days},
+        context_instance=RequestContext(request) )
 
     
 def recording_sheets(request,show_id):
@@ -401,7 +441,6 @@ def client(request,client_slug=None):
                 print form.errors
         else:
             locations=Location.objects.filter(default=True).order_by('sequence')
-            print locations
             form=Show_Form(
                 initial={'client':client.id, 'sequence':1,
                          'locations': [o.pk for o in locations] })
@@ -431,7 +470,6 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
     # episode entry form
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
-    # locations=show.locations.all()
     locations=show.locations.filter(default=True).order_by('sequence')
     if location_slug:
         location=get_object_or_404(Location,slug=location_slug)

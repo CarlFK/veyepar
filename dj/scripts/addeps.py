@@ -24,6 +24,8 @@ import urllib2,json
 from dateutil.parser import parse
 
 import process
+import lxml.etree
+
 
 from main.models import fnify, Client, Show, Location, Episode
 
@@ -61,8 +63,8 @@ class add_eps(process.process):
           
       seq=0
       for row in schedule:
-          # room = row['room']
-          room = "room 1"
+          row=row['node']
+          room = row['Room']
           loc,created = Location.objects.get_or_create(name=room)
           if created: 
               seq+=1
@@ -106,9 +108,9 @@ class add_eps(process.process):
           row = row['node']
           if self.options.verbose: print row
 
-          name = row['Title']
-          room = 'room 1'
-          # room = row['room']
+          name = lxml.etree.fromstring('<foo>' + row['Title'] + '</foo>').text
+
+          room = row['Room']
           location = Location.objects.get(name=room)
           primary = row['Nid']
           start, duration = self.talk_time(row['Day'],row['Time'])
@@ -141,7 +143,7 @@ class add_eps(process.process):
               print
           else:
               episode,created = Episode.objects.get_or_create(
-                  show=show, primary=primary, name=name)
+                  show=show, primary=primary, )
 
               if created:
                   episode.sequence=seq
@@ -221,6 +223,7 @@ class add_eps(process.process):
       # url='http://djangocon.us/schedule/json/'
       url='http://2010.osdc.com.au/program/json'
       j=urllib2.urlopen(url).read()
+
       # j=open('schedule.json').read()
       schedule = json.loads(j)
 
