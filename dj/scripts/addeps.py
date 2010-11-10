@@ -21,7 +21,7 @@ import datetime
 import urllib2,json
 # from csv import DictReader
 # from datetime import timedelta
-# from dateutil.parser import parse
+from dateutil.parser import parse
 
 import process
 
@@ -61,54 +61,61 @@ class add_eps(process.process):
           
       seq=0
       for row in schedule:
-          room = row['room']
+          # room = row['room']
+          room = "room 1"
           loc,created = Location.objects.get_or_create(name=room)
           if created: 
               seq+=1
               loc.sequence=seq
               loc.save()
 
-  
+    def  talk_time(self, day,time):
+# Day: "Wed 24 Nov"
+# Time: "09:00 - 10:00"
+        start_ts, end_ts = time.split('-')
+
+        start_dts = day + ' 2010 ' + start_ts
+        end_dts = day + ' 2010 ' + end_ts
+
+        start_dt = parse(start_dts)        
+        end_dt = parse(end_dts)        
+
+        delta = end_dt - start_dt
+        minutes = delta.seconds/60 - 5
+
+        duration="00:%s:00" % ( minutes) 
+        return start_dt, duration
+
+          # start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
+
+          # [ 2010, 9, 7, 15, 0 ]
+          # start = datetime.datetime(*row['start'])
+
+
+          # minutes = row['duration']
+
+          # adjust for time zone:
+	  # start += datetime.timedelta(hours=-7,minutes=0)
+
+
     def addeps(self, schedule, show):
       seq=0
 
-      """
-      for i in [1, 2, 10, 23, 14, 26, 27, 31, 32, ]:
-        for row in schedule:
-          if i == row['id']: print row
-        print
-
-      return
-      """
-
       for row in schedule:
 
-          name = row['title']
-          if name in ["Topics of Interest",
-                "Why Django Sucks, and How We Can Fix It",
-                "Technical Design Panel",
-                "NoSQL and Django Panel",
-                ]:
-             room = 'Plenary'
-          else:
-             room = row['room']
+          row = row['node']
+          if self.options.verbose: print row
+
+          name = row['Title']
+          room = 'room 1'
+          # room = row['room']
           location = Location.objects.get(name=room)
-          primary = row['url']
-          # start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
-          start = datetime.datetime(*row['start'])
-          start += datetime.timedelta(hours=-7,minutes=0)
-          authors=row['presenters']
-          released=row['released']
-          minutes = row['duration']
-          if not minutes: minutes = '50'
-          # if minutes: duration = "00:%s:00" % minutes
-          # else: duration = "01:00:00"
-          # hours = int(int(minutes)/60)
-          # minutes = int(minutes) % 60
-          # duration="0%s:%s:00" % ( hours, minutes) 
-          duration="00:%s:00" % ( minutes) 
-          description = row['description']
-          tags = row['tags']
+          primary = row['Nid']
+          start, duration = self.talk_time(row['Day'],row['Time'])
+          authors=row['Presenter']
+          # released=row['released']
+          description = row['Link']
+          tags = row['Keywords']
 
           # print row
           if name in ['Registration','Lunch']:
@@ -127,7 +134,7 @@ class add_eps(process.process):
               print primary
               print start
               print authors
-              print released
+              # print released
               print duration
               print description
               print tags
@@ -145,7 +152,7 @@ class add_eps(process.process):
               episode.name=name
               episode.primary=primary
               episode.authors=authors
-              episode.released=released
+              # episode.released=released
               episode.start=start
               episode.duration=duration
               episode.description=description
@@ -211,11 +218,13 @@ class add_eps(process.process):
     def one_show(self, show):
       # url='http://us.pycon.org/2010/conference/schedule/events.json'
       # url='http://pycon-au.org/2010/conference/schedule/events.json'
-      url='http://djangocon.us/schedule/json/'
+      # url='http://djangocon.us/schedule/json/'
+      url='http://2010.osdc.com.au/program/json'
       j=urllib2.urlopen(url).read()
       # j=open('schedule.json').read()
       schedule = json.loads(j)
 
+      schedule = schedule['nodes']
       self.addlocs(schedule)
       self.addeps(schedule, show)
 
