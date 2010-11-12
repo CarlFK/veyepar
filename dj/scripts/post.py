@@ -28,7 +28,6 @@ roles={
 class post(process):
 
   ready_state = 4
-  ready_state = 3
 
   def process_ep(self, ep):
     print ep.id, ep.name
