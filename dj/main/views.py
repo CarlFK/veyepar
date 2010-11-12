@@ -320,6 +320,8 @@ def raw_play_list(request,episode_id):
 
 def enc_play_list(request,episode_id):
     episode=get_object_or_404(Episode,id=episode_id)
+    show =episode.show
+    client=show.client
 
     response = HttpResponse(mimetype='audio/mpegurl')
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'

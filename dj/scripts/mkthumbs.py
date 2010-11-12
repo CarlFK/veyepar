@@ -37,7 +37,7 @@ class add_dv(process):
             print "png:", png_pathname
 
         if not os.path.exists(png_pathname):
-            if self.options.test: 
+            if not self.options.test: 
               p=gsocr.Main(dv_pathname)
               p.debug=self.options.verbose
               p.dictionaries=[dictionary]
