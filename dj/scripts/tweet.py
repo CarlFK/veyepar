@@ -21,7 +21,6 @@ from process import process
 class tweet(process):
 
     ready_state = 5
-    ready_state = 4
 
     def shorten(self, url):
         return url # hack because auth broke:

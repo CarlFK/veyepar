@@ -17,7 +17,7 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 # http://wiki.blip.tv/index.php/Roles
     # old, works.. but Source looks better:    'ogv':"Web", 
 roles={
-        'ogv':{'description':"Master",'num':'1'},
+        'ogv':{'description':"Master",'num':''},
         'flv':{'description':"Web",'num':'2'},
         'mp4':{'description':"dvd",'num':'3'},
         'm4v':{'description':"Portable (iPod)",'num':'4'},
@@ -168,6 +168,29 @@ Your file called Test Episode #0 has been successfully posted.
 </otterResponses>
 
 '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"\n "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html>\n  <head>\n    <title>503 Service Unavailable</title>\n  </head>\n  <body>\n    <h1>Error 503 Service Unavailable</h1>\n    <p>Service Unavailable</p>\n    <h3>Guru Meditation:</h3>\n    <p>XID: 1112821342</p>\n    <hr>\n    <p>Varnish cache server</p>\n  </body>\n</html>\n'
+
+<otterResponses>
+<response>
+	<error>You must upload a file for your post</error>
+	
+		<hidden>1</hidden>
+	
+	<conversiontargets>
+		<conversiontarget>
+			<id>request_transcode_18</id>
+			<name>m4v</name>
+		</conversiontarget>
+	
+		<conversiontarget>
+			<id>request_transcode_11</id>
+			<name>mp3</name>
+		</conversiontarget>
+	</conversiontargets>
+	
+</response>
+
+</otterResponses>
+
 
 """
 # (02:37:51 PM) Juhaz: CarlFK, no. tree is the root element, it can't find itself, only children.
