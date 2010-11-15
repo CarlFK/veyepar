@@ -215,7 +215,7 @@ def emailer(show_id):
 
     return
 
-def schedule(request, show_id):
+def schedule(request, show_id, show_slug):
     show=get_object_or_404(Show,id=show_id)
     locations=show.locations.all().order_by('sequence')
     episodes=Episode.objects.filter(show=show)
@@ -478,6 +478,19 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
         episodes=Episode.objects.filter(show=show,location=location).order_by('sequence')
     else:
         episodes=Episode.objects.filter(show=show).order_by('sequence')
+    
+    # calc total time and dv size
+    total_minutes=0
+    for e in episodes:
+        seconds = reduce(lambda x, i: x*60 + i,
+            map(float, e.duration.split(':')))
+        # add 5 min to each talk to accomdate talks going over 
+        # and recording break time 
+        minutes = seconds/60 + 5 
+        total_minutes += minutes
+    total_hours = total_minutes / 60
+    total_gig = total_hours * 13
+     
 
     if request.user.is_authenticated():
         if request.method == 'POST':
@@ -531,6 +544,8 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
           'location_slug':location_slug,
           'episodes':episodes,
           'episode_form':form,
+          'total_hours': total_hours,
+          'total_gig': total_gig,
         },
         context_instance=RequestContext(request) )
 

@@ -198,7 +198,7 @@ meta.attr.titles.markup=#timecode# \
   # tell the world (test account)
   import tweet
   p=tweet.tweet()
-  p.set_options(force=True, verbose=True, )
+  # p.set_options(force=True, verbose=True, )
   p.main()
   return
 

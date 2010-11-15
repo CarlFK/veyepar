@@ -23,7 +23,7 @@ urlpatterns += patterns(
     url(r'meeting_announcement/(?P<show_id>\w+)/$', 
         meet_ann, 
         name='meet_ann'),
-    url(r'schedule/(?P<show_id>\w+)/$', 
+    url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>\w+)_schedule.html$', 
         schedule, 
         name='schedule'),
     url(r'play_list/(?P<show_id>\w+)/.*$', 

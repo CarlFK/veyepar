@@ -20,7 +20,7 @@
 
 <table class="shortcuts">
 <tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
-<tr><td><a href="{% url schedule show.id %}">schedule</a></td></tr>
+<tr><td><a href="{% url schedule show.id show.slug %}">schedule</a></td></tr>
 <tr><td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td></tr>
 <tr><td><a href="{% url play_list show.id %}{{show.slug}}.m3u">play_list <span style="color: #000; text-decoration: none;">state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
 <tr><td><a href="{% url recording_sheets show.id %}{{show.slug}}.pdf">recording_sheets.pdf</a></td></tr>
@@ -68,6 +68,8 @@
       </tr>
     {% endfor %}
   </table>
+
+total_hours: {{total_hours}},  total_gig: {{total_gig}}
 
   {% if episode_form %}
     <div class=logged-in>
