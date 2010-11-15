@@ -62,6 +62,7 @@ class Run_Tests(object):
   # p=process.process()
   self.show_dir = p.show_dir
   self.show=Show.objects.get(slug=p.options.show)
+  self.options = p.options
   return
 
  def make_source_dvs(self):
@@ -88,18 +89,24 @@ class Run_Tests(object):
           ('30','06:00'),]):
 
        # make a text file to use as encoder input
-       text = ["test %s" % i, melt_ver, datetime.now().ctime()]
+       text = ["test %s - format %s" % ( i, self.options.dv_format),
+                  melt_ver, datetime.now().ctime()]
        tf = open(text_file,'wa')
        tf.write('\n'.join(text))
        tf.close()
        
        # encode the text file into .dv
        # this takes the place of using dvswitch to record an event.
+       #  works: "melt -profile dv_ntsc
+
        parms={'input_file':text_file, 
            'output_file':'%s/00:%s.dv' % (dv_dir,l[1]),
+           'format':"dv_%s" % (self.options.dv_format),
            'frames':l[0]}
        print parms
-       cmd = "melt -profile dv_ntsc %(input_file)s \
+       cmd = "melt \
+-profile %(format)s \
+%(input_file)s \
 out=%(frames)s \
 meta.attr.titles=1 \
 meta.attr.titles.markup=#timecode# \

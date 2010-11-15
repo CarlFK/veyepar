@@ -224,7 +224,7 @@ class process(object):
     parser = optparse.OptionParser()
 
     # hardcoded defauts
-    parser.set_defaults(format='dv_ntsc')
+    parser.set_defaults(dv_format='ntsc')
     parser.set_defaults(upload_formats="ogv")
     parser.set_defaults(media_dir=os.path.expanduser('~/Videos/veyepar'))
     self.add_more_option_defaults(parser)
@@ -259,7 +259,7 @@ class process(object):
     parser.add_option('-d', '--day' )
     parser.add_option('-r', '--room',
               help="Location")
-    parser.add_option('--format', 
+    parser.add_option('--dv-format', 
               help='pal, pal_wide, ntsc, ntsc_wide' )
     parser.add_option('--upload-formats', 
               help='ogg, ogv, mp4, flv, dv' )
@@ -289,7 +289,7 @@ class process(object):
         from django.conf import settings
         print settings.DATABASE_ENGINE, settings.DATABASE_NAME
 
-    if "pal" in self.options.format.lower():
+    if "pal" in self.options.dv_format:
         self.fps=25.0
         self.bpf=144000 
 
