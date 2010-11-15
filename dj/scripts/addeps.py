@@ -70,7 +70,7 @@ class add_eps(process.process):
               seq+=1
               loc.sequence=seq
               loc.save()
-              show.location.add(loc)
+              show.locations.add(loc)
               show.save()
 
     def  talk_time(self, day,time):
