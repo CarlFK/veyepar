@@ -31,7 +31,7 @@ from main.models import fnify, Client, Show, Location, Episode
 
 class add_eps(process.process):
 
-    def addlocs(self, show, schedule):
+    def addlocs(self, schedule, show):
       """ pycon 2010 
       seq=0
       locs=d['rooms']
@@ -230,7 +230,7 @@ class add_eps(process.process):
       schedule = json.loads(j)
 
       schedule = schedule['nodes']
-      self.addlocs(schedule)
+      self.addlocs(schedule,show)
       self.addeps(schedule, show)
 
     def add_more_options(self, parser):
