@@ -31,7 +31,7 @@ from main.models import fnify, Client, Show, Location, Episode
 
 class add_eps(process.process):
 
-    def addlocs(self, schedule):
+    def addlocs(self, show, schedule):
       """ pycon 2010 
       seq=0
       locs=d['rooms']
@@ -70,6 +70,8 @@ class add_eps(process.process):
               seq+=1
               loc.sequence=seq
               loc.save()
+              show.location.add(loc)
+              show.save()
 
     def  talk_time(self, day,time):
 # Day: "Wed 24 Nov"
@@ -237,8 +239,17 @@ class add_eps(process.process):
 
     def work(self):
       if self.options.client and self.options.show:
-        client = Client.objects.get(slug=self.options.client)
-        show = Show.objects.get(client=client,slug=self.options.show)
+
+        client,created = Client.objects.get_or_create(slug=self.options.client)
+        if created:
+          client.name = self.options.client
+          client.save()
+
+        show,created = Show.objects.get_or_create(
+                             client=client,slug=self.options.show)
+        if created:
+          show.name = self.options.show
+          show.save()
         
         if self.options.whack:
 # clear out previous runs for this show
