@@ -266,7 +266,7 @@ class enc(process):
         clip.attrib['in']='0'
         clip.attrib['out']='150'
         new=xml.etree.ElementTree.Element('entry', clip.attrib )
-        # playlist.insert(pos,new)
+        playlist.insert(pos,new)
         pos+=1
 
 # add volume tweeks
@@ -508,7 +508,7 @@ out=%(frames)s \
         title_img=self.mktitle(template, title_base, episode)
 
 # define postroll
-        postroll = os.path.join(self.show_dir, "bling", 'nvd.png')
+        postroll = os.path.join(self.show_dir, "bling", 'ndv1-black.png')
 
 # get list of raw footage for this episode
         rfs = Raw_File.objects. \

@@ -7,7 +7,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="800"
@@ -147,15 +146,15 @@
      inkscape:pageopacity="0.94117647"
      inkscape:pageshadow="2"
      inkscape:zoom="0.84880128"
-     inkscape:cx="277.34231"
-     inkscape:cy="347.62165"
+     inkscape:cx="115.93822"
+     inkscape:cy="394.74693"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1267"
-     inkscape:window-height="1001"
+     inkscape:window-height="721"
      inkscape:window-x="1"
-     inkscape:window-y="53"
+     inkscape:window-y="24"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -194,25 +193,6 @@
        height="600"
        x="0"
        y="0" />
-    <text
-       xml:space="preserve"
-       style="font-size:20.176651px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       x="64.395706"
-       y="575.07855"
-       id="text2556"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan2558"
-         x="64.395706"
-         y="575.07855">You too can support the PSF: http://www.python.org/psf/donations/</tspan></text>
-    <image
-       sodipodi:absref="/home/juser/src/veyepar/dj/scripts/bling/sauce_masthead.png"
-       xlink:href="sauce_masthead.png"
-       y="485.66159"
-       x="130.38989"
-       id="logo3"
-       height="56.666668"
-       width="116.62791" />
     <flowRoot
        xml:space="preserve"
        id="titlebox"
@@ -243,7 +223,7 @@
        xml:space="preserve"
        id="flowRoot2802"
        style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="translate(17.664063,136)"><flowRegion
+       transform="translate(17.382813,264)"><flowRegion
          id="flowRegion2804"><rect
            id="rect2806"
            width="587.64703"
@@ -253,8 +233,8 @@
            style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
          id="flowPara2816">Video produced by <flowSpan
    style="font-weight:bold;-inkscape-font-specification:Bitstream Charter Bold"
-   id="flowSpan2854">Next Day Video</flowSpan> productions </flowPara><flowPara
-         id="flowPara2818">in conjunction with the PSF and support from:</flowPara></flowRoot>    <text
+   id="flowSpan2854">Next Day Video</flowSpan> productions. </flowPara><flowPara
+         id="flowPara2818" /></flowRoot>    <text
        xml:space="preserve"
        style="font-size:26.56643677px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
        x="342.53442"
@@ -278,23 +258,7 @@
            x="68.642532"
            y="121.71946"
            style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
-         id="client">PyCon 2010 Atlanta</flowPara></flowRoot>    <image
-       sodipodi:absref="/home/juser/src/veyepar/dj/scripts/bling/orbitz.png"
-       xlink:href="orbitz.png"
-       width="168.77777"
-       height="34.230686"
-       id="image2957"
-       x="315.61111"
-       y="494.66238" />
-    <image
-       sodipodi:absref="/home/juser/src/veyepar/dj/scripts/bling/imagescape-web.gif"
-       xlink:href="imagescape-web.gif"
-       width="139.55556"
-       height="58.919197"
-       id="logo1"
-       x="516.66663"
-       y="484.54037" />
-    <flowRoot
+         id="client">PyCon 2010 Atlanta</flowPara></flowRoot>    <flowRoot
        transform="matrix(1,0,0,1.1970692,-11.226563,93.523298)"
        style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
        id="presenterbox-5"
@@ -307,5 +271,15 @@
            width="684.7511"
            id="rect2832-4" /></flowRegion><flowPara
          id="presentertitle"
-         style="font-weight:normal">Video MaD Man</flowPara></flowRoot>  </g>
+         style="font-weight:normal">Video MaD Man</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3030"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Bitstream Vera Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion3032"><rect
+           id="rect3034"
+           width="566.68152"
+           height="76.578583"
+           x="89.53804"
+           y="469.22736" /></flowRegion><flowPara
+         id="flowPara3036"></flowPara></flowRoot>  </g>
 </svg>
