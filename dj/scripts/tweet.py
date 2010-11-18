@@ -34,8 +34,10 @@ class tweet(process):
         print data
         return data['results'].values()[0]['shorturl']
 
-    def mk_tweet(self, prefix, video_name, video_url):
-        message = ' '.join([prefix, video_name, video_url])
+    def mk_tweet(self, prefix, video_name, authors, video_url):
+        message = ' '.join([prefix, video_name, '-', authors, video_url])
+        if len(message) > 140:
+            message = ' '.join([prefix, video_name, video_url])
         if len(message) > 140:
             short_url = self.shorten(video_url)
             message = ' '.join([prefix, video_name, short_url])
@@ -51,7 +53,7 @@ class tweet(process):
 
         blip_url="http://carlfk.blip.tv/file/%s" % ep.target
         prefix = "#%s #VIDEO" % show.client.slug
-        tweet = self.mk_tweet(prefix, ep.name, blip_url)
+        tweet = self.mk_tweet(prefix, ep.name, ep.authors, blip_url)
 
         ret=False
         if self.options.test:
