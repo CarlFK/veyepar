@@ -173,10 +173,10 @@ class add_eps(process.process):
                       a1,a2 = episode.__getattribute__(f), locals()[f]
                       if a1 != a2: diff_fields.append((f,a1,a2))
                   if diff_fields:
-                      print 'diff: id:%s name:%s' % (episode.id, episode.name)
-                      # for f,a1,a2 in diff_fields:
-                      for i in diff_fields:
-                          print '%s\n%s\n%s' % i
+                      print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
+                      for f,a1,a2 in diff_fields:
+                          print 'veyepar %s: %s' % (f,a1)
+                          print '  event %s: %s' % (f,a2)
                       print
 
 
