@@ -118,6 +118,7 @@ class add_eps(process.process):
           start, duration = self.talk_time(row['Day'],row['Time'])
           authors=row['Presenter']
           # released=row['released']
+          released=None
           description = row['Link']
           tags = row['Keywords']
 
@@ -152,15 +153,31 @@ class add_eps(process.process):
                   seq+=1
                   episode.state=1
 
-              episode.location=location 
-              episode.name=name
-              episode.primary=primary
-              episode.authors=authors
-              # episode.released=released
-              episode.start=start
-              episode.duration=duration
-              episode.description=description
-              episode.save()
+              if created or self.options.update:
+                  episode.location=location 
+                  episode.name=name
+                  episode.primary=primary
+                  episode.authors=authors
+                  episode.released=released
+                  episode.start=start
+                  episode.duration=duration
+                  episode.description=description
+                  episode.save()
+              else:
+                  # check for diffs
+                  # report if different
+                  fields = [ 'location', 'name', 'primary', 'authors', 
+                      'released', 'start', 'duration', 'description',]
+                  diff_fields=[]
+                  for f in fields:
+                      a1,a2 = episode.__getattribute__(f), locals()[f]
+                      if a1 != a2: diff_fields.append((f,a1,a2))
+                  if diff_fields:
+                      print 'diff: id:%s name:%s' % (episode.id, episode.name)
+                      # for f,a1,a2 in diff_fields:
+                      for i in diff_fields:
+                          print '%s\n%s\n%s' % i
+                      print
 
 
       """ pycon 2010
@@ -236,6 +253,8 @@ class add_eps(process.process):
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
           help='csv file' )
+        parser.add_option('-u', '--update', action="store_true", 
+          help='update when diff, else print' )
 
     def work(self):
       if self.options.client and self.options.show:
