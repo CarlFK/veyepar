@@ -14,7 +14,7 @@ sudo apt-add-repository ppa:sunab/kdenlive-svn
 
 sudo apt-get update
 
-sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim
+sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim python-virtualenv
 
 sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
 printf "\nsource /usr/local/bin/virtualenvwrapper.sh\n" >> ~/.bashrc
