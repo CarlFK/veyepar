@@ -351,11 +351,13 @@ out=%(frames)s \
 
   def enc_all(self, mlt_pathname, episode):
 
-        def enc_one(ext, acodec=None, vcodec=None):
+        def enc_one(ext):
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
-              cmds=["melt -verbose -progress -profile square_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.dv_format, mlt_pathname, out_pathname, acodec, vcodec)]
+              # cmds=["melt -verbose -progress -profile square_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.dv_format, mlt_pathname, out_pathname, acodec, vcodec)]
+              if ext=='flv': 
+                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=1000k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
               if ext=='flac': 
                   # 16kHz/mono 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)]
@@ -368,8 +370,7 @@ out=%(frames)s \
                   ffpreset=open('/usr/share/ffmpeg/libx264-default.ffpreset').read().split('\n')
                   ffpreset.extend(open('/usr/share/ffmpeg/libx264-ipod640.ffpreset').read().split('\n'))
                   ffpreset = [i for i in ffpreset if i]
-                  # cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
-                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=1000k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
                   cmd = cmd.split()
                   cmd.extend(ffpreset)
                   cmds=[cmd]
@@ -414,7 +415,8 @@ out=%(frames)s \
             if self.options.verbose: 
                 print "checking %s in [%s]" % (ext,self.options.upload_formats)
             if ext in self.options.upload_formats:
-                ret = enc_one(ext, acodec, vcodec)
+                # ret = enc_one(ext, acodec, vcodec)
+                ret = enc_one(ext)
             else:
                 # this is the case where we don't do this format, 
                 # so don't flag as error
@@ -424,9 +426,10 @@ out=%(frames)s \
 
 
         ret = True
-        ret = ret and one_format("ogg", "vorbis", "libtheora")
-        ret = ret and one_format("flv", "libmp3lame", "flv")
-        ret = ret and one_format("mp4", "libmp3lame", "mpeg4")
+        # ret = ret and one_format("ogg", "vorbis", "libtheora")
+        ret = ret and one_format("flv")
+        # ret = ret and one_format("flv", "libmp3lame", "flv")
+        # ret = ret and one_format("mp4", "libmp3lame", "mpeg4")
         ret = ret and one_format("mp3")
         ret = ret and one_format("flac")
         ret = ret and one_format("m4v")
