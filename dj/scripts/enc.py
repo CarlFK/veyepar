@@ -368,7 +368,8 @@ out=%(frames)s \
                   ffpreset=open('/usr/share/ffmpeg/libx264-default.ffpreset').read().split('\n')
                   ffpreset.extend(open('/usr/share/ffmpeg/libx264-ipod640.ffpreset').read().split('\n'))
                   ffpreset = [i for i in ffpreset if i]
-                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  # cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=1000k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
                   cmd = cmd.split()
                   cmd.extend(ffpreset)
                   cmds=[cmd]

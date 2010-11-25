@@ -12,9 +12,11 @@ sudo apt-add-repository ppa:sunab/kdenlive-svn
 # sudo apt-add-repository ppa:j/ppa
 # sudo apt-add-repository ppa:freshmedia/ppa
 
+sudo apt-add-repository 'deb http://packages.medibuntu.org/ '$(lsb_release -cs)' free non-free'
+
 sudo apt-get update
 
-sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim python-virtualenv
+sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim python-virtualenv  libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 mencoder ffmpeg
 
 sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
 printf "\nsource /usr/local/bin/virtualenvwrapper.sh\n" >> ~/.bashrc
