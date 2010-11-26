@@ -264,7 +264,7 @@ class enc(process):
         clip.attrib['id']="clip_footer"
         clip.attrib['producer']="footer"
         clip.attrib['in']='0'
-        clip.attrib['out']='150'
+        clip.attrib['out']='50'
         new=xml.etree.ElementTree.Element('entry', clip.attrib )
         playlist.insert(pos,new)
         pos+=1
@@ -381,11 +381,9 @@ out=%(frames)s \
               if ext=='dv': 
                   out_pathname = os.path.join( 
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
-                  # note: removed -profile cuz it was causing this error:
-# [dvvideo @ 0x997640]Found no DV profile for 640x480 yuv411p video
                   cmds=["melt -verbose -progress %s -consumer avformat:%s pix_fmt=yuv411p progressive=1" % ( mlt_pathname, out_pathname)]
               if ext=='ogv': 
-                  # melts ogv encoder is loopy, 
+                  # melt/ffmpeg ogv encoder is loopy, 
                   # so make a .dv and pass it to ffmpeg2theora
                   ret = enc_one("dv")
                   if ret:

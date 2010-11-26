@@ -76,6 +76,8 @@ class StateAdmin(admin.ModelAdmin):
 admin.site.register(State, StateAdmin)
 
 class LogAdmin(admin.ModelAdmin):
-    pass
+    list_display=['stop', 'episode', 'state', 'start', 'end']
+    list_display_links = ('episode',)
+    list_editable = ('stop',)
 admin.site.register(Log, LogAdmin)
 

@@ -210,6 +210,8 @@ class Log(models.Model):
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
     result = models.CharField(max_length=250)
+    stop = models.NullBooleanField(
+             help_text="Stop process.py from processing anymore")
 
 def set_slug(sender, instance, **kwargs):
     if not instance.slug and instance.name:

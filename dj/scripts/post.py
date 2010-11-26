@@ -17,8 +17,8 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 # http://wiki.blip.tv/index.php/Roles
     # old, works.. but Source looks better:    'ogv':"Web", 
 roles={
-        'ogv':{'description':"Master",'num':''},
-        'flv':{'description':"Web",'num':'2'},
+        'flv':{'description':"Blip SD",'num':''},
+        'ogv':{'description':"Web",'num':'2'},
         'mp4':{'description':"dvd",'num':'3'},
         'm4v':{'description':"Portable (iPod)",'num':'4'},
         'ogg':{'description':"Portable (other)",'num':'5'},

@@ -36,6 +36,12 @@ class process(object):
 
   extra_options={} 
 
+  # set to True to stop processing at the end of episode
+  # will not abort an encode, upload or anything like that.
+  # it just exits these loops: 
+  #    for e in es: (process episodes) and do while not Done: (poll)
+  stop = False 
+
   ready_state=None
   
 # defaults to ntsc stuff
@@ -78,13 +84,19 @@ class process(object):
     self.log.result += text + '\n'
 
   def log_out(self):
+
+    # refresh the in memory log object in case another process 
+    # has set the 'stop' flag
+
+    self.log = Log.objects.get(pk=self.log.id)
+    self.stop = self.log.stop
+    
     self.log.end = datetime.datetime.now()
     self.log.save()
     ep=self.log.episode
     ep.locked = None
     ep.locked_by = ''
     ep.save()
-    del(self.log)
     
   def process_ep(self, episode):
     print "stubby process_ep", episode.id, episode.name
@@ -126,8 +138,10 @@ class process(object):
                     # bump state
                     ep.state += 1
             self.end = datetime.datetime.now()
-            self.log_out()
             ep.save()
+            self.log_out()
+            if self.stop: 
+                return 
         else:
             if self.options.verbose:
                 print '#%s: "%s" is in state %s, ready is %s' % (
@@ -149,7 +163,6 @@ class process(object):
             'sequence','start',)
         if self.options.day:
             episodes=episodes.filter(start__day=self.options.day)
-        # self.process_eps(episodes)
         for day in [17,18,19,20,21]:
             # self.process_eps(episodes.filter(start__day=day))
             es=episodes.filter(start__day=day)
@@ -176,8 +189,6 @@ class process(object):
         self.end=datetime.datetime.now()
         work_time = self.end-self.start
         print "run time: %s minutes" % (work_time.seconds/60)
-        # for day in [11,17,18,19,20,21]:
-        #    self.process_eps(episodes.filter(start__day=day))
 
         return
 
@@ -185,8 +196,11 @@ class process(object):
         done=False
         while not done:
             self.work()
-            if self.options.verbose: print "sleeping...."
-            time.sleep(int(self.options.poll))
+            if self.stop:
+                done=True
+            else: 
+                if self.options.verbose: print "sleeping...."
+                time.sleep(int(self.options.poll))
 
  
   def list(self):
