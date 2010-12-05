@@ -156,6 +156,9 @@ class process(object):
                 if self.options.verbose: print ".STOP set on the episode."
                 # send message to .poll 
                 self.stop = True
+                # re-set the stop flag.
+                ep.stop = False
+                ep.save()
                 return 
         else:
             if self.options.verbose:
