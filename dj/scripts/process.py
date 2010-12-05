@@ -71,6 +71,8 @@ class process(object):
     what_where = "%s@%s" % (self.__class__.__name__, hostname)
     episode.locked = datetime.datetime.now()
     episode.locked_by = what_where
+    # save the lock to disk
+    episode.save()
     try:
         state = State.objects.get(id=episode.state)
     except State.DoesNotExist:
@@ -82,12 +84,11 @@ class process(object):
         start = datetime.datetime.now(),
         result = what_where)
     self.log.save()
-    episode.save()
 
   def log_info(self,text):
     self.log.result += text + '\n'
 
-  def log_out(self):
+  def log_out(self, episode):
 
     # done processing
     # log the end time
@@ -95,10 +96,10 @@ class process(object):
 
     self.log.end = datetime.datetime.now()
     self.log.save()
-    ep=self.log.episode
-    ep.locked = None
-    ep.locked_by = ''
-    ep.save()
+
+    episode.locked = None
+    episode.locked_by = ''
+    episode.save()
     
   def process_ep(self, episode):
     print "stubby process_ep", episode.id, episode.name
@@ -151,7 +152,7 @@ class process(object):
                     ep.state += 1
             self.end = datetime.datetime.now()
             ep.save()
-            self.log_out()
+            self.log_out(ep)
             if ep.stop: 
                 if self.options.verbose: print ".STOP set on the episode."
                 # send message to .poll 
