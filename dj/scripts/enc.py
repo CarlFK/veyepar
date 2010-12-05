@@ -364,6 +364,7 @@ out=%(frames)s \
               if ext=='mp3': 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s" % ( mlt_pathname, out_pathname)]
               if ext=='m4v': 
+                  # iPhone
                   tmp_pathname = os.path.join( 
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
                   # combine settings from 2 files
