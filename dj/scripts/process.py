@@ -63,6 +63,10 @@ class process(object):
 
 
   def log_in(self,episode):
+    """
+    log_in/out
+    create logs, and logk.unlock the episode
+    """
     hostname=socket.gethostname()
     what_where = "%s@%s" % (self.__class__.__name__, hostname)
     episode.locked = datetime.datetime.now()
@@ -85,12 +89,10 @@ class process(object):
 
   def log_out(self):
 
-    # refresh the in memory log object in case another process 
-    # has set the 'stop' flag
+    # done processing
+    # log the end time
+    # unlock the episode
 
-    self.log = Log.objects.get(pk=self.log.id)
-    self.stop = self.log.stop
-    
     self.log.end = datetime.datetime.now()
     self.log.save()
     ep=self.log.episode
@@ -127,20 +129,33 @@ class process(object):
 
             if self.options.verbose: print ep.name
             self.log_in(ep)
-            if self.process_ep(ep):
+            good = self.process_ep(ep)
+            # .process is long running (maybe, like encode or post) 
+            # so refresh episode in case its .stop was set 
+            # (would be set in some other process, like the UI)
+            ep=Episode.objects.get(pk=e.id)
+            if good:
                 # if the process doesn't fail,
                 # and it was part of the normal process, 
-                # so don't bump if the process was forced, 
+                # don't bump if the process was forced, 
                 # even if it would have been had it not been forced.
                 # if you force, you know better than the process,
                 # so the process is going to let you bump.
-                if self.ready_state is not None and not self.options.force:
+                # huh?!  
+                # so..  ummm... 
+                # 1. you can't bump None
+                # 2. if it wan't forced:   bump.
+                if self.ready_state is not None \
+                        and not self.options.force:
                     # bump state
                     ep.state += 1
             self.end = datetime.datetime.now()
             ep.save()
             self.log_out()
-            if self.stop: 
+            if ep.stop: 
+                if self.options.verbose: print ".STOP set on the episode."
+                # send message to .poll 
+                self.stop = True
                 return 
         else:
             if self.options.verbose:

@@ -140,6 +140,8 @@ class Episode(models.Model):
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
+    stop = models.NullBooleanField(
+             help_text="Stop process.py from processing anymore")
     @models.permalink
     def get_absolute_url(self):
         return ('episode', [self.id])
