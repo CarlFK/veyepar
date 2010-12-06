@@ -32,7 +32,7 @@ class Client(models.Model):
     blip_user = models.CharField(max_length=30, blank=True, null=True)
     title_svg = models.CharField(max_length=30, blank=True, null=True,
         help_text='template for event/title/authors')
-    credits_svg = models.CharField(max_length=30, blank=True, null=True,
+    credits = models.CharField(max_length=30, blank=True, null=True,
         help_text='template for ending credits')
     def __unicode__(self):
         return self.name
