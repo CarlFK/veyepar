@@ -20,13 +20,14 @@ sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstre
 
 sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
 printf "\nsource /usr/local/bin/virtualenvwrapper.sh\n" >> ~/.bashrc
+printf "workon veyepar\n" >> ~/.bashrc
 source /usr/local/bin/virtualenvwrapper.sh 
 # if [ ! -d ~/.virtualenvs ]; then
 #   mkdir ~/.virtualenvs
 #fi
 
 mkvirtualenv veyepar
-# workon veyepar
+printf "workon veyepar\n" >> ~/.bashrc
 
 # git clone https://CarlFK@github.com/CarlFK/veyepar.git
 # git clone git@github.com:CarlFK/veyepar.git

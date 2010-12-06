@@ -593,7 +593,6 @@ def episode(request, episode_no):
     location=episode.location
     client=show.client
 
-
     try:
         # prev_episode = episode.get_previous_by_start(show=show)
         prev_episode = episode.my_get_previous_by_start(show=show)

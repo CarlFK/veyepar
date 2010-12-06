@@ -172,7 +172,7 @@ class enc(process):
     return png_name
 
 
-  def mkmlt(self,title_img,postroll,episode,cls,rfs):
+  def mkmlt(self,title_img,credits_img,episode,cls,rfs):
         """
         assemble a mlt playlist from:
         mlt template, title screen image, 
@@ -204,11 +204,9 @@ class enc(process):
             tree[0].insert(pos,new)
             pos+=1
 
-# add footer file
-        dvfile.attrib['id']="footer"
-        # rawpathname = os.path.join(self.episode_dir,rf.filename)
-        # dvfile.attrib['resource']=rawpathname
-        dvfile.attrib['resource']=postroll
+# add credits file
+        dvfile.attrib['id']="credits"
+        dvfile.attrib['resource']=credits_img
         new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
         tree[0].insert(pos,new)
         pos+=1
@@ -260,9 +258,9 @@ class enc(process):
             playlist.insert(pos,new)
             pos+=1
 
-# add footer file
-        clip.attrib['id']="clip_footer"
-        clip.attrib['producer']="footer"
+# add credits file
+        clip.attrib['id']="clip_credits"
+        clip.attrib['producer']="credits"
         clip.attrib['in']='0'
         clip.attrib['out']='50'
         new=xml.etree.ElementTree.Element('entry', clip.attrib )
@@ -503,15 +501,18 @@ out=%(frames)s \
     if cls:
 
 # make a title slide
-        svg_name = episode.show.client.title_svg if episode.show.client.title_svg \
-                    else "title.svg"
+        svg_name = episode.show.client.title_svg \
+                if episode.show.client.title_svg \
+                else "title.svg"
 
         template = os.path.join(self.show_dir, "bling", svg_name)
         title_base = os.path.join(self.show_dir, "bling", episode.slug)
         title_img=self.mktitle(template, title_base, episode)
 
-# define postroll
-        postroll = os.path.join(self.show_dir, "bling", 'ndv1-black.png')
+# define credits
+        credits_img = episode.show.client.credits \
+                   if episode.show.client.credits \
+                   else os.path.join(self.show_dir, "bling", 'ndv1-black.png')
 
 # get list of raw footage for this episode
         rfs = Raw_File.objects. \
@@ -519,7 +520,7 @@ out=%(frames)s \
             exclude(trash=True).distinct()
 
 # make a .mlt file for this episode
-        mlt = self.mkmlt(title_img,postroll,episode,cls,rfs)
+        mlt = self.mkmlt(title_img,credits_img,episode,cls,rfs)
 
 # do the final encoding:
 # using melt

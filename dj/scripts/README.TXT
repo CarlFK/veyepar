@@ -2,29 +2,34 @@
 
 Getting started...
 
-1. install django, create the database
-veyepar/dj$ ./manage.py syncdb
+1. install dependancies: INSTALL.sh
+This installs all of the python modules in a virtualenv sandbox using virtualenvwrapper.  So before running any python apps, you must activate the virtualenv with:
+workon veyepar.
+This has been added to ~/.bashrc so it should be setup.
+Then you must run everything with 
+python <script name>.py
+Running ./<script>.py won't work.
+Using virtualenv makes develoment easier and reduces the amount of things that require root/sudo privs.  
+
+1.1 create the database
+veyepar/dj$ python ./manage.py syncdb
+INSTAL.sh calls rt.sh (run tests) which will create the db and a test admin user.  For production you should start with a fresh db, so delete veyepar.db and ru  the above command.
 
 2. create a location, client, show, and episode records in the db
 http://localhost:8080 log in.
 a. click "Locations"
 b. enter Location Name, hit save. 
- tip: use hostname of box dvs-mon is run on.
- tip: tab over default to set slug.
+ tip: use hostname of box dvswitch is run on.
 c. click "Clients"
 d. enter Client Name, hit save.
 f. enter Show Name, select Location from step b, hit Save.
 g. click on show link
-h. enter episode Name, start/end - hit Save.
+h. enter episode Name, start/duration - hit Save.
 i. repeat for each Episode
 
-setup veyepar.cfg with at least the client and show.
+3. veyepar.cfg: set client and show to the client and show slugs.  review settings,  pal/ntsc is one of the more important ones.
 
-If you have many Episodes it might be worth the effort to import locaion and episodes from a .csv file using addeps.py.  
-Otherwise use the admin UI for location and episode too.
-
-3. Make sure the start/end times are right. the next step uses them.  you can fix the db later, but it is much easier if you get it right here, and the camera's clock was set.  
-If you don't know when someting started or ended, leave it blank.  This will link all .dv files to the episode.  It is easier to remvoe links than add them.
+If you have many Episodes it might be worth the effort to import locaion and episodes from a json or .csv file using addeps.py.  
 
 4. create the dirs for the .dv files:
 mkdirs.py  # Makes the dir tree to put files into
@@ -43,12 +48,14 @@ adddv.py: Raw_File.objects.get_or_create( filename=dv,)
 tsdv.py - timestamp dv
 Gets start from one of:
 the file name (assumes hh:mm:ss.dv format)
+There is code to read the time stamp from the .dv file frames, but that doesn't work well at all.  
 
 6.2 ocr/thumbnail
 use ocr to find some text, which makes for a good thumnail.
 mkthumbs.py - find thumbs, ocr untill we find some text
 
 7. Associte dv files with Episodes.
+create cutlist records for each intersection of a dv file and episodes start/end time and location.
 assocdv.py: # creates cutlist items for dv files that might belong to an episode
         eps = Episode.objects.filter(
             Q(start__lte=dv.end)|Q(start__isnull=True),
@@ -62,20 +69,22 @@ dvogg.py:# makes .ogg for all dv in a show
 
 http://0.0.0.0:8080/main/E/1 
 
-If there are ones missing, either use fixdv.py to fix batches, or use django's admin UI to add one by one.  If a dv file has no useful content, mark it as Trash.  
+If there are ones missing, either use fixdv.py to fix batches, or use django's admin UI to add one by one.  
+
 If it belongs to some other event, mark "Cut List - Delete [x]"  This deletes the cutlist entry in the db, not the file.  Nothing deletes the file.
 
 If a dv needs junk trimmed from the start or end, put the time offset in "Cut List - Start/End" 
-1 or 0:0:1 means trim 1 second from start.  1:2:3 means the clip ends 1 hour 2 min 3 seconds from the start of the file, so in this case 1h 2m 2 seconds would be used.
+1 or 0:0:1 means trim 1 second from start.  1:2:3 means the clip ends 1 hour 2 min 3 seconds from the start of the file, so in this case 1h 2m 3 seconds would be used.
 
-Set Episode.state to 2 in admin UI
+Set Episode.state to Encode (2)
 
-10. encode dv to ogg.  
-enc.py:# encodes to ogg
+10. encode files to upload
+enc.py:# encodes to ogg, flv, m4v
 adds titles too.
 
 11. post em:
-post.py:# posts to blip.tv, tweets it
+post.py:# posts to blip.tv, 
 pw.py holds user/passwords, not checked in, make one from pw_samp.py
 
-
+12. tweet 
+tweet.py

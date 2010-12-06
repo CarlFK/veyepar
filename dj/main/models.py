@@ -26,11 +26,14 @@ class Client(models.Model):
     tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
     preroll = models.CharField(max_length=135, blank=True, 
-        help_text="name of video to prepend")
+        help_text="name of video to prepend (not implemented)")
     postroll = models.CharField(max_length=135, blank=True,
-        help_text="name of video to postpend")
+        help_text="name of video to postpend (not implemented)")
     blip_user = models.CharField(max_length=30, blank=True, null=True)
-    title_svg = models.CharField(max_length=30, blank=True, null=True)
+    title_svg = models.CharField(max_length=30, blank=True, null=True,
+        help_text='template for event/title/authors')
+    credits_svg = models.CharField(max_length=30, blank=True, null=True,
+        help_text='template for ending credits')
     def __unicode__(self):
         return self.name
     @models.permalink
@@ -61,7 +64,8 @@ class Show(models.Model):
     locations = models.ManyToManyField(Location)
     sequence = models.IntegerField(default=1)
     name = models.CharField(max_length=135)
-    slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    slug = models.CharField(max_length=135,
+        help_text="dir name to store input files")
     tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
     @property
@@ -110,29 +114,39 @@ class Episode(models.Model):
     location = models.ForeignKey(Location, null=True)
     state = models.IntegerField(null=True,blank=True,choices=STATES,
         help_text="2=ready to encode, 4=ready to post, 5=tweet" )
-    locked = models.DateTimeField(null=True, blank=True)
+    locked = models.DateTimeField(null=True, blank=True, 
+         help_text="clear this to unlock")
     locked_by = models.CharField(max_length=35, blank=True,
 	 help_text="user/process that locked." )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
     start = models.DateTimeField(blank=True, null=True,
         help_text="initially scheduled time from master, adjusted to match reality")
-    duration = models.CharField(max_length=15,null=True,blank=True,)
-    end = models.DateTimeField(blank=True, null=True,)
-    name = models.CharField(max_length=135, help_text="(synced from primary source)")
-    slug = models.CharField(max_length=135,help_text="used for file name")
-    released = models.NullBooleanField(null=True,blank=True,)
-    primary = models.CharField(max_length=135,blank=True,
-        help_text="pointer to master version of event (name,desc,time,author,files,etc)")
+    duration = models.CharField(max_length=15,null=True,blank=True,
+        help_text="length in hh:mm:ss")
+    end = models.DateTimeField(blank=True, null=True,
+        help_text="(calculated if start and duration are set.)")
+    name = models.CharField(max_length=135, 
+        help_text="(synced from primary source)")
+    slug = models.CharField(max_length=135,
+        help_text="file name friendly version of name")
+    released = models.NullBooleanField(null=True,blank=True,
+        help_text="has someone authorised pubication")
+    conf_key = models.CharField(max_length=32, blank=True,
+        help_text='primary key of event in conference system database.')
+    conf_url = models.CharField(max_length=135,blank=True,
+        help_text="event's details on conference site  (name,desc,time,author,files,etc)")
     authors = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
     normalise = models.CharField(max_length=5,null=True,blank=True, )
 
     channelcopy = models.CharField(max_length=2,null=True,blank=True,
-          help_text='copy left to right (10) or right to left (01)' )
-    license = models.IntegerField(null=True,blank=True,default=13)
-    hidden = models.NullBooleanField(null=True,blank=True)
+          help_text='m=mono, 10=copy left to right, 01=right to left.' )
+    license = models.IntegerField(null=True,blank=True,default=13,
+        help_text='see http://0.0.0.0:8080/main/C/test_client/S/test_show/')
+    hidden = models.NullBooleanField(null=True,blank=True,
+        help_text='hidden on blip (does not show up on public episode list')
     thumbnail = models.CharField(max_length=135,blank=True, 
         help_text="filename.png" )
     target = models.CharField(max_length=135, null=True,blank=True,
@@ -146,6 +160,7 @@ class Episode(models.Model):
     def get_absolute_url(self):
         return ('episode', [self.id])
 
+    # better version of django's get_next.. (this handles nuls).
     def _get_next_or_previous_by_FIELD(self, field, is_next, **kwargs):
         from django.utils.encoding import smart_str
         from django.db.models.query import Q
