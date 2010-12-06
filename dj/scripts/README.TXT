@@ -34,7 +34,10 @@ If you have many Episodes it might be worth the effort to import locaion and epi
 4. create the dirs for the .dv files:
 mkdirs.py  # Makes the dir tree to put files into
 
-4.1. put the dv files into the dirs
+4.1. copy the bling into the show's bling dir.
+cp veyepar/dj/scripts/* ~/Videos/veyepar/test_client/test_show/bling/
+
+4.2. put the dv files into the dirs
 Use your mad file copy skilz to rsync, mv, whatever.  
 
 5. for all dv files, add records into the db:
