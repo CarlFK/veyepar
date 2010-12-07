@@ -1,0 +1,8 @@
+# notes to review when setting up production systems
+
+tune2fs - disable fsck on boot.  maybe.  it took 45 min in 2009 to fsck a 200g ext2 box.  I use ext4 now, so maybe not a problem 
+
+
+fstab nfs line:
+ve:/video /video nfs noauto,rw,nfsvers=3 0 0
+
