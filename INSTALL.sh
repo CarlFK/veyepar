@@ -13,6 +13,8 @@ sudo apt-add-repository ppa:sunab/kdenlive-svn
 # sudo apt-add-repository ppa:freshmedia/ppa
 
 sudo apt-add-repository 'deb http://packages.medibuntu.org/ '$(lsb_release -cs)' free non-free'
+# once natty is released:
+# sudo apt-add-repository 'http://packages.medibuntu.org free non-free'
 
 sudo apt-get update
 

@@ -17,6 +17,9 @@ URL of talk page
 tags - comma seperated list 
 """
 
+# FireFox plugin to view .json data:
+# https://addons.mozilla.org/en-US/firefox/addon/10869/
+
 import datetime 
 import urllib2,json
 # from csv import DictReader
@@ -114,11 +117,12 @@ class add_eps(process.process):
 
           room = row['Room']
           location = Location.objects.get(name=room)
-          primary = row['Nid']
+          conf_key = row['Nid']
           start, duration = self.talk_time(row['Day'],row['Time'])
           authors=row['Presenter']
           # released=row['released']
           released=None
+          url = row['Link']
           description = row['Link']
           tags = row['Keywords']
 
@@ -131,12 +135,12 @@ class add_eps(process.process):
                 'Lightning Talks', 
                 'Distinguished Guest Speaker', 
                 'Sprints Kickoff']:
-              primary=''
+              conf_key=''
           
           if self.options.test:
               print location
               print name
-              print primary
+              print conf_key
               print start
               print authors
               # print released
@@ -146,7 +150,7 @@ class add_eps(process.process):
               print
           else:
               episode,created = Episode.objects.get_or_create(
-                  show=show, primary=primary, )
+                  show=show, conf_key=conf_key, )
 
               if created:
                   episode.sequence=seq
@@ -156,7 +160,8 @@ class add_eps(process.process):
               if created or self.options.update:
                   episode.location=location 
                   episode.name=name
-                  episode.primary=primary
+                  episode.conf_key=conf_key
+                  episode.conf_url=url
                   episode.authors=authors
                   episode.released=released
                   episode.start=start
@@ -166,7 +171,7 @@ class add_eps(process.process):
               else:
                   # check for diffs
                   # report if different
-                  fields = [ 'location', 'name', 'primary', 'authors', 
+                  fields = [ 'location', 'name', 'conf_key', 'authors', 
                       'released', 'start', 'duration', 'description',]
                   diff_fields=[]
                   for f in fields:
@@ -201,7 +206,7 @@ class add_eps(process.process):
         name = ep['title']
         slug=fnify(name)
         authors=ep['presenters']
-        primary=str(ep['id'])
+        conf_key=str(ep['id'])
         start = datetime.datetime(*ep['start'])
         end = start + datetime.timedelta(minutes=ep['duration'])
         print name
@@ -211,7 +216,7 @@ class add_eps(process.process):
 
         if self.options.test:
             episode = Episode.objects.get(
-                show=show, primary=primary)
+                show=show, conf_key=conf_key)
             if episode.location != location:
                 print  episode.name, episode.location, location
                 if self.options.force:
@@ -220,13 +225,13 @@ class add_eps(process.process):
                     episode.save()
         else:
             episode,created = Episode.objects.get_or_create(
-                show=show, primary=primary)
+                show=show, conf_key=conf_key)
             if created:
                 episode.sequence=seq
             episode.location=location 
             episode.name=name
             episode.slug=fnify(name)
-            episode.primary=primary
+            episode.conf_key=conf_key
             episode.authors=authors
             episode.start=start
             episode.end=end
