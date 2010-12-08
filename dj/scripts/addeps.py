@@ -17,6 +17,23 @@ URL of talk page
 tags - comma seperated list 
 """
 
+"""
+There is a datetime format issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code. easy to read data is good too.  Do not write extra server side code to try and make it easier to parse.  That has lead to data loss, which means trying to debug a ssytem that starts with the event's data input and ends with veyepar's database, which is not fun.  
+
+Here is PyCon 2010's impemtation:
+datetime objects are represented as a time tuple of six elements:
+    (year, month, day, hour, min, sec) 
+        "start":      [2010, 2, 19, 9, 30, 0],
+        "duration":   30, # in min
+http://us.pycon.org/2010/conference/schedule/json/
+Easy to code, hard to read.
+
+OSDC2010: easy to read, harder to parse/assemble into start durration.
+http://2010.osdc.com.au/program/json
+# Day: "Tue 23 Nov"
+# Time: "09:00 - 17:00"
+"""
+
 # FireFox plugin to view .json data:
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
 
