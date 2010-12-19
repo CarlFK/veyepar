@@ -51,7 +51,7 @@ class tweet(process):
         show = ep.show
         client = show.client
 
-        blip_url="http://osdc.blip.tv/file/%s" % ep.target
+        blip_url="http://%s.blip.tv/file/%s" % (self.blip_user,ep.target)
         prefix = "#%s #VIDEO" % show.client.slug
         tweet = self.mk_tweet(prefix, ep.name, ep.authors, blip_url)
 
