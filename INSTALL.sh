@@ -20,7 +20,11 @@ sudo apt-get update
 
 sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim python-virtualenv  libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 mencoder ffmpeg
 
-sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
+# curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv 
+
+# sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
+sudo pip install hg+https://bitbucket.org/dhellmann/virtualenvwrapper
+
 printf "\nsource /usr/local/bin/virtualenvwrapper.sh\n" >> ~/.bashrc
 source /usr/local/bin/virtualenvwrapper.sh 
 # if [ ! -d ~/.virtualenvs ]; then

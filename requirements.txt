@@ -1,4 +1,5 @@
-svn+http://code.djangoproject.com/svn/django/trunk/#egg=django
+# svn+http://code.djangoproject.com/svn/django/trunk/#egg=django
+django==1.2
 vobject
 oauth2
 # svn+http://svn.dabodev.com/dabo/trunk/#egg=dabo
