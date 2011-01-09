@@ -153,7 +153,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     show=get_object_or_404(Show,client=client,slug=show_slug)
     eps = Episode.objects.filter(show=show)
 
-    fields=('id','location','sequence','primary','target',
+    fields=('id','location','sequence','conf_key','target',
         'name','authors','description','start','duration')
 
     # response = HttpResponse(mimetype="text/javascript")
@@ -280,7 +280,7 @@ def recording_sheets(request,show_id):
         ds.append({'episode_id':ep.id,
           'episode_name':ep.name,
           'episode_authors':ep.authors,
-          'episode_primary':ep.primary,
+          'episode_primary':ep.conf_key,
           'episode_start':ep.start,
           'episode_duration':ep.duration,
           'episode_end':ep.end,
@@ -297,7 +297,8 @@ def recording_sheets(request,show_id):
     buffer.close()
 
     response = HttpResponse(mimetype='application/pdf')
-    response['Content-Disposition'] = 'filename=recording_sheets.pdf'
+    response['Content-Disposition'] = \
+      'filename=%s_recording_sheets.pdf' % ( show.slug )
     response.write(pdf)
     return response
 
