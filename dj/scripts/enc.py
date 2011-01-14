@@ -262,7 +262,7 @@ class enc(process):
         clip.attrib['id']="clip_credits"
         clip.attrib['producer']="credits"
         clip.attrib['in']='0'
-        clip.attrib['out']='50'
+        clip.attrib['out']='120' # this should be sec * fps.
         new=xml.etree.ElementTree.Element('entry', clip.attrib )
         playlist.insert(pos,new)
         pos+=1

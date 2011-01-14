@@ -8,6 +8,8 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, '..' )
 from django.conf import settings
 
+import socket
+
 from main.models import Show, Episode
 
 class Run_Tests(object):
@@ -90,7 +92,9 @@ class Run_Tests(object):
 
        # make a text file to use as encoder input
        text = ["test %s - format %s" % ( i, self.options.dv_format),
-                  melt_ver, datetime.now().ctime()]
+                  melt_ver, datetime.now().ctime(),
+                  socket.gethostname()
+              ]
        tf = open(text_file,'wa')
        tf.write('\n'.join(text))
        tf.close()
