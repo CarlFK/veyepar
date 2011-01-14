@@ -200,6 +200,10 @@ def emailer(show_id):
  '<genluglist@codlug.info>',
  '<chicagotechcal@gmail.com>']
 
+    test_tos = [
+    'carl@personnelware.com', 
+    ]
+
     subject,body=meet_ann(None,show_id)
     
     # connect to the smtp server

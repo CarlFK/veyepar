@@ -1,5 +1,6 @@
 {#Meeting  meeting_announcement.html #}
 ANN: {{client.name}} at {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
+{% autoescape off %}
 
 {{client.name}}
 =========================
@@ -20,7 +21,7 @@ Details
 {{forloop.counter}}. {{ episode.name }} 
 {{episode.authors}}
 {{episode.description}}
-{{episode.primary}}
+{{episode.conf_url}}
 {% if episode.target %}
  Video: http://carlfk.blip.tv/file/{{episode.target}}
 {% endif %}
@@ -33,4 +34,5 @@ Location
 About the group
 ---------------
 {{client.description}}
+{% endautoescape %}
 

@@ -51,7 +51,10 @@ class tweet(process):
         show = ep.show
         client = show.client
 
-        blip_url="http://%s.blip.tv/file/%s" % (self.blip_user,ep.target)
+        # use the username for the client, else use the first user in pw.py
+        user =  client.blip_user if client.blip_user else 'nextdayvideo'
+
+        blip_url="http://%s.blip.tv/file/%s" % (user,ep.target)
         prefix = "#%s #VIDEO" % show.client.slug
         tweet = self.mk_tweet(prefix, ep.name, ep.authors, blip_url)
 
@@ -60,12 +63,7 @@ class tweet(process):
             print 'test mode:', tweet
         else:
             print 'tweeting:', tweet
-            # use the username for the client, else use the first user in pw.py
-            user =  client.blip_user if client.blip_user \
-                        else 'nextdayvideo'
-            # password = pw.twit[user]
             # print user,password
-            # api = twitter.Api(username=user, password=password)
             t = pw.twit[user]
             api = twitter.Api(consumer_key=t['consumer_key'], 
                      consumer_secret=t['consumer_secret'],
