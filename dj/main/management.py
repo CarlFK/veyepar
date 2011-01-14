@@ -12,9 +12,16 @@ Leaving this in here untill the fix hits the repos.
 it is pretty harmless, so no need to rush it out.
 """
 
-def init_data(sender, **kwargs):
-    django.contrib.sites.models.Site.objects.all().delete()
+"""
+# get rid of this alltogher given:
+http://code.djangoproject.com/changeset/13980#file12
+ 	153	For code which relies on getting the current domain but cannot be certain 
+ 	154	that the sites framework will be installed for any given project
+"""
 
-post_syncdb.connect(init_data, sender=django.contrib.sites.models)
+# def init_data(sender, **kwargs):
+#     django.contrib.sites.models.Site.objects.all().delete()
+
+# post_syncdb.connect(init_data, sender=django.contrib.sites.models)
 # post_syncdb.disconnect(django.contrib.sites.management.create_default_site)
 
