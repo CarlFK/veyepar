@@ -1,15 +1,24 @@
 #!/bin/bash -x
 # Veyepar instalation script
 
+# boot strap command to get this file and run it.
 # wget --no-check-certificate https://github.com/CarlFK/veyepar/raw/master/INSTALL.sh
 # chmod u+x INSTALL.sh
 
 # install apt-add-repository:
 sudo apt-get install python-software-properties
 
+# trunk gstreamer - used for mkthumbs
 sudo apt-add-repository ppa:gstreamer-developers/ppa
-sudo apt-add-repository ppa:sunab/kdenlive-svn
+
+# sunab tracks melt trunk, kxstudio has melt stable 6.0
+# sudo apt-add-repository ppa:sunab/kdenlive-svn
+sudo apt-add-repository ppa:kxstudio-team/ppa
+
+# j tracks ffmpeg2theora trunk
 # sudo apt-add-repository ppa:j/ppa
+
+# I think this is an another melt source.
 # sudo apt-add-repository ppa:freshmedia/ppa
 
 sudo apt-add-repository 'deb http://packages.medibuntu.org/ '$(lsb_release -cs)' free non-free'
