@@ -565,9 +565,11 @@ def overlaping_episodes(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.raw('select e1.* from main_episode e1, main_episode e2 where e1.id != e2.id and e1.start<e2.end and e1.end>e2.start and e1.location_id=e2.location_id and e1.show_id=%s and e2.show_id=%s order by e1.location_id, e1.start', [show.id,show.id])
-    elist=list(episodes)
+    episodes=Episode.objects.raw('select distinct e1.* from main_episode e1, main_episode e2 where e1.id != e2.id and e1.start<e2.end and e1.end>e2.start and e1.location_id=e2.location_id and e1.show_id=%s and e2.show_id=%s order by e1.location_id, e1.start', [show.id,show.id])
     elist=[e.__dict__ for e in episodes]
+    start,end=24*60,0
+    for e in elist:
+        e['location']=Location.objects.get(id=e['location_id'])
     start,end=24*60,0
     for e in elist:
         e['start_min']=e['start'].hour*60+e['start'].minute

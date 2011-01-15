@@ -17,7 +17,7 @@
 
 	<Author>"Paul McNett &lt;root@paulmcnett.com&gt;"</Author>
 
-	<Title>"PyCon Recording Sheet"</Title>
+	<Title>"Recording Sheet"</Title>
 
 	<Subject>"http://dabodev.com"</Subject>
 
@@ -338,7 +338,7 @@
 				</Objects>
 			</Frameset>
 			<String>
-				<expr>self.episode_start.strftime("%H:%M:00")</expr>
+				<expr>self.episode_start.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
 				<width>'75.0 pt'</width>
@@ -346,7 +346,7 @@
 				<y>'85.0 pt'</y>
 			</String>
 			<String>
-				<expr>self.episode_end.strftime("%H:%M:00")</expr>
+				<expr>self.episode_end.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
 				<width>'75.0 pt'</width>

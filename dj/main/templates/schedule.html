@@ -26,8 +26,8 @@
           {% for episode in t.1 %}
             <td style="white-space:normal">
             {% if episode %}
-              {# <a href="E/{{episode.id}}/">{{ episode.name }}</a> #}
-              <a href="{{episode.description}}/">{{ episode.name }}</a>
+              <a href="E/{{episode.id}}/">{{ episode.name }}</a>
+              {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> #}
               {{episode.authors}}
             {% endif %}
             </td>

@@ -17,6 +17,8 @@ URL of talk page
 tags - comma seperated list 
 """
 
+{"Description":"","Presenters":"Ian Grigg,Mark Lipscombe","Title":"CAcert Assurer Training Event (bring your ID!)","Start":"2011-01-24 15:45:00","Duration":"1:45:00","Id":175,"Room Name":"Z411"}
+
 """
 There is a datetime format issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code. easy to read data is good too.  Do not write extra server side code to try and make it easier to parse.  That has lead to data loss, which means trying to debug a ssytem that starts with the event's data input and ends with veyepar's database, which is not fun.  
 
@@ -83,8 +85,15 @@ class add_eps(process.process):
           
       seq=0
       for row in schedule:
-          row=row['node']
-          room = row['Room']
+          # row=row['node']
+          room = row['Room Name']
+          if room in [
+             '',
+             "Napalese Pagoda",
+             "Z4 Atrium",
+             "Maritime Museum",
+             "Grand Hall - BCEC",
+             ]: continue
           loc,created = Location.objects.get_or_create(name=room)
           if created: 
               seq+=1
@@ -92,6 +101,8 @@ class add_eps(process.process):
               loc.save()
               show.locations.add(loc)
               show.save()
+          else:
+            print row
 
     def  talk_time(self, day,time):
 # Day: "Wed 24 Nov"
@@ -127,22 +138,42 @@ class add_eps(process.process):
 
       for row in schedule:
 
-          row = row['node']
-          if self.options.verbose: print row
-
-          name = lxml.etree.fromstring('<foo>' + row['Title'] + '</foo>').text
-
-          room = row['Room']
-          location = Location.objects.get(name=room)
-          conf_key = row['Nid']
-          start, duration = self.talk_time(row['Day'],row['Time'])
-          authors=row['Presenter']
+        # row = row['node']
+        if self.options.verbose: print row
+        if row['Title'] in [
+            'Registration',
+            'Welcome to linux.conf.au 2011!',
+            'Morning Tea', 'Afternoon Tea',
+            "Speaker's Dinner",
+          ]:
+           continue
+        if row['Room Name']:
+          # name = lxml.etree.fromstring('<foo>' + row['Title'] + '</foo>').text
+          name = row['Title'] 
+          room = row['Room Name']
+          locations = Location.objects.filter(name=room)
+          if locations: location=locations[0]
+          else: continue
+          conf_key = row['Id']
+          start=datetime.datetime.strptime(row['Start'], '%Y-%m-%d %H:%M:%S' )
+          duration = row['Duration']
+          # start, duration = self.talk_time(row['Day'],row['Time'])
+          authors=row.get('Presenters','')
           # released=row['released']
           released=None
-          url = row['Link']
-          description = row['Link']
-          tags = row['Keywords']
+          # url = row['Link']
+          description = row['Description']
+          if description:
+              url = \
+                "http://conf.linux.org.au/programme/schedule/view_talk/%s" \
+                 % (row['Id'])
+          else:
+              url = "http://conf.linux.org.au"
+          # never mind all that URL stuff.  this is simpler:
+          url = row.get('URL', "http://conf.linux.org.au" )
 
+          # tags = row['Keywords']
+          tags = None
           # print row
           if name in ['Registration','Lunch']:
               continue
@@ -262,13 +293,16 @@ class add_eps(process.process):
       # url='http://us.pycon.org/2010/conference/schedule/events.json'
       # url='http://pycon-au.org/2010/conference/schedule/events.json'
       # url='http://djangocon.us/schedule/json/'
-      url='http://2010.osdc.com.au/program/json'
-      j=urllib2.urlopen(url).read()
+      # url='http://2010.osdc.com.au/program/json'
+      url='http://test.followtheflow.org/programme/schedule/json'
+      # j=urllib2.urlopen(url).read()
+      # file('lca.json','w').write(j) 
+      j=file('lca.json').read()
 
       # j=open('schedule.json').read()
       schedule = json.loads(j)
 
-      schedule = schedule['nodes']
+      # schedule = schedule['nodes']
       self.addlocs(schedule,show)
       self.addeps(schedule, show)
 

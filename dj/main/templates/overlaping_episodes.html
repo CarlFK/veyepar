@@ -14,6 +14,7 @@
 <td style="padding-left: {{episode.start_px}}px;">
 <div style="background: black;width:{{episode.width_px}}">.</div></td>
             <td>{{episode.start|date:"D b d H:i"}} - {{episode.end|date:"H:i"}}</td>
+            <td>{{episode.location}}</td>
             <td><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
             </tr>
         {% endfor %}

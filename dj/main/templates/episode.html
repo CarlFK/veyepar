@@ -19,9 +19,12 @@
   Next: (none, at end of list)
 {% endif %}
 
-<h2>ID: {{episode.id}} Location: {{episode.location}}</h2>
 <h2>Title: {{episode.name}}</h2>
 <h2>Author(s): {{episode.authors}}</h2>
+<h2>Location: {{episode.location}}</h2>
+{% if episode.conf_url %}
+  <a href="{{episode.conf_url}}">{{episode.conf_url}}</a></br>
+{% endif %}
 <a href="{% url admin:main_episode_change episode.id%}">admin</a> 
 <a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a> 
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a> 
