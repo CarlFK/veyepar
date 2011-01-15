@@ -116,7 +116,7 @@ class add_eps(process.process):
         end_dt = parse(end_dts)        
 
         delta = end_dt - start_dt
-        minutes = delta.seconds/60 - 5
+        minutes = delta.seconds/60 # - 5 for talk slot that includes break
 
         duration="00:%s:00" % ( minutes) 
         return start_dt, duration
@@ -295,8 +295,8 @@ class add_eps(process.process):
       # url='http://djangocon.us/schedule/json/'
       # url='http://2010.osdc.com.au/program/json'
       url='http://test.followtheflow.org/programme/schedule/json'
-      # j=urllib2.urlopen(url).read()
-      # file('lca.json','w').write(j) 
+      j=urllib2.urlopen(url).read()
+      file('lca.json','w').write(j) 
       j=file('lca.json').read()
 
       # j=open('schedule.json').read()
