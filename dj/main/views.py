@@ -265,14 +265,13 @@ def recording_sheets(request,show_id):
     episodes=Episode.objects.filter(show=show).order_by('location','start')
 
     base  = os.path.dirname(__file__)
-    print base
     rfxmlfile  = os.path.join(base,'templates','RecordingSheet_v2a.rfxml')
-    # fontfile = get_templete_abspath('badges/fonts/FreeSans.ttf')
      
     # buffer to create pdf in
     buffer = StringIO()
 
     # nonstandard font.  (not sure what standard is.)
+    # fontfile = get_templete_abspath('badges/fonts/FreeSans.ttf')
     # pdfmetrics.registerFont(TTFont("FreeSans", fontfile))
     
     ds=[]
@@ -292,7 +291,6 @@ def recording_sheets(request,show_id):
           'show_name':show.name })
         
     # generate the pdf in the buffer, using the layout and data
-    print ds
     rw = dReportWriter(OutputFile=buffer, ReportFormFile=rfxmlfile, Cursor=ds)
     rw.write()
 
@@ -383,7 +381,8 @@ def former(request, Model, parents, inits={}):
             if form.is_valid():
                 form.save()
             else:
-                print form.errors
+                # print form.errors
+                pass
         else:
             # add parents to inits
             inits.update(parents)
@@ -412,7 +411,8 @@ def clients(request):
                 form.save()
                 return HttpResponseRedirect(reverse(client, args=(form.cleaned_data['slug'],)))
             else:
-                print form.errors
+                pass
+                # print form.errors
         else:
             form=Client_Form(initial={'sequence':1})
     else:
@@ -445,7 +445,8 @@ def client(request,client_slug=None):
                 form.save()
                 return HttpResponseRedirect(reverse(episodes, args=(client_slug, form.cleaned_data['slug'])))
             else:
-                print form.errors
+                pass
+                # print form.errors
         else:
             locations=Location.objects.filter(default=True).order_by('sequence')
             form=Show_Form(
@@ -624,7 +625,6 @@ def episode(request, episode_no):
     try:
         # next_episode = episode.get_next_by_start(show=show)
         next_episode = episode.my_get_next_by_start(show=show)
-        print 5
     # except AttributeError:
         # current django does not support this:
         # http://code.djangoproject.com/ticket/13611
@@ -635,7 +635,6 @@ def episode(request, episode_no):
         if episode.start is None:
             # we are at the *last null*, so go to the *first value*
             try:
-                print 4
                 next_episode = Episode.objects.filter(start__isnull=False).order_by('id')[0]
                 
             except IndexError:
@@ -644,7 +643,6 @@ def episode(request, episode_no):
         else:
             # there is no *next value*, we have nowhere to go.
             next_episode = 'no next value'
-    print 3, next_episode
 
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
 
@@ -695,8 +693,9 @@ def episode(request, episode_no):
             clrfformset = clrfFormSet(initial=init)
 
         else:
-            print "ep errors:", episode_form.errors
-            print clrfformset.errors
+            pass
+            # print "ep errors:", episode_form.errors
+            # print clrfformset.errors
     else:
         episode_form = Episode_Form_small(instance=episode) 
         # init data with things in the queryset that need editing
