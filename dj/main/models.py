@@ -164,7 +164,6 @@ class Episode(models.Model):
     def _get_next_or_previous_by_FIELD(self, field, is_next, **kwargs):
         from django.utils.encoding import smart_str
         from django.db.models.query import Q
-        print 2, kwargs
         op = is_next and 'gt' or 'lt'
         order = not is_next and '-' or ''
         # current_field_value = getattr(self, field.attname)
@@ -182,7 +181,6 @@ class Episode(models.Model):
     def my_get_previous_by_start(self,**kwargs):
         self._get_next_or_previous_by_FIELD('start', is_next=False, **kwargs)
     def my_get_next_by_start(self,**kwargs):
-        print 1, kwargs
         self._get_next_or_previous_by_FIELD('start', is_next=True, **kwargs)
  
            
