@@ -31,8 +31,8 @@ sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstre
 
 # curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv 
 
-# sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
-sudo pip install hg+https://bitbucket.org/dhellmann/virtualenvwrapper
+sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
+# sudo pip install hg+https://bitbucket.org/dhellmann/virtualenvwrapper
 
 printf "\nsource /usr/local/bin/virtualenvwrapper.sh\n" >> ~/.bashrc
 source /usr/local/bin/virtualenvwrapper.sh 
