@@ -111,11 +111,17 @@ class enc(process):
       for cmd in cmds: 
           if type(cmd)==list:
               print cmd
-              sh.writelines(' '.join(cmd))
+              log_text = ' '.join(cmd)
           else:
-              sh.writelines(cmd)
+              log_text = cmd
               cmd=cmd.split()
+          sh.writelines(log_text)
           sh.write('\n')
+          self.log_info(log_text)
+          if self.options.debug_log:
+              episode.description += "\n%s\n" % (log_text)
+              episode.save()
+
           if not self.run_cmd(cmd):
               return False
 
@@ -320,7 +326,14 @@ class enc(process):
         if self.options.verbose: xml.etree.ElementTree.dump(tree[0])
 
         mlt_pathname = os.path.join(self.work_dir,"%s.mlt"%episode.slug)
-        open(mlt_pathname,'w').write(xml.etree.ElementTree.tostring(tree[0]))
+        mlt_xml = xml.etree.ElementTree.tostring(tree[0])
+        open(mlt_pathname,'w').write(mlt_xml)
+
+        if self.options.debug_log:
+            mlt_xml = mlt_xml.replace('<','&lt;').replace('>','&gt;')
+            mlt_xml = mlt_xml.replace('&','&amp;')
+            episode.description += "\n%s\n" % (mlt_xml)
+            episode.save()
 
         return mlt_pathname
 
@@ -355,7 +368,7 @@ out=%(frames)s \
 
               # cmds=["melt -verbose -progress -profile square_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.dv_format, mlt_pathname, out_pathname, acodec, vcodec)]
               if ext=='flv': 
-                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=1200k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
+                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=220k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
               if ext=='flac': 
                   # 16kHz/mono 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)]

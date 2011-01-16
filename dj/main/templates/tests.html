@@ -48,11 +48,13 @@
 <ul> 
 {% for location in locations %}
   <li> <a href="/admin/main/location/{{location.id}}/">{{location.name}}</a>
+    <ul> 
   {% for raw_file in location.raw_file_set.all %}
     <li><a href="/admin/main/raw_file/{{raw_file.id}}/">{{raw_file.filename}}</a>
     - <a href="/admin/main/show/{{raw_file.show.id}}/">{{raw_file.show.name}}</a>
     </li>
   {% endfor %}
+    </ul>
   {% endfor %}
   </ul>
 

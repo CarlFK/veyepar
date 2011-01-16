@@ -298,6 +298,8 @@ class process(object):
               help='ogg, ogv, mp4, flv, dv' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
+    parser.add_option('--debug-log', action="store_true",
+              help="append logs to .description so it gets posted to blip" )
     parser.add_option('--test', action="store_true",
               help="test mode - do not make changes to the db "
                 "(not fully implemetned, for development use.")

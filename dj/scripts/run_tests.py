@@ -91,7 +91,7 @@ class Run_Tests(object):
           ('30','06:00'),]):
 
        # make a text file to use as encoder input
-       text = ["test %s - format %s" % ( i, self.options.dv_format),
+       text = ["test %s - %s" % ( i, self.options.dv_format),
                   melt_ver, datetime.now().ctime(),
                   socket.gethostname()
               ]
@@ -172,7 +172,8 @@ meta.attr.titles.markup=#timecode# \
   #  --upload-formats "flv ogv"
   import enc
   p=enc.enc()
-  p.set_options(force=True, verbose=True, rm_temp=False)
+  p.set_options(force=True, verbose=True, 
+      rm_temp=False, debug_log=True)
   p.main()
   return
 
