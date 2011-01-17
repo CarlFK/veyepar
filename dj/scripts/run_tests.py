@@ -15,8 +15,11 @@ from main.models import Show, Episode
 class Run_Tests(object):
 
  def run_cmd(self,cmd, get_out=False):
-        # print cmd
-        print ' '.join(cmd)
+
+        log_text = ' '.join(cmd)
+        print log_text
+        open(self.sh_pathname,'a').write(log_text+'\n')
+
         if get_out:
           p = subprocess.Popen(cmd,
             stdin=subprocess.PIPE,
@@ -38,12 +41,11 @@ class Run_Tests(object):
   from django.contrib.auth.models import User
   users=User.objects.all()
   if not users:
-    user = User.objects.create_user( 'test', 'test@example.com', 'abc' )
+    user = User.objects.create_user( 'test', 'a@b.com', 'abc' )
     user.is_superuser=True
     user.is_staff=True
     user.save()
     print user
-
   return
 
  def setup_test_data(self):
@@ -60,11 +62,10 @@ class Run_Tests(object):
   p.main()
 
   # hack to save some of these values for other tests
-  # import process
-  # p=process.process()
   self.show_dir = p.show_dir
   self.show=Show.objects.get(slug=p.options.show)
   self.options = p.options
+  self.sh_pathname = os.path.join( self.show_dir, 'tmp', "Test_Episode.sh" )
   return
 
  def make_source_dvs(self):
@@ -83,42 +84,45 @@ class Run_Tests(object):
    # MELT_PARMS="-attach lines width=80 num=1 -attach lines width=2 num=10"
    text_file="source.txt"
    
-   for i,l in enumerate(
-         [('180','00:00'),
-          ('180','01:58'),
-          ('30','03:00'),
-          ('180','04:58'),
-          ('30','06:00'),]):
+   for i in range(5):
+       # each file is 3 seconds long
 
-       # make a text file to use as encoder input
-       text = ["test %s - %s" % ( i, self.options.dv_format),
-                  melt_ver, datetime.now().ctime(),
-                  socket.gethostname()
-              ]
-       tf = open(text_file,'wa')
-       tf.write('\n'.join(text))
-       tf.close()
-       
        # encode the text file into .dv
        # this takes the place of using dvswitch to record an event.
        #  works: "melt -profile dv_ntsc
 
+       out_file="00:00:%02i.dv" % (i*3)
        parms={'input_file':text_file, 
-           'output_file':'%s/00:%s.dv' % (dv_dir,l[1]),
+           'output_file':os.path.join(dv_dir,out_file),
            'format':"dv_%s" % (self.options.dv_format),
-           'frames':l[0]}
+           'video_frames':30 * 3,
+           'audio_frames':30 * 3 * (i%2)}
        print parms
+
+       # make a text file to use as encoder input
+       text = ["test %s - %s" % ( i, self.options.dv_format),
+                  out_file,
+                  melt_ver, datetime.now().ctime(),
+                  '',
+                  socket.gethostname()
+              ]
+       print text
+       tf = open(text_file,'w')
+       tf.write('\n'.join(text))
+       tf.close()
+       
        cmd = "melt \
 -profile %(format)s \
-%(input_file)s \
-out=%(frames)s \
+ -audio-track -producer noise out=%(audio_frames)s \
+ -video-track %(input_file)s out=%(video_frames)s \
 meta.attr.titles=1 \
 meta.attr.titles.markup=#timecode# \
 -attach data_show dynamic=1 \
--consumer avformat:%(output_file)s pix_fmt=yuv411p" % parms
+-consumer avformat:%(output_file)s \
+pix_fmt=yuv411p" % parms
        self.run_cmd(cmd.split())
 
-   self.run_cmd(['rm',text_file])
+   # self.run_cmd(['rm',text_file])
    cmd = ['cp', '-a', 'bling', self.show_dir ]
    self.run_cmd(cmd)
 
@@ -159,9 +163,9 @@ meta.attr.titles.markup=#timecode# \
   print p.cuts
   cut=p.cuts[1]
   print cut
-  cut.start="0:0:5"
-  cut.end="0:0:10"
-  cut.save()
+  # cut.start="0:0:1"
+  # cut.end="0:0:10"
+  # cut.save()
   return
 
 
@@ -172,8 +176,10 @@ meta.attr.titles.markup=#timecode# \
   #  --upload-formats "flv ogv"
   import enc
   p=enc.enc()
+  
   p.set_options(force=True, verbose=True, 
-      rm_temp=False, debug_log=True)
+    upload_formats=self.upload_formats, 
+    rm_temp=False, debug_log=True)
   p.main()
   return
 
@@ -202,8 +208,12 @@ meta.attr.titles.markup=#timecode# \
   """
   import post
   p=post.post()
-  p.set_options(force=True, verbose=True, )
+  p.set_options(force=True, verbose=True, 
+      upload_formats=self.upload_formats,
+      debug_log=True)
   p.main()
+  # self.url = p.last_url
+  self.run_cmd(["firefox",p.last_url])
   return
 
  def tweet(self):
@@ -215,8 +225,11 @@ meta.attr.titles.markup=#timecode# \
   return
 
 
+
 if __name__=='__main__':
+
     t=Run_Tests() 
+    t.upload_formats="flv"
 
     t.make_test_user()
     t.setup_test_data()

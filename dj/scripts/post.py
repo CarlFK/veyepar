@@ -109,6 +109,26 @@ class post(process):
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
         files.append((fileno,role_desc,src_pathname))
 
+    if self.options.debug_log:
+
+        # put the mlt and .sh stuff into the log 
+        # blip and firefox want it to be xml, so jump though some hoops
+        log = "<log>\n"
+        mlt_pathname = os.path.join( self.show_dir, 'tmp', "%s.mlt"%(ep.slug,))
+        log += open(mlt_pathname).read()
+        sh_pathname = os.path.join( self.show_dir, 'tmp', "%s.sh"%(ep.slug,))
+        shs = open(sh_pathname).read().split('\n')
+        shs = [ "<line>\n%s\n</line>\n" % l for l in shs if l]
+        log += "<shell_script>\n%s</shell_script>\n" % ''.join(shs)
+        log += "</log>"
+
+        # blip says: try something like a tt or srt file
+        log_pathname = os.path.join( self.show_dir, 'tmp', "%s.tt"%(ep.slug,))
+        log_file=open(log_pathname,'w').write(log)
+        # add the log to the list of files to be posted to blip
+        files.append(("10","Captions",log_pathname))
+        
+
     # username comes from options, client, first in pw.py
     # password always comes from pw.py
    
@@ -205,6 +225,7 @@ Your file called Test Episode #0 has been successfully posted.
 
         response = tree.find('response')
         post_url=response.find('post_url')
+        self.last_url = post_url.text # hook for tests so that it can be browsed
         if xml.etree.ElementTree.iselement(post_url):
 # <post_url>http://blip.tv/file/3734423</post_url>
             blip_id=post_url.text.split('/')[-1]

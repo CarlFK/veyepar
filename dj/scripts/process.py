@@ -47,7 +47,66 @@ class process(object):
 # defaults to ntsc stuff
   fps=29.98
   bpf=120000
+ 
+  def run_cmd(self,cmd):
+    """
+    given command list
+    if verbose prints stuff,
+    runs it, returns pass/fail.
+    """
+    if self.options.verbose:
+        print cmd
+        print ' '.join(cmd)
 
+    if self.options.test:
+        print "TEST: not running command"
+        return True
+
+    p=subprocess.Popen(cmd)
+    p.wait()
+    retcode=p.returncode
+    if retcode:
+        if self.options.verbose:
+            print "command failed"
+            print retcode
+        ret = False
+    else:
+        ret = True
+    return ret
+
+  def run_cmds(self, episode, cmds):
+      """
+      given a list of commands
+      append them to the episode's shell script
+      then run each
+      abort and return False if any fail.
+      """
+      
+      script_pathname = os.path.join(self.work_dir, episode.slug+".sh")
+      sh = open(script_pathname,'a')
+
+      for cmd in cmds: 
+          if type(cmd)==list:
+              print cmd
+              log_text = ' '.join(cmd)
+          else:
+              log_text = cmd
+              cmd=cmd.split()
+          sh.writelines(log_text)
+          sh.write('\n')
+          self.log_info(log_text)
+          if self.options.debug_log:
+              episode.description += "\n%s\n" % (log_text)
+              episode.save()
+
+          if not self.run_cmd(cmd):
+              return False
+
+      sh.write('\n')
+      sh.close()
+
+      return True
+ 
   def set_dirs(self,show):
       client = show.client
       self.show_dir = os.path.join(
@@ -252,6 +311,7 @@ class process(object):
   def get_options(self):
     for k,v in self.extra_options.iteritems():
       self.options.ensure_value(k,v)
+      setattr(self.options, k, v)
 
   def parse_args(self):
     parser = optparse.OptionParser()

@@ -39,13 +39,13 @@ from accounts.forms import LoginForm
 def make_test_data():
     desc = """
 Sample files and episode:  
-file 0 and 4 are 1 min long, outside the range
-file 1 and 3 are 2 min long, overlap the episode start/end
-file 2 is 1 min long, inside the start/end
+file 0 and 4 are outside the range
+file 1 and 3 are overlap the episode start/end
+file 2 inside the start/end
 e=episode,r=raw files
 time: 0  1  2  3  4  5  6  7
 raws:  00 11111 22 33333 44
-episode:     00000000
+episode:     XXXXXXXXX
 """
 
     # get/create a location, client and show.
@@ -58,36 +58,30 @@ episode:     00000000
     if create:
         show.locations.add(loc)
 
-    ep_count=Episode.objects.filter(show=show).count() 
     ep = Episode.objects.create(
         show=show,
         location=loc,
         state=1,
-        sequence=ep_count)
+        )
 
-    ep.name = "Test Episode #%s %s" % (ep_count,
-        datetime.datetime.now().ctime())
-
-    # this whole dynamic episode slug thing isn't working.
-    # too hard to keep the python and bash scrips in sync
-    # and I am no sure the value in it anyway.
-    # the 2 hardcoded values below seem to put everthing back.
-    ep_count=0
     ep.name = "Test Episode" 
+    ep.sequence = 1
 
     # datetime matches what run_tests.sh uses to create files.
-    t=[datetime.datetime(2010,5,21,0,0)+datetime.timedelta(
-         hours=ep_count,minutes=i) for i in range(8) ]
+    # the scheduled start time is at 4 seconds
+    # in the middle of the 2nd clip
+    t=datetime.datetime(2010,5,21,0,0,4)
+    # huh?  +datetime.timedelta( hours=ep_count,seconds=i) for i in range(8) ]
 
     ep.description = desc
     ep.authors = 'test author'
-    ep.start = t[2]
-    ep.duration = "00:03:00"
+    ep.start = t
+    ep.duration = "00:00:06"
     ep.save()
 
     # send the count back so that the scrip that makes .dv files 
     # are alinged with the episode start/end time.
-    return ep_count
+    return 
 
 def del_test_data():
     clients = Client.objects.filter(slug='test_client')

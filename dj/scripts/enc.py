@@ -70,66 +70,7 @@ def time2b(time,fps,bpf,default):
 class enc(process):
 
   ready_state = 2
- 
-  def run_cmd(self,cmd):
-    """
-    given command list
-    if verbose prints stuff,
-    runs it, returns pass/fail.
-    """
-    if self.options.verbose:
-        print cmd
-        print ' '.join(cmd)
 
-    if self.options.test:
-        print "TEST: not running command"
-        return True
-
-    p=subprocess.Popen(cmd)
-    p.wait()
-    retcode=p.returncode
-    if retcode:
-        if self.options.verbose:
-            print "command failed"
-            print retcode
-        ret = False
-    else:
-        ret = True
-    return ret
-
-  def run_cmds(self, episode, cmds):
-      """
-      given a list of commands
-      append them to the episode's shell script
-      then run each
-      abort and return False if any fail.
-      """
-      
-      script_pathname = os.path.join(self.work_dir, episode.slug+".sh")
-      sh = open(script_pathname,'a')
-
-      for cmd in cmds: 
-          if type(cmd)==list:
-              print cmd
-              log_text = ' '.join(cmd)
-          else:
-              log_text = cmd
-              cmd=cmd.split()
-          sh.writelines(log_text)
-          sh.write('\n')
-          self.log_info(log_text)
-          if self.options.debug_log:
-              episode.description += "\n%s\n" % (log_text)
-              episode.save()
-
-          if not self.run_cmd(cmd):
-              return False
-
-      sh.write('\n')
-      sh.close()
-
-      return True
- 
   def mktitle(self, source, output_base, episode):
     """
     Make a title slide by filling in a pre-made svg with name/authors.
@@ -141,7 +82,7 @@ class enc(process):
             'show': episode.show.name, 
             'title': episode.name, 
             'authors': episode.authors,
-            'presentertitle': episode.description,
+            'presentertitle': ""
         }
  
     svg_in=open(source).read()
@@ -368,7 +309,7 @@ out=%(frames)s \
 
               # cmds=["melt -verbose -progress -profile square_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.dv_format, mlt_pathname, out_pathname, acodec, vcodec)]
               if ext=='flv': 
-                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=220k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
+                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=100 vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
               if ext=='flac': 
                   # 16kHz/mono 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)]
