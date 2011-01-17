@@ -14,23 +14,32 @@ mlt="""
 
   <producer id="title" resource="title.png" in="0" out="149" />
   <producer id="producer0" resource="/home/juser/vid/t2.dv" />
+  <producer id="footer" resource="footer.png" in="0" out="0" /> 
 
   <playlist id="playlist0">
-    <entry id="clip" producer="producer0" in="500" out="690" />
-  </playlist>
-
-  <playlist id="playlist1">
     <entry producer="title"/>
   </playlist>
 
+  <playlist id="playlist1">
+    <entry id="clip" producer="producer0" in="500" out="690" />
+    <entry id="foot0" producer="footer"/>
+  </playlist>
+
+  <playlist id="playlist2">
+    <entry id="foot1" producer="footer"/>
+  </playlist>
+
   <tractor id="tractor0">
-       <multitrack>
-         <track producer="playlist0"/>
-         <track producer="playlist1"/>
-       </multitrack>
-       <transition 
-         mlt_service="luma" in="100" out="149" a_track="1" b_track="0"/>
-   </tractor>
+    <multitrack>
+      <track id="track2" producer="playlist2"/>
+      <track id="track1" producer="playlist1"/>
+      <track id="track0" producer="playlist0"/>
+    </multitrack>
+    <transition id="transition0"
+      mlt_service="luma" in="100" out="149" a_track="2" b_track="1"/>
+    <transition id="transition1"
+      mlt_service="luma" in="0" out="0" a_track="1" b_track="0"/>
+  </tractor>
 
 </mlt>
 """
@@ -87,9 +96,6 @@ class enc(process):
  
     svg_in=open(source).read()
     tree=xml.etree.ElementTree.XMLID(svg_in)
-    # print tree[1]
-    # tree[1]['title'].text=name
-    # for key in ['client', 'title']:
 
     for key in text:
         if self.options.verbose: print key
@@ -127,6 +133,13 @@ class enc(process):
         and cutlist+raw filenames
         """
 
+        # output file name
+        # this gets used twice: 
+        # once to get melt to scan the files and count total frames of content
+        # then the trailer gets added to the xml
+        # and a final version gets written out.  whacky.
+        mlt_pathname = os.path.join(self.work_dir,"%s.mlt"%episode.slug)
+
 # parse the xml into a tree of nodes
         tree= xml.etree.ElementTree.XMLID(mlt)
 
@@ -151,19 +164,15 @@ class enc(process):
             tree[0].insert(pos,new)
             pos+=1
 
-# add credits file
-        dvfile.attrib['id']="credits"
-        dvfile.attrib['resource']=credits_img
-        new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
-        tree[0].insert(pos,new)
-        pos+=1
+# set credits file
+        footer=tree[1]['footer']
+        footer.attrib['resource']=credits_img
 
 
-# get the clip placeholder, the playlist and remove the clip from the playlist
+# get the dv clip placeholder, remove it from the playlist
         clip=tree[1]['clip']
-        playlist=tree[1]['playlist0']
+        playlist=tree[1]['playlist1']
         playlist.remove(clip)
-        # remvoe the start end, will add them if needed.
 
 # add in the clips
         pos = 0
@@ -173,6 +182,10 @@ class enc(process):
             print "duration:", cl.raw_file.duration
             clip.attrib['id']="clip%s"%cl.id
             clip.attrib['producer']="producer%s"%cl.raw_file.id
+          
+            # set start/end on the clips if they are set in the db
+            # else remove them, 
+            # ignoroe the error if they are not there to remove
 
             if cl.start:
                 in_frame=time2f(cl.start,self.fps)
@@ -192,27 +205,49 @@ class enc(process):
                 except KeyError:
                     pass
 
-            # end not needed anymore 
-            # (as of 2/9/10, will take out 9999 once melt version bumps)
-
-            # in_frame=time2f(cl.start,self.fps) if cl.start else 0
-            # out_frame=time2f(cl.end,self.fps) if cl.end else 999999
-            # clip.attrib['in']=str(in_frame)
-            # clip.attrib['out']=str(out_frame)
-
+            # add the new clip to the tree
             print clip.attrib
             new=xml.etree.ElementTree.Element('entry', clip.attrib )
             playlist.insert(pos,new)
             pos+=1
 
-# add credits file
-        clip.attrib['id']="clip_credits"
-        clip.attrib['producer']="credits"
-        clip.attrib['in']='0'
-        clip.attrib['out']='120' # this should be sec * fps.
-        new=xml.etree.ElementTree.Element('entry', clip.attrib )
-        playlist.insert(pos,new)
-        pos+=1
+        # write out the xml we have so far
+        # then pass it to melt to calc total frames
+        mlt_xml = xml.etree.ElementTree.tostring(tree[0])
+        open(mlt_pathname,'w').write(mlt_xml)
+        p = subprocess.Popen( ['melt', mlt_pathname, '-consumer', 'xml'], 
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+        out,err = p.communicate()
+        t=xml.etree.ElementTree.XMLID(out)
+        frames=t[1]['tractor1'].get('out')
+        frames=int(frames)
+
+        # set 2 parts of the footer:
+        # 1. 3 seconds of fade from video to footer
+        # 2. append 3 seconds of footer
+
+        x1,end,x3=str(frames-90),str(frames),str(frames+90)
+
+        # 1.
+        transition = tree[1]['transition1']
+        transition.set('in',x1)
+        transition.set('out',end)
+
+        track = tree[1]['track2']
+        track.set('in',x1)
+        track.set('out',end)
+
+        pf = tree[1]['foot1']
+        pf.set('in',x1)
+        pf.set('out',end)
+
+        # 2. 
+        pf = tree[1]['footer']
+        pf.set('out',"90")
+
+        pf = tree[1]['foot0']
+        pf.set('in',str(end))
+        pf.set('out',str(x3))
 
 # add volume tweeks
         """
@@ -235,7 +270,7 @@ class enc(process):
         if episode.channelcopy:
             if self.options.verbose: print 'channelcopy:', episode.channelcopy
             # channelcopy should be 01 or 10.
-            # or 'mono' to kick in this hack
+            # or m/'mono' to kick in this hack
             if episode.channelcopy=='m':
                 new=xml.etree.ElementTree.Element('filter', 
                     {'mlt_service':'mono', 'channels':'2'} )
@@ -258,7 +293,7 @@ class enc(process):
             # super hack: remove a bunch of stuff that messes up flac
             # like the title and transistion from title to cut
             tree[0].remove(title)
-            x=tree[1]['playlist1']
+            x=tree[1]['playlist0']
             # print x
             tree[0].remove(x)
             x=tree[1]['tractor0']
@@ -266,7 +301,6 @@ class enc(process):
 
         if self.options.verbose: xml.etree.ElementTree.dump(tree[0])
 
-        mlt_pathname = os.path.join(self.work_dir,"%s.mlt"%episode.slug)
         mlt_xml = xml.etree.ElementTree.tostring(tree[0])
         open(mlt_pathname,'w').write(mlt_xml)
 
@@ -309,7 +343,7 @@ out=%(frames)s \
 
               # cmds=["melt -verbose -progress -profile square_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.dv_format, mlt_pathname, out_pathname, acodec, vcodec)]
               if ext=='flv': 
-                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=100 vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
+                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 -b=240k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
               if ext=='flac': 
                   # 16kHz/mono 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)]

@@ -229,11 +229,11 @@ pix_fmt=yuv411p" % parms
 if __name__=='__main__':
 
     t=Run_Tests() 
-    t.upload_formats="flv"
+    t.upload_formats="flv ogv m4v mp3"
 
     t.make_test_user()
     t.setup_test_data()
-    t.make_dirs()
+    t.make_dirs() # don't skip this, it sets self.show_dir and stuff
     t.make_source_dvs()
     t.add_dv()
     t.make_thumbs()
