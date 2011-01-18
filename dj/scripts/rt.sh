@@ -1,6 +1,6 @@
-#!/bin/bash -xe
+#!/bin/bash -x
 
-MLT_VER=$(melt --version 2>&1 | grep MLT)
+# MLT_VER=$(melt --version 2>&1 | grep MLT)
 
 if [ -e ../../bin/activate ]; then
  . ../../bin/activate

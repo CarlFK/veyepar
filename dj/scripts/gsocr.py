@@ -58,7 +58,7 @@ def one_frame( sink,buffer,pad, it):
         if it.ckocr(ocrtext):
             # this frame is better that previous better.    
             
-            # save a pointer to the frame  
+            # save a pointer (frame number) to the frame 
             it.frame = it.pipeline.query_position(it.time_format, None)[0]
        
             # write image out to a pnm file
@@ -71,7 +71,7 @@ def one_frame( sink,buffer,pad, it):
        
             # convert it to a png (for firefox and uploading as thumb)
             p = subprocess.Popen(
-                ['convert', '-', it.base_name+'.png'],
+                ['convert', '-', "png:"+it.base_name+'.png'],
                 stdin=subprocess.PIPE, 
                 stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             p.stdin.write(it.buffer)  
@@ -119,6 +119,8 @@ class Main:
 
         self.debug=False
         self.last_ocr=''
+        self.dictionaries=[["WORD1","WORD2","TEST","NTSC","PAL"]]
+
         self.words=None
         self.frame=0
         self.seek_sec = 10
@@ -237,7 +239,8 @@ def parse_args():
 if __name__=='__main__':
     options,args = parse_args()
     gobject.threads_init()
-    if not args: args=['foo.dv']
+    if not args: args=['00:00:00.dv']
+    # if not args: args=['foo.dv']
     p=Main(args[0])
     p.debug=True
     gtk.main()

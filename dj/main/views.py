@@ -191,6 +191,7 @@ def emailer(show_id):
  '"ACM Chicago" <mtemkin@speakeasy.net>',
  '"Linux Users Of Northern Illinois" <luni@luni.org>', 
  '"Chicago Linux Discuss" <chicagolinux-discuss@chicagolug.org>', 
+ '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
  '<genluglist@codlug.info>',
  '<chicagotechcal@gmail.com>']
 
