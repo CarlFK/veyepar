@@ -30,7 +30,7 @@ from pprint import pprint
 
 from dabo.dReportWriter import dReportWriter
 
-from main.models import Client,Show,Location,Episode,Cut_List
+from main.models import Client,Show,Location,Episode,Cut_List,Raw_File
 from main.models import fnify
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm
 
@@ -587,6 +587,32 @@ def overlaping_episodes(request,show_id):
 	},
         context_instance=RequestContext(request) )
 
+
+def orphan_dv(request,show_id):
+    """
+    dv files that are not associated with an episode.
+    """
+    
+    show=get_object_or_404(Show,id=show_id)
+    # rfs=Raw_File.objects.filter(location=location,show=show).order_by('start')
+    rfs_all=Raw_File.objects.filter(show=show).order_by('start')
+    rfs=[]
+    for rf in rfs_all:
+        if rf.cut_list_set.count()==0:
+          dv=rf
+          eps = Episode.objects.filter(
+            Q(start__lte=dv.end)|Q(start__isnull=True),
+            Q(end__gte=dv.start)|Q(end__isnull=True),
+            location=dv.location)
+
+          rfs.append([rf,eps])
+    
+    return render_to_response('orphan_dv.html',
+        {
+          'rfs':rfs,
+          'MEDIA_ROOT':settings.MEDIA_ROOT,
+	},
+        context_instance=RequestContext(request) )
 
 
 def episode(request, episode_no):

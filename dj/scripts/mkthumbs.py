@@ -52,6 +52,7 @@ class add_dv(process):
 
         return None
 
+    """
     def process_eps(self,episodes):
       # this never gets called because this processes files, not episodes.
       raise
@@ -65,6 +66,7 @@ class add_dv(process):
               # ep.thumbnail = imgname
               # ep.save()
               return
+    """
           
 
     def one_loc(self,location,dir):

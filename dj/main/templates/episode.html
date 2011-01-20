@@ -82,7 +82,7 @@
 {# <tr><td> <a href="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a></td></tr> #}
 <tr><td> {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}</td></tr>
 <tr><td> <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></td></tr>
-<tr><td> <video src ="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
+<tr><td> <video src ="file://{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
     poster ="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" 
     ></video>
     </td></tr>

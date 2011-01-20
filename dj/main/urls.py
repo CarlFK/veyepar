@@ -48,6 +48,8 @@ urlpatterns += patterns(
 
     url(r'overlaping_episodes/(?P<show_id>\w+)/$', overlaping_episodes,
         name='overlaping_episodes'),
+    url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
+        name='orphan_dv'),
     url(r'recording_sheets/(?P<show_id>\w+)/.*$', recording_sheets,
         name='recording_sheets'),
 

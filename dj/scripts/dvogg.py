@@ -23,12 +23,36 @@ class mkpreview(process):
             p=subprocess.Popen(cmd).wait()
         return
    
+    """
     def process_ep(self, ep):
         dir=os.path.join(self.show_dir,'dv',ep.location.slug)
         dvs = Raw_File.objects.filter(cut_list__episode=ep)
         for dv in dvs:
             self.one_dv(dir,dv)
         return True
+    """
+
+    def one_loc(self,location,dir):
+      for dv in Raw_File.objects.filter(location=location):
+          self.one_dv(dir,dv)
+
+    def one_show(self, show):
+      self.set_dirs(show)
+      for loc in Location.objects.filter(show=show):
+        dir=os.path.join(self.show_dir,'dv',loc.slug)
+        if self.options.verbose: print show,loc,dir
+        self.one_loc(loc, dir)
+
+    def work(self):
+        """
+        find and process show
+        """
+        if self.options.client and self.options.show:
+            client = Client.objects.get(slug=self.options.client)
+            show = Show.objects.get(client=client, slug=self.options.show)
+            self.one_show(show)
+
+        return
 
 
 if __name__=='__main__': 
