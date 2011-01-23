@@ -157,10 +157,10 @@ class enc(process):
             dvfile.attrib['id']="producer%s"%rf.id
             if self.options.load_temp:
                 src_pathname = os.path.join(self.episode_dir,rf.filename)
-                dst_path = os.path.join(self.tmp_dir,os.path.dirname(rf.filename))
-                rawpathname = os.path.join(self.tmp_dir,rf.filename)
+                dst_path = os.path.join(self.tmp_dir,episode.slug,os.path.dirname(rf.filename))
+                rawpathname = os.path.join(self.tmp_dir,episode.slug,rf.filename)
                 cmds = [['mkdir', '-p', dst_path],
-                        ['rsync', src_pathname, rawpathname]]
+                        ['rsync', '--progress', src_pathname, rawpathname]]
                 self.run_cmds(episode,cmds)
             else:
                 rawpathname = os.path.join(self.episode_dir,rf.filename)
@@ -458,6 +458,17 @@ class enc(process):
             cmd = [self.options.enc_script, 
                     self.show_dir, episode.slug]
             ret = ret and self.run_cmds(episode,[cmd])
+
+        if self.options.load_temp and self.options.rm_temp:
+            cmds=[]
+            for rf in rfs:
+                dst_path = os.path.join(self.tmp_dir,episode.slug,os.path.dirname(rf.filename))
+                rawpathname = os.path.join(self.tmp_dir,episode.slug,rf.filename)
+                cmds.append( ['rm', rawpathname] )
+            cmds.append( ['rmdir', dst_path] )
+            dst_path = os.path.join(self.tmp_dir,episode.slug)
+            cmds.append( ['rmdir', dst_path] )
+            self.run_cmds(episode,cmds)
 
     else:
         print "No cutlist found."
