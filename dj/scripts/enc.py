@@ -154,11 +154,16 @@ class enc(process):
 # add in the dv files
         pos = 1
         for rf in rfs:
-          print rf
-          # don't include clips of 0 length
-          if rf.duration:
             dvfile.attrib['id']="producer%s"%rf.id
-            rawpathname = os.path.join(self.episode_dir,rf.filename)
+            if self.options.load_temp:
+                src_pathname = os.path.join(self.episode_dir,rf.filename)
+                dst_path = os.path.join(self.tmp_dir,os.path.dirname(rf.filename))
+                rawpathname = os.path.join(self.tmp_dir,rf.filename)
+                cmds = [['mkdir', '-p', dst_path],
+                        ['rsync', src_pathname, rawpathname]]
+                self.run_cmds(episode,cmds)
+            else:
+                rawpathname = os.path.join(self.episode_dir,rf.filename)
             dvfile.attrib['resource']=rawpathname
             new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
             tree[0].insert(pos,new)
@@ -312,29 +317,6 @@ class enc(process):
 
         return mlt_pathname
 
-  def mk_title_dv(self, mlt_pathname, episode):
-
-        # make an intro .dv from title and audio
-
-        dv_pathname = os.path.join( self.work_dir,"%s_title.dv"%episode.slug)
-        parms={'input_file':mlt_pathname,
-           'output_file':dv_pathname,
-           'format':"square_%s" % (self.options.dv_format),
-           'frames':149}
-        print parms
-        cmd = "melt \
--profile %(format)s \
-%(input_file)s \
-in=0 \
-out=%(frames)s \
--consumer avformat:%(output_file)s pix_fmt=yuv411p" % parms
-        # cmd="melt -verbose -profile %s %s in=0 out=149 -consumer avformat:%s pix_fmt=yuv411p" 
-        # cmd = cmd % ( self.options.format, mlt_pathname, dv_pathname)
-
-        ret = self.run_cmds(episode,[cmd])
-        # if not ret: raise something
-        return dv_pathname
-
   def enc_all(self, mlt_pathname, episode):
 
         def enc_one(ext):
@@ -423,48 +405,6 @@ out=%(frames)s \
 
         return ret
 
-  def mkdv(self, mlt_pathname, episode, cls ):
-        """
-        assemble parts into a master .dv file
-        so that something like ffmpeg2theora can encode it.
-        it is different from run_melt-one_format("dv") because it does not 
-        re-encode - it just copies chunks of files.
-        use it if melt is having problems and you don't have time to fix it.
-        """
-        title_dv=self.mk_title_dv(mlt_pathname, episode)
-
-        # make a new dv file using just the frames to encode
-        dv_pathname = os.path.join(self.tmp_dir, episode.slug+".dv")
-        if self.options.verbose: 
-            print "making %s - may take awhile..." % dv_pathname
-        outf=open(dv_pathname,'wb')
-
-        # splice in the intro dv make by melt()
-        title=open(title_dv,'rb').read()
-        title_bytes=len(title)
-        outf.write(title)
-
-        for c in cls:
-            if self.options.verbose: 
-                print (c.raw_file.filename, c.start,c.end)
-            raw_pathname = os.path.join(self.episode_dir,c.raw_file.filename)
-            inf=open(raw_pathname,'rb')
-            inf.seek(time2b(c.start,self.fps,self.bpf,0)+title_bytes)
-            # there is a problem if the first clip is shorter than the title.
-# the next clip will start at 0, 
-# which is part of the title, so it will play twice.  oh well.
-# it also does't pick up the volume adjustments. 
-            title_bytes=0 
-            size=os.fstat(inf.fileno()).st_size
-            end = time2b(c.end,self.fps,self.bpf,size)
-            while inf.tell()<end:
-                outf.write(inf.read(self.bpf))
-            inf.close()
-        outf.close()
-    
-        return dv_pathname
-
-
   def dv2theora(self,episode,dvpathname,cls,rfs):
         """
         transcode dv to ogv
@@ -504,7 +444,7 @@ out=%(frames)s \
 
 # get list of raw footage for this episode
         rfs = Raw_File.objects. \
-            filter(cut_list__episode=episode).\
+            filter(cut_list__episode=episode,cut_list__apply=True).\
             exclude(trash=True).distinct()
 
 # make a .mlt file for this episode
@@ -528,6 +468,8 @@ out=%(frames)s \
   def add_more_options(self, parser):
         parser.add_option('--enc-script', 
           help='encode shell script' )
+        parser.add_option('--load-temp', action="store_true", 
+          help='copy .dv to temp files' )
         parser.add_option('--rm-temp', 
           help='remove large temp files' )
 

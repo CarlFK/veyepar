@@ -294,7 +294,7 @@ class add_eps(process.process):
       # url='http://pycon-au.org/2010/conference/schedule/events.json'
       # url='http://djangocon.us/schedule/json/'
       # url='http://2010.osdc.com.au/program/json'
-      url='http://test.followtheflow.org/programme/schedule/json'
+      url='http://conf.followtheflow.org/programme/schedule/json'
       j=urllib2.urlopen(url).read()
       file('lca.json','w').write(j) 
       j=file('lca.json').read()

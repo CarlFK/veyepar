@@ -165,6 +165,7 @@ pix_fmt=yuv411p" % parms
   print cut
   # cut.start="0:0:1"
   # cut.end="0:0:10"
+  # cut.apply=False
   # cut.save()
   return
 
