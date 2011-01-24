@@ -93,8 +93,8 @@ class process(object):
               log_text = cmd
               cmd=cmd.split()
           sh.writelines(log_text)
-          sh.write('\n')
-          self.log_info(log_text)
+          # sh.write('\n')
+          # self.log_info(log_text)
           if self.options.debug_log:
               episode.description += "\n%s\n" % (log_text)
               episode.save()
