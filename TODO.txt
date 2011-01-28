@@ -1,3 +1,16 @@
 
-add sound to tests
+next/prev (match recording sheet: same room/day)
 
+
+
+add show stats page:
+  longest talk title
+  size of DV files in rooms/dir/days
+
+recording sheets
+  remove vert line by time
+  episode.durration 
+  bold room name
+  date in yyyy-mm-dd format too
+  [x] Page Done Entered
+  [x] Page Done QA

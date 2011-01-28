@@ -45,6 +45,10 @@
 </tbody>
 </table>
 
+
+<video src ="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video>
+<a href="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
+
 <form action="" method="POST">{% csrf_token %}
 <input type="submit" value="Save" />
 <table border=1>
@@ -52,10 +56,6 @@
 {{ episode_form }}  
 </tbody>
 </table>
-<input type="submit" value="Save" />
-
-<video src ="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video>
-<a href="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
 
 <input type="submit" value="Save" />
 {{ clrfformset.management_form }}
