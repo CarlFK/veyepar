@@ -2,10 +2,10 @@
 next/prev (match recording sheet: same room/day)
 
 
-
 add show stats page:
   longest talk title
   size of DV files in rooms/dir/days
+  day/room checklist: recording sheet tracking
 
 recording sheets
   remove vert line by time
@@ -14,3 +14,7 @@ recording sheets
   date in yyyy-mm-dd format too
   [x] Page Done Entered
   [x] Page Done QA
+  Date, Room, overall sequential page number
+   - move to top and bottem of page for easy viewing when sorting at end of day/event, trying to get all the papers in order
+
+
