@@ -16,7 +16,7 @@ sudo apt-add-repository ppa:gstreamer-developers/ppa
 sudo apt-add-repository ppa:kxstudio-team/ppa
 
 # j tracks ffmpeg2theora trunk
-# sudo apt-add-repository ppa:j/ppa
+sudo apt-add-repository ppa:j/ppa
 
 # I think this is an another melt source.
 # sudo apt-add-repository ppa:freshmedia/ppa

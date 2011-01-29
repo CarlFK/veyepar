@@ -11,10 +11,11 @@ recording sheets
   remove vert line by time
   episode.durration 
   bold room name
-  date in yyyy-mm-dd format too
+  date in yyyy-mm-dd format too (same as dv file dir name)
+  date in DOW, date, Month
   [x] Page Done Entered
   [x] Page Done QA
   Date, Room, overall sequential page number
    - move to top and bottem of page for easy viewing when sorting at end of day/event, trying to get all the papers in order
-
+  move speaker(s) name up under talk title
 
