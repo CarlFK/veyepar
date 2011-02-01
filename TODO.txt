@@ -1,6 +1,7 @@
 
 next/prev (match recording sheet: same room/day)
 
+json etc links to show page that give url's.
 
 add show stats page:
   longest talk title

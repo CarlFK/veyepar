@@ -468,6 +468,60 @@ def locations(request):
         },
 	context_instance=RequestContext(request) )
  
+def show_stats(request, show_id, ):
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+    episodes=Episode.objects.filter(show=show)
+    locations=show.locations.all().order_by('sequence')
+    # above gets all locations, we need a list of all dates too.
+    dates=[] 
+    for ep in episodes:
+        date = ep.start.date()
+        if date not in dates: dates.append(date)
+    # now make an empty grid
+    stats={} # {(date,loc):{count:1, min, max, total minutes...}}
+    for loc in locations: 
+        for date in dates: 
+            stats[(date,loc.name)] = {'count':0,'minutes':0, 
+               'start':None, 'end':None, 'states':[0,0,0,0,0,0]}
+    # print dates, stats
+
+    # fill in the grid (there may be gaps)
+    for ep in episodes:
+        date = ep.start.date()
+        key = (date, ep.location.name)
+        val=stats[key]
+        val['count']+=1        
+        duration=ep.end-ep.start        
+        val['minutes']+=duration.seconds/60        
+        val['start']=ep.start if val['start'] is None else min(val['start'],ep.start)
+        val['end']=ep.end if val['end'] is None else min(val['end'],ep.end)
+        if 0<= ep.state <=6:
+            val['states'][ep.state]+=1        
+  
+        # stats[key]=val
+
+    # make a list of lists cuz I can't figur out how to get at the dict
+    rows=[]
+    for loc in locations: 
+        row=[]
+        for date in dates: 
+            row.append(stats[(date,loc.name)])
+        rows.append(row)
+
+    # same as above, not sure which is better
+    rows=[ [stats[(date,loc.name)] for date in dates] for loc in locations]
+
+    return render_to_response('show_stats.html',
+        {
+          'locations':locations,
+          'dates':dates,
+          'stats':stats,
+          'rows':rows,
+        },
+	context_instance=RequestContext(request) )
+
+
 def episodes(request, client_slug=None, show_slug=None, location_slug=None):
     # the selected client, show and episodes
     # episode entry form

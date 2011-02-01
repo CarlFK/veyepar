@@ -92,12 +92,12 @@ class csv(process):
     blip_pathname = os.path.join( self.show_dir, "txt", basename+"_blip.xml" )
 
     if self.options.verbose: 
-        print "filenames:" + "\n%s"*5 % (
-            csv_pathname, txt_pathname, wget_pathname, 
+        print "filenames:" + "\n%s"*6 % (
+            json_pathname, csv_pathname, txt_pathname, wget_pathname, 
             html_pathname, blip_pathname )
 
 # setup csv 
-    fields="id state name primary target blip source embed".split()
+    fields="id conf_key conf_url state name primary target blip source embed".split()
     csv = DictWriter(open(csv_pathname, "w"),fields)
     # write out field names
     csv.writerow(dict(zip(fields,fields)))
@@ -147,7 +147,7 @@ class csv(process):
         if self.options.verbose: print pprint.pprint(oggs)
         row['source']=oggs[0]
 
-        # if self.options.verbose: print row
+        if self.options.verbose: print row
         json_data.append(row)
         csv.writerow(row)
         txt.write("%s %s\n" % (row['blip'],row['name']))
