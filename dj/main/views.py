@@ -478,12 +478,14 @@ def show_stats(request, show_id, ):
     for ep in episodes:
         date = ep.start.date()
         if date not in dates: dates.append(date)
+    dates.sort()
     # now make an empty grid
     stats={} # {(date,loc):{count:1, min, max, total minutes...}}
     for loc in locations: 
         for date in dates: 
             stats[(date,loc.name)] = {'count':0,'minutes':0, 
-               'start':None, 'end':None, 'states':[0,0,0,0,0,0]}
+               'start':None, 'end':None, 'states':[0,0,0,0,0,0],
+               'loc':loc.name, 'date':date }
     # print dates, stats
 
     # fill in the grid (there may be gaps)
@@ -501,6 +503,9 @@ def show_stats(request, show_id, ):
   
         # stats[key]=val
 
+    pprint( stats ) 
+    # for k,v in stats: print k,v
+
     # make a list of lists cuz I can't figur out how to get at the dict
     rows=[]
     for loc in locations: 
@@ -510,10 +515,13 @@ def show_stats(request, show_id, ):
         rows.append(row)
 
     # same as above, not sure which is better
-    rows=[ [stats[(date,loc.name)] for date in dates] for loc in locations]
+    rows=[ [stats[(date,loc.name)] for loc in locations] for date in dates] 
+    pprint( rows )
 
     return render_to_response('show_stats.html',
         {
+          'client':client,
+          'show':show,
           'locations':locations,
           'dates':dates,
           'stats':stats,
@@ -522,17 +530,22 @@ def show_stats(request, show_id, ):
 	context_instance=RequestContext(request) )
 
 
-def episodes(request, client_slug=None, show_slug=None, location_slug=None):
+def episodes(request, client_slug=None, show_slug=None, location_slug=None,
+    start_day=None, state=None):
     # the selected client, show and episodes
     # episode entry form
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
+    # wtf is this for:
     locations=show.locations.filter(default=True).order_by('sequence')
+    episodes=Episode.objects.filter(show=show).order_by('sequence')
     if location_slug:
+        # location here is for default location for new episodes
         location=get_object_or_404(Location,slug=location_slug)
-        episodes=Episode.objects.filter(show=show,location=location).order_by('sequence')
-    else:
-        episodes=Episode.objects.filter(show=show).order_by('sequence')
+        episodes=episodes.filter(show=show,location=location)
+    if start_day:
+        episodes = episodes.filter(start__day=start_day)
+
     
     # calc total time and dv size
     total_minutes=0
@@ -565,6 +578,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None):
                     'state':1,
                     }
             else:
+                print form
                 inits=None # (prevents form from being created below)
         else:
             if episodes:
