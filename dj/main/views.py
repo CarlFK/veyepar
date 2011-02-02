@@ -484,7 +484,7 @@ def show_stats(request, show_id, ):
     for loc in locations: 
         for date in dates: 
             stats[(date,loc.name)] = {'count':0,'minutes':0, 
-               'start':None, 'end':None, 'states':[0,0,0,0,0,0],
+               'start':None, 'end':None, 'states':[0,0,0,0,0,0,0],
                'loc':loc.name, 'date':date }
     # print dates, stats
 
@@ -497,7 +497,7 @@ def show_stats(request, show_id, ):
         duration=ep.end-ep.start        
         val['minutes']+=duration.seconds/60        
         val['start']=ep.start if val['start'] is None else min(val['start'],ep.start)
-        val['end']=ep.end if val['end'] is None else min(val['end'],ep.end)
+        val['end']=ep.end if val['end'] is None else max(val['end'],ep.end)
         if 0<= ep.state <=6:
             val['states'][ep.state]+=1        
   
@@ -541,6 +541,8 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         episodes=episodes.filter(show=show,location=location)
     if start_day:
         episodes = episodes.filter(start__day=start_day)
+    if state:
+        episodes = episodes.filter(state=state)
 
     
     # calc total time and dv size
