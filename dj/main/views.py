@@ -503,9 +503,6 @@ def show_stats(request, show_id, ):
   
         # stats[key]=val
 
-    pprint( stats ) 
-    # for k,v in stats: print k,v
-
     # make a list of lists cuz I can't figur out how to get at the dict
     rows=[]
     for loc in locations: 
@@ -516,7 +513,6 @@ def show_stats(request, show_id, ):
 
     # same as above, not sure which is better
     rows=[ [stats[(date,loc.name)] for loc in locations] for date in dates] 
-    pprint( rows )
 
     return render_to_response('show_stats.html',
         {
