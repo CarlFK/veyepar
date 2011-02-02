@@ -6,6 +6,14 @@
 {% endblock %}
 
 {% block content %}
+
+[
+{% for s in states %}
+   {% if s.1.0 == 1 or s.1.0 == 3 %}<u>{% endif %}
+   {{s.1.1}}:<a href="{% url episode_list client_slug=client.slug show_slug=show.slug state=forloop.counter0 %}">{{s.0}}</a>
+   {% if s.1.0 == 1 or s.1.0 == 3 %}</u>{% endif %}
+{% endfor %}
+]
     <table border=1>
       <tr>
          <th> </th>
@@ -23,9 +31,11 @@
                  <a href="{% url episode_list client.slug show.slug item.loc item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
                  [
                  {% for s in item.states %}
+                   {% if forloop.counter0 == 1 or forloop.counter0 == 3 %}<u>{% endif %}
                    {% if s %}
                    <a href="{% url episode_list client.slug show.slug item.loc item.date|date:"d" forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
                    {% else %} 0 {% endif %}
+                   {% if forloop.counter0 == 1 or forloop.counter0 == 3 %}</u>{% endif %}
                  {% endfor %}
                  ]
                {% endif %}

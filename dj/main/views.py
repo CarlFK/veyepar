@@ -481,6 +481,7 @@ def show_stats(request, show_id, ):
     dates.sort()
     # now make an empty grid
     stats={} # {(date,loc):{count:1, min, max, total minutes...}}
+    states=[0,0,0,0,0,0,0]
     for loc in locations: 
         for date in dates: 
             stats[(date,loc.name)] = {'count':0,'minutes':0, 
@@ -500,6 +501,7 @@ def show_stats(request, show_id, ):
         val['end']=ep.end if val['end'] is None else max(val['end'],ep.end)
         if 0<= ep.state <=6:
             val['states'][ep.state]+=1        
+            states[ep.state]+=1        
   
         # stats[key]=val
 
@@ -520,8 +522,9 @@ def show_stats(request, show_id, ):
           'show':show,
           'locations':locations,
           'dates':dates,
-          'stats':stats,
           'rows':rows,
+          'states':zip(states,((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done')))
+
         },
 	context_instance=RequestContext(request) )
 
