@@ -1,0 +1,109 @@
+{# show.html #}
+{% extends "base.html" %}
+
+{% block head %}
+  <title>veyepar - Show: {{client.name}} {{show.name}} </title>
+{% endblock %}
+
+{% block content %}
+    <table border=1>
+      <tr>
+         <th> </th>
+        {% for location in locations %}
+         <th> <a href="L/{{location.slug}}/">{{ location.name }}</a> </th>
+        {% endfor %}
+        </tr>
+
+        {% for date  in dates %}
+          <tr><td>{{date}}</td>
+          {% for loc in locations %}
+             <td>{{stats.date.loc}}</td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
+
+        {% for row  in rows  %}
+          <tr><td>{{row.0.start|date:"D d"}}</td>
+          {% for item in row %}
+             <td>
+                 {{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</br>
+                 <a href="{% url episode_list client.slug show.slug item.loc item.date|date:"d" %}">{{item.count}}</a> {{item.states}}
+             </td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
+
+    </table>
+
+<table class="shortcuts">
+<tr><td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td></tr>
+<tr><td><a href="{% url orphan_dv show.id %}">orphan_dv</a></td></tr>
+<tr><td><a href="{% url schedule show.id show.slug %}">schedule</a></td></tr>
+<tr><td><a href="{% url recording_sheets show.id %}{{show.slug}}.pdf">recording_sheets.pdf</a></td></tr>
+<tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
+<tr><td><a href="{% url show_stats show.id %}">show stats</a></td></tr>
+<tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td><tr>
+<tr><td><a href="{% url play_list show.id %}{{show.slug}}.m3u">play_list <span style="color: #000; text-decoration: none;">state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
+<tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>
+<tr><td><a href="{% url admin:main_episode_changelist %}?show__id__exact={{show.id}}">episodes admin</a></td></tr>
+<tr><td><a href="{% url admin:main_client_change client.id %}">client admin</a></td></tr>
+</table>
+<hr />
+
+  <table>
+    <thead>
+      <tr>
+        <th>id</td>
+        <th>seq</td>
+        <th>loc name</td>
+        <th>start-end</td>
+        <th>duration</td>
+        <th>state</td>
+        <th>episode.name</td>
+        <th>episode.authors</td>
+        <th></th>
+      </tr>
+    </thead>
+
+    {% for episode in episodes %}
+      <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+        <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
+        <td>{{episode.sequence}}</td>
+
+        <td><a href="
+        {%if location_slug %}
+         {% url episode_list client.slug show.slug %}
+        {% else %}
+         {% url episode_list client.slug show.slug episode.location.slug %}
+        {% endif %}
+         ">{{episode.location}}</a></td>
+
+        <td>{{episode.start|date:"D d H:i"}} - {{episode.end|date:"H:i"}}</td>
+        <td>{{episode.start|timesince:episode.end}}</td>
+        <td>{{episode.state}}</td>
+        <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+        <td style="white-space:normal">{{episode.authors}}</td>
+{#        <td><a href="E/{{episode.id}}/claim_lock">[LOCK]</a></td> #}
+      </tr>
+    {% endfor %}
+  </table>
+
+total episodes {{total_episodes}}<br> 
+total_hours: {{total_hours}}, total_gig: {{total_gig}}<br>
+fudge_hours: {{fudge_hours}}, fudge_gig: {{fudge_gig}}
+
+
+
+  {% if episode_form %}
+    <div class=logged-in>
+      <h1>Enter Episode:</h1>
+      <form action="" method="POST">{% csrf_token %}
+        <table border=1>
+          <tr><td colspan="2"><input type="submit" value="Save" /></td></tr>
+          {{ episode_form }}
+          <tr><td colspan="2"><input type="submit" value="Save" /></td></tr>
+        </table>
+      </form>
+    </div>
+  {% endif %}
+{% endblock %}
