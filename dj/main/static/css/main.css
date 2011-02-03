@@ -1,0 +1,42 @@
+
+body {
+    margin-left: 5px;
+}
+
+.tpick {
+    width: 90%;
+}
+
+table {
+    border: 1px solid #CCCCCC;
+}
+
+td a {
+    display: block;
+    padding: 4px;
+}
+
+td, th {
+    border: 0px;
+    border-left:1px solid #DDDDDD;
+    white-space: nowrap;
+}
+
+th {
+    font-weight:bold;
+}
+
+td {
+    vertical-align: middle;
+    padding: 0px 6px;
+}
+
+a:hover {
+    background: #279d27;
+    color: white;
+}
+
+.shortcuts a {
+    padding: 4px;
+}
+
