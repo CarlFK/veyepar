@@ -325,12 +325,16 @@ def enc_play_list(request,episode_id):
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
-    # for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
-    for ext in [ 'flv' ]:
-        # pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
-        item = '/'.join(request.META['HTTP_HOST'], settings.MEDIA_URL,client.slug,show.slug,ext,
-            '%s.%s' % (episode.slug, ext) )
+    for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
+        if settings.MEDIA_URL.startswith('file:/'):
+            head=settings.MEDIA_URL
+        else:
+            # probably no local file access
+            head='http://'+request.META['HTTP_HOST']+settings.MEDIA_URL
+            # so review the smaller iPhone file
+        item = '/'.join([head, client.slug,show.slug,ext, '%s.%s' % (episode.slug, ext)] )
         writer.writerow([item])
+
 
     return response
 
@@ -345,7 +349,6 @@ def play_list(request,show_id):
 
     writer = csv.writer(response)
     for ep in episodes:
-        ext='flv'
         # pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
         if settings.MEDIA_URL.startswith('file:/'):
             head=settings.MEDIA_URL
