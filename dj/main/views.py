@@ -349,9 +349,12 @@ def play_list(request,show_id):
         # pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
         if settings.MEDIA_URL.startswith('file:/'):
             head=settings.MEDIA_URL
+            ext='flv'
         else:
             # probably no local file access
-            head=request.META['HTTP_HOST']+settings.MEDIA_URL
+            head='http://'+request.META['HTTP_HOST']+settings.MEDIA_URL
+            # so review the smaller iPhone file
+            ext='m4v'
         item = '/'.join([head, client.slug,show.slug,ext, '%s.%s' % (ep.slug, ext)] )
         writer.writerow([item])
 
