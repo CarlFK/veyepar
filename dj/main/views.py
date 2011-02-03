@@ -327,9 +327,10 @@ def enc_play_list(request,episode_id):
     writer = csv.writer(response)
     # for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
     for ext in [ 'flv' ]:
-        pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
+        # pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
+        item = '/'.join(request.META['HTTP_HOST'], settings.MEDIA_URL,client.slug,show.slug,ext,
             '%s.%s' % (episode.slug, ext) )
-        writer.writerow([pathname])
+        writer.writerow([item])
 
     return response
 
@@ -345,9 +346,14 @@ def play_list(request,show_id):
     writer = csv.writer(response)
     for ep in episodes:
         ext='flv'
-        pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
-            '%s.%s' % (ep.slug, ext) )
-        writer.writerow([pathname])
+        # pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
+        if settings.MEDIA_URL.startswith('file:/'):
+            head=settings.MEDIA_URL
+        else:
+            # probably no local file access
+            head=request.META['HTTP_HOST']+settings.MEDIA_URL
+        item = '/'.join([head, client.slug,show.slug,ext, '%s.%s' % (ep.slug, ext)] )
+        writer.writerow([item])
 
     return response
 
@@ -472,6 +478,7 @@ def show_stats(request, show_id, ):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
     episodes=Episode.objects.filter(show=show)
+    locked=Episode.objects.filter(show=show, locked__isnull=False)
     locations=show.locations.all().order_by('sequence')
     # above gets all locations, we need a list of all dates too.
     dates=[] 
@@ -525,8 +532,8 @@ def show_stats(request, show_id, ):
           'locations':locations,
           'dates':dates,
           'rows':rows,
-          'states':zip(states,STATES)
-
+          'states':zip(states,STATES),
+          'locked':locked,
         },
 	context_instance=RequestContext(request) )
 
