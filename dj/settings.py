@@ -7,14 +7,18 @@ TEMPLATE_DEBUG = DEBUG
 TEMPLATE_STRING_IF_INVALID = 'template_error'
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
-STATICFILES_URL='foo'
+# STATICFILES_URL='foo'
 # STATICFILES_ROOT='foo'
+# STATICFILES_DIRS = [os.path.expanduser('~/Videos/veyepar'),]
+STATIC_URL = "/static/"
+MEDIA_URL = "file:///"+os.path.expanduser('~/Videos/veyepar')
+
 
 MANAGERS = ADMINS
 DATABASES =  {'default': {'ENGINE': 'django.db.backends.sqlite3',
@@ -47,17 +51,18 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.expanduser('~/Videos/veyepar')
+# MEDIA_ROOT = os.path.expanduser('~/Videos/veyepar')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static'
+# MEDIA_URL = '/static'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+# ADMIN_MEDIA_PREFIX = '/static/admin/'
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '_)n%2id#&ke+^q_si_9c^v(+d9o6$&6kp*&s*w2sl$%esyx4$v'
@@ -69,6 +74,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     # 'django.core.context_processors.auth',
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.media',
+    'django.core.context_processors.static',
     )
 
 # List of callables that know how to import templates from various sources.
@@ -112,6 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.databrowse',
+    'django.contrib.staticfiles',
     'main',
     'accounts',
 )

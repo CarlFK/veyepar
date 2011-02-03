@@ -3,6 +3,7 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
 from django.views.generic.simple import direct_to_template, redirect_to
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from django.contrib import admin
 admin.autodiscover()
@@ -30,12 +31,13 @@ urlpatterns = patterns('',
     (r'^my_admin/jsi18n', 'django.views.i18n.javascript_catalog'),
 )
 
-urlpatterns += patterns('',
-(r'^static/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve',
-        {'document_root': 'static/','show_indexes': True}))
+urlpatterns += staticfiles_urlpatterns()
+# urlpatterns += patterns('',
+# (r'^static/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve',
+#        {'document_root': 'static/','show_indexes': True}))
 
-urlpatterns += patterns('',
+#urlpatterns += patterns('',
 # (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-(r'^site_media/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve',
-        {'document_root': settings.MEDIA_ROOT,'show_indexes': True}))
+#(r'^site_media/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve',
+#        {'document_root': settings.MEDIA_ROOT,'show_indexes': True}))
 
