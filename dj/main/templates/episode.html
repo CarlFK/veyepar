@@ -45,9 +45,8 @@
 </tbody>
 </table>
 
-
-<video src ="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video>
-<a href="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
+<video src ={{STATIC_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video>
+<a href="{{STATIC_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
 
 <form action="" method="POST">{% csrf_token %}
 <input type="submit" value="Save" />
@@ -78,11 +77,11 @@
     {{clrfform.clid}}
       <table border=1>
       <tbody>
-{# <tr><td> <a href="file:///{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a></td></tr> #}
-{# <tr><td> <a href="file:///{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a></td></tr> #}
+{# <tr><td> <a href="{{STATIC_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a></td></tr> #}
+{# <tr><td> <a href="{{STATIC_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a></td></tr> #}
 <tr><td> {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}</td></tr>
 <tr><td> <a href="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></td></tr>
-<tr><td> <video src ="file://{{MEDIA_ROOT}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
+<tr><td> <video src ="{{STATIC_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
     poster ="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" 
     ></video>
     </td></tr>
@@ -128,7 +127,6 @@
     <tr>
     <td>{{cl.raw_file.ocrtext}}</td>
     {# <td> <video src="/site_media/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogg" controls='' ></video> </td> #}
-    {#  <td> <video src="file:///home/juser/foo.ogg" ></video> </td> #}
 
     </tr>
   </tbody>

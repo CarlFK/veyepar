@@ -7,6 +7,7 @@ TEMPLATE_DEBUG = DEBUG
 TEMPLATE_STRING_IF_INVALID = 'template_error'
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__)
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),

@@ -516,6 +516,8 @@ def show_stats(request, show_id, ):
     # same as above, not sure which is better
     rows=[ [stats[(date,loc.name)] for loc in locations] for date in dates] 
 
+    STATES=((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done')))
+
     return render_to_response('show_stats.html',
         {
           'client':client,
@@ -523,7 +525,7 @@ def show_stats(request, show_id, ):
           'locations':locations,
           'dates':dates,
           'rows':rows,
-          'states':zip(states,((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done')))
+          'states':zip(states,STATES)
 
         },
 	context_instance=RequestContext(request) )
