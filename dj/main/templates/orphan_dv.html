@@ -6,8 +6,8 @@
 <table>
 
 <tr>
-<td> <video src ="/site_media/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv" controls width=200
-    poster ="/site_media/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png" 
+<td> <video src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv" controls width=200
+    poster ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png" 
     ></video>
 </td>
 
@@ -15,8 +15,8 @@
 <table>
 <tr><td> <a href="/admin/main/raw_file/{{raw_file.id}}/">{{raw_file.filename}} admin</a> </td></tr> 
 
-<tr><td> <a href="/site_media/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png">{{raw_file.basename}}.png</a></td></tr>
-<tr><td> <a href="/site_media/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv">{{raw_file.basename}}.ogv</a></td></tr>
+<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png">{{raw_file.basename}}.png</a></td></tr>
+<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv">{{raw_file.basename}}.ogv</a></td></tr>
 
      <tr> <td>Location:</td><td>{{raw_file.location}}</td> </tr>
      <tr> <td>Start:</td><td>{{raw_file.start}}</td> </tr>

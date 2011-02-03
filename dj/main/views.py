@@ -311,7 +311,7 @@ def raw_play_list(request,episode_id):
 
     writer = csv.writer(response)
     for cut in cuts:
-        pathname = os.path.join(settings.MEDIA_ROOT,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )
+        pathname = os.path.join(settings.MEDIA_URL,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )
         writer.writerow([pathname])
 
     return response
@@ -327,7 +327,7 @@ def enc_play_list(request,episode_id):
     writer = csv.writer(response)
     # for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
     for ext in [ 'flv' ]:
-        pathname = os.path.join( settings.MEDIA_ROOT,client.slug,show.slug,ext,
+        pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
             '%s.%s' % (episode.slug, ext) )
         writer.writerow([pathname])
 
@@ -345,7 +345,7 @@ def play_list(request,show_id):
     writer = csv.writer(response)
     for ep in episodes:
         ext='flv'
-        pathname = os.path.join( settings.MEDIA_ROOT,client.slug,show.slug,ext,
+        pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
             '%s.%s' % (ep.slug, ext) )
         writer.writerow([pathname])
 
@@ -681,7 +681,6 @@ def orphan_dv(request,show_id):
     return render_to_response('orphan_dv.html',
         {
           'rfs':rfs,
-          'MEDIA_ROOT':settings.MEDIA_ROOT,
 	},
         context_instance=RequestContext(request) )
 
@@ -821,7 +820,6 @@ def episode(request, episode_no):
         'episode_form':episode_form,
         'clrffs':zip(cuts,clrfformset.forms),
         'clrfformset':clrfformset,
-        'MEDIA_ROOT':settings.MEDIA_ROOT,
         },
     	context_instance=RequestContext(request) )
     	

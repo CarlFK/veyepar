@@ -57,7 +57,7 @@
         {%if location_slug %}
          {% url episode_list client.slug show.slug %}
         {% else %}
-         {% url episode_list client.slug show.slug episode.location.slug %}
+         {% url episode_list client_slug=client.slug show_slug=show.slug location_slug=episode.location.slug %}
         {% endif %}
          ">{{episode.location}}</a></td>
 

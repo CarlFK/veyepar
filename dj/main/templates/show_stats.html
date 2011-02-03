@@ -18,7 +18,7 @@
       <tr>
          <th> </th>
         {% for location in locations %}
-         <th> <a href="{% url episode_list client.slug show.slug location.slug %}">{{ location.name }}</a> </th>
+         <th> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=location.slug %}">{{ location.name }}</a> </th>
         {% endfor %}
         </tr>
 
@@ -28,12 +28,12 @@
              <td>  
                {% if item.count %}
                  {{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</br>
-                 <a href="{% url episode_list client.slug show.slug item.loc item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
+                 <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
                  [
                  {% for s in item.states %}
                    {% if forloop.counter0 == 1 or forloop.counter0 == 3 %}<u>{% endif %}
                    {% if s %}
-                   <a href="{% url episode_list client.slug show.slug item.loc item.date|date:"d" forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
+                   <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
                    {% else %} 0 {% endif %}
                    {% if forloop.counter0 == 1 or forloop.counter0 == 3 %}</u>{% endif %}
                  {% endfor %}
