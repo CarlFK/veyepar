@@ -339,10 +339,12 @@ def enc_play_list(request,episode_id):
     return response
 
 
-def play_list(request,show_id):
+def play_list(request,show_id,location_slug=None):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
     episodes=Episode.objects.filter(show=show,state=3).order_by('sequence')
+    if location_slug:
+        episodes = episodes.filter(location__slug=location_slug)
 
     response = HttpResponse(mimetype='audio/mpegurl')
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'

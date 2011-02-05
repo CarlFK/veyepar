@@ -26,7 +26,14 @@
 <tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
 <tr><td><a href="{% url show_stats show.id %}">show stats</a></td></tr>
 <tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td><tr>
-<tr><td><a href="{% url play_list show.id %}{{show.slug}}.m3u">play_list <span style="color: #000; text-decoration: none;">state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
+<tr><td><a href="
+{%if location_slug %}
+  {% url play_list show.id location_slug %}
+{%else%}
+  {% url play_list show.id %}
+{%endif%}
+{{show.slug}}.m3u">play_list <span style="color: #000; text-decoration: none;"
+>state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
 <tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>
 <tr><td><a href="{% url admin:main_episode_changelist %}?show__id__exact={{show.id}}">episodes admin</a></td></tr>
 <tr><td><a href="{% url admin:main_client_change client.id %}">client admin</a></td></tr>
@@ -62,7 +69,7 @@
          ">{{episode.location}}</a></td>
 
         <td>{{episode.start|date:"D d H:i"}} - {{episode.end|date:"H:i"}}</td>
-        <td>{{episode.start|timesince:episode.end}}</td>
+        <td>{{episode.duration}}</td>
         <td>{{episode.state}}</td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>

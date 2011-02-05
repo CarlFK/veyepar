@@ -477,8 +477,13 @@ class Blip_CLI(Blip):
             meta['title'] = cgi.escape(options.title.encode("utf-8"))
 
         if options.description:
-            if options.description[0]=='@':
+            # getting a description from either command line or read from file.
+            # both are an IO boundary, so decode on the way in
+            # if options.description[0]=='@':
+            #     meta['description'] = open(options.description[1:]).read()
+            if options.description.startswith('@'):
                 meta['description'] = open(options.description[1:]).read()
+                # meta['description'] = codecs.open(options.description[1:]).read()
             else:
                 meta['description'] = options.description
             meta['description'] = cgi.escape(
