@@ -54,6 +54,7 @@
         <th>state</th>
         <th>locked</th>
         <th>locked by</th>
+        <th>stop</th>
         <th>episode.name</th>
         <th></th>
       </tr>
@@ -65,6 +66,7 @@
         <td>{{episode.state}}</td>
         <td>{{episode.locked}} - {{episode.locked|timesince}}</td>
         <td>{{episode.locked_by}}</td>
+        <td>{{episode.stop|yesno:"y,n,"}}</td>
 
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
       </tr>
