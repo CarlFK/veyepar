@@ -15,14 +15,15 @@
 {% endfor %}
 ]
     <table border=1>
-      <tr>
-         <th> </th>
-        {% for location in locations %}
-         <th> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=location.slug %}">{{ location.name }}</a> </th>
-        {% endfor %}
-        </tr>
-
         {% for row  in rows  %}
+          {% if forloop.first %}
+           <tr>
+         <th> </th>
+            {% for item in row %}
+         <th> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}">{{ item.loc.name }}</a> </th>
+            {% endfor %}
+           </tr>
+          {% endif %}
           <tr><td> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=row.0.start|date:"d" %}">{{row.0.start|date:"D d"}}</a></td>
           {% for item in row %}
              <td>  

@@ -501,7 +501,7 @@ def show_stats(request, show_id, ):
         for date in dates: 
             stats[(date,loc.name)] = {'count':0,'minutes':0, 
                'start':None, 'end':None, 'states':[0,0,0,0,0,0,0],
-               'loc':loc.name, 'date':date }
+               'loc':loc, 'date':date }
     # print dates, stats
 
     # fill in the grid (there may be gaps)
@@ -526,6 +526,7 @@ def show_stats(request, show_id, ):
         row=[]
         for date in dates: 
             row.append(stats[(date,loc.name)])
+            pprint(stats[(date,loc.name)])
         rows.append(row)
 
     # same as above, not sure which is better
