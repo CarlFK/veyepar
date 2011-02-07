@@ -155,16 +155,22 @@ class post(process):
         print blipcmd 
 
     else:
+   
+        done=False
+        while not done:
         
-        response_obj = blip_cli.Upload(
+          response_obj = blip_cli.Upload(
             video_id, blip_user, blip_pw, files, meta, thumb)
-        response_xml = response_obj.read()
+          response_xml = response_obj.read()
 
-        if 'Guru Meditation' in response_xml:
-            # buggy xml, prolly going to crash, 
-            # so blurt whatever might help.
+          if 'Guru Meditation' in response_xml:
+            # buggy xml, will crash if we try to parse it.
             # xml bugged Sep 22 2010: http://support.blip.tv/requests/17356
-            self.options.verbose=True
+            # self.options.verbose=True
+            # solution is to just loop.
+            done=False 
+          else:
+            done=True
 
         if self.options.verbose: print response_xml
         ep.comment += "\n%s\n" % response_xml
