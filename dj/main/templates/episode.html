@@ -33,6 +33,8 @@
   <a href=http://blip.tv/file/{{episode.target}}>blip</a> 
 {% endif %}
 </br>
+<a href={% url episode_logs episode.id %}>logs</a><br/>
+
 <table>
 <tbody>
 <tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>

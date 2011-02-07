@@ -63,6 +63,8 @@ urlpatterns += patterns(
     url(r'recording_sheets/(?P<show_id>\w+)/.*$', recording_sheets,
         name='recording_sheets'),
 
+    url(r'episode_logs/(?P<episode_id>\w+)/$', episode_logs, name='episode_logs'),
+
     url(r'tests', tests, name='tests'),
 
 )

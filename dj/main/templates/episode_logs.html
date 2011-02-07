@@ -1,0 +1,20 @@
+{# episode_logs.html #}
+{% extends "base.html" %}
+
+{% block head %}
+<title>veyepar: {{episode.name}} logs</title>
+{% endblock %}
+
+{% block content %}
+
+<table border=1>
+  <tr><th>State</th><th>Ready</th><th>Start</th><th>End</th><th>Result</th></tr>
+{% for log in logs %}
+  <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+  <td>{{log.state.slug}}</td><td>{{log.ready}}</td><td>{{log.start}}</td><td>{{log.end}}</td><td>{{log.result}}</td>
+  </tr>
+{% endfor %}
+</table>
+
+{% endblock %}
+
