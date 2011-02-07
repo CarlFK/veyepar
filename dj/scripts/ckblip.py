@@ -83,27 +83,14 @@ class ckblip(process):
 
     return response
 
- 
-  def process_ep(self, ep):
-    if self.options.verbose: print ep.id, ep.name, ep.target
-
-    if ep.state == -1: return 
-    """
-    ext='flac'
-    out_pathname = os.path.join(
-        self.show_dir, ext, "%s.%s"%(ep.slug,ext))
-    if ep.state>2 and not os.path.exists(out_pathname): print ep.id, 
-    return True
-    """
-
-    type_map = (
+  def up_missing_files():
+        type_map = (
             # {'ext':'ogv','mime':'video/ogg'},
             # {'ext':'flv','mime':'video/x-flv'},
             {'ext':'m4v','mime':'video/x-m4v'},
             # {'ext':'mp3','mime':'audio/mpeg'},)
             )
 
-    if ep.target:
         
         # Episode in veypar has been uploaded to blip,
         # use the local blip id and fetch the blip metadata.
@@ -160,15 +147,7 @@ class ckblip(process):
             if self.options.verbose: print file_types_to_upload    
             self.post(ep,file_types_to_upload,user,password)
 
-    else:
-        # episode not on blip, 
-        # This code doens't post new episodes,
-        # use post.py to set title, thumb, etc.
-        print "Not on blip: %s - %s" % (ep.id, ep.name)
-
-    ret = True
-    return ret
-    """
+        """
 
         # code left over from PyCon10 audit.
         files_on_blip = {}
@@ -226,6 +205,38 @@ class ckblip(process):
     return ret
     """
 
+  def update_meta(self, ep):
+    # upload current description.
+    # to fix the ones that were missing due to improper unicode handeling
+    blip_cli=blip_uploader.Blip_CLI()
+    blip_cli.debug = self.options.verbose
+    user = ep.show.client.blip_user if ep.show.client.blip_user \
+            else self.options.blip_user
+    password = pw.blip[user]
+    meta = {'description':ep.description, 'license':self.options.license}
+    response = blip_cli.Upload(
+            ep.target, user, password, [], meta, )
+    response_xml = response.read()
+    if self.options.verbose: print response_xml
+
+    return 
+
+ 
+  def process_ep(self, ep):
+    if self.options.verbose: print ep.id, ep.name, ep.target
+
+    if ep.state in [-1,0]: return 
+
+    if ep.target:
+        ret = self.update_meta(ep)
+    else:
+        # episode not on blip, 
+        # This code doens't post new episodes,
+        # use post.py to set title, thumb, etc.
+        print "Not on blip: %s - %s" % (ep.id, ep.name)
+        ret = True
+
+    return ret
 
 if __name__ == '__main__':
     p=ckblip()
