@@ -526,7 +526,6 @@ def show_stats(request, show_id, ):
         row=[]
         for date in dates: 
             row.append(stats[(date,loc.name)])
-            pprint(stats[(date,loc.name)])
         rows.append(row)
 
     # same as above, not sure which is better

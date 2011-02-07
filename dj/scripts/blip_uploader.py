@@ -482,12 +482,14 @@ class Blip_CLI(Blip):
             # if options.description[0]=='@':
             #     meta['description'] = open(options.description[1:]).read()
             if options.description.startswith('@'):
+                # read description from file
                 meta['description'] = open(options.description[1:]).read()
-                # meta['description'] = codecs.open(options.description[1:]).read()
             else:
                 meta['description'] = options.description
-            meta['description'] = cgi.escape(
-                meta['description'].encode("utf-8"))
+            # input is utf-8 encoded becase I say.
+            meta['description'] = meta['description'].decode("utf-8")
+            # I tink this converts < to &lt; not sure if that is a good thing.
+            meta['description'] = cgi.escape( meta['description'] )
         
         if options.topics:
             meta['topics'] = options.topics
