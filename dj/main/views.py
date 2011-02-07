@@ -326,13 +326,19 @@ def enc_play_list(request,episode_id):
 
     writer = csv.writer(response)
     for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
+        
+      foot_pathname = os.path.join(client.slug,show.slug, ext, '%s.%s' % (episode.slug, ext))
+
+      if os.path.exists( 
+          os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)):
+        
         if settings.MEDIA_URL.startswith('file:/'):
             head=settings.MEDIA_URL
         else:
             # probably no local file access
             head='http://'+request.META['HTTP_HOST']+settings.MEDIA_URL
             # so review the smaller iPhone file
-        item = '/'.join([head, client.slug,show.slug,ext, '%s.%s' % (episode.slug, ext)] )
+        item = '/'.join([head, foot_pathname ] )
         writer.writerow([item])
 
 
