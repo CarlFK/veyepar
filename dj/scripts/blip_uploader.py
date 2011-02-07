@@ -87,6 +87,7 @@ def stot(seconds):
 class Blip(object):
 
     BLIP_UPLOAD_URL = "http://blip.tv/file/post"
+# While both URLs will currently work, future applications should use uploads.blip.tv. 
     
     MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
 
@@ -120,7 +121,7 @@ class Blip(object):
             data.append('--' + self.MULTIPART_BOUNDARY)
             data.append('Content-Disposition: form-data; name="%s"' % field_name)
             data.append('')
-            data.append(value)
+            data.append(value.encode("utf-8"))
         fieldsdata="\r\n".join(data)
         filedatas=[]
         for (field_name, filename) in files:
@@ -153,7 +154,7 @@ class Blip(object):
         if self.debug: print fieldsdata.__repr__()
         if self.debug: print fieldsdata
         self.start_time = datetime.datetime.now()
-        h.send(fieldsdata.encode("utf-8"))
+        h.send(fieldsdata)
         bytes_sent = len(fieldsdata)
         for filedata, filename in filedatas:
             if self.debug: print "%s (%s)" % (filedata.__repr__(), filename)
