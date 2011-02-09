@@ -1,5 +1,4 @@
 ---
-layout: default
 title: qa.txt - Quality Assurance
 ---
 
