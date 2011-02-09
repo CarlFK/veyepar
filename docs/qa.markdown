@@ -1,6 +1,5 @@
----
-title: qa.txt - Quality Assurance
----
+qa.markdown - Quality Assurance
+-
 
 Spend about a minute on each, except when it is interesting then I watch the whole thing - that's the biggest time sink.  Typically about 5% have problems, they take 2-3 min of trying to figure out what is going on, then 5-10 looking at code and stuff trying to figure out how it happened.  I don't expect anyone to look at the code, most of the time the problem is file permissions, encoder libs, disk space, etc.
 
