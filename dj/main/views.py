@@ -184,8 +184,9 @@ def meet_ann(request,show_id):
         body = '\n'.join(r[3:])
         return subject,body
 
-def emailer(show_id):
-    tos = [
+def emailer(show_id, real=False):
+    if real:
+        tos = [
  '"ChiPy" <chicago@python.org>', '"ChiPy Announce" <ChiPy-announce@python.org>',
  '"PS1" <pumping-station-one-public@googlegroups.com>',
  '"ACM Chicago" <mtemkin@speakeasy.net>',
@@ -194,8 +195,8 @@ def emailer(show_id):
  '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
  '<genluglist@codlug.info>',
  '<chicagotechcal@gmail.com>']
-
-    test_tos = [
+    else: 
+        tos = [
     'carl@personnelware.com', 
     ]
 
