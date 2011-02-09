@@ -6,7 +6,7 @@ ANN: {{client.name}} at {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
 =========================
 
 When: {{episodes.0.start|date:"f A l F j, Y"}}
-Where: {{location.name}}
+Where: {{location.name}} - You need to RSVP to get past security, see link below.
 
 {{show.description}}
 
@@ -21,10 +21,7 @@ Details
 {{forloop.counter}}. {{ episode.name }} 
 {{episode.authors}}
 {{episode.description}}
-{{episode.conf_url}}
-{% if episode.target %}
- Video: http://carlfk.blip.tv/file/{{episode.target}}
-{% endif %}
+{{episode.conf_url}} {% if episode.target %} Video: http://carlfk.blip.tv/file/{{episode.target}} {% endif %}
 {% endfor %}
 
 Location
