@@ -549,8 +549,10 @@ def show_stats(request, show_id, ):
             stat['hours']=int( stat['minutes']/60.0 + .9)
             stat['talk_gig']=stat['hours']*13
             stat['gig']=stat['bytes']/(1024**3)
-            stat['variance'] = stat['gig'] - stat['talk_gig']	
-            stat['alarm']= abs(stat['variance'])>stat['gig']*.1
+            stat['variance'] = stat['talk_gig'] - stat['gig']	
+            # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
+            # using minutes for better resolution
+            stat['alarm']= int( abs(stat['variance']) / (stat['minutes']/60.0*13 + 1) * 100 )
             row.append(stat)
         rows.append(row)
 

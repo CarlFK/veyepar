@@ -29,7 +29,7 @@
              <td>  
                {% if item.count %}
 
-                 {{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</br>
+                 <span style="float:left">{{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</span> <span style="float:right;"> {{item.hours}} h </span> </br>
                  <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
                  [
                  {% for s in item.states %}
@@ -40,10 +40,10 @@
                    {% if forloop.counter0 == 1 or forloop.counter0 == 3 %}</u>{% endif %}
                  {% endfor %}
                  ]</br>
-                 talks: {{item.hours}} h ~ {{item.talk_gig}} g </br>
+                 <span style="float:left">expected:</span><span style="float:right">{{item.talk_gig}} g</span></br>
                  {% if item.files %}
-                   disk: {{item.files}} files, {{item.gig}} g </br>
-                   {% if item.alarm %} alarm: {{item.variance}} {% endif %}
+                   <span style="float:left">disk: {{item.files}} files</span><span style="float:right">{{item.gig}} g</span></br>
+                   {% if item.alarm >= 0 %} <span style="float:left">{{item.alarm}}%</span><span style="float:right">{{item.variance}} g</span> {% endif %}
                  {% endif %}
                {% endif %}
              </td>
