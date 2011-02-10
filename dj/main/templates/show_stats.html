@@ -24,7 +24,7 @@
             {% endfor %}
            </tr>
           {% endif %}
-          <tr><td> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=row.0.start|date:"d" %}">{{row.0.start|date:"D d"}}</a></td>
+          <tr><td> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=row.0.date|date:"d" %}">{{row.0.date|date:"D d"}}</a></td>
           {% for item in row %}
              <td>  
                {% if item.count %}

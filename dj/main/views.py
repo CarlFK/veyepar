@@ -540,21 +540,19 @@ def show_stats(request, show_id, ):
         val['bytes'] += rf.filesize
         
     # make a list of lists cuz I can't figur out how to get at the dict
+    # and do some calcs
     rows=[]
-    for loc in locations: 
+    for date in dates: 
         row=[]
-        for date in dates: 
+        for loc in locations: 
             stat = stats[(date,loc.id)] 
-            stat['hours']=stat['minutes']/60.0
+            stat['hours']=int( stat['minutes']/60.0 + .9)
             stat['talk_gig']=stat['hours']*13
             stat['gig']=stat['bytes']/(1024**3)
-            stat['variance'] = stat['talk_gig'] - stat['gig']	
+            stat['variance'] = stat['gig'] - stat['talk_gig']	
             stat['alarm']= abs(stat['variance'])>stat['gig']*.1
             row.append(stat)
         rows.append(row)
-
-    # same as above, not sure which is better
-    # rows=[ [stats[(date,loc.id)] for loc in locations] for date in dates] 
 
     STATES=((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
 
