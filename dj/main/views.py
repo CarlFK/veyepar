@@ -553,6 +553,7 @@ def show_stats(request, show_id, ):
             # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
             # using minutes for better resolution
             stat['alarm']= int( abs(stat['variance']) / (stat['minutes']/60.0*13 + 1) * 100 )
+            stat['alarm_color'] = "%02x%02x%02x" % ( 255, 255-stat['alarm'], 255-stat['alarm'] )
             row.append(stat)
         rows.append(row)
 
