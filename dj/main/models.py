@@ -83,7 +83,7 @@ class Raw_File(models.Model):
     location = models.ForeignKey(Location)
     show = models.ForeignKey(Show)
     filename = models.CharField(max_length=135,help_text="filename.dv")
-    filesize = models.IntegerField(default=1,help_text="size in bytes")
+    filesize = models.BigIntegerField(default=1,help_text="size in bytes")
     start = models.DateTimeField(null=True, blank=True,
         help_text='when recorded (should agree with file name and timestamp)')
     duration = models.CharField(max_length=11, blank=True, )
