@@ -4,20 +4,19 @@
 
 """
 fields:
-ID - uniquie ID of item (used to update item if details change)
-Title - of talk
-Room Name - "room1" if there is only one room.
-Start - datetime in some parsable format 
-Duration in minutes, or HH:MM:SS 
-Presenters - comma seperated list of people's names.
-Released - permission to release.
-Description - used as the description of the video (paragraphs are fine)
- in source database - should be uniquie 
-URL of talk page
+id - uniquie ID of item (used to update item if details change)
+ritle - of talk
+room - "room1" if there is only one room.
+start - datetime in some parsable format 
+duration in minutes, or HH:MM:SS 
+presenters - comma seperated list of people's names.
+released - permission to release.
+license - CC license (13 is safe)
+description - used as the description of the video (paragraphs are fine)
+conf_key - PK in source database - should be uniquie across this file
+conf_url - URL of talk page
 tags - comma seperated list 
 """
-
-{"Description":"","Presenters":"Ian Grigg,Mark Lipscombe","Title":"CAcert Assurer Training Event (bring your ID!)","Start":"2011-01-24 15:45:00","Duration":"1:45:00","Id":175,"Room Name":"Z411"}
 
 """
 There is a datetime format issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code. easy to read data is good too.  Do not write extra server side code to try and make it easier to parse.  That has lead to data loss, which means trying to debug a ssytem that starts with the event's data input and ends with veyepar's database, which is not fun.  
@@ -159,8 +158,9 @@ class add_eps(process.process):
           duration = row['Duration']
           # start, duration = self.talk_time(row['Day'],row['Time'])
           authors=row.get('Presenters','')
-          # released=row['released']
-          released=None
+          released=row['released']
+          # released=None
+          license=row['license']
           # url = row['Link']
           description = row['Description']
           if description:
@@ -191,7 +191,6 @@ class add_eps(process.process):
               print conf_key
               print start
               print authors
-              # print released
               print duration
               print description
               print tags
