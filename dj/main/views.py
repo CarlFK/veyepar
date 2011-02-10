@@ -36,6 +36,8 @@ from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm
 
 from accounts.forms import LoginForm
 
+
+
 def make_test_data():
     desc = """
 Sample files and episode:  
@@ -193,7 +195,7 @@ def emailer(show_id, real=False):
  '"Linux Users Of Northern Illinois" <luni@luni.org>', 
  '"Chicago Linux Discuss" <chicagolinux-discuss@chicagolug.org>', 
  '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
- '<genluglist@codlug.info>',
+ # '<genluglist@codlug.info>',
  '<chicagotechcal@gmail.com>']
     else: 
         tos = [
@@ -495,6 +497,7 @@ def show_stats(request, show_id, ):
     episodes=Episode.objects.filter(show=show)
     locked=Episode.objects.filter(show=show, locked__isnull=False)
     locations=show.locations.all().order_by('sequence')
+    raw_files=Raw_File.objects.filter(show=show)
     # above gets all locations, we need a list of all dates too.
     dates=[] 
     for ep in episodes:
@@ -506,15 +509,16 @@ def show_stats(request, show_id, ):
     states=[0,0,0,0,0,0,0]
     for loc in locations: 
         for date in dates: 
-            stats[(date,loc.name)] = {'count':0,'minutes':0, 
+            stats[(date,loc.id)] = {'count':0,'minutes':0, 
                'start':None, 'end':None, 'states':[0,0,0,0,0,0,0],
+               'files':0, 'bytes':0, 
                'loc':loc, 'date':date }
     # print dates, stats
 
     # fill in the grid (there may be gaps)
     for ep in episodes:
         date = ep.start.date()
-        key = (date, ep.location.name)
+        key = (date, ep.location.id)
         val=stats[key]
         val['count']+=1        
         duration=ep.end-ep.start        
@@ -527,16 +531,30 @@ def show_stats(request, show_id, ):
   
         # stats[key]=val
 
+    for rf in raw_files:
+        date = rf.start.date()
+        loc = rf.location.id
+        key = (date, loc)
+        val=stats[key]
+        val['files'] += 1
+        val['bytes'] += rf.filesize
+        
     # make a list of lists cuz I can't figur out how to get at the dict
     rows=[]
     for loc in locations: 
         row=[]
         for date in dates: 
-            row.append(stats[(date,loc.name)])
+            stat = stats[(date,loc.id)] 
+            stat['hours']=stat['minutes']/60.0
+            stat['talk_gig']=stat['hours']*13
+            stat['gig']=stat['bytes']/(1024**3)
+            stat['variance'] = stat['talk_gig'] - stat['gig']	
+            stat['alarm']= abs(stat['variance'])>stat['gig']*.1
+            row.append(stat)
         rows.append(row)
 
     # same as above, not sure which is better
-    rows=[ [stats[(date,loc.name)] for loc in locations] for date in dates] 
+    # rows=[ [stats[(date,loc.id)] for loc in locations] for date in dates] 
 
     STATES=((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
 

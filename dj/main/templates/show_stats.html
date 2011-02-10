@@ -28,6 +28,7 @@
           {% for item in row %}
              <td>  
                {% if item.count %}
+
                  {{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</br>
                  <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
                  [
@@ -38,7 +39,12 @@
                    {% else %} 0 {% endif %}
                    {% if forloop.counter0 == 1 or forloop.counter0 == 3 %}</u>{% endif %}
                  {% endfor %}
-                 ]
+                 ]</br>
+                 talks: {{item.hours}} h ~ {{item.talk_gig}} g </br>
+                 {% if item.files %}
+                   disk: {{item.files}} files, {{item.gig}} g </br>
+                   {% if item.alarm %} alarm: {{item.variance}} {% endif %}
+                 {% endif %}
                {% endif %}
              </td>
           {% endfor %}

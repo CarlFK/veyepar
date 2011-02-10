@@ -57,6 +57,8 @@ class add_dv(process):
             print dv.location.slug
             start += datetime.timedelta(hours=-3,minutes=0)
 
+        dv.filesize=st.st_size
+
         frames = st.st_size/self.bpf
         seconds = frames/self.fps 
 
