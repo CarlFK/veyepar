@@ -1,15 +1,8 @@
 {#Meeting  meeting_announcement.html #}
-ANN: {{client.name}} RSVP today for {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
-
+ANN: {{client.name}} {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
 {% autoescape off %}
-
-Sorry for the last minute spamy, but unlike previous meetings the RSVP list needs to be in tonight, so if you plan on attending, Get R Done now: https://spreadsheets.google.com/viewform?formkey=dHVLOTNTU3oxTzJKYjB3RmV4eVZkMEE6MA  or on ChiPy.org if for some reason the goog link doesn't work.
-
-And for those of you that missed it the first time:
-
 {{client.name}}
 =========================
-
 When: {{episodes.0.start|date:"f A l F j, Y"}}
 Where: {{location.name}} - You need to RSVP to get past security, see link below.
 

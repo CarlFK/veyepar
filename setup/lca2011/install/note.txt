@@ -1,0 +1,19 @@
+GET AV TO DISABLE AUTO-OFF ON SYSTEMS (120 mins)
+NOC: DISABLE INTERNET TO AV PC'S
+
+System -> Preferences - Mouse -> touchpad
+disable enable clicks with touchpad
+scrolling - disable
+
+disable wifi
+
+chown root:root /home/avuser/Desktop/dv/nd
+chmod a-w /home/avuser/Desktop/dv/nd
+
+install scripts to /scripts
+
+/etc/fstab:
+192.168.128.1:/mnt/lcadata      /home/avuser/Desktop/dv/nd      nfs     intr,hard,rsize=8192,wsize=8192 0       0
+
+/etc/sudoers:
+
