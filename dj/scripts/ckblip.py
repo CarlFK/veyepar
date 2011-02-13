@@ -83,7 +83,7 @@ class ckblip(process):
 
     return response
 
-  def up_missing_files():
+  def up_missing_files(self,ep):
         type_map = (
             # {'ext':'ogv','mime':'video/ogg'},
             # {'ext':'flv','mime':'video/x-flv'},
@@ -229,6 +229,7 @@ class ckblip(process):
 
     if ep.target:
         ret = self.update_meta(ep)
+        # ret = self.up_missing_files(ep)
     else:
         # episode not on blip, 
         # This code doens't post new episodes,
@@ -236,6 +237,8 @@ class ckblip(process):
         print "Not on blip: %s - %s" % (ep.id, ep.name)
         ret = True
 
+    # always return False so that state doesn't get bumped
+    ret=False
     return ret
 
 if __name__ == '__main__':

@@ -192,6 +192,7 @@ def emailer(show_id, real=False):
  '"ChiPy" <chicago@python.org>', '"ChiPy Announce" <ChiPy-announce@python.org>',
  '"PS1" <pumping-station-one-public@googlegroups.com>',
  '"ACM Chicago" <mtemkin@speakeasy.net>',
+ '"ACM Chicago" <chicago-chapter-acm@googlegroups.com>',
  '"Linux Users Of Northern Illinois" <luni@luni.org>', 
  '"Chicago Linux Discuss" <chicagolinux-discuss@chicagolug.org>', 
  '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
