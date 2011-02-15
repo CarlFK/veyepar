@@ -325,7 +325,7 @@ class enc(process):
 
               # cmds=["melt -verbose -progress -profile square_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.dv_format, mlt_pathname, out_pathname, acodec, vcodec)]
               if ext=='flv': 
-                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=240k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
+                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
               if ext=='flac': 
                   # 16kHz/mono 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)]
@@ -339,7 +339,7 @@ class enc(process):
                   ffpreset=open('/usr/share/ffmpeg/libx264-default.ffpreset').read().split('\n')
                   ffpreset.extend(open('/usr/share/ffmpeg/libx264-ipod640.ffpreset').read().split('\n'))
                   ffpreset = [i for i in ffpreset if i]
-                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=700k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=70k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
                   cmd = cmd.split()
                   cmd.extend(ffpreset)
                   cmds=[cmd]
