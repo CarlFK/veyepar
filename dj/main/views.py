@@ -25,8 +25,11 @@ import datetime
 # from datetime import timedelta
 import os
 import csv
+from copy import deepcopy
+
 from cStringIO import StringIO
 from pprint import pprint
+import operator
 
 from dabo.dReportWriter import dReportWriter
 
@@ -493,60 +496,103 @@ def locations(request):
 	context_instance=RequestContext(request) )
  
 def show_stats(request, show_id, ):
+    """
+    Show Status - varous summaries of rooms, days and the whole thing
+    """
+
     show=get_object_or_404(Show,id=show_id)
     client=show.client
     episodes=Episode.objects.filter(show=show)
     locked=Episode.objects.filter(show=show, locked__isnull=False)
-    locations=show.locations.all().order_by('sequence')
     raw_files=Raw_File.objects.filter(show=show)
-    # above gets all locations, we need a list of all dates too.
-    dates=[] 
-    for ep in episodes:
-        date = ep.start.date()
-        if date not in dates: dates.append(date)
-    dates.sort()
-    # now make an empty grid
-    stats={} # {(date,loc):{count:1, min, max, total minutes...}}
-    states=[0,0,0,0,0,0,0]
-    for loc in locations: 
-        for date in dates: 
-            stats[(date,loc.id)] = {'count':0,'minutes':0, 
+    locations=show.locations.all().order_by('sequence')
+    
+    empty_stat = {'count':0,'minutes':0, 
                'start':None, 'end':None, 'states':[0,0,0,0,0,0,0],
                'files':0, 'bytes':0, 
-               'loc':loc, 'date':date }
-    # print dates, stats
-
-    # fill in the grid (there may be gaps)
+               'loc':None, 'date':None }
+ 
+    dates=[] 
     for ep in episodes:
-        date = ep.start.date()
-        key = (date, ep.location.id)
-        val=stats[key]
-        val['count']+=1        
-        duration=ep.end-ep.start        
-        val['minutes']+=duration.seconds/60        
-        val['start']=ep.start if val['start'] is None else min(val['start'],ep.start)
-        val['end']=ep.end if val['end'] is None else max(val['end'],ep.end)
-        if 0<= ep.state <=6:
-            val['states'][ep.state]+=1        
-            states[ep.state]+=1        
-  
-        # stats[key]=val
+        dt = ep.start.date()
+        if dt not in dates: dates.append(dt)
+    dates.sort()
+    
+    # show totals:
+    STATES=((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
+    # states=[0,0,0,0,0,0,0]
+    show_stat = deepcopy(empty_stat)
 
-    for rf in raw_files:
-        date = rf.start.date()
-        loc = rf.location.id
-        key = (date, loc)
-        val=stats[key]
-        val['files'] += 1
-        val['bytes'] += rf.filesize
+    # make 3 dicts of empty stats
+    # one for each room-day (date,loc)
+    stats={} 
+    for loc in locations: 
+        for dt in dates: 
+            d = deepcopy(empty_stat)
+            d['loc'] = loc
+            d['date'] = dt
+            stats[(dt,loc.id)] = d
+
+    # one for locations:
+    d={}
+    for loc in locations:
+        d[loc.id] = deepcopy(empty_stat)
+        d[loc.id]['loc'] = loc
+    locations=d
+
+    # one for dates:
+    d={}
+    for dt in dates:
+        d[dt] = deepcopy(empty_stat)
+    dates=d
+
+    # gather episode stats
+    # func to update one:
+    def add_ep_to_stat(ep,stat):
+        stat['count']+=1        
+        duration=ep.end-ep.start        
+        stat['minutes']+=duration.seconds/60        
+        stat['start']=ep.start if stat['start'] is None else min(stat['start'],ep.start)
+        stat['end']=ep.end if stat['end'] is None else max(stat['end'],ep.end)
+        if 0<= ep.state <=6:
+            stat['states'][ep.state]+=1        
+
+    for ep in episodes:
+        dt = ep.start.date()
+        loc = ep.location.id
+
+        # update grand total:
+        add_ep_to_stat(ep,show_stat)
         
-    # make a list of lists cuz I can't figur out how to get at the dict
-    # and do some calcs
-    rows=[]
-    for date in dates: 
-        row=[]
-        for loc in locations: 
-            stat = stats[(date,loc.id)] 
+        # update total for date:
+        add_ep_to_stat(ep,dates[dt])
+        
+        # update total for location:
+        add_ep_to_stat(ep,locations[loc])
+        
+        # update room-loc
+        add_ep_to_stat(ep,stats[(dt,loc)])
+        
+
+    def add_rf_to_stat(rf,stat):
+        stat['files'] += 1
+        stat['bytes'] += rf.filesize
+
+    # gather raw_file stats
+    for rf in raw_files:
+        dt = rf.start.date()
+        loc = rf.location.id
+
+        add_rf_to_stat(rf,show_stat)
+        add_rf_to_stat(rf,dates[dt])
+        add_rf_to_stat(rf,locations[loc])
+        add_rf_to_stat(rf,stats[(dt, loc)])
+        
+
+    # make lists out of the dics cuz I can't figur out how to get at the dict
+ 
+    # and do some more calcs
+    def calc_stat(stat):
             stat['hours']=int( stat['minutes']/60.0 + .9)
             stat['talk_gig']=stat['hours']*13
             stat['gig']=stat['bytes']/(1024**3)
@@ -555,10 +601,38 @@ def show_stats(request, show_id, ):
             # using minutes for better resolution
             stat['alarm']= int( abs(stat['variance']) / (stat['minutes']/60.0*13 + 1) * 100 )
             stat['alarm_color'] = "%02x%02x%02x" % ( 255, 255-stat['alarm'], 255-stat['alarm'] )
+            return stat
+ 
+    l = []
+    for dt in dates:
+        d = dates[dt]
+        d['date'] = dt
+        d = calc_stat(d)
+        l.append(d)
+    l.sort(key=operator.itemgetter('date'))
+    dates=l
+    pprint(dates)
+ 
+    l = []
+    for loc in locations:
+        d = locations[loc]
+        d['seq'] = d['loc'].sequence
+        d = calc_stat(d)
+        l.append(d)
+    l.sort(key=operator.itemgetter('seq'))
+    locations=l
+    pprint(locations)
+
+    rows=[]
+    for dt in dates: 
+        dt=dt['date']
+        row=[]
+        for loc in locations: 
+            stat = calc_stat(stats[(dt,loc['loc'].id)])
             row.append(stat)
         rows.append(row)
-
-    STATES=((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
+    
+    states = zip( show_stat['states'], STATES)
 
     return render_to_response('show_stats.html',
         {
@@ -567,7 +641,7 @@ def show_stats(request, show_id, ):
           'locations':locations,
           'dates':dates,
           'rows':rows,
-          'states':zip(states,STATES),
+          'states':states,
           'locked':locked,
         },
 	context_instance=RequestContext(request) )
