@@ -234,7 +234,7 @@ def schedule(request, show_id, show_slug):
     dates = list(set(t['start'].date() for t in times))
     dates.sort()
 
-    # `pprint([s for s in starts if s.date()==dates[1]])
+    # pprint([s for s in starts if s.date()==dates[1]])
         
     # [[d1,[[t1,[e1,e2,e3]],
     #       [t2,[e4,e5,e6]]],
@@ -611,7 +611,7 @@ def show_stats(request, show_id, ):
         l.append(d)
     l.sort(key=operator.itemgetter('date'))
     dates=l
-    pprint(dates)
+    # pprint(dates)
  
     l = []
     for loc in locations:
@@ -621,7 +621,7 @@ def show_stats(request, show_id, ):
         l.append(d)
     l.sort(key=operator.itemgetter('seq'))
     locations=l
-    pprint(locations)
+    # pprint(locations)
 
     rows=[]
     for dt in dates: 
@@ -697,7 +697,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                     'state':1,
                     }
             else:
-                print form
+                # print form
                 inits=None # (prevents form from being created below)
         else:
             if episodes:
