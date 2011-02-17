@@ -1,0 +1,37 @@
+
+/*
+    Show_stats style
+*/
+
+.human {
+    text-decoration: underline;
+}
+.process {
+    text-decoration: none;
+}
+
+table.grid {
+	border-width: 1px;
+	border-spacing: 0px;
+	border-style: outset;
+	border-color: gray;
+	/* border-collapse: separate; */
+	background-color: white;
+}
+
+
+table.grid th {
+	border-width: 1px;
+	/* padding: 1px; */
+	border-style: solid;
+	border-color: red;
+	background-color: white;
+	/* -moz-border-radius: 0px 0px 0px 0px; */
+}
+table.grid td {
+	border-width: 1px;
+	/* padding: 1px; */
+	border-style: solid;
+	border-color: black;
+	background-color: white;
+}

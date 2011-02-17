@@ -5,7 +5,7 @@
 
 .login_form li {   
     list-style-type:none; 
-    padding: 0 5 0 0; 
+    padding: 0 5px 0 0; 
     display: inline;
 }
 

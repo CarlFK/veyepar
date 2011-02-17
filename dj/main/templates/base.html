@@ -1,5 +1,8 @@
-<html>
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
 <head>
+<meta charset="utf-8" />
 
 <script type="text/javascript" src="{{STATIC_URL}}admin/js/urlify.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
@@ -7,12 +10,12 @@
 <script type="text/javascript" src="{{STATIC_URL}}js/fnitize.js"></script>
 
 {% block head %}{% endblock %}
-</head>
 
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/base.css">
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/login_form.css"> 
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/main.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/main.css">
 
+</head>
 <body>
 {% include "accounts/login_form.html" %}
 

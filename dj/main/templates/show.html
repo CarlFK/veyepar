@@ -6,17 +6,6 @@
 {% endblock %}
 
 {% block content %}
-{% comment %}
-    <table>
-        {% for location in locations %}
-         <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" >
-         <td> {{location.sequence}} </td>
-         <td> <a href="L/{{location.slug}}/">{{ location.name }}</a> </td>
-<td><a href="/admin/main/episode/?location__id__exact={{location.id}}">admin</a></td>
-         </tr>
-        {% endfor %}
-    </table>
-{% endcomment %}
 
 <table class="shortcuts">
 <tr><td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td></tr>
@@ -25,14 +14,14 @@
 <tr><td><a href="{% url recording_sheets show.id %}{{show.slug}}.pdf">recording_sheets.pdf</a></td></tr>
 <tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
 <tr><td><a href="{% url show_stats show.id %}">show stats</a></td></tr>
-<tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td><tr>
-<tr><td><a href="
+<tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
+<tr><td><a href=
 {%if location_slug %}
-  {% url play_list show.id location_slug %}
+  "{% url play_list show.id location_slug %}{{show.slug}}.m3u"
 {%else%}
-  {% url play_list show.id %}
+  "{% url play_list show.id %}{{show.slug}}.m3u"
 {%endif%}
-{{show.slug}}.m3u">play_list <span style="color: #000; text-decoration: none;"
+>play_list <span style="color: #000; text-decoration: none;"
 >state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
 <tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>
 <tr><td><a href="{% url admin:main_episode_changelist %}?show__id__exact={{show.id}}">episodes admin</a></td></tr>
@@ -43,15 +32,14 @@
   <table>
     <thead>
       <tr>
-        <th>id</td>
-        <th>seq</td>
-        <th>loc name</td>
-        <th>start-end</td>
-        <th>duration</td>
-        <th>state</td>
-        <th>episode.name</td>
-        <th>episode.authors</td>
-        <th></th>
+        <th>id</th>
+        <th>seq</th>
+        <th>loc name</th>
+        <th>start-end</th>
+        <th>duration</th>
+        <th>state</th>
+        <th>episode.name</th>
+        <th>episode.authors</th>
       </tr>
     </thead>
 
