@@ -16,13 +16,20 @@
 ]
     <table border=1>
            <tr>
-         <th> </th>
+<td> <span><b>TOTAL</b></span></br>
+<span> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug %}"> {{show_stat.count}} </a> </span>
+<span style="float:left">expected:</span><span style="float:right">{{show_stat.talk_gig}} g</span></br>
+                 {% if show_stat.files %}
+                   <span style="float:left">files:{{show_stat.files}}</span><span style="float:right">{{show_stat.gig}} g</span></br>
+                 {% endif %}
+ 
+ </td>
             {% for item in locations %}
 <td> <span><b>{{ item.loc.slug }}</b></span></br>
 <span> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}"> {{item.count}} </a> </span>
 <span style="float:left">expected:</span><span style="float:right">{{item.talk_gig}} g</span></br>
                  {% if item.files %}
-                   <span style="float:left">disk: {{item.files}} files</span><span style="float:right">{{item.gig}} g</span></br>
+                   <span style="float:left">files:{{item.files}}</span><span style="float:right">{{item.gig}} g</span></br>
                    {% if item.alarm >= 0 %} <span style="float:left">{{item.alarm}}%</span><span style="float:right">{{item.variance}} g</span> {% endif %}
                  {% endif %}
  
@@ -30,8 +37,17 @@
             {% endfor %}
          </tr>
 
-        {% for row  in rows  %}
-          <tr><td> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=row.0.date|date:"d" %}">{{row.0.date|date:"D d"}}</a></td>
+        {% for item,row  in rows  %}
+          <tr><td><b>{{item.date|date:"D d"}}</b><br/>
+<a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" %}"> {{item.count}} </a>
+
+<span style="float:left">expected:</span><span style="float:right">{{item.talk_gig}} g</span></br>
+                 {% if item.files %}
+                   <span style="float:left">files: {{item.files}}</span><span style="float:right">{{item.gig}} g</span></br>
+                   {% if item.alarm >= 0 %} <span style="float:left">{{item.alarm}}%</span><span style="float:right">{{item.variance}} g</span> {% endif %}
+                 {% endif %}
+</td>
+
           {% for item in row %}
              <td style="background-color:#{{item.alarm_color}};">  
                {% if item.count %}
@@ -49,7 +65,7 @@
                  ]</br>
                  <span style="float:left">expected:</span><span style="float:right">{{item.talk_gig}} g</span></br>
                  {% if item.files %}
-                   <span style="float:left">disk: {{item.files}} files</span><span style="float:right">{{item.gig}} g</span></br>
+                   <span style="float:left">files: {{item.files}}</span><span style="float:right">{{item.gig}} g</span></br>
                    {% if item.alarm >= 0 %} <span style="float:left">{{item.alarm}}%</span><span style="float:right">{{item.variance}} g</span> {% endif %}
                  {% endif %}
                {% endif %}

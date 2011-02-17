@@ -556,6 +556,8 @@ def show_stats(request, show_id, ):
         stat['end']=ep.end if stat['end'] is None else max(stat['end'],ep.end)
         if 0<= ep.state <=6:
             stat['states'][ep.state]+=1        
+        else:
+            stat['states'][0]+=1        
 
     for ep in episodes:
         dt = ep.start.date()
@@ -603,6 +605,7 @@ def show_stats(request, show_id, ):
             stat['alarm_color'] = "%02x%02x%02x" % ( 255, 255-stat['alarm'], 255-stat['alarm'] )
             return stat
  
+    show_stat = calc_stat(show_stat)
     l = []
     for dt in dates:
         d = dates[dt]
@@ -633,13 +636,16 @@ def show_stats(request, show_id, ):
         rows.append(row)
     
     states = zip( show_stat['states'], STATES)
+    rows = zip(dates,rows)
 
     return render_to_response('show_stats.html',
         {
           'client':client,
           'show':show,
           'locations':locations,
-          'dates':dates,
+          'show_stat':show_stat,
+          'locations':locations,
+          # 'dates':dates,
           'rows':rows,
           'states':states,
           'locked':locked,
@@ -653,7 +659,6 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     # episode entry form
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
-    # wtf is this for:
     locations=show.locations.filter(default=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show).order_by('sequence')
     if location_slug:
@@ -663,6 +668,9 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     if start_day:
         episodes = episodes.filter(start__day=start_day)
     if state:
+      if state=='0':
+        episodes = episodes.filter(state__isnull=True)
+      else:
         episodes = episodes.filter(state=state)
 
     
