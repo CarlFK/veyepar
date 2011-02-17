@@ -35,3 +35,10 @@ table.grid td {
 	border-color: black;
 	background-color: white;
 }
+
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}

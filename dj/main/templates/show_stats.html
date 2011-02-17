@@ -17,41 +17,41 @@
            <tr>
 <th> <span><b>TOTAL</b></span><br/>
 <span> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug %}"> {{show_stat.count}} </a> </span>
-<span style="float:left">expected:</span><span style="float:right">{{show_stat.talk_gig}} g</span><br/>
+<span class="left">expected:</span><span class="right">{{show_stat.talk_gig}} g</span><br/>
                  {% if show_stat.files %}
-                   <span style="float:left">files:{{show_stat.files}}</span><span style="float:right">{{show_stat.gig}} g</span><br/>
+                   <span class="left">files:{{show_stat.files}}</span><span class="right">{{show_stat.gig}} g</span><br/>
                  {% endif %}
 </th>
 
             {% for item in locations %}
-<th> <span><b>{{ item.loc.slug }}</b></span><br/>
+<td> <span><b>{{ item.loc.slug }}</b></span><br/>
 <span> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}"> {{item.count}} </a> </span>
-<span style="float:left">expected:</span><span style="float:right">{{item.talk_gig}} g</span><br/>
+<span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                   <span style="float:left">files:{{item.files}}</span><span style="float:right">{{item.gig}} g</span><br/>
-                   {% if item.alarm >= 0 %} <span style="float:left">{{item.alarm}}%</span><span style="float:right">{{item.variance}} g</span> {% endif %}
+                   <span class="left">files:{{item.files}}</span><span class="right">{{item.gig}} g</span><br/>
+                   {% if item.alarm >= 0 %} <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance}} g</span> {% endif %}
                  {% endif %}
  
-</th>
+</td>
             {% endfor %}
          </tr>
 
         {% for item,row  in rows  %}
-          <tr><th><b>{{item.date|date:"D d"}}</b><br/>
+          <tr><td><b>{{item.date|date:"D d"}}</b><br/>
 <a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" %}"> {{item.count}} </a>
 
-<span style="float:left">expected:</span><span style="float:right">{{item.talk_gig}} g</span><br/>
+<span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                   <span style="float:left">files: {{item.files}}</span><span style="float:right">{{item.gig}} g</span><br/>
-                   {% if item.alarm >= 0 %} <span style="float:left">{{item.alarm}}%</span><span style="float:right">{{item.variance}} g</span> {% endif %}
+                   <span class="left">files: {{item.files}}</span><span class="right">{{item.gig}} g</span><br/>
+                   <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance}} g</span>
                  {% endif %}
-</th>
+</td>
 
           {% for item in row %}
              <td style="background-color:#{{item.alarm_color}};">  
                {% if item.count %}
 
-                 <span style="float:left">{{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</span> <span style="float:right;"> {{item.hours}} h </span><br/>
+                 <span class="left">{{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</span> <span class="right;"> {{item.hours}} h </span><br/>
                  <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
                  [
                  {% for s in item.states %} 
@@ -62,10 +62,10 @@
                    {% else %} 0 {% endif %} </span>
                  {% endfor %}
                  ]<br/>
-                 <span style="float:left">expected:</span><span style="float:right">{{item.talk_gig}} g</span><br/>
+                 <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                   <span style="float:left">files: {{item.files}}</span><span style="float:right">{{item.gig}} g</span><br/>
-                   {% if item.alarm >= 0 %} <span style="float:left">{{item.alarm}}%</span><span style="float:right">{{item.variance}} g</span> {% endif %}
+                   <span class="left">files: {{item.files}}</span><span class="right">{{item.gig}} g</span><br/>
+                   {% if item.alarm >= 0 %} <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance}} g</span> {% endif %}
                  {% endif %}
                {% endif %}
              </td>
