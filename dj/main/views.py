@@ -653,14 +653,24 @@ def show_stats(request, show_id, ):
 	context_instance=RequestContext(request) )
 
 
-def episodes(request, client_slug=None, show_slug=None, location_slug=None,
-    start_day=None, state=None):
+# def episodes(request, client_slug=None, show_slug=None, location_slug=None,
+#              start_day=None, state=None):
+def episodes(request, client_slug=None, show_slug=None):
     # the selected client, show and episodes
     # episode entry form
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
+    location_slug = request.REQUEST.get('location')
+    start_day = request.REQUEST.get('start_day')
+    state = request.REQUEST.get('state')
+    raise Exception((state, start_day, location_slug))
     locations=show.locations.filter(default=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show).order_by('sequence')
+
+    kwargs = {'start__day':start_day, 'state__isnull': bool(state)}
+    start_day=20
+    state=2
+    raise Exception(episodes.filter(**kwargs))
     if location_slug:
         # location here is for default location for new episodes
         location=get_object_or_404(Location,slug=location_slug)

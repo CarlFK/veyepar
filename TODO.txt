@@ -19,4 +19,7 @@ recording sheets
   Date, Room, overall sequential page number
    - move to top and bottem of page for easy viewing when sorting at end of day/event, trying to get all the papers in order
   move speaker(s) name up under talk title
+  Check list at the top:
+    [x] sound check - levels on DVswitch are sane
+    [x] record/stop - date and time are accurate.
 

@@ -30,7 +30,11 @@ class post(process):
   ready_state = 4
 
   def process_ep(self, ep):
-    print ep.id, ep.name
+    if self.options.verbose: print ep.id, ep.name
+    if not ep.released:
+        if self.options.verbose: print "not released:", ep.released
+        return False
+
     loc = ep.location
     show = ep.show
     client = show.client

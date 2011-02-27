@@ -240,9 +240,9 @@ if __name__=='__main__':
     t.make_thumbs()
     t.make_cut_list()
     t.encode()
-    # t.ck_errors()
-    # t.play_vid()
-    # t.post()
-    # t.tweet()
+    t.ck_errors()
+    t.play_vid()
+    t.post()
+    t.tweet()
 
 

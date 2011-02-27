@@ -7,18 +7,22 @@ from views import *
 # client_list={"queryset": Client.objects.all(), }
 #    "template_object_name": "client_list" }
 
-urlpatterns = patterns('main.views',
+urlpatterns = patterns(
+    'main.views',
     url(r'^$', main, name='main'),
     url(r'clients/$', clients, name='clients'),
     url(r'locations/$', 'locations', name='locations'),
     url(r'C/(?P<client_slug>\w+)/$', client, name='client'),
-    url(r'^C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$',
-        episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
+    # url(r'^C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$',
+    #     episodes, name='episode_list'),
+    
+    url(r'^client/(?P<client_slug>[\w\-]+)/(?P<show_slug>[\w\-]+)/$', episodes, name='episode_list'),
+
+    # url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/$', episodes, name='episode_list'),
+    # url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
+    # url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
+    # url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
+    # url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
     url(r'E/(?P<episode_no>\d+)/$', episode, name='episode'),
     url(r'E/(?P<episode_no>\d+)/claim_lock/$', claim_episode_lock),
 )

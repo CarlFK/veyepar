@@ -109,12 +109,12 @@ class Quality(models.Model):
     def __unicode__(self):
         return self.name
 
-STATES=((1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
+STATES=((0, 'borked'), (1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
-    state = models.IntegerField(null=True,blank=True,
-        choices=STATES, default=STATES[0][0],
+    state = models.IntegerField(#null=True,blank=True,
+        choices=STATES, default=STATES[1][0],
         help_text="2=ready to encode, 4=ready to post, 5=tweet" )
     locked = models.DateTimeField(null=True, blank=True, 
          help_text="clear this to unlock")
@@ -226,6 +226,7 @@ class Log(models.Model):
     ready = models.DateTimeField()
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
+    # user = models.CharField(max_length=50)
     result = models.CharField(max_length=250)
 
 def set_slug(sender, instance, **kwargs):

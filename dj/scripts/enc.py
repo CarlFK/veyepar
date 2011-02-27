@@ -324,6 +324,8 @@ class enc(process):
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
               # cmds=["melt -verbose -progress -profile square_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.dv_format, mlt_pathname, out_pathname, acodec, vcodec)]
+              if ext=='webm': 
+                  cmds=["/usr/bin/melt"   "/tmp/kde-carl/kdenliveY27808.mlt -profile dv_ntsc -consumer avformat:/home/carl/kdenlive/untitled.webm progress=1 acodec=libvorbis ab=128k ar=44100 vcodec=libvpx minrate=0 b=600k aspect=@4/3 maxrate=1800k g=120 qmax=42 qmin=10 threads=2"% (fix_me)]
               if ext=='flv': 
                   cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
               if ext=='flac': 
