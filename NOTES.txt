@@ -2,7 +2,12 @@
 
 tune2fs - disable fsck on boot.  maybe.  it took 45 min in 2009 to fsck a 200g ext2 box.  I use ext4 now, so maybe not a problem 
 
+nfs server:
+vi /etc/exports
+/video  10.0.0.0/24(rw,insecure,no_subtree_check,no_root_squash,async,all_squash,anonuid=1000,anongid=0)
 
-fstab nfs line:
+nfs client:
+sudo vi /etc/fstab
 ve:/video /video nfs noauto,rw,nfsvers=3 0 0
+
 

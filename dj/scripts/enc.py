@@ -333,6 +333,22 @@ class enc(process):
                   cmds=["melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)]
               if ext=='mp3': 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s" % ( mlt_pathname, out_pathname)]
+
+              if ext=='mp4':
+                  # High Quality Master 720x480 NTSC
+                  tmp_pathname = os.path.join(
+                      self.tmp_dir,"%s.%s"%(episode.slug,ext))
+                  ffpreset=open('/usr/share/ffmpeg/libx264-hq.ffpreset').read().split('\n')
+                  ffpreset = [i for i in ffpreset if i]
+                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  cmd = cmd.split()
+                  cmd.extend(ffpreset)
+                  cmds=[cmd]
+                  cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
+                  # cmds.append( ["mv", tmp_pathname, '/tmp'] )
+                  if self.options.rm_temp:
+                      cmds.append( ["rm", tmp_pathname] )
+
               if ext=='m4v': 
                   # iPhone
                   tmp_pathname = os.path.join( 
