@@ -235,6 +235,7 @@ Your file called Test Episode #0 has been successfully posted.
 
         response = tree.find('response')
         post_url=response.find('post_url')
+        print post_url
         self.last_url = post_url.text # hook for tests so that it can be browsed
         if xml.etree.ElementTree.iselement(post_url):
 # <post_url>http://blip.tv/file/3734423</post_url>
