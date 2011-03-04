@@ -66,6 +66,8 @@ urlpatterns += patterns(
         name='orphan_dv'),
     url(r'recording_sheets/(?P<show_id>\w+)/.*$', recording_sheets,
         name='recording_sheets'),
+    url(r'room_signs/(?P<show_id>\w+)/.*$', room_signs,
+        name='room_signs'),
 
     url(r'episode_logs/(?P<episode_id>\w+)/$', episode_logs, name='episode_logs'),
 

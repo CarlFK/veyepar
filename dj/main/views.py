@@ -261,6 +261,52 @@ def schedule(request, show_id, show_slug):
         'locations':locations,
         'days':days},
         context_instance=RequestContext(request) )
+    
+def room_signs(request,show_id):
+    show=get_object_or_404(Show,id=show_id)
+    episodes=Episode.objects.filter(show=show).order_by('location','start')
+
+    base  = os.path.dirname(__file__)
+    rfxmlfile  = os.path.join(base,'templates','TalkSigns.rfxml')
+     
+    # buffer to create pdf in
+    buffer = StringIO()
+
+    # nonstandard font.  (not sure what standard is.)
+    # fontfile = get_templete_abspath('badges/fonts/FreeSans.ttf')
+    # pdfmetrics.registerFont(TTFont("FreeSans", fontfile))
+    
+    ds=[]
+    for ep in episodes:
+        if ep.location:
+            location_name=ep.location.name
+        else:
+            location_name='None'
+        ds.append({'episode_id':ep.id,
+          'episode_name':ep.name,
+          'episode_authors':ep.authors,
+          'episode_primary':ep.conf_key,
+          'episode_start':ep.start,
+          'episode_duration':ep.duration,
+          'episode_end':ep.end,
+          'episode_released':ep.released,
+          'location_name':location_name,
+          'show_name':show.name })
+        
+    # generate the pdf in the buffer, using the layout and data
+    rw = dReportWriter(OutputFile=buffer, ReportFormFile=rfxmlfile, Cursor=ds)
+    rw.write()
+
+    # get the pdf out of the buffer
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(mimetype='application/pdf')
+    response['Content-Disposition'] = \
+      'filename=%s_recording_sheets.pdf' % ( show.slug )
+    response.write(pdf)
+    return response
+
 
     
 def recording_sheets(request,show_id):
