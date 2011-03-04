@@ -414,7 +414,7 @@ class enc(process):
         # ret = ret and one_format("ogg", "vorbis", "libtheora")
         ret = ret and one_format("flv")
         # ret = ret and one_format("flv", "libmp3lame", "flv")
-        # ret = ret and one_format("mp4", "libmp3lame", "mpeg4")
+        ret = ret and one_format("mp4")
         ret = ret and one_format("mp3")
         ret = ret and one_format("flac")
         ret = ret and one_format("m4v")

@@ -113,7 +113,7 @@ STATES=((0, 'borked'), (1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'twee
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
-    state = models.IntegerField(#null=True,blank=True,
+    state = models.IntegerField(null=True, blank=True,
         choices=STATES, default=STATES[1][0],
         help_text="2=ready to encode, 4=ready to post, 5=tweet" )
     locked = models.DateTimeField(null=True, blank=True, 

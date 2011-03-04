@@ -290,6 +290,7 @@ def recording_sheets(request,show_id):
           'episode_start':ep.start,
           'episode_duration':ep.duration,
           'episode_end':ep.end,
+          'episode_released':ep.released,
           'location_name':location_name,
           'show_name':show.name })
         

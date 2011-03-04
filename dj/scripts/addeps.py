@@ -5,7 +5,7 @@
 """
 fields:
 id - uniquie ID of item (used to update item if details change)
-ritle - of talk
+title - of talk
 room - "room1" if there is only one room.
 start - datetime in some parsable format 
 duration in minutes, or HH:MM:SS 
@@ -85,7 +85,8 @@ class add_eps(process.process):
       seq=0
       for row in schedule:
           # row=row['node']
-          room = row['Room Name']
+          if self.options.verbose: print row
+          room = row['room']
           if room in [
              '',
              "Napalese Pagoda",
@@ -120,11 +121,12 @@ class add_eps(process.process):
         duration="00:%s:00" % ( minutes) 
         return start_dt, duration
 
+          # start=datetime.datetime.strptime(row['Start'], '%Y-%m-%d %H:%M:%S' )
           # start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
 
+          # pycon dates:
           # [ 2010, 9, 7, 15, 0 ]
           # start = datetime.datetime(*row['start'])
-
 
           # minutes = row['duration']
 
@@ -139,38 +141,30 @@ class add_eps(process.process):
 
         # row = row['node']
         if self.options.verbose: print row
-        if row['Title'] in [
+        if row['title'] in [
             'Registration',
             'Welcome to linux.conf.au 2011!',
             'Morning Tea', 'Afternoon Tea',
             "Speaker's Dinner",
           ]:
            continue
-        if row['Room Name']:
+        if row['room']:
           # name = lxml.etree.fromstring('<foo>' + row['Title'] + '</foo>').text
-          name = row['Title'] 
-          room = row['Room Name']
+          name = row['title'] 
+          room = row['room']
           locations = Location.objects.filter(name=room)
           if locations: location=locations[0]
           else: continue
-          conf_key = row['Id']
-          start=datetime.datetime.strptime(row['Start'], '%Y-%m-%d %H:%M:%S' )
-          duration = row['Duration']
+          conf_key = row['id']
+          start = datetime.datetime(*row['start'])
+          duration="00:%s:00" % row['duration']
           # start, duration = self.talk_time(row['Day'],row['Time'])
-          authors=row.get('Presenters','')
+          authors=row.get('presenters','')
           released=row['released']
-          # released=None
-          license=row['license']
-          # url = row['Link']
-          description = row['Description']
-          if description:
-              url = \
-                "http://conf.linux.org.au/programme/schedule/view_talk/%s" \
-                 % (row['Id'])
-          else:
-              url = "http://conf.linux.org.au"
-          # never mind all that URL stuff.  this is simpler:
-          url = row.get('URL', "http://conf.linux.org.au" )
+          license=row.get('license',"13")
+          description = row['description']
+          conf_key = row['conf_key']
+          conf_url = row.get('conf_url', "" )
 
           # tags = row['Keywords']
           tags = None
@@ -208,7 +202,7 @@ class add_eps(process.process):
                   episode.location=location 
                   episode.name=name
                   episode.conf_key=conf_key
-                  episode.conf_url=url
+                  episode.conf_url=conf_url
                   episode.authors=authors
                   episode.released=released
                   episode.start=start
@@ -293,10 +287,11 @@ class add_eps(process.process):
       # url='http://pycon-au.org/2010/conference/schedule/events.json'
       # url='http://djangocon.us/schedule/json/'
       # url='http://2010.osdc.com.au/program/json'
-      url='http://conf.followtheflow.org/programme/schedule/json'
-      j=urllib2.urlopen(url).read()
-      file('lca.json','w').write(j) 
-      j=file('lca.json').read()
+      # url='http://conf.followtheflow.org/programme/schedule/json'
+      # url='http://lca2011.linux.org.au/programme/schedule/json'
+      # j=urllib2.urlopen(url).read()
+      # file('lca.json','w').write(j) 
+      j=file('pycon2011.json').read()
 
       # j=open('schedule.json').read()
       schedule = json.loads(j)

@@ -14,3 +14,7 @@ recording sheets
    - move to top and bottem of page for easy viewing when sorting at end of day/event, trying to get all the papers in order
   move speaker(s) name up under talk title
 
+dvswitch:
+  everything: default host/port
+  dvsource-dvgrab - save unmixed stream
+  dvsink-file - default file name
