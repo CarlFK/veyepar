@@ -23,7 +23,9 @@
 
 	<Keywords>("dabo", "report", "writer", "banded", "free")</Keywords>
 
-	<Page></Page>
+	<Page>
+		<Orientation>'landscape'</Orientation>
+	</Page>
 
 	<Variables></Variables>
 
@@ -48,37 +50,17 @@
 	</PageBackground>
 
 	<PageHeader>
-		<Height>74.1</Height>
+		<Height>31.8</Height>
 		<Objects>
-			<String>
-				<align>'right'</align>
-				<expr>self.location_name</expr>
-				<fontname>'Helvetica-Bold'</fontname>
-				<FontSize>13</FontSize>
-				<hanchor>'right'</hanchor>
-				<width>'95.0 pt'</width>
-				<x>'537.0 pt'</x>
-				<y>'15.0 pt'</y>
-			</String>
-			<String>
-				<align>'right'</align>
-				<expr>self.episode_start.strftime("%b %d %a")</expr>
-				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>13</FontSize>
-				<hanchor>'right'</hanchor>
-				<width>'91.0 pt'</width>
-				<x>'537.0 pt'</x>
-				<y>'34.0 pt'</y>
-			</String>
 			<Rectangle>
 				<FillColor>(0.902, 0.902, 0.980)</FillColor>
 				<Height>20</Height>
 				<StrokeColor>(0.302, 0.302, 0.302)</StrokeColor>
 				<StrokeWidth>.5</StrokeWidth>
 				<vAnchor>'bottom'</vAnchor>
-				<Width>self.Bands["pageHeader"]["Width"]</Width>
+				<width>'720.0 pt'</width>
 				<x>'0.0 pt'</x>
-				<y>'51.0 pt'</y>
+				<y>'6.0 pt'</y>
 			</Rectangle>
 			<String>
 				<expr>self.show_name</expr>
@@ -86,42 +68,64 @@
 				<FontSize>15</FontSize>
 				<width>'240.0 pt'</width>
 				<x>'2.0 pt'</x>
-				<y>'55.0 pt'</y>
+				<y>'10.0 pt'</y>
+			</String>
+			<String>
+				<align>'right'</align>
+				<expr>self.location_name</expr>
+				<fontname>'Helvetica-Bold'</fontname>
+				<FontSize>13</FontSize>
+				<hanchor>'right'</hanchor>
+				<height>'18.0 pt'</height>
+				<width>'135.0 pt'</width>
+				<x>'547.0 pt'</x>
+				<y>'9.0 pt'</y>
+			</String>
+			<String>
+				<align>'right'</align>
+				<expr>self.episode_start.strftime("%b %d %a")</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<hanchor>'right'</hanchor>
+				<width>'101.0 pt'</width>
+				<x>'704.0 pt'</x>
+				<y>'9.0 pt'</y>
 			</String>
 		</Objects>
 	</PageHeader>
 
 	<Detail>
-		<Height>473.2</Height>
+		<Height>442.2</Height>
 		<Objects>
 			<Frameset>
-				<height>'171.0 pt'</height>
-				<width>'495.0 pt'</width>
-				<x>'24 pt'</x>
-				<y>'225.7 pt'</y>
+				<height>'31.0 pt'</height>
+				<width>'695.0 pt'</width>
+				<x>'4.0 pt'</x>
+				<y>'354.7 pt'</y>
 				<Objects>
 					<Paragraph>
 						<expr>self.episode_name</expr>
-						<FontSize>60</FontSize>
-						<Height>60</Height>
+						<FontSize>10</FontSize>
 					</Paragraph>
 				</Objects>
 			</Frameset>
 			<String>
 				<expr>self.episode_start.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
-				<FontSize>13</FontSize>
-				<width>'53.0 pt'</width>
-				<x>25</x>
-				<y>'434.0 pt'</y>
+				<FontSize>30</FontSize>
+				<height>'28.0 pt'</height>
+				<width>'113.0 pt'</width>
+				<x>'35.7 pt'</x>
+				<y>'405.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_end.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
-				<FontSize>13</FontSize>
-				<width>'45.0 pt'</width>
-				<x>'165.0 pt'</x>
-				<y>'431.0 pt'</y>
+				<FontSize>30</FontSize>
+				<height>'28.0 pt'</height>
+				<width>'125.0 pt'</width>
+				<x>'175.0 pt'</x>
+				<y>'405.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_duration</expr>
@@ -129,8 +133,8 @@
 				<FontSize>13</FontSize>
 				<height>'14.0 pt'</height>
 				<width>'53.0 pt'</width>
-				<x>'234.0 pt'</x>
-				<y>'432.0 pt'</y>
+				<x>'324.0 pt'</x>
+				<y>'414.6 pt'</y>
 			</String>
 			<String>
 				<expr>"Len:"</expr>
@@ -138,45 +142,88 @@
 				<FontSize>7</FontSize>
 				<height>'11.0 pt'</height>
 				<width>'19.0 pt'</width>
-				<x>'212.8 pt'</x>
-				<y>'433.6 pt'</y>
+				<x>'302.8 pt'</x>
+				<y>'414.6 pt'</y>
 			</String>
 			<String>
 				<expr>"start:"</expr>
 				<FontName>'Helvetica'</FontName>
-				<FontSize>7</FontSize>
-				<height>'11.0 pt'</height>
-				<width>'24.0 pt'</width>
+				<FontSize>14</FontSize>
+				<height>'21.0 pt'</height>
+				<width>'34.0 pt'</width>
 				<x>'4.4 pt'</x>
-				<y>'434.6 pt'</y>
+				<y>'411.6 pt'</y>
 			</String>
 			<String>
 				<expr>"end:"</expr>
 				<FontName>'Helvetica'</FontName>
-				<FontSize>7</FontSize>
-				<height>'11.0 pt'</height>
-				<width>'24.0 pt'</width>
-				<x>'147.4 pt'</x>
-				<y>'433.6 pt'</y>
+				<FontSize>14</FontSize>
+				<height>'14.0 pt'</height>
+				<width>'28.0 pt'</width>
+				<x>'146.4 pt'</x>
+				<y>'411.6 pt'</y>
+			</String>
+			<String>
+				<expr>"%s..." % (self.episode_name[:10] )</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>120</FontSize>
+				<height>'114.0 pt'</height>
+				<width>'693.0 pt'</width>
+				<x>'4.7 pt'</x>
+				<y>'193.0 pt'</y>
+			</String>
+			<String>
+				<expr>"%s..." % (self.episode_authors[:10])</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>100</FontSize>
+				<height>'114.0 pt'</height>
+				<width>'693.0 pt'</width>
+				<x>'4.7 pt'</x>
+				<y>'43.0 pt'</y>
 			</String>
 			<Frameset>
-				<height>'182.0 pt'</height>
-				<width>'495.0 pt'</width>
-				<x>'24 pt'</x>
-				<y>'35.7 pt'</y>
+				<height>'31.0 pt'</height>
+				<width>'695.0 pt'</width>
+				<x>'4.0 pt'</x>
+				<y>'324.7 pt'</y>
 				<Objects>
 					<Paragraph>
 						<expr>self.episode_authors</expr>
-						<FontSize>40</FontSize>
-						<Height>50</Height>
+						<FontSize>10</FontSize>
 					</Paragraph>
 				</Objects>
 			</Frameset>
+			<String>
+				<Align>'right'</Align>
+				<expr>"set page %s of %s" % (self.PageNumber, self.PageCount)</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>11</FontSize>
+				<width>'110.0 pt'</width>
+				<x>'606.0 pt'</x>
+				<y>'419.0 pt'</y>
+			</String>
+			<String>
+				<expr>"id:"</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>7</FontSize>
+				<height>'11.0 pt'</height>
+				<width>'13.0 pt'</width>
+				<x>'397.4 pt'</x>
+				<y>'414.6 pt'</y>
+			</String>
+			<String>
+				<expr>self.episode_id</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>10</FontSize>
+				<width>'17.0 pt'</width>
+				<x>'412.4 pt'</x>
+				<y>'414.6 pt'</y>
+			</String>
 		</Objects>
 	</Detail>
 
 	<PageFooter>
-		<Height>56.1</Height>
+		<Height>31.7</Height>
 		<Objects>
 			<Rectangle>
 				<FillColor>(0.902, 0.902, 0.980)</FillColor>
@@ -192,8 +239,8 @@
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>11</FontSize>
 				<width>'240.0 pt'</width>
-				<x>'3.0 pt'</x>
-				<y>'8.0 pt'</y>
+				<x>'2.3 pt'</x>
+				<y>'7.3 pt'</y>
 			</String>
 			<String>
 				<Align>'right'</Align>
@@ -201,34 +248,17 @@
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>11</FontSize>
 				<width>'110.0 pt'</width>
-				<x>'426.0 pt'</x>
+				<x>'596.0 pt'</x>
 				<y>'8.0 pt'</y>
 			</String>
 			<String>
 				<expr>"Veyepar: TalkSigns.rfxml"</expr>
 				<FontName>'Helvetica'</FontName>
-				<FontSize>7</FontSize>
+				<FontSize>12</FontSize>
 				<height>'11.0 pt'</height>
-				<width>'99.0 pt'</width>
-				<x>'442.8 pt'</x>
-				<y>'27.6 pt'</y>
-			</String>
-			<String>
-				<expr>"id:"</expr>
-				<FontName>'Helvetica'</FontName>
-				<FontSize>7</FontSize>
-				<height>'11.0 pt'</height>
-				<width>'13.0 pt'</width>
-				<x>'497.4 pt'</x>
-				<y>'44.6 pt'</y>
-			</String>
-			<String>
-				<expr>self.episode_id</expr>
-				<FontName>'Helvetica'</FontName>
-				<FontSize>10</FontSize>
-				<width>'17.0 pt'</width>
-				<x>'512.4 pt'</x>
-				<y>'44.7 pt'</y>
+				<width>'139.0 pt'</width>
+				<x>'563.5 pt'</x>
+				<y>'28.3 pt'</y>
 			</String>
 		</Objects>
 	</PageFooter>
@@ -238,8 +268,8 @@
 	</PageForeground>
 
 	<TestCursor>
-		<record episode_primary="201" location_name="u&apos;Hollister&apos;" episode_duration="u&apos;04:10:00&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_id="101" show_name="u&apos;PyCon 2010&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" />
 		<record episode_primary="202" location_name="u&apos;Hollister&apos;" episode_duration="u&apos;00:15:00&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_id="123" show_name="u&apos;PyCon 2010&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" />
+		<record episode_primary="201" location_name="u&apos;Hollister&apos;" episode_duration="u&apos;04:10:00&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_id="101" show_name="u&apos;PyCon 2010&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" />
 	</TestCursor>
 
 </Report>

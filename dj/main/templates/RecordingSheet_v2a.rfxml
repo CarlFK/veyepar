@@ -261,6 +261,7 @@
 			</String>
 			<Frameset>
 				<height>'72.0 pt'</height>
+				<vAnchor>'bottom'</vAnchor>
 				<width>'355.0 pt'</width>
 				<x>'126.8 pt'</x>
 				<y>'55.7 pt'</y>
