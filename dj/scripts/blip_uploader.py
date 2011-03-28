@@ -112,6 +112,10 @@ class Blip(object):
         """
         content_type = 'multipart/form-data; boundary=%s' % self.MULTIPART_BOUNDARY
 
+        # lots of code to figure out Content-Length.. and now I see:
+        # The header Content-Length is automatically set to the correct value. 
+        # http://docs.python.org/library/httplib.html#httplib.HTTPConnection
+
         # gather all the data (except for the actual file) into:
         # fieldsdata - string of "field1:value1\nfield2:value2\n..."
         # filedatas - list of tuples: [(metadata1, filename1),(m2,f2)...]

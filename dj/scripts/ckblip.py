@@ -23,6 +23,8 @@ from main.models import Episode
 
 class ckblip(process):
 
+  last_del_id=None
+
   def post(self, ep, file_types_to_upload, user, password ):
 
     blip_cli=blip_uploader.Blip_CLI()
@@ -50,7 +52,12 @@ class ckblip(process):
   def delete_from_blip(self, episode_id, file_id, user, password, reason):
 # http://blip.tv/file/delete/Pyohio-GettingToKnowMongoDBUsingPythonAndIronPython664.flv?reason="just cuz."
 #http://blip.tv/?cmd=delete;id=Veyepar_test-TestEpisode0760.ogv;s=file;undelete=
-    print "http://blip.tv/file/" + episode_id
+
+    if self.last_del_id != episode_id:
+       # only print this once per episode_id
+       print "http://blip.tv/file/" + episode_id
+       self.last_del_id = episode_id
+
     print "delete:", file_id
     return 
 
@@ -85,9 +92,9 @@ class ckblip(process):
 
   def up_missing_files(self,ep):
         type_map = (
-            # {'ext':'ogv','mime':'video/ogg'},
+            {'ext':'ogv','mime':'video/ogg'},
             # {'ext':'flv','mime':'video/x-flv'},
-            {'ext':'m4v','mime':'video/x-m4v'},
+            # {'ext':'m4v','mime':'video/x-m4v'},
             # {'ext':'mp3','mime':'audio/mpeg'},)
             )
 
@@ -144,8 +151,8 @@ class ckblip(process):
                    
 
         if file_types_to_upload: 
-            if self.options.verbose: print file_types_to_upload    
-            self.post(ep,file_types_to_upload,user,password)
+            if self.options.verbose: print "upload:", file_types_to_upload    
+            # self.post(ep,file_types_to_upload,user,password)
 
         """
 
@@ -228,8 +235,8 @@ class ckblip(process):
     if ep.state in [-1,0]: return 
 
     if ep.target:
-        ret = self.update_meta(ep)
-        # ret = self.up_missing_files(ep)
+        # ret = self.update_meta(ep)
+        ret = self.up_missing_files(ep)
     else:
         # episode not on blip, 
         # This code doens't post new episodes,

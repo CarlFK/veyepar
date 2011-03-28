@@ -42,7 +42,7 @@ import datetime
 import urllib2,json
 # from csv import DictReader
 # from datetime import timedelta
-from dateutil.parser import parse
+# from dateutil.parser import parse
 
 import process
 import lxml.etree
@@ -138,16 +138,9 @@ class add_eps(process.process):
       seq=0
 
       for row in schedule:
-
         # row = row['node']
         if self.options.verbose: print row
-        if row['title'] in [
-            'Registration',
-            'Welcome to linux.conf.au 2011!',
-            'Morning Tea', 'Afternoon Tea',
-            "Speaker's Dinner",
-          ]:
-           continue
+
         if row['room']:
           # name = lxml.etree.fromstring('<foo>' + row['Title'] + '</foo>').text
           name = row['title'] 
@@ -172,13 +165,6 @@ class add_eps(process.process):
           if name in ['Registration','Lunch']:
               continue
 
-          if name in ["Welcome and Chairman's Address",
-                'Keynote', 
-                'Lightning Talks', 
-                'Distinguished Guest Speaker', 
-                'Sprints Kickoff']:
-              conf_key=''
-          
           if self.options.test:
               print location
               print name
@@ -291,13 +277,15 @@ class add_eps(process.process):
       # url='http://lca2011.linux.org.au/programme/schedule/json'
       # j=urllib2.urlopen(url).read()
       # file('lca.json','w').write(j) 
-      j=file('pycon2011.json').read()
+      # j=file('pycon201u.json').read()
+      # j=file('schedule_a.json').read()
+      j=file('schedule.json').read()
 
       # j=open('schedule.json').read()
       schedule = json.loads(j)
 
       # schedule = schedule['nodes']
-      self.addlocs(schedule,show)
+      # self.addlocs(schedule,show)
       self.addeps(schedule, show)
 
     def add_more_options(self, parser):

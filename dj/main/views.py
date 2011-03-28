@@ -35,6 +35,7 @@ from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List,Raw_File
 from main.models import fnify
+from main.models import STATES
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm
 
 from accounts.forms import LoginForm
@@ -311,6 +312,8 @@ def room_signs(request,show_id):
     
 def recording_sheets(request,show_id):
     show=get_object_or_404(Show,id=show_id)
+
+    # kwargs = {'location': location_slug, 'start__day':start_day, 'state':state}
     episodes=Episode.objects.filter(show=show).order_by('location','start')
 
     base  = os.path.dirname(__file__)
@@ -366,7 +369,9 @@ def raw_play_list(request,episode_id):
 
     writer = csv.writer(response)
     for cut in cuts:
-        pathname = os.path.join(settings.MEDIA_URL,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )
+	head=settings.MEDIA_URL
+	# head="/home/juser/Videos/veyepar"
+        pathname = os.path.join(head,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )
         writer.writerow([pathname])
 
     return response
@@ -380,7 +385,9 @@ def enc_play_list(request,episode_id):
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
-    for ext in [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
+    # exts = [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
+    exts = [ 'mp4', ]
+    for ext in exts:
         
       foot_pathname = os.path.join(client.slug,show.slug, ext, '%s.%s' % (episode.slug, ext))
 
@@ -391,7 +398,8 @@ def enc_play_list(request,episode_id):
             head=settings.MEDIA_URL
         else:
             # probably no local file access
-            head='http://'+request.META['HTTP_HOST']+settings.MEDIA_URL
+            # head='http://'+request.META['HTTP_HOST']+settings.MEDIA_URL
+            head=settings.MEDIA_URL
             # so review the smaller iPhone file
         item = '/'.join([head, foot_pathname ] )
         writer.writerow([item])
@@ -550,13 +558,13 @@ def show_stats(request, show_id, ):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show)
-    locked=Episode.objects.filter(show=show, locked__isnull=False)
+    episodes=Episode.objects.filter(show=show,location__default=True)
+    locked=Episode.objects.filter(show=show, locked__isnull=False).order_by('locked')
     raw_files=Raw_File.objects.filter(show=show)
-    locations=show.locations.all().order_by('sequence')
+    locations=show.locations.filter(default=True).order_by('sequence')
     
     empty_stat = {'count':0,'minutes':0, 
-               'start':None, 'end':None, 'states':[0,0,0,0,0,0,0],
+               'start':None, 'end':None, 'states':[0]*len(STATES),
                'files':0, 'bytes':0, 
                'loc':None, 'date':None }
  
@@ -567,7 +575,7 @@ def show_stats(request, show_id, ):
     dates.sort()
     
     # show totals:
-    STATES=((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
+    # STATES=((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
     # states=[0,0,0,0,0,0,0]
     show_stat = deepcopy(empty_stat)
 
@@ -602,7 +610,7 @@ def show_stats(request, show_id, ):
         stat['minutes']+=duration.seconds/60        
         stat['start']=ep.start if stat['start'] is None else min(stat['start'],ep.start)
         stat['end']=ep.end if stat['end'] is None else max(stat['end'],ep.end)
-        if 0<= ep.state <=6:
+        if 0<= ep.state <= len(STATES):
             stat['states'][ep.state]+=1        
         else:
             stat['states'][0]+=1        
@@ -915,6 +923,27 @@ def episode(request, episode_no):
             next_episode = 'no next value'
 
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
+
+    if not cuts:
+        # no dv found, go look for it
+        if episode.name == "PSF funds PyPi":
+           # but only for this one so we don't tank the db if this doesnt work
+           """ code from assocdv.py:
+        eps = Episode.objects.filter(
+            Q(start__lte=dv.end)|Q(start__isnull=True),
+            Q(end__gte=dv.start)|Q(end__isnull=True),
+            location=dv.location)
+           """
+
+        dvs = Raw_File.objects.filter(start__lte=episode.end,end__gte=episode.start,location=episode.location)
+        seq=0
+        for dv in dvs:
+            seq+=1
+            cl = Cut_List.objects.create(
+                episode=episode,
+                raw_file=dv,
+                sequence=seq)
+        cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 

@@ -145,7 +145,8 @@ class csv(process):
         row['embed']=blip_meta['embed_code']
         oggs = [i for i in blip_meta['contents'] if i['type']=='video/ogg']
         if self.options.verbose: print pprint.pprint(oggs)
-        row['source']=oggs[0]
+        # row['source']=oggs[0]
+        row['source']=''
 
         if self.options.verbose: print row
         json_data.append(row)

@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib import messages
+from django.utils.translation import ungettext
 
 from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_List, State, Log
 
@@ -19,7 +21,7 @@ admin.site.register(Show, ShowAdmin)
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('id','sequence', 'default', 'name','slug')
     list_display_links = ('id',)
-    list_editable = ('default', 'name','slug')
+    list_editable = ('sequence', 'default', 'name','slug')
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Location, LocationAdmin)
@@ -61,6 +63,36 @@ class EpisodeAdmin(admin.ModelAdmin):
     search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True
+    actions = ['set_stopped', 'clear_locked'] + admin.ModelAdmin.actions
+
+    def set_stopped(self, request, queryset):
+        rows_updated = queryset.update(stop=True)
+        msg = ungettext(
+            'Set stopped to true in %(count)d %(name)s successfully.',
+            'Set stopped to true in %(count)d %(name_plural)s successfully.',
+            rows_updated
+        ) % {
+            'count': rows_updated,
+            'name': self.model._meta.verbose_name.title(),
+            'name_plural': self.model._meta.verbose_name_plural.title()
+        }
+        messages.success(request, msg)
+    set_stopped.short_discription = "Set stop"
+
+    def clear_locked(self, request, queryset):
+        rows_updated = queryset.update(locked=None)
+        msg = ungettext(
+            'Cleared locked timestamp in %(count)d %(name)s successfully.',
+            'Cleared locked timestamp in %(count)d %(name_plural)s successfully.',
+            rows_updated
+        ) % {
+            'count': rows_updated,
+            'name': self.model._meta.verbose_name.title(),
+            'name_plural': self.model._meta.verbose_name_plural.title()
+        }
+        messages.success(request, msg)
+    set_stopped.short_discription = "Clear locked timestamp"
+
     class Media:
         js = ("/static/js/jquery.js","/static/js/bumpbut.js",)
 admin.site.register(Episode, EpisodeAdmin)

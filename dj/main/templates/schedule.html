@@ -20,7 +20,7 @@
        {% for t in day.1 %}
          <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
           <td>
-          {#  {{t.0.start|date:"H:i"}} - {{t.0.end|date:"H:i"}} </br> #}
+          {#  {{t.0.start|date:"H:i"}} - {{t.0.end|date:"H:i"}} <br/> #}
            {{t.0.start|date:"h:i"}} - {{t.0.end|date:"h:i"}} 
 </td>
           {% for episode in t.1 %}

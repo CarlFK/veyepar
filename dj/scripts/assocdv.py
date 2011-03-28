@@ -36,12 +36,15 @@ class ass_dv(process.process):
             
             # cls = Cut_List.objects.filter( episode=ep, raw_file=dv )
             # if len(cls)>1: print [c.id for c in cls]
-            cl, created = Cut_List.objects.get_or_create(
+            try:
+              cl = Cut_List.objects.filter(
                 episode=ep,
-                raw_file=dv )
-            if created:
-                cl.sequence=seq
-                cl.save()
+                raw_file=dv )[0]
+            except IndexError:
+                cl = Cut_List.objects.create(
+                episode=ep,
+                raw_file=dv,
+                sequence=seq)
                 self.cuts.append(cl)
         print
 

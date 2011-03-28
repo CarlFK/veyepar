@@ -12,31 +12,18 @@
 {% else %}
   Prev: (none, at start of list)
 {% endif %}
-</br>
+<br/>
 {% if next_episode %}
 <a href="/main/E/{{ next_episode.id }}">Next: {{next_episode.state }} {{next_episode.name }}</a>
 {% else %}
   Next: (none, at end of list)
 {% endif %}
 
-<h2>Title: {{episode.name}}</h2>
-<h2>Author(s): {{episode.authors}}</h2>
-<h2>Location: {{episode.location}}</h2>
-{% if episode.conf_url %}
-  <a href="{{episode.conf_url}}">{{episode.conf_url}}</a></br>
-{% endif %}
-<a href="{% url admin:main_episode_change episode.id%}">admin</a> 
-<a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a> 
-<a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a> 
-<a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a> 
-{% if episode.target %}
-  <a href=http://blip.tv/file/{{episode.target}}>blip</a> 
-{% endif %}
-</br>
-<a href={% url episode_logs episode.id %}>logs</a><br/>
-
 <table>
 <tbody>
+<tr><td> Title</td><td><b>{{episode.name}}</b></td></tr>
+<tr><td> Author(s)</td><td>{{episode.authors}} </td></tr>
+<tr><td> Location</td><td>{{episode.location}} </td></tr>
 <tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>
 <tr><td>Start</td><td>{% if same_dates %}{{episode.start|date:"H:i"}}{% else %}{{episode.start}}{% endif %}</td>
 <td>First Raw Start</td><td>{% if same_dates %}{{clrffs.0.0.raw_file.start|date:"H:i"}}{% else %}{{clrffs.0.0.faw_file.start}}{% endif %}</td></tr>
@@ -46,6 +33,23 @@
 </tr>
 </tbody>
 </table>
+{% if episode.conf_url %}
+  <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
+{% endif %}
+<a href="{% url admin:main_episode_change episode.id%}">admin</a> 
+<a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a> 
+<a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a> 
+<a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a> 
+{% if episode.target %}
+  <a href=http://blip.tv/file/{{episode.target}}>blip</a> 
+{% endif %}
+<br/>
+<a href={% url episode_logs episode.id %}>logs</a><br/>
+
+<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/bling/{{episode.slug}}.svg">
+svg</a><br/>
+
+
 <video src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
 

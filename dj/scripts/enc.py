@@ -102,8 +102,8 @@ class enc(process):
         # tollerate template where tokens have been removed
         if tree[1].has_key(key):
             if self.options.verbose: 
-                print tree[1][key].text
-                print text[key]
+                print "org", tree[1][key].text
+                # print "new", text[key].encode()
             tree[1][key].text=text[key]
 
     if tree[1].has_key('presenternames'):
@@ -340,7 +340,7 @@ class enc(process):
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
                   ffpreset=open('/usr/share/ffmpeg/libx264-hq.ffpreset').read().split('\n')
                   ffpreset = [i for i in ffpreset if i]
-                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
                   cmd = cmd.split()
                   cmd.extend(ffpreset)
                   cmds=[cmd]
