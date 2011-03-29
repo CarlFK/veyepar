@@ -44,7 +44,6 @@ class Client(models.Model):
 
 class Location(models.Model):
     sequence = models.IntegerField(default=1)
-    hostname because dvs-mon defaults to saving data in the same dirname
     active = models.BooleanField(help_text="Turn off to hide from UI.")
     default = models.BooleanField(default=True,
         help_text="Adds this loc to new Clients.")
@@ -53,6 +52,9 @@ class Location(models.Model):
         help_text="room name")
     slug = models.CharField(max_length=135,
         help_text="dir name to store input files")
+    # hostname because dvs-mon defaults to saving data in the same dirname
+    hostname = models.CharField(max_length=135,
+        help_text="hostname of the box doing recording")
     description = models.TextField(blank=True)
     def __unicode__(self):
         return "%s" % ( self.name )
