@@ -44,8 +44,8 @@ class Client(models.Model):
 
 class Location(models.Model):
     sequence = models.IntegerField(default=1)
-    ## hostname because dvs-mon defaults to saving data in the same dirname
-    # active = models.BooleanField(help_text="Turn off to hide from UI.")
+    hostname because dvs-mon defaults to saving data in the same dirname
+    active = models.BooleanField(help_text="Turn off to hide from UI.")
     default = models.BooleanField(default=True,
         help_text="Adds this loc to new Clients.")
     name = models.CharField(max_length=135, 
@@ -113,13 +113,14 @@ STATES=((0, 'borked'), (1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'twee
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
+    active = models.BooleanField(help_text="Turn off to hide from UI.")
     state = models.IntegerField(null=True, blank=True,
         choices=STATES, default=STATES[1][0],
         help_text="2=ready to encode, 4=ready to post, 5=tweet" )
     locked = models.DateTimeField(null=True, blank=True, 
-         help_text="clear this to unlock")
+        help_text="clear this to unlock")
     locked_by = models.CharField(max_length=35, blank=True,
-	 help_text="user/process that locked." )
+	    help_text="user/process that locked." )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
     start = models.DateTimeField(blank=True, null=True,
@@ -226,7 +227,7 @@ class Log(models.Model):
     ready = models.DateTimeField()
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
-    # user = models.CharField(max_length=50)
+    user = models.CharField(max_length=50)
     result = models.CharField(max_length=250)
 
 def set_slug(sender, instance, **kwargs):
@@ -244,6 +245,7 @@ def set_end(sender, instance, **kwargs):
 
 pre_save.connect(set_slug,sender=Location)
 pre_save.connect(set_slug,sender=Episode)
+
 pre_save.connect(set_end,sender=Episode)
 pre_save.connect(set_end,sender=Raw_File)
 
