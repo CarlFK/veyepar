@@ -133,7 +133,7 @@ class Episode(models.Model):
     end = models.DateTimeField(blank=True, null=True,
         help_text="(calculated if start and duration are set.)")
     name = models.CharField(max_length=135, 
-        help_text="(synced from primary source)")
+        help_text="Talk title (synced from primary source)")
     slug = models.CharField(max_length=135,
         help_text="file name friendly version of name")
     released = models.NullBooleanField(null=True,blank=True,
