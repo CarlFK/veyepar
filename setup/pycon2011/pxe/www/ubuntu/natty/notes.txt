@@ -1,0 +1,3 @@
+
+(12:41:57 PM) CarlFK:  http://dpaste.de/RrEa/ d-i partman-auto/expert_recipe string  that works.  now I want a 2nd install to use the exiting partition table, sda2 for / - how do I keep it from building a new table?
+(12:43:02 PM) DavidDreezer: is't it —preserve-partition

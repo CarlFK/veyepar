@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Icon[en_US]=gnome-panel-launcher
+Exec=/scripts/2-audiomixer.sh
+Name=3. Restart Audio Only
+Icon=gnome-panel-launcher
