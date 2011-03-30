@@ -237,14 +237,14 @@ if __name__=='__main__':
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    # t.make_source_dvs()
+    t.make_source_dvs()
     t.add_dv()
-    # t.make_thumbs()
+    t.make_thumbs()
     t.make_cut_list()
     t.encode()
-    # t.ck_errors()
-    # t.play_vid()
+    t.ck_errors()
+    t.play_vid()
     t.post()
-    # t.tweet()
+    t.tweet()
 
 
