@@ -44,7 +44,8 @@ class Client(models.Model):
 
 class Location(models.Model):
     sequence = models.IntegerField(default=1)
-    active = models.BooleanField(help_text="Turn off to hide from UI.")
+    active = models.BooleanField( default=True,
+        help_text="Turn off to hide from UI.")
     default = models.BooleanField(default=True,
         help_text="Adds this loc to new Clients.")
     name = models.CharField(max_length=135, 

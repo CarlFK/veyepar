@@ -42,7 +42,12 @@ import datetime
 import urllib2,json
 # from csv import DictReader
 # from datetime import timedelta
-# from dateutil.parser import parse
+from dateutil.parser import parse
+
+import gdata.calendar.client
+import gdata.calendar.service
+
+import pw # for google calandar
 
 import process
 import lxml.etree
@@ -266,28 +271,87 @@ class add_eps(process.process):
             episode.save()
        """
 
-
-
     def one_show(self, show):
-      # url='http://us.pycon.org/2010/conference/schedule/events.json'
-      # url='http://pycon-au.org/2010/conference/schedule/events.json'
-      # url='http://djangocon.us/schedule/json/'
-      # url='http://2010.osdc.com.au/program/json'
-      # url='http://conf.followtheflow.org/programme/schedule/json'
-      # url='http://lca2011.linux.org.au/programme/schedule/json'
-      # j=urllib2.urlopen(url).read()
-      # file('lca.json','w').write(j) 
-      # j=file('pycon201u.json').read()
-      # j=file('schedule_a.json').read()
-      j=file('schedule.json').read()
+        # url='http://us.pycon.org/2010/conference/schedule/events.json'
+        # url='http://pycon-au.org/2010/conference/schedule/events.json'
+        # url='http://djangocon.us/schedule/json/'
+        # url='http://2010.osdc.com.au/program/json'
+        # url='http://conf.followtheflow.org/programme/schedule/json'
+        # url='http://lca2011.linux.org.au/programme/schedule/json'
+        # j=urllib2.urlopen(url).read()
+        # file('lca.json','w').write(j) 
+        # j=file('pycon201u.json').read()
+        # j=file('schedule_a.json').read()
+        # j=file('schedule.json').read()
 
-      # j=open('schedule.json').read()
-      schedule = json.loads(j)
+        # j=open('schedule.json').read()
+        # schedule = json.loads(j)
 
-      # schedule = schedule['nodes']
-      # self.addlocs(schedule,show)
-      self.addeps(schedule, show)
+        # schedule = schedule['nodes']
+        # self.addlocs(schedule,show)
+        # self.addeps(schedule, show)
 
+        loc,created = Location.objects.get_or_create( 
+                sequence = 1,
+                name='Illinois Room A', slug='room_a' )
+        if created: show.locations.add(loc)
+
+        loc,created = Location.objects.get_or_create( 
+                sequence = 2,
+                name='Illinois Room B', slug='room_b' )
+        if created: show.locations.add(loc)
+
+        client = gdata.calendar.service.CalendarService()
+        client.ClientLogin(pw.goocal_email, pw.goocal_password, client.source)
+        fcal = client.GetAllCalendarsFeed().entry[7]
+        print "fcal title:", fcal.title.text
+        a_link = fcal.GetAlternateLink()
+        feed = client.GetCalendarEventFeed(a_link.href)
+        seq=0
+        for event in feed.entry:
+
+            name = event.title.text + 's talk'
+            authors = event.title.text
+
+            wheres = event.where
+            room = wheres[0].value_string
+            location = Location.objects.get(name=room)
+
+            goo_start = event.when[0].start_time 
+            goo_end = event.when[0].end_time
+
+            start = datetime.datetime.strptime(goo_start,'%Y-%m-%dT%H:%M:%S.%f-05:00') 
+            end = datetime.datetime.strptime(goo_end,'%Y-%m-%dT%H:%M:%S.%f-05:00') 
+
+            delta = end - start
+            minutes = delta.seconds/60 # - 5 for talk slot that includes break
+            hours = minutes/60
+            minutes -= hours*60
+
+            duration="%s:%s:00" % ( hours,minutes) 
+            released = True
+
+            # print name, authors, location, start, duration
+            print "%s: %s - %s" % ( authors, location, start.time() )
+
+            seq+=1
+            episode,created = Episode.objects.get_or_create(
+                  show=show, 
+                  location=location,
+                  start=start,
+                  authors=authors)
+
+            if created:
+                  episode.name=name
+                  episode.released=released
+                  episode.start=start
+                  episode.duration=duration
+                  episode.sequence=seq
+                  episode.state=1
+                  episode.save()
+             
+        return 
+        
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
           help='csv file' )
@@ -295,6 +359,12 @@ class add_eps(process.process):
           help='update when diff, else print' )
 
     def work(self):
+
+      client,created = Client.objects.get_or_create(slug=self.options.client)
+      client.delete()
+      locs = Location.objects.all()
+      for loc in locs: loc.delete()
+
       if self.options.client and self.options.show:
 
         client,created = Client.objects.get_or_create(slug=self.options.client)
