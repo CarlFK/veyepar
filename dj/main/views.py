@@ -155,7 +155,8 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     eps = Episode.objects.filter(show=show)
 
     fields=('id','location','sequence','conf_key','target',
-        'name','authors','description','start','duration')
+        'name','authors','description','start','duration', 
+        'released', 'license', 'conf_key', 'conf_url', 'tags')
 
     # response = HttpResponse(mimetype="text/javascript")
     response = HttpResponse(mimetype="application/json")
@@ -526,7 +527,7 @@ def client(request,client_slug=None):
                 pass
                 # print form.errors
         else:
-            locations=Location.objects.filter(default=True).order_by('sequence')
+            locations=Location.objects.filter(active=True).order_by('sequence')
             form=Show_Form(
                 initial={'client':client.id, 'sequence':1,
                          'locations': [o.pk for o in locations] })
@@ -558,10 +559,10 @@ def show_stats(request, show_id, ):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show,location__default=True)
+    episodes=Episode.objects.filter(show=show,location__active=True)
     locked=Episode.objects.filter(show=show, locked__isnull=False).order_by('locked')
     raw_files=Raw_File.objects.filter(show=show)
-    locations=show.locations.filter(default=True).order_by('sequence')
+    locations=show.locations.filter(active=True).order_by('sequence')
     
     empty_stat = {'count':0,'minutes':0, 
                'start':None, 'end':None, 'states':[0]*len(STATES),
@@ -720,7 +721,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     # start_day = request.REQUEST.get('start_day')
     # state = request.REQUEST.get('state')
     # raise Exception((client_slug, show_slug, state, start_day, location_slug))
-    locations=show.locations.filter(default=True).order_by('sequence')
+    locations=show.locations.filter(active=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show).order_by('sequence')
 
     kwargs = {'location': location_slug, 'start__day':start_day, 'state':state}

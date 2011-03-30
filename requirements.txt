@@ -10,3 +10,6 @@ hg+https://python-twitter.googlecode.com/hg/#egg=twitter
 Pinax==0.9a2.dev6
 
 
+# hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
+# ElementTree
+
