@@ -1,0 +1,9 @@
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Icon[en_US]=gnome-panel-launcher
+Exec=xterm /scripts/5-streaming.sh
+Name=5. Restart Streaming Only
+Icon=gnome-panel-launcher
