@@ -164,18 +164,18 @@
 				<y>'411.6 pt'</y>
 			</String>
 			<String>
-				<expr>"%s..." % (self.episode_name[:10] )</expr>
+				<expr>self.episode_name</expr>
 				<FontName>'Helvetica'</FontName>
-				<FontSize>120</FontSize>
-				<height>'114.0 pt'</height>
+				<FontSize>max( 150 - len(self.episode_name)*4, 20 )</FontSize>
+				<height>'124.0 pt'</height>
 				<width>'693.0 pt'</width>
 				<x>'4.7 pt'</x>
 				<y>'193.0 pt'</y>
 			</String>
 			<String>
-				<expr>"%s..." % (self.episode_authors[:10])</expr>
+				<expr>self.episode_authors</expr>
 				<FontName>'Helvetica'</FontName>
-				<FontSize>100</FontSize>
+				<FontSize>max( 150 - len(self.episode_authors)*4, 20 )</FontSize>
 				<height>'114.0 pt'</height>
 				<width>'693.0 pt'</width>
 				<x>'4.7 pt'</x>
@@ -218,6 +218,26 @@
 				<width>'17.0 pt'</width>
 				<x>'412.4 pt'</x>
 				<y>'414.6 pt'</y>
+			</String>
+			<String>
+				<expr>len(self.episode_name)</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>20 + (100 - len(self.episode_name))/100</FontSize>
+				<height>'34.0 pt'</height>
+				<Show>False</Show>
+				<width>'62.0 pt'</width>
+				<x>'4.7 pt'</x>
+				<y>'158.0 pt'</y>
+			</String>
+			<String>
+				<expr>max( 100 - len(self.episode_name), 20 )</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>20 + (100 - len(self.episode_name))/100</FontSize>
+				<height>'34.0 pt'</height>
+				<Show>False</Show>
+				<width>'53.0 pt'</width>
+				<x>'85.7 pt'</x>
+				<y>'158.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
