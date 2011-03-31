@@ -1,0 +1,25 @@
+PRESENTATION: GREEN/GREEN - presenter's laptop goes to both monitor and projector.
+setup: red/green - presenters laptop goes to monitor, slide show goes to projector.
+panel: off/off - nothing goes to monitor or slideshow
+debug slide show: red/red - slide show to both monitor and projector.
+pointless: green/red - presenters laptop to screen, slide show to monitor
+
+Normal operation:  
+Start with red-green.  slide show projected, monitor shows presenters laptop.  presenter hooks up laptop and figures out how to get his display showing on monitor.
+When talk is about to start: press button 1 twice. lights are now green-green.  Presenter gives talk.
+When talk is over, press button 1 once.  This puts back to red-geen.
+
+Key:
+button 1 (right): projector  
+button 2 (left): lcd monitor 
+green(A): presenter's laptop
+red(B): slide show 
+off: no output
+
+Cable Connections:
+B (top) - from slide show vga card
+A (bottom left) - from presenters laptop
+2 (middle) - to lcd monitor
+2 (right) - to twinpact in, twinpact out to projector
+
+
