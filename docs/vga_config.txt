@@ -1,8 +1,8 @@
-PRESENTATION: GREEN/GREEN - presenter's laptop goes to both monitor and projector.
-setup: red/green - presenter's laptop goes to monitor, slide show goes to projector.
-panel: off/off - nothing goes to monitor or slideshow
-debug slide show: red/red - slide show to both monitor and projector.
-pointless: green/red - presenter's laptop to screen, slide show to monitor
+PRESENTATION: GREEN/GREEN - Presenter's laptop on both monitor and projector.
+BETWEEN TALKS / SETUP: RED/GREEN - Presenter's laptop on monitor, slide show on projector.
+
+dark: off/off - nothing on monitor or slideshow
+debug: red/red - slide show to both monitor and projector.
 
 Normal operation:  
 Push button 1 to flip projector between slide show and presenter's laptop.
@@ -11,11 +11,12 @@ When talk is about to start: press button 1 twice. lights are now green-green.  
 When talk is over, press button 1 once.  This puts back to red-geen.
 
 Key:
-button 1 (right): projector  
-button 2 (left): lcd monitor 
-green(A): presenter's laptop
-red(B): slide show 
-off: no output
+Button 1 (right): projector  
+Button 2 (left): lcd monitor 
+Green(A): presenter's laptop
+Red(B): slide show 
+Off: no output
+
 
 Cable Connections:
 B (top) - from slide show vga card
