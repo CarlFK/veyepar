@@ -22,8 +22,9 @@ class Episode_Form_Preshow(forms.ModelForm):
         model = Episode
         fields = (
                   'name', 'slug', 
-                  'location', 
+                  'show','location', 
                   'start', 'duration', 
+                  'sequence',
                   'authors', 
                   'released', 
                   'description', 'tags')
