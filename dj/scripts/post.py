@@ -106,12 +106,21 @@ class post(process):
     exts = self.options.upload_formats.split()
 # pull dv from the list
     exts = [e for e in exts if e != 'dv']
+    has_master = False
     for ext in exts:
         role=roles.get(ext, {'description':"extra",'num':'9'})
+        if role == 'Master': has_master = True
         fileno=role['num']
         role_desc = role['description']
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
-        files.append((fileno,role_desc,src_pathname))
+        files.append([fileno,role_desc,src_pathname])
+
+    if not video_id and not has_master: 
+        # If this is a new upload (no id yet) blip needs one marked as master
+        # if nothing is marked as master, mark the first one.
+        # this seems like such a hack.
+        files[0][0]=''
+        files[0][1]='Master'
 
     if self.options.debug_log:
 

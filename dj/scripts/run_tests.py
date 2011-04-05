@@ -232,18 +232,18 @@ if __name__=='__main__':
 
     t=Run_Tests() 
     # t.upload_formats="flv ogv m4v mp3"
-    t.upload_formats="mp4"
+    t.upload_formats="ogv"
 
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
     t.make_source_dvs()
     t.add_dv()
-    t.make_thumbs()
+    # t.make_thumbs()
     t.make_cut_list()
     t.encode()
-    t.ck_errors()
-    t.play_vid()
+    # t.ck_errors()
+    # t.play_vid()
     t.post()
     t.tweet()
 
