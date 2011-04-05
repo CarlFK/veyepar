@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.utils.translation import ungettext
 
-from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_List, State, Log
+from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_List, State, Log, fnify
 
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('sequence', 'name', 'description',)
@@ -63,7 +63,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True
-    actions = ['set_stopped', 'clear_locked'] + admin.ModelAdmin.actions
+    actions = ['set_stopped', 'clear_locked', 're_slug' ] + admin.ModelAdmin.actions
 
     def set_stopped(self, request, queryset):
         rows_updated = queryset.update(stop=True)
@@ -92,6 +92,25 @@ class EpisodeAdmin(admin.ModelAdmin):
         }
         messages.success(request, msg)
     set_stopped.short_discription = "Clear locked timestamp"
+
+    def re_slug(self, request, queryset):
+        rows_updated = 0
+        for obj in queryset:
+            obj.slug = fnify(obj.name)
+            obj.save()
+            rows_updated +=1
+
+        msg = ungettext(
+            'updated slug with fnify(name) in %(count)d %(name)s successfully.',
+            'updated slug with fnify(name) in %(count)d %(name_plural)s successfully.',
+            rows_updated
+        ) % {
+            'count': rows_updated,
+            'name': self.model._meta.verbose_name.title(),
+            'name_plural': self.model._meta.verbose_name_plural.title()
+        }
+        messages.success(request, msg)
+    set_stopped.short_discription = "reset slug"
 
     class Media:
         js = ("/static/js/jquery.js","/static/js/bumpbut.js",)
