@@ -103,7 +103,7 @@ svg</a><br/>
 </td>
       </tr>
 
-     <tr> <td>Start</td><td>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</td> <td>{{ clrfform.start }}</td> </tr>
+     <tr> <td>Start</td><td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td> <td>{{ clrfform.start }}</td> </tr>
       <tr> <td>Duration:</td> <td>{{cl.raw_file.duration}}</td> </tr>
       <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}</td> </tr>
       <tr> <td>Comments:</td> <td>{#{clrfform.rf_comment}#}</td> <td>{{clrfform.cl_comment}}</td> </tr>

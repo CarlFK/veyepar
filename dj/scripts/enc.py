@@ -160,7 +160,8 @@ class enc(process):
                 dst_path = os.path.join(self.tmp_dir,episode.slug,os.path.dirname(rf.filename))
                 rawpathname = os.path.join(self.tmp_dir,episode.slug,rf.filename)
                 cmds = [['mkdir', '-p', dst_path],
-                        ['rsync', '--progress', src_pathname, rawpathname]]
+                         ['rsync', '--progress', '--size-only',  
+                            src_pathname, rawpathname]]
                 self.run_cmds(episode,cmds)
             else:
                 rawpathname = os.path.join(self.episode_dir,rf.filename)
