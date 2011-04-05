@@ -391,6 +391,7 @@ def enc_play_list(request,episode_id):
     for ext in exts:
         
       foot_pathname = os.path.join(client.slug,show.slug, ext, '%s.%s' % (episode.slug, ext))
+      print os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)
 
       if os.path.exists( 
           os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)):
@@ -576,12 +577,10 @@ def show_stats(request, show_id, ):
     dates.sort()
     
     # show totals:
-    # STATES=((0,'broke'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'tweet'),(6,'done'))
-    # states=[0,0,0,0,0,0,0]
     show_stat = deepcopy(empty_stat)
 
     # make 3 dicts of empty stats
-    # one for each room-day (date,loc)
+    # 1. for each room-day (date,loc)
     stats={} 
     for loc in locations: 
         for dt in dates: 
@@ -590,14 +589,14 @@ def show_stats(request, show_id, ):
             d['date'] = dt
             stats[(dt,loc.id)] = d
 
-    # one for locations:
+    # 2. for locations:
     d={}
     for loc in locations:
         d[loc.id] = deepcopy(empty_stat)
         d[loc.id]['loc'] = loc
     locations=d
 
-    # one for dates:
+    # 3. for dates:
     d={}
     for dt in dates:
         d[dt] = deepcopy(empty_stat)
@@ -653,7 +652,10 @@ def show_stats(request, show_id, ):
     # and do some more calcs
     def calc_stat(stat):
             stat['hours']=int( stat['minutes']/60.0 + .9)
+            stat['hours_o']=(stat['end']-stat['start'])
+     
             stat['talk_gig']=stat['hours']*13
+            stat['talk_gig']=int(stat['minutes']*13/60)
             stat['gig']=stat['bytes']/(1024**3)
             stat['variance'] = stat['talk_gig'] - stat['gig']	
             # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
