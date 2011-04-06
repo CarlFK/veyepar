@@ -13,8 +13,12 @@ def fnify(text):
     convert spaces to _, remove junk like # and quotes.
     like slugify, but more file name friendly.
     """
-    fn = text.replace(' ','_')
-    fn = ''.join([c for c in fn if c.isalpha() or c.isdigit() or (c in '_') ])
+    # remove anything that isn't alpha, num or space,  _ or dash.
+    fn = ''.join([c for c in fn if c.isalpha() or c.isdigit() or (c in '- _') ])
+    # single _ between words.
+    # removes mutiple and leading spaces or underscores
+    fn = '_'.join([w for w in fn.split('_') if w])
+
     return fn
 
 
