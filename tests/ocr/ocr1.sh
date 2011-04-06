@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-echo INVALID>source.txt
+echo ABCDEFG>source.txt
 
 melt -verbose \
  -profile dv_ntsc \
@@ -14,4 +14,12 @@ melt -verbose \
 
 mplayer -vo pnm test.mp4
 
-gocr -s 40 -C A-Z 00000001.ppm
+# display 00000001.ppm
+
+if [[ "$(gocr -s 40 -C A-Z 00000001.ppm)" == "ABCDEFG" ]] ; then
+   echo pass
+   exit 0
+else
+   echo fail 
+   exit 1
+fi
