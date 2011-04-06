@@ -18,11 +18,11 @@ urlpatterns = patterns(
     
     # url(r'^client/(?P<client_slug>[\w\-]+)/(?P<show_slug>[\w\-]+)/$', episodes, name='episode_list'),
 
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>[\w\-]+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>\w+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
     url(r'E/(?P<episode_no>\d+)/$', episode, name='episode'),
     url(r'E/(?P<episode_no>\d+)/claim_lock/$', claim_episode_lock),
 )
@@ -37,7 +37,7 @@ urlpatterns += patterns(
     url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>\w+)_schedule.html$', 
         schedule, 
         name='schedule'),
-    url(r'play_list/(?P<show_id>\w+)/L/(?P<location_slug>\w+)/.*$', 
+    url(r'play_list/(?P<show_id>\w+)/L/(?P<location_slug>[\w+\-]+)/.*$', 
         play_list, 
         name='play_list'),
     url(r'play_list/(?P<show_id>\w+)/.*$', 
