@@ -321,8 +321,10 @@ class add_eps(process.process):
             goo_start = event.when[0].start_time 
             goo_end = event.when[0].end_time
 
-            start = datetime.datetime.strptime(goo_start,'%Y-%m-%dT%H:%M:%S.%f-05:00') 
-            end = datetime.datetime.strptime(goo_end,'%Y-%m-%dT%H:%M:%S.%f-05:00') 
+            print goo_start
+            start = datetime.datetime.strptime(goo_start,'%Y-%m-%dT%H:%M:%S.000-05:00')
+            end = datetime.datetime.strptime(goo_end,'%Y-%m-%dT%H:%M:%S.000-05:00')
+
 
             delta = end - start
             minutes = delta.seconds/60 # - 5 for talk slot that includes break
