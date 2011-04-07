@@ -17,7 +17,7 @@ def fnify(text):
     fn = ''.join([c for c in text if c.isalpha() or c.isdigit() or (c in '- _') ])
     # single _ between words.
     # removes mutiple and leading spaces or underscores
-    fn = '_'.join([w for w in fn.split('_') if w])
+    fn = '_'.join([w for w in fn.split(' _') if w])
 
     return fn
 
