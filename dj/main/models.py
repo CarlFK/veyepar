@@ -15,9 +15,11 @@ def fnify(text):
     """
     # remove anything that isn't alpha, num or space,  _ or dash.
     fn = ''.join([c for c in text if c.isalpha() or c.isdigit() or (c in '- _') ])
+    fn = fn.replace(' ','_')
+
     # single _ between words.
     # removes mutiple and leading spaces or underscores
-    fn = '_'.join([w for w in fn.split(' _') if w])
+    fn = '_'.join([w for w in fn.split('_') if w])
 
     return fn
 
