@@ -10,6 +10,7 @@ room - "room1" if there is only one room.
 start - datetime in some parsable format 
 duration in minutes, or HH:MM:SS 
 presenters - comma seperated list of people's names.
+contact - email(s) of presenters.
 released - permission to release.
 license - CC license (13 is safe)
 description - used as the description of the video (paragraphs are fine)

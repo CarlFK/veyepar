@@ -48,7 +48,7 @@
 						<y>'69.0 pt'</y>
 					</Rectangle>
 					<Rectangle>
-						<FillColor>(0.941, 0.941, 0.941)</FillColor>
+						<FillColor>(0.953, 0.953, 0.953)</FillColor>
 						<height>'69.0 pt'</height>
 						<width>'259.0 pt'</width>
 						<x>'279.0 pt'</x>
@@ -179,7 +179,7 @@
 				<fontname>'Helvetica-Bold'</fontname>
 				<FontSize>13</FontSize>
 				<hanchor>'right'</hanchor>
-				<width>'95.0 pt'</width>
+				<width>'145.0 pt'</width>
 				<x>'537.0 pt'</x>
 				<y>'15.0 pt'</y>
 			</String>
@@ -204,7 +204,7 @@
 				<y>'51.0 pt'</y>
 			</Rectangle>
 			<String>
-				<expr>self.show_name</expr>
+				<expr>"%s: %s" % (self.client_name, self.show_name)</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>15</FontSize>
 				<width>'240.0 pt'</width>
@@ -234,7 +234,7 @@
 				<expr>"[  ] Notes on back"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
-				<width>'213.0 pt'</width>
+				<width>'143.0 pt'</width>
 				<x>'206.0 pt'</x>
 				<y>'30.0 pt'</y>
 			</String>
@@ -253,17 +253,17 @@
 		<Height>132.0</Height>
 		<Objects>
 			<Rectangle>
-				<FillColor>(0.941, 0.941, 0.941)</FillColor>
+				<FillColor>(0.953, 0.953, 0.953)</FillColor>
 				<height>'19.0 pt'</height>
 				<width>'65.0 pt'</width>
-				<x>'475.5 pt'</x>
+				<x>'473.5 pt'</x>
 				<y>'107.3 pt'</y>
 			</Rectangle>
 			<Rectangle>
-				<FillColor>(0.941, 0.941, 0.941)</FillColor>
+				<FillColor>(0.953, 0.953, 0.953)</FillColor>
 				<height>'19.0 pt'</height>
 				<width>'139.0 pt'</width>
-				<x>'401.5 pt'</x>
+				<x>'400.5 pt'</x>
 				<y>'0.3 pt'</y>
 			</Rectangle>
 			<String>
@@ -463,8 +463,8 @@
 	</PageForeground>
 
 	<TestCursor>
-		<record episode_primary="201" location_name="u&apos;Hollister&apos;" episode_duration="u&apos;04:10:00&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_id="101" show_name="u&apos;PyCon 2010&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" />
-		<record episode_primary="202" location_name="u&apos;Hollister&apos;" episode_duration="u&apos;00:15:00&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_id="123" show_name="u&apos;PyCon 2010&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" />
+		<record episode_primary="201" location_name="u&apos;Hollister&apos;" client_name="u&apos;Happy Co.&apos;" show_name="u&apos;Great Event&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_id="101" episode_duration="u&apos;04:10:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" />
+		<record episode_primary="202" location_name="u&apos;Hollister&apos;" client_name="u&apos;Happy Co.&apos;" show_name="u&apos;Great Event&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_id="123" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" />
 	</TestCursor>
 
 </Report>

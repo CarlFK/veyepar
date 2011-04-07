@@ -1,5 +1,8 @@
 #!/bin/bash -x
 
+# clean up previous runs
+rm test.mp4 00000001.ppm
+
 echo ABCDEFG>source.txt
 
 melt -verbose \

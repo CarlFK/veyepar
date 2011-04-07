@@ -147,6 +147,8 @@ class Episode(models.Model):
     conf_url = models.CharField(max_length=135,blank=True,
         help_text="event's details on conference site  (name,desc,time,author,files,etc)")
     authors = models.TextField(null=True,blank=True,)
+    # emails = models.TextField(null=True,blank=True, 
+    #    help_text="email(s) of the presenter(s)")
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
     normalise = models.CharField(max_length=5,null=True,blank=True, )

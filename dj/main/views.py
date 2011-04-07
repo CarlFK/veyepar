@@ -305,7 +305,7 @@ def room_signs(request,show_id):
 
     response = HttpResponse(mimetype='application/pdf')
     response['Content-Disposition'] = \
-      'filename=%s_recording_sheets.pdf' % ( show.slug )
+      'filename=%s_room_signs.pdf' % ( show.slug )
     response.write(pdf)
     return response
 
@@ -313,6 +313,7 @@ def room_signs(request,show_id):
     
 def recording_sheets(request,show_id):
     show=get_object_or_404(Show,id=show_id)
+    client = show.client
 
     # kwargs = {'location': location_slug, 'start__day':start_day, 'state':state}
     episodes=Episode.objects.filter(show=show).order_by('location','start')
@@ -342,7 +343,9 @@ def recording_sheets(request,show_id):
           'episode_end':ep.end,
           'episode_released':ep.released,
           'location_name':location_name,
-          'show_name':show.name })
+          'client_name':client.name,
+          'show_name':show.name,
+          })
         
     # generate the pdf in the buffer, using the layout and data
     rw = dReportWriter(OutputFile=buffer, ReportFormFile=rfxmlfile, Cursor=ds)
