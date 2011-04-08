@@ -773,6 +773,8 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                     'duration':episode.duration,
                     'state':1,
                     }
+                # roll the new episode into the query set
+                episodes=Episode.objects.filter(show=show).order_by('sequence')
             else:
                 # print form
                 inits=None # (prevents form from being created below)
