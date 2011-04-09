@@ -232,7 +232,7 @@ if __name__=='__main__':
 
     t=Run_Tests() 
     # t.upload_formats="flv ogv m4v mp3"
-    t.upload_formats="ogv"
+    t.upload_formats="ogv mp4"
 
     t.make_test_user()
     t.setup_test_data()

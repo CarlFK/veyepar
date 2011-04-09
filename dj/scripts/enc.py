@@ -341,7 +341,9 @@ class enc(process):
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
                   ffpreset=open('/usr/share/ffmpeg/libx264-hq.ffpreset').read().split('\n')
                   ffpreset = [i for i in ffpreset if i]
-                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libmp3lame ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  # acodec=libfaac
+                  # cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
                   cmd = cmd.split()
                   cmd.extend(ffpreset)
                   cmds=[cmd]

@@ -1,10 +1,9 @@
 #!/bin/bash -x
 
-# clean up previous runs
-rm test.mp4 00000001.ppm
-
+# create file to encode
 echo ABCDEFG>source.txt
 
+# encode to 1 frame movie
 melt -verbose \
  -profile dv_ntsc \
  -audio-track \
@@ -15,12 +14,17 @@ melt -verbose \
  out=0 \
  -consumer avformat:test.mp4
 
+# extract the frame 
 mplayer -vo pnm test.mp4
+
 
 # display 00000001.ppm
 
-if [[ "$(gocr -s 40 -C A-Z 00000001.ppm)" == "ABCDEFG" ]] ; then
+# see if gocr can read the letters:
+if [[ "$(gocr 00000001.ppm)" == "ABCDEFG" ]] ; then
    echo pass
+   # clean up
+   rm source.txt test.mp4 00000001.ppm
    exit 0
 else
    echo fail 
