@@ -72,6 +72,7 @@ import urlparse
 import xml.etree.ElementTree
 import xml.dom.minidom 
 import xml.sax.saxutils 
+import json
 
 import cgi
 
@@ -307,6 +308,7 @@ httplib.BadStatusLine
         meta['description'] = xml.sax.saxutils.unescape(
             self.Get_TextFromDomNode(item.getElementsByTagName("blip:puredescription")[0]))
         meta['link'] = self.Get_TextFromDomNode(item.getElementsByTagName("link")[0])
+        meta['posts_id'] = self.Get_TextFromDomNode(item.getElementsByTagName("blip:posts_id")[0])
         meta['embed_code'] = self.Get_TextFromDomNode(item.getElementsByTagName("media:player")[0])
         
         existing_mime_types = {}
@@ -328,6 +330,22 @@ httplib.BadStatusLine
         meta['contents']=contents
             
         return meta
+
+    def Get_MoreMeta(self, user_id, user_name, password, mystery_id):
+        # http://blip.tv/dashboard/episode_detailed/4840010?users_id=613931&userlogin=veyepar_test&password=bdff6680&skin=json
+        url = "http://blip.tv/dashboard/episode_detailed/%(mystery_id)s?users_id=%(users_id)s&userlogin=%(user_name)s&password=%(password)s&skin=json" % { 'mystery_id':mystery_id, 
+                'users_id':user_id, 'user_name':user_name, 'password':password }
+        if self.debug: print url
+        json_like_data = urllib2.urlopen(url).read()
+
+        json_data = json_like_data[len('blip_ws_results('):-3]
+        return json_data
+
+    def Parse_MoreMeta(self, file_meta):
+        # [{"posts":[{"categoryId":"7"
+        # [u'conversions', u'languageCode', u'playlists', u'itemType', u'revenue', u'userId', u'blogUrl', u'licenseId', u'nsfw', u'licenseUrl', u'midrollStart', u'datestamp', u'thumbnailUrl', u'adsEnabled', u'display_name', u'additionalLicense', u'title', u'media', u'tags', u'contentRating', u'nextHiddenDate', u'midrollDuration', u'embedUrl', u'categoryId', u'description', u'views', u'thumbnail120Url', u'hidden', u'adminTitle', u'postsGuid', u'languageName', u'hiddenPassword', u'numMidrolls', u'itemId', u'datestampText', u'categoryName', u'mediaUrl', u'url', u'thumbnailFilename', u'licenseTitle', u'adOptOut', u'postsId', u'additionalMedia', u'login', u'embedLookup', u'showName']
+        j = json.loads(file_meta)
+        return j[0]
 
 class Blip_CLI(Blip):
 
