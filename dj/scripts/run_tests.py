@@ -275,6 +275,39 @@ pix_fmt=yuv411p" % parms
   p.main()
   return
 
+ def ocr_test(self):
+  # ocr an output file, check for ABCDEFG
+  # someday this will wget the m4v from blip to see what they made
+
+  tmp_dir = os.path.join("/tmp/veyepar_test/")
+  if not os.path.exists(tmp_dir): os.makedirs(tmp_dir)
+
+  blip_file = os.path.join(self.show_dir, 'mp4', "Test_Episode.mp4" )
+  # blip_file = "Veyepar_test-TestEpisode897.m4v"
+  parms = {
+          "tmp_dir":tmp_dir,
+          'blip_file':blip_file,
+          }
+  cmd = "mplayer \
+    -ss 12 \
+    -vf framestep=20 \
+    -ao null \
+    -vo pnm:outdir=%(tmp_dir)s \
+    %(blip_file)s" % parms
+  print cmd
+  self.run_cmd(cmd.split())
+
+  test_file = os.path.join(tmp_dir, "00000002.ppm" )
+  gocr_outs = self.run_cmd(['gocr', test_file], True )
+  text = gocr_outs['sout']
+  print text
+  
+  # not sure what is tacking on the \n, but it is there, so it is here.
+  result = (text == "ABCDEFG\n")
+  print "Video test pass:", result
+
+  return result
+
 
 
 if __name__=='__main__':
@@ -296,5 +329,6 @@ if __name__=='__main__':
     t.play_vid()
     t.post()
     t.tweet()
+    t.ocr_test()
 
 
