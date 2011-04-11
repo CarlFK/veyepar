@@ -10,7 +10,7 @@ from django.conf import settings
 
 import socket
 
-from main.models import Show, Episode
+from main.models import Show # , Episode
 
 class Run_Tests(object):
 
@@ -52,7 +52,7 @@ class Run_Tests(object):
   # make sample data: location, client, show, episode
   from main.views import make_test_data, del_test_data
   del_test_data()
-  ep_count=make_test_data()
+  self.ep=make_test_data()
   return
 
  def make_dirs(self):
@@ -127,6 +127,55 @@ pix_fmt=yuv411p" % parms
    self.run_cmd(cmd)
 
    return
+ 
+
+ def make_source_footer(self):
+   """ 
+ ` make a footer.png 
+   via a convoluted process, which has a side effect of more testing
+   the process:
+   create 1 line source.txt: ABCDEFG
+   convert to 1 frame dv
+   convert that frame to footer.png
+   """
+
+   # dv_dir = os.path.join(self.show_dir,'dv', 'test_loc','2010-05-21')
+   tmp_dir = os.path.join(self.show_dir, 'tmp')
+   bling_dir = os.path.join(self.show_dir, 'bling')
+   text_file = os.path.join(tmp_dir, "source.txt")
+   dv_file = os.path.join(tmp_dir,"footer.dv") 
+   parms={'input_file':text_file, 
+           'dv_file':dv_file,
+           'text_file':text_file,
+           'bling_dir':bling_dir,
+           'format':"dv_%s" % (self.options.dv_format),
+           'video_frames':1,
+           'audio_frames':1 }
+   print parms
+
+   # make a text file to use as encoder input
+   text = ["ABCDEFG", ]
+   tf = open(text_file,'w')
+   tf.write('\n'.join(text))
+   tf.close()
+   
+   cmd = "melt \
+ -profile %(format)s \
+ -audio-track -producer noise out=%(audio_frames)s \
+ -video-track %(input_file)s out=%(video_frames)s \
+ -consumer avformat:%(dv_file)s \
+ pix_fmt=yuv411p" % parms
+   self.run_cmd(cmd.split())
+
+   cmd = "mplayer \
+           -frames 1 \
+           -ao null \
+           -vo png:outdir=%(bling_dir)s \
+           %(dv_file)s" % parms
+   self.run_cmd(cmd.split())
+
+   # "00000001.png"
+   return 
  
  def add_dv(self):
   # add the dv files to the db
@@ -238,12 +287,13 @@ if __name__=='__main__':
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
     t.make_source_dvs()
+    t.make_source_footer()
     t.add_dv()
-    # t.make_thumbs()
+    t.make_thumbs()
     t.make_cut_list()
     t.encode()
-    # t.ck_errors()
-    # t.play_vid()
+    t.ck_errors()
+    t.play_vid()
     t.post()
     t.tweet()
 

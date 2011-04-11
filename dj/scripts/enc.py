@@ -461,7 +461,8 @@ class enc(process):
 # define credits
         credits_img = episode.show.client.credits \
                    if episode.show.client.credits \
-                   else os.path.join(self.show_dir, "bling", 'ndv1-black.png')
+                   else 'ndv1-black.png'
+        credits_img = os.path.join(self.show_dir, "bling", credits_img)
 
 # get list of raw footage for this episode
         rfs = Raw_File.objects. \

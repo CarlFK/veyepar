@@ -58,7 +58,7 @@ episode:     XXXXXXXXX
     # append additional episodes 
 
     loc,create = Location.objects.get_or_create(name='test loc',slug='test_loc')
-    client,create = Client.objects.get_or_create(name='test client',slug='test_client', blip_user='veyepar_test', title_svg='test_pattern_1.svg')
+    client,create = Client.objects.get_or_create(name='test client',slug='test_client', blip_user='veyepar_test', title_svg='test_pattern_1.svg', credits="00000001.png")
 
     show,create = Show.objects.get_or_create(name='test show',slug='test_show',client=client)
     if create:
@@ -86,9 +86,7 @@ episode:     XXXXXXXXX
     ep.duration = "00:00:06"
     ep.save()
 
-    # send the count back so that the scrip that makes .dv files 
-    # are alinged with the episode start/end time.
-    return 
+    return ep
 
 def del_test_data():
     clients = Client.objects.filter(slug='test_client')

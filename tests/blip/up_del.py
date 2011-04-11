@@ -4,7 +4,7 @@
 posts files to blip.tv, then tries (fails) to deletes 1
 """
 # to run this:
-# create pw.py with a blip={user:pw}
+# create pw.py: blip={'username':'password'}
 # put Test_Episode.ogv in the cwd
 # handy place to get a small ogv good for uploading:
 # cp /home/carl/Videos/veyepar/test_client/test_show/ogv/Test_Episode.ogv .
