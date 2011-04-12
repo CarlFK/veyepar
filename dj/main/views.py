@@ -197,11 +197,13 @@ def emailer(show_id, real=False):
  '"PS1" <pumping-station-one-public@googlegroups.com>',
  '"ACM Chicago" <mtemkin@speakeasy.net>',
  '"ACM Chicago" <chicago-chapter-acm@googlegroups.com>',
- '"Linux Users Of Northern Illinois" <luni@luni.org>', 
+ #'"Linux Users Of Northern Illinois" <luni@luni.org>', 
+ '"LUNI-Announce" <luni-announce@luni.org>', 
  '"Chicago Linux Discuss" <chicagolinux-discuss@chicagolug.org>', 
  '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
  # '<genluglist@codlug.info>',
- '<chicagotechcal@gmail.com>']
+ #'<chicagotechcal@gmail.com>'
+ ]
     else: 
         tos = [
     'carl@personnelware.com', 
@@ -211,12 +213,13 @@ def emailer(show_id, real=False):
     
     # connect to the smtp server
     connection = get_connection()
-    sender = '"Carl Karsten" <carl@nextdayvideo.com>"'
+    sender = 'Carl Karsten <cfkarsten@gmail.com>'
     headers = {
-        'Reply-To': "ChiPy <chicago@python.org>"
+        # 'Reply-To': "ChiPy <chicago@python.org>"
+        # 'From': sender,
         }
     for to in tos:
-        email = EmailMessage(subject, body, sender, [to] ) 
+        email = EmailMessage(subject, body, sender, [to], headers=headers ) 
         ret = connection.send_messages([email])
         print to, ret
 
