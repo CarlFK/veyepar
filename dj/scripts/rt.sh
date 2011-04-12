@@ -14,6 +14,8 @@ fi
 
 # delete previous scripts
 rm ~/Videos/veyepar/test_client/test_show/tmp/Test_Episode.sh
+# have something for post to post
+touch ~/Videos/veyepar/test_client/test_show/tmp/Test_Episode.sh
 
 python run_tests.py --client test_client --show test_show
 

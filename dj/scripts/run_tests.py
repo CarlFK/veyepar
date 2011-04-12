@@ -17,7 +17,7 @@ class Run_Tests(object):
  def run_cmd(self,cmd, get_out=False):
 
         log_text = ' '.join(cmd)
-        print log_text
+        # print log_text
         open(self.sh_pathname,'a').write(log_text+'\n')
 
         if get_out:
@@ -32,7 +32,7 @@ class Run_Tests(object):
           ret = dict( returncode=p.returncode)
         # p.stdin.write(it.buffer)
         # 2. write rest of image and get return values
-        print ret
+        # print ret
         if ret['returncode']: raise
         return ret
 
@@ -266,8 +266,8 @@ pix_fmt=yuv411p" % parms
   p.main()
  
   # post.py does: self.last_url = post_url.text
-  self.run_cmd(["firefox",p.last_url])
-  return
+  # self.run_cmd(["firefox",p.last_url])
+  return p.last_url
 
  def tweet(self):
   # tell the world (test account)
@@ -275,7 +275,8 @@ pix_fmt=yuv411p" % parms
   p=tweet.tweet()
   p.set_options(force=True, verbose=True, )
   p.main()
-  return
+  tweet_url = "http://twitter.com/#!/squid/status/%s" % (p.last_tweet["id"],)
+  return tweet_url
 
  def ocr_test(self):
   # ocr an output file, check for ABCDEFG
@@ -306,7 +307,6 @@ pix_fmt=yuv411p" % parms
   
   # not sure what is tacking on the \n, but it is there, so it is here.
   result = (text == "ABCDEFG\n")
-  print "Video test pass:", result
 
   return result
 
@@ -346,15 +346,30 @@ pix_fmt=yuv411p" % parms
 
   cmd = """sphinx2-continuous -verbose 9 -adcin TRUE -adcext 16k -ctlfn %(ctl_file)s -ctloffset 0 -ctlcount 100000000 -datadir %(TASK)s -agcmax TRUE -langwt 6.5 -fwdflatlw 8.5 -rescorelw 9.5 -ugwt 0.5 -fillpen 1e-10 -silpen 0.005 -inspen 0.65 -top 1 -topsenfrm 3 -topsenthresh -70000 -beam 2e-06 -npbeam 2e-06 -lpbeam 2e-05 -lponlybeam 0.0005 -nwbeam 0.0005 -fwdflat FALSE -fwdflatbeam 1e-08 -fwdflatnwbeam 0.0003 -bestpath TRUE -kbdumpdir %(TASK)s -lmfn %(TURT)s/turtle.lm -dictfn %(TURT)s/turtle.dic -ndictfn %(HMM)s/noisedict -phnfn %(HMM)s/phone -mapfn %(HMM)s/map -hmmdir %(HMM)s -hmmdirlist %(HMM)s -8bsen TRUE -sendumpfn %(HMM)s/sendump -cbdir %(HMM)s """ % parms
 
-  print cmd
+  # print cmd
   sphinx_outs = self.run_cmd(cmd.split(),True)
   text = sphinx_outs['serr']
-  print text
+  # print text
   for line in text.split('\n'):
       if "BESTPATH" in line:
-          print line.split()
+          words = line.split()
+          print words
+          # words=['INFO:', 'searchlat.c(939):', 'BESTPATH:', 'GO', 'FORWARD', 'TEN', 'METERS', 'GO', 'FORWARD', 'TEN', 'METERS', '(test', '-237372955)']
+          text = words[3:-2]
+
+          result = ( text == ['GO', 'FORWARD', 'TEN', 'METERS', 'GO', 'FORWARD', 'TEN', 'METERS'] )
+
+          score = int(words[-1][:-1])
+          # goforward.16k: BESTPATH: GO FORWARD TEN METERS  goforward -97741561
+          history = [-97741561, -237372955]
+          print score, history
+          print [score-h for h in history]
+
+          return result
   
 if __name__=='__main__':
+
+    result={}
 
     t=Run_Tests() 
     # t.upload_formats="flv ogv m4v mp3"
@@ -363,7 +378,6 @@ if __name__=='__main__':
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    """
     t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
@@ -372,10 +386,11 @@ if __name__=='__main__':
     t.encode()
     t.ck_errors()
     t.play_vid()
-    t.post()
-    t.tweet()
-    t.ocr_test()
-    """
-    t.sphinx_test()
+    result['url'] = t.post()
+    result['tweet'] = t.tweet()
+    result['video'] = t.ocr_test()
+    result['audio'] = t.sphinx_test()
+    print 
+    print 'test results', result
 
 

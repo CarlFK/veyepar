@@ -72,6 +72,7 @@ class tweet(process):
             if self.options.verbose: print api.VerifyCredentials()
             status = api.PostUpdate(tweet)
             d=status.AsDict()
+            self.last_tweet = d
             ret=True
 
         return ret
