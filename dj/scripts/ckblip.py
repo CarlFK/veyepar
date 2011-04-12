@@ -49,13 +49,14 @@ class ckblip(process):
         if self.options.verbose: print response_xml
         ep.comment += "\n%s\n" % response_xml
 
-  def delete_from_blip(self, episode_id, file_id, user, password, reason):
+  def delete_from_blip(self, episode_id, posts_id, file_id, user, password, reason):
 # http://blip.tv/file/delete/Pyohio-GettingToKnowMongoDBUsingPythonAndIronPython664.flv?reason="just cuz."
 #http://blip.tv/?cmd=delete;id=Veyepar_test-TestEpisode0760.ogv;s=file;undelete=
 
     if self.last_del_id != episode_id:
        # only print this once per episode_id
        print "http://blip.tv/file/" + episode_id
+       print "http://blip.tv/dashboard/episode/%s" % (posts_id,)
        self.last_del_id = episode_id
 
     print "delete:", file_id
@@ -107,6 +108,11 @@ class ckblip(process):
         if self.options.verbose: print xml_code
         blip_meta = blip_cli.Parse_VideoMeta(xml_code)
 
+        # get int used to get to episode edit page
+        rss=xml.dom.minidom.parseString(xml_code)
+        node=rss.getElementsByTagName("blip:posts_id")
+        posts_id = blip_cli.Get_TextFromDomNode(node[0])
+
         file_types_to_upload=[]    
         user = ep.show.client.blip_user if ep.show.client.blip_user \
             else self.options.blip_user
@@ -135,8 +141,8 @@ class ckblip(process):
                             # and needs to be deleted.
                             # too bad I can't figure ou the blip api for this.
                             file_id = os.path.basename(content['url'])
-                            ret=self.delete_from_blip(ep.target, file_id,
-                                user, password, 'old version')
+                            ret=self.delete_from_blip(ep.target, posts_id,
+                                    file_id, user, password, 'old version')
                 if not match:
                     file_types_to_upload.append(t['ext'])
             else:
