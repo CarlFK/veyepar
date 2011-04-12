@@ -27,7 +27,8 @@ sudo apt-add-repository 'deb http://packages.medibuntu.org/ '$(lsb_release -cs)'
 
 sudo apt-get update
 
-sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 mencoder ffmpeg python-virtualenv screen
+sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape melt ffmpeg2theora mplayer vlc git vim libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 mencoder ffmpeg python-virtualenv screen sphinx2-bin sox pocketsphinx-utils
+
 
 # curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv 
 
@@ -69,6 +70,10 @@ mkdir static
 cd static
 wget -N http://0x80.org/wordlist/webster-dictionary.txt
 ln -s webster-dictionary.txt dictionary.txt
+
+sox -b 16 -r 16k -e signed -c 1 -t raw \
+    /usr/share/sphinx2/model/lm/turtle/goforward.16k \
+    goforward.wav
 
 cd ..
 cp pw_samp.py pw.py
