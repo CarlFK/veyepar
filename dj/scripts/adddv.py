@@ -11,7 +11,7 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 class add_dv(process):
 
     def one_file(self,pathname,show,location,seq):
-        print pathname
+        print pathname,
         if self.options.test:
             rfs = Raw_File.objects.filter(
                 show=show, location=location,
@@ -23,8 +23,11 @@ class add_dv(process):
                 show=show, location=location,
                 filename=pathname,)
             if created: 
+               print "(new)"
                rf.sequence=seq
                rf.save()
+            else:
+               print "(exists)"
    
     def one_loc(self,show,location):
       """

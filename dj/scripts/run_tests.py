@@ -111,9 +111,11 @@ class Run_Tests(object):
        tf.write('\n'.join(text))
        tf.close()
        
+ # -audio-track -producer noise out=%(audio_frames)s \
+
        cmd = "melt \
 -profile %(format)s \
- -audio-track -producer noise out=%(audio_frames)s \
+ -audio-track static/goforward.wav out=%(audio_frames)s \
  -video-track %(input_file)s out=%(video_frames)s \
 meta.attr.titles=1 \
 meta.attr.titles.markup=#timecode# \
@@ -309,7 +311,49 @@ pix_fmt=yuv411p" % parms
   return result
 
 
+ def sphinx_test(self):
+  # sphinx transcribe an output file, check for GO FORWARD TEN METERS
+  # someday this will wget the m4v from blip to see what they made
 
+  blip_file = os.path.join(self.show_dir, 'mp4', "Test_Episode.mp4" )
+  # blip_file = "Veyepar_test-TestEpisode897.m4v"
+
+  tmp_dir = os.path.join("/tmp/veyepar_test/")
+  if not os.path.exists(tmp_dir): os.makedirs(tmp_dir)
+  wav_file = os.path.join(tmp_dir,'test.wav')
+  raw_file = os.path.join(tmp_dir,'test.16k')
+  ctl_file = os.path.join(tmp_dir,'test.ctl')
+
+  parms = {
+          'blip_file':blip_file,
+          "wav_file":wav_file,
+          "raw_file":raw_file,
+          }
+
+  cmd = "melt %(blip_file)s -consumer avformat:%(wav_file)s" % parms
+  self.run_cmd(cmd.split())
+  cmd = "sox %(wav_file)s -b 16 -r 16k -e signed -c 1 -t raw %(raw_file)s" % parms
+  self.run_cmd(cmd.split())
+
+  # open(ctl_file,'w').write(raw_file)
+  open(ctl_file,'w').write('test')
+  parms = {
+          'HMM':'/usr/share/sphinx2/model/hmm/6k',
+          'TURT':'/usr/share/sphinx2/model/lm/turtle',
+          'TASK':tmp_dir,
+          "ctl_file":ctl_file,
+          }
+
+  cmd = """sphinx2-continuous -verbose 9 -adcin TRUE -adcext 16k -ctlfn %(ctl_file)s -ctloffset 0 -ctlcount 100000000 -datadir %(TASK)s -agcmax TRUE -langwt 6.5 -fwdflatlw 8.5 -rescorelw 9.5 -ugwt 0.5 -fillpen 1e-10 -silpen 0.005 -inspen 0.65 -top 1 -topsenfrm 3 -topsenthresh -70000 -beam 2e-06 -npbeam 2e-06 -lpbeam 2e-05 -lponlybeam 0.0005 -nwbeam 0.0005 -fwdflat FALSE -fwdflatbeam 1e-08 -fwdflatnwbeam 0.0003 -bestpath TRUE -kbdumpdir %(TASK)s -lmfn %(TURT)s/turtle.lm -dictfn %(TURT)s/turtle.dic -ndictfn %(HMM)s/noisedict -phnfn %(HMM)s/phone -mapfn %(HMM)s/map -hmmdir %(HMM)s -hmmdirlist %(HMM)s -8bsen TRUE -sendumpfn %(HMM)s/sendump -cbdir %(HMM)s """ % parms
+
+  print cmd
+  sphinx_outs = self.run_cmd(cmd.split(),True)
+  text = sphinx_outs['serr']
+  print text
+  for line in text.split('\n'):
+      if "BESTPATH" in line:
+          print line.split()
+  
 if __name__=='__main__':
 
     t=Run_Tests() 
@@ -319,6 +363,7 @@ if __name__=='__main__':
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
+    """
     t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
@@ -330,5 +375,7 @@ if __name__=='__main__':
     t.post()
     t.tweet()
     t.ocr_test()
+    """
+    t.sphinx_test()
 
 
