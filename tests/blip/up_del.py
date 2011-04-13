@@ -43,7 +43,7 @@ def up(blip_user,blip_pw, filename, blip_id=''):
 
     return blip_id
 
-def get_uid(episode_id):
+def get_ids(episode_id):
 
     blip_cli=blip_uploader.Blip_CLI()
     blip_cli.debug = False
@@ -81,12 +81,12 @@ def pick_one(episode_id):
     ogv=ogvs[r]
     return ogv
 
-def get_file_id(user_id, user_name, password, episode_id, file_url):
+def get_file_id(user_id, user_name, password, posts_id, file_url):
 
     blip_cli=blip_uploader.Blip_CLI()
     blip_cli.debug = False
 
-    mm = blip_cli.Get_MoreMeta(user_id,user_name,password,episode_id)
+    mm = blip_cli.Get_MoreMeta(user_id,user_name,password,posts_id)
     pm = blip_cli.Parse_MoreMeta(mm)
     ams = pm['posts'][0]['additionalMedia']
 
@@ -97,11 +97,11 @@ def get_file_id(user_id, user_name, password, episode_id, file_url):
     return id
 
 
-def del_from_blip( episode_id,mystery_id,file_url,file_id,
+def del_from_blip( episode_id,posts_id,file_url,file_id,
         user_id,user_name,password):
     print
     print "http://blip.tv/file/%s" % (episode_id)
-    print "http://blip.tv/dashboard/episode/%s" % (mystery_id)
+    print "http://blip.tv/dashboard/episode/%s" % (posts_id)
     print file_url
     print "file id:", file_id
     return
@@ -114,25 +114,25 @@ if __name__ == '__main__':
     # upload 
     filename = "Test_Episode.ogv"
     # blank to create new episode, like if you delete this one
-    episode_id = ''
     # episode_id = '4998133'
+    episode_id = ''
     episode_id = up(blip_user,blip_pw,filename,episode_id)
-
     # print "episode_id:", episode_id
 
     # get the blip user_id (int, not the login name string)
     # and some posts_id that is like a 2nd episode id.
     # user_id = '613931'
-    # mystery_id='5015967'
-    user_id,mystery_id = get_uid(episode_id)
+    # posts_id='5015967'
+    user_id,posts_id = get_ids(episode_id)
 
     # get name of a file to delete
     del_me = pick_one(episode_id)
     # print "del_me:", del_me
 
-    file_id = get_file_id(user_id, blip_user, blip_pw, mystery_id, del_me)
+    file_id = get_file_id(user_id, blip_user, blip_pw, posts_id, del_me)
+    # print file_id
 
-    del_from_blip(episode_id,mystery_id,del_me,file_id, 
+    del_from_blip(episode_id,posts_id,del_me,file_id, 
             user_id, blip_user, blip_pw)
 
 
