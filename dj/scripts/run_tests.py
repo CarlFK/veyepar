@@ -14,7 +14,7 @@ from main.models import Show # , Episode
 
 class Run_Tests(object):
 
- def run_cmd(self,cmd, get_out=False):
+ def run_cmd(self, cmd, get_out=False):
 
         log_text = ' '.join(cmd)
         # print log_text
@@ -30,10 +30,11 @@ class Run_Tests(object):
           p = subprocess.Popen(cmd)
           p.wait()
           ret = dict( returncode=p.returncode)
-        # p.stdin.write(it.buffer)
-        # 2. write rest of image and get return values
-        # print ret
-        if ret['returncode']: raise
+
+        if ret['returncode']: 
+            print "command returned" ret
+            print "cmd:", cmd
+            raise
         return ret
 
 

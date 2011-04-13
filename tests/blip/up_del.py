@@ -114,10 +114,10 @@ if __name__ == '__main__':
     # upload 
     filename = "Test_Episode.ogv"
     # blank to create new episode, like if you delete this one
-    # episode_id = ''
-    episode_id = '4998133'
+    episode_id = ''
+    # episode_id = '4998133'
+    episode_id = up(blip_user,blip_pw,filename,episode_id)
 
-    # episode_id = up(filename,episode_id)
     # print "episode_id:", episode_id
 
     # get the blip user_id (int, not the login name string)

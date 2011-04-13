@@ -6,7 +6,7 @@
 # chmod u+x INSTALL.sh
 
 # install apt-add-repository:
-sudo apt-get install python-software-properties
+sudo apt-get --assume-yes install python-software-properties
 
 # trunk gstreamer - used for mkthumbs
 sudo apt-add-repository ppa:gstreamer-developers/ppa
@@ -27,9 +27,9 @@ sudo apt-add-repository 'deb-src http://ppa.launchpad.net/j/ppa/ubuntu maverick 
 # once natty is released:
 # sudo apt-add-repository 'http://packages.medibuntu.org free non-free'
 
-sudo apt-get update
+sudo apt-get --assume-yes update
 
-sudo apt-get install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder ffmpeg python-virtualenv screen sphinx2-bin sox melt 
+sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder ffmpeg python-virtualenv screen sphinx2-bin sox melt 
 # libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 
 # pocketsphinx-utils
 
