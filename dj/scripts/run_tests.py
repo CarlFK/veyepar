@@ -362,7 +362,7 @@ pix_fmt=yuv411p" % parms
 
           score = int(words[-1][:-1])
           # goforward.16k: BESTPATH: GO FORWARD TEN METERS  goforward -97741561
-          history = [ -237372955, -238233587, -237354187]
+          history = [ -237372955, -238233587, -237354187, -237794573, -236981214, -238252773, -237441077, -237811816, -237844755, -236981148, -238180207, -239149259, -237291130, -236846314, ]
           print score, history
           print [score-h for h in history]
 
