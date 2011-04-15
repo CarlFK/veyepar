@@ -60,7 +60,9 @@ class tweet(process):
 
         ret=False
         if self.options.test:
-            print 'test mode:', tweet
+            print 'test mode:' 
+            print 'user:', user
+            print tweet
         else:
             print 'tweeting:', tweet
             # print user,password
