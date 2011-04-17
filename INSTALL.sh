@@ -18,7 +18,7 @@ sudo apt-add-repository ppa:sunab/kdenlive-svn
 # j^ theora dev ffmpeg2theora trunk
 # http://ppa.launchpad.net/j/ppa/ubuntu/dists/
 # sudo apt-add-repository ppa:j/ppa
-sudo apt-add-repository 'deb-src http://ppa.launchpad.net/j/ppa/ubuntu maverick main'
+sudo apt-add-repository 'deb http://ppa.launchpad.net/j/ppa/ubuntu maverick main'
 
 # I think this is an another melt source.
 # sudo apt-add-repository ppa:freshmedia/ppa
