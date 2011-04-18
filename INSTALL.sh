@@ -33,6 +33,9 @@ sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugi
 # libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 
 # pocketsphinx-utils
 
+# for encoder node
+# python-psycopg2 inkscape ffmpeg2theora python-imaging python-virtualenv virtualenvwrapper
+
 
 # curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv 
 
