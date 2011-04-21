@@ -20,3 +20,5 @@ overview of good video:
  it is easier for people to understand what a presenter is saying when they can see the body language.  especially for people who are not native.
 
 setup: postgresql install/config.  nfs install/config, apache...
+
+ mkfs.ext4 -L disk25 -O sparse_super,extent,uninit_bg -E lazy_itable_init=1 -m 0 /dev/abc

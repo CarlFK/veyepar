@@ -202,7 +202,8 @@ def emailer(show_id, real=False):
  '"Chicago Linux Discuss" <chicagolinux-discuss@chicagolug.org>', 
  '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
  # '<genluglist@codlug.info>',
- #'<chicagotechcal@gmail.com>'
+ #'<chicagotechcal@gmail.com>',
+ 'clclinuxclub@gmail.com',
  ]
     else: 
         tos = [
