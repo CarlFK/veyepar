@@ -20,6 +20,16 @@ tags - comma seperated list
 """
 
 """
+NOTE: In general it is better to build the export as simple as posible, 
+even at the expense of deviatng from the above fields.  Exporting extra
+fields is just fine.  They will be ignored.
+For instance, if you store start and end in the database but not duration, 
+export end, I can can calculate duration.  
+Given historic problems with duration, I woujldn't mind seeing both end 
+and duration so that I can verify my transformations.  
+"""
+
+"""
 There is a datetime format issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code. easy to read data is good too.  Do not write extra server side code to try and make it easier to parse.  That has lead to data loss, which means trying to debug a ssytem that starts with the event's data input and ends with veyepar's database, which is not fun.  
 
 Here is PyCon 2010's impemtation:
@@ -34,6 +44,8 @@ OSDC2010: easy to read, harder to parse/assemble into start durration.
 http://2010.osdc.com.au/program/json
 # Day: "Tue 23 Nov"
 # Time: "09:00 - 17:00"
+
+Again, keep the server side code simple.
 """
 
 # FireFox plugin to view .json data:

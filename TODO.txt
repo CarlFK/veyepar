@@ -21,3 +21,6 @@ dvswitch:
 veyepar:
   split long talk (tutorials) into parts.
 
+veyepar: 
+  location model: 
+    full dir path

@@ -199,7 +199,7 @@ def emailer(show_id, real=False):
  '"ACM Chicago" <chicago-chapter-acm@googlegroups.com>',
  #'"Linux Users Of Northern Illinois" <luni@luni.org>', 
  '"LUNI-Announce" <luni-announce@luni.org>', 
- '"Chicago Linux Discuss" <chicagolinux-discuss@chicagolug.org>', 
+ '"Chicago Linux Discuss" <chicagolinux-discuss@googlegroups.com>',
  '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
  # '<genluglist@codlug.info>',
  #'<chicagotechcal@gmail.com>',
