@@ -657,14 +657,23 @@ def show_stats(request, show_id, ):
     # and do some more calcs
     def calc_stat(stat):
             stat['hours']=int( stat['minutes']/60.0 + .9)
-            stat['hours_o']=(stat['end']-stat['start'])
      
-            stat['talk_gig']=stat['hours']*13
             stat['talk_gig']=int(stat['minutes']*13/60)
             stat['gig']=stat['bytes']/(1024**3)
-            stat['variance'] = stat['talk_gig'] - stat['gig']	
+            stat['max_gig']=(stat['end']-stat['start']).seconds*13/3600
+
+            if stat['talk_gig'] < stat['gig'] < stat['max_gig']:
+                # amount recoreded between all talks and below cruft
+                stat['variance'] = 0
+            else:
+                if stat['gig'] < stat['talk_gig']:
+                    # amount recoreded less than expected
+                    stat['variance'] = stat['gig'] - stat['talk_gig']	
+                else:
+                    # amount recoreded over talks+cruft
+                    stat['variance'] = stat['talk_gig'] - stat['gig']	
+
             # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
-            # using minutes for better resolution
             stat['alarm']= int( abs(stat['variance']) / (stat['minutes']/60.0*13 + 1) * 100 )
             stat['alarm_color'] = "%02x%02x%02x" % ( 255, 255-stat['alarm'], 255-stat['alarm'] )
             return stat
@@ -702,6 +711,19 @@ def show_stats(request, show_id, ):
     states = zip( show_stat['states'], STATES)
     rows = zip(dates,rows)
 
+    max_title_len = max( len(ep.name) for ep in episodes )
+    max_authors_len = max( len(ep.authors) for ep in episodes )
+
+    max_name_len = 0
+    max_authors_len = 0
+    for ep in episodes:
+        if len(ep.name) > max_name_len:
+            max_name_len = len(ep.name)
+            max_name_ep = ep
+        if len(ep.authors) > max_authors_len:
+            max_authors_len = len(ep.authors)
+            max_authors_ep = ep
+
     return render_to_response('show_stats.html',
         {
           'client':client,
@@ -709,10 +731,11 @@ def show_stats(request, show_id, ):
           'locations':locations,
           'show_stat':show_stat,
           'locations':locations,
-          # 'dates':dates,
           'rows':rows,
           'states':states,
           'locked':locked,
+          'max_name_ep':max_name_ep,
+          'max_authors_ep':max_authors_ep,
         },
 	context_instance=RequestContext(request) )
 

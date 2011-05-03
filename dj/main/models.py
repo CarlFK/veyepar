@@ -59,9 +59,8 @@ class Location(models.Model):
         help_text="room name")
     slug = models.CharField(max_length=135,
         help_text="dir name to store input files")
-    # hostname because dvs-mon defaults to saving data in the same dirname
-    hostname = models.CharField(max_length=135,
-        help_text="hostname of the box doing recording")
+    # dirname = models.CharField(max_length=135,
+    #    help_text="pat to raw files. overrieds show/slug.")
     description = models.TextField(blank=True)
     def __unicode__(self):
         return "%s" % ( self.name )

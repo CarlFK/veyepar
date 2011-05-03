@@ -3,10 +3,6 @@ next/prev (match recording sheet: same room/day)
 
 json etc links to show page that give url's.
 
-add show stats page:
-  longest talk title
-  day/room checklist: recording sheet tracking
-
 recording sheets
   date in yyyy-mm-dd format too (same as dv file dir name)
   date in DOW, date, Month
@@ -16,11 +12,11 @@ recording sheets
 dvswitch:
   everything: default host/port
   dvsource-dvgrab - save unmixed stream
-  dvsink-file - default file name
+  dvsink-file - default file name: yyyy-mm-ddd/hh-mm-ss.i.dv
 
 veyepar:
   split long talk (tutorials) into parts.
 
-veyepar: 
-  location model: 
-    full dir path
+encoding:
+  fade audio in out
+  soften jump cuts
