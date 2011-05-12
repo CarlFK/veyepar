@@ -291,18 +291,22 @@ class add_eps(process.process):
         # url='http://2010.osdc.com.au/program/json'
         # url='http://conf.followtheflow.org/programme/schedule/json'
         # url='http://lca2011.linux.org.au/programme/schedule/json'
-        # j=urllib2.urlopen(url).read()
-        # file('lca.json','w').write(j) 
-        # j=file('pycon201u.json').read()
+        url='http://veyepar.nextdayvideo.com/main/C/chipy/S/may_2011.json'
+
+        j=urllib2.urlopen(url).read()
+        file('chipy.json','w').write(j) 
+        j=file('chipy.json').read()
+
         # j=file('schedule_a.json').read()
         # j=file('schedule.json').read()
 
         # j=open('schedule.json').read()
-        # schedule = json.loads(j)
+        schedule = json.loads(j)
 
         # schedule = schedule['nodes']
-        # self.addlocs(schedule,show)
-        # self.addeps(schedule, show)
+        self.addlocs(schedule,show)
+        self.addeps(schedule, show)
+        return
 
         loc,created = Location.objects.get_or_create( 
                 sequence = 1,

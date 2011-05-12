@@ -261,6 +261,11 @@ class enc(process):
         p = subprocess.Popen( ['melt', mlt_pathname, 
            '-consumer', 'xml'], 
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+
+        # hack to remove "Plugin 1046 exists in both ...."
+        out = '\n'.join(
+                l for l in out.split('\n') if not l.startswith('Plugin') )
+
         out,err = p.communicate()
         t=xml.etree.ElementTree.XMLID(out)
         frames=t[1]['tractor1'].get('out')
