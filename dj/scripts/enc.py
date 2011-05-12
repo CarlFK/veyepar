@@ -22,6 +22,29 @@ mlt="""
 
   <playlist id="playlist1">
     <entry id="clip" producer="producer0" in="500" out="690" />
+
+   <filter in="567" out="598" id="fadein">
+    <property name="track">0</property>
+    <property name="window">75</property>
+    <property name="max_gain">20dB</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">volume</property>
+    <property name="tag">volume</property>
+    <property name="gain">0</property>
+    <property name="end">1</property>
+   </filter>
+
+   <filter in="58" out="87" id="fadeout">
+    <property name="track">0</property>
+    <property name="window">75</property>
+    <property name="max_gain">20dB</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">volume</property>
+    <property name="tag">volume</property>
+    <property name="gain">1</property>
+    <property name="end">0</property>
+   </filter>
+
     <entry id="foot0" producer="footer"/>
   </playlist>
 
@@ -39,6 +62,17 @@ mlt="""
       mlt_service="luma" in="100" out="149" a_track="2" b_track="1"/>
     <transition id="transition1"
       mlt_service="luma" in="0" out="0" a_track="1" b_track="0"/>
+
+  <transition in="0" out="0" id="transition0">
+   <property name="a_track">1</property>
+   <property name="b_track">2</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">mix</property>
+   <property name="always_active">1</property>
+   <property name="combine">1</property>
+   <property name="internal_added">237</property>
+  </transition>
+
   </tractor>
 
 </mlt>
@@ -164,7 +198,10 @@ class enc(process):
                             src_pathname, rawpathname]]
                 self.run_cmds(episode,cmds)
             else:
-                rawpathname = os.path.join(self.episode_dir,rf.filename)
+                if rf.filename.startswith('\\'):
+                    rawpathname = rf.filename
+                else:
+                    rawpathname = os.path.join(self.episode_dir,rf.filename)
             dvfile.attrib['resource']=rawpathname
             new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
             tree[0].insert(pos,new)
@@ -181,7 +218,7 @@ class enc(process):
         playlist.remove(clip)
 
 # add in the clips
-        pos = 0
+        pos = 1
         for cl in cls:
           print cl
           if cl.raw_file.duration:
@@ -221,16 +258,20 @@ class enc(process):
         # then pass it to melt to calc total frames
         mlt_xml = xml.etree.ElementTree.tostring(tree[0])
         open(mlt_pathname,'w').write(mlt_xml)
-        p = subprocess.Popen( ['melt', mlt_pathname, '-consumer', 'xml'], 
+        p = subprocess.Popen( ['melt', mlt_pathname, 
+           '-consumer', 'xml'], 
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE )
         out,err = p.communicate()
-
-        # hack to remove "Plugin 1046 exists in both ...."
-        out = '\n'.join(l for l in out.split('\n') if not l.startswith('Plugin') )
-
         t=xml.etree.ElementTree.XMLID(out)
         frames=t[1]['tractor1'].get('out')
         frames=int(frames)
+
+        # fade in/out the audio of the main track
+        # in is already set: 0-30 frames.
+        # out needs to be set to last 30 frames
+        fadeout = tree[1]['fadeout']
+        fadeout.set("in",str(frames-30+200))
+        fadeout.set("out",str(frames+300))
 
         # set 2 parts of the footer:
         # 1. 3 seconds of fade from video to footer
@@ -345,7 +386,7 @@ class enc(process):
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
                   ffpreset=open('/usr/share/ffmpeg/libx264-hq.ffpreset').read().split('\n')
                   ffpreset = [i for i in ffpreset if i]
-                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libmp3lame ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s deinterlace=bob threads=%s aspect=@4/3 progressive=1 acodec=libmp3lame ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
                   # acodec=libfaac
                   # cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
                   cmd = cmd.split()
@@ -509,6 +550,7 @@ class enc(process):
           help='copy .dv to temp files' )
         parser.add_option('--rm-temp', 
           help='remove large temp files' )
+        parser.add_option('--threads')
 
 if __name__ == '__main__':
     p=enc()
