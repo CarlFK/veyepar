@@ -92,7 +92,7 @@ class Run_Tests(object):
        # this takes the place of using dvswitch to record an event.
        #  works: "melt -profile dv_ntsc
 
-       out_file="00:00:%02i.dv" % (i*3)
+       out_file="00_00_%02i.dv" % (i*3)
        parms={'input_file':text_file, 
            'output_file':os.path.join(dv_dir,out_file),
            'format':"dv_%s" % (self.options.dv_format),

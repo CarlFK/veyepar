@@ -7,7 +7,7 @@ sets start/end times of dv files
 Gets start from one of:
 the file system time stamp, 
 the first frame of the dv
-the file name (assumes hh:mm:ss.dv format)
+the file name (assumes hh_mm_ss.dv format)
 
 duration (in seconds) based on file size / BBF*FPS 
 last frame
@@ -42,7 +42,7 @@ class add_dv(process):
         # for now, the last dir is the date, and the file is time:
         filename='/'.join(filename.split('/')[-2:])
 
-        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
+        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
         # dt = dv.filename[:-3]
         # dt.replace('/',' ')
         st = os.stat(pathname)    
