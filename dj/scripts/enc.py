@@ -557,6 +557,9 @@ class enc(process):
           help='remove large temp files' )
         parser.add_option('--threads')
 
+  def add_more_option_defaults(self, parser):
+        parser.set_defaults(threads=2)
+
 if __name__ == '__main__':
     p=enc()
     p.main()

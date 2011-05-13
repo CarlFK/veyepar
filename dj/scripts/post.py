@@ -109,7 +109,7 @@ class post(process):
     has_master = False
     for ext in exts:
         role=roles.get(ext, {'description':"extra",'num':'9'})
-        if role == 'Master': has_master = True
+        if role['description'] == 'Master': has_master = True
         fileno=role['num']
         role_desc = role['description']
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
