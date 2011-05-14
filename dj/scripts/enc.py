@@ -23,7 +23,7 @@ mlt="""
   <playlist id="playlist1">
     <entry id="clip" producer="producer0" in="500" out="690" />
 
-   <filter in="567" out="598" id="fadein">
+   <filter in="0" out="30" id="fadein">
     <property name="track">0</property>
     <property name="window">75</property>
     <property name="max_gain">20dB</property>
@@ -275,8 +275,8 @@ class enc(process):
         # in is already set: 0-30 frames.
         # out needs to be set to last 30 frames
         fadeout = tree[1]['fadeout']
-        fadeout.set("in",str(frames-30+200))
-        fadeout.set("out",str(frames+300))
+        fadeout.set("in",str(frames-30))
+        fadeout.set("out",str(frames))
 
         # set 2 parts of the footer:
         # 1. 3 seconds of fade from video to footer
