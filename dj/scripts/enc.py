@@ -264,8 +264,8 @@ class enc(process):
         out,err = p.communicate()
 
         # hack to remove "Plugin 1046 exists in both ...."
-        out = '\n'.join(
-                l for l in out.split('\n') if not l.startswith('Plugin') )
+        # out = '\n'.join(
+        #        l for l in out.split('\n') if not l.startswith('Plugin') )
 
         t=xml.etree.ElementTree.XMLID(out)
         frames=t[1]['tractor1'].get('out')

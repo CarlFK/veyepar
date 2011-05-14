@@ -90,14 +90,19 @@ class Run_Tests(object):
 
        # encode the text file into .dv
        # this takes the place of using dvswitch to record an event.
-       #  works: "melt -profile dv_ntsc
 
        out_file="00_00_%02i.dv" % (i*3)
+       frames = 90
        parms={'input_file':text_file, 
            'output_file':os.path.join(dv_dir,out_file),
            'format':"dv_%s" % (self.options.dv_format),
-           'video_frames':30 * 3,
-           'audio_frames':30 * 3 * (i%2)}
+           'video_frames':frames,
+           'audio_frames':frames}
+       if i%2:
+           parms['audio-track'] = "-producer noise"
+       else:
+           parms['audio-track'] = "static/goforward.wav" 
+
        print parms
 
        # make a text file to use as encoder input
@@ -112,11 +117,10 @@ class Run_Tests(object):
        tf.write('\n'.join(text))
        tf.close()
        
- # -audio-track -producer noise out=%(audio_frames)s \
 
        cmd = "melt \
 -profile %(format)s \
- -audio-track static/goforward.wav out=%(audio_frames)s \
+ -audio-track %(audio-track)s out=%(audio_frames)s \
  -video-track %(input_file)s out=%(video_frames)s \
 meta.attr.titles=1 \
 meta.attr.titles.markup=#timecode# \
@@ -331,7 +335,7 @@ pix_fmt=yuv411p" % parms
           "raw_file":raw_file,
           }
 
-  cmd = "melt %(blip_file)s -consumer avformat:%(wav_file)s" % parms
+  cmd = "melt %(blip_file)s in=92 out=178 -consumer avformat:%(wav_file)s" % parms
   self.run_cmd(cmd.split())
   cmd = "sox %(wav_file)s -b 16 -r 16k -e signed -c 1 -t raw %(raw_file)s" % parms
   self.run_cmd(cmd.split())
@@ -355,16 +359,8 @@ pix_fmt=yuv411p" % parms
       if "BESTPATH" in line:
           words = line.split()
           print words
-          # words=['INFO:', 'searchlat.c(939):', 'BESTPATH:', 'GO', 'FORWARD', 'TEN', 'METERS', 'GO', 'FORWARD', 'TEN', 'METERS', '(test', '-237372955)']
           text = words[3:-2]
-
-          result = ( text == ['GO', 'FORWARD', 'TEN', 'METERS', 'GO', 'FORWARD', 'TEN', 'METERS'] )
-
-          score = int(words[-1][:-1])
-          # goforward.16k: BESTPATH: GO FORWARD TEN METERS  goforward -97741561
-          history = [ -237372955, -238233587, -237354187, -237794573, -236981214, -238252773, -237441077, -237811816, -237844755, -236981148, -238180207, -239149259, -237291130, -236846314, ]
-          print score, history
-          print [score-h for h in history]
+          result = ( text == ['GO', 'FORWARD', 'TEN', 'METERS'] )
 
           return result
   
