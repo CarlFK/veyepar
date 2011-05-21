@@ -191,10 +191,12 @@ class enc(process):
             dvfile.attrib['id']="producer%s"%rf.id
             if self.options.load_temp:
                 src_pathname = os.path.join(self.episode_dir,rf.filename)
-                dst_path = os.path.join(self.tmp_dir,episode.slug,os.path.dirname(rf.filename))
-                rawpathname = os.path.join(self.tmp_dir,episode.slug,rf.filename)
+                dst_path = os.path.join(
+                  self.tmp_dir,episode.slug,os.path.dirname(rf.filename))
+                rawpathname = os.path.join(
+                  self.tmp_dir,episode.slug,rf.filename.replace(':','_'))
                 cmds = [['mkdir', '-p', dst_path],
-                         ['rsync', '--progress', '--size-only',  
+                        ['rsync', '--progress', '--size-only',  
                             src_pathname, rawpathname]]
                 self.run_cmds(episode,cmds)
             else:
