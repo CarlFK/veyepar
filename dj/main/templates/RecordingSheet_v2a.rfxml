@@ -64,20 +64,20 @@
 						<y>'75.0 pt'</y>
 					</String>
 					<String>
-						<expr>"[  ] sound levels on DVswitch OK"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<width>'223.0 pt'</width>
-						<x>'19.0 pt'</x>
-						<y>'39.0 pt'</y>
-					</String>
-					<String>
-						<expr>"[  ] record/stop - date and time right."</expr>
+						<expr>"[  ] Sound levels on DVswitch"</expr>
 						<FontName>'Helvetica-Bold'</FontName>
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
 						<x>'19.0 pt'</x>
-						<y>'11.0 pt'</y>
+						<y>'39.0 pt'</y>
+					</String>
+					<String>
+						<expr>"[  ] System date and time."</expr>
+						<FontName>'Helvetica-Bold'</FontName>
+						<FontSize>13</FontSize>
+						<width>'243.0 pt'</width>
+						<x>'19.0 pt'</x>
+						<y>'21.0 pt'</y>
 					</String>
 					<String>
 						<expr>"DVswitch op:"</expr>
@@ -153,6 +153,7 @@
 						<FontName>'Helvetica'</FontName>
 						<FontSize>12</FontSize>
 						<height>'14.0 pt'</height>
+						<ScalePercent>(100.0, 90.0)</ScalePercent>
 						<width>'81.0 pt'</width>
 						<x>'6.0 pt'</x>
 						<y>'57.0 pt'</y>
@@ -254,10 +255,11 @@
 		<Objects>
 			<Rectangle>
 				<FillColor>(0.953, 0.953, 0.953)</FillColor>
-				<height>'19.0 pt'</height>
-				<width>'65.0 pt'</width>
-				<x>'473.5 pt'</x>
-				<y>'107.3 pt'</y>
+				<height>'18.0 pt'</height>
+				<StrokeColor>(.7, .7, .7 )</StrokeColor>
+				<width>'85.0 pt'</width>
+				<x>'452.5 pt'</x>
+				<y>'108.3 pt'</y>
 			</Rectangle>
 			<Rectangle>
 				<FillColor>(0.953, 0.953, 0.953)</FillColor>
@@ -271,8 +273,8 @@
 				<FontName>'Helvetica'</FontName>
 				<FontSize>10</FontSize>
 				<width>'19.0 pt'</width>
-				<x>'72.4 pt'</x>
-				<y>'114.7 pt'</y>
+				<x>'74.4 pt'</x>
+				<y>'2.7 pt'</y>
 			</String>
 			<Frameset>
 				<height>'72.0 pt'</height>
@@ -282,8 +284,8 @@
 				<y>'55.7 pt'</y>
 				<Objects>
 					<Paragraph>
-						<expr>"title: %s\npresenter(s): %s" % (self.episode_name, self.episode_authors)</expr>
-						<FontSize>9</FontSize>
+						<expr>"Title: %s\nPresenter(s): %s" % (self.episode_name, self.episode_authors)</expr>
+						<FontSize>12</FontSize>
 						<Height>24</Height>
 					</Paragraph>
 				</Objects>
@@ -314,7 +316,7 @@
 			</String>
 			<Line>
 				<height>'6.0 pt'</height>
-				<Width>self.Bands["pageHeader"]["width"]</Width>
+				<width>'539.0 pt'</width>
 				<y>'126.0 pt'</y>
 			</Line>
 			<String>
@@ -324,7 +326,7 @@
 				<height>'14.0 pt'</height>
 				<width>'48.0 pt'</width>
 				<x>'76.0 pt'</x>
-				<y>'2.0 pt'</y>
+				<y>'115.0 pt'</y>
 			</String>
 			<String>
 				<expr>"[  ] Edit"</expr>
@@ -335,13 +337,13 @@
 				<y>'5.3 pt'</y>
 			</String>
 			<String>
-				<expr>"Len:"</expr>
+				<expr>"Length:"</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>7</FontSize>
 				<height>'11.0 pt'</height>
-				<width>'19.0 pt'</width>
-				<x>'55.8 pt'</x>
-				<y>'3.6 pt'</y>
+				<width>'24.0 pt'</width>
+				<x>'50.8 pt'</x>
+				<y>'116.6 pt'</y>
 			</String>
 			<String>
 				<expr>"id:"</expr>
@@ -349,16 +351,17 @@
 				<FontSize>7</FontSize>
 				<height>'11.0 pt'</height>
 				<width>'15.0 pt'</width>
-				<x>'57.4 pt'</x>
-				<y>'114.6 pt'</y>
+				<x>'59.4 pt'</x>
+				<y>'2.6 pt'</y>
 			</String>
 			<String>
-				<expr>"[  ] Fixed"</expr>
+				<expr>"[  ] [  ] [  ] misc."</expr>
+				<FontColor>(.5, .5, .5)</FontColor>
 				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>13</FontSize>
-				<width>'63.0 pt'</width>
-				<x>'479.0 pt'</x>
-				<y>'114.0 pt'</y>
+				<FontSize>10</FontSize>
+				<width>'80.0 pt'</width>
+				<x>'460.0 pt'</x>
+				<y>'115.0 pt'</y>
 			</String>
 			<String>
 				<expr>"Start: _____________________"</expr>
@@ -367,7 +370,7 @@
 				<height>'11.0 pt'</height>
 				<ScalePercent>(100.0, 150.0)</ScalePercent>
 				<width>'122.0 pt'</width>
-				<x>'4.4 pt'</x>
+				<x>'1pt'</x>
 				<y>'83.6 pt'</y>
 			</String>
 			<String>
@@ -377,7 +380,7 @@
 				<height>'11.0 pt'</height>
 				<ScalePercent>(100.0, 150.0)</ScalePercent>
 				<width>'124.0 pt'</width>
-				<x>'2.4 pt'</x>
+				<x>'1 pt'</x>
 				<y>'28.6 pt'</y>
 			</String>
 			<String>
