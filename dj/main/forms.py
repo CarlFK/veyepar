@@ -32,7 +32,8 @@ class Episode_Form_Preshow(forms.ModelForm):
 class Episode_Form_small(forms.ModelForm):
     class Meta:
 	model = Episode
-        fields = ('state', 'locked', 'locked_by', 'normalise', 'channelcopy',
+        fields = ('state', 'locked', 'locked_by', 'start', 'duration',
+                  'normalise', 'channelcopy',
                   'thumbnail', 'description', 'comment')
 
 
