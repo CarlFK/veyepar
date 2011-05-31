@@ -2,7 +2,7 @@
 # Veyepar instalation script
 
 # boot strap command to get this file and run it.
-# wget -N --no-check-certificate https://github.com/CarlFK/veyepar/raw/master/INSTALL.sh
+# wget -N http://github.com/CarlFK/veyepar/raw/master/INSTALL.sh
 # chmod u+x INSTALL.sh
 
 # install apt-add-repository:

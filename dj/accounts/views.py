@@ -32,6 +32,7 @@ def auth(username,password):
 
 def logax(request):
 
+    print 1
     if request.method == 'POST':
         form=forms.LoginForm(request.POST)
         if form.is_valid():

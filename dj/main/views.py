@@ -153,7 +153,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     eps = Episode.objects.filter(show=show)
 
     fields=('id','location','sequence','conf_key','target',
-        'name','authors','description','start','duration', 
+        'name','slug', 'authors','description','start','duration', 
         'released', 'license', 'conf_key', 'conf_url', 'tags')
 
     # response = HttpResponse(mimetype="text/javascript")
