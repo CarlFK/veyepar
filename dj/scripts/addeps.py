@@ -5,11 +5,11 @@
 """
 fields:
 id - uniquie ID of item (used to update item if details change)
-title - of talk
+name - title of talk
 room - "room1" if there is only one room.
 start - datetime in some parsable format 
 duration in minutes, or HH:MM:SS 
-presenters - comma seperated list of people's names.
+authors - comma seperated list of people's names.
 contact - email(s) of presenters.
 released - permission to release.
 license - CC license (13 is safe)
@@ -284,6 +284,99 @@ class add_eps(process.process):
             episode.save()
        """
 
+    def zoo_cages(self, schedule):
+      rooms=[]
+      for row in schedule:
+          # row=row['node']
+          if self.options.verbose: print row
+          room = row['Room Name']
+          if room not in rooms: rooms.append(room)
+      return rooms
+
+    def zoo_events(self, schedule):
+        events=[]
+        for row in schedule:
+            if self.options.verbose: print row
+            event={}
+            event['id'] = row['Id']
+            event['name'] = row['Title']
+            event['room'] = row['Room Name']
+            event['start'] = datetime.datetime.strptime(
+                    row['Start'], '%Y-%m-%d %H:%M:%S' )
+            event['duration'] = row['Duration']
+            event['authors'] = row['Presenters']
+            event['contact'] = ''
+            event['released'] = True
+            event['license'] = 13
+            event['description'] = row['Description']
+            event['conf_key'] = row['Id']
+            event['conf_url'] = row['URL']
+            event['tags'] = ''
+
+            events.append(event)
+
+        return events
+
+    def add_rooms(self, rooms, show):
+      seq=0
+      for room in rooms:
+          if self.options.verbose: print room
+          loc,created = Location.objects.get_or_create(
+                  name=room,)
+          if created: 
+              seq+=1
+              loc.sequence=seq
+              loc.save()
+              show.locations.add(loc)
+              show.save()
+          
+    def add_eps(self, episodes, show):
+      seq=0
+      for row in episodes:
+          if self.options.verbose: print row
+          episode,created = Episode.objects.get_or_create(
+                  show=show, conf_key=row['conf_key'], )
+
+          if created:
+              episode.sequence=seq
+              seq+=1
+              episode.state=1
+
+          fields = [ 'name', 'conf_url', 'conf_key', 
+                  'released', 'start', 'duration', 'description',
+                   'authors', 'contact', 'released', 'license',
+                   'tags', ]
+
+          if created or self.options.update:
+              episode.location=Location.objects.get(name=row['room'])
+              for f in fields:
+                  setattr( episode, f, row[f] )
+                  print( f, row[f] )
+              episode.save()
+          else:
+              # check for diffs
+              # report if different
+              diff_fields=[]
+              for f in fields:
+                  print f
+                  a1,a2 = episode.__getattribute__(f), locals()[f]
+                  if a1 != a2: diff_fields.append((f,a1,a2))
+              if diff_fields:
+                  print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
+                  for f,a1,a2 in diff_fields:
+                      print 'veyepar %s: %s' % (f,a1)
+                      print '  event %s: %s' % (f,a2)
+                  print
+
+
+    def zoo(self, schedule, show):
+        rooms = self.zoo_cages(schedule)
+        self.add_rooms(rooms,show)
+
+        events = self.zoo_events(schedule)
+        self.add_eps(events, show)
+        return 
+
     def one_show(self, show):
         # url='http://us.pycon.org/2010/conference/schedule/events.json'
         # url='http://pycon-au.org/2010/conference/schedule/events.json'
@@ -291,7 +384,9 @@ class add_eps(process.process):
         # url='http://2010.osdc.com.au/program/json'
         # url='http://conf.followtheflow.org/programme/schedule/json'
         # url='http://lca2011.linux.org.au/programme/schedule/json'
-        url='http://veyepar.nextdayvideo.com/main/C/chipy/S/may_2011.json'
+        # url='http://veyepar.nextdayvideo.com/main/C/chipy/S/may_2011.json'
+        url='http://lca2011.linux.org.au/programme/schedule/json'
+        url='http://2011.pyohio.org/programme/schedule/json'
 
         j=urllib2.urlopen(url).read()
         file('chipy.json','w').write(j) 
@@ -302,6 +397,8 @@ class add_eps(process.process):
 
         # j=open('schedule.json').read()
         schedule = json.loads(j)
+
+        return self.zoo(schedule,show)
 
         # schedule = schedule['nodes']
         self.addlocs(schedule,show)
