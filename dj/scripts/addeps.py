@@ -9,6 +9,7 @@ name - title of talk
 room - "room1" if there is only one room.
 start - datetime in some parsable format 
 duration in minutes, or HH:MM:SS 
+end - datetime in some parsable format 
 authors - comma seperated list of people's names.
 contact - email(s) of presenters.
 released - permission to release.
@@ -24,10 +25,15 @@ NOTE: In general it is better to build the export as simple as posible,
 even at the expense of deviatng from the above fields.  Exporting extra
 fields is just fine.  They will be ignored, or maybe I will use them in 
 a future version.
-For instance, if you store start and end in the database but not duration, 
-export end, I can can calculate duration.  
-Given historic problems with duration, I woujldn't mind seeing both end 
-and duration so that I can verify the transformations.  
+
+For fields yuou don't have, plug in a value.  If you don't have 'released'
+give me a "Yes" and let the presenters know.
+
+Given historic problems with end and duration, give me what you have and 
+derive the other one if it isn't too much trouble.  
+I'll use it to verify the transformations.  
+
+
 """
 
 """
