@@ -22,15 +22,17 @@ tags - comma seperated list
 """
 NOTE: In general it is better to build the export as simple as posible, 
 even at the expense of deviatng from the above fields.  Exporting extra
-fields is just fine.  They will be ignored.
+fields is just fine.  They will be ignored, or maybe I will use them in 
+a future version.
 For instance, if you store start and end in the database but not duration, 
 export end, I can can calculate duration.  
 Given historic problems with duration, I woujldn't mind seeing both end 
-and duration so that I can verify my transformations.  
+and duration so that I can verify the transformations.  
 """
 
 """
-There is a datetime format issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code. easy to read data is good too.  Do not write extra server side code to try and make it easier to parse.  That has lead to data loss, which means trying to debug a ssytem that starts with the event's data input and ends with veyepar's database, which is not fun.  
+datetime and json:
+There is a issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code. easy to read data is good too.  
 
 Here is PyCon 2010's impemtation:
 datetime objects are represented as a time tuple of six elements:
@@ -38,14 +40,23 @@ datetime objects are represented as a time tuple of six elements:
         "start":      [2010, 2, 19, 9, 30, 0],
         "duration":   30, # in min
 http://us.pycon.org/2010/conference/schedule/json/
-Easy to code, hard to read.
+Easy to code, kinda hard to read.
+I parse it with 
+          start = datetime.datetime(*row['start'])
+good.
+
+This is also good:
+    json: Start: "2011-06-09 19:00:00"
+    parser:  datetime.datetime.strptime( x, '%Y-%m-%d %H:%M:%S' )
 
 OSDC2010: easy to read, harder to parse/assemble into start durration.
 http://2010.osdc.com.au/program/json
 # Day: "Tue 23 Nov"
 # Time: "09:00 - 17:00"
+but if that is how it is stored on the server, don't try to transform it.
 
 Again, keep the server side code simple.
+I can fix my consumer easier than I can get someone else's website updated.
 """
 
 # FireFox plugin to view .json data:
