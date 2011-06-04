@@ -57,7 +57,7 @@ class Location(models.Model):
     name = models.CharField(max_length=135, 
         default=socket.gethostname(),
         help_text="room name")
-    slug = models.CharField(max_length=135,
+    slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="dir name to store input files")
     dirname = models.CharField(max_length=135,
         help_text="pat to raw files. overrieds show/slug.")
