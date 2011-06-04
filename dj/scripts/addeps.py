@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# }!/usr/bin/python
 
 # adds episodes from an external source, like a json file or url.
 
@@ -305,12 +305,22 @@ class add_eps(process.process):
                     row['Start'], '%Y-%m-%d %H:%M:%S' )
             event['duration'] = row['Duration']
             event['authors'] = row['Presenters']
-            event['contact'] = ''
+            contacts = {"Massimo Di Pierro":"mdipierro@cs.depaul.edu", 
+                    "Christopher Webber":"cwebber@dustycloud.org", 
+                    "Carl Karsten":"carl@personnelware.com", 
+                    "Brian Ray":"brianhray@gmail.com", 
+                    "Bill Mania":"bill@manialabs.us", }
+            authors=row.get('presenters','')
+            # event['contact'] = ""
+            event['emails'] = contacts.get(row['Presenters'], "" )
+            # print event['authors'], event['contact'], contacts
+
             event['released'] = True
             event['license'] = 13
             event['description'] = row['Description']
             event['conf_key'] = row['Id']
             event['conf_url'] = row['URL']
+            event['conf_url'] = row['URL'][-1]
             event['tags'] = ''
 
             events.append(event)
@@ -344,14 +354,14 @@ class add_eps(process.process):
 
           fields = [ 'name', 'conf_url', 'conf_key', 
                   'released', 'start', 'duration', 'description',
-                   'authors', 'contact', 'released', 'license',
+                   'authors', 'emails', 'released', 'license',
                    'tags', ]
 
           if created or self.options.update:
               episode.location=Location.objects.get(name=row['room'])
               for f in fields:
                   setattr( episode, f, row[f] )
-                  print( f, row[f] )
+                  # print( f, row[f] )
               episode.save()
           else:
               # check for diffs
@@ -385,8 +395,9 @@ class add_eps(process.process):
         # url='http://conf.followtheflow.org/programme/schedule/json'
         # url='http://lca2011.linux.org.au/programme/schedule/json'
         # url='http://veyepar.nextdayvideo.com/main/C/chipy/S/may_2011.json'
-        url='http://lca2011.linux.org.au/programme/schedule/json'
-        url='http://2011.pyohio.org/programme/schedule/json'
+        # url='http://lca2011.linux.org.au/programme/schedule/json'
+        # url='http://2011.pyohio.org/programme/schedule/json'
+        url='http://pyohio.nextdayvideo.com/programme/schedule/json'
 
         j=urllib2.urlopen(url).read()
         file('chipy.json','w').write(j) 

@@ -1,10 +1,24 @@
 {#Meeting  meeting_announcement.html #}
+{% spaceless %}
+{% if show.announcement_state == 2 %}
+please proof: {{client.name}} meeting announcement 
+
+This is what will go out, and what will be used to title the videos.
+If you want to edit your submission, use the the edit URL under your item.  Anything else, email me.  If it looks good, email me.
+
+If you want to hack on the template:
+https://github.com/CarlFK/veyepar/blob/master/dj/main/templates/meeting_announcement.html
+
+Subject: {% endif %}
 ANN: {{client.name}} {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
+{% endspaceless %}
+
 {% autoescape off %}
 {{client.name}}
 =========================
 When: {{episodes.0.start|date:"f A l F j, Y"}}
 Where: {{location.name}} 
+
 
 {{show.description}}
 
@@ -19,7 +33,10 @@ Details
 {{forloop.counter}}. {{ episode.name }} 
 {{episode.authors}}
 {{episode.description}}
-{{episode.conf_url}} {% if episode.target %} Video: http://carlfk.blip.tv/file/{{episode.target}} {% endif %}
+{% if show.announcement_state == 2 %}
+EDIT:  http://pyohio.nextdayvideo.com/proposal/{{episode.conf_url}}/edit
+{% endif %}
+{% if episode.target %} Video: http://carlfk.blip.tv/file/{{episode.target}} {% endif %}
 {% endfor %}
 
 Location
@@ -30,4 +47,5 @@ About the group
 ---------------
 {{client.description}}
 {% endautoescape %}
+
 

@@ -59,14 +59,15 @@ class Location(models.Model):
         help_text="room name")
     slug = models.CharField(max_length=135,
         help_text="dir name to store input files")
-    # dirname = models.CharField(max_length=135,
-    #    help_text="pat to raw files. overrieds show/slug.")
+    dirname = models.CharField(max_length=135,
+        help_text="pat to raw files. overrieds show/slug.")
     description = models.TextField(blank=True)
     def __unicode__(self):
         return "%s" % ( self.name )
     class Meta:
         ordering = ["sequence"]
 
+ANN_STATES=((1,'preview'),(2,'review'),(3,'approved')) 
 class Show(models.Model):
     client = models.ForeignKey(Client)
     locations = models.ManyToManyField(Location)
@@ -76,6 +77,8 @@ class Show(models.Model):
         help_text="dir name to store input files")
     tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
+    announcement_state = models.IntegerField(null=True, blank=True,
+        choices=ANN_STATES, default=ANN_STATES[1][0], )
     @property
     def client_name(self):
         return self.client
@@ -148,8 +151,8 @@ class Episode(models.Model):
     conf_url = models.CharField(max_length=135,blank=True,
         help_text="event's details on conference site  (name,desc,time,author,files,etc)")
     authors = models.TextField(null=True,blank=True,)
-    # emails = models.TextField(null=True,blank=True, 
-    #    help_text="email(s) of the presenter(s)")
+    emails = models.TextField(null=True,blank=True, 
+        help_text="email(s) of the presenter(s)")
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
     normalise = models.CharField(max_length=5,null=True,blank=True, )

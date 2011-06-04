@@ -35,7 +35,7 @@ from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List,Raw_File
 from main.models import fnify
-from main.models import STATES
+from main.models import STATES, ANN_STATES
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm
 
 from accounts.forms import LoginForm
@@ -177,6 +177,7 @@ def meet_ann(request,show_id):
     t = loader.get_template('meeting_announcement.html')
     c = Context(
         {'client':client,'show':show,
+          'ANN_STATES': ANN_STATES,
           'location':location,
           'episodes':episodes,
     })
@@ -190,9 +191,26 @@ def meet_ann(request,show_id):
         body = '\n'.join(r[3:])
         return subject,body
 
-def emailer(show_id, real=False):
-    if real:
-        tos = [
+def emailer(show_id, ):
+    show=get_object_or_404(Show,id=show_id)
+
+    # show.announcement_state drives which of the following 3 get used:
+    # 1 preview is for proofing the whole thing
+    # 2. review is for the presenters to review their part
+    # 3. approved means it is ready for distribution
+
+    admin_emails = ['carl@personnelware.com',  ]
+
+    def author_emails(show):
+        # return a list of email addresses for the show
+        pems=[]
+        episodes=Episode.objects.filter(show=show)
+        for ep in episodes:
+            if ep.emails:
+                pems.append(ep.emails)
+        return pems
+
+    announce_lists = [
  '"ChiPy" <chicago@python.org>', '"ChiPy Announce" <ChiPy-announce@python.org>',
  '"PS1" <pumping-station-one-public@googlegroups.com>',
  '"ACM Chicago" <mtemkin@speakeasy.net>',
@@ -205,12 +223,19 @@ def emailer(show_id, real=False):
  #'<chicagotechcal@gmail.com>',
  'clclinuxclub@gmail.com',
  ]
-    else: 
-        tos = [
-    'carl@personnelware.com', 
-    ]
+#     tos = { 1: admin_emails,
+#             2: author_emails(show),
+#             3: announce_lists}[show.announcement_state]
+
+    if show.announcement_state == 1:
+        tos = admin_emails
+    else:
+        tos = author_emails(show)
 
     subject,body=meet_ann(None,show_id)
+    print subject
+    print body
+    return
     
     # connect to the smtp server
     connection = get_connection()
@@ -221,7 +246,8 @@ def emailer(show_id, real=False):
         }
     for to in tos:
         email = EmailMessage(subject, body, sender, [to], headers=headers ) 
-        ret = connection.send_messages([email])
+        # ret = connection.send_messages([email])
+        ret = "safe mode"
         print to, ret
 
     return
