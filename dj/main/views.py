@@ -156,10 +156,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
         'name','slug', 'authors','description','start','duration', 
         'released', 'license', 'conf_key', 'conf_url', 'tags')
 
-    # response = HttpResponse(mimetype="text/javascript")
     response = HttpResponse(mimetype="application/json")
-    # response['Content-Disposition'] = \
-    #    'attachment; filename=%s.json' % show_slug
     serializers.serialize("json", eps, fields=fields,  stream=response)
 
     return response
@@ -171,8 +168,7 @@ def main(request):
 def meet_ann(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    # episodes=Episode.objects.filter(show=show).order_by('sequence')
-    episodes=Episode.objects.filter(show=show)
+    episodes=Episode.objects.filter(show=show).order_by('start')
     location=episodes[0].location
     t = loader.get_template('meeting_announcement.html')
     c = Context(
@@ -199,11 +195,11 @@ def emailer(show_id, ):
     # 2. review is for the presenters to review their part
     # 3. approved means it is ready for distribution
 
-    admin_emails = ['carl@personnelware.com',  ]
+    admin_emails = ['carl@personnelware.com', ]
 
     def author_emails(show):
         # return a list of email addresses for the show
-        pems=[]
+        pems = [ 'brianhray@gmail.com']
         episodes=Episode.objects.filter(show=show)
         for ep in episodes:
             if ep.emails:
@@ -235,7 +231,7 @@ def emailer(show_id, ):
     subject,body=meet_ann(None,show_id)
     print subject
     print body
-    return
+    print tos
     
     # connect to the smtp server
     connection = get_connection()
@@ -246,8 +242,7 @@ def emailer(show_id, ):
         }
     for to in tos:
         email = EmailMessage(subject, body, sender, [to], headers=headers ) 
-        # ret = connection.send_messages([email])
-        ret = "safe mode"
+        ret = connection.send_messages([email])
         print to, ret
 
     return
