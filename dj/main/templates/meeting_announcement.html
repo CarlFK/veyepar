@@ -21,6 +21,17 @@ Where: {{location.name}}
 
 {{show.description}}
 
+{# TODO:
+
+
+RSVP Quick Links:
+
+YES http://chipy.org/meetings/rsvp/{{meetingid}}/yes
+MAYBE http://chipy.org/meetings/rsvp/{{meetingid}}/maybe
+
+#}
+
+
 Topics
 ------
 {% for episode in episodes %} {{forloop.counter}}. {{episode.start|date:"g:i"}} {{ episode.name }} ({{episode.authors}})
