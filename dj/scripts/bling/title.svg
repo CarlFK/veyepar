@@ -7,6 +7,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="800"
@@ -146,8 +147,8 @@
      inkscape:pageopacity="0.94117647"
      inkscape:pageshadow="2"
      inkscape:zoom="0.84880128"
-     inkscape:cx="115.93822"
-     inkscape:cy="394.74693"
+     inkscape:cx="264.4878"
+     inkscape:cy="241.92613"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -281,5 +282,23 @@
            height="76.578583"
            x="89.53804"
            y="469.22736" /></flowRegion><flowPara
-         id="flowPara3036"></flowPara></flowRoot>  </g>
+         id="flowPara3036" /></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:26.56643677px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       x="254.82507"
+       y="437.36426"
+       id="text2538-5"
+       sodipodi:linespacing="100%"><tspan
+         sodipodi:role="line"
+         id="date"
+         x="254.82507"
+         y="437.36426">Sepetember 99, 1234</tspan></text>
+    <image
+       y="477.14624"
+       x="232"
+       id="image3112"
+       xlink:href="file:///home/carl/src/veyepar/dj/scripts/bling/paul_may.png"
+       height="64"
+       width="336" />
+  </g>
 </svg>
