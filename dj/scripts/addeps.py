@@ -17,7 +17,7 @@ license - CC license (13 is safe)
 description - used as the description of the video (paragraphs are fine)
 conf_key - PK in source database - should be uniquie across this file
 conf_url - URL of talk page
-tags - comma seperated list 
+tags - comma seperated list - serch terms, including sub topics briefly discussed in your talk.
 """
 
 """

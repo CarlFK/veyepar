@@ -147,8 +147,8 @@
      inkscape:pageopacity="0.94117647"
      inkscape:pageshadow="2"
      inkscape:zoom="0.84880128"
-     inkscape:cx="264.4878"
-     inkscape:cy="241.92613"
+     inkscape:cx="489.9587"
+     inkscape:cy="351.86569"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -282,23 +282,26 @@
            height="76.578583"
            x="89.53804"
            y="469.22736" /></flowRegion><flowPara
-         id="flowPara3036" /></flowRoot>    <text
-       xml:space="preserve"
-       style="font-size:26.56643677px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       x="254.82507"
-       y="437.36426"
-       id="text2538-5"
-       sodipodi:linespacing="100%"><tspan
-         sodipodi:role="line"
-         id="date"
-         x="254.82507"
-         y="437.36426">Sepetember 99, 1234</tspan></text>
-    <image
+         id="flowPara3036" /></flowRoot>    <image
+       sodipodi:absref="/home/juser/Videos/veyepar/chipy/june2011/bling/paul_may.png"
+       xlink:href="paul_may.png"
        y="477.14624"
        x="232"
        id="image3112"
-       xlink:href="file:///home/carl/src/veyepar/dj/scripts/bling/paul_may.png"
        height="64"
        width="336" />
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2576-7"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="matrix(1.5228736,0,0,1.8229844,-226.1152,183.78752)"
+       inkscape:label="#flowRoot2414"><flowRegion
+         id="flowRegion2416-5"><rect
+           id="rect2418-9"
+           width="684.7511"
+           height="95.016434"
+           x="68.642532"
+           y="121.71946"
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="date">PyCon 2010 Atlanta</flowPara></flowRoot>  </g>
 </svg>
