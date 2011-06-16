@@ -125,8 +125,8 @@ class enc(process):
             'show': episode.show.name, 
             'title': episode.name, 
             'authors': episode.authors,
-            'presentertitle': ""
-            'date': episode.start.strftime("%B %d, %Y")
+            'presentertitle': "",
+            'date': episode.start.strftime("%B %d, %Y"),
         }
  
     svg_in=open(source).read()

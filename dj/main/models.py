@@ -102,10 +102,17 @@ class Raw_File(models.Model):
     trash = models.BooleanField(help_text="This clip is trash")
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
+
     def basename(self):
         # strip the extension
-        # good for making foo.png from foo.dv
+        # good for making foo.png from 1-2-3/foo.dv
         return os.path.splitext(self.filename)[0]
+
+    def get_minutes(self):
+        delta = self.end - self.start
+        minutes = delta.days*60*24 + delta.seconds/60.0
+        return minutes
+
     def __unicode__(self):
         return self.filename
 
@@ -134,11 +141,11 @@ class Episode(models.Model):
 	    help_text="user/process that locked." )
     sequence = models.IntegerField(null=True,blank=True,
         help_text="process order")
-    start = models.DateTimeField(blank=True, null=True,
+    start = models.DateTimeField(blank=True, null=False,
         help_text="initially scheduled time from master, adjusted to match reality")
     duration = models.CharField(max_length=15,null=True,blank=True,
         help_text="length in hh:mm:ss")
-    end = models.DateTimeField(blank=True, null=True,
+    end = models.DateTimeField(blank=True, null=False,
         help_text="(calculated if start and duration are set.)")
     name = models.CharField(max_length=135, 
         help_text="Talk title (synced from primary source)")

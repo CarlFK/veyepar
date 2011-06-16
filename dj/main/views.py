@@ -925,6 +925,36 @@ def orphan_dv(request,show_id):
 	},
         context_instance=RequestContext(request) )
 
+def mk_cuts(episode):
+
+    # Get the overlaping dv,
+    # plus some fuzz: 5 min before and 10 after.
+    dvs = Raw_File.objects.filter(
+            end__gte=episode.start - datetime.timedelta(minutes=5),
+            start__lte=episode.end + datetime.timedelta(minutes=15),
+            location=episode.location).order_by('start')
+
+    seq=0
+    started=False ## magic to figure out when talk really started
+    for dv in dvs:
+        seq+=1
+        if dv.get_minutes() > 2: 
+            started = True
+        cl,created = Cut_List.objects.get_or_create(
+            episode=episode,
+            raw_file=dv)
+        if created:
+            cl.sequence=seq
+            # if the talk has started, 
+            # and the segment is in the time slot
+            cl.apply = started and (dv.start < episode.end)
+            cl.save()
+
+    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
+
+    return cuts
+            
+
 
 def episode(request, episode_no):
 
@@ -934,70 +964,22 @@ def episode(request, episode_no):
     client=show.client
 
     try:
-        # prev_episode = episode.get_previous_by_start(show=show)
-        prev_episode = episode.my_get_previous_by_start(show=show)
-    except AttributeError:
-        # current django does not support this:
+        # why Start/End can't be null:
         # http://code.djangoproject.com/ticket/13611
-        prev_episode = ''
+        prev_episode = episode.get_previous_by_start(show=show)
     except Episode.DoesNotExist:
         # at edge of the set of nulls or values.  
-        # In this app, *nulls come before values*.
-        if episode.start is not None:
-            # we are at the first value, try to go to the last null
-            try:
-                prev_episode = Episode.objects.filter(start__isnull=True).order_by('id').reverse()[0]
-            except IndexError:
-                # There are no nulls
-                prev_episode = None
-        else:
-            # there is no privious null, we have nowhere to go.
-            prev_episode = None
+        prev_episode = None
            
     try:
-        # next_episode = episode.get_next_by_start(show=show)
-        next_episode = episode.my_get_next_by_start(show=show)
-    # except AttributeError:
-        # current django does not support this:
-        # http://code.djangoproject.com/ticket/13611
-    #    next_episode = 'AttributeError'
+        next_episode = episode.get_next_by_start(show=show)
     except Episode.DoesNotExist:
-        # at edge of the set of nulls or values.  
-        # In this app, *values come after nulls*.
-        if episode.start is None:
-            # we are at the *last null*, so go to the *first value*
-            try:
-                next_episode = Episode.objects.filter(start__isnull=False).order_by('id')[0]
-                
-            except IndexError:
-                # There are no values
-                next_episode = 'IndexError'
-        else:
-            # there is no *next value*, we have nowhere to go.
-            next_episode = 'no next value'
+        next_episode = None
 
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
 
     if not cuts:
-        # no dv found, go look for it
-        if episode.name == "PSF funds PyPi":
-           # but only for this one so we don't tank the db if this doesnt work
-           """ code from assocdv.py:
-        eps = Episode.objects.filter(
-            Q(start__lte=dv.end)|Q(start__isnull=True),
-            Q(end__gte=dv.start)|Q(end__isnull=True),
-            location=dv.location)
-           """
-
-        dvs = Raw_File.objects.filter(start__lte=episode.end,end__gte=episode.start,location=episode.location)
-        seq=0
-        for dv in dvs:
-            seq+=1
-            cl = Cut_List.objects.create(
-                episode=episode,
-                raw_file=dv,
-                sequence=seq)
-        cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
+        cuts = mk_cuts(episode)
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
