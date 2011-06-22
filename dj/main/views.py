@@ -69,20 +69,19 @@ episode:     XXXXXXXXX
     # in the middle of the 2nd clip
     t=datetime.datetime(2010,5,21,0,0,4)
 
-
     ep = Episode.objects.create(
         show=show,
         location=loc,
         state=1,
         released=True,
         start = t
+        duration = "00:00:06"
         )
 
     ep.name = "Test Episode" 
     ep.sequence = 1
     ep.description = desc
     ep.authors = 'test author'
-    ep.duration = "00:00:06"
     ep.save()
 
     return ep
