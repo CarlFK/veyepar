@@ -74,8 +74,8 @@ episode:     XXXXXXXXX
         location=loc,
         state=1,
         released=True,
-        start = t
-        duration = "00:00:06"
+        start = t,
+        duration = "00:00:06",
         )
 
     ep.name = "Test Episode" 
