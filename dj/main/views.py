@@ -64,25 +64,24 @@ episode:     XXXXXXXXX
     if create:
         show.locations.add(loc)
 
+    # datetime matches what run_tests.sh uses to create files.
+    # the scheduled start time is at 4 seconds
+    # in the middle of the 2nd clip
+    t=datetime.datetime(2010,5,21,0,0,4)
+
+
     ep = Episode.objects.create(
         show=show,
         location=loc,
         state=1,
         released=True,
+        start = t
         )
 
     ep.name = "Test Episode" 
     ep.sequence = 1
-
-    # datetime matches what run_tests.sh uses to create files.
-    # the scheduled start time is at 4 seconds
-    # in the middle of the 2nd clip
-    t=datetime.datetime(2010,5,21,0,0,4)
-    # huh?  +datetime.timedelta( hours=ep_count,seconds=i) for i in range(8) ]
-
     ep.description = desc
     ep.authors = 'test author'
-    ep.start = t
     ep.duration = "00:00:06"
     ep.save()
 
