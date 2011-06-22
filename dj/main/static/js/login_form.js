@@ -24,7 +24,7 @@ $(function(){
     
     $('#login').submit(function(ev){
         $.ajax({
-            url: "/accounts/login",
+            url: "/accounts/login/",
             type: "POST",
             dataType: 'json',
             data: {
