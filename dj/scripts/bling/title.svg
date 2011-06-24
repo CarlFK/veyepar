@@ -525,8 +525,8 @@
      inkscape:pageopacity="0.94117647"
      inkscape:pageshadow="2"
      inkscape:zoom="0.84880128"
-     inkscape:cx="328.55461"
-     inkscape:cy="310.01274"
+     inkscape:cx="462.39365"
+     inkscape:cy="233.43416"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -555,7 +555,7 @@
        style="fill:#ffffff"
        id="rect2895"
        width="803.19147"
-       height="292.02576"
+       height="277.88818"
        x="0"
        y="109.57447" />
     <rect
@@ -602,7 +602,7 @@
        xml:space="preserve"
        id="flowRoot2802"
        style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="matrix(1.7433323,0,0,1.7433323,-266.82963,-23.46954)"><flowRegion
+       transform="matrix(1.7433323,0,0,1.2699132,-561.16857,127.43082)"><flowRegion
          id="flowRegion2804"><rect
            id="rect2806"
            width="587.64703"
@@ -610,7 +610,7 @@
            x="88.733032"
            y="292.48868"
            style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
-         id="flowPara2818">Video produced by</flowPara></flowRoot>    <text
+         id="flowPara2818">produced by</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:26.56643677px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
        x="342.53442"
@@ -661,7 +661,7 @@
        xml:space="preserve"
        id="flowRoot2576-7"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="matrix(1.5228736,0,0,1.8229844,-226.1152,183.78752)"
+       transform="matrix(1.5228736,0,0,1.8229844,46.033306,273.57248)"
        inkscape:label="#flowRoot2414"><flowRegion
          id="flowRegion2416-5"><rect
            id="rect2418-9"
@@ -772,5 +772,33 @@
         </g>
       </g>
     </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2802-1"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="matrix(1.7433323,0,0,1.2699132,-511.10463,20.09035)"><flowRegion
+         id="flowRegion2804-2"><rect
+           id="rect2806-9"
+           width="587.64703"
+           height="45.203621"
+           x="88.733032"
+           y="292.48868"
+           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara2818-3">Video sponsord by</flowPara></flowRoot>    <image
+       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/logos/paul_may.png"
+       xlink:href="logos/paul_may.png"
+       width="336"
+       height="64"
+       id="image3188"
+       x="416.62866"
+       y="424.26788" />
+    <image
+       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/logos/enovafinancial.png"
+       xlink:href="logos/enovafinancial.png"
+       width="226"
+       height="51"
+       id="image3253"
+       x="54.294765"
+       y="430.76788" />
   </g>
 </svg>
