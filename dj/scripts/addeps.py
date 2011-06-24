@@ -301,21 +301,50 @@ class add_eps(process.process):
             episode.save()
        """
 
-    def zoo_cages(self, schedule):
+    def snake_holes(self, schedule):
+        # this is dumb.  
+        # currently there is no support for multi rooms.
       rooms=[]
       for row in schedule:
+          row = row['fields']
           # row=row['node']
           if self.options.verbose: print row
-          room = row['Room Name']
+          room = row['location']
           if room not in rooms: rooms.append(room)
       return rooms
+
+    def snake_bites(self, schedule, location):
+        events=[]
+
+        fields=('location','sequence','conf_key','target',
+            'name','slug', 'authors','emails', 'description',
+            'start','duration', 
+            'released', 'license', 'conf_key', 'conf_url', 'tags')
+
+        for row in schedule:
+            pk = row['pk']
+            row = row['fields']
+            if self.options.verbose: print row
+            event={}
+            for f in fields:
+                event[f] = row[f]
+            
+            # fields that don't flow thought json that nice.
+            if not event['conf_key']: event['conf_key'] = pk
+            event['location'] = location
+            event['start'] = datetime.datetime.strptime(
+                    row['start'], '%Y-%m-%d %H:%M:%S' )
+
+            events.append(event)
+
+        return events
 
     def zoo_events(self, schedule):
         events=[]
         for row in schedule:
             if self.options.verbose: print row
             event={}
-            event['id'] = row['Id']
+            # event['id'] = row['Id']
             event['name'] = row['Title']
             event['room'] = row['Room Name']
             event['start'] = datetime.datetime.strptime(
@@ -344,6 +373,16 @@ class add_eps(process.process):
 
         return events
 
+    def zoo_cages(self, schedule):
+      rooms=[]
+      for row in schedule:
+          # row=row['node']
+          if self.options.verbose: print row
+          room = row['Room Name']
+          if room not in rooms: rooms.append(room)
+      return rooms
+
+
     def add_rooms(self, rooms, show):
       seq=0
       for room in rooms:
@@ -369,13 +408,13 @@ class add_eps(process.process):
               seq+=1
               episode.state=1
 
-          fields = [ 'name', 'conf_url', 'conf_key', 
-                  'released', 'start', 'duration', 'description',
-                   'authors', 'emails', 'released', 'license',
-                   'tags', ]
+          fields=('sequence','conf_key','target',
+        'name','slug', 'authors','emails', 'description',
+        'start','duration', 
+        'released', 'license', 'conf_key', 'conf_url', 'tags')
 
           if created or self.options.update:
-              episode.location=Location.objects.get(name=row['room'])
+              episode.location=Location.objects.get(name=row['location'])
               for f in fields:
                   setattr( episode, f, row[f] )
                   # print( f, row[f] )
@@ -386,7 +425,8 @@ class add_eps(process.process):
               diff_fields=[]
               for f in fields:
                   print f
-                  a1,a2 = episode.__getattribute__(f), locals()[f]
+                  # a1,a2 = episode.__getattribute__(f), locals()[f]
+                  a1,a2 = getattr(episode,f), row[f]
                   if a1 != a2: diff_fields.append((f,a1,a2))
               if diff_fields:
                   print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
@@ -394,6 +434,19 @@ class add_eps(process.process):
                       print 'veyepar %s: %s' % (f,a1)
                       print '  event %s: %s' % (f,a2)
                   print
+
+
+    def veyepar(self, schedule, show):
+        # importing from some other instance
+        rooms = self.snake_holes(schedule)
+        # hack because the veyepar export doesn't give room name
+        # will fix when I need to.
+        rooms = ['enova']
+        self.add_rooms(rooms,show)
+
+        events = self.snake_bites(schedule,rooms[0])
+        self.add_eps(events, show)
+        return 
 
 
     def zoo(self, schedule, show):
@@ -414,19 +467,26 @@ class add_eps(process.process):
         # url='http://veyepar.nextdayvideo.com/main/C/chipy/S/may_2011.json'
         # url='http://lca2011.linux.org.au/programme/schedule/json'
         # url='http://2011.pyohio.org/programme/schedule/json'
-        url='http://pyohio.nextdayvideo.com/programme/schedule/json'
+        # url='http://pyohio.nextdayvideo.com/programme/schedule/json'
+        url='http://veyepar.nextdayvideo.com/main/C/jschi/S/june_2011.json'
 
         j=urllib2.urlopen(url).read()
         file('chipy.json','w').write(j) 
         j=file('chipy.json').read()
 
+        # cache for speedy development 
         # j=file('schedule_a.json').read()
         # j=file('schedule.json').read()
 
-        # j=open('schedule.json').read()
         schedule = json.loads(j)
 
-        return self.zoo(schedule,show)
+        # look at fingerprint of file, call appropiate parser
+        if j.startswith('[{"pk": '):
+            # veyepar show export
+            return self.veyepar(schedule,show)
+
+        elif isZoo:
+            return self.zoo(schedule,show)
 
         # schedule = schedule['nodes']
         self.addlocs(schedule,show)
