@@ -18,3 +18,9 @@ veyepar:
 encoding:
   soften jump cuts
   credits - hold for a few seconds at end.
+
+ndv walpaper 
+
+upload:
+  grab blip rss for episode
+  upload to youtube

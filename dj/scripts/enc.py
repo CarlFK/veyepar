@@ -78,6 +78,20 @@ mlt="""
 </mlt>
 """
 
+# overlay ndv log to obscure sensitive information 
+# that leaked into presentation opps.
+"""
+    <filter id="filter0" in="51139" out="51197">
+      <property name="track">1</property>
+      <property name="factory">loader</property>
+      <property name="resource">ndv.png</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">watermark</property>
+      <property name="composite.geometry">58%,93%,100%,100%</property>
+      <property name="composite.progressive">1</property>
+    </filter>
+"""
+
 
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
