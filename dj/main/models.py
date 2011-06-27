@@ -174,6 +174,7 @@ class Episode(models.Model):
         help_text="filename.png" )
     target = models.CharField(max_length=135, null=True,blank=True,
         help_text = "Blip.tv episode ID")
+    # blip_metta = models.TextField(blank=True, help_text="blip xml")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
