@@ -38,7 +38,9 @@ for row in reader:
     last_sec = sec
     last_bytes = bytes_sent
 
-pprint.pprint(dat)
+    if sec-first_sec > 30: break
+
+# pprint.pprint(dat)
 
 # seconds from first log entry,
 # bytes sent for that entry,
@@ -56,4 +58,36 @@ pprint.pprint(dat)
 """
 
 xys = [ (int(row[0]*10000),int(row[3])) for row in dat ]
-pprint.pprint( xys )
+# pprint.pprint( xys )
+
+
+import os, tempfile, random, cStringIO
+os.environ['MPLCONfigureDIR'] = tempfile.mkdtemp()
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+
+def plot(title='title',xlab='x',ylab='y',
+        data={'xxx':[(0,0),(1,1),(1,2),(3,3)],
+              'yyy':[(0,0,.2),(2,1,0.2),(2,2,0.2),(3,3,0.2)]},
+               filename='test.png'):
+   figure=Figure(frameon=False)
+   axes=figure.add_subplot(111)
+   if title: axes.set_title(title)
+   if xlab: axes.set_xlabel(xlab)
+   if ylab: axes.set_ylabel(ylab)
+   keys=sorted(data)
+   for key in keys:
+       stream = data[key]
+       (x,y)=([],[])
+       for point in stream:
+           x.append(point[0])
+           y.append(point[1])
+       axes.plot(x, y, linewidth="2")
+   canvas=FigureCanvas(figure)
+   stream=open(filename,'wb')
+   canvas.print_png(stream)
+
+points=[(3, 3927051), (4, 1281045), (893, 168818),]
+# plot(data={'mypoints':points},filename='test.png')
+plot(data={'mypoints':xys},filename='test.png')
+
