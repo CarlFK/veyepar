@@ -62,10 +62,12 @@ class add_dv(process):
         frames = st.st_size/self.bpf
         seconds = frames/self.fps 
 
-        hours = int(seconds / 3600)
-        minutes = int((seconds - hours*3600)/60)
-        seconds = seconds - (hours*3600 + minutes*60)
-        duration = "%02d:%02d:%02d" % (hours, minutes,seconds)
+        # hours = int(seconds / 3600)
+        # minutes = int((seconds - hours*3600)/60)
+        # seconds = seconds - (hours*3600 + minutes*60)
+        # duration = "%02d:%02d:%02d" % (hours, minutes,seconds)
+        hms = seconds//3600, (seconds%3600)//60, seconds%60
+        duration = "%02d:%02d:%02d" % hms
 
         dv.start = start
         dv.duration = duration
