@@ -5,3 +5,116 @@ Video metadata manager - given file names of raw footage, construct cut list (wi
 based on DebConf system
 
 authors: Carl Karsten <carl@personnelware.com>  
+
+Install and usage:
+
+1. install dependancies: INSTALL.sh
+This installs all of the python modules in a virtualenv sandbox using virtualenvwrapper.  So before running any python apps, you must activate the virtualenv with:
+workon veyepar.
+This has been added to ~/.bashrc so it should be setup.
+Then you must run everything with 
+python <script name>.py
+Running ./<script>.py won't work.
+Using virtualenv makes develoment easier and reduces the amount of things that require root/sudo privs.  
+
+
+1.1 create the database
+INSTAL.sh calls rt.sh (run tests) which will create the db 
+and an admin username: test, password abc.
+For production you should use a secure set of credentials
+so delete veyepar.db and run:
+veyepar/dj$ python ./manage.py syncdb
+This will prompt for an admin username and password.
+
+2. create a location, client, show, and episode records in the db
+browse to http://localhost:8080 
+log in
+a. click "Locations"
+b. enter Location Name, hit save. 
+c. click "Clients"
+d. enter Client Name, hit save.
+f. enter Show Name, select Location(s) from step b, hit Save.
+g. click on show link
+
+If you have many Episodes it might be worth the effort to import locaion and episodes from a json or .csv file using addeps.py.   Otherwise, continue to use the browser:
+
+h. enter Episode Name, start/duration - hit Save.
+i. repeat for each Episode
+
+3. veyepar.cfg: set client and show to the client and show slugs.  
+review settings,  pal/ntsc is one of the more important ones.
+
+4. create the dirs for the .dv files:
+veyepar/dj/scripts$ python mkdirs.py  # Makes the dir tree to put files into
+
+4.1. copy the bling into the show's bling dir.
+veyepar/dj/scripts$ cp -r bling/ ~/Videos/veyepar/test_client/test_show/bling/
+This creates a title.svg for this show.  So edit the show copy:
+~/Videos/veyepar/test_client/test_show/bling$ inkscape title.svg
+
+Do some sanity checks:
+browse to the show page:
+check "overlapping episodes" - there shouldn't be any.
+show stats: grid of days by room.  should look like your show
+schedule: crude grid of events in a room and time slot. 
+meeting announcement: meant for usergroup meetings, doesn't scale well to a large event.
+
+recording sheets: pdf to be printed and put next to each recoreding station runing DVswitch.  
+
+use DVswitch to record talks.  Note the actual start/end time on the recoding sheet.
+
+4.2. put the dv files into the dirs
+Use your mad file copy skilz to rsync, mv, whatever.  
+
+5. for all dv files, add records into the db:
+veyepar/dj/scripts$ python adddv.py
+Adds the .dv filenames to the raw files table
+
+6.0 collect dv metadata  
+6.1 start/end
+veyepar/dj/scripts$ python tsdv.py - timestamp dv
+Gets start from one of:
+the file name (assumes hh:mm:ss.dv format)
+There is code to read the time stamp from the .dv file frames, but that doesn't work well at all.  
+
+6.2 ocr/thumbnail
+use ocr to find some text, which makes for a good thumnail.
+veyepar/dj/scripts$ python mkthumbs.py - find thumbs, ocr untill we find some text, saves png.
+
+7. Associte dv files with Episodes.
+(This now happens automatically when you browse to an Episode that does not have a cutlist.  I am leaving this here because their may be a performance hit for larger 100+ Episode shows.)
+Create cutlist records for each intersection of a dv file and episodes start/end time and location.
+veyepar/dj/scripts$ python assocdv.py: # creates cutlist items for dv files that might belong to an episode
+        eps = Episode.objects.filter(
+            Q(start__lte=dv.end)|Q(start__isnull=True),
+            Q(end__gte=dv.start)|Q(end__isnull=True),
+            location=dv.location).exclude(slug='orphans' )
+
+8. make low quality versions of all the dv files so you can preview each file in a browser using <video> (not necessary, didn't work too well, I used mplayer.)
+veyepar/dj/scripts$ python dvogg.py:# makes .ogg for all dv in a show
+
+9. Post production editing
+
+9.1 for each episode, look at what .dv files have been assigned to it.  
+
+browse http://0.0.0.0:8080/main/E/1 
+
+If there are ones missing, either use fixdv.py to fix batches, or use django's admin UI to add one by one.  
+
+If it belongs to some other event, mark "Cut List - Delete [x]"  This deletes the cutlist entry in the db, not the file.  Nothing deletes the file.
+
+If a dv needs junk trimmed from the start or end, put the time offset in "Cut List - Start/End" 
+1 or 0:0:1 means trim 1 second from start.  1:2:3 means the clip ends 1 hour 2 min 3 seconds from the start of the file, so in this case 1h 2m 3 seconds would be used.
+
+Set Episode.state to Encode (2)
+
+10. encode files to upload
+enc.py:# encodes to ogg, flv, m4v
+adds titles too.
+
+11. post em:
+post.py:# posts to blip.tv, 
+pw.py holds user/passwords, not checked in, make one from pw_samp.py
+
+12. tweet 
+tweet.py

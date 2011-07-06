@@ -32,6 +32,7 @@ class Run_Tests(object):
           ret = dict( returncode=p.returncode)
 
         if ret['returncode']: 
+            ret['command'] = cmd
             print "command returned", ret
             print "cmd:", cmd
             raise
