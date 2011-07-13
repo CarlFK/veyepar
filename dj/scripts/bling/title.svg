@@ -525,8 +525,8 @@
      inkscape:pageopacity="0.94117647"
      inkscape:pageshadow="2"
      inkscape:zoom="0.84880128"
-     inkscape:cx="300.98956"
-     inkscape:cy="358.07387"
+     inkscape:cx="331.66409"
+     inkscape:cy="216.69802"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -785,12 +785,25 @@
            y="292.48868"
            style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
          id="flowPara2818-3">Sponsord by</flowPara></flowRoot>    <image
-       sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/logos/ascendtraining.png"
-       xlink:href="logos/ascendtraining.png"
-       width="336"
-       height="113.48155"
-       id="image3188"
-       x="232"
-       y="398.81458" />
+       y="430.39481"
+       x="14.472884"
+       id="image3166"
+       xlink:href="file:///home/carl/src/veyepar/dj/scripts/bling/logos/wi-logo.png"
+       height="61.171188"
+       width="238.4902" />
+    <image
+       y="436.3858"
+       x="529.20728"
+       id="image3231"
+       xlink:href="file:///home/carl/src/veyepar/dj/scripts/bling/logos/paul_may.png"
+       height="49.189198"
+       width="258.24329" />
+    <image
+       y="420.98041"
+       x="320"
+       id="image3315"
+       xlink:href="file:///home/carl/src/veyepar/dj/scripts/bling/logos/imagescape-web.gif"
+       height="80"
+       width="160" />
   </g>
 </svg>
