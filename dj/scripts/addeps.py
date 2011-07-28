@@ -1,4 +1,4 @@
-# }!/usr/bin/python
+#!/usr/bin/python
 
 # adds episodes from an external source, like a json file or url.
 
@@ -10,8 +10,8 @@ room - "room1" if there is only one room.
 start - datetime in some parsable format 
 duration in minutes, or HH:MM:SS 
 end - datetime in some parsable format 
-authors - comma seperated list of people's names.
-contact - email(s) of presenters.
+authors - list of people's names.
+contact - list of email(s) of presenters.
 released - permission to release.
 license - CC license (13 is safe)
 description - used as the description of the video (paragraphs are fine)
@@ -382,6 +382,54 @@ class add_eps(process.process):
           if room not in rooms: rooms.append(room)
       return rooms
 
+    def get_rooms(self, schedule, key):
+      rooms=[]
+      for row in schedule:
+          if self.options.verbose: print row
+          room = row[key]
+          if room not in rooms: rooms.append(room)
+      return rooms
+
+
+    def symp_events(self, schedule ):
+        events=[]
+
+        for row in schedule:
+            if self.options.verbose: print row
+            event={}
+            event['id'] = row['id']
+            event['name'] = row['title']
+            
+            event['location'] = row['room']
+            if event['location']=='Plenary': event['location'] = "Cartoon 1" 
+
+            event['start'] = datetime.datetime.strptime(
+                    row['start_iso'], '%Y-%m-%dT%H:%M:%S' )
+
+            seconds=(row['duration'] -10) * 60
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            event['duration'] =  duration
+
+            event['authors'] = row['authors']
+            event['emails'] = row['contact']
+            event['released'] = row['released']
+            event['license'] = row['released'] or '13'
+            event['description'] = row['description']
+            event['conf_key'] = row['id']
+
+            event['conf_url'] = row['url']
+            if event['conf_url'] is None: event['conf_url'] = ""
+
+            event['tags'] = ''
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = row
+
+            events.append(event)
+
+        return events
+
 
     def add_rooms(self, rooms, show):
       seq=0
@@ -408,12 +456,14 @@ class add_eps(process.process):
               seq+=1
               episode.state=1
 
-          fields=('sequence','conf_key','target',
-        'name','slug', 'authors','emails', 'description',
+          fields=(
+        'name', 'authors', 'emails', 'description',
         'start','duration', 
-        'released', 'license', 'conf_key', 'conf_url', 'tags')
+        'released', 'license', 
+        'conf_url', 'tags')
 
           if created or self.options.update:
+              print row['location']
               episode.location=Location.objects.get(name=row['location'])
               for f in fields:
                   setattr( episode, f, row[f] )
@@ -424,10 +474,9 @@ class add_eps(process.process):
               # report if different
               diff_fields=[]
               for f in fields:
-                  print f
-                  # a1,a2 = episode.__getattribute__(f), locals()[f]
                   a1,a2 = getattr(episode,f), row[f]
-                  if a1 != a2: diff_fields.append((f,a1,a2))
+                  if (a1 or a2) and (a1 != a2): 
+                      diff_fields.append((f,a1,a2))
               if diff_fields:
                   print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
                   for f,a1,a2 in diff_fields:
@@ -435,13 +484,26 @@ class add_eps(process.process):
                       print '  event %s: %s' % (f,a2)
                   print
 
+    def pyohio(self, schedule, show):
+        # importing from some other instance
+        rooms = self.get_rooms(schedule,'room')
+        rooms = [r for r in rooms if r != 'Plenary' ]
+        # print rooms
+        self.add_rooms(rooms,show)
+
+        events = self.symp_events(schedule)
+        # print events
+        self.add_eps(events, show)
+        return 
+
+
 
     def veyepar(self, schedule, show):
         # importing from some other instance
         rooms = self.snake_holes(schedule)
         # hack because the veyepar export doesn't give room name
         # will fix when I need to.
-        rooms = ['enova']
+        # rooms = ['enova']
         self.add_rooms(rooms,show)
 
         events = self.snake_bites(schedule,rooms[0])
@@ -469,10 +531,11 @@ class add_eps(process.process):
         # url='http://2011.pyohio.org/programme/schedule/json'
         # url='http://pyohio.nextdayvideo.com/programme/schedule/json'
         url='http://veyepar.nextdayvideo.com/main/C/jschi/S/june_2011.json'
+        url='http://pyohio.org/schedule/json/'
 
-        j=urllib2.urlopen(url).read()
-        file('chipy.json','w').write(j) 
-        j=file('chipy.json').read()
+        # j=urllib2.urlopen(url).read()
+        # file('chipy.json','w').write(j) 
+        j=file('pyohio.json').read()
 
         # cache for speedy development 
         # j=file('schedule_a.json').read()
@@ -481,11 +544,18 @@ class add_eps(process.process):
         schedule = json.loads(j)
 
         # look at fingerprint of file, call appropiate parser
+        # print j[:10]
+        # print schedule[0]
         if j.startswith('[{"pk": '):
             # veyepar show export
             return self.veyepar(schedule,show)
 
-        elif isZoo:
+        if j.startswith('[{"') and schedule[0].has_key('last_updated'):
+            # [{"last_up
+            # pyohio
+            return self.pyohio(schedule,show)
+
+        if isZoo:
             return self.zoo(schedule,show)
 
         # schedule = schedule['nodes']
@@ -563,29 +633,31 @@ class add_eps(process.process):
           help='update when diff, else print' )
 
     def work(self):
-
-      client,created = Client.objects.get_or_create(slug=self.options.client)
-      client.delete()
-      locs = Location.objects.all()
-      for loc in locs: loc.delete()
-
       if self.options.client and self.options.show:
 
         client,created = Client.objects.get_or_create(slug=self.options.client)
         if created:
-          client.name = self.options.client
+          client.name = self.options.client.capitalize()
           client.save()
 
         show,created = Show.objects.get_or_create(
                              client=client,slug=self.options.show)
         if created:
-          show.name = self.options.show
+          show.name = self.options.show.capitalize()
           show.save()
         
         if self.options.whack:
-# clear out previous runs for this show
+            # DRAGONS!
+            # clear out previous runs for this show
+
+            client,created = Client.objects.get_or_create(slug=self.options.client)
+            client.delete()
+            # locs = Location.objects.all()
+            # for loc in locs: loc.delete()
+
             Episode.objects.filter(show=show).delete()
             # Location.objects.filter(show=show).delete()
+
         self.one_show(show)
 
 if __name__ == '__main__':

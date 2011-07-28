@@ -155,7 +155,7 @@ class Episode(models.Model):
         help_text="has someone authorised pubication")
     conf_key = models.CharField(max_length=32, blank=True,
         help_text='primary key of event in conference system database.')
-    conf_url = models.CharField(max_length=135,blank=True,
+    conf_url = models.CharField(max_length=135,blank=True,default='',
         help_text="event's details on conference site  (name,desc,time,author,files,etc)")
     authors = models.TextField(null=True,blank=True,)
     emails = models.TextField(null=True,blank=True, 
@@ -252,7 +252,7 @@ class Log(models.Model):
     result = models.CharField(max_length=250)
 
 def set_slug(sender, instance, **kwargs):
-    if not instance.slug and instance.name:
+    if not instance.slug:
         instance.slug = fnify(instance.name)
 
 def set_end(sender, instance, **kwargs):

@@ -5,7 +5,17 @@ import gdata.youtube
 import gdata.youtube.service
 
 import pw
+gauth = pw.gdata['ndv']
 
+
+# auth
+yt_service = gdata.youtube.service.YouTubeService()
+yt_service.email = gauth['email']
+yt_service.password = gauth['password']
+yt_service.source = 'video eyebaal review'
+yt_service.developer_key = gauth['dev_key']
+yt_service.client_id = 'veyepar_test'
+yt_service.ProgrammaticLogin()
 
 # prepare a media group object to hold our video's meta-data
 my_media_group = gdata.media.Group(
@@ -30,20 +40,14 @@ where.set_location((37.0,-122.0))
 video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group,
                                               geo=where)
 
+# add some more metadata
 developer_tags = ['some_tag_01', 'another_tag']
 video_entry.AddDeveloperTags(developer_tags)
 
 # set the path for the video file binary
 video_file_location = '/home/carl/temp/Test_Episode.mp4'
 
-yt_service = gdata.youtube.service.YouTubeService()
-yt_service.email = pw.gdata['email']
-yt_service.password = pw.gdata['password']
-yt_service.source = 'video eyebaal review'
-yt_service.developer_key = pw.gdata['dev_key']
-yt_service.client_id = 'veyepar_test'
-yt_service.ProgrammaticLogin()
-
+# actually upload
 new_entry = yt_service.InsertVideoEntry(video_entry, video_file_location)
 
 video_id = new_entry.id.text

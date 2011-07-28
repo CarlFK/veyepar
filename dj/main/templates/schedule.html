@@ -16,18 +16,16 @@
     </tr></thead> 
     
     {% for day in days %}
-      <tr><td> {{day.0|date:"D d"}} </td></tr>
+      <tr class=row1><td> {{day.0|date:"D d"}} </td></tr>
+      <tr><td><hr></td></tr>
        {% for t in day.1 %}
          <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
-          <td>
-          {#  {{t.0.start|date:"H:i"}} - {{t.0.end|date:"H:i"}} <br/> #}
-           {{t.0.start|date:"h:i"}} - {{t.0.end|date:"h:i"}} 
-</td>
+          <td> {{t.0.start|date:"h:i"}}</td>
           {% for episode in t.1 %}
             <td style="white-space:normal">
             {% if episode %}
               <a href="E/{{episode.id}}/">{{ episode.name }}</a>
-              {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> #}
+              {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> {{ episode.duration }} #}
               {{episode.authors}}
             {% endif %}
             </td>

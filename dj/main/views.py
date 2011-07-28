@@ -254,6 +254,7 @@ def schedule(request, show_id, show_slug):
     # order_by to override Meta: ordering = ["sequence"]
     # which will get included in the field list and break the .distinct().
     times=episodes.order_by('start').values('start','end').distinct()
+    times=episodes.order_by('start').values('start').distinct()
     # starts=[ s['start'] for s in starts]
 
     dates = list(set(t['start'].date() for t in times))
@@ -273,12 +274,14 @@ def schedule(request, show_id, show_slug):
                 for loc in locations: 
                     i=None
                     for ep in episodes:
-                        if ep.location == loc and \
-                            ep.start == t['start'] and  ep.end == t['end']: 
+                        if ep.location == loc and  ep.start == t['start'] : 
+                            # ep.start == t['start'] and  ep.end == t['end']: 
                             i = ep
                     slots.append(i)
                 rows.append([t,slots])
         days.append([d,rows])
+
+    # pprint(days)
 
     return render_to_response('schedule.html',
         {'show':show, 
