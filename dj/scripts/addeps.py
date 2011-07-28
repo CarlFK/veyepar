@@ -77,10 +77,11 @@ from dateutil.parser import parse
 import gdata.calendar.client
 import gdata.calendar.service
 
-import pw # for google calandar
+# for google calandar:
+# import pw 
+# import lxml.etree
 
 import process
-import lxml.etree
 
 
 from main.models import fnify, Client, Show, Location, Episode
@@ -448,13 +449,22 @@ class add_eps(process.process):
       seq=0
       for row in episodes:
           if self.options.verbose: print row
-          episode,created = Episode.objects.get_or_create(
+          # episode,created = Episode.objects.get_or_create(
+          #        show=show, conf_key=row['conf_key'], )
+          episodes = Episode.objects.filter(
                   show=show, conf_key=row['conf_key'], )
 
-          if created:
+          # if created:
+          if episodes:
+              created = False
+              episode = episodes[0]
+          else:
+              episodes = Episode.objects.create(
+                  show=show, conf_key=row['conf_key'], )
               episode.sequence=seq
-              seq+=1
               episode.state=1
+              seq+=1
+              created = True
 
           fields=(
         'name', 'authors', 'emails', 'description',
@@ -530,18 +540,19 @@ class add_eps(process.process):
         # url='http://lca2011.linux.org.au/programme/schedule/json'
         # url='http://2011.pyohio.org/programme/schedule/json'
         # url='http://pyohio.nextdayvideo.com/programme/schedule/json'
-        url='http://veyepar.nextdayvideo.com/main/C/jschi/S/june_2011.json'
+        # url='http://veyepar.nextdayvideo.com/main/C/jschi/S/june_2011.json'
         url='http://pyohio.org/schedule/json/'
 
-        # j=urllib2.urlopen(url).read()
+        j=urllib2.urlopen(url).read()
         # file('chipy.json','w').write(j) 
-        j=file('pyohio.json').read()
+        # j=file('pyohio.json').read()
 
         # cache for speedy development 
         # j=file('schedule_a.json').read()
         # j=file('schedule.json').read()
 
         schedule = json.loads(j)
+        # schedule = json.read(j)
 
         # look at fingerprint of file, call appropiate parser
         # print j[:10]
