@@ -459,8 +459,10 @@ class add_eps(process.process):
               created = False
               episode = episodes[0]
           else:
-              episodes = Episode.objects.create(
-                  show=show, conf_key=row['conf_key'], )
+              episode = Episode.objects.create(
+                  show=show, conf_key=row['conf_key'], 
+                  start=row['start'], duration=row['duration'],
+                  )
               episode.sequence=seq
               episode.state=1
               seq+=1
