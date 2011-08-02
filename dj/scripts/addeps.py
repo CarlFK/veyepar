@@ -69,13 +69,11 @@ I can fix my consumer easier than I can get someone else's website updated.
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
 
 import datetime 
-import urllib2,json
-from csv import DictReader
-# from datetime import timedelta
+import urllib2,json,csv
 from dateutil.parser import parse
 
-import gdata.calendar.client
-import gdata.calendar.service
+# import gdata.calendar.client
+# import gdata.calendar.service
 
 # for google calandar:
 # import pw 
@@ -523,6 +521,49 @@ class add_eps(process.process):
         return 
 
 
+    def desktopsummit(self, schedule, show):
+        rooms = set(row[2] for row in schedule)
+        self.add_rooms(rooms,show)
+
+        events=[]
+        for row in schedule:
+            if self.options.verbose: print row
+            event={}
+            event['id'] = row[0]
+            event['name'] = row[1]
+            event['location'] = row[2]
+            dt_format='%a, %Y-%m-%d %H:%M'
+            event['start'] = datetime.datetime.strptime(
+                    row[3], dt_format)
+            end = datetime.datetime.strptime(
+                    row[4], dt_format)
+
+            seconds=(end - event['start']).seconds 
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            event['duration'] =  duration
+
+            event['authors'] = row[5]
+            event['emails'] = ''
+            event['released'] = True
+            event['license'] = '13'
+            event['description'] = ''
+            event['conf_key'] = row[0]
+
+            event['conf_url'] = row[6]
+            event['tags'] = ''
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = row
+
+            events.append(event)
+ 
+
+        self.add_eps(events, show)
+        return 
+
+
+
     def zoo(self, schedule, show):
         rooms = self.zoo_cages(schedule)
         self.add_rooms(rooms,show)
@@ -543,9 +584,18 @@ class add_eps(process.process):
         # url='http://2011.pyohio.org/programme/schedule/json'
         # url='http://pyohio.nextdayvideo.com/programme/schedule/json'
         # url='http://veyepar.nextdayvideo.com/main/C/jschi/S/june_2011.json'
-        url='http://pyohio.org/schedule/json/'
+        # url='http://pyohio.org/schedule/json/'
+        url='https://www.desktopsummit.org/program/veyepar.csv'
 
-        j=urllib2.urlopen(url).read()
+        f=urllib2.urlopen(url)
+        if url[-4:]=='.csv':
+            schedule = list(csv.reader(f))
+            if 'desktopsummit.org' in url:
+                return self.desktopsummit(schedule,show)
+        else:
+            j=f.read()
+            schedule = json.loads(j)
+
         # file('chipy.json','w').write(j) 
         # j=file('pyohio.json').read()
 
@@ -553,7 +603,6 @@ class add_eps(process.process):
         # j=file('schedule_a.json').read()
         # j=file('schedule.json').read()
 
-        schedule = json.loads(j)
         # schedule = json.read(j)
 
         # look at fingerprint of file, call appropiate parser
