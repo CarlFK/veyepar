@@ -127,7 +127,7 @@ class StateAdmin(admin.ModelAdmin):
 admin.site.register(State, StateAdmin)
 
 class LogAdmin(admin.ModelAdmin):
-    list_display=['episode', 'state', 'start', 'end']
+    list_display=['episode', 'state', 'start', 'end', 'duration']
     list_display_links = ('episode',)
 admin.site.register(Log, LogAdmin)
 

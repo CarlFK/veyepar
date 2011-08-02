@@ -1,11 +1,4 @@
 
-next/prev (match recording sheet: same room/day)
-
-recording sheets
-  date in yyyy-mm-dd format too (same as dv file dir name)
-  date in DOW, date, Month
-  Date, Room, overall sequential page number
-   - move to top and bottem of page for easy viewing when sorting at end of day/event, trying to get all the papers in order
 
 dvswitch:
   everything: default host/port
@@ -15,6 +8,7 @@ dvswitch:
 run sink-playdv on slave as a monitor for cam op.
 
 veyepar:
+  next/prev (match recording sheet: same room/day)
   split long talk (tutorials) into parts.
 
 encoding:

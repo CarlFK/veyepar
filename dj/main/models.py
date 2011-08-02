@@ -241,6 +241,8 @@ class State(models.Model):
     description = models.CharField(max_length=135, blank=True)
     class Meta:
         ordering = ["sequence"]
+    def __unicode__(self):
+        return self.slug
 
 class Log(models.Model):
     episode = models.ForeignKey(Episode)
@@ -250,6 +252,13 @@ class Log(models.Model):
     end = models.DateTimeField(null=True, blank=True)
     user = models.CharField(max_length=50)
     result = models.CharField(max_length=250)
+    def duration(self):
+        if self.start and self.end:
+            dur = self.end - self.start
+            dur = datetime.timedelta(dur.days,dur.seconds)
+            return dur
+        else:
+            return None
 
 def set_slug(sender, instance, **kwargs):
     if not instance.slug:

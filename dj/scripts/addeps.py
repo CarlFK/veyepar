@@ -70,7 +70,7 @@ I can fix my consumer easier than I can get someone else's website updated.
 
 import datetime 
 import urllib2,json
-# from csv import DictReader
+from csv import DictReader
 # from datetime import timedelta
 from dateutil.parser import parse
 
