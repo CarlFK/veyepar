@@ -5,6 +5,7 @@ vobject
 oauth2
 # svn+http://svn.dabodev.com/dabo/trunk/#egg=dabo
 hg+https://python-twitter.googlecode.com/hg/#egg=twitter
+feedparser
 
 --extra-index-url=http://dist.pinaxproject.com/dev/
 Pinax==0.9a2.dev6

@@ -46,23 +46,12 @@ class tweet(process):
             message = ' '.join([prefix, video_name, short_url])
         return message
 
-    def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
-        show = ep.show
-        client = show.client
-
-        # use the username for the client, else use the first user in pw.py
-        user =  client.blip_user if client.blip_user else 'nextdayvideo'
-
-        blip_url="http://%s.blip.tv/file/%s" % (user,ep.target)
-        prefix = "#%s #VIDEO" % show.client.slug
-        tweet = self.mk_tweet(prefix, ep.name, ep.authors, blip_url)
-
-        ret=False
+    def tweet_tweet(self, user, tweet):
         if self.options.test:
             print 'test mode:' 
             print 'user:', user
             print tweet
+            ret=False
         else:
             print 'tweeting:', tweet
             # print user,password
@@ -80,6 +69,21 @@ class tweet(process):
             
             ret=True
 
+        return ret
+
+    def process_ep(self, ep):
+        if self.options.verbose: print ep.id, ep.name
+        show = ep.show
+        client = show.client
+
+        # use the username for the client, else use the first user in pw.py
+        user =  client.blip_user if client.blip_user else 'nextdayvideo'
+
+        blip_url="http://%s.blip.tv/file/%s" % (user,ep.target)
+        prefix = "#%s #VIDEO" % show.client.slug
+        tweet = self.mk_tweet(prefix, ep.name, ep.authors, blip_url)
+
+        ret=self.tweet_tweet(user, tweet)
         return ret
 
 if __name__ == '__main__':
