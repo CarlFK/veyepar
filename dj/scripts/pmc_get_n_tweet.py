@@ -30,13 +30,32 @@ class pmc_tweet(tweet):
         if not self.feed:
             self.feed = feedparser.parse('http://python.mirocommunity.org/feeds/category/pyohio-2011')
 
-        urlss = [ (fe['link'], [ l['href'] for l in fe['links'] if l['rel']=='via' ][0]) for fe in self.feed['entries'] ]
-        public_urls = [ u[0] for u in urlss if u[1].split('/')[-1] == ep.target]
+        # get the URLs we care about:
+        # [(pmc1, [blip1]),(pmc2, [blip2])...)
+        # the [blipN] list should only have 1 item.
+        urlss = [ 
+                (fe['link'], 
+                 [ l['href'] for l in fe['links'] if l['rel']=='via' ][0]) 
+                for fe in self.feed['entries'] 
+                ]
+
+        # given the blip url (ep.target)
+        # find the pmc url (public url)
+        # again, there should only be 1
+        public_urls = [ 
+                u[0] for u in urlss 
+                if u[1].split('/')[-1] == ep.target]
 
         if public_urls:
+
+            # urls[0] because there can be only 1
+            # '/'.join....split('/')... to drop the tail of the URL
+            # it is just a truncated title 
+            # warning: MC specific.
             public_url = '/'.join(public_urls[0].split('/')[:-1])
             ep.public_url = public_url
             ep.save()
+
             prefix = "#%s #VIDEO" % show.client.slug
             tweet = self.mk_tweet(prefix, ep.name, ep.authors, public_url)
             user = 'nextdayvideo'
