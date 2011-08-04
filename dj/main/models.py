@@ -173,7 +173,9 @@ class Episode(models.Model):
     thumbnail = models.CharField(max_length=135,blank=True, 
         help_text="filename.png" )
     target = models.CharField(max_length=135, null=True,blank=True,
-        help_text = "Blip.tv episode ID")
+        help_text = "URL of page video is hosted")
+    public_url = models.CharField(max_length=135, null=True,blank=True,
+        help_text = "URL public should use (like pmc or some aggregator")
     # blip_metta = models.TextField(blank=True, help_text="blip xml")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')

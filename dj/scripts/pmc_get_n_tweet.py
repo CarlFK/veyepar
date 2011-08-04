@@ -31,12 +31,14 @@ class pmc_tweet(tweet):
             self.feed = feedparser.parse('http://python.mirocommunity.org/feeds/category/pyohio-2011')
 
         urlss = [ (fe['link'], [ l['href'] for l in fe['links'] if l['rel']=='via' ][0]) for fe in self.feed['entries'] ]
-        pmc_urls = [ u[0] for u in urlss if u[1].split('/')[-1] == ep.target]
+        public_urls = [ u[0] for u in urlss if u[1].split('/')[-1] == ep.target]
 
-        if pmc_urls:
-            pmc_url = '/'.join(pmc_urls[0].split('/')[:-1])
+        if public_urls:
+            public_url = '/'.join(public_urls[0].split('/')[:-1])
+            ep.public_url = public_url
+            ep.save()
             prefix = "#%s #VIDEO" % show.client.slug
-            tweet = self.mk_tweet(prefix, ep.name, ep.authors, pmc_url)
+            tweet = self.mk_tweet(prefix, ep.name, ep.authors, public_url)
             user = 'nextdayvideo'
 
             ret=self.tweet_tweet(user, tweet)

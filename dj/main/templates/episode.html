@@ -41,7 +41,10 @@
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a> 
 <a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a> 
 {% if episode.target %}
-  <a href=http://blip.tv/file/{{episode.target}}>blip</a> 
+  <a href=http://blip.tv/file/{{episode.target}}>host</a> 
+{% endif %}
+{% if episode.public_url %}
+  <a href={{episode.public_url}}>public</a> 
 {% endif %}
 <br/>
 <a href={% url episode_logs episode.id %}>logs</a><br/>

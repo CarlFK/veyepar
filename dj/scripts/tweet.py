@@ -69,6 +69,10 @@ class tweet(process):
             
             ret=True
 
+        if self.options.lag:
+            print "lagging....", self.options.lag
+            time.sleep(self.options.lag)
+
         return ret
 
     def process_ep(self, ep):
@@ -85,6 +89,13 @@ class tweet(process):
 
         ret=self.tweet_tweet(user, tweet)
         return ret
+
+    def add_more_options(self, parser):
+        parser.add_option('--lag', type="int",
+           help="delay in seconds between tweets.")
+
+    def add_more_option_defaults(self, parser):
+        parser.set_defaults(lag=120)
 
 if __name__ == '__main__':
     p=tweet()
