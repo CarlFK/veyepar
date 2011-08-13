@@ -18,7 +18,7 @@ class ckbroke(process):
     ready_state = 3
 
     def process_ep(self, ep):
-        exts = self.options.upload_formats.split()
+        exts = self.options.upload_formats
         for ext in exts:
             src_pathname = os.path.join( self.show_dir, ext, 
                 "%s.%s"%(ep.slug,ext))

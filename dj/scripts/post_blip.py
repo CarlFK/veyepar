@@ -103,7 +103,7 @@ class post(process):
 # the blip api gets kinda funky around multiple uploads
 # so no surprise the code is kinda funky.
     files = []
-    exts = self.options.upload_formats.split()
+    exts = self.options.upload_formats
 # pull dv from the list
     exts = [e for e in exts if e != 'dv']
     has_master = False

@@ -35,7 +35,7 @@ class Client(models.Model):
         help_text="name of video to prepend (not implemented)")
     postroll = models.CharField(max_length=135, blank=True,
         help_text="name of video to postpend (not implemented)")
-    blip_user = models.CharField(max_length=30, blank=True, null=True)
+    host_user = models.CharField(max_length=30, blank=True, null=True)
     title_svg = models.CharField(max_length=30, blank=True, null=True,
         help_text='template for event/title/authors')
     credits = models.CharField(max_length=30, blank=True, 
@@ -62,6 +62,8 @@ class Location(models.Model):
     dirname = models.CharField(max_length=135,
         help_text="pat to raw files. overrieds show/slug.")
     description = models.TextField(blank=True)
+    lon = models.FloatField()
+    lat = models.FloatField()
     def __unicode__(self):
         return "%s" % ( self.name )
     class Meta:
@@ -169,14 +171,15 @@ class Episode(models.Model):
     license = models.IntegerField(null=True,blank=True,default=13,
         help_text='see http://0.0.0.0:8080/main/C/test_client/S/test_show/')
     hidden = models.NullBooleanField(null=True,blank=True,
-        help_text='hidden on blip (does not show up on public episode list')
+        help_text='hidden (does not show up on public episode list')
     thumbnail = models.CharField(max_length=135,blank=True, 
         help_text="filename.png" )
-    target = models.CharField(max_length=135, null=True,blank=True,
+    host_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL of page video is hosted")
     public_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL public should use (like pmc or some aggregator")
-    # blip_metta = models.TextField(blank=True, help_text="blip xml")
+    host_metta = models.TextField(blank=True, 
+            help_text="metta right after upload")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")

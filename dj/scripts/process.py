@@ -319,7 +319,7 @@ class process(object):
 
     # hardcoded defauts
     parser.set_defaults(dv_format='ntsc')
-    parser.set_defaults(upload_formats="ogv")
+    parser.set_defaults(upload_formats="mp4")
     parser.set_defaults(media_dir=os.path.expanduser('~/Videos/veyepar'))
     self.add_more_option_defaults(parser)
 
@@ -378,6 +378,8 @@ class process(object):
     self.add_more_options(parser)
 
     self.options, self.args = parser.parse_args()
+    # this needs to be done better:
+    self.options.upload_formats = self.options.upload_formats.split()
     self.get_options()
     
     if self.options.verbose:

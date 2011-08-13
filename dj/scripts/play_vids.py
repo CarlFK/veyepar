@@ -13,7 +13,7 @@ class play_vids(process):
     ready_state = 3
 
     def process_ep(self, ep):
-        exts = self.options.upload_formats.split()
+        exts = self.options.upload_formats
         if self.options.verbose: print exts
         for ext in exts:
             filename = "%s.%s"%(ep.slug,ext)

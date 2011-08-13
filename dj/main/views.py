@@ -58,7 +58,7 @@ episode:     XXXXXXXXX
     # append additional episodes 
 
     loc,create = Location.objects.get_or_create(name='test loc',slug='test_loc')
-    client,create = Client.objects.get_or_create(name='test client',slug='test_client', blip_user='veyepar_test', title_svg='test_pattern_1.svg', credits="00000001.png")
+    client,create = Client.objects.get_or_create(name='test client',slug='test_client', host_user='veyepar_test', title_svg='test_pattern_1.svg', credits="00000001.png")
 
     show,create = Show.objects.get_or_create(name='test show',slug='test_show',client=client)
     if create:
@@ -143,7 +143,7 @@ def ajax_user_lookup_form(request):
 def eps_xfer(request,client_slug=None,show_slug=None):
     """
     Returns all the episodes for a show as json.
-    Used to synk blip url's with the main conference site.
+    Used to synk public url's with the main conference site.
     """
 
     client=get_object_or_404(Client,slug=client_slug)
