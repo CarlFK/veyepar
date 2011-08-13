@@ -62,8 +62,8 @@ class Location(models.Model):
     dirname = models.CharField(max_length=135,
         help_text="pat to raw files. overrieds show/slug.")
     description = models.TextField(blank=True)
-    lon = models.FloatField()
-    lat = models.FloatField()
+    lon = models.FloatField(null=True,)
+    lat = models.FloatField(null=True,)
     def __unicode__(self):
         return "%s" % ( self.name )
     class Meta:
