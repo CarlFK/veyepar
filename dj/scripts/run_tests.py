@@ -264,7 +264,7 @@ pix_fmt=yuv411p" % parms
 # --force \
 # --hidden=1
   """
-  import post_youtube
+  import post_yt as post
   p=post.post()
   p.set_options(force=True, verbose=True, 
       upload_formats=self.upload_formats,

@@ -87,7 +87,7 @@ class post(process):
     # blip supports multiple formats, youtube does not.
     # youtube and such will only upload the first file.
     files = []
-    for ext in self.options.upload_formats
+    for ext in self.options.upload_formats:
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
         files.append({'ext':ext,'pathname':src_pathname})
 
@@ -166,7 +166,7 @@ class post(process):
         parser.add_option('--hidden',
             help="availability on host: 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
 
-    def add_more_option_defaults(self, parser):
+  def add_more_option_defaults(self, parser):
         parser.set_defaults(license='CC BY-SA')
 
 if __name__ == '__main__':
