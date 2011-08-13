@@ -137,7 +137,8 @@ class post(process):
      
         ret = uploader.upload()
 
-        # self.log_info(uploader.upload_text)
+        ep.comment += "\n%s\n" % ret_text
+        self.log_info(uploader.ret_text)
 
         if ret:
 

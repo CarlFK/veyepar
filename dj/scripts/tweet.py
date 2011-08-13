@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# tweets #client.slug, #video, title and blipurl
+# tweets #client.slug, #video, title and url
 # shortens the URL and title if needed
 
 # if over 140 char, url is shortened using bity,
@@ -81,11 +81,11 @@ class tweet(process):
         client = show.client
 
         # use the username for the client, else use the first user in pw.py
-        user =  client.blip_user if client.blip_user else 'nextdayvideo'
+        user =  client.host_user if client.host_user else 'nextdayvideo'
 
-        blip_url="http://%s.blip.tv/file/%s" % (user,ep.target)
+        url=ep.host_url
         prefix = "#%s #VIDEO" % show.client.slug
-        tweet = self.mk_tweet(prefix, ep.name, ep.authors, blip_url)
+        tweet = self.mk_tweet(prefix, ep.name, ep.authors, url)
 
         ret=self.tweet_tweet(user, tweet)
         return ret
@@ -93,6 +93,8 @@ class tweet(process):
     def add_more_options(self, parser):
         parser.add_option('--lag', type="int",
            help="delay in seconds between tweets.")
+        parser.add_option('--twitter_user', 
+           help="account to tweet from if not specified in client.")
 
     def add_more_option_defaults(self, parser):
         parser.set_defaults(lag=120)
