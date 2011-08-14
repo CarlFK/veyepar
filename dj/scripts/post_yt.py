@@ -27,8 +27,8 @@ class post(process):
 
     descriptions = [ep.authors, ep.description, show.description, client.description]
     descriptions = [d for d in descriptions if d]
-    description = "</p>\n".join(descriptions)
-    description = "<br/>\n".join(description.split('\n'))
+    description = "\n".join(descriptions)
+    # description = "<br/>\n".join(description.split('\n'))
 
     meta = {
         'title': ep.name,
@@ -36,7 +36,7 @@ class post(process):
         }
 
     tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
-    meta['tags'] = ' '.join([tag for tag in tags if tag] )
+    meta['tags'] = [tag for tag in tags if tag] 
 
     if ep.license: 
         meta['license'] = str(ep.license)
@@ -137,12 +137,12 @@ class post(process):
      
         ret = uploader.upload()
 
-        ep.comment += "\n%s\n" % ret_text
+        ep.comment += "\n%s\n" % uploader.ret_text
         self.log_info(uploader.ret_text)
 
         if ret:
 
-            ep.host_url = uploaader.new_url
+            ep.host_url = uploader.new_url
             self.last_url = uploader.new_url # hook for tests so that it can be browsed
 
         else:

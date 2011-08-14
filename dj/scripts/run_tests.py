@@ -279,7 +279,7 @@ pix_fmt=yuv411p" % parms
   # tell the world (test account)
   import tweet
   p=tweet.tweet()
-  p.set_options(force=True, verbose=True, )
+  p.set_options(force=True, verbose=True, lag=0, )
   p.main()
   tweet_url = "http://twitter.com/#!/squid/status/%s" % (p.last_tweet["id"],)
   return tweet_url
@@ -371,7 +371,7 @@ if __name__=='__main__':
 
     t=Run_Tests() 
     # t.upload_formats="flv ogv m4v mp3"
-    t.upload_formats="ogv mp4"
+    t.upload_formats=["mp4"]
 
     t.make_test_user()
     t.setup_test_data()
@@ -390,5 +390,4 @@ if __name__=='__main__':
     result['audio'] = t.sphinx_test()
     print 
     print 'test results', result
-
 

@@ -76,26 +76,28 @@ class Uploader(object):
         yt_service = self.auth()
 
         video_entry = gdata.youtube.YouTubeVideoEntry(
-                media=self.media_group(), geo=self.geo())
+                media=self.media_group())
 
-        # add some more metadata -  more tags!
+        if self.meta.has_key('latlon'):
+            video_entry.geo = self.geo()
+
+        # add some more metadata -  more tags
+        print self.meta['tags']
         video_entry.AddDeveloperTags(self.meta['tags'])
 
         # actually upload
-        self.new_entry = yt_service.InsertVideoEntry(video_entry, self.files[0])
+        pathname= self.files[0]['pathname']
+        print pathname
+        self.new_entry = yt_service.InsertVideoEntry(video_entry, pathname)
 
         self.ret_text = self.new_entry.__str__()
 
         link = self.new_entry.GetHtmlLink()
-        self.new_url = link.href 
+        self.new_url = link.href.split('&')[0]
 
         return True
     
     def extra_stuff():
-
-        print video_id
-        video_id = video_id.split('/')[-1]
-        print video_id
 
         upload_status = yt_service.CheckUploadStatus(new_entry)
 

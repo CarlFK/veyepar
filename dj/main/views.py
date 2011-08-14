@@ -150,10 +150,12 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     show=get_object_or_404(Show,client=client,slug=show_slug)
     eps = Episode.objects.filter(show=show)
 
-    fields=('id','location','sequence','conf_key','target',
+    fields=('id','location','sequence',
+            'conf_key', 'conf_url',
+            'host_url', 'publiv_url',
         'name','slug', 'authors','emails', 'description',
         'start','duration', 
-        'released', 'license', 'conf_key', 'conf_url', 'tags')
+        'released', 'license', 'tags')
 
     response = HttpResponse(mimetype="application/json")
     serializers.serialize("json", eps, fields=fields,  stream=response)

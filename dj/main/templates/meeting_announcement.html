@@ -35,7 +35,7 @@ Details
 {% if show.announcement_state == 2 %}
 EDIT:  http://pyohio.nextdayvideo.com/proposal/{{episode.conf_url}}/edit
 {% endif %}
-{% if episode.target %} Video: http://carlfk.blip.tv/file/{{episode.target}} {% endif %}
+{% if episode.public_url %} Video: {{episode.public_url}} {% endif %}
 {% endfor %}
 
 Location

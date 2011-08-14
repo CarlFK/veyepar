@@ -51,7 +51,7 @@ class EpisodeAdmin(admin.ModelAdmin):
 	'sequence', 'name', 'state', 'state_bumper', 
         'locked','locked_by',
         'show', 
-        'start','end','target')
+        'start','end',)
     # list_display = ( 'sequence', 'name', 'state', 'state_bumper', 'duration' )
     ordering = ('sequence', )
     date_hierarchy = 'start'
