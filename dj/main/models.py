@@ -168,8 +168,9 @@ class Episode(models.Model):
 
     channelcopy = models.CharField(max_length=2,null=True,blank=True,
           help_text='m=mono, 10=copy left to right, 01=right to left.' )
-    license = models.IntegerField(null=True,blank=True,default=13,
-        help_text='see http://0.0.0.0:8080/main/C/test_client/S/test_show/')
+    license = models.CharField(max_length=10, null=True,blank=True,
+            default='CC BY-SA',
+            help_text='see http://creativecommons.org/licenses/')
     hidden = models.NullBooleanField(null=True,blank=True,
         help_text='hidden (does not show up on public episode list')
     thumbnail = models.CharField(max_length=135,blank=True, 

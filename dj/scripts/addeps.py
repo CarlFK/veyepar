@@ -13,7 +13,7 @@ end - datetime in some parsable format
 authors - list of people's names.
 contact - list of email(s) of presenters.
 released - permission to release.
-license - CC license (13 is safe)
+license - CC license 
 description - used as the description of the video (paragraphs are fine)
 conf_key - PK in source database - should be uniquie across this file
 conf_url - URL of talk page
@@ -188,7 +188,7 @@ class add_eps(process.process):
           # start, duration = self.talk_time(row['Day'],row['Time'])
           authors=row.get('presenters','')
           released=row['released']
-          license=row.get('license',"13")
+          license=row['license']
           description = row['description']
           conf_key = row['conf_key']
           conf_url = row.get('conf_url', "" )
@@ -361,7 +361,7 @@ class add_eps(process.process):
             # print event['authors'], event['contact'], contacts
 
             event['released'] = True
-            event['license'] = 13
+            event['license'] = self.options.license
             event['description'] = row['Description']
             event['conf_key'] = row['Id']
             event['conf_url'] = row['URL']
@@ -413,7 +413,7 @@ class add_eps(process.process):
             event['authors'] = row['authors']
             event['emails'] = row['contact']
             event['released'] = row['released']
-            event['license'] = row['released'] or '13'
+            event['license'] = row['license'] 
             event['description'] = row['description']
             event['conf_key'] = row['id']
 
@@ -596,7 +596,7 @@ class add_eps(process.process):
             event['authors'] = row[5]
             event['emails'] = ''
             event['released'] = True
-            event['license'] = '13'
+            event['license'] = self.options.license
             event['description'] = ''
             event['conf_key'] = row[0]
 
@@ -746,6 +746,12 @@ class add_eps(process.process):
           help='csv file' )
         parser.add_option('-u', '--update', action="store_true", 
           help='update when diff, else print' )
+        parser.add_option('-L', '--license', 
+          help= "http://creativecommons.org/licenses/" )
+
+    def add_more_option_defaults(self, parser):
+        parser.set_defaults(license='CC BY-SA')
+
 
     def work(self):
       if self.options.client and self.options.show:

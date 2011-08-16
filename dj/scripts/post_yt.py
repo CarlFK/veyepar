@@ -159,15 +159,11 @@ class post(process):
             help="TV rating")
         parser.add_option('-T', '--topics',
             help="list of topics (user defined)")
-        parser.add_option('-L', '--license', 
-            help= "http://creativecommons.org/licenses/" )
         parser.add_option('-C', '--category',
             help = "-C list' to see full list" )
         parser.add_option('--hidden',
             help="availability on host: 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
 
-  def add_more_option_defaults(self, parser):
-        parser.set_defaults(license='CC BY-SA')
 
 if __name__ == '__main__':
     p=post()
