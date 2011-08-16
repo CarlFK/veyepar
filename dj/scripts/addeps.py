@@ -429,6 +429,44 @@ class add_eps(process.process):
 
         return events
 
+    def pct_events(self, schedule):
+        # >>> schedule['events']['28'].keys()
+        # [u'files', u'room', u'videos', u'title', u'url', u'id', u'tags', u'shorturl', u' sponsors', u'summary', u'presenters', u'duration', u'level', u'type', u'start']
+
+        events=[]
+        for event_id in schedule['events']:
+          src_event=schedule['events'][event_id]
+          if self.options.verbose: print src_event
+          if src_event['type'] != 'Social Event':
+            event={}
+            # event['id'] = event_id
+            event['name'] = src_event['title']
+            event['location'] = schedule['rooms'][src_event['room']]['name']
+
+            event['start'] = datetime.datetime(*src_event['start'])
+
+            seconds=src_event['duration'] * 60
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            event['duration'] =  duration
+
+            event['authors'] = src_event['presenters']
+            event['emails'] = ''
+            event['released'] = True
+            event['license'] = self.options.license
+            event['description'] = src_event['summary']
+            event['conf_key'] = src_event['id']
+
+            event['conf_url'] = src_event['url']
+            event['tags'] = ''
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = src_event
+
+            events.append(event)
+ 
+        return events
+
 
     def add_rooms(self, rooms, show):
       seq=0
@@ -493,6 +531,18 @@ class add_eps(process.process):
                       print 'veyepar %s: %s' % (f,a1)
                       print '  event %s: %s' % (f,a2)
                   print
+
+
+    def pctech(self, schedule, show):
+        # importing from some other instance
+        rooms = [schedule['rooms'][r]['name'] for r in schedule['rooms']]
+        # print rooms
+        self.add_rooms(rooms,show)
+
+        events = self.pct_events(schedule)
+        # print events
+        self.add_eps(events, show)
+        return 
 
     def pyohio(self, schedule, show):
         # importing from some other instance
@@ -585,7 +635,8 @@ class add_eps(process.process):
         # url='http://pyohio.nextdayvideo.com/programme/schedule/json'
         # url='http://veyepar.nextdayvideo.com/main/C/jschi/S/june_2011.json'
         # url='http://pyohio.org/schedule/json/'
-        url='https://www.desktopsummit.org/program/veyepar.csv'
+        # url='https://www.desktopsummit.org/program/veyepar.csv'
+        url='http://pycon-au.org/2011/conference/schedule/events.json'
 
         f=urllib2.urlopen(url)
         if url[-4:]=='.csv':
@@ -596,18 +647,20 @@ class add_eps(process.process):
             j=f.read()
             schedule = json.loads(j)
 
-        # file('chipy.json','w').write(j) 
-        # j=file('pyohio.json').read()
 
         # cache for speedy development 
-        # j=file('schedule_a.json').read()
-        # j=file('schedule.json').read()
+        file('schedule.json','w').write(j) 
+        j=file('schedule.json').read()
 
         # schedule = json.read(j)
 
         # look at fingerprint of file, call appropiate parser
         # print j[:10]
         # print schedule[0]
+        if j.startswith('{"files": {'):
+            # doug pycon, used by py.au
+            return self.pctech(schedule,show)
+
         if j.startswith('[{"pk": '):
             # veyepar show export
             return self.veyepar(schedule,show)
