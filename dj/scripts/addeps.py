@@ -511,7 +511,6 @@ class add_eps(process.process):
         'conf_url', 'tags')
 
           if created or self.options.update:
-              print row['location']
               episode.location=Location.objects.get(name=row['location'])
               for f in fields:
                   setattr( episode, f, row[f] )
@@ -536,11 +535,9 @@ class add_eps(process.process):
     def pctech(self, schedule, show):
         # importing from some other instance
         rooms = [schedule['rooms'][r]['name'] for r in schedule['rooms']]
-        # print rooms
         self.add_rooms(rooms,show)
 
         events = self.pct_events(schedule)
-        # print events
         self.add_eps(events, show)
         return 
 
@@ -548,11 +545,9 @@ class add_eps(process.process):
         # importing from some other instance
         rooms = self.get_rooms(schedule,'room')
         rooms = [r for r in rooms if r != 'Plenary' ]
-        # print rooms
         self.add_rooms(rooms,show)
 
         events = self.symp_events(schedule)
-        # print events
         self.add_eps(events, show)
         return 
 
@@ -655,8 +650,6 @@ class add_eps(process.process):
         # schedule = json.read(j)
 
         # look at fingerprint of file, call appropiate parser
-        # print j[:10]
-        # print schedule[0]
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
             return self.pctech(schedule,show)

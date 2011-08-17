@@ -57,6 +57,11 @@ class post(process):
     if ep.location.lat and ep.location.lon:
         meta['latlon'] = (ep.location.lat, ep.location.lon)
 
+
+    # private is implemnted different in youtube and blip.
+    # plit want's a number, yt wants Truthy
+    meta['hidden'] = ep.hidden or self.options.hidden
+
     # find a thumbnail
     # check for episode.tumb used in the following:
     # 1. absololute path (dumb?)

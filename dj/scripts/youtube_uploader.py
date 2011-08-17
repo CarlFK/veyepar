@@ -4,6 +4,8 @@
 # caled from post_yt.py 
 # which someday will be jsut post.py with a yt parameter.
 
+# http://code.google.com/apis/youtube/1.0/developers_guide_python.html
+
 import gdata.media
 import gdata.geo
 import gdata.youtube
@@ -20,6 +22,7 @@ class Uploader(object):
     upload_user = ''
     old_url = ''
     user=''
+    private=False
 
     # return attributes:
     ret_text = ''
@@ -57,6 +60,11 @@ class Uploader(object):
                 )],
             player=None
             )
+        if self.meta['hidden']:
+            media_group.private=gdata.media.Private()
+
+        import code
+        code.interact(local=locals())
 
         return media_group
 
@@ -97,7 +105,7 @@ class Uploader(object):
 
         return True
     
-    def extra_stuff():
+    def extra_stuff(self):
 
         upload_status = yt_service.CheckUploadStatus(new_entry)
 
@@ -133,7 +141,6 @@ if __name__ == '__main__':
     }
 
     u.files = ['/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4']
-    u.user = 'cfkarsten'
     u.user = 'ndv'
 
     ret = u.upload()
