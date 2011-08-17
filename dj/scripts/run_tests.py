@@ -312,7 +312,7 @@ pix_fmt=yuv411p" % parms
   print text
   
   # not sure what is tacking on the \n, but it is there, so it is here.
-  result = (text == "ABCDEFG\n")
+  result = (text in ["ABCDEFG\n","_BCDEFG\n"])
 
   return result
 

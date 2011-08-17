@@ -11,9 +11,10 @@ sudo apt-get --assume-yes install python-software-properties
 # trunk gstreamer - used for mkthumbs
 sudo apt-add-repository ppa:gstreamer-developers/ppa
 
-# sunab tracks melt trunk, kxstudio has melt stable 6.0
+# sunab tracks melt trunk, 
+# kxstudio has melt stable 
 # sudo apt-add-repository ppa:sunab/kdenlive-svn
-sudo apt-add-repository ppa:kxstudio-team/ppa
+# sudo apt-add-repository ppa:kxstudio-team/ppa
 
 # j^ theora dev ffmpeg2theora trunk
 # http://ppa.launchpad.net/j/ppa/ubuntu/dists/

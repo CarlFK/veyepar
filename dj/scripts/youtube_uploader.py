@@ -5,11 +5,14 @@
 # which someday will be jsut post.py with a yt parameter.
 
 # http://code.google.com/apis/youtube/1.0/developers_guide_python.html
+# http://code.google.com/apis/youtube/2.0/reference.html
 
 import gdata.media
 import gdata.geo
 import gdata.youtube
 import gdata.youtube.service
+
+from gdata.youtube.service import YouTubeError
 
 import pw
 
@@ -93,14 +96,20 @@ class Uploader(object):
         # actually upload
         pathname= self.files[0]['pathname']
         print pathname
-        self.new_entry = yt_service.InsertVideoEntry(video_entry, pathname)
+        try:
+            self.new_entry = yt_service.InsertVideoEntry(video_entry, pathname)
+            self.ret_text = self.new_entry.__str__()
+            link = self.new_entry.GetHtmlLink()
+            self.new_url = link.href.split('&')[0]
+            ret = True
 
-        self.ret_text = self.new_entry.__str__()
+        except gdata.youtube.service.YouTubeError as e:
+            import code
+            # code.interact(local=locals())
+            self.ret_text = e.__str__()
+            ret = False
 
-        link = self.new_entry.GetHtmlLink()
-        self.new_url = link.href.split('&')[0]
-
-        return True
+        return ret
     
     def extra_stuff(self):
 

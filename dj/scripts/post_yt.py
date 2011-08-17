@@ -114,6 +114,7 @@ class post(process):
         log_file=open(log_pathname,'w').write(log)
         # add the log to the list of files to be posted 
         files.append({'ext':'tt', 'pathname':log_pathname})
+
         
     # look for username in [options, client, first in pw.py]
     # password always comes from pw.py
