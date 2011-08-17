@@ -63,9 +63,6 @@ class Uploader(object):
         if self.meta['hidden']:
             media_group.private=gdata.media.Private()
 
-        import code
-        code.interact(local=locals())
-
         return media_group
 
 
