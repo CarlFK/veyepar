@@ -237,7 +237,7 @@ pix_fmt=yuv411p" % parms
   
   p.set_options(force=True, verbose=True, 
     upload_formats=self.upload_formats, 
-    rm_temp=False, debug_log=True)
+    rm_temp=False, debug_log=False)
   p.main()
   return
 
