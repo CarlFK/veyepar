@@ -10,3 +10,11 @@ twit = {
    }
 bitly = {'user':'fred', 'password':'R_longstringofstuff'}
 
+yt = {
+'veyepar_test':{
+    'email': 'veyepar_test@gmail.com',
+    'password': '', 
+    'dev_key':'',
+    },
+}
+
