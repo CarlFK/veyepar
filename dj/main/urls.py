@@ -34,9 +34,14 @@ urlpatterns += patterns(
     url(r'show_stats/(?P<show_id>\w+)/$', 
         show_stats, 
         name='show_stats'),
+
     url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>\w+)_schedule.html$', 
         schedule, 
-        name='schedule'),
+        name='schedule', kwargs={'template_name':'schedule.html'}),
+    url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>\w+)_schedule.iframe$', 
+        schedule, 
+        name='schedule.iframe', kwargs={'template_name':'schedule.iframe'}),
+
     url(r'play_list/(?P<show_id>\w+)/L/(?P<location_slug>[\w+\-]+)/.*$', 
         play_list, 
         name='play_list'),

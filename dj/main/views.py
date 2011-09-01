@@ -248,7 +248,7 @@ def emailer(show_id, ):
 
     return
 
-def schedule(request, show_id, show_slug):
+def schedule(request, show_id, show_slug, template_name):
     show=get_object_or_404(Show,id=show_id)
     locations=show.locations.all().order_by('sequence')
     episodes=Episode.objects.filter(show=show)
@@ -257,7 +257,6 @@ def schedule(request, show_id, show_slug):
     # which will get included in the field list and break the .distinct().
     times=episodes.order_by('start').values('start','end').distinct()
     times=episodes.order_by('start').values('start').distinct()
-    # starts=[ s['start'] for s in starts]
 
     dates = list(set(t['start'].date() for t in times))
     dates.sort()
@@ -267,6 +266,7 @@ def schedule(request, show_id, show_slug):
     # [[d1,[[t1,[e1,e2,e3]],
     #       [t2,[e4,e5,e6]]],
     #  [d2,[[t3,[e7,e8,e9]]]]]]
+
     days=[]
     for d in dates:
         rows=[]
@@ -277,15 +277,13 @@ def schedule(request, show_id, show_slug):
                     i=None
                     for ep in episodes:
                         if ep.location == loc and  ep.start == t['start'] : 
-                            # ep.start == t['start'] and  ep.end == t['end']: 
                             i = ep
                     slots.append(i)
                 rows.append([t,slots])
         days.append([d,rows])
 
-    # pprint(days)
 
-    return render_to_response('schedule.html',
+    return render_to_response(template_name,
         {'show':show, 
         'locations':locations,
         'days':days},
