@@ -36,8 +36,11 @@
           {% for episode in t.1 %}
             <td style="white-space:normal">
             {% if episode %}
-              <a href="{{episode.conf_url}}/">{{ episode.name }}</a>
-              {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> {{ episode.duration }} #}
+              {% if episode.conf_url %}
+                <a href="{{episode.conf_url}}/">{{ episode.name }}</a>
+              {% else %}
+                {{ episode.name }}
+              {% endif %}
               {{episode.authors}}
             {% endif %}
             </td>
