@@ -1,0 +1,52 @@
+{# schedule.iframe #}
+
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta charset="utf-8" />
+
+<script type="text/javascript" src="{{STATIC_URL}}admin/js/urlify.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/login_form.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/fnitize.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/base.css">
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/login_form.css"> 
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/main.css">
+
+</head>
+<body>
+
+  <table width=100%>
+    <thead> <tr>   
+    <td></td>
+    {% for location in locations %}
+      <td>{{ location.name }}</td>
+    {% endfor %}
+    </tr></thead> 
+    
+    {% for day in days %}
+      <tr class=row1><td> {{day.0|date:"D d"}} </td></tr>
+      <tr><td><hr></td></tr>
+       {% for t in day.1 %}
+         <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+          <td> {{t.0.start|date:"h:i"}}</td>
+          {% for episode in t.1 %}
+            <td style="white-space:normal">
+            {% if episode %}
+              <a href="{{episode.conf_url}}/">{{ episode.name }}</a>
+              {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> {{ episode.duration }} #}
+              {{episode.authors}}
+            {% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+       {% endfor %}
+    {% endfor %}
+
+  </table>
+
+</body>
+</html>
