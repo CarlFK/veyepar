@@ -69,8 +69,13 @@ I can fix my consumer easier than I can get someone else's website updated.
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
 
 import datetime 
-import urllib2,json,csv
+import urllib2,csv
 from dateutil.parser import parse
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 # import gdata.calendar.client
 # import gdata.calendar.service
@@ -301,6 +306,7 @@ class add_eps(process.process):
        """
 
     def snake_holes(self, schedule):
+        # importing from veyepar 
         # this is dumb.  
         # currently there is no support for multi rooms.
       rooms=[]
@@ -386,6 +392,8 @@ class add_eps(process.process):
       for row in schedule:
           if self.options.verbose: print row
           room = row[key]
+          if room is None: room = "Plenary"
+          if room == "Plenary": room = "Track 1"
           if room not in rooms: rooms.append(room)
       return rooms
 
@@ -400,7 +408,9 @@ class add_eps(process.process):
             event['name'] = row['title']
             
             event['location'] = row['room']
-            if event['location']=='Plenary': event['location'] = "Cartoon 1" 
+            # if event['location']=='Plenary': event['location'] = "Cartoon 1" 
+            if event['location']=='Plenary': event['location'] = "Track 1" 
+            if event['location'] is None: event['location'] = "Track 1" 
 
             event['start'] = datetime.datetime.strptime(
                     row['start_iso'], '%Y-%m-%dT%H:%M:%S' )
@@ -631,7 +641,8 @@ class add_eps(process.process):
         # url='http://veyepar.nextdayvideo.com/main/C/jschi/S/june_2011.json'
         # url='http://pyohio.org/schedule/json/'
         # url='https://www.desktopsummit.org/program/veyepar.csv'
-        url='http://pycon-au.org/2011/conference/schedule/events.json'
+        # url='http://pycon-au.org/2011/conference/schedule/events.json'
+        url='http://djangocon.us/schedule/json/'
 
         f=urllib2.urlopen(url)
         if url[-4:]=='.csv':
