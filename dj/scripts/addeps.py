@@ -439,7 +439,51 @@ class add_eps(process.process):
 
         return events
 
+
+    def goth_events(self, schedule ):
+        # PyGotham
+
+        # ['outline', 'title', 'room_number', 'duration_minutes', 'talktype', 'levels', 'full_name', 'talk_end_time', 'talk_day_time', 'desc']
+
+        events=[]
+
+        for pk,row in enumerate(schedule):
+            if self.options.verbose: print pk, row
+            event={}
+            # event['id'] = row['id']
+            event['id'] = pk
+            event['name'] = row['title']
+            
+            event['location'] = row['room_number']
+
+            event['start'] = datetime.datetime.strptime(
+                    row['talk_day_time'], '%Y-%m-%d %H:%M:%S' )
+
+            seconds=(row['duration_minutes'] -10) * 60
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            event['duration'] =  duration
+
+            event['authors'] = row['full_name']
+            event['emails'] = '' # row['contact']
+            event['released'] = False
+            event['license'] = ''
+            event['description'] = row['desc']
+            event['conf_key'] = pk
+
+            event['conf_url'] = ''
+
+            event['tags'] = ''
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = row
+
+            events.append(event)
+
+        return events
+
     def pct_events(self, schedule):
+        # pyCon Tech
         # >>> schedule['events']['28'].keys()
         # [u'files', u'room', u'videos', u'title', u'url', u'id', u'tags', u'shorturl', u' sponsors', u'summary', u'presenters', u'duration', u'level', u'type', u'start']
 
@@ -562,6 +606,16 @@ class add_eps(process.process):
         return 
 
 
+    def pygotham(self, schedule, show):
+        # importing from some other instance
+        rooms = self.get_rooms(schedule,'room_number')
+        self.add_rooms(rooms,show)
+
+        events = self.goth_events(schedule)
+        self.add_eps(events, show)
+        return 
+
+
 
     def veyepar(self, schedule, show):
         # importing from some other instance
@@ -642,9 +696,20 @@ class add_eps(process.process):
         # url='http://pyohio.org/schedule/json/'
         # url='https://www.desktopsummit.org/program/veyepar.csv'
         # url='http://pycon-au.org/2011/conference/schedule/events.json'
-        url='http://djangocon.us/schedule/json/'
 
-        f=urllib2.urlopen(url)
+
+        url='http://djangocon.us/schedule/json/'
+        url='http://pygotham.org/talkvote/full_schedule/'
+
+
+        req = urllib2.Request(url)
+        # req.add_header('Content-Type', 'application/json')
+        req.add_header('Accept', 'application/json')
+        response = urllib2.urlopen(req)
+
+        # f=urllib2.urlopen(url)
+        f = response
+
         if url[-4:]=='.csv':
             schedule = list(csv.reader(f))
             if 'desktopsummit.org' in url:
@@ -654,13 +719,14 @@ class add_eps(process.process):
             schedule = json.loads(j)
 
 
-        # cache for speedy development 
+        # save for later
         file('schedule.json','w').write(j) 
-        j=file('schedule.json').read()
+        # j=file('schedule.json').read()
 
         # schedule = json.read(j)
 
         # look at fingerprint of file, call appropiate parser
+
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
             return self.pctech(schedule,show)
@@ -670,9 +736,12 @@ class add_eps(process.process):
             return self.veyepar(schedule,show)
 
         if j.startswith('[{"') and schedule[0].has_key('last_updated'):
-            # [{"last_up
             # pyohio
             return self.pyohio(schedule,show)
+
+        if j.startswith('[{"') and schedule[0].has_key('talk_day_time'):
+            # pyGotham
+            return self.pygotham(schedule,show)
 
         if isZoo:
             return self.zoo(schedule,show)

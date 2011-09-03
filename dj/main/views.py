@@ -683,7 +683,10 @@ def show_stats(request, show_id, ):
      
             stat['talk_gig']=int(stat['minutes']*13/60)
             stat['gig']=stat['bytes']/(1024**3)
-            stat['max_gig']=(stat['end']-stat['start']).seconds*13/3600
+            try:
+                stat['max_gig']=(stat['end']-stat['start']).seconds*13/3600
+            except TypeError:
+                stat['max_gig']=0
 
             if stat['talk_gig'] < stat['gig'] < stat['max_gig']:
                 # amount recoreded between all talks and below cruft
