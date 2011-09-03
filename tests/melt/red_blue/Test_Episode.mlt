@@ -1,0 +1,19 @@
+<mlt>
+
+  <producer id="title" in="0" out="149" resource="/home/carl/Videos/veyepar/test_client/test_show/bling/Test_Episode.png" />
+  <producer id="producer1" resource="/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00:00:03.dv" /><producer id="producer4" resource="/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00:00:06.dv" /><producer id="producer3" resource="/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00:00:09.dv" /><producer id="credits" resource="/home/carl/Videos/veyepar/test_client/test_show/bling/ndv1-black.png" /><playlist id="playlist0">
+    <entry id="clip1" producer="producer1" /><entry id="clip2" producer="producer4" /><entry id="clip3" producer="producer3" /><entry id="clip_credits" in="0" out="120" producer="credits" /><filter mlt_service="volume" normalise="-12db" /></playlist>
+
+  <playlist id="playlist1">
+    <entry producer="title" />
+  </playlist>
+
+  <tractor id="tractor0">
+       <multitrack>
+         <track producer="playlist0" />
+         <track producer="playlist1" />
+       </multitrack>
+       <transition a_track="1" b_track="0" in="100" mlt_service="luma" out="149" />
+   </tractor>
+
+</mlt>

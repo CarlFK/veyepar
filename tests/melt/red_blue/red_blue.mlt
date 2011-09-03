@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<mlt>
+
+ <producer id="producer0" mlt_service="noise" length="30" />
+ <producer id="producer1" mlt_service="color" colour="red" length="30" />
+ <producer id="producer2" mlt_service="color" colour="blue" length="30" />
+ 
+ <playlist id="playlist0">
+  <entry producer="producer0" />
+ </playlist>
+
+ <playlist id="playlist1">
+  <entry producer="producer1" />
+  <entry producer="producer2" />
+ </playlist>
+
+ <tractor id="tractor0">
+      <multitrack>
+        <track producer="playlist0" />
+        <track producer="playlist1" />
+      </multitrack>
+  </tractor>
+
+</mlt>
+
