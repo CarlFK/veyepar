@@ -766,8 +766,9 @@ class add_eps(process.process):
         # url='http://pycon-au.org/2011/conference/schedule/events.json'
 
 
-        url='http://djangocon.us/schedule/json/'
-        # Nurl='http://pygotham.org/talkvote/full_schedule/'
+        # url='http://djangocon.us/schedule/json/'
+        # url='http://pygotham.org/talkvote/full_schedule/'
+        url='http://www.pytexas.org/2011/schedule/json/'
 
         req = urllib2.Request(url)
         # req.add_header('Content-Type', 'application/json')
@@ -804,6 +805,10 @@ class add_eps(process.process):
 
         if j.startswith('[{"') and schedule[0].has_key('last_updated'):
             # pyohio
+            return self.pyohio(schedule,show)
+
+        if j.startswith('[{"') and schedule[0].has_key('start_iso'):
+            # pyTexas
             return self.pyohio(schedule,show)
 
         if j.startswith('[{"') and schedule[0].has_key('talk_day_time'):
