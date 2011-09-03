@@ -143,7 +143,8 @@ class post(process):
      
         ret = uploader.upload()
 
-        ep.comment += "\n%s\n" % uploader.ret_text
+        ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
+
         self.log_info(uploader.ret_text)
 
         if ret:
