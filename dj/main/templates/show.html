@@ -36,7 +36,7 @@
         <th>id</th>
         <th>seq</th>
         <th>loc name</th>
-        <th>start-end</th>
+        <th>start</th><th>end</th>
         <th>duration</th>
         <th>state</th>
         <th>episode.name</th>
@@ -57,7 +57,8 @@
         {% endif %}
          ">{{episode.location}}</a></td>
 
-        <td>{{episode.start|date:"D d H:i"}} - {{episode.end|date:"H:i"}}</td>
+ <td> <a href="/databrowse/main/episode/fields/start/{{episode.start|date:"Y-m-d H:i:s"}}"> {{episode.start|date:"D d H:i"}} </a> </td>
+ <td>{{episode.end|date:"H:i"}}</td>
         <td>{{episode.duration}}</td>
         <td>{{episode.state}}</td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
