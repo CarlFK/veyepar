@@ -22,6 +22,6 @@ Cable Connections:
 B (top) - from slide show vga card
 A (bottom left) - from presenter's laptop
 2 (middle) - to lcd monitor
-2 (right) - to twinpact in, twinpact out to projector
+1 (right) - to twinpact in, twinpact out to projector
 
 
