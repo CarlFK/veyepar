@@ -33,19 +33,19 @@
 			<ReprintHeaderOnNewPage>False</ReprintHeaderOnNewPage>
 			<StartOnNewPage>True</StartOnNewPage>
 			<GroupHeader>
-				<Height>87.8</Height>
+				<Height>99.0</Height>
 				<Objects>
 					<Rectangle>
-						<height>'57.0 pt'</height>
+						<height>'67.0 pt'</height>
 						<width>'273.0 pt'</width>
-						<x>'4.0 pt'</x>
+						<x>'3.8 pt'</x>
 						<y>'0.0 pt'</y>
 					</Rectangle>
 					<Rectangle>
 						<height>'31.0 pt'</height>
 						<width>'446.0 pt'</width>
 						<x>'4.0 pt'</x>
-						<y>'57.0 pt'</y>
+						<y>'67.0 pt'</y>
 					</Rectangle>
 					<Rectangle>
 						<FillColor>(0.953, 0.953, 0.953)</FillColor>
@@ -61,7 +61,7 @@
 						<Height>15</Height>
 						<width>'74.0 pt'</width>
 						<x>'9.0 pt'</x>
-						<y>'63.0 pt'</y>
+						<y>'73.0 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] Sound levels on DVswitch"</expr>
@@ -69,7 +69,7 @@
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
 						<x>'19.0 pt'</x>
-						<y>'27.0 pt'</y>
+						<y>'23.0 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] System date and time."</expr>
@@ -77,7 +77,7 @@
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
 						<x>'19.0 pt'</x>
-						<y>'9.0 pt'</y>
+						<y>'7.0 pt'</y>
 					</String>
 					<String>
 						<expr>"DVswitch op:"</expr>
@@ -86,7 +86,7 @@
 						<Height>15</Height>
 						<width>'82.0 pt'</width>
 						<x>'115.4 pt'</x>
-						<y>'63.0 pt'</y>
+						<y>'73.0 pt'</y>
 					</String>
 					<String>
 						<expr>"Audio op:"</expr>
@@ -95,7 +95,7 @@
 						<Height>15</Height>
 						<width>'62.0 pt'</width>
 						<x>'341.5 pt'</x>
-						<y>'63.0 pt'</y>
+						<y>'73.0 pt'</y>
 					</String>
 					<String>
 						<expr>"Cam Op:"</expr>
@@ -104,7 +104,7 @@
 						<Height>15</Height>
 						<width>'59.0 pt'</width>
 						<x>'238.0 pt'</x>
-						<y>'63.0 pt'</y>
+						<y>'73.0 pt'</y>
 					</String>
 					<String>
 						<expr>"Edit by:"</expr>
@@ -156,7 +156,15 @@
 						<ScalePercent>(100.0, 90.0)</ScalePercent>
 						<width>'81.0 pt'</width>
 						<x>'6.0 pt'</x>
-						<y>'45.0 pt'</y>
+						<y>'55.0 pt'</y>
+					</String>
+					<String>
+						<expr>"[  ] Replace Batteries in mics"</expr>
+						<FontName>'Helvetica-Bold'</FontName>
+						<FontSize>13</FontSize>
+						<width>'243.0 pt'</width>
+						<x>'19.0 pt'</x>
+						<y>'39.0 pt'</y>
 					</String>
 				</Objects>
 			</GroupHeader>
