@@ -19,7 +19,13 @@ ndv walpaper
 
 upload:
   grab blip rss for episode
-  upload to youtube
-
 
 recording sheets:
+
+live cd: mainly for slave
+  openssh-server dvsource kino mplayer
+  ~/dvswitchrc
+  10.0.0.2
+  avahi to find dvswitch
+  user in video group
+
