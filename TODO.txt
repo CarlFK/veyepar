@@ -29,3 +29,9 @@ live cd: mainly for slave
   avahi to find dvswitch
   user in video group
 
+title screen preview
+  extract mktitle from enc.py 
+  so that they can be generated and displayed on web page.
+maybe use this to make room signs.
+
+

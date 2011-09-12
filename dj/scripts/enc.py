@@ -128,7 +128,38 @@ class enc(process):
 
   ready_state = 2
 
-  def mktitle(self, source, output_base, episode):
+  def mk_title_svg(self, raw_svg, texts):
+    """
+    Make a title slide by filling in a pre-made svg with name/authors.
+    melt uses librsvg which doesn't support flow, 
+    wich is needed for long titles, so render it to a .png using inkscape
+    """
+    tree=xml.etree.ElementTree.XMLID(raw_svg)
+
+    for key in texts:
+        if self.options.verbose: print key
+        # tollerate template where tokens have been removed
+        if tree[1].has_key(key):
+            if self.options.verbose: 
+                print "org", tree[1][key].text
+                # print "new", text[key].encode()
+            tree[1][key].text=text[key]
+
+    if tree[1].has_key('presenternames'):
+        if text['authors']:
+            prefix = "Featuring" if "," in text['authors'] else "By"
+            tree[1]['presenternames'].text="%s %s" % (prefix,text['authors'])
+        else:
+            # remove the text (there is a placholder to make editing sane)
+            tree[1]['presenternames'].text=""
+
+
+    open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))
+    cooked_svg = xml.etree.ElementTree.tostring(tree[0])
+
+    return cooked_svg
+
+  def mk_title_png(self, source, output_base, episode):
     """
     Make a title slide by filling in a pre-made svg with name/authors.
     melt uses librsvg which doesn't support flow, 
@@ -525,7 +556,7 @@ class enc(process):
 
         template = os.path.join(self.show_dir, "bling", svg_name)
         title_base = os.path.join(self.show_dir, "bling", episode.slug)
-        title_img=self.mktitle(template, title_base, episode)
+        title_img=self.mk_title_png(template, title_base, episode)
 
 # define credits
         credits_img = episode.show.client.credits \
