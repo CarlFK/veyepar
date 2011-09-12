@@ -12,6 +12,7 @@ class mkdirs(process):
 
   def mkdir(self,dir):
       """ makes the dir if it doesn't exist """
+      ret = False
       print dir,
       if os.path.exists(dir):
          print '(exists)'
@@ -20,7 +21,10 @@ class mkdirs(process):
              print '(testing, skipped)'
          else:
              os.makedirs(dir)
+             ret = True
          print
+
+      return ret
 
   def work(self):
         """
@@ -29,15 +33,20 @@ class mkdirs(process):
         client = Client.objects.get(slug=self.options.client)
         show = Show.objects.get(client=client,slug=self.options.show)
         self.set_dirs(show)
-        for d in "dv tmp/dv tmp/bling bling ogg ogv mp4 m4v mp3 flv txt thumb".split():
-            self.mkdir(os.path.join(self.show_dir,d))
+        for d in "dv tmp/dv titles titles/svg titles/png bling ogg ogv mp4 m4v mp3 flv txt thumb ".split():
+            full_dir = os.path.join(self.show_dir,d)
+            ret = self.mkdir(full_dir)
+            if ret: 
+                if d == 'bling':
+                    cmd = ['cp', '-a', 'bling', self.show_dir ]
+                    self.run_cmd(cmd)
 
 # get episodes for this show
         eps = Episode.objects.filter(show=show)
 # get locations of the episodes
         for loc in Location.objects.filter(show=show):
              dir = os.path.join(self.show_dir,'dv',loc.slug)
-             self.mkdir(dir)
+             ret = self.mkdir(dir)
 
         return
 

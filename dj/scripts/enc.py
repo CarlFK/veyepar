@@ -131,8 +131,7 @@ class enc(process):
   def mk_title_svg(self, raw_svg, texts):
     """
     Make a title slide by filling in a pre-made svg with name/authors.
-    melt uses librsvg which doesn't support flow, 
-    wich is needed for long titles, so render it to a .png using inkscape
+    return: svg
     """
     tree=xml.etree.ElementTree.XMLID(raw_svg)
 
@@ -142,30 +141,24 @@ class enc(process):
         if tree[1].has_key(key):
             if self.options.verbose: 
                 print "org", tree[1][key].text
-                # print "new", text[key].encode()
-            tree[1][key].text=text[key]
+                # print "new", texts[key].encode()
+            tree[1][key].text=texts[key]
 
     if tree[1].has_key('presenternames'):
-        if text['authors']:
-            prefix = "Featuring" if "," in text['authors'] else "By"
-            tree[1]['presenternames'].text="%s %s" % (prefix,text['authors'])
+        if texts['authors']:
+            # prefix = "Featuring" if "," in texts['authors'] else "By"
+            # tree[1]['presenternames'].text="%s %s" % (prefix,texts['authors'])
+            tree[1]['presenternames'].text=texts['authors']
         else:
             # remove the text (there is a placholder to make editing sane)
             tree[1]['presenternames'].text=""
 
-
-    open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))
     cooked_svg = xml.etree.ElementTree.tostring(tree[0])
 
     return cooked_svg
 
-  def mk_title_png(self, source, output_base, episode):
-    """
-    Make a title slide by filling in a pre-made svg with name/authors.
-    melt uses librsvg which doesn't support flow, 
-    wich is needed for long titles, so render it to a .png using inkscape
-    """
-    text={
+  def get_title_text( self, episode ): 
+    texts={
             'client': episode.show.client.name, 
             'show': episode.show.name, 
             'title': episode.name, 
@@ -174,34 +167,37 @@ class enc(process):
             'date': episode.start.strftime("%B %d, %Y"),
             'time': episode.start.strftime("%H:%M"),
         }
- 
-    svg_in=open(source).read()
-    tree=xml.etree.ElementTree.XMLID(svg_in)
+    return texts
 
-    for key in text:
-        if self.options.verbose: print key
-        # tollerate template where tokens have been removed
-        if tree[1].has_key(key):
-            if self.options.verbose: 
-                print "org", tree[1][key].text
-                # print "new", text[key].encode()
-            tree[1][key].text=text[key]
+  def mk_title_png(self, source, output_base, episode):
+    """
+    Make a title slide png file.
+    melt uses librsvg which doesn't support flow, 
+    wich is needed for long titles, so render it to a .png using inkscape
+    TODO: pass svg in and get png back over stdio 
+      so that files are not created.
+      but no clue how to do that, and files aren't so bad.
+    """
 
-    if tree[1].has_key('presenternames'):
-        if text['authors']:
-            prefix = "Featuring" if "," in text['authors'] else "By"
-            tree[1]['presenternames'].text="%s %s" % (prefix,text['authors'])
-        else:
-            # remove the text (there is a placholder to make editing sane)
-            tree[1]['presenternames'].text=""
+    raw_svg=open(source).read()
+    tree=xml.etree.ElementTree.XMLID(raw_svg)
 
+    texts = self.get_title_text( episode )
+  
+    cooked_svg = self.mk_title_svg(raw_svg, texts)
 
+    # save svg to a file
+    # (no clue how else to pass svg to inkscape)
     cooked_svg_name='%s.svg'%output_base
-    open(cooked_svg_name,'w').write(xml.etree.ElementTree.tostring(tree[0]))
+    open(cooked_svg_name,'w').write(cooked_svg)
+
+    # create png file
     png_name="%s.png"%output_base
-    if self.options.verbose: print png_name
     cmd=["inkscape", cooked_svg_name, "--export-png", png_name]
     self.run_cmds(episode,[cmd])
+
+    if self.options.verbose: print cooked_svg
+    if self.options.verbose: print png_name
 
     return png_name
 
@@ -555,7 +551,7 @@ class enc(process):
                 else "title.svg"
 
         template = os.path.join(self.show_dir, "bling", svg_name)
-        title_base = os.path.join(self.show_dir, "bling", episode.slug)
+        title_base = os.path.join(self.show_dir, "titles", episode.slug)
         title_img=self.mk_title_png(template, title_base, episode)
 
 # define credits
