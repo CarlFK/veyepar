@@ -548,7 +548,7 @@ class enc(process):
 # make a title slide
         svg_name = episode.show.client.title_svg \
                 if episode.show.client.title_svg \
-                else "title.svg"
+                else "%s_title.svg" % (episode.show.slug)
 
         template = os.path.join(self.show_dir, "bling", svg_name)
         title_base = os.path.join(self.show_dir, "titles", episode.slug)
