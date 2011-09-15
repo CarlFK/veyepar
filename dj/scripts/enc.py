@@ -444,7 +444,6 @@ class enc(process):
                   cmd.extend(ffpreset)
                   cmds=[cmd]
                   cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
-                  # cmds.append( ["mv", tmp_pathname, '/tmp'] )
                   if self.options.rm_temp:
                       cmds.append( ["rm", tmp_pathname] )
 
@@ -461,7 +460,6 @@ class enc(process):
                   cmd.extend(ffpreset)
                   cmds=[cmd]
                   cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
-                  # cmds.append( ["mv", tmp_pathname, '/tmp'] )
                   if self.options.rm_temp:
                       cmds.append( ["rm", tmp_pathname] )
               if ext=='dv': 

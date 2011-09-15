@@ -21,6 +21,7 @@ upload:
   grab blip rss for episode
 
 recording sheets:
+ [x] over time (adjust before addeps to suck in the extras)
 
 live cd: mainly for slave
   openssh-server dvsource kino mplayer

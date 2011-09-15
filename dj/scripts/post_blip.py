@@ -54,15 +54,16 @@ class post(process):
 
 # if .target is blank, a new episode will be created and .target set
 # else it will use the id of the episode from a previous run. 
-    video_id = ep.target
+    video_id = ep.host_url
 
     tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
     meta['topics'] = ' '.join([tag for tag in tags if tag] )
 
     if ep.license: 
-        meta['license'] = str(ep.license)
+        license = ep.license
     elif self.options.license:
-        meta['license'] = self.options.license
+        license = self.options.license
+    meta['license'] = {'CC BY-SA': '13'}[license]
 
     if self.options.rating:
         meta['content_rating'] = self.options.rating
@@ -146,9 +147,9 @@ class post(process):
     # password always comes from pw.py
    
     # print "client blip_user", client.blip_user
-    blip_user =  self.options.blip_user if self.options.blip_user \
-                    else client.blip_user if client.blip_user \
-                    else pw.blip.keys()[0]
+    blip_user =  self.options.host_user if self.options.host_user \
+                    else client.host_user if client.host_user \
+                    else pw.host.keys()[0]
     # print "user", blip_user
     blip_pw = pw.blip[blip_user]
 
@@ -251,7 +252,7 @@ Your file called Test Episode #0 has been successfully posted.
             blip_id=post_url.text.split('/')[-1]
             if self.options.verbose:
                 print "blip id:", blip_id
-            ep.target = blip_id
+            ep.host_url = blip_id
             ep.comment += post_url.text
             self.log_info(response.text)
             ret=True

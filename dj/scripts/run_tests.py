@@ -264,7 +264,8 @@ pix_fmt=yuv411p" % parms
 # --force \
 # --hidden=1
   """
-  import post_yt as post
+  # import post_yt as post
+  import post_blip as post
   p=post.post()
   p.set_options(force=True, verbose=True, 
       upload_formats=self.upload_formats,
@@ -376,18 +377,18 @@ if __name__=='__main__':
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    t.make_source_dvs()
+    # t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
-    t.make_thumbs()
+    # t.make_thumbs()
     t.make_cut_list()
-    t.encode()
-    t.ck_errors()
-    t.play_vid()
+    # t.encode()
+    # t.ck_errors()
+    # t.play_vid()
     result['url'] = t.post()
-    result['tweet'] = t.tweet()
-    result['video'] = t.ocr_test()
-    result['audio'] = t.sphinx_test()
+    # result['tweet'] = t.tweet()
+    # result['video'] = t.ocr_test()
+    # result['audio'] = t.sphinx_test()
     print 
     print 'test results', result
 

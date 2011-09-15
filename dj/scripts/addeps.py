@@ -768,7 +768,13 @@ class add_eps(process.process):
 
         # url='http://djangocon.us/schedule/json/'
         # url='http://pygotham.org/talkvote/full_schedule/'
-        url='http://www.pytexas.org/2011/schedule/json/'
+        # url='http://www.pytexas.org/2011/schedule/json/'
+
+        url = { 
+            'djangocon2011': 'http://djangocon.us/schedule/json/',
+            'pygotham': 'http://pygotham.org/talkvote/full_schedule/',
+            'pytexas_2011': 'http://www.pytexas.org/2011/schedule/json/',
+            }[self.options.show]
 
         req = urllib2.Request(url)
         # req.add_header('Content-Type', 'application/json')
