@@ -58,7 +58,7 @@
 			</Line>
 			<Memo>
 				<calculatedHeight>36</calculatedHeight>
-				<expr>"The PSF would like to distribute audio or video of your presentation. 				To do that, we need to have you agree to the following legalese. 				It allows us 1) to perform the necessary audio and video editing needed to prepare your presentation, 				and 2) to distribute the recordings to other people, including on Blip.TV and YouTube.  				It also allows other people to watch what we put up."</expr>
+				<expr>"The PSF would like to distribute audio or video of your presentation.  To do that, we need to have you agree to the following legalese.  It allows us 1) to perform the necessary audio and video editing needed to prepare your presentation, and 2) to distribute the recordings to other people, including on Blip.TV and YouTube.  It also allows other people to watch what we put up."</expr>
 				<Height>None</Height>
 				<width>522</width>
 				<x>10.6</x>
