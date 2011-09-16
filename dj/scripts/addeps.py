@@ -519,7 +519,7 @@ class add_eps(process.process):
             if self.options.verbose: print pk, row
             event={}
             # event['id'] = row['id']
-            event['id'] = pk
+            event['id'] = row['key']
             event['name'] = row['title']
             
             event['location'] = row['room_number']
@@ -537,7 +537,7 @@ class add_eps(process.process):
             event['released'] = False
             event['license'] = ''
             event['description'] = row['desc']
-            event['conf_key'] = pk
+            event['conf_key'] = row['key']
 
             event['conf_url'] = ''
 

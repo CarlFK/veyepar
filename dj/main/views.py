@@ -340,7 +340,8 @@ def room_signs(request,show_id):
 
 
     
-def recording_sheets(request,show_id):
+# def recording_sheets(request,show_id):
+def recording_sheets(request,show_id, rfxml):
     show=get_object_or_404(Show,id=show_id)
     client = show.client
 
@@ -348,7 +349,8 @@ def recording_sheets(request,show_id):
     episodes=Episode.objects.filter(show=show).order_by('location','start')
 
     base  = os.path.dirname(__file__)
-    rfxmlfile  = os.path.join(base,'templates','RecordingSheet_v2a.rfxml')
+    # rfxmlfile  = os.path.join(base,'templates','RecordingSheet_v2a.rfxml')
+    rfxmlfile  = os.path.join(base,'templates', rfxml)
      
     # buffer to create pdf in
     buffer = StringIO()

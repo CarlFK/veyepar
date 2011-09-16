@@ -70,7 +70,12 @@ urlpatterns += patterns(
     url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
         name='orphan_dv'),
     url(r'recording_sheets/(?P<show_id>\w+)/.*$', recording_sheets,
-        name='recording_sheets'),
+        name='recording_sheets',
+        kwargs={'rfxml':'RecordingSheet_v2a.rfxml'}),
+
+    url(r'release/(?P<show_id>\w+)/.*$', recording_sheets,
+        name='release',
+        kwargs={'rfxml':'release_agreement.rfxml'}),
     url(r'room_signs/(?P<show_id>\w+)/.*$', room_signs,
         name='room_signs'),
 
