@@ -399,7 +399,7 @@
 				<y>'2.0 pt'</y>
 			</String>
 			<String>
-				<expr>"NOT Released."</expr>
+				<expr>"Released: [  ] yes  [  ] no."</expr>
 				<FontName>'Helvetica- bold'</FontName>
 				<FontSize>13</FontSize>
 				<height>'14.0 pt'</height>
