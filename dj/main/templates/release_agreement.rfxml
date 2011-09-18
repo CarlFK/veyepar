@@ -233,6 +233,24 @@
 				<x>100</x>
 				<y>'32 pt'</y>
 			</String>
+			<String>
+				<expr>self.episode_conf_key</expr>
+				<FontName>'Helvetica'</FontName>
+				<Height>10</Height>
+				<Width>38</Width>
+				<x>'150.0 pt'</x>
+				<y>'32 pt'</y>
+			</String>
+			<String>
+				<Align>'right'</Align>
+				<expr>"page %s of %s" % (self.PageNumber, self.PageCount)</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>11</FontSize>
+				<height>'15.0 pt'</height>
+				<width>'106.0 pt'</width>
+				<x>'432.0 pt'</x>
+				<y>'0.0 pt'</y>
+			</String>
 		</Objects>
 	</Detail>
 
@@ -245,7 +263,7 @@
 	</PageForeground>
 
 	<TestCursor>
-		<record episode_primary="&quot;113&quot;" location_name="u&apos;Hollister&apos;" talk_title="&quot;My Great Talk&quot;" presenter_name="&quot;John Doh&quot;" talk_id="&quot;PM5&quot;" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" />
+		<record episode_primary="201" episode_conf_key="u&apos;abc&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="101" episode_emails="u&apos;p@ulmcnett.com&apos;" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_duration="u&apos;04:10:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" />
 	</TestCursor>
 
 </Report>
