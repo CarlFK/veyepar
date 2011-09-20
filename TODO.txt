@@ -35,4 +35,5 @@ title screen preview
   so that they can be generated and displayed on web page.
 maybe use this to make room signs.
 
+move get_size from tsdv to adddv.
 

@@ -45,7 +45,7 @@ class add_dv(process):
         start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
         # dt = dv.filename[:-3]
         # dt.replace('/',' ')
-        st = os.stat(pathname)    
+        # st = os.stat(pathname)    
         # get start from filesystem create timestamp
         # start=datetime.datetime.fromtimestamp( st.st_mtime )
         # start=parse(dt)
@@ -57,9 +57,9 @@ class add_dv(process):
             print dv.location.slug
             start += datetime.timedelta(hours=-3,minutes=0)
 
-        dv.filesize=st.st_size
+        # dv.filesize=st.st_size
 
-        frames = st.st_size/self.bpf
+        frames = dv.filesize/self.bpf
         seconds = frames/self.fps 
 
         # hours = int(seconds / 3600)

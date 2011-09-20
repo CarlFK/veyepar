@@ -40,7 +40,7 @@
 	</PageHeader>
 
 	<Detail>
-		<Height>None</Height>
+		<Height>94.2</Height>
 		<Objects>
 			<String>
 				<Align>'center'</Align>
@@ -249,6 +249,16 @@
 				<height>'15.0 pt'</height>
 				<width>'106.0 pt'</width>
 				<x>'432.0 pt'</x>
+				<y>'0.0 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
+				<expr>"[  ] logged"</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>10</FontSize>
+				<height>'10.0 pt'</height>
+				<width>'55.0 pt'</width>
+				<x>'10.7 pt'</x>
 				<y>'0.0 pt'</y>
 			</String>
 		</Objects>

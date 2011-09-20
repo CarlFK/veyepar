@@ -22,9 +22,17 @@ class add_dv(process):
             rf, created = Raw_File.objects.get_or_create(
                 show=show, location=location,
                 filename=pathname,)
+            
+            st = os.stat(pathname)    
+            rf.filesize=st.st_size
+
             if created: 
                print "(new)"
                rf.sequence=seq
+
+               st = os.stat(pathname)    
+               rf.filesize=st.st_size
+
                rf.save()
             else:
                print "(exists)"
