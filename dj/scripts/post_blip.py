@@ -195,6 +195,12 @@ class post(process):
         ep.comment += "\n%s\n%s\n" % (reponse_code,response_xml)
         ep.save()
 
+        if response_obj.status == 503:
+            ep.state=0
+            ep.save()
+            return False
+
+
         """<?xml version="1.0" encoding="UTF-8"?>
 <otterResponses>
 <response>
