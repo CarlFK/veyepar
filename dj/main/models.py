@@ -59,11 +59,11 @@ class Location(models.Model):
         help_text="room name")
     slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="dir name to store input files")
-    dirname = models.CharField(max_length=135,
+    dirname = models.CharField(max_length=135, blank=True,
         help_text="pat to raw files. overrieds show/slug.")
     description = models.TextField(blank=True)
-    lon = models.FloatField(null=True,)
-    lat = models.FloatField(null=True,)
+    lon = models.FloatField(null=True, blank=True )
+    lat = models.FloatField(null=True, blank=True )
     def __unicode__(self):
         return "%s" % ( self.name )
     class Meta:

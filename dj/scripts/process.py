@@ -385,7 +385,7 @@ class process(object):
     if self.options.verbose:
         print self.options, self.args
         from django.conf import settings
-        print settings.DATABASE_ENGINE, settings.DATABASE_NAME
+        # print settings.DATABASE_ENGINE, settings.DATABASE_NAME
 
     if "pal" in self.options.dv_format:
         self.fps=25.0

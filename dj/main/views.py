@@ -419,7 +419,7 @@ def enc_play_list(request,episode_id):
 
     response = HttpResponse(mimetype='audio/mpegurl')
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
-    response['Content-Disposition'] = 'inline'
+    response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
     writer = csv.writer(response)
     # exts = [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
@@ -462,6 +462,9 @@ def play_list(request,show_id,location_slug=None):
         if settings.MEDIA_URL.startswith('file:/'):
             head=settings.MEDIA_URL
             ext='flv'
+        elif settings.MEDIA_URL.startswith('http:/'):
+            head=settings.MEDIA_URL
+            ext='mp4'
         else:
             # probably no local file access
             head='http://'+request.META['HTTP_HOST']+settings.MEDIA_URL

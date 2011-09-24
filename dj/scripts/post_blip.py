@@ -63,6 +63,9 @@ class post(process):
         license = ep.license
     elif self.options.license:
         license = self.options.license
+    else:
+        license = 'CC BY-SA'
+
     meta['license'] = {'CC BY-SA': '13'}[license]
 
     if self.options.rating:
