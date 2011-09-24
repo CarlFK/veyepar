@@ -175,6 +175,8 @@ class post(process):
         
           response_obj = blip_cli.Upload(
             video_id, blip_user, blip_pw, files, meta, thumb)
+          reponse_code = "%s: %s" % (
+                  response_obj.status, response_obj.reason)
           response_xml = response_obj.read()
 
           if 'Guru Meditation' in response_xml:
@@ -187,7 +189,7 @@ class post(process):
             done=True
 
         if self.options.verbose: print response_xml
-        ep.comment += "\n%s\n" % response_xml
+        ep.comment += "\n%s\n%s\n" % (reponse_code,response_xml)
         ep.save()
 
         """<?xml version="1.0" encoding="UTF-8"?>

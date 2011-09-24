@@ -181,6 +181,7 @@ class Blip(object):
         self.progress(bytes_sent,datalen)
 
         response = h.getresponse()
+        print "\n", response.status, response.reason
         return response
 
     def Upload(self, video_id, username, password, files, meta={}, thumbname=None):

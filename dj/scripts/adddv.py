@@ -23,14 +23,13 @@ class add_dv(process):
                 show=show, location=location,
                 filename=pathname,)
             
-            st = os.stat(pathname)    
-            rf.filesize=st.st_size
-
             if created: 
                print "(new)"
                rf.sequence=seq
 
-               st = os.stat(pathname)    
+               fullpathname = os.path.join(
+                       self.show_dir, "dv", location.slug, pathname )
+               st = os.stat(fullpathname)    
                rf.filesize=st.st_size
 
                rf.save()

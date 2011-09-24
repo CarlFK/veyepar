@@ -418,7 +418,8 @@ def enc_play_list(request,episode_id):
     client=show.client
 
     response = HttpResponse(mimetype='audio/mpegurl')
-    response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
+    # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
+    response['Content-Disposition'] = 'inline'
 
     writer = csv.writer(response)
     # exts = [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:

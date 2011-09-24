@@ -37,3 +37,5 @@ maybe use this to make room signs.
 
 move get_size from tsdv to adddv.
 
+tests: 
+  check file sizes of resulting test vids
