@@ -285,6 +285,15 @@ pix_fmt=yuv411p" % parms
   tweet_url = "http://twitter.com/#!/squid/status/%s" % (p.last_tweet["id"],)
   return tweet_url
 
+ def csv(self):
+  # make csv and other data files
+  import cvs
+  p=cvs.csv()
+  p.main()
+
+  return
+
+
  def ocr_test(self):
   # ocr an output file, check for ABCDEFG
   # someday this will wget the m4v from blip to see what they made
@@ -387,6 +396,7 @@ if __name__=='__main__':
     t.play_vid()
     result['url'] = t.post()
     result['tweet'] = t.tweet()
+    t.csv()
     result['video'] = t.ocr_test()
     result['audio'] = t.sphinx_test()
     print 

@@ -97,7 +97,7 @@ class csv(process):
             html_pathname, blip_pathname )
 
 # setup csv 
-    fields="id conf_key conf_url state name primary target blip source embed".split()
+    fields="id conf_key conf_url state name primary host_url public_url blip source embed".split()
     csv = DictWriter(open(csv_pathname, "w"),fields)
     # write out field names
     csv.writerow(dict(zip(fields,fields)))
@@ -115,7 +115,7 @@ class csv(process):
 
     # write out episode data
     for ep in episodes:
-        if not ep.target: 
+        if not ep.host_url: 
             # skip episodes that have not been uploaded yet.
             continue
 
@@ -125,16 +125,17 @@ class csv(process):
         blip_cli=blip_uploader.Blip_CLI()
         blip_cli.debug = self.options.verbose
 
-        xml_code = blip_cli.Get_VideoMeta(ep.target)
+        xml_code = blip_cli.Get_VideoMeta(ep.host_url)
         if self.options.verbose: print xml_code
         blip_meta = blip_cli.Parse_VideoMeta(xml_code)
         # if self.options.verbose: print blip_meta
         if self.options.verbose: print pprint.pprint(blip_meta)
 
-        # blip_xml=self.blip_meta(ep.target)
+        # blip_xml=self.blip_meta(ep.host_url)
         # show_page = self.get_showpage(blip_xml)
-        # row['blip'] = "%sfile/%s"%(show_page,ep.target)
-        row['blip'] = "http://%s.blip.tv/file/%s"%('carlfk',ep.target)
+        # row['blip'] = "%sfile/%s"%(show_page,ep.host_url)
+        row['blip'] = "http://%s.blip.tv/file/%s"%(
+                ep.show.slug, ep.host_url)
 
         # xml.write(blip_xml)
         # if self.options.verbose: print blip_xml

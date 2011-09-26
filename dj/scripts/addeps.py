@@ -774,15 +774,19 @@ class add_eps(process.process):
             'djangocon2011': 'http://djangocon.us/schedule/json/',
             'pygotham': 'http://pygotham.org/talkvote/full_schedule/',
             'pytexas_2011': 'http://www.pytexas.org/2011/schedule/json/',
+            'pyconde2011': 'file://pyconde2011_talks.json',
             }[self.options.show]
 
-        req = urllib2.Request(url)
-        # req.add_header('Content-Type', 'application/json')
-        req.add_header('Accept', 'application/json')
-        response = urllib2.urlopen(req)
+        if url.startswith('file'):
+            f = open(url[7:])
+        else:
+            req = urllib2.Request(url)
+            # req.add_header('Content-Type', 'application/json')
+            req.add_header('Accept', 'application/json')
+            response = urllib2.urlopen(req)
 
-        # f=urllib2.urlopen(url)
-        f = response
+            # f=urllib2.urlopen(url)
+            f = response
 
         if url[-4:]=='.csv':
             schedule = list(csv.reader(f))
