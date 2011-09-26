@@ -364,7 +364,7 @@ class Blip_CLI(Blip):
             bps = current/elapsed.seconds
             remaining_seconds = remaining_bytes / bps
             eta = datetime.datetime.now() + datetime.timedelta(seconds=remaining_seconds)
-            sys.stdout.write('\r%3i%%  %s of %s MB, %s kbps, elap/remain: %s/%s, eta: %s' 
+            sys.stdout.write('\r%3i%%  %s of %s MB, %s KB/s, elap/remain: %s/%s, eta: %s' 
               % (100*current/total, current/(1024**2), total/(1024**2), bps/1024, stot(elapsed.seconds), stot(remaining_seconds), eta.strftime('%H:%M:%S')))
         else: 
             sys.stdout.write('\r%3i%%  %s of %s bytes: remaining: %s' 

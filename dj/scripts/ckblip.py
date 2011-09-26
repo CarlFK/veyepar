@@ -14,7 +14,7 @@ import os
 import xml.etree.ElementTree
 
 import blip_uploader
-from post import roles
+from post_blip import roles
 import pw
 
 from process import process
@@ -43,7 +43,7 @@ class ckblip(process):
         print "Test mode, not uploading:", files 
     else:
         response = blip_cli.Upload(
-            ep.target, user, password, files, {'title':ep.name})
+            ep.host_url, user, password, files, {'title':ep.name})
 
         response_xml = response.read()
         if self.options.verbose: print response_xml
@@ -55,7 +55,8 @@ class ckblip(process):
 
     if self.last_del_id != episode_id:
        # only print this once per episode_id
-       print "http://blip.tv/file/" + episode_id
+       print "http://blip.tv/file/%s" % (episode_id, )
+       print "http://blip.tv/file/%s?skin=rss" % (episode_id, )
        print "http://blip.tv/dashboard/episode/%s" % (posts_id,)
        self.last_del_id = episode_id
 
@@ -96,7 +97,8 @@ class ckblip(process):
             {'ext':'ogv','mime':'video/ogg'},
             # {'ext':'flv','mime':'video/x-flv'},
             # {'ext':'m4v','mime':'video/x-m4v'},
-            # {'ext':'mp3','mime':'audio/mpeg'},)
+            # {'ext':'mp3','mime':'audio/mpeg'},
+            {'ext':'mp4','mime':'audio/mpeg'},
             )
 
         
@@ -104,7 +106,7 @@ class ckblip(process):
         # use the local blip id and fetch the blip metadata.
         blip_cli=blip_uploader.Blip_CLI()
         blip_cli.debug = self.options.verbose
-        xml_code = blip_cli.Get_VideoMeta(ep.target)
+        xml_code = blip_cli.Get_VideoMeta(ep.host_url)
         if self.options.verbose: print xml_code
         blip_meta = blip_cli.Parse_VideoMeta(xml_code)
 
@@ -114,8 +116,8 @@ class ckblip(process):
         posts_id = blip_cli.Get_TextFromDomNode(node[0])
 
         file_types_to_upload=[]    
-        user = ep.show.client.blip_user if ep.show.client.blip_user \
-            else self.options.blip_user
+        user = ep.show.client.host_user if ep.show.client.host_user \
+            else self.options.host_user
         password= pw.blip[user]
 
         for t in type_map:
@@ -141,7 +143,7 @@ class ckblip(process):
                             # and needs to be deleted.
                             # too bad I can't figure ou the blip api for this.
                             file_id = os.path.basename(content['url'])
-                            ret=self.delete_from_blip(ep.target, posts_id,
+                            ret=self.delete_from_blip(ep.host_url, posts_id,
                                     file_id, user, password, 'old version')
                 if not match:
                     file_types_to_upload.append(t['ext'])
@@ -153,7 +155,7 @@ class ckblip(process):
                     if self.options.verbose: 
                         print "On blip but not local", matches
                 else:
-                    print t['ext'], "missing from http://blip.tv/file/%s" % ep.target , ep
+                    print t['ext'], "missing from http://blip.tv/file/%s" % ep.host_url , ep
                    
 
         if file_types_to_upload: 
@@ -228,7 +230,7 @@ class ckblip(process):
     password = pw.blip[user]
     meta = {'description':ep.description, 'license':self.options.license}
     response = blip_cli.Upload(
-            ep.target, user, password, [], meta, )
+            ep.host_url, user, password, [], meta, )
     response_xml = response.read()
     if self.options.verbose: print response_xml
 
@@ -236,11 +238,12 @@ class ckblip(process):
 
  
   def process_ep(self, ep):
-    if self.options.verbose: print ep.id, ep.name, ep.target
+    if self.options.verbose: print ep.id, ep.name, ep.host_url
 
     if ep.state in [-1,0]: return 
+    if ep.state != 5: return 
 
-    if ep.target:
+    if ep.host_url:
         # ret = self.update_meta(ep)
         ret = self.up_missing_files(ep)
     else:
