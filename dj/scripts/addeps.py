@@ -483,7 +483,8 @@ class add_eps(process.process):
             event['start'] = datetime.datetime.strptime(
                     row['start_iso'], '%Y-%m-%dT%H:%M:%S' )
 
-            seconds=(row['duration'] -10) * 60
+            break_min = 0 ## no time for breaks!
+            seconds=(row['duration'] - break_min ) * 60
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             duration = "%02d:%02d:%02d" % hms
             event['duration'] =  duration
