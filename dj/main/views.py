@@ -349,7 +349,6 @@ def recording_sheets(request,show_id, rfxml):
     episodes=Episode.objects.filter(show=show).order_by('location','start')
 
     base  = os.path.dirname(__file__)
-    # rfxmlfile  = os.path.join(base,'templates','RecordingSheet_v2a.rfxml')
     rfxmlfile  = os.path.join(base,'templates', rfxml)
      
     # buffer to create pdf in
@@ -366,6 +365,7 @@ def recording_sheets(request,show_id, rfxml):
         else:
             location_name='None'
         ds.append({'episode_id':ep.id,
+          'episode_conf_key':ep.conf_key,
           'episode_name':ep.name,
           'episode_authors':ep.authors,
           'episode_emails':ep.emails,

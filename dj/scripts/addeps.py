@@ -87,7 +87,7 @@ except ImportError:
 import process
 
 
-from main.models import fnify, Client, Show, Location, Episode
+from main.models import fnify, Client, Show, Location, Episode, Raw_File
 
 def goog(show,url):
     # read from goog spreadsheet api
@@ -600,8 +600,8 @@ class add_eps(process.process):
               seq+=1
               loc.sequence=seq
               loc.save()
-              show.locations.add(loc)
-              show.save()
+          show.locations.add(loc)
+          show.save()
           
     def add_eps(self, episodes, show):
       seq=0
@@ -670,6 +670,28 @@ class add_eps(process.process):
         self.add_rooms(rooms,show)
 
         events = self.symp_events(schedule)
+        self.add_eps(events, show)
+        return 
+
+
+    def pyconde2011(self, schedule, show):
+        # importing from some other instance
+        rooms = self.get_rooms(schedule,'room')
+        rooms = [r for r in rooms if r != 'Plenary' ]
+        self.add_rooms(rooms,show)
+
+        events = self.symp_events(schedule)
+        for e in events:
+            print e
+            end  = datetime.datetime.strptime(
+                    e['raw']['end_iso'], '%Y-%m-%dT%H:%M:%S' )
+            td = end - e['start']
+
+            seconds=td.seconds
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            e['duration'] =  duration
+
         self.add_eps(events, show)
         return 
 
@@ -805,6 +827,11 @@ class add_eps(process.process):
 
         # look at fingerprint of file, call appropiate parser
 
+        if self.options.show == 'pyconde2011':
+            # pycon.de 2011 
+            return self.pyohio(schedule,show)
+            # return self.pyconde2011(schedule,show)
+
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
             return self.pctech(schedule,show)
@@ -863,13 +890,15 @@ class add_eps(process.process):
             # DRAGONS!
             # clear out previous runs for this show
 
-            client,created = Client.objects.get_or_create(slug=self.options.client)
-            client.delete()
-            # locs = Location.objects.all()
-            # for loc in locs: loc.delete()
+            rfs = Raw_File.objects.filter(show=show)
+            if rfs and not self.options.force:
+                print "There are Raw Fiels... --force to whack."
+                print rfs
+                print "whacking aborted."
+                return False
 
+            rfs.delete()
             Episode.objects.filter(show=show).delete()
-            # Location.objects.filter(show=show).delete()
 
         self.one_show(show)
 
