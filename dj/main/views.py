@@ -600,7 +600,7 @@ def show_stats(request, show_id, ):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
     episodes=Episode.objects.filter(show=show,location__active=True)
-    locked=Episode.objects.filter(show=show, locked__isnull=False).order_by('locked')
+    lockeds=Episode.objects.filter(show=show, locked__isnull=False).order_by('locked')
     raw_files=Raw_File.objects.filter(show=show)
     locations=show.locations.filter(active=True).order_by('sequence')
     
@@ -770,7 +770,7 @@ def show_stats(request, show_id, ):
           'locations':locations,
           'rows':rows,
           'states':states,
-          'locked':locked,
+          'locked':lockeds,
           'max_name_ep':max_name_ep,
           'max_authors_ep':max_authors_ep,
         },
