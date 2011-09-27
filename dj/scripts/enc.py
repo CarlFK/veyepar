@@ -368,15 +368,16 @@ class enc(process):
                 'normalise':normalise} )
             playlist.insert(pos,new)
 
-        if episode.channelcopy:
-            if self.options.verbose: print 'channelcopy:', episode.channelcopy
+        channelcopy = episode.channelcopy or '10'
+        if channelcopy:
+            if self.options.verbose: print 'channelcopy:', channelcopy
             # channelcopy should be 01 or 10.
             # or m/'mono' to kick in this hack
-            if episode.channelcopy=='m':
+            if channelcopy=='m':
                 new=xml.etree.ElementTree.Element('filter', 
                     {'mlt_service':'mono', 'channels':'2'} )
             else:
-                fro,to=list(episode.channelcopy)
+                fro,to=list(channelcopy)
                 new=xml.etree.ElementTree.Element('filter', 
                     {'mlt_service':'channelcopy', 
                     'from':fro, 'to':to} )
@@ -436,7 +437,9 @@ class enc(process):
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
                   ffpreset=open('/usr/share/ffmpeg/libx264-hq.ffpreset').read().split('\n')
                   ffpreset = [i for i in ffpreset if i]
-                  cmd="melt -verbose -progress -profile dv_%s %s -consumer avformat:%s deinterlace=bob threads=%s progressive=1 acodec=libmp3lame ab=256k ar=48000 vcodec=libx264 b=2048k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
+                  cmd="melt -verbose -progress -profile dv_%s %s -consumer avformat:%s deinterlace=bob threads=%s progressive=1 acodec=libfaac ab=256k ar=48000 vcodec=libx264 b=2048k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
+                  # acodec=libmp3lame
+
                   # pyohio: cmd="melt -progress -profile square_%s %s -consumer avformat:%s deinterlace=bob threads=%s aspect=@4/3 progressive=1 acodec=libmp3lame ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
                   # acodec=libfaac
                   # cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )

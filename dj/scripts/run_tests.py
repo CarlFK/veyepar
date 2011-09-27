@@ -287,8 +287,8 @@ pix_fmt=yuv411p" % parms
 
  def csv(self):
   # make csv and other data files
-  import cvs
-  p=cvs.csv()
+  import mkcvs
+  p=mkcvs.csv()
   p.main()
 
   return
