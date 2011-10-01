@@ -87,7 +87,8 @@ def stot(seconds):
 
 class Blip(object):
 
-    BLIP_UPLOAD_URL = "http://blip.tv/file/post"
+    # BLIP_UPLOAD_URL = "http://blip.tv/file/post"
+    BLIP_UPLOAD_URL = "http://uploads.blip.tv/file/post"
 # While both URLs will currently work, future applications should use uploads.blip.tv. 
     
     MULTIPART_BOUNDARY = "-----------$$SomeFancyBoundary$$"
