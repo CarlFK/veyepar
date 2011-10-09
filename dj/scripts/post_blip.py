@@ -57,6 +57,11 @@ class post(process):
     video_id = ep.host_url
 
     tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
+    # camelcase the AuthorNames.
+    authors = ep.authors.split(',')
+    authors = [ a.replace(' ','') for a in authors ]
+    tags += authors
+
     meta['topics'] = ' '.join([tag for tag in tags if tag] )
 
     if ep.license: 
