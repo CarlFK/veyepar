@@ -176,7 +176,7 @@ class process(object):
       if self.options.unlock: ep.locked=None
       if ep.locked and not self.options.force:
         if self.options.verbose:
-          print '#%s: "%s" locked on %s by %s' % (ep.id, ep, ep.locked, ep.locked_by)
+          print '#%s: "%s" locked on %s by %s' % (ep.id, ep.name, ep.locked, ep.locked_by)
       else:
         # None means "don't care", 
         # ready means ready, 

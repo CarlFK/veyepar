@@ -215,10 +215,10 @@ class Episode(models.Model):
     def my_get_next_by_start(self,**kwargs):
         self._get_next_or_previous_by_FIELD('start', is_next=True, **kwargs)
  
-           
     def __unicode__(self):
-        return "%s: %s" % ( self.id, self.name )
-        return "%s: %s" % ( self.location.name, self.name )
+        n = self.name.encode('utf-8','igniore')
+        return "%s: %s" % ( self.id, n )
+
     class Meta:
         ordering = ["sequence"]
 

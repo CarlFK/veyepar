@@ -207,6 +207,9 @@ class enc(process):
     if self.options.verbose: print cooked_svg
     if self.options.verbose: print png_name
 
+    if not ret: 
+        print "svg:", cooked_svg_name
+        png_name=None
     return png_name
 
 
