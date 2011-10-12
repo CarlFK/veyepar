@@ -528,6 +528,7 @@ class enc(process):
 
 
         ret = True
+        ret = ret and one_format("ogv")
         # ret = ret and one_format("ogg", "vorbis", "libtheora")
         ret = ret and one_format("flv")
         # ret = ret and one_format("flv", "libmp3lame", "flv")
@@ -536,7 +537,6 @@ class enc(process):
         ret = ret and one_format("flac")
         ret = ret and one_format("m4v")
         ret = ret and one_format("dv")
-        ret = ret and one_format("ogv")
 
         return ret
 
