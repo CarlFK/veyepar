@@ -225,7 +225,7 @@ class process(object):
         else:
             if self.options.verbose:
                 print '#%s: "%s" is in state %s, ready is %s' % (
-                    ep.id, ep, ep.state, self.ready_state)
+                    ep.id, ep.name, ep.state, self.ready_state)
 
 
   def one_show(self, show):
