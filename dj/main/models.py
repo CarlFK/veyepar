@@ -225,6 +225,10 @@ class Episode(models.Model):
   
 
 class Cut_List(models.Model):
+    """
+    note: this sould be Cut_list_ITEM 
+    because it is not the whole list, just one entry.
+    """
     raw_file = models.ForeignKey(Raw_File)
     episode = models.ForeignKey(Episode)
     sequence = models.IntegerField(default=1)
@@ -238,7 +242,7 @@ class Cut_List(models.Model):
     def get_absolute_url(self):
         return ('episode', [self.episode.id])
     def __unicode__(self):
-        return "%s - %s" % (self.raw_file, self.episode)
+        return "%s - %s" % (self.raw_file, self.episode.name)
     class Meta:
         ordering = ["sequence"]
     
