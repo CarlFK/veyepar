@@ -381,9 +381,10 @@ class enc(process):
                 'normalise':normalise} )
             playlist.insert(pos,new)
 
-        channelcopy = episode.channelcopy or 
-            episode.location.channelcopy or
+        channelcopy = episode.channelcopy or \
+            # episode.location.channelcopy or \
             self.options.channelcopy
+
         if channelcopy:
             if self.options.verbose: print 'channelcopy:', channelcopy
             # channelcopy should be 01 or 10.
