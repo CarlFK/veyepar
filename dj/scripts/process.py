@@ -285,7 +285,6 @@ class process(object):
   def list(self):
     """
     list clients and shows.
-    todo: filter on something.
     """
     for client in Client.objects.all():
         print "\nName: %s  Slug: %s" %( client.name, client.slug )
@@ -335,6 +334,7 @@ class process(object):
     config = ConfigParser.RawConfigParser()
     files=config.read(['veyepar.cfg',
                 os.path.expanduser('~/veyepar.cfg')])
+
     if files:
         d=dict(config.items('global'))
         d['whack']=False # don't want this somehow getting set in .conf
@@ -384,7 +384,7 @@ class process(object):
     
     if self.options.verbose:
         print self.options, self.args
-        from django.conf import settings
+        # from django.conf import settings
         # print settings.DATABASE_ENGINE, settings.DATABASE_NAME
 
     if "pal" in self.options.dv_format:

@@ -193,8 +193,14 @@ class enc(process):
 
     # create png file
     png_name="%s.png"%output_base
+    # inkscape does not return an error code on failure
+    # so clean up previous run and 
+    # check for the existance of a new png
+    if os.path.exists(png_name):  os.remove(png_name)
     cmd=["inkscape", cooked_svg_name, "--export-png", png_name]
-    self.run_cmds(episode,[cmd])
+    ret = self.run_cmds(episode,[cmd])
+    ret = os.path.exists(png_name)
+    if not ret: png_name=None
 
     if self.options.verbose: print cooked_svg
     if self.options.verbose: print png_name
@@ -231,13 +237,13 @@ class enc(process):
 # add in the dv files
         pos = 1
         for rf in rfs:
-            dvfile.attrib['id']="producer%s"%rf.id
             if self.options.load_temp:
                 src_pathname = os.path.join(self.episode_dir,rf.filename)
                 dst_path = os.path.join(
                   self.tmp_dir,episode.slug,os.path.dirname(rf.filename))
                 rawpathname = os.path.join(
-                  self.tmp_dir,episode.slug,rf.filename.replace(':','_'))
+                  self.tmp_dir,episode.slug,rf.filename)
+                  # self.tmp_dir,episode.slug,rf.filename.replace(':','_'))
                 cmds = [['mkdir', '-p', dst_path],
                         ['rsync', '--progress', '--size-only',  
                             src_pathname, rawpathname]]
@@ -247,6 +253,13 @@ class enc(process):
                     rawpathname = rf.filename
                 else:
                     rawpathname = os.path.join(self.episode_dir,rf.filename)
+
+            # check for missing input file
+            # typically due to incorrect fs mount
+            if not os.path.exists(rawpathname):
+                return False
+
+            dvfile.attrib['id']="producer%s"%rf.id
             dvfile.attrib['resource']=rawpathname
             new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
             tree[0].insert(pos,new)
@@ -368,7 +381,9 @@ class enc(process):
                 'normalise':normalise} )
             playlist.insert(pos,new)
 
-        channelcopy = episode.channelcopy or '10'
+        channelcopy = episode.channelcopy or 
+            episode.location.channelcopy or
+            self.options.channelcopy
         if channelcopy:
             if self.options.verbose: print 'channelcopy:', channelcopy
             # channelcopy should be 01 or 10.
@@ -553,6 +568,7 @@ class enc(process):
         template = os.path.join(self.show_dir, "bling", svg_name)
         title_base = os.path.join(self.show_dir, "titles", episode.slug)
         title_img=self.mk_title_png(template, title_base, episode)
+        if title_img is None: return False
 
 # define credits
         credits_img = episode.show.client.credits \
@@ -567,6 +583,10 @@ class enc(process):
 
 # make a .mlt file for this episode
         mlt = self.mkmlt(title_img,credits_img,episode,cls,rfs)
+        if not mlt:
+            episode.state = 0
+            episode.save()
+            return False
 
 # do the final encoding:
 # using melt
@@ -601,9 +621,12 @@ class enc(process):
           help='copy .dv to temp files' )
         parser.add_option('--rm-temp', 
           help='remove large temp files' )
+        parser.add_option('--channelcopy', 
+          help='copy one channel to another.' )
         parser.add_option('--threads')
 
   def add_more_option_defaults(self, parser):
+        parser.set_defaults(channelcopy='10')
         parser.set_defaults(threads=2)
 
 if __name__ == '__main__':

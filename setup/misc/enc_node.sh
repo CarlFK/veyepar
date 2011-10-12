@@ -7,6 +7,8 @@ SHOW=pyconde2011
 DVDIR=~/Videos/dv/room_c
 ROOM=Saal_1C
 
+sudo apt-get install python-psycopg2
+
 # gen and copy ssh key to server
 if [ ! -f ~/.ssh/id_rsa.pub ]; then ssh-keygen; fi 
 ssh-copy-id $SERVER.local:
@@ -47,8 +49,8 @@ rmdir *
 ln -s $DVDIR $ROOM
 
 # restrict veyepart to just this room
-cat <<EOT >> ~/veyepar.cfg
-[global]
-room=$ROOM
-EOT
+# cat <<EOT >> ~/veyepar.cfg
+# [global]
+# room=$ROOM
+# EOT
 

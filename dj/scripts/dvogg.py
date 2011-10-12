@@ -18,7 +18,7 @@ class mkpreview(process):
             cmd="ffmpeg2theora --videoquality 1 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --keyint 256 --channels 1".split()
             # cmd="ffmpeg2theora --videoquality 1 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --height 240 --framerate 2 --keyint 256 --channels 1".split()
             # cmd="ffmpeg2theora --videoquality 10 --videobitrate  16778 --optimize --audioquality 10 --audiobitrate 500 --keyint 1".split()
-            cmd+=[ '-o', dst, src ]
+            cmd+=[ src, '-o', dst, ]
             print ' '.join(cmd)
             p=subprocess.Popen(cmd).wait()
         return

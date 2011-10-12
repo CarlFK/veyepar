@@ -223,12 +223,17 @@ class ckblip(process):
   def update_meta(self, ep):
     # upload current description.
     # to fix the ones that were missing due to improper unicode handeling
+
     blip_cli=blip_uploader.Blip_CLI()
     blip_cli.debug = self.options.verbose
-    user = ep.show.client.blip_user if ep.show.client.blip_user \
-            else self.options.blip_user
+    user = ep.show.client.host_user if ep.show.client.host_user \
+            else self.options.host_user
     password = pw.blip[user]
-    meta = {'description':ep.description, 'license':self.options.license}
+
+    meta = {'title':ep.name,
+            'language_code': 'de', 'language_name':'German',
+            'Language':'German'}
+
     response = blip_cli.Upload(
             ep.host_url, user, password, [], meta, )
     response_xml = response.read()
@@ -244,8 +249,8 @@ class ckblip(process):
     if ep.state != 5: return 
 
     if ep.host_url:
-        # ret = self.update_meta(ep)
-        ret = self.up_missing_files(ep)
+        ret = self.update_meta(ep)
+        # ret = self.up_missing_files(ep)
     else:
         # episode not on blip, 
         # This code doens't post new episodes,

@@ -61,6 +61,8 @@ class Location(models.Model):
         help_text="dir name to store input files")
     dirname = models.CharField(max_length=135, blank=True,
         help_text="pat to raw files. overrieds show/slug.")
+    # channelcopy - models.CharField(max_length=2, blank=True,
+    #    help_text='audio adjustment for this room')
     description = models.TextField(blank=True)
     lon = models.FloatField(null=True, blank=True )
     lat = models.FloatField(null=True, blank=True )
@@ -278,6 +280,7 @@ def set_end(sender, instance, **kwargs):
            datetime.timedelta(seconds=seconds)
     else:
         instance.end = None
+
 
 pre_save.connect(set_slug,sender=Location)
 pre_save.connect(set_slug,sender=Episode)
