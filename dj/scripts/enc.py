@@ -189,7 +189,10 @@ class enc(process):
     # save svg to a file
     # (no clue how else to pass svg to inkscape)
     # strip 'broken' chars because inkscape can't handle the truth
+    # output_base=''.join([ c for c in output_base if c.isalpha()])
     output_base=''.join([ c for c in output_base if ord(c)<128])
+    # output_base=output_base.encode('utf-8','ignore')
+
     cooked_svg_name='%s.svg'%output_base
     open(cooked_svg_name,'w').write(cooked_svg)
 
@@ -203,12 +206,13 @@ class enc(process):
     ret = self.run_cmds(episode,[cmd])
     ret = os.path.exists(png_name)
 
-    if self.options.verbose: print cooked_svg
+    # if self.options.verbose: print cooked_svg
     if self.options.verbose: print png_name
 
     if not ret: 
         print "svg:", cooked_svg_name
         png_name=None
+
     return png_name
 
 
@@ -328,6 +332,9 @@ class enc(process):
         # hack to remove "Plugin 1046 exists in both ...."
         # out = '\n'.join(
         #        l for l in out.split('\n') if not l.startswith('Plugin') )
+
+        print out
+        print "err", err
 
         t=xml.etree.ElementTree.XMLID(out)
         frames=t[1]['tractor1'].get('out')
@@ -571,7 +578,10 @@ class enc(process):
                 else "%s_title.svg" % (episode.show.slug)
 
         template = os.path.join(self.show_dir, "bling", svg_name)
-        title_base = os.path.join(self.show_dir, "titles", episode.slug)
+        # happy_filename = episode.slug.encode('utf-8')
+        happy_filename = episode.slug
+        happy_filename = ''.join([c for c in happy_filename if c.isalpha()])
+        title_base = os.path.join(self.show_dir, "titles", happy_filename)
         title_img=self.mk_title_png(template, title_base, episode)
         if title_img is None: return False
 
