@@ -189,6 +189,8 @@ class enc(process):
     # save svg to a file
     # (no clue how else to pass svg to inkscape)
     cooked_svg_name='%s.svg'%output_base
+    # strip 'broken' chars because inkscape can't handle the truth
+    cooked_svg_name=''.join([ c for c in cooked_svg_name if ord(c)<128])
     open(cooked_svg_name,'w').write(cooked_svg)
 
     # create png file
@@ -382,8 +384,8 @@ class enc(process):
             playlist.insert(pos,new)
 
         channelcopy = episode.channelcopy or \
-            # episode.location.channelcopy or 
             self.options.channelcopy
+            # episode.location.channelcopy or 
 
         if channelcopy:
             if self.options.verbose: print 'channelcopy:', channelcopy
