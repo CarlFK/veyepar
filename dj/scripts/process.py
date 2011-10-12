@@ -92,7 +92,9 @@ class process(object):
           else:
               log_text = cmd
               cmd=cmd.split()
-          sh.writelines(log_text)
+          sh.writelines([t.encode('utf-8','ignore') for t in log_text])
+          # sh.writelines(log_text)
+          # if isinstance(s, unicode): return s.encode('utf-8') else: return s
           sh.write('\n')
           # self.log_info(log_text)
           if self.options.debug_log:
