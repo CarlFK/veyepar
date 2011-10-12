@@ -188,9 +188,9 @@ class enc(process):
 
     # save svg to a file
     # (no clue how else to pass svg to inkscape)
-    cooked_svg_name='%s.svg'%output_base
     # strip 'broken' chars because inkscape can't handle the truth
-    cooked_svg_name=''.join([ c for c in cooked_svg_name if ord(c)<128])
+    output_base=''.join([ c for c in output_base if ord(c)<128])
+    cooked_svg_name='%s.svg'%output_base
     open(cooked_svg_name,'w').write(cooked_svg)
 
     # create png file
@@ -202,7 +202,6 @@ class enc(process):
     cmd=["inkscape", cooked_svg_name, "--export-png", png_name]
     ret = self.run_cmds(episode,[cmd])
     ret = os.path.exists(png_name)
-    if not ret: png_name=None
 
     if self.options.verbose: print cooked_svg
     if self.options.verbose: print png_name
