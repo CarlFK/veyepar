@@ -190,7 +190,7 @@ class enc(process):
     # (no clue how else to pass svg to inkscape)
     # strip 'broken' chars because inkscape can't handle the truth
     # output_base=''.join([ c for c in output_base if c.isalpha()])
-    output_base=''.join([ c for c in output_base if ord(c)<128])
+    # output_base=''.join([ c for c in output_base if ord(c)<128])
     # output_base=output_base.encode('utf-8','ignore')
 
     cooked_svg_name='%s.svg'%output_base
@@ -265,6 +265,7 @@ class enc(process):
             # check for missing input file
             # typically due to incorrect fs mount
             if not os.path.exists(rawpathname):
+                print "can't find rawpathname", rawpathname
                 return False
 
             dvfile.attrib['id']="producer%s"%rf.id
@@ -580,10 +581,12 @@ class enc(process):
         template = os.path.join(self.show_dir, "bling", svg_name)
         # happy_filename = episode.slug.encode('utf-8')
         happy_filename = episode.slug
-        happy_filename = ''.join([c for c in happy_filename if c.isalpha()])
+        # happy_filename = ''.join([c for c in happy_filename if c.isalpha()])
         title_base = os.path.join(self.show_dir, "titles", happy_filename)
         title_img=self.mk_title_png(template, title_base, episode)
-        if title_img is None: return False
+        if title_img is None: 
+            print "missing title png"
+            return False
 
 # define credits
         credits_img = episode.show.client.credits \
@@ -597,6 +600,7 @@ class enc(process):
             exclude(trash=True).distinct()
 
 # make a .mlt file for this episode
+        print "title_img", title_img
         mlt = self.mkmlt(title_img,credits_img,episode,cls,rfs)
         if not mlt:
             episode.state = 0

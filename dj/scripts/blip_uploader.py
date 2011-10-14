@@ -125,6 +125,7 @@ class Blip(object):
         data = []
         for field_name, value in fields.iteritems():
             data.append('--' + self.MULTIPART_BOUNDARY)
+            data.append( "Content-type: text/plain; charset=UTF-8" )
             data.append('Content-Disposition: form-data; name="%s"' % field_name)
             data.append('')
             data.append(value.encode("utf-8"))
@@ -133,8 +134,10 @@ class Blip(object):
         for (field_name, filename) in files:
             data=['']
             data.append('--' + self.MULTIPART_BOUNDARY)
-            data.append('Content-Disposition: form-data; name="%s"; filename="%s"'
-                        % (field_name, filename))
+            data.append('Content-Disposition: form-data; name="%s";'
+                    % (field_name, ))
+            # data.append('Content-Disposition: form-data; name="%s"; filename="%s"'
+                        # % (field_name, filename))
             data.append('Content-Type: %s' % self.GetMimeType(filename))
             data.append('')
             data.append('')

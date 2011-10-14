@@ -216,8 +216,7 @@ class Episode(models.Model):
         self._get_next_or_previous_by_FIELD('start', is_next=True, **kwargs)
  
     def __unicode__(self):
-        n = self.name.encode('utf-8','igniore')
-        return "%s: %s" % ( self.id, n )
+        return self.name
 
     class Meta:
         ordering = ["sequence"]

@@ -9,10 +9,10 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.0 r9654"
    width="800"
    height="600"
-   sodipodi:docname="test_pattern_1.svg">
+   sodipodi:docname="test_show_title2.svg">
   <metadata
      id="metadata14">
     <rdf:RDF>
@@ -43,13 +43,13 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="489"
+     inkscape:window-width="954"
+     inkscape:window-height="641"
      id="namedview10"
      showgrid="false"
-     inkscape:zoom="0.22425739"
-     inkscape:cx="372.04724"
-     inkscape:cy="73.818909"
+     inkscape:zoom="0.695"
+     inkscape:cx="400"
+     inkscape:cy="300"
      inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="0"
@@ -78,4 +78,17 @@
      sodipodi:rx="300"
      sodipodi:ry="300"
      style="fill:#ff0000" />
-</svg>
+  <flowRoot
+     xml:space="preserve"
+     id="titlebox"
+     style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+     transform="matrix(0.83353328,0,0,1.6285501,56.232642,48.539808)"><flowRegion
+       id="flowRegion2776"><rect
+         id="rect2778"
+         width="684.7511"
+         height="95.016434"
+         x="68.642532"
+         y="121.71946"
+         style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
+       id="title"
+       style="font-weight:normal">UR DOING IT WRONG for god sake, you really need to please RTFM, RTFM!</flowPara></flowRoot></svg>
