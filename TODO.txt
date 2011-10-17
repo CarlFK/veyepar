@@ -36,11 +36,11 @@ recording sheets:
  [x] over time (adjust before addeps to suck in the extras)
 
 live cd: mainly for slave
-  openssh-server dvsource kino mplayer
+  user in video group
+  sudo apt-get install openssh-server dvsource kino mplayer
   ~/dvswitchrc
   10.0.0.2
   avahi to find dvswitch
-  user in video group
 
 title screen preview
   extract mktitle from enc.py 

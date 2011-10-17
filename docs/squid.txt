@@ -1,0 +1,2 @@
+
+ "offline_mode" : http://www.squid-cache.org/Doc/config/offline_mode/
