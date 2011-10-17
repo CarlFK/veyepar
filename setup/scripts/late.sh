@@ -33,7 +33,7 @@ wget http://$SHAZ/lc/fw-beep.rules
 ## disable screensaver, blank screen on idle, blank screen on lid close
 gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
 gsettings set org.gnome.desktop.screensaver lock-enabled false
-gsettings set org.gnome.desktop.session idle-delay uint32 0
+gsettings set org.gnome.desktop.session idle-delay 0
 
 gsettings set org.gnome.settings-daemon.plugins.power lid-close-ac-action nothing
 gsettings set org.gnome.settings-daemon.plugins.power lid-close-battery-action nothing
