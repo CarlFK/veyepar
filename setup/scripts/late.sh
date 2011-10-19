@@ -44,7 +44,7 @@ cd /etc/dconf/db/site.d/
 cat <<EOT >local.dconf
 [org/gnome/desktop/screensaver]
 idle-activation-enabled=false
-lock-enabled false
+lock-enabled=false
 
 [org/gnome/desktop/session]
 idle-delay=0
