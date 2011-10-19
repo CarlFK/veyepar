@@ -38,6 +38,7 @@ echo user > user
 echo site >> user
 
 mkdir -p /etc/dconf/db/site.d/
+mkdir -p /etc/dconf/db/site.d/locks
 cd /etc/dconf/db/site.d/
 
 cat <<EOT >local.dconf
@@ -49,8 +50,8 @@ lock-enabled false
 idle-delay=0
 
 [org/gnome/settings-daemon/plugins/power]
-lid-close-ac-action=nothing
-lid-close-battery-action=nothing
+lid-close-ac-action='nothing'
+lid-close-battery-action='nothing'
 idle-dim-ac=false
 sleep-display-ac=0
 sleep-display-battery=0
