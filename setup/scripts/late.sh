@@ -31,24 +31,46 @@ wget http://$SHAZ/lc/fw-beep.rules
 
 
 ## disable screensaver, blank screen on idle, blank screen on lid close
-gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
-gsettings set org.gnome.desktop.screensaver lock-enabled false
-gsettings set org.gnome.desktop.session idle-delay 0
 
-gsettings set org.gnome.settings-daemon.plugins.power lid-close-ac-action nothing
-gsettings set org.gnome.settings-daemon.plugins.power lid-close-battery-action nothing
-gsettings set org.gnome.settings-daemon.plugins.power idle-dim-ac false
-gsettings set org.gnome.settings-daemon.plugins.power sleep-display-ac 0
-gsettings set org.gnome.settings-daemon.plugins.power sleep-display-battery 0
+mkdir -p /etc/dconf/profile
+cd /etc/dconf/profile
+echo user > user
+echo site >> user
 
-gsettings set com.ubuntu.update-manager check-dist-upgrades false
+mkdir -p /etc/dconf/db/site.d/
+cd /etc/dconf/db/site.d/
 
-gsettings set com.canonical.indicator.power show-time true
+cat <<EOT >local.dconf
+[org/gnome/desktop/screensaver]
+idle-activation-enabled=false
+lock-enabled false
 
-# gsettings set com.canonical.indicator.datetime show-seconds true
-# gsettings set org.gnome.desktop.interface clock-show-seconds true
+[org/gnome/desktop/session]
+idle-delay=0
 
-gsettings set com.canonical.indicator.datetime custom-time-format '%H:%M:%S'
+[org/gnome/settings-daemon/plugins/power]
+lid-close-ac-action=nothing
+lid-close-battery-action=nothing
+idle-dim-ac=false
+sleep-display-ac=0
+sleep-display-battery=0
+
+[com/ubuntu/update-manager]
+check-dist-upgrades=false
+
+[com/canonical/indicator/power]
+show-time=true
+
+[com/canonical/indicator/datetime]
+show-seconds=true
+
+[org/gnome/desktop/interface]
+clock-show-seconds=true
+
+[com/canonical/indicator/datetime]
+custom-time-format='%H:%M:%S'
+EOT
+dconf update
 
 ## don't check for updates (so no 'UPDATE ME!' dialog.)
 CONF=/etc/update-manager/release-upgrades
@@ -56,6 +78,12 @@ if [ -f $CONF ]; then
   sed -i "/^Prompt=normal/s/^.*$/Prompt=never/" \
     $CONF
 fi
+
+CONF=/usr/share/gnome/autostart/libcanberra-login-sound.desktop 
+if [ -f $CONF ]; then
+  echo X-GNOME-Autostart-enabled=false >> $CONF
+fi
+
 
 # work around bug:
 # https://bugs.launchpad.net/ubuntu/+source/gnome-control-center/+bug/792636
@@ -186,10 +214,10 @@ cat <<EOT >> $APP
 #!/bin/bash -x
 # sudo apt-get install python-wxversion
 git clone git://github.com/CarlFK/dvsmon.git
-sudo apt-add-repository ppa:carlfk
-sudo apt-get update
-sudo apt-get install dvswitch dvsource dvsink
-sudo apt-get install kino
+sudo apt-add-repository --assume-yes ppa:carlfk
+sudo apt-get --assume-yes update
+sudo apt-get --assume-yes install dvswitch dvsource dvsink
+sudo apt-get --assume-yes install kino
 EOT
 chmod 777 $APP
 chown 1000:1000 $APP
