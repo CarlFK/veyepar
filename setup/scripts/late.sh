@@ -69,7 +69,10 @@ show-seconds=true
 clock-show-seconds=true
 
 [com/canonical/indicator/datetime]
-custom-time-format='%H:%M:%S'
+time-format='24-hour'
+show-date=true
+show-day=true
+
 EOT
 dconf update
 
@@ -222,6 +225,7 @@ sudo apt-get --assume-yes install kino
 EOT
 chmod 777 $APP
 chown 1000:1000 $APP
+git clone git://github.com/CarlFK/dvsmon.git
 
 
 # APP=inst_miro.sh
