@@ -3,14 +3,17 @@
 {% if show.announcement_state == 2 %}
 please proof: {{client.name}} meeting announcement 
 
-This is what will go out, and what will be used to title the videos.
-If you want to edit your submission, use the the edit URL under your item.  Anything else, email me.  If it looks good, email me.
+Subject and below is what will go out, and what will be used to title the videos.
+If you want to edit your stuff, 
+ask me for an account, then use the the edit URL under your item.  
+Anything else, email me.  
+If it looks good, email me.
 
 If you want to hack on the template:
 https://github.com/CarlFK/veyepar/blob/master/dj/main/templates/meeting_announcement.html
 
 Subject: {% endif %}
-ANN: {{client.name}} {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
+ANN: {{client.name}} at {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
 {% endspaceless %}
 
 {% autoescape off %}
@@ -33,7 +36,7 @@ Details
 {{episode.authors}}
 {{episode.description}}
 {% if show.announcement_state == 2 %}
-EDIT:  http://pyohio.nextdayvideo.com/proposal/{{episode.conf_url}}/edit
+EDIT: http://nextdayvideo.com:8080{% url admin:main_episode_change episode.id%}
 {% endif %}
 {% if episode.public_url %} Video: {{episode.public_url}} {% endif %}
 {% endfor %}

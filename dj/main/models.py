@@ -40,6 +40,8 @@ class Client(models.Model):
         help_text='template for event/title/authors')
     credits = models.CharField(max_length=30, blank=True, 
         help_text='template for ending credits')
+    # contacts = models.CharField(max_length=30, blank=True, 
+    #    help_text='emails of people putting on the event.')
     def __unicode__(self):
         return self.name
     @models.permalink

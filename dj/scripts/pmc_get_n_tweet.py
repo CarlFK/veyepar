@@ -11,6 +11,8 @@ feed = feedparser.parse('http://python.mirocommunity.org/feeds/category/pyohio-2
 
 import feedparser 
 
+import blip_uploader
+
 # from process import process
 from tweet import tweet
 
@@ -27,8 +29,14 @@ class pmc_tweet(tweet):
         show = ep.show
         client = show.client
 
+        # translate blip short URL into pretty URL that pmc has
+        blip=blip_uploader.Blip()
+        xml_code = blip.Get_VideoMeta(ep.host_url)
+        info = blip.Parse_VideoMeta(xml_code)
+        host_url = info['link']
+
         if not self.feed:
-            self.feed = feedparser.parse('http://python.mirocommunity.org/feeds/category/pyohio-2011')
+            self.feed = feedparser.parse( 'http://python.mirocommunity.org/feeds/category/djangocon-2011?count=1000')
 
         # get the URLs we care about:
         # [(pmc1, [blip1]),(pmc2, [blip2])...)
@@ -39,13 +47,17 @@ class pmc_tweet(tweet):
                 for fe in self.feed['entries'] 
                 ]
 
-        # given the blip url (ep.target)
+        # print urlss
+
+        # given the blip url (ep.host_url)
         # find the pmc url (public url)
         # again, there should only be 1
         public_urls = [ 
                 u[0] for u in urlss 
-                if u[1].split('/')[-1] == ep.target]
+                if u[1] == host_url]
+                # if u[1].split('/')[-1] == ep.host_url]
 
+        print public_urls
         if public_urls:
 
             # urls[0] because there can be only 1
@@ -57,6 +69,7 @@ class pmc_tweet(tweet):
             ep.save()
 
             prefix = "#%s #VIDEO" % show.client.slug
+            # prefix = "#DjangoCon #VIDEO" 
             tweet = self.mk_tweet(prefix, ep.name, ep.authors, public_url)
             user = 'nextdayvideo'
 

@@ -26,6 +26,7 @@ class Episode_Form_Preshow(forms.ModelForm):
                   'start', 'duration', 
                   'sequence',
                   'authors', 
+                  'emails',
                   'released', 
                   'description', 'tags')
 
