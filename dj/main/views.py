@@ -188,7 +188,7 @@ def meet_ann(request,show_id):
     })
     r = t.render(c)
     if request:
-        return HttpResponse(r)
+        return HttpResponse("<pre>%s</pre>" % r)
     else:
         # called from emailer
         r=r.split('\n')
