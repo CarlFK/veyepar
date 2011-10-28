@@ -463,15 +463,36 @@ class enc(process):
                   # High Quality Master 720x480 NTSC
                   tmp_pathname = os.path.join(
                       self.tmp_dir,"%s.%s"%(episode.slug,ext))
-                  ffpreset=open('/usr/share/ffmpeg/libx264-hq.ffpreset').read().split('\n')
-                  ffpreset = [i for i in ffpreset if i]
-                  cmd="melt -verbose -progress -profile dv_%s %s -consumer avformat:%s deinterlace=bob threads=%s progressive=1 acodec=libmp3lame ab=256k ar=48000 vcodec=libx264 b=2048k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
+
+                  parms = {
+                  	'abr': 128, 
+			'vbr': 1024,
+                        'dv_format': self.options.dv_format, 
+			'mlt': mlt_pathname, 
+			'tmp': tmp_pathname, 
+			'threads': self.options.threads, 
+			}
+                  ffpreset_files = [
+                      '/usr/share/ffmpeg/libx264-faster.ffpreset',
+                      '/usr/share/ffmpeg/libx264-hq.ffpreset',
+                      ]
+
+                  cmd="melt -verbose -progress -profile dv_%(dv_format)s %(mlt)s -consumer avformat:%(tmp)s deinterlace=bob threads=%(threads)s progressive=1 acodec=libmp3lame ab=(abr)k ar=48000 vcodec=libx264 b=(vbr)k" % parms 
 
                   # pyohio: cmd="melt -progress -profile square_%s %s -consumer avformat:%s deinterlace=bob threads=%s aspect=@4/3 progressive=1 acodec=libmp3lame ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
                   # acodec=libfaac
                   # cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
-                  cmd = cmd.split()
-                  cmd.extend(ffpreset)
+
+                  # search for a ffpreset file from the list of possibles
+                  for ffpreset_file in ffpreset_files:
+                      if os.path.exists( ffpreset_file ):
+                          ffpreset=open(ffpreset_file).read().split('\n')
+                          ffpreset = [i for i in ffpreset if i]
+                          cmd = cmd.split()
+                          cmd.extend(ffpreset)
+                          # first found is all we want, so bail
+                          break
+
                   cmds=[cmd]
                   cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
                   if self.options.rm_temp:

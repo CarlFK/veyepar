@@ -42,7 +42,7 @@ from accounts.forms import LoginForm
 
 
 
-def make_test_data():
+def make_test_data(title):
     desc = """
 Sample files and episode:  
 file 0 and 4 are outside the range
@@ -86,7 +86,9 @@ episode:     XXXXXXXXX
         )
 
     # ep.name = "Test Episode" 
-    ep.name = u'TECHNICI\xc3\x84NS \xc3\x96F CH\xc4\xa8P\xc3\x9d THIS IS Y\xc3\x96\xc3\x9cR C\xc3\x84PT\xc3\x85IN SPE\xc3\x84KING Y\xc3\x96\xc3\x9cR \xc3\x98\xc3\x85PT\xc3\x85IN IS DEA\xcc\x8bD'
+    # ep.name = u'TECHNICI\xc3\x84NS \xc3\x96F CH\xc4\xa8P\xc3\x9d THIS IS Y\xc3\x96\xc3\x9cR C\xc3\x84PT\xc3\x85IN SPE\xc3\x84KING Y\xc3\x96\xc3\x9cR \xc3\x98\xc3\x85PT\xc3\x85IN IS DEA\xcc\x8bD'
+    ep.name = title
+
     ep.sequence = 1
     ep.description = desc
     ep.authors = 'test author'

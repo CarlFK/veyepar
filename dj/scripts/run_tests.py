@@ -54,7 +54,7 @@ class Run_Tests(object):
   # make sample data: location, client, show, episode
   from main.views import make_test_data, del_test_data
   del_test_data()
-  self.ep=make_test_data()
+  self.ep=make_test_data(self.title)
   return
 
  def make_dirs(self):
@@ -67,7 +67,8 @@ class Run_Tests(object):
   self.show_dir = p.show_dir
   self.show=Show.objects.get(slug=p.options.show)
   self.options = p.options
-  self.sh_pathname = os.path.join( self.show_dir, 'tmp', "Test_Episode.sh" )
+  self.sh_pathname = os.path.join( 
+          self.show_dir, 'tmp', "%s.sh" % (self.title) )
   return
 
  def make_source_dvs(self):
@@ -269,7 +270,9 @@ pix_fmt=yuv411p" % parms
   p=post.post()
   p.set_options(force=True, verbose=True, 
       upload_formats=self.upload_formats,
-      debug_log=True)
+      debug_log=True,
+      host_user="veyepar_test",
+      )
   p.main()
  
   # post.py does: self.last_url = post_url.text
@@ -301,7 +304,7 @@ pix_fmt=yuv411p" % parms
   tmp_dir = os.path.join("/tmp/veyepar_test/")
   if not os.path.exists(tmp_dir): os.makedirs(tmp_dir)
 
-  blip_file = os.path.join(self.show_dir, 'mp4', "Test_Episode.mp4" )
+  blip_file = os.path.join(self.show_dir, 'mp4', "%s.mp4" % (self.title,) )
   # blip_file = "Veyepar_test-TestEpisode897.m4v"
   parms = {
           "tmp_dir":tmp_dir,
@@ -331,7 +334,7 @@ pix_fmt=yuv411p" % parms
   # sphinx transcribe an output file, check for GO FORWARD TEN METERS
   # someday this will wget the m4v from blip to see what they made
 
-  blip_file = os.path.join(self.show_dir, 'mp4', "Test_Episode.mp4" )
+  blip_file = os.path.join(self.show_dir, 'mp4', "%s.mp4" % (self.title,) )
   # blip_file = "Veyepar_test-TestEpisode897.m4v"
 
   tmp_dir = os.path.join("/tmp/veyepar_test/")
@@ -375,14 +378,44 @@ pix_fmt=yuv411p" % parms
 
           return result
   
+ def size_test(self):
+     sizes = [
+             ('ogv',602392),
+             ('mp4',448393),
+             ]
+     ret = True
+     for size in sizes:
+         ext,expected_size = size
+         fullpathname = os.path.join( self.show_dir, ext,
+                 "%s.%s" % (self.title, ext))
+         st = os.stat(fullpathname)
+         actual_size=st.st_size
+         delta = expected_size - actual_size
+         # is it off by more than some %
+         tolerance = 2
+         err = abs(delta * 100 ) / expected_size
+         if err > tolerance:
+             ret = False
+             print ext
+             print "expectected: %15d" % expected_size
+             print "actual:      %15d" % actual_size
+             print "delta:       %15d" % delta
+             print "error:       %15d%%" % err
+
+     return ret
+
+
 
 def main():
 
     result={}
 
+
     t=Run_Tests() 
     # t.upload_formats="flv ogv m4v mp3"
-    t.upload_formats=["mp4"]
+    # t.upload_formats=["mp4"]
+    t.upload_formats=["ogv","mp4"]
+    t.title = "Foo"
 
     t.make_test_user()
     t.setup_test_data()
@@ -402,6 +435,8 @@ def main():
     t.csv()
     result['video'] = t.ocr_test()
     result['audio'] = t.sphinx_test()
+    result['sizes'] = t.size_test()
+
     print 
     print 'test results', result
 
