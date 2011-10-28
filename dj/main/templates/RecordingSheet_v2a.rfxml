@@ -51,10 +51,10 @@
 					</Rectangle>
 					<Rectangle>
 						<FillColor>(0.953, 0.953, 0.953)</FillColor>
-						<height>'58.0 pt'</height>
+						<height>'66.0 pt'</height>
 						<width>'259.0 pt'</width>
-						<x>'279.0 pt'</x>
-						<y>'-1.0 pt'</y>
+						<x>'278.0 pt'</x>
+						<y>'0.0 pt'</y>
 					</Rectangle>
 					<String>
 						<expr>"Kit Number:"</expr>
@@ -67,7 +67,7 @@
 					</String>
 					<String>
 						<expr>"[  ] Sound levels on DVswitch"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
+						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
 						<x>'19.0 pt'</x>
@@ -75,7 +75,7 @@
 					</String>
 					<String>
 						<expr>"[  ] System date and time."</expr>
-						<FontName>'Helvetica-Bold'</FontName>
+						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
 						<x>'19.0 pt'</x>
@@ -115,7 +115,7 @@
 						<height>'14.0 pt'</height>
 						<width>'41.0 pt'</width>
 						<x>'286.0 pt'</x>
-						<y>'24.0 pt'</y>
+						<y>'30.0 pt'</y>
 					</String>
 					<String>
 						<expr>"Review by:"</expr>
@@ -123,46 +123,46 @@
 						<FontSize>12</FontSize>
 						<width>'62.0 pt'</width>
 						<x>'285.0 pt'</x>
-						<y>'6.0 pt'</y>
+						<y>'11.0 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] Edit - set done"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
-						<FontSize>13</FontSize>
-						<width>'123.0 pt'</width>
-						<x>'414.0 pt'</x>
-						<y>'38.0 pt'</y>
-					</String>
-					<String>
-						<expr>"[  ] Review - done"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
+						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'19.0 pt'</y>
+						<y>'30.0 pt'</y>
 					</String>
 					<String>
-						<expr>"Post production"</expr>
-						<FontName>'Helvetica'</FontName>
+						<expr>"[  ] Review - done"</expr>
+						<fontname>'Helvetica'</fontname>
+						<FontSize>13</FontSize>
+						<width>'118.0 pt'</width>
+						<x>'415.0 pt'</x>
+						<y>'11.0 pt'</y>
+					</String>
+					<String>
+						<expr>"Post production:"</expr>
+						<fontname>'Helvetica-Bold'</fontname>
 						<FontSize>12</FontSize>
 						<height>'14.0 pt'</height>
-						<width>'91.0 pt'</width>
+						<width>'101.0 pt'</width>
 						<x>'283.0 pt'</x>
-						<y>'41.0 pt'</y>
+						<y>'49.0 pt'</y>
 					</String>
 					<String>
 						<expr>"Pre Day check:"</expr>
-						<FontName>'Helvetica'</FontName>
+						<fontname>'Helvetica-Bold'</fontname>
 						<FontSize>12</FontSize>
 						<height>'14.0 pt'</height>
 						<ScalePercent>(100.0, 90.0)</ScalePercent>
-						<width>'81.0 pt'</width>
+						<width>'90.0 pt'</width>
 						<x>'6.0 pt'</x>
 						<y>'55.0 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] Replace Batteries in mics"</expr>
-						<FontName>'Helvetica-Bold'</FontName>
+						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
 						<x>'19.0 pt'</x>
@@ -243,7 +243,7 @@
 			</String>
 			<String>
 				<expr>"[  ] Notes on back"</expr>
-				<FontName>'Helvetica-Bold'</FontName>
+				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'143.0 pt'</width>
 				<x>'206.0 pt'</x>
@@ -251,7 +251,7 @@
 			</String>
 			<String>
 				<expr>"[  ] Equipment problems"</expr>
-				<FontName>'Helvetica-Bold'</FontName>
+				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'163.0 pt'</width>
 				<x>'4.5 pt'</x>
@@ -282,6 +282,7 @@
 				<expr>self.episode_id</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>10</FontSize>
+				<height>'12.0 pt'</height>
 				<width>'19.0 pt'</width>
 				<x>'74.4 pt'</x>
 				<y>'2.7 pt'</y>
@@ -307,6 +308,7 @@
 				<expr>self.episode_end.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
+				<height>'12.0 pt'</height>
 				<width>'45.0 pt'</width>
 				<x>'1.0 pt'</x>
 				<y>'11.0 pt'</y>
@@ -354,7 +356,7 @@
 				<expr>"id:"</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>7</FontSize>
-				<height>'11.0 pt'</height>
+				<height>'8.0 pt'</height>
 				<width>'15.0 pt'</width>
 				<x>'59.4 pt'</x>
 				<y>'2.6 pt'</y>
@@ -370,7 +372,7 @@
 			</String>
 			<String>
 				<expr>"Start: _____________________"</expr>
-				<FontName>'Helvetica-bold'</FontName>
+				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>10</FontSize>
 				<height>'11.0 pt'</height>
 				<ScalePercent>(100.0, 150.0)</ScalePercent>
@@ -380,13 +382,13 @@
 			</String>
 			<String>
 				<expr>"End: _______________________"</expr>
-				<FontName>'Helvetica-bold'</FontName>
+				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>10</FontSize>
 				<height>'11.0 pt'</height>
 				<ScalePercent>(100.0, 150.0)</ScalePercent>
 				<width>'124.0 pt'</width>
 				<x>'1 pt'</x>
-				<y>'28.6 pt'</y>
+				<y>'31.6 pt'</y>
 			</String>
 			<String>
 				<expr>"Presenter initials for intent to release:  _____________"</expr>
@@ -400,7 +402,7 @@
 			</String>
 			<String>
 				<expr>"Released: [  ] yes  [  ] no."</expr>
-				<FontName>'Helvetica- bold'</FontName>
+				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<height>'14.0 pt'</height>
 				<Show>not self.episode_released</Show>
@@ -433,14 +435,14 @@
 			</String>
 			<String>
 				<Align>'right'</Align>
-				<expr>"[  ] %s %s" % (self.episode_emails, len(self.episode_emails))</expr>
+				<expr>"[  ] %s" % (self.episode_emails, )</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>10</FontSize>
 				<height>'14.0 pt'</height>
 				<Show>(self.episode_emails is not None) and self.episode_emails</Show>
 				<width>'198.0 pt'</width>
 				<x>'342.0 pt'</x>
-				<y>'40.0 pt'</y>
+				<y>'42.0 pt'</y>
 			</String>
 			<String>
 				<Align>'right'</Align>
@@ -451,15 +453,26 @@
 				<Show>not self.episode_emails</Show>
 				<width>'79.0 pt'</width>
 				<x>'461.3 pt'</x>
-				<y>'63.0 pt'</y>
+				<y>'66.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_conf_key</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>10</FontSize>
+				<height>'12.0 pt'</height>
 				<width>'29.0 pt'</width>
 				<x>'96.4 pt'</x>
 				<y>'2.7 pt'</y>
+			</String>
+			<String>
+				<expr>"[  ] late"</expr>
+				<FontColor>(.5, .5, .5)</FontColor>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<height>'11.0 pt'</height>
+				<width>'44.0 pt'</width>
+				<x>'1.0 pt'</x>
+				<y>'46.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
