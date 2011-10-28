@@ -381,7 +381,7 @@ pix_fmt=yuv411p" % parms
  def size_test(self):
      sizes = [
              ('ogv',602392),
-             ('mp4',448393),
+             ('mp4',1636263),
              ]
      ret = True
      for size in sizes:

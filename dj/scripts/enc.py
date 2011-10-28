@@ -477,7 +477,7 @@ class enc(process):
                       '/usr/share/ffmpeg/libx264-hq.ffpreset',
                       ]
 
-                  cmd="melt -verbose -progress -profile dv_%(dv_format)s %(mlt)s -consumer avformat:%(tmp)s deinterlace=bob threads=%(threads)s progressive=1 acodec=libmp3lame ab=(abr)k ar=48000 vcodec=libx264 b=(vbr)k" % parms 
+                  cmd="melt -verbose -progress -profile dv_%(dv_format)s %(mlt)s -consumer avformat:%(tmp)s deinterlace=bob threads=%(threads)s progressive=1 acodec=libmp3lame ab=%(abr)sk ar=48000 vcodec=libx264 b=%(vbr)sk" % parms 
 
                   # pyohio: cmd="melt -progress -profile square_%s %s -consumer avformat:%s deinterlace=bob threads=%s aspect=@4/3 progressive=1 acodec=libmp3lame ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
                   # acodec=libfaac
