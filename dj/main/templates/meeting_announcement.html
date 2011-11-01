@@ -34,7 +34,8 @@ Details
 {% for episode in episodes %}
 {{forloop.counter}}. {{ episode.name }} 
 {{episode.authors}}
-{{episode.description}}
+{% if episode.tags %}tags: {{episode.tags}}{% endif %}
+{% if episode.description %} {{episode.description}} {% else %}(Needs description.) {% endif %}
 {% if show.announcement_state == 2 %}
 EDIT: http://nextdayvideo.com:8080{% url admin:main_episode_change episode.id%}
 {% endif %}

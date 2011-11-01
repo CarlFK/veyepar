@@ -210,7 +210,8 @@ def emailer(show_id, ):
 
     def author_emails(show):
         # return a list of email addresses for the show
-        pems = [ 'brianhray@gmail.com']
+        # pems = [ 'brianhray@gmail.com']
+        pems = [ '"Brian Moloney" <brian@imagescape.com>']
         episodes=Episode.objects.filter(show=show)
         for ep in episodes:
             if ep.emails:
@@ -227,7 +228,7 @@ def emailer(show_id, ):
  '"Chicago Linux Discuss" <chicagolinux-discuss@googlegroups.com>',
  '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
  # '<genluglist@codlug.info>',
- #'<chicagotechcal@gmail.com>',
+ '<chicagotechcal@gmail.com>',
  'clclinuxclub@gmail.com',
  ]
 #     tos = { 1: admin_emails,
