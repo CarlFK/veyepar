@@ -473,6 +473,7 @@ class enc(process):
 			'threads': self.options.threads, 
 			}
                   ffpreset_files = [
+                      '/usr/share/ffmpeg/libx264-ultrafast.ffpreset',
                       '/usr/share/ffmpeg/libx264-faster.ffpreset',
                       '/usr/share/ffmpeg/libx264-hq.ffpreset',
                       ]
