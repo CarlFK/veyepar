@@ -231,8 +231,7 @@ class ckblip(process):
     password = pw.blip[user]
 
     meta = {'title':ep.name,
-            'language_code': 'de', 'language_name':'German',
-            'Language':'German'}
+            'description':ep.description}
 
     response = blip_cli.Upload(
             ep.host_url, user, password, [], meta, )

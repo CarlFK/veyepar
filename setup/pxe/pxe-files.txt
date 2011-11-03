@@ -3,26 +3,30 @@
 /etc/dhcp3/dhcpd.conf
 /etc/dhcp3/dhcpd.conf.macs
 
+/etc/bind/personnelware.com.db
+
 /var/lib/tftpboot/pxelinux.cfg/default
 
-/var/lib/tftpboot/util/cz/getcz.sh
+/root/bin/getcz.sh
+/root/bin/getu.sh
 
-/var/lib/tftpboot/ubuntu/oneiric/preseeds.cfg
-/var/lib/tftpboot/ubuntu/oneiric/preseed_carl.cfg
-/var/lib/tftpboot/ubuntu/oneiric/preseed_user.cfg
-/var/lib/tftpboot/ubuntu/oneiric/getu.sh
+/var/www/ubuntu/oneiric/preseeds.cfg
+/var/www/ubuntu/oneiric/preseed_carl.cfg
+/var/www/ubuntu/oneiric/preseed_user.cfg
 
 # /var/lib/tftpboot/ubuntu/oneiric/amd64/initrd.gz  
 # /var/lib/tftpboot/ubuntu/oneiric/amd64/linux
 # /var/lib/tftpboot/ubuntu/oneiric/i386/initrd.gz  
 # /var/lib/tftpboot/ubuntu/oneiric/i386/linux
 
-/var/www/ec/cpl.sh
 /var/www/ec/early_command.sh
+/var/www/ec/cpl.sh
 /var/www/ec/isshd.sh
 
+/var/www/lc/late.sh
 /var/www/lc/nm/dhcpipv4.conf
 /var/www/lc/nm/10.0.0.1.conf
+/var/www/lc/nm/10.0.0.2.conf
 /var/www/lc/nm/auto-magic.conf
 /var/www/lc/authorized_keys
 /var/www/lc/async-test
@@ -32,6 +36,5 @@
 /var/www/lc/hook.sh
 /var/www/lc/mp.conf
 /var/www/lc/build-melted.sh
-/var/www/lc/late.sh
 /var/www/lc/local.dconf
 
