@@ -4,7 +4,11 @@
 
 # run this on target box
 
+WEBPROXY=g2a:8000
 WEBROOT=/usr/share/nginx/www
+SHAZ=$(hostname)
+# WEBPROXY=$SHAZ:8000
+WEBPROXY=g2a:8000
 
 apt-get install  \
  dhcp3-server \
@@ -23,11 +27,16 @@ cp -rv srv/var/www/* $WEBROOT
 sed -i "/dhcp3/s//dhcp/"  /etc/dhcp/dhcpd.conf
 
 # put pxe boot binaries in place
-ln -sf /usr/lib/syslinux/ /var/lib/tftpboot/
-ln -sf syslinux/pxelinux.0 /var/lib/tftpboot/
+cp -r /usr/lib/syslinux/ /var/lib/tftpboot/
+# pxelinux.cfg/default is relitive to where it fins pxelinux.0
+# (i guess)
+ln -s syslinux/pxelinux.0  /var/lib/tftpboot/
+
+# swap shaz for whatever this box's name is.
+sed "/shaz/s//$SHAZ/" /var/lib/tftpboot/pxelinux.cfg/default
 
 # get ubuntu net boot kernel/initrd
-srv/root/bin/getu.sh oneiric
+http_proxy=$WEBPROXY srv/root/bin/getu.sh oneiric
 
 cd $WEBROOT/ubuntu/oneiric/
 cp /usr/share/doc/installation-guide-i386/example-preseed.txt.gz .
@@ -40,3 +49,5 @@ wget -N http://www.memtest.org/download/4.20/memtest86+-4.20.bin.gz
 
 service isc-dhcp-server restart
 service isc-dhcp-server stop
+
+service nginx start
