@@ -33,7 +33,7 @@ cp -r /usr/lib/syslinux/ /var/lib/tftpboot/
 ln -s syslinux/pxelinux.0  /var/lib/tftpboot/
 
 # swap shaz for whatever this box's name is.
-sed "/shaz/s//$SHAZ/" /var/lib/tftpboot/pxelinux.cfg/default
+sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default
 
 # get ubuntu net boot kernel/initrd
 http_proxy=$WEBPROXY srv/root/bin/getu.sh oneiric
