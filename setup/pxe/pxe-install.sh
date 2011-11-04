@@ -10,7 +10,7 @@ SHAZ=$(hostname)
 # WEBPROXY=$SHAZ:8000
 WEBPROXY=g2a:8000
 
-apt-get install  \
+apt-get --assyme-yes install  \
  dhcp3-server \
  tftpd-hpa \
  syslinux \
@@ -19,9 +19,9 @@ apt-get install  \
  installation-guide-i386 
  # squid-deb-proxy \
 
-cp -rv srv/etc/dhcp3/* /etc/dhcp/
-cp -rv srv/var/lib/tftpboot/* /var/lib/tftpboot/
-cp -rv srv/var/www/* $WEBROOT
+cp -rv shaz/etc/dhcp3/* /etc/dhcp/
+cp -rv shaz/var/lib/tftpboot/* /var/lib/tftpboot/
+cp -rv shaz/var/www/* $WEBROOT
 
 # fix the different path
 sed -i "/dhcp3/s//dhcp/"  /etc/dhcp/dhcpd.conf
@@ -36,7 +36,7 @@ ln -s syslinux/pxelinux.0  /var/lib/tftpboot/
 sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default
 
 # get ubuntu net boot kernel/initrd
-http_proxy=$WEBPROXY srv/root/bin/getu.sh oneiric
+http_proxy=$WEBPROXY shaz/root/bin/getu.sh oneiric
 
 cd $WEBROOT/ubuntu/oneiric/
 cp /usr/share/doc/installation-guide-i386/example-preseed.txt.gz .
