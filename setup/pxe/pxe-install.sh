@@ -7,21 +7,27 @@
 WEBPROXY=g2a:8000
 WEBROOT=/usr/share/nginx/www
 SHAZ=$(hostname)
-# WEBPROXY=$SHAZ:8000
-WEBPROXY=g2a:8000
+WEBPROXY=$SHAZ:8000
+# WEBPROXY=g2a:8000
 
-apt-get --assyme-yes install  \
+apt-get --assume-yes install  \
  dhcp3-server \
  tftpd-hpa \
  syslinux \
  nginx \
  nfs-kernel-server \
- installation-guide-i386 
- # squid-deb-proxy \
+ installation-guide-i386 \
+ squid-deb-proxy \
+
+# convience for checking things
+ln -sf $WEBROOT
 
 cp -rv shaz/etc/dhcp3/* /etc/dhcp/
 cp -rv shaz/var/lib/tftpboot/* /var/lib/tftpboot/
 cp -rv shaz/var/www/* $WEBROOT
+
+# allow ppa's, repo keys
+cp -rv shaz/etc/squid-deb-proxy/* /etc/squid-deb-proxy/
 
 # fix the different path
 sed -i "/dhcp3/s//dhcp/"  /etc/dhcp/dhcpd.conf
@@ -30,13 +36,15 @@ sed -i "/dhcp3/s//dhcp/"  /etc/dhcp/dhcpd.conf
 cp -r /usr/lib/syslinux/ /var/lib/tftpboot/
 # pxelinux.cfg/default is relitive to where it fins pxelinux.0
 # (i guess)
-ln -s syslinux/pxelinux.0  /var/lib/tftpboot/
+ln -sf syslinux/pxelinux.0  /var/lib/tftpboot/
 
 # swap shaz for whatever this box's name is.
 sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default
+sed -i "/g2a.personnelware.com:8000/s//$WEBPROXY/g" /usr/share/nginx/www/ubuntu/oneiric/preseed_user.cfg
 
 # get ubuntu net boot kernel/initrd
-http_proxy=$WEBPROXY shaz/root/bin/getu.sh oneiric
+# remove proxy for production
+http_proxy=g2a:8000 shaz/root/bin/getu.sh oneiric
 
 cd $WEBROOT/ubuntu/oneiric/
 cp /usr/share/doc/installation-guide-i386/example-preseed.txt.gz .
@@ -50,4 +58,5 @@ wget -N http://www.memtest.org/download/4.20/memtest86+-4.20.bin.gz
 service isc-dhcp-server restart
 service isc-dhcp-server stop
 
+service squid-deb-proxy restart
 service nginx start

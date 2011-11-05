@@ -3,6 +3,9 @@
 /etc/dhcp3/dhcpd.conf
 /etc/dhcp3/dhcpd.conf.macs
 
+/etc/squid-deb-proxy/squid-deb-proxy.conf
+/etc/squid-deb-proxy/mirror-dstdomain.acl
+
 /etc/bind/personnelware.com.db
 
 /var/lib/tftpboot/pxelinux.cfg/default
@@ -24,9 +27,9 @@
 /var/www/ec/isshd.sh
 
 /var/www/lc/late.sh
-
 /var/www/lc/authorized_keys
 /var/www/lc/sshkeys.tar
+/var/www/lc/sshd_config
 /var/www/lc/async-test
 /var/www/lc/mkmlt.sh
 /var/www/lc/netcons.sh
@@ -41,4 +44,5 @@
 /var/www/lc/nm/10.0.0.2.conf
 /var/www/lc/nm/auto-magic.conf
 
+/var/www/pxe.py
 
