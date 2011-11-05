@@ -140,7 +140,7 @@ class Episode(models.Model):
     active = models.BooleanField(help_text="Turn off to hide from UI.")
     state = models.IntegerField(null=True, blank=True,
         choices=STATES, default=STATES[1][0],
-        help_text="2=ready to encode, 4=ready to post, 5=tweet" )
+        help_text="" )
     locked = models.DateTimeField(null=True, blank=True, 
         help_text="clear this to unlock")
     locked_by = models.CharField(max_length=35, blank=True,
