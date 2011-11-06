@@ -36,6 +36,7 @@ class Client(models.Model):
     postroll = models.CharField(max_length=135, blank=True,
         help_text="name of video to postpend (not implemented)")
     host_user = models.CharField(max_length=30, blank=True, null=True)
+    # tweet_prefix = models.CharField(max_length=30, blank=True, null=True)
     title_svg = models.CharField(max_length=30, blank=True, null=True,
         help_text='template for event/title/authors')
     credits = models.CharField(max_length=30, blank=True, 

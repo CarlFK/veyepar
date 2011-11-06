@@ -29,8 +29,18 @@ cp -rv shaz/var/www/* $WEBROOT
 # allow ppa's, repo keys
 cp -rv shaz/etc/squid-deb-proxy/* /etc/squid-deb-proxy/
 
-# fix the different path
+# fix the different path 
 sed -i "/dhcp3/s//dhcp/"  /etc/dhcp/dhcpd.conf
+
+# gen some keys for the nodes
+# same keys on all nodes so that any box can ssh to any other node
+mkdir -p shaz/var/www/lc/ssh
+cd shaz/var/www/lc/ssh
+ssh-keygen -f id_rsa -N ""
+cp id_rsa.pub authorized_keys
+echo <<EOT >>config
+StrictHostKeyChecking no
+EOT
 
 # put pxe boot binaries in place
 cp -r /usr/lib/syslinux/ /var/lib/tftpboot/
@@ -40,7 +50,7 @@ ln -sf syslinux/pxelinux.0  /var/lib/tftpboot/
 
 # swap shaz for whatever this box's name is.
 sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default
-sed -i "/g2a.personnelware.com:8000/s//$WEBPROXY/g" /usr/share/nginx/www/ubuntu/oneiric/preseed_user.cfg
+sed -i "/g2a.personnelware.com:8000/s//$WEBPROXY/g" $WEBROOT/ubuntu/oneiric/preseed_user.cfg
 
 # get ubuntu net boot kernel/initrd
 # remove proxy for production
