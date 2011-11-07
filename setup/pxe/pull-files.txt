@@ -10,34 +10,28 @@
 
 /var/lib/tftpboot/pxelinux.cfg/default
 
-/root/bin/getcz.sh
 /root/bin/getu.sh
+/root/bin/getcz.sh
 
 /var/www/ubuntu/oneiric/preseeds.cfg
 /var/www/ubuntu/oneiric/preseed_carl.cfg
 /var/www/ubuntu/oneiric/preseed_user.cfg
 
-# /var/lib/tftpboot/ubuntu/oneiric/amd64/initrd.gz  
-# /var/lib/tftpboot/ubuntu/oneiric/amd64/linux
-# /var/lib/tftpboot/ubuntu/oneiric/i386/initrd.gz  
-# /var/lib/tftpboot/ubuntu/oneiric/i386/linux
-
 /var/www/ec/early_command.sh
 /var/www/ec/cpl.sh
-/var/www/ec/isshd.sh
+/var/www/ec/ssh/isshd.sh
+/var/www/ec/ssh/sshd_config
+/var/www/ec/ssh/authorized_keys
 
 /var/www/lc/late.sh
-/var/www/lc/authorized_keys
-# /var/www/lc/sshkeys.tar
-# /var/www/lc/sshd_config
+
+/var/www/lc/local.dconf
+/var/www/lc/fw-beep.rules
+/var/www/lc/mp.conf
 /var/www/lc/async-test
 /var/www/lc/mkmlt.sh
 /var/www/lc/netcons.sh
-/var/www/lc/fw-beep.rules
 /var/www/lc/hook.sh
-/var/www/lc/mp.conf
-/var/www/lc/build-melted.sh
-/var/www/lc/local.dconf
 
 /var/www/lc/nm/dhcpipv4.conf
 /var/www/lc/nm/10.0.0.1.conf
