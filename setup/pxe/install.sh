@@ -12,6 +12,7 @@ apt-get --assume-yes install  \
  tftpd-hpa \
  syslinux \
  nginx \
+ bind9 \
  nfs-kernel-server \
  installation-guide-i386 \
  squid-deb-proxy \
@@ -31,7 +32,8 @@ service isc-dhcp-server stop
 # this is the stupid line that comes from the .deb
 # try_files $uri $uri/ /index.html; 
 # and add in autoindex - cuz it is handy.
-sed -i "/^[[:space:]]*try_files \$uri \$uri\/ \/index.html;/s/.*/#cfk# &\n\t\tautoindex on;/" /etc/nginx/sites-available/default
+sed -i "/^[[:space:]]*try_files \$uri \$uri\/ \/index.html;/s/.*/#cfk# &\n\t\tautoindex on;/" \
+    /etc/nginx/sites-available/default
 service nginx start
 
 # put pxe boot config and binaries in place
@@ -79,13 +81,16 @@ cp -rv shaz/etc/squid-deb-proxy/* /etc/squid-deb-proxy/
 service squid-deb-proxy restart
 # set preseeed to use proxy
 # g2a is the proxy used for develment
-sed -i "/g2a.personnelware.com/s//$SHAZ/g" $WEBROOT/ubuntu/oneiric/preseed_user.cfg
+# #commented out for developing.
+# sed -i "/g2a.personnelware.com/s//$SHAZ/g" \
+#    $WEBROOT/ubuntu/oneiric/preseed_user.cfg
 
 # handy utilites
 # memtest
 mkdir -p /var/lib/tftpboot/util
 cd /var/lib/tftpboot/util
 wget -N http://www.memtest.org/download/4.20/memtest86+-4.20.bin.gz
+gunzip --force memtest86+-4.20.bin.gz
 # clonezilla
 # /var/lib/tftpboot/util/cz/getcz.sh
 cd -

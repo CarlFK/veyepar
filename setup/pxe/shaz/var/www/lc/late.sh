@@ -201,6 +201,7 @@ chown 1000:1000 .dvswitchrc
 
 APP=x.sh
 cat <<EOT > $APP
+#!/bin/bash -x
 wget -N http://$SHAZ/lc/hook.sh
 chmod u+x hook.sh
 ./hook.sh $1
@@ -291,16 +292,16 @@ wget http://$SHAZ/lc/ssh/id_rsa
 wget http://$SHAZ/lc/ssh/id_rsa.pub
 wget http://$SHAZ/lc/ssh/authorized_keys
 wget http://$SHAZ/lc/ssh/config
-wget http://$SHAZ/lc/ssh/known_hosts
+# wget http://$SHAZ/lc/ssh/known_hosts
 chmod 600 config authorized_keys id_rsa
-chmod 644 id_rsa.pub known_hosts
+chmod 644 id_rsa.pub 
 cd ..
 chmod 700 .ssh
-chown -R juser:juser .ssh
+chown -R $NUSER:$NUSER .ssh
 
 # add 'private' keys - inscure, they are publicly avalibe on this box.
 # cd /home/$NUSER~/.ssh
-# wget http://$SHAZ/lc/sshkeys.tar
+# wget --overwrite http://$SHAZ/lc/sshkeys.tar
 # tar xf sshkeys.tar
 
 # cd sshkeys

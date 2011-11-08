@@ -37,6 +37,7 @@ Details
 {% if episode.tags %}tags: {{episode.tags}}{% endif %}
 {% if episode.description %} {{episode.description}} {% else %}(Needs description.) {% endif %}
 {% if show.announcement_state == 2 %}
+recording release: {{episode.released|yesno:"yeah,no,maybe" }}
 EDIT: http://nextdayvideo.com:8080{% url admin:main_episode_change episode.id%}
 {% endif %}
 {% if episode.public_url %} Video: {{episode.public_url}} {% endif %}
@@ -44,6 +45,7 @@ EDIT: http://nextdayvideo.com:8080{% url admin:main_episode_change episode.id%}
 
 Location
 --------
+{{location.name}}
 {{location.description}}
 
 About the group
