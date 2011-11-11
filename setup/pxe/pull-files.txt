@@ -1,7 +1,12 @@
 # Files needed for PXE install ubuntu
 
 /etc/dhcp3/dhcpd.conf
-/etc/dhcp3/dhcpd.conf.macs
+/etc/dhcp3/dhcpd-pxe.conf
+/etc/dhcp3/dhcpd-cz.conf
+/etc/dhcp3/dhcpd-ddns.conf
+/etc/dhcp3/dhcpd-hostname.conf
+/etc/dhcp3/dhcpd-yaboot.conf
+/etc/dhcp3/dhcpd-macs.conf
 
 /etc/squid-deb-proxy/squid-deb-proxy.conf
 /etc/squid-deb-proxy/mirror-dstdomain.acl

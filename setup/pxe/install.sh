@@ -24,9 +24,25 @@ ln -sf $WEBROOT
 # dhcp server:
 cp -rv shaz/etc/dhcp3/* /etc/dhcp/
 # fix the different path 
-sed -i "/dhcp3/s//dhcp/"  /etc/dhcp/dhcpd.conf
-service isc-dhcp-server restart
+sed -i "/dhcp3/s//dhcp/"  /etc/dhcp/dhcpd*.conf
+
+# needed for ddns
+# include "/etc/bind/rndc.key";
+# adduser dhcpd bind
+
+adduser root bind
+
+cat <<EOT >>/etc/apparmor.d/local/usr.sbin.dhcpd
+/etc/bind/ r,
+/etc/bind/** r,
+EOT
+
+service apparmor restart
+# need sudo because root isn't in bind group in this shell
+sudo service isc-dhcp-server restart
 service isc-dhcp-server stop
+
+
 
 # 404 when the file is not found!! (duh)
 # this is the stupid line that comes from the .deb
@@ -69,7 +85,7 @@ fi
 cd $WEBROOT/lc/ssh
 ssh-keygen -f id_rsa -N ""
 chmod a+r id_rsa id_rsa.pub
-echo <<EOT >>config
+cat <<EOT >>config
 StrictHostKeyChecking no
 EOT
 cat id_rsa.pub ~/.ssh/id_rsa.pub >> authorized_keys
@@ -82,8 +98,8 @@ service squid-deb-proxy restart
 # set preseeed to use proxy
 # g2a is the proxy used for develment
 # #commented out for developing.
-# sed -i "/g2a.personnelware.com/s//$SHAZ/g" \
-#    $WEBROOT/ubuntu/oneiric/preseed_user.cfg
+sed -i "/g2a.personnelware.com/s//$SHAZ/g" \
+    $WEBROOT/ubuntu/oneiric/preseed_user.cfg
 
 # handy utilites
 # memtest
