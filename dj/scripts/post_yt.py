@@ -36,6 +36,10 @@ class post(process):
         }
 
     tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
+   authors = ep.authors.split(',')
+   authors = [ a.replace(' ','') for a in authors ]
+   tags += authors 
+
     meta['tags'] = [tag for tag in tags if tag] 
 
     if ep.license: 

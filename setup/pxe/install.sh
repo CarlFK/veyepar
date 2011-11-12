@@ -93,6 +93,7 @@ cd -
 
 # squid cache of install files
 # allow ppa's, repo keys
+# note: http://www.squid-cache.org/Doc/config/offline_mode/
 cp -rv shaz/etc/squid-deb-proxy/* /etc/squid-deb-proxy/
 service squid-deb-proxy restart
 # set preseeed to use proxy
