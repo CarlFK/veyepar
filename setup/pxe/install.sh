@@ -119,7 +119,7 @@ service squid-deb-proxy restart
 # set preseeed to use proxy
 # g2a is the proxy used for development
 sed -i "/g2a.personnelware.com/s//$SHAZ/g" \
-    $WEBROOT/ubuntu/oneiric/preseed_user.cfg
+    $WEBROOT/ubuntu/oneiric/preseed_local.cfg
 
 # handy utilites
 # memtest
