@@ -114,7 +114,7 @@ service nginx start
 # nodes will have the same user as the server box
 sed -i "/@user@/s//$NUSER/g" \
     $WEBROOT/ubuntu/oneiric/preseed_local.cfg \
-    $WEBROOT/ubuntu/lc/late.sh
+    $WEBROOT/lc/late.sh
 
 # squid cache the install files
 # allow ppa's, repo keys

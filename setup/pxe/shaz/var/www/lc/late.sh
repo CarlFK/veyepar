@@ -5,11 +5,7 @@
 # d-i preseed/late_command  string cd /tmp;apt-get install wget;wget http://shaz/late_command.sh; chmod u+x late_command.sh; chroot /target ./late_command.sh
 
 set -xe
-# NUSER=videoteam
 NUSER=@user@
-# NUSER=carl
-
-# SHAZ=shaz.personnelware.com
 
 ## ssh greating: cpu, ubuntu ver, firewire guids
 # add the cpu name/speed and ubuntu flavor to login greeting
