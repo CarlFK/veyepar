@@ -113,7 +113,8 @@ service nginx start
 
 # nodes will have the same user as the server box
 sed -i "/@user@/s//$NUSER/g" \
-    $WEBROOT/ubuntu/oneiric/preseed_local.cfg
+    $WEBROOT/ubuntu/oneiric/preseed_local.cfg \
+    $WEBROOT/ubuntu/lc/late.sh
 
 # squid cache the install files
 # allow ppa's, repo keys
@@ -136,3 +137,5 @@ gunzip --force memtest86+-4.20.bin.gz
 # /var/lib/tftpboot/util/cz/getcz.sh
 cd -
 
+echo sudo ./nat.sh
+echo sudo service isc-dhcp-server start

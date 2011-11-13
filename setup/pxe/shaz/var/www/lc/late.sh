@@ -6,7 +6,7 @@
 
 set -xe
 # NUSER=videoteam
-NUSER=juser
+NUSER=@user@
 # NUSER=carl
 
 # SHAZ=shaz.personnelware.com
