@@ -3,4 +3,10 @@ squid port
 /etc/squid-deb-proxy/squid-deb-proxy.conf 
 http_port 8000
 
+bind db dir
+/etc/bind9/named.conf.options 
+directory "/var/cache/bind";
 
+http://www.debianadmin.com/howto-setup-dhcp-server-and-dynamic-dns-with-bind-in-debian.html
+http://tech.watts.co.nz/ubuntu-dns/
+http://www.debian-administration.org/article/Configuring_Dynamic_DNS__DHCP_on_Debian_Stable 

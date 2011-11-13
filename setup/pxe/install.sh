@@ -17,10 +17,6 @@ apt-get --assume-yes install  \
  installation-guide-i386 \
  squid-deb-proxy \
 
-# convience for checking things
-ln -sf $WEBROOT
-
-
 # dhcp server:
 cp -rv shaz/etc/dhcp* /etc/
 
@@ -30,14 +26,17 @@ cp -rv shaz/etc/dhcp* /etc/
 # adduser dhcpd bind
 # yeah, well, it doesn't work so well right now:
 # https://bugs.launchpad.net/ubuntu/+source/isc-dhcp/+bug/341817
-# so for now, mess with root:
+# so for now, my fav workaround:
 adduser root bind
 
+# tell apparor to allow dhcpd process to read the dns keyfile
 cat <<EOT >>/etc/apparmor.d/local/usr.sbin.dhcpd
 /etc/bind/ r,
 /etc/bind/** r,
 EOT
+service apparmor restart
 
+# setup dns
 cp shaz/etc/bind/named.conf.local /etc/bind/
 cp shaz/var/cache/bind/db.private  /var/cache/bind/
 cp shaz/var/cache/bind/rev.z.y.x.in-addr.arpa /var/cache/bind/
@@ -47,7 +46,8 @@ sed -i "/shaz/s//$SHAZ/g" \
 touch /var/cache/bind/managed-keys.bind
 chown bind:bind /var/cache/bind/*
 
-service apparmor restart
+# start servers...
+# layers of workaround here that will go away someday.
 # need sudo because root isn't in bind group in this shell
 # never mind, lets not start the server just yet.
 # having 2 dhcp servers on 1 lan is dumb.
@@ -55,14 +55,9 @@ service apparmor restart
 # sudo service isc-dhcp-server restart
 # service isc-dhcp-server stop
 
-# fix nginx config:
-# 404 when the file is not found!! (duh)
-# this is the stupid line that comes from the .deb
-# try_files $uri $uri/ /index.html; 
-# and add in autoindex - cuz it is handy.
-sed -i "/^[[:space:]]*try_files \$uri \$uri\/ \/index.html;/s/.*/#cfk# &\n\t\tautoindex on;/" \
-    /etc/nginx/sites-available/default
-service nginx start
+## ddns setup done.
+
+# setup pxe and ubuntu install scripts
 
 # put pxe boot config and binaries in place
 cp -rv shaz/var/lib/tftpboot/* /var/lib/tftpboot/
@@ -107,13 +102,23 @@ EOT
 cat id_rsa.pub ~/.ssh/id_rsa.pub >> authorized_keys
 cd -
 
-# squid cache of install files
+# fix nginx config:
+# not needed for production, but default is anoying to debug.
+# 404 when the file is not found!! (duh)
+# this is the stupid line that comes from the .deb
+# try_files $uri $uri/ /index.html; 
+# and add in autoindex - cuz it is handy.
+sed -i "/^[[:space:]]*try_files \$uri \$uri\/ \/index.html;/s/.*/#cfk# &\n\t\tautoindex on;/" \
+    /etc/nginx/sites-available/default
+service nginx start
+
+# squid cache the install files
 # allow ppa's, repo keys
 # note: http://www.squid-cache.org/Doc/config/offline_mode/
 cp -rv shaz/etc/squid-deb-proxy/* /etc/squid-deb-proxy/
 service squid-deb-proxy restart
 # set preseeed to use proxy
-# g2a is the proxy used for develment
+# g2a is the proxy used for development
 sed -i "/g2a.personnelware.com/s//$SHAZ/g" \
     $WEBROOT/ubuntu/oneiric/preseed_user.cfg
 
