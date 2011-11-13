@@ -4,7 +4,7 @@
 # run this on target box
 
 SHAZ=$(hostname)
-USER=$USER 
+NUSER=$USER 
 WEBROOT=/usr/share/nginx/www
 
 apt-get --assume-yes install  \
@@ -110,6 +110,10 @@ cd -
 sed -i "/^[[:space:]]*try_files \$uri \$uri\/ \/index.html;/s/.*/#cfk# &\n\t\tautoindex on;/" \
     /etc/nginx/sites-available/default
 service nginx start
+
+# nodes will have the same user as the server box
+sed -i "/@user@/s//$NUSER/g" \
+    $WEBROOT/ubuntu/oneiric/preseed_user.cfg
 
 # squid cache the install files
 # allow ppa's, repo keys
