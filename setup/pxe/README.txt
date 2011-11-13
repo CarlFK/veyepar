@@ -14,7 +14,9 @@ steps:
       (given that is very likely, this should be changed.)
 4.2 sudo ./nat.sh 
 5. sudo service isc-dhcp-server start
-6. 
+6. hook up empty nodes, pxe boot, select "hands off install" and wait.
+   takes about 20 minutes once the cache is warm.
+
 
 This will install and configure all the servers, but not start dhcpd.
 (you don't want a 2nd primary dhcp server on your lan.)

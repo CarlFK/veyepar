@@ -31,8 +31,7 @@ adduser root bind
 
 # tell apparor to allow dhcpd process to read the dns keyfile
 cat <<EOT >>/etc/apparmor.d/local/usr.sbin.dhcpd
-/etc/bind/ r,
-/etc/bind/** r,
+/etc/bind/rndc.key r,
 EOT
 service apparmor restart
 
