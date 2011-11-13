@@ -1,0 +1,6 @@
+
+squid port 
+/etc/squid-deb-proxy/squid-deb-proxy.conf 
+http_port 8000
+
+

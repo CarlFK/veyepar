@@ -1,0 +1,12 @@
+$ORIGIN .
+$TTL 86400      ; 1 day
+z.y.x.in-addr.arpa           SOA  shaz.private. root.shaz.private. (
+                                2          ; serial
+                                604800     ; refresh (1 week)
+                                86400      ; retry (1 day)
+                                2419200    ; expire (4 weeks)
+                                86400      ; minimum (1 day)
+                                )
+                        NS      shaz.private.
+$ORIGIN z.y.x.in-addr.arpa.
+1           PTR       shaz.private.

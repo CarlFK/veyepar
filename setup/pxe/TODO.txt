@@ -1,0 +1,6 @@
+1. change default IP block to something less likely to conflict with internet connection (192.168.0.x being the most likely)
+
+2. run an install, parse squid logs for URLs, make a file of URLs,
+make a script that just reads them to warm up a fresh cache. This will be quicker than runing a full install.  Used when the installs are done witout a bordband connection: take the server to somewhere with a good connection, warm up cache, move server back to the Internet deseart. 
+
+3. split out ddns setup.  people want that without the pxe and carl's install scripts.

@@ -19,7 +19,7 @@ if [ -d $PROFDIR ]; then
   echo lsb_release -d -c > $PROFDIR/showrelease.sh 
   echo uname -a > $PROFDIR/showkernel.sh 
   echo cat /sys/devices/virtual/dmi/id/product_name > $PROFDIR/showproduct_name.sh 
-  echo cat /sys/bus/firewire/devices/fw0/guid > $PROFDIR/show_fwguid.sh 
+  echo cat /sys/bus/firewire/devices/fw?/guid > $PROFDIR/show_fwguid.sh 
   echo "cd /sys/devices/virtual/dmi/id" > $PROFDIR/showproduct_name.sh 
   echo "echo \$(cat sys_vendor) \$(cat product_version) \$(cat product_name)" >> $PROFDIR/showproduct_name.sh 
   echo cd >> $PROFDIR/showproduct_name.sh 
@@ -82,6 +82,9 @@ if [ -f $CONF ]; then
   sed -i "/^Prompt=normal/s/^.*$/Prompt=never/" \
     $CONF
 fi
+
+# disable "incomplete language support" dialog
+rm -f /var/lib/update-notifier/user.d/incomplete*
 
 CONF=/usr/share/gnome/autostart/libcanberra-login-sound.desktop 
 if [ -f $CONF ]; then
@@ -150,6 +153,7 @@ if [ -d /etc/NetworkManager/system-connections ]; then
   cd /etc/NetworkManager/system-connections
   get_nm_conf 10.0.0.1
   get_nm_conf 10.0.0.2
+  get_nm_conf 192.168.0.1
   get_nm_conf dhcpipv4
   get_nm_conf auto-magic
 
@@ -168,10 +172,10 @@ EOT
 ## grab some home made utilities 
 cd /sbin
 
-APP=async-test
-wget http://$SHAZ/lc/$APP
-chmod 777 $APP 
-chown 1000:1000 $APP 
+# APP=async-test
+# wget http://$SHAZ/lc/$APP
+# chmod 777 $APP 
+# chown 1000:1000 $APP 
 
 # rest of script does things in defaunt users home dir (~)
 cd /home/$NUSER
@@ -190,6 +194,7 @@ chown 1000:1000 bin temp .mplayer
 
 cat <<EOT > .dvswitchrc
 MIXER_HOST=0.0.0.0
+# MIXER_HOST=10.0.0.1
 MIXER_PORT=2000
 EOT
 chown 1000:1000 .dvswitchrc
@@ -259,7 +264,7 @@ chown 1000:1000 $APP
 
 ## get mplayer default config 
 APP=.mplayer/config
-wget http://$SHAZ/lc/mp.conf -O $APP  
+wget http://$SHAZ/lc/mplayer.conf -O $APP  
 chmod 777 $APP 
 chown 1000:1000 $APP 
 

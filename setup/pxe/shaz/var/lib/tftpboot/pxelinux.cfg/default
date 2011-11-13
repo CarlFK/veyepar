@@ -1,0 +1,294 @@
+# /var/lib/tftpboot/pxelinux.cfg/default
+
+# Show the user a boot: prompt
+# prompt 1
+
+# label to use if the user hits Enter
+UI menu
+
+# how long in 1/10 seccond to wait for the user
+timeout 50
+
+# what to load if the user doesn't press anything
+ontimeout boothd
+# ontimeout clonezilla
+
+# file to dump to the client's screen if the user hits F1
+# (this file, which is way too large and will scrool off the screen, 
+# but comes in handy as new sections are added to the end,
+# because that is the only part I need to see 
+# when the new thing isn't working
+F1 pxelinux.cfg/default
+
+# added to the kernel command line:
+# BOOTIF=<hardware-address-of-boot-interface>
+# http://syslinux.zytor.com/wiki/index.php/SYSLINUX#IPAPPEND_flag_val_.5BPXELINUX_only.5D
+
+################
+# begin menu options
+# each "label" defines a (something) that the user can pick
+
+label boothd
+# boot from the first HD
+        kernel syslinux/chain.c32
+        append hd0 
+
+label bootnext
+	# fail the pxe boot, 
+	# the bios should try the next boot device, probably the HD.
+	# this only works if pxe was booted from a rom - a floppy 
+	# based pxe boot will just reboot the floppy.
+	# given that this is the timeout, it makes sense to create the floppy
+	# such that it requries a keypress to pxe boot, else let the bios 
+	# select the next boot device.
+	# The alternative is to use 
+	localboot 0
+
+label ubuntu-precise-amd64-handsoff
+	linux ubuntu/precise/amd64/linux
+	append initrd=ubuntu/precise/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=auto netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 url=http://shaz/ubuntu/precise/preseeds.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-precise-i386-handsoff
+	linux ubuntu/precise/i386/linux
+	append initrd=ubuntu/precise/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/get_hostname= apt-setup/proposed=true netcfg/choose_interface=auto DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/precise/preseeds.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-oneiric-amd64-handsoff
+	linux ubuntu/oneiric/amd64/linux
+	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=auto netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/oneiric/preseeds.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-oneiric-i386-handsoff
+	linux ubuntu/oneiric/i386/linux
+	append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/get_hostname= apt-setup/proposed=true netcfg/choose_interface=auto DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/oneiric/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	# append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=auto netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 url=http://shaz/ubuntu/oneiric/preseeds.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label memtest86+-4.20.bin
+        linux util/memtest86+-4.20.bin
+
+label ubuntu-natty-amd64-handsoff
+	linux ubuntu/natty/amd64/linux
+	append initrd=ubuntu/natty/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/natty/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+label ubuntu-natty-i386-handsoff
+	linux ubuntu/natty/i386/linux
+	append initrd=ubuntu/natty/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/natty/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+label ubuntu-maverick-amd64-handsoff
+	linux ubuntu/maverick/amd64/linux
+	append initrd=ubuntu/maverick/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+label ubuntu-maverick-i386-handsoff-server
+	linux ubuntu/maverick/i386/linux
+	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="" -- vga=2
+        # vga=2 or  791 792 794 795.
+
+
+
+label ubuntu-maverick-i386-handsoff
+	linux ubuntu/maverick/i386/linux
+	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+label mav-srv
+	linux ubuntu/maverick/i386/linux
+	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu" -- vga=6
+
+label sbm-floppy
+# smart boot manager - menu of all bootable devices on the local box
+	kernel syslinux/memdisk 
+	append initrd=util/sbm.img
+
+label memtest86
+	kernel memtest/memtest
+
+label dvswitch
+	linux ubuntu/jaunty/dvswitch/iso/casper/vmlinuz
+	append initrd=ubuntu/jaunty/dvswitch/iso/casper/initrd.gz boot=casper netboot=nfs nfsroot=shaz:/var/lib/tftpboot/ubuntu/jaunty/dvswitch/iso/ vga=6 log_host=cw1b 
+
+label clonezilla-exper
+	linux util/cz/exper/live/vmlinuz 
+	append initrd=util/cz/exper/live/initrd.img boot=live union=aufs ocs_live_run="ocs-live-general" ocs_live_extra_param=""  ocs_lang="" ocs_live_keymap="NONE" ip=dhcp nolocales netboot=nfs nfsroot=shaz:/var/lib/tftpboot/util/cz/exper/ ocs_daemonon="ssh" usercrypted=yfjxD88LCd8AY console=ttyS0,9600n8 
+
+label clonezilla-testing
+	linux util/cz/testing/live/vmlinuz1
+	append initrd=util/cz/testing/live/initrd1.img boot=live union=aufs  hostname=intrepid  ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch="no" ocs_lang="" ocs_live_keymap="NONE" ip=dhcp nolocales netboot=nfs nfsroot=shaz:/var/lib/tftpboot/util/cz/testing/ vga=6 ocs_daemonon="ssh" usercrypted=yfjxD88LCd8AY console=ttyS0,9600n8 edd=off
+
+label ubuntu-lucid-amd64-handsoff
+	linux ubuntu/lucid/amd64/linux
+	append initrd=ubuntu/lucid/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/lucid/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+label ubuntu-lucid-i386-handsoff
+	linux ubuntu/lucid/i386/linux
+	append initrd=ubuntu/lucid/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/lucid/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+label ubuntu-karmic-amd64-handsoff
+	linux ubuntu/karmic/amd64/linux
+	append initrd=ubuntu/karmic/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/karmic/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+label ubuntu-karmic-i386-handsoff
+	linux ubuntu/karmic/i386/linux
+	append initrd=ubuntu/karmic/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/karmic/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+
+label ubuntu-karmic-livecd
+	linux ubuntu/karmic/i386/desktop/casper/vmlinuz
+	append initrd=ubuntu/karmic/i386/desktop/casper/initrd.gz boot=casper netboot=nfs nfsroot=192.168.1.7:/var/lib/tftpboot/ubuntu/karmic/i386/desktop/ vga=6 single
+
+label ubuntu-jaunty-amd64-livecd
+	linux ubuntu/jaunty/amd64/iso/casper/vmlinuz
+	append initrd=ubuntu/jaunty/amd64/iso/casper/initrd.gz boot=casper netboot=nfs nfsroot=192.168.1.7:/var/lib/tftpboot/ubuntu/jaunty/amd64/iso/ vga=6 single
+
+label ubuntu-jaunty-i386-handsoff
+	linux ubuntu/jaunty/i386/linux
+	append initrd=ubuntu/jaunty/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/jaunty/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+label ubuntu-karmic-amd64-livecd
+	linux ubuntu/karmic/amd64/iso/casper/vmlinuz
+	append initrd=ubuntu/karmic/amd64/iso/casper/initrd.gz boot=casper netboot=nfs nfsroot=192.168.1.7:/var/lib/tftpboot/ubuntu/karmic/amd64/iso/ vga=6 single
+
+label ubuntu-jaunty-i386-livecd
+	linux ubuntu/jaunty/i386/desktop/casper/vmlinuz
+	append initrd=ubuntu/jaunty/i386/desktop/casper/initrd.gz boot=casper netboot=nfs nfsroot=192.168.1.7:/var/lib/tftpboot/ubuntu/jaunty/i386/desktop/ vga=6 single
+
+# d-i partman-auto/disk string /dev/sda
+# d-i partman-auto/method string regular
+# partman/choose_partition \
+#       select Finish partitioning and write changes to disk
+
+label ubuntu-jaunty-amd64-handsoff
+	linux ubuntu/jaunty/amd64/linux
+	append initrd=ubuntu/jaunty/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5  tasksel:tasksel/first="ubuntu-desktop" url=http://shaz/ubuntu/jaunty/preseed.cfg --
+
+label ubuntu-intrepid-livecd
+	linux ubuntu/intrepid/desktop/casper/vmlinuz
+	append initrd=ubuntu/intrepid/desktop/casper/initrd.gz boot=casper netboot=nfs nfsroot=192.168.1.7:/var/lib/tftpboot/ubuntu/intrepid/desktop/ vga=6 single
+
+label ubuntu-hardy-alternate-handsoff
+	linux ubuntu/hardy/alt/linux
+	append initrd=ubuntu/hardy/alt/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5  url=http://shaz/ubuntu/hardy/preseed-hardy-alt.cfg apt-setup/proposed=true tasksel:tasksel/first=""  --
+
+label lenny-i386-handsoff
+	linux debian/lenny/i386/linux
+	append initrd=debian/lenny/i386/initrd.gz ramdisk_size=15360 root=/dev/rd/0 devfs=mount,dall rw DEBCONF_PRIORITY=high d-i locale=en_US countrychooser/shortlist=EN console-keymaps-at/keymap=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/debian/lenny/preseed.cfg tasksel:tasksel/first="" -- vga=6
+
+label lenny-x64-handsoff
+	linux debian/lenny/i386/linux
+	append initrd=debian/lenny/i386/initrd.gz ramdisk_size=15360 root=/dev/rd/0 devfs=mount,dall rw DEBCONF_PRIORITY=high d-i locale=en_US countrychooser/shortlist=EN console-keymaps-at/keymap=us netcfg/wireless_wep= DEBCONF_DEBUG=5 SHAZ-shaz url=http://shaz/debian/lenny/preseed.cfg tasksel:tasksel/first="" -- vga=6
+
+label avlinux
+	linux avlinux/vmlinuz
+	append initrd=avlinux/initrd.gz boot=casper netboot=nfs nfsroot=192.168.1.177:/home/carl/isoimages/avlinux vga=6 single
+
+label tomsrtbt-ElTorito
+# Linux http://www.toms.net/rb/
+	kernel memdisk
+	append initrd=linux/tomsrtbt-2.0.103.ElTorito.288.img
+
+label freedos
+# um... some sort of dos that isn't MS.
+	kernel memdisk 
+	append initrd=floppy.img
+
+label image
+# hard disk imager, will burn multipe CD's on a local burner
+	kernel memdisk 
+	append initrd=BootItNG/image-exe.img
+
+label dosimage
+# hard disk imager, will burn multipe CD's on a local burner
+	kernel memdisk 
+	append initrd=BootItNG/dosimage.IMA 
+
+label proboot
+# Intel Boot Agent Utility (what's this?)
+	kernel memdisk
+	append initrd=util/proboot.ima
+
+label pxesmb
+# SMB on pxe TCP/IP stack
+	kernel memdisk 
+	append initrd=smb/pxesmbboot.IMA keeppxe 
+
+label dell333b
+# Intel Eather Express Pro (built into Dell V333), tcp/ip, smb
+# (UNDI was crashing, so this uses drivers for the NIC) 
+	kernel memdisk 
+	append initrd=smb/dell333.img 
+
+label Drive Fitness Test 
+# Utilities for analyzing, monitoring and restoring Hitachi HDDs 
+# http://www.hitachigst.com/hdd/support/download.htm
+	kernel util/dft32_v412_b01_install.IMG
+
+label xpmsdos
+# WinME, might read NTFS
+	kernel util/xpmsdos.img
+
+label GhostUSB.IMA
+# GhostUSB.IMA from josh v7.5
+	kernel memdisk
+	append initrd=util/ghost/GhostUSB.IMA pause
+
+label barts-modboot26
+# Barts boot disk
+	kernel memdisk
+	append initrd=util/barts/modboot26
+
+label ubcd-maxblast
+# Ultimage Boot CD
+	kernel memdisk
+	append initrd=ubcd/images/maxblast.igz
+
+label ubcd-maxtor
+# Ultimage Boot CD
+	kernel memdisk
+	append initrd=ubcd/images/maxtor.igz
+
+label BootItNG.IMA
+# Ultimage Boot CD
+	kernel memdisk
+	append initrd=util/BootItNG.IMA
+
+label MSDOS71B.IMG
+# Ultimage Boot CD
+	kernel memdisk
+	append initrd=dos/MSDOS71B.IMG
+
+label vmsmb.img
+	kernel memdisk
+	append initrd=smb/vmsmb.img
+
+label netboot.ima
+	kernel memdisk
+	append initrd=util/netboot.ima
+
+label bd050303.bin (nt pw reset)
+# http://www.petri.co.il/forgot_administrator_password.htm#1
+	kernel memdisk
+	append initrd=util/bd050303.bin
+
+label w98ebd
+# Win98 Emergancy Boot Disk - has drivers for all sorts of old CD's 
+# and a .cab uf handy utilities that get expanded into a ram disk.
+	kernel memdisk
+	append initrd=util/w98ebd.img
+
+label knoppix402
+	linux knoppix/k402/vmlinuz
+	APPEND nfsdir=shaz:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=791 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=knoppix noacpi
+
+label knoppix402-expert
+	linux knoppix/k402/vmlinuz
+	APPEND nfsdir=shaz:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=791 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=expert noacpi 
+
+label knoppix402-text
+	linux knoppix/k402/vmlinuz
+	APPEND nfsdir=shaz:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=0f01 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=knoppix noacpi 1
+
+label menu
+	kernel syslinux/menu.c32
+
+# eof: pxelinux.cfg/default
+

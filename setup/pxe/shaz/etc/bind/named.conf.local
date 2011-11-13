@@ -1,0 +1,25 @@
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+include "/etc/bind/rndc.key";
+
+controls {
+	inet 127.0.0.1 allow { localhost; } keys { "rndc-key"; };
+};
+
+zone  "private" {
+	type master;
+	file "db.private";
+	allow-update { key "rndc-key"; };
+};
+
+zone "x.y.x.in-addr.arpa" {
+        type master;
+        file "rev.z.y.x.in-addr.arpa";
+        allow-update { key "rndc-key"; };
+};

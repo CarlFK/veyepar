@@ -1,0 +1,12 @@
+$ORIGIN .
+$TTL 86400	; 1 day
+private		IN SOA	shaz.private. root.private. (
+				1         ; serial
+				604800     ; refresh (1 week)
+				86400      ; retry (1 day)
+				2419200    ; expire (4 weeks)
+				86400      ; minimum (1 day)
+				)
+			NS	shaz.private.
+$ORIGIN private.
+shaz			A	192.168.0.1

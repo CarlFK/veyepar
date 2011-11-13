@@ -1,18 +1,18 @@
 #!/bin/bash -xe
 
 # Files needed for PXE install ubuntu
-
 # run this on target box
 
-WEBROOT=/usr/share/nginx/www
 SHAZ=$(hostname)
+USER=$USER 
+WEBROOT=/usr/share/nginx/www
 
 apt-get --assume-yes install  \
  dhcp3-server \
+ bind9 \
  tftpd-hpa \
  syslinux \
  nginx \
- bind9 \
  nfs-kernel-server \
  installation-guide-i386 \
  squid-deb-proxy \
@@ -22,14 +22,15 @@ ln -sf $WEBROOT
 
 
 # dhcp server:
-cp -rv shaz/etc/dhcp3/* /etc/dhcp/
-# fix the different path 
-sed -i "/dhcp3/s//dhcp/"  /etc/dhcp/dhcpd*.conf
+cp -rv shaz/etc/dhcp* /etc/
 
 # needed for ddns
+# give dhcpd process access to this file
 # include "/etc/bind/rndc.key";
 # adduser dhcpd bind
-
+# yeah, well, it doesn't work so well right now:
+# https://bugs.launchpad.net/ubuntu/+source/isc-dhcp/+bug/341817
+# so for now, mess with root:
 adduser root bind
 
 cat <<EOT >>/etc/apparmor.d/local/usr.sbin.dhcpd
@@ -37,13 +38,24 @@ cat <<EOT >>/etc/apparmor.d/local/usr.sbin.dhcpd
 /etc/bind/** r,
 EOT
 
+cp shaz/etc/bind/named.conf.local /etc/bind/
+cp shaz/var/cache/bind/db.private  /var/cache/bind/
+cp shaz/var/cache/bind/rev.z.y.x.in-addr.arpa /var/cache/bind/
+sed -i "/shaz/s//$SHAZ/g" \
+    /var/cache/bind/db.private \
+    /var/cache/bind/rev.z.y.x.in-addr.arpa
+touch /var/cache/bind/managed-keys.bind
+chown bind:bind /var/cache/bind/*
+
 service apparmor restart
 # need sudo because root isn't in bind group in this shell
-sudo service isc-dhcp-server restart
-service isc-dhcp-server stop
+# never mind, lets not start the server just yet.
+# having 2 dhcp servers on 1 lan is dumb.
+# but leave it in incase we need to test again.
+# sudo service isc-dhcp-server restart
+# service isc-dhcp-server stop
 
-
-
+# fix nginx config:
 # 404 when the file is not found!! (duh)
 # this is the stupid line that comes from the .deb
 # try_files $uri $uri/ /index.html; 
@@ -63,8 +75,12 @@ ln -sf syslinux/pxelinux.0  /var/lib/tftpboot/
 sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default
 
 # get ubuntu net boot kernel/initrd
-http_proxy=g2a:8000 shaz/root/bin/getu.sh oneiric
-http_proxy=g2a:8000 shaz/root/bin/getu.sh precise
+# squid here is mainly to speed up testing this install script
+SQUID=g2a:8000
+http_proxy=$SQUID shaz/root/bin/getu.sh maverick
+http_proxy=$SQUID shaz/root/bin/getu.sh natty
+http_proxy=$SQUID shaz/root/bin/getu.sh oneiric
+http_proxy=$SQUID shaz/root/bin/getu.sh precise
 
 # setup d-i preseed files and scripts
 # docs I like
@@ -98,7 +114,6 @@ cp -rv shaz/etc/squid-deb-proxy/* /etc/squid-deb-proxy/
 service squid-deb-proxy restart
 # set preseeed to use proxy
 # g2a is the proxy used for develment
-# #commented out for developing.
 sed -i "/g2a.personnelware.com/s//$SHAZ/g" \
     $WEBROOT/ubuntu/oneiric/preseed_user.cfg
 
@@ -109,6 +124,7 @@ cd /var/lib/tftpboot/util
 wget -N http://www.memtest.org/download/4.20/memtest86+-4.20.bin.gz
 gunzip --force memtest86+-4.20.bin.gz
 # clonezilla
+# 400mb iso.... come back if you raelly need it.
 # /var/lib/tftpboot/util/cz/getcz.sh
 cd -
 

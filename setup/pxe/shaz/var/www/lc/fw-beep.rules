@@ -1,0 +1,22 @@
+# firewire card and device rules
+
+# ADD
+# pci card, firewire nodes (both controler and device)
+SUBSYSTEM=="pci", ACTION=="add", RUN="/usr/bin/sox -n -d synth .1 sin 500"
+SUBSYSTEM=="firewire", ACTION=="add", RUN="/usr/bin/sox -n -d synth .1 sin 700"
+
+# REMOVE
+# after removing EC card, syslog reports 3 events at 0, 2, 12 seconds. 
+# no udev event at 0, firewire remove at 2, pci remove at 12.
+# so at 2 start beeping for 10 seconds, then at 12 one long beep
+# this makes a lot of noise that is kinda anoying
+# for firewire device (not card) remove, just one beep.
+
+# device 
+SUBSYSTEM=="firewire", ENV{MINOR}!="0" ACTION=="remove", RUN="/usr/bin/sox -n -d synth .1 sin 700"
+
+# card
+SUBSYSTEM=="firewire", ENV{MINOR}=="0" ACTION=="remove", RUN="/usr/bin/screen -S pci_beep -d -m  bash -c 'for x in {1..10}; do  /usr/bin/sox -n -d synth .05 sin 700; /bin/sleep .9; done'"
+SUBSYSTEM=="pci", ACTION=="remove", RUN="/usr/bin/sox -n -d synth .2 sin 500"
+
+
