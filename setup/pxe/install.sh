@@ -4,7 +4,8 @@
 # run this on target box
 
 SHAZ=$(hostname)
-NUSER=$USER 
+# user that sudoed, othwerwise $USER=root
+NUSER=$SUDO_USER
 WEBROOT=/usr/share/nginx/www
 
 apt-get --assume-yes install  \
