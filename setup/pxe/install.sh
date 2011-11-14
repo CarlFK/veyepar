@@ -55,6 +55,8 @@ chown bind:bind /var/cache/bind/*
 # sudo service isc-dhcp-server restart
 # service isc-dhcp-server stop
 
+ service bind9 stop
+
 ## ddns setup done.
 
 # setup pxe and ubuntu install scripts
