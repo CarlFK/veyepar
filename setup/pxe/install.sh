@@ -8,7 +8,7 @@ SHAZ=$(hostname)
 NUSER=$SUDO_USER
 WEBROOT=/usr/share/nginx/www
 
-apt-get --assume-yes install  \
+apt-get --force --assume-yes install  \
  dhcp3-server \
  bind9 \
  tftpd-hpa \
