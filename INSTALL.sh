@@ -52,16 +52,9 @@ source /usr/local/bin/virtualenvwrapper.sh
 mkvirtualenv veyepar
 printf "workon veyepar\n" >> ~/.bashrc
 
-# git clone https://CarlFK@github.com/CarlFK/veyepar.git
-# git clone git@github.com:CarlFK/veyepar.git
 git clone git://github.com/CarlFK/veyepar.git
 
 cd veyepar
-
-# hg clone http://bitbucket.org/ianb/pip/
-# cd pip/
-# python setup.py install
-# cd ..
 
 pip install -r requirements.txt
 # fix broken dabo installer
