@@ -232,7 +232,7 @@ sudo apt-get --assume-yes install kino
 EOT
 chmod 777 $APP
 chown 1000:1000 $APP
-su -l $NUSER -c "git clone git://github.com/CarlFK/dvsmon.git"
+# su -l $NUSER -c "git clone git://github.com/CarlFK/dvsmon.git"
 
 
 # APP=inst_miro.sh
