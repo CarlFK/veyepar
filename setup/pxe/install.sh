@@ -55,7 +55,7 @@ chown bind:bind /var/cache/bind/*
 # sudo service isc-dhcp-server restart
 # service isc-dhcp-server stop
 
- service bind9 stop
+service bind9 start
 
 ## ddns setup done.
 
@@ -95,6 +95,10 @@ if [ ! -f ~/.ssh/id_rsa.pub ]; then
 fi
 # gen some keys for the nodes
 # same keys on all nodes so that any box can ssh to any other node
+# ec/ssh is to ssh into the installer (for debugging the install)
+cd $WEBROOT/ec/ssh
+cat id_rsa.pub ~/.ssh/id_rsa.pub >> authorized_keys
+cd -
 cd $WEBROOT/lc/ssh
 ssh-keygen -f id_rsa -N ""
 chmod a+r id_rsa id_rsa.pub
@@ -140,5 +144,5 @@ gunzip --force memtest86+-4.20.bin.gz
 # /var/lib/tftpboot/util/cz/getcz.sh
 cd -
 
-echo sudo ./nat.sh
+# echo sudo ./nat.sh
 echo sudo service isc-dhcp-server start

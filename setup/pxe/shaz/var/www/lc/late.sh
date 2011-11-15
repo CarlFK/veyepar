@@ -95,7 +95,11 @@ fi
 #     /etc/UPower/UPower.conf 
 # fi
 
+# this is here till this gets fixed:
+# https://launchpad.net/bugs/889656
+# debian-installer "installer stops using proxy"
 
+apt-get install squid-deb-proxy-client
 
 ## enable autologin of $NUSER
 # sed docs http://www.opengroup.org/onlinepubs/009695399/utilities/sed.html
