@@ -74,10 +74,12 @@ sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default
 # get ubuntu net boot kernel/initrd
 # squid here is mainly to speed up testing this install script
 SQUID=g2a:8000
-http_proxy=$SQUID shaz/root/bin/getu.sh maverick
-http_proxy=$SQUID shaz/root/bin/getu.sh natty
-http_proxy=$SQUID shaz/root/bin/getu.sh oneiric
-http_proxy=$SQUID shaz/root/bin/getu.sh precise
+# http_proxy=$SQUID shaz/root/bin/getu.sh maverick amd64
+# http_proxy=$SQUID shaz/root/bin/getu.sh natty amd64
+http_proxy=$SQUID shaz/root/bin/getu.sh oneiric amd64
+http_proxy=$SQUID shaz/root/bin/getu.sh oneiric i386
+http_proxy=$SQUID shaz/root/bin/getu.sh precise amd64
+http_proxy=$SQUID shaz/root/bin/getu.sh precise i386
 
 # setup d-i preseed files and scripts
 # docs I like
@@ -91,13 +93,14 @@ cd -
 # setup ssh keys
 # make sure the server box has keys for the user
 if [ ! -f ~/.ssh/id_rsa.pub ]; then
+    mkdir -p ~/.ssh
     ssh-keygen -f ~/.ssh/id_rsa -N ""
 fi
 # gen some keys for the nodes
 # same keys on all nodes so that any box can ssh to any other node
 # ec/ssh is to ssh into the installer (for debugging the install)
 cd $WEBROOT/ec/ssh
-cat id_rsa.pub ~/.ssh/id_rsa.pub >> authorized_keys
+cat ~/.ssh/id_rsa.pub >> authorized_keys
 cd -
 cd $WEBROOT/lc/ssh
 ssh-keygen -f id_rsa -N ""
