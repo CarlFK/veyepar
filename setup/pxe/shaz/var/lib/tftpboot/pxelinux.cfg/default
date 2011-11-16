@@ -46,22 +46,22 @@ label bootnext
 
 label ubuntu-precise-amd64-handsoff
 	linux ubuntu/precise/amd64/linux
-	append initrd=ubuntu/precise/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=auto netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 url=http://shaz/ubuntu/precise/preseeds.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/precise/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=auto netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 url=shaz tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 	ipappend 2
 
 label ubuntu-precise-i386-handsoff
 	linux ubuntu/precise/i386/linux
-	append initrd=ubuntu/precise/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/get_hostname= apt-setup/proposed=true netcfg/choose_interface=auto DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/precise/preseeds.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/precise/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/get_hostname= apt-setup/proposed=true netcfg/choose_interface=auto DEBCONF_DEBUG=5 SHAZ=shaz url=shaz tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 	ipappend 2
 
 label ubuntu-oneiric-amd64-handsoff
 	linux ubuntu/oneiric/amd64/linux
-	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=auto netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/oneiric/preseeds.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz tasks="ubuntu-desktop" -- vga=6
 	ipappend 2
 
 label ubuntu-oneiric-i386-handsoff
 	linux ubuntu/oneiric/i386/linux
-	append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/get_hostname= apt-setup/proposed=true netcfg/choose_interface=auto DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/oneiric/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/get_hostname= apt-setup/proposed=true netcfg/choose_interface=auto DEBCONF_DEBUG=5 url=shaz tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 	# append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=auto netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 url=http://shaz/ubuntu/oneiric/preseeds.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 	ipappend 2
 

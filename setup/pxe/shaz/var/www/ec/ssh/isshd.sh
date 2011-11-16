@@ -3,6 +3,7 @@
 set -xe
 
 # SHAZ=shaz.personnelware.com
+SHAZ=$url
 
 mkdir -p /var/log
 touch /var/log/lastlog

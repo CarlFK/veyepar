@@ -1,6 +1,7 @@
 #! /bin/sh -x
 
 # SHAZ=shaz.personnelware.com
+SHAZ=$url
 
 # install the scp command:
 anna-install openssh-client-udeb

@@ -7,6 +7,10 @@
 set -xe
 NUSER=@user@
 
+# url=(hostname) of pxe server
+# passed from append= in /var/lib/tftpboot/pxelinux.cfg/default 
+SHAZ=$url
+
 ## ssh greating: cpu, ubuntu ver, firewire guids
 # add the cpu name/speed and ubuntu flavor to login greeting
 PROFDIR=/etc/profile.d
