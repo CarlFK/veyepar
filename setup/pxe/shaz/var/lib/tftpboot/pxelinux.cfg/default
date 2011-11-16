@@ -56,7 +56,7 @@ label ubuntu-precise-i386-handsoff
 
 label ubuntu-oneiric-amd64-handsoff
 	linux ubuntu/oneiric/amd64/linux
-	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz tasks="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz tasks="ubuntu-desktop" -- vga=6
 	ipappend 2
 
 label ubuntu-oneiric-i386-handsoff
