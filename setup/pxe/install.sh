@@ -85,7 +85,7 @@ http_proxy=$SQUID shaz/root/bin/getu.sh precise i386
 # docs I like
 # http://www.debian.org/releases/stable/i386/apbs05.html.en
 cp -rv shaz/var/www/* $WEBROOT
-cd $WEBROOT/ubuntu/oneiric/
+cd $WEBROOT/d-i/oneiric/
 cp /usr/share/doc/installation-guide-i386/example-preseed.txt.gz .
 gunzip --force example-preseed.txt.gz
 cd -
@@ -123,7 +123,7 @@ service nginx start
 
 # nodes will have the same user as the server box
 sed -i "/@user@/s//$NUSER/g" \
-    $WEBROOT/ubuntu/oneiric/preseed_local.cfg \
+    $WEBROOT/d-i/oneiric/preseed_local.cfg \
     $WEBROOT/lc/late.sh
 
 # squid cache the install files
@@ -134,7 +134,7 @@ service squid-deb-proxy restart
 # set preseeed to use proxy
 # g2a is the proxy used for development
 sed -i "/g2a.personnelware.com/s//$SHAZ/g" \
-    $WEBROOT/ubuntu/oneiric/preseed_local.cfg
+    $WEBROOT/d-i/oneiric/preseed_local.cfg
 
 # handy utilites
 # memtest
