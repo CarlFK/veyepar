@@ -132,20 +132,18 @@ sed -i "/@user@/s//$NUSER/g" \
 # allow ppa's, repo keys
 # note: http://www.squid-cache.org/Doc/config/offline_mode/
 # 
-# local cache used to speed up testing this script
 cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
 maximum_object_size 512000
 acl Safe_ports port 11371
 http_access allow !to_ubuntu_mirrors
 cache allow !to_ubuntu_mirrors
 EOT
+
 if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
-cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
-# works:
+ # local cache used to speed up testing this script
+ cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
 cache_peer 192.168.1.20 parent 8000 8002
-# never_direct deny all
-# lets try this:
-never_direct allow all
+never_direct deny all
 EOT
 fi
 
