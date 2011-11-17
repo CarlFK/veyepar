@@ -7,11 +7,13 @@
 UI menu
 
 # how long in 1/10 seccond to wait for the user
-timeout 50
+timeout 150
 
 # what to load if the user doesn't press anything
 ontimeout boothd
 # ontimeout clonezilla
+
+default ubuntu-oneiric-amd64-handsoff
 
 # file to dump to the client's screen if the user hits F1
 # (this file, which is way too large and will scrool off the screen, 
