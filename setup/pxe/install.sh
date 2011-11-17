@@ -9,6 +9,9 @@ NUSER=$SUDO_USER
 
 WEBROOT=/usr/share/nginx/www
 
+# this has the squid-deb-proxy config that allows PPAs
+sudo apt-add-repository --assume-yes ppa:carlfk
+
 apt-get --force-yes --assume-yes install  \
  dhcp3-server \
  bind9 \
@@ -132,12 +135,17 @@ sed -i "/@user@/s//$NUSER/g" \
 # allow ppa's, repo keys
 # note: http://www.squid-cache.org/Doc/config/offline_mode/
 # 
-cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
-maximum_object_size 512000
-acl Safe_ports port 11371
-http_access allow !to_ubuntu_mirrors
-cache allow !to_ubuntu_mirrors
-EOT
+# moved to carlfk:ppa
+# cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
+# acl Safe_ports port 11371
+# http_access allow !to_ubuntu_mirrors
+# cache allow !to_ubuntu_mirrors
+# EOT
+# 
+# cat <<EOT >> /etc/squid-deb-proxy/mirror-dstdomain.acl.d/10-default
+# ppa.launchpad.net
+# EOT
+#
 
 if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
  # local cache used to speed up testing this script
@@ -147,11 +155,6 @@ never_direct deny all
 EOT
 fi
 
-cat <<EOT >> /etc/squid-deb-proxy/mirror-dstdomain.acl.d/10-default
-ppa.launchpad.net
-EOT
-
-# cp -rv shaz/etc/squid-deb-proxy/* /etc/squid-deb-proxy/
 service squid-deb-proxy restart
 # set preseeed to use proxy
 # g2a is the proxy used for development
