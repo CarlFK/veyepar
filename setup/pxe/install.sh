@@ -6,6 +6,7 @@
 SHAZ=$(hostname)
 # user that sudoed, othwerwise $USER=root
 NUSER=$SUDO_USER
+
 WEBROOT=/usr/share/nginx/www
 
 apt-get --force-yes --assume-yes install  \
@@ -17,6 +18,19 @@ apt-get --force-yes --assume-yes install  \
  nfs-kernel-server \
  installation-guide-i386 \
  squid-deb-proxy \
+
+
+# local cache used to speed up testing this script
+if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
+   export http_proxy=http://192.168.1.20:8000
+cat <<EOT >> /etc/squid-deb-proxy/etc/squid-deb-proxy.cfg
+# works:
+cache_peer 192.168.1.20 parent 8000 8002
+# never_direct deny all
+# lets try this:
+never_direct allow all
+EOT
+fi
 
 # dhcp server:
 cp -rv shaz/etc/dhcp* /etc/
@@ -71,15 +85,13 @@ ln -sf syslinux/pxelinux.0  /var/lib/tftpboot/
 # swap shaz for whatever this box's name is.
 sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default
 
-# get ubuntu net boot kernel/initrd
-# squid here is mainly to speed up testing this install script
-SQUID=g2a:8000
-# http_proxy=$SQUID shaz/root/bin/getu.sh maverick amd64
-# http_proxy=$SQUID shaz/root/bin/getu.sh natty amd64
-http_proxy=$SQUID shaz/root/bin/getu.sh oneiric amd64
-http_proxy=$SQUID shaz/root/bin/getu.sh oneiric i386
-http_proxy=$SQUID shaz/root/bin/getu.sh precise amd64
-http_proxy=$SQUID shaz/root/bin/getu.sh precise i386
+## get ubuntu net boot kernel/initrd
+# shaz/root/bin/getu.sh maverick amd64
+# shaz/root/bin/getu.sh natty amd64
+shaz/root/bin/getu.sh oneiric amd64
+shaz/root/bin/getu.sh oneiric i386
+shaz/root/bin/getu.sh precise amd64
+shaz/root/bin/getu.sh precise i386
 
 # setup d-i preseed files and scripts
 # docs I like
