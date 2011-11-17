@@ -19,19 +19,6 @@ apt-get --force-yes --assume-yes install  \
  installation-guide-i386 \
  squid-deb-proxy \
 
-
-# local cache used to speed up testing this script
-if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
-   export http_proxy=http://192.168.1.20:8000
-cat <<EOT >> /etc/squid-deb-proxy/etc/squid-deb-proxy.cfg
-# works:
-cache_peer 192.168.1.20 parent 8000 8002
-# never_direct deny all
-# lets try this:
-never_direct allow all
-EOT
-fi
-
 # dhcp server:
 cp -rv shaz/etc/dhcp* /etc/
 
@@ -141,6 +128,29 @@ sed -i "/@user@/s//$NUSER/g" \
 # squid cache the install files
 # allow ppa's, repo keys
 # note: http://www.squid-cache.org/Doc/config/offline_mode/
+# 
+# local cache used to speed up testing this script
+cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.cfg
+maximum_object_size 512000
+acl Safe_ports port 11371
+http_access allow !to_ubuntu_mirrors
+cache allow !to_ubuntu_mirrors
+EOT
+if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
+   export http_proxy=http://192.168.1.20:8000
+cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.cfg
+# works:
+cache_peer 192.168.1.20 parent 8000 8002
+# never_direct deny all
+# lets try this:
+never_direct allow all
+EOT
+fi
+
+cat <<EOT >> /etc/squid-deb-proxy/mirror-dstdomain.acl.d/10-default
+ppa.launchpad.net
+EOT
+
 # cp -rv shaz/etc/squid-deb-proxy/* /etc/squid-deb-proxy/
 service squid-deb-proxy restart
 # set preseeed to use proxy
