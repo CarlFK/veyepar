@@ -10,7 +10,7 @@ NUSER=$SUDO_USER
 WEBROOT=/usr/share/nginx/www
 
 # this has the squid-deb-proxy config that allows PPAs
-sudo apt-add-repository --assume-yes ppa:carlfk
+apt-add-repository --yes ppa:carlfk
 
 apt-get --force-yes --assume-yes install  \
  dhcp3-server \
