@@ -1,24 +1,28 @@
 #!/bin/bash -xe
 
-# Files needed for PXE install ubuntu
-# run this on target box
+# installs packages, configs and scripts for PXE install ubuntu
 
+# run this to setup pxe server
+
+# change scripts to reference this box
 SHAZ=$(hostname)
-# user that sudoed, othwerwise $USER=root
+# change scripts to use this user
 NUSER=$SUDO_USER
 
+# default webroot for nginx
 WEBROOT=/usr/share/nginx/www
 
 apt-get --force-yes --assume-yes install  \
     python-software-properties \
-    debconf
+
+#    debconf
 
 # this has the squid-deb-proxy config that allows PPAs
 apt-add-repository --yes ppa:carlfk
 apt-get update
 
-debconf-set-selections -v <<< \
-    "squid-deb-proxy squid-deb-proxy/ppa-enable boolean true" 
+# debconf-set-selections -v <<< \
+#    "squid-deb-proxy squid-deb-proxy/ppa-enable boolean true" 
 
 apt-get --force-yes --assume-yes install  \
  dhcp3-server \
@@ -58,14 +62,9 @@ sed -i "/shaz/s//$SHAZ/g" \
 touch /var/cache/bind/managed-keys.bind
 chown bind:bind /var/cache/bind/*
 
-# start servers...
-# layers of workaround here that will go away someday.
-# need sudo because root isn't in bind group in this shell
-# never mind, lets not start the server just yet.
+# lets not start the dhcp server just yet.
 # having 2 dhcp servers on 1 lan is dumb.
-# but leave it in incase we need to test again.
-# sudo service isc-dhcp-server restart
-# service isc-dhcp-server stop
+# service isc-dhcp-server restart
 
 service bind9 start
 
@@ -126,12 +125,14 @@ cd -
 
 # fix nginx config:
 # not needed for production, but default is anoying to debug.
-# 404 when the file is not found!! (duh)
+# current behavior: if file not found, fall back to index.html 
+# fix it to make it 404 when the file is not found!! 
 # this is the stupid line that comes from the .deb
 # try_files $uri $uri/ /index.html; 
 # and add in autoindex - cuz it is handy.
 sed -i "/^[[:space:]]*try_files \$uri \$uri\/ \/index.html;/s/.*/#cfk# &\n\t\tautoindex on;/" \
     /etc/nginx/sites-available/default
+
 service nginx start
 
 # nodes will have the same user as the server box
@@ -153,6 +154,7 @@ EOT
 fi
 
 service squid-deb-proxy restart
+
 # set preseeed to use proxy
 # g2a is the proxy used for development
 sed -i "/g2a.personnelware.com/s//$SHAZ/g" \
@@ -169,5 +171,6 @@ gunzip --force memtest86+-4.20.bin.gz
 # /var/lib/tftpboot/util/cz/getcz.sh
 cd -
 
-# echo sudo ./nat.sh
+echo setup static IP in range of 192.168.0.1-9
 echo sudo service isc-dhcp-server start
+

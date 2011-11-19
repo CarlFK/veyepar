@@ -10,3 +10,5 @@ directory "/var/cache/bind";
 http://www.debianadmin.com/howto-setup-dhcp-server-and-dynamic-dns-with-bind-in-debian.html
 http://tech.watts.co.nz/ubuntu-dns/
 http://www.debian-administration.org/article/Configuring_Dynamic_DNS__DHCP_on_Debian_Stable 
+
+sudo dpkg-reconfigure -plow squid-deb-proxy
