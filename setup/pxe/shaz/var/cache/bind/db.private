@@ -1,6 +1,6 @@
 $ORIGIN .
 $TTL 86400	; 1 day
-private		IN SOA	shaz.private. root.private. (
+private		IN SOA	shaz.private. root.shaz.private. (
 				1         ; serial
 				604800     ; refresh (1 week)
 				86400      ; retry (1 day)
