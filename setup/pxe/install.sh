@@ -9,6 +9,10 @@ NUSER=$SUDO_USER
 
 WEBROOT=/usr/share/nginx/www
 
+apt-get --force-yes --assume-yes install  \
+    python-software-properties \
+    debconf
+
 # this has the squid-deb-proxy config that allows PPAs
 apt-add-repository --yes ppa:carlfk
 apt-get update
