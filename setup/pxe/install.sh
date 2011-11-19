@@ -11,6 +11,10 @@ WEBROOT=/usr/share/nginx/www
 
 # this has the squid-deb-proxy config that allows PPAs
 apt-add-repository --yes ppa:carlfk
+apt-get update
+
+debconf-set-selections -v <<< \
+    "squid-deb-proxy squid-deb-proxy/ppa-enable boolean true" 
 
 apt-get --force-yes --assume-yes install  \
  dhcp3-server \
@@ -134,17 +138,6 @@ sed -i "/@user@/s//$NUSER/g" \
 # squid cache the install files
 # allow ppa's, repo keys
 # note: http://www.squid-cache.org/Doc/config/offline_mode/
-# 
-# moved to carlfk:ppa
-# cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
-# acl Safe_ports port 11371
-# http_access allow !to_ubuntu_mirrors
-# cache allow !to_ubuntu_mirrors
-# EOT
-# 
-# cat <<EOT >> /etc/squid-deb-proxy/mirror-dstdomain.acl.d/10-default
-# ppa.launchpad.net
-# EOT
 #
 
 if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
