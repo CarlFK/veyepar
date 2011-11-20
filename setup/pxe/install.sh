@@ -83,7 +83,7 @@ ln -sf syslinux/pxelinux.0  /var/lib/tftpboot/
 sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default
 
 if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
-   export http_proxy=http://192.168.1.20:8000
+   export http_proxy=http://g2a:8000
 fi
 ## get ubuntu net boot kernel/initrd
 # shaz/root/bin/getu.sh maverick amd64
@@ -148,9 +148,7 @@ sed -i "/@user@/s//$NUSER/g" \
 if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
  # local cache used to speed up testing this script
  cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
-
-# cache_peer 192.168.1.20 parent 8000 8002 no-query default
-cache_peer 192.168.1.20 parent 8000 8002 no-query default
+cache_peer g2a parent 8000 8002 
 never_direct allow all
 EOT
 fi
