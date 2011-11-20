@@ -48,22 +48,22 @@ label bootnext
 
 label ubuntu-precise-amd64-handsoff
 	linux ubuntu/precise/amd64/linux
-	append initrd=ubuntu/precise/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz tasks="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/precise/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz -- 
 	ipappend 2
 
 label ubuntu-precise-i386-handsoff
 	linux ubuntu/precise/i386/linux
-	append initrd=ubuntu/precise/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz tasks="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/precise/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz -- 
 	ipappend 2
 
 label ubuntu-oneiric-amd64-handsoff
 	linux ubuntu/oneiric/amd64/linux
-	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz tasks="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz -- 
 	ipappend 2
 
 label ubuntu-oneiric-i386-handsoff
 	linux ubuntu/oneiric/i386/linux
-	append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz tasks="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz -- 
 	ipappend 2
 
 label memtest86+-4.20.bin

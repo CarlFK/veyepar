@@ -148,8 +148,10 @@ sed -i "/@user@/s//$NUSER/g" \
 if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
  # local cache used to speed up testing this script
  cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
-cache_peer 192.168.1.20 parent 8000 8002
-never_direct deny all
+
+# cache_peer 192.168.1.20 parent 8000 8002 no-query default
+cache_peer 192.168.1.20 parent 8000 8002 no-query default
+never_direct allow all
 EOT
 fi
 

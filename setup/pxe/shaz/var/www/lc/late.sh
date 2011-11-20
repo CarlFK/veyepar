@@ -103,7 +103,8 @@ fi
 # https://launchpad.net/bugs/889656
 # debian-installer "installer stops using proxy"
 
-apt-get install squid-deb-proxy-client
+# this bombs the -server install, so screw it.
+# apt-get install --assume-yes squid-deb-proxy-client
 
 ## enable autologin of $NUSER
 # sed docs http://www.opengroup.org/onlinepubs/009695399/utilities/sed.html
