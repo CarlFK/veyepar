@@ -151,6 +151,8 @@ if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
 cache_peer g2a parent 8000 8002 
 never_direct allow all
 EOT
+printf "www.memtest.org\n" \
+    >> /etc/squid-deb-proxy/mirror-dstdomain.acl.d/90-debug
 fi
 
 service squid-deb-proxy restart
