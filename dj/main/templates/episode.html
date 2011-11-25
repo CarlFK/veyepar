@@ -60,14 +60,23 @@
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
 
 <form action="" method="POST">{% csrf_token %}
-<input type="submit" value="Save" />
+{% if user.is_authenticated %}
+  <input type="submit" value="Save" />
+{% else %}
+  <p>(Not logged in)</p>
+{% endif %}
 <table border=1>
 <tbody>
 {{ episode_form }}  
 </tbody>
 </table>
 
-<input type="submit" value="Save" />
+{% if user.is_authenticated %}
+  <input type="submit" value="Save" />
+{% else %}
+  <p>(Not logged in)</p>
+{% endif %}
+
 {{ clrfformset.management_form }}
 <table border=1>
 <tbody>
@@ -148,7 +157,11 @@
 </tbody>
 </table>
 
-<p><input type="submit" value="Save" /></p>
+{% if user.is_authenticated %}
+  <input type="submit" value="Save" />
+{% else %}
+  <p>(Not logged in)</p>
+{% endif %}
 </form>
 
 {% endblock %}

@@ -119,6 +119,8 @@ class csv(process):
             # skip episodes that have not been uploaded yet.
             continue
 
+        # fields includes output fields that are derived below
+        # so fill them with None for now.
         row = dict([(f,getattr(ep,f,None)) for f in fields])
         if self.options.verbose: print row
         
@@ -134,8 +136,7 @@ class csv(process):
         # blip_xml=self.blip_meta(ep.host_url)
         # show_page = self.get_showpage(blip_xml)
         # row['blip'] = "%sfile/%s"%(show_page,ep.host_url)
-        row['blip'] = "http://%s.blip.tv/file/%s"%(
-                ep.show.slug, ep.host_url)
+        row['blip'] = "http://blip.tv/file/%s"%(ep.host_url)
 
         # xml.write(blip_xml)
         # if self.options.verbose: print blip_xml
@@ -146,15 +147,16 @@ class csv(process):
         row['embed']=blip_meta['embed_code']
         oggs = [i for i in blip_meta['contents'] if i['type']=='video/ogg']
         if self.options.verbose: print pprint.pprint(oggs)
-        # row['source']=oggs[0]
-        row['source']=''
+        row['source']=oggs[0]
+
+        row['name'] = row['name'].encode('utf-8')
+        
 
         if self.options.verbose: print row
         json_data.append(row)
         csv.writerow(row)
-        txt.write("%s %s\n" % (row['blip'],row['name']))
-        html.write('<a href="%(blip)s">%(name)s</a>\n%(blip)s\n'%row)
-        # wget.writelines(["%s\n" % url for url in self.get_media(blip_xml,'*')])
+        # txt.write("%s %s\n" % (row['blip'],row['name']))
+        # html.write('<a href="%(blip)s">%(name)s</a>\n%(blip)s\n'%row)
         wget.writelines(["%s\n" % c['url'] for c in blip_meta['contents']])
 
         if self.options.verbose: 
