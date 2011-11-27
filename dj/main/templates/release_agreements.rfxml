@@ -134,7 +134,7 @@
 				<FontName>'Helvetica-Underline'</FontName>
 				<Height>12</Height>
 				<Rotation>0</Rotation>
-				<width>'175.0 pt'</width>
+				<width>'200.0 pt'</width>
 				<x>'133.6 pt'</x>
 				<y>'359.9 pt'</y>
 			</String>
@@ -152,7 +152,7 @@
 				<expr>self.episode_name</expr>
 				<FontName>'Helvetica-Underline'</FontName>
 				<Height>12</Height>
-				<width>'175.0 pt'</width>
+				<width>'200.0 pt'</width>
 				<x>'153.6 pt'</x>
 				<y>'339.9 pt'</y>
 			</String>
