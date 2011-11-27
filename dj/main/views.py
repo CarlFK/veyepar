@@ -316,7 +316,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
         episodes=Episode.objects.filter(show=show).order_by('location','start')
 
     base  = os.path.dirname(__file__)
-    rfxmlfile  = os.path.join(base,'templates', rfxml)
+    rfxmlfile  = os.path.join(base,'templates', rfxml+".rfxml")
      
     # buffer to create pdf in
     buffer = StringIO()
@@ -355,8 +355,10 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     buffer.close()
 
     response = HttpResponse(mimetype='application/pdf')
+    e_id = episode_id if episode_id else 'all'
+    filename = '_'.join( [client.slug, show.slug, e_id, rfxml] )
     response['Content-Disposition'] = \
-      'filename=%s_recording_sheets.pdf' % ( show.slug )
+      'filename=%s.pdf' % ( filename )
     response.write(pdf)
     return response
 
