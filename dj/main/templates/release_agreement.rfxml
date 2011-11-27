@@ -40,7 +40,7 @@
 	</PageHeader>
 
 	<Detail>
-		<Height>94.2</Height>
+		<Height>None</Height>
 		<Objects>
 			<String>
 				<Align>'center'</Align>
@@ -226,7 +226,7 @@
 				<y>'32 pt'</y>
 			</String>
 			<String>
-				<expr>self.episode_primary</expr>
+				<expr>self.episode_id</expr>
 				<FontName>'Helvetica'</FontName>
 				<Height>10</Height>
 				<Width>38</Width>

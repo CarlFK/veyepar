@@ -300,12 +300,20 @@ def schedule(request, show_id, show_slug, template_name):
         'days':days},
         context_instance=RequestContext(request) )
        
-def episode_pdfs(request,show_id, rfxml):
+def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
+    """
+    Generates a pdf 
+    for all episodes in a show or just one episode
+    layout defined by rfxml
+    """
+
     show=get_object_or_404(Show,id=show_id)
     client = show.client
 
-    # kwargs = {'location': location_slug, 'start__day':start_day, 'state':state}
-    episodes=Episode.objects.filter(show=show).order_by('location','start')
+    if episode_id:
+        episodes=Episode.objects.filter(id=episode_id)
+    else:
+        episodes=Episode.objects.filter(show=show).order_by('location','start')
 
     base  = os.path.dirname(__file__)
     rfxmlfile  = os.path.join(base,'templates', rfxml)
@@ -325,10 +333,10 @@ def episode_pdfs(request,show_id, rfxml):
             location_name='None'
         ds.append({'episode_id':ep.id,
           'episode_conf_key':ep.conf_key,
+          'episode_primary':ep.conf_key,
           'episode_name':ep.name,
           'episode_authors':ep.authors,
           'episode_emails':ep.emails,
-          'episode_primary':ep.conf_key,
           'episode_start':ep.start,
           'episode_duration':ep.duration,
           'episode_end':ep.end,

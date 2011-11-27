@@ -73,12 +73,16 @@ urlpatterns += patterns(
     url(r'recording_sheets/(?P<show_id>\w+)/.*$', episode_pdfs,
         name='recording_sheets',
         kwargs={'rfxml':'RecordingSheet_v2a.rfxml'}),
-    url(r'release/(?P<show_id>\w+)/.*$', episode_pdfs,
+    url(r'release/(?P<show_id>\w+)/\w*.pdf$', episode_pdfs,
+        name='release',
+        kwargs={'rfxml':'release_agreement.rfxml'}),
+    url(r'release/(?P<show_id>\w+)/(?P<episode_id>\w+).*$', episode_pdfs,
         name='release',
         kwargs={'rfxml':'release_agreement.rfxml'}),
     url(r'room_signs/(?P<show_id>\w+)/.*$', episode_pdfs,
         name='room_signs',
         kwargs={'rfxml':'TalkSigns.rfxml'}),
+
 
     url(r'episode_logs/(?P<episode_id>\w+)/$', episode_logs, name='episode_logs'),
 
