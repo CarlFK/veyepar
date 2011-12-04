@@ -116,7 +116,8 @@ def time2b(time,fps,bpf,default):
     to the byte offset in the file.
     blank returns default, typically either 0 or filesize for start/end.
     fps is 25.0 for pal and 29.9 ntsc.
-    bpf (bytes per frame) is 120000 for both.
+    bpf (bytes per frame) is 120000 for both. 
+      (huh? doesn't matter, this func not used.)
     """
     if time:
         bytes = int(time2s(time)*fps)*bpf

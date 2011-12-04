@@ -5,6 +5,8 @@ make a script that just reads them to warm up a fresh cache. This will be quicke
 
 3. split out ddns setup.  people want that without the pxe and carl's install scripts.
 
-4. nfs mounts for server:/Video or something.
+4. maybe use http://www.thekelleys.org.uk/dnsmasq/doc.html - it is way simpler than isc-dhcp+bind9. 
+
+5. nfs mounts for server:/Video or something.
 
 
