@@ -250,9 +250,8 @@ def emailer(show_id, ):
         }
     for to in tos:
         email = EmailMessage(subject, body, sender, [to], headers=headers ) 
-        # ret = connection.send_messages([email])
-        # print to, ret
-        print to
+        ret = connection.send_messages([email])
+        print to, ret
 
     return
 
