@@ -202,7 +202,7 @@ def emailer(show_id, ):
     show=get_object_or_404(Show,id=show_id)
 
     # show.announcement_state drives which of the following 3 get used:
-    # 1 preview is for proofing the whole thing
+    # 1. preview is for proofing the whole thing
     # 2. review is for the presenters to review their part
     # 3. approved means it is ready for distribution
 
@@ -210,12 +210,13 @@ def emailer(show_id, ):
 
     def author_emails(show):
         # return a list of email addresses for the show
-        # pems = [ 'brianhray@gmail.com']
-        pems = [ '"Brian Moloney" <brian@imagescape.com>']
+        # pems = [ '"Brian Moloney" <brian@imagescape.com>' ]
+        pems = [ 'brianhray@gmail.com' ]
         episodes=Episode.objects.filter(show=show)
         for ep in episodes:
             if ep.emails:
-                pems.append(ep.emails)
+                emails = ep.emails.split(',')
+                pems.extend(emails)
         return pems
 
     announce_lists = [
@@ -231,14 +232,9 @@ def emailer(show_id, ):
  '<chicagotechcal@gmail.com>',
  'clclinuxclub@gmail.com',
  ]
-#     tos = { 1: admin_emails,
-#             2: author_emails(show),
-#             3: announce_lists}[show.announcement_state]
-
-    if show.announcement_state == 1:
-        tos = admin_emails
-    else:
-        tos = author_emails(show)
+    tos = { 1: admin_emails,
+             2: author_emails(show),
+             3: announce_lists}[show.announcement_state]
 
     subject,body=meet_ann(None,show_id)
     print subject
@@ -254,8 +250,9 @@ def emailer(show_id, ):
         }
     for to in tos:
         email = EmailMessage(subject, body, sender, [to], headers=headers ) 
-        ret = connection.send_messages([email])
-        print to, ret
+        # ret = connection.send_messages([email])
+        # print to, ret
+        print to
 
     return
 

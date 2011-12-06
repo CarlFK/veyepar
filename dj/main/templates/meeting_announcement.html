@@ -3,7 +3,7 @@
 {% if show.announcement_state == 2 %}
 please proof: {{client.name}} meeting announcement 
 
-Subject and below is what will go out, and what will be used to title the videos.
+{# Subject and below is what will go out, and what will be used to title the videos. $}
 If you want to edit your stuff, 
 ask me for an account, then use the the edit URL under your item.  
 Anything else, email me.  
@@ -35,7 +35,7 @@ Details
 {{forloop.counter}}. {{ episode.name }} 
 {{episode.authors}}
 {% if episode.tags %}tags: {{episode.tags}}{% endif %}
-{% if episode.description %} {{episode.description}} {% else %}(Needs description.) {% endif %}
+{% if episode.description %}{{episode.description}}{% else %}(Needs description.) {% endif %}
 {% if show.announcement_state == 2 %}
 recording release: {{episode.released|yesno:"yeah,no,maybe" }} 
 {# license: {{episode.released|yesno:[episode.lisense,""] }} #}
