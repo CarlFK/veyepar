@@ -798,6 +798,7 @@ class add_eps(process.process):
             'pygotham': 'http://pygotham.org/talkvote/full_schedule/',
             'pytexas_2011': 'http://www.pytexas.org/2011/schedule/json/',
             'pyconde2011': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
+            'lca_2012': "http://lca2012.linux.org.au/programme/schedule/json"
             }[self.options.show]
 
         if url.startswith('file'):

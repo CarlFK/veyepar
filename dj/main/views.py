@@ -219,16 +219,15 @@ def emailer(show_id, ):
                 pems.extend(emails)
         return pems
 
+# need to join the #ed lists
     announce_lists = [
- '"ChiPy" <chicago@python.org>', '"ChiPy Announce" <ChiPy-announce@python.org>',
+ # '"ChiPy" <chicago@python.org>', 
+ '"ChiPy Announce" <ChiPy-announce@python.org>',
  '"PS1" <pumping-station-one-public@googlegroups.com>',
  '"ACM Chicago" <mtemkin@speakeasy.net>',
- '"ACM Chicago" <chicago-chapter-acm@googlegroups.com>',
- #'"Linux Users Of Northern Illinois" <luni@luni.org>', 
- '"LUNI-Announce" <luni-announce@luni.org>', 
- '"Chicago Linux Discuss" <chicagolinux-discuss@googlegroups.com>',
- '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
- # '<genluglist@codlug.info>',
+ # '"ACM Chicago" <chicago-chapter-acm@googlegroups.com>',
+ # '"Chicago Linux Discuss" <chicagolinux-discuss@googlegroups.com>',
+ # '"UFO Chicago" <ufo@ufo.chicago.il.us>', 
  '<chicagotechcal@gmail.com>',
  'clclinuxclub@gmail.com',
  ]
