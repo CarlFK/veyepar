@@ -668,7 +668,7 @@ class enc(process):
         parser.add_option('--threads')
 
   def add_more_option_defaults(self, parser):
-        parser.set_defaults(channelcopy='10')
+        parser.set_defaults(channelcopy='01')
         parser.set_defaults(threads=2)
 
 if __name__ == '__main__':
