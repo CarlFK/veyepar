@@ -254,6 +254,7 @@ def emailer(show_id, ):
 
     return
 
+
 def schedule(request, show_id, show_slug, template_name):
     show=get_object_or_404(Show,id=show_id)
     locations=show.locations.all().order_by('sequence')

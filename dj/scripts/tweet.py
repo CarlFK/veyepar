@@ -83,7 +83,8 @@ class tweet(process):
         # use the username for the client, else use the first user in pw.py
         user =  client.host_user if client.host_user else 'nextdayvideo'
 
-        url="http://nextdayvideo.blip.tv/file/%s" % ep.host_url
+        # url="http://nextdayvideo.blip.tv/file/%s" % ep.host_url
+        url = ep.host_url
         prefix = "#%s #VIDEO" % show.client.slug
         tweet = self.mk_tweet(prefix, ep.name, ep.authors, url)
 
