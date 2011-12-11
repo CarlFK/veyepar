@@ -416,30 +416,47 @@ class add_eps(process.process):
         events=[]
         for row in schedule:
             if self.options.verbose: print row
+            if row['Title'] in [
+                'Registration', 
+                'Morning Tea', "Lunch", 'Afternoon Tea',
+                'Speakers Dinner', 'Penguin Dinner',
+                'Professional Delegates Networking Session',
+                # 'Sysadmin Miniconf'
+                ]:  
+                continue
+            if "AGM" in row['Title']:
+                continue
+            # if "Lightning talks" in row['Title']:
+            #     continue
+            # if "Conference Close" in row['Title']:
+            #    continue
+
             event={}
-            # event['id'] = row['Id']
             event['name'] = row['Title']
-            event['room'] = row['Room Name']
+            event['location'] = row['Room Name']
             event['start'] = datetime.datetime.strptime(
                     row['Start'], '%Y-%m-%d %H:%M:%S' )
             event['duration'] = row['Duration']
-            event['authors'] = row['Presenters']
-            contacts = {"Massimo Di Pierro":"mdipierro@cs.depaul.edu", 
-                    "Christopher Webber":"cwebber@dustycloud.org", 
-                    "Carl Karsten":"carl@personnelware.com", 
-                    "Brian Ray":"brianhray@gmail.com", 
-                    "Bill Mania":"bill@manialabs.us", }
-            authors=row.get('presenters','')
-            # event['contact'] = ""
-            event['emails'] = contacts.get(row['Presenters'], "" )
-            # print event['authors'], event['contact'], contacts
+            event['authors'] = row.get('Presenters','')
 
+            # https://github.com/zookeepr/zookeepr/issues/92
+            event['emails'] = ""
+
+            # https://github.com/zookeepr/zookeepr/issues/93
             event['released'] = True
+
             event['license'] = self.options.license
             event['description'] = row['Description']
+            # from /zookeepr/controllers/schedule.py
+            # row['Id'] = schedule.id
+            # row['Event'] = schedule.event_id
+            # I think Id is what is useful
             event['conf_key'] = row['Id']
-            event['conf_url'] = row['URL']
-            event['conf_url'] = row['URL'][-1]
+
+            # there may not be a URL, like for Lunch and Keynote.
+            # https://github.com/zookeepr/zookeepr/issues/91
+            event['conf_url'] = row.get('URL','')
+
             event['tags'] = ''
 
             events.append(event)
@@ -597,6 +614,7 @@ class add_eps(process.process):
           if self.options.verbose: print room
           loc,created = Location.objects.get_or_create(
                   name=room,)
+          loc.active = False
           if created: 
               seq+=1
               loc.sequence=seq
@@ -634,11 +652,14 @@ class add_eps(process.process):
         'conf_url', 'tags')
 
           if created or self.options.update:
-              episode.location=Location.objects.get(name=row['location'])
+              loc=Location.objects.get(name=row['location'])
+              loc.active = True
+              episode.location=loc
               for f in fields:
                   setattr( episode, f, row[f] )
                   # print( f, row[f] )
               episode.save()
+              loc.save()
           else:
               # check for diffs
               # report if different
@@ -768,6 +789,15 @@ class add_eps(process.process):
         rooms = self.zoo_cages(schedule)
         self.add_rooms(rooms,show)
 
+        # rooms=['Cafeteria', 'Caro', 'Studio', 'C001', 'T101', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
+        # good rooms=['Caro', 'Studio', 'C001', 'T101', ]
+
+        bad_rooms=['Cafeteria', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
+        locs=Location.objects.filter(name__in = bad_rooms)
+        for loc in locs:
+            loc.active = False
+            loc.save()
+
         events = self.zoo_events(schedule)
         self.add_eps(events, show)
         return 
@@ -854,7 +884,8 @@ class add_eps(process.process):
             # pyGotham
             return self.pygotham(schedule,show)
 
-        if isZoo:
+        if url.endswith('programme/schedule/json'):
+            # Zookeepr
             return self.zoo(schedule,show)
 
         # schedule = schedule['nodes']
