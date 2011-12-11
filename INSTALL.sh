@@ -30,7 +30,8 @@ sudo apt-add-repository --assume-yes ppa:j/ppa
 
 sudo apt-get --assume-yes update
 
-sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder ffmpeg python-virtualenv screen sphinx2-bin sox melt 
+sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder ffmpeg python-virtualenv screen sox melt 
+# sphinx2-bin 
 # libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 
 # pocketsphinx-utils
 

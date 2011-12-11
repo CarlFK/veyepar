@@ -434,7 +434,7 @@ def main():
     result['tweet'] = t.tweet()
     t.csv()
     result['video'] = t.ocr_test()
-    result['audio'] = t.sphinx_test()
+    # result['audio'] = t.sphinx_test()
     result['sizes'] = t.size_test()
 
     print 
