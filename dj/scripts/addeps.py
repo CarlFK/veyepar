@@ -387,9 +387,15 @@ class add_eps(process.process):
       return rooms
 
     def snake_bites(self, schedule, location):
+
+        # warning: location is the 2nd half of a hack:
+        # veyepar json export only gives room key, not name
+        # so convert the int to a string and call it the name
+        # lame.
+
         events=[]
 
-        fields=('location','sequence','conf_key','target',
+        fields=('location','sequence','conf_key','host_url',
             'name','slug', 'authors','emails', 'description',
             'start','duration', 
             'released', 'license', 'conf_key', 'conf_url', 'tags')
@@ -404,7 +410,7 @@ class add_eps(process.process):
             
             # fields that don't flow thought json that nice.
             if not event['conf_key']: event['conf_key'] = pk
-            event['location'] = location
+            # event['location'] = location
             event['start'] = datetime.datetime.strptime(
                     row['start'], '%Y-%m-%d %H:%M:%S' )
 
@@ -734,7 +740,8 @@ class add_eps(process.process):
         rooms = self.snake_holes(schedule)
         # hack because the veyepar export doesn't give room name
         # will fix when I need to.
-        # rooms = ['enova']
+        # rooms = ['CrowdSPRING']
+        rooms = [ str(r) for r in rooms ]
         self.add_rooms(rooms,show)
 
         events = self.snake_bites(schedule,rooms[0])
@@ -823,7 +830,10 @@ class add_eps(process.process):
         # url='http://pygotham.org/talkvote/full_schedule/'
         # url='http://www.pytexas.org/2011/schedule/json/'
 
-        url = { 
+        if self.args:
+            url = self.args[0]
+        else:
+            url = { 
             'djangocon2011': 'http://djangocon.us/schedule/json/',
             'pygotham': 'http://pygotham.org/talkvote/full_schedule/',
             'pytexas_2011': 'http://www.pytexas.org/2011/schedule/json/',
