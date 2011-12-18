@@ -164,7 +164,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'location','sequence',
             'name','slug', 'authors','emails', 'description',
             'start','duration', 
-            'released', 'license', 'tags'
+            'released', 'license', 'tags',
             'conf_key', 'conf_url',
             'host_url', 'publiv_url',
         )
