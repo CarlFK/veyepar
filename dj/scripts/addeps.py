@@ -4,18 +4,17 @@
 
 """
 fields:
-id - uniquie ID of item (used to update item if details change)
 name - title of talk
 room - "room1" if there is only one room.
 start - datetime in some parsable format 
-duration in minutes, or HH:MM:SS 
+duration in minutes
 end - datetime in some parsable format 
 authors - list of people's names.
 contact - list of email(s) of presenters.
 released - permission to release.
 license - CC license 
 description - used as the description of the video (paragraphs are fine)
-conf_key - PK in source database - should be uniquie across this file
+conf_key - PK in source database - uniquie used to update this item 
 conf_url - URL of talk page
 tags - comma seperated list - serch terms, including sub topics briefly discussed in your talk.
 """

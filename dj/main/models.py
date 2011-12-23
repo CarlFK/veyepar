@@ -186,6 +186,8 @@ class Episode(models.Model):
         help_text = "URL public should use (like pmc or some aggregator")
     host_metta = models.TextField(blank=True, 
             help_text="metta right after upload")
+    twitter_url = models.CharField(max_length=135, null=True,blank=True,
+        help_text = "URL of tweet to email presenters for retweeting")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
     comment = models.TextField(blank=True, help_text="production notes")
