@@ -70,7 +70,9 @@ I can fix my consumer easier than I can get someone else's website updated.
 
 import datetime 
 import urllib2,csv
-from dateutil.parser import parse
+import HTMLParser
+# from dateutil.parser import parse
+# import pprint
 
 try:
     import simplejson as json
@@ -240,6 +242,10 @@ class add_eps(process.process):
           # adjust for time zone:
 	  # start += datetime.timedelta(hours=-7,minutes=0)
 
+
+    def str2bool(self, tf):
+        return {'true':True, 
+                "false":False}[tf]
 
     def addeps(self, schedule, show):
       seq=0
@@ -531,6 +537,70 @@ class add_eps(process.process):
 
         return events
 
+    def ddu_events(self, schedule ):
+        # Drupal Down Under 2012
+
+        html_parser = HTMLParser.HTMLParser()
+
+        # these fields exist in both json and veyepar:
+        common_fields = [ 'name', 'authors', 'description', 
+            'start', 'duration', 
+            'released', 'license', 'tags', 'conf_key', 'conf_url']
+
+        # mapping of json to veyepar:
+        field_map = [ 
+                ('emails','contact'), 
+                ('location','room'),
+                ]
+     
+        html_encoded_fields = [ 'name', 'authors', 'description', ]
+
+        events=[]
+        for row in schedule:
+            if self.options.verbose: print row
+            event={}
+
+            for k in common_fields:
+                try: 
+                    event[k] = row[k]
+                except KeyError:
+                    event[k] = 'missing'
+
+            for k1,k2 in field_map:
+                event[k1] = row[k2]
+
+            if isinstance(event['authors'],dict):
+                event['authors'] = ", ".join( event['authors'].values() )
+            
+            if row["entities"] == "true":
+                for k in html_encoded_fields:
+                    # x = html_parser.unescape('&pound;682m')
+                    event[k] = html_parser.unescape( event[k] )
+
+            
+            # x = html_parser.unescape('&pound;682m')
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], '%Y-%m-%d %H:%M:%S' )
+
+            seconds=(int(event['duration'] )) * 60
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            event['duration'] =  duration
+
+            event['released'] = event['released'].startswith(
+                "You may publish" )
+
+            event['license'] = event['license'].split('(')[1][5:-1]
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = row
+
+            events.append(event)
+
+        return events
+
+
 
     def goth_events(self, schedule ):
         # PyGotham
@@ -725,7 +795,7 @@ class add_eps(process.process):
 
 
     def pygotham(self, schedule, show):
-        # importing from some other instance
+        # pygotham 2011
         rooms = self.get_rooms(schedule,'room_number')
         self.add_rooms(rooms,show)
 
@@ -792,6 +862,18 @@ class add_eps(process.process):
 
 
 
+    def ddu(self, schedule, show):
+        print schedule[0]
+        return
+        rooms = self.get_rooms(schedule,'room')
+        self.add_rooms(rooms,show)
+
+        events = self.ddu_events(schedule)
+        self.add_eps(events, show)
+        return 
+
+
+
     def zoo(self, schedule, show):
         rooms = self.zoo_cages(schedule)
         self.add_rooms(rooms,show)
@@ -838,8 +920,11 @@ class add_eps(process.process):
             'pygotham': 'http://pygotham.org/talkvote/full_schedule/',
             'pytexas_2011': 'http://www.pytexas.org/2011/schedule/json/',
             'pyconde2011': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
+            'ddu_2012': "http://drupaldownunder.org/program/session-schedule/json",
             'lca_2012': "http://lca2012.linux.org.au/programme/schedule/json"
             }[self.options.show]
+
+        if self.options.verbose: print url
 
         if url.startswith('file'):
             f = open(url[7:])
@@ -864,8 +949,6 @@ class add_eps(process.process):
         # save for later
         file('schedule.json','w').write(j) 
         # j=file('schedule.json').read()
-
-        # schedule = json.read(j)
 
         # look at fingerprint of file, call appropiate parser
 
@@ -897,6 +980,25 @@ class add_eps(process.process):
         if url.endswith('programme/schedule/json'):
             # Zookeepr
             return self.zoo(schedule,show)
+
+        if url.endswith('program/session-schedule/json'):
+            # ddu 2012
+            schedule = [s['session'] for s in schedule['ddu2012']]
+            # pprint.pprint( schedule )
+            s_keys = schedule[0].keys()
+            print s_keys
+            v_keys=('id',
+                'location','sequence',
+                'name','slug', 'authors','emails', 'description',
+                'start','duration', 
+                'released', 'license', 'tags',
+                'conf_key', 'conf_url',
+                'host_url', 'publiv_url',
+        )    
+            print [k for k in v_keys if k in s_keys]
+            print [k for k in v_keys if k not in s_keys]
+
+            return self.ddu(schedule,show)
 
         # schedule = schedule['nodes']
         # self.addlocs(schedule,show)

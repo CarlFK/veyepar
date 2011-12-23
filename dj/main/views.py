@@ -812,6 +812,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             if episodes:
                 # use last Episode as a base for defaults
                 episode = episodes[len(episodes)-1]
+                print episode
                 location = episode.location.id
                 sequence = episode.sequence+1
                 start = episode.end
