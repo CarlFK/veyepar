@@ -43,11 +43,11 @@ class process(object):
   stop = False 
 
   ready_state=None
-  
+
 # defaults to ntsc stuff
   fps=29.98
   bpf=120000
- 
+
   def run_cmd(self,cmd):
     """
     given command list
@@ -81,7 +81,7 @@ class process(object):
       then run each
       abort and return False if any fail.
       """
-      
+
       script_pathname = os.path.join(self.work_dir, episode.slug+".sh")
       sh = open(script_pathname,'a')
 
@@ -98,7 +98,7 @@ class process(object):
           sh.write('\n')
           # self.log_info(log_text)
           if self.options.debug_log:
-              episode.description += "\n%s\n" % (log_text)
+              episode.description += "\n{0:>s}\n".format(log_text, )
               episode.save()
 
           if not self.run_cmd(cmd):
@@ -108,7 +108,7 @@ class process(object):
       sh.close()
 
       return True
- 
+
   def set_dirs(self,show):
       client = show.client
       self.show_dir = os.path.join(
@@ -117,7 +117,7 @@ class process(object):
           self.tmp_dir = self.options.tmp_dir
       else:
           self.tmp_dir = os.path.join(self.show_dir,"tmp")
-      # change me to "cmd" or something beofre the next show
+      # change me to "cmd" or something before the next show
       self.work_dir = os.path.join(self.show_dir,"tmp")
 
       return
@@ -126,7 +126,7 @@ class process(object):
   def log_in(self,episode):
     """
     log_in/out
-    create logs, and logk.unlock the episode
+    create logs, and lock.unlock the episode
     """
     hostname=socket.gethostname()
     what_where = "%s@%s" % (self.__class__.__name__, hostname)
@@ -161,14 +161,14 @@ class process(object):
     episode.locked = None
     episode.locked_by = ''
     episode.save()
-    
+
   def process_ep(self, episode):
     print "stubby process_ep", episode.id, episode.name
     return 
 
   def process_eps(self, episodes):
     for e in episodes:
-      # next line requeries the db to make sure the lock field is fresh
+      # next line requires the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
       if ep.locked and self.options.show_locks: 
           print "locked: ", ep
@@ -206,7 +206,7 @@ class process(object):
                 # huh?!  
                 # so..  ummm... 
                 # 1. you can't bump None
-                # 2. if it wan't forced:   bump.
+                # 2. if it wasn't forced:, bump.
                 if self.ready_state is not None \
                         and not self.options.force:
                     # bump state
@@ -221,7 +221,13 @@ class process(object):
                 # re-set the stop flag.
                 ep.stop = False
                 ep.save()
-                return 
+                return
+
+            if self.options.lag:
+                if ep != eps[-1]: # don't lag on the last (or only) one.
+                    print "lagging....", self.options.lag
+                    time.sleep(self.options.lag)
+
         else:
             if self.options.verbose:
                 print '#%s: "%s" is in state %s, ready is %s' % (
@@ -230,6 +236,9 @@ class process(object):
 
   def one_show(self, show):
 
+    """
+
+"""
     self.set_dirs(show)
 
     locs = Location.objects.filter(show=show)
@@ -263,7 +272,7 @@ class process(object):
             episodes = episodes.filter(start__day=self.options.day)
         if self.args:
             episodes = episodes.filter(id__in=self.args)
-        
+
         self.start=datetime.datetime.now()
         self.process_eps(episodes)
         self.end=datetime.datetime.now()
@@ -283,7 +292,7 @@ class process(object):
                 if self.options.verbose: print "sleeping...."
                 time.sleep(int(self.options.poll))
 
- 
+
   def list(self):
     """
     list clients and shows.
@@ -302,10 +311,10 @@ class process(object):
 
   def add_more_options(self, parser):
     pass
- 
+
   def add_more_option_defaults(self, parser):
     pass
- 
+
   def set_options(self,*bar,**extra_options):
     # hook for test runner
     self.extra_options=extra_options
@@ -316,12 +325,16 @@ class process(object):
       setattr(self.options, k, v)
 
   def parse_args(self):
+    """
+    parse command line arguments.
+    """
     parser = optparse.OptionParser()
 
-    # hardcoded defauts
-    parser.set_defaults(dv_format='ntsc')
+    # hardcoded defaults
+    parser.set_defaults(dv_format="ntsc")
     parser.set_defaults(upload_formats="mp4")
     parser.set_defaults(media_dir=os.path.expanduser('~/Videos/veyepar'))
+    parser.set_defaults(lag=0)
     self.add_more_option_defaults(parser)
 
     # read from config file, overrides hardcoded
@@ -339,7 +352,7 @@ class process(object):
 
     if files:
         d=dict(config.items('global'))
-        d['whack']=False # don't want this somehow getting set in .conf
+        d['whack']=False # don't want this somehow getting set in .config - too dangerous.
         parser.set_defaults(**d)
         if 'verbose' in d: 
             print "using config file(s):", files
@@ -364,8 +377,8 @@ class process(object):
     parser.add_option('--debug-log', action="store_true",
               help="append logs to .description so it gets posted to blip" )
     parser.add_option('--test', action="store_true",
-              help="test mode - do not make changes to the db "
-                "(not fully implemetned, for development use.")
+              help="test mode - do not make changes to the db.  maybe. "
+                "(not fully implemented, for development use.")
     parser.add_option('--force', action="store_true",
               help="override ready state and lock, use with care." )
     parser.add_option('--show-locks', action="store_true",
@@ -374,7 +387,9 @@ class process(object):
               help="clear locked status, use with care." )
     parser.add_option('--whack', action="store_true",
               help="whack current episodes, use with care." )
-    parser.add_option('--poll', 
+    parser.add_option('--lag', type="int",
+        help="delay in seconds between processing episodes.")
+    parser.add_option('--poll',
               help="poll every x seconds." )
 
     self.add_more_options(parser)
@@ -383,11 +398,9 @@ class process(object):
     # this needs to be done better:
     self.options.upload_formats = self.options.upload_formats.split()
     self.get_options()
-    
+
     if self.options.verbose:
         print self.options, self.args
-        # from django.conf import settings
-        # print settings.DATABASE_ENGINE, settings.DATABASE_NAME
 
     if "pal" in self.options.dv_format:
         self.fps=25.0
@@ -395,8 +408,8 @@ class process(object):
 
     return 
 
-    
- 
+
+
   def main(self):
     self.parse_args()
 
@@ -405,7 +418,7 @@ class process(object):
     elif self.options.poll:
         self.poll()
     else:
-    	self.work()
+        self.work()
 
 if __name__ == '__main__':
     p=process()

@@ -18,8 +18,8 @@ zone  "private" {
 	allow-update { key "rndc-key"; };
 };
 
-zone "x.y.x.in-addr.arpa" {
+zone "0.168.192.in-addr.arpa" {
         type master;
-        file "rev.z.y.x.in-addr.arpa";
+        file "rev.0.168.992.in-addr.arpa";
         allow-update { key "rndc-key"; };
 };

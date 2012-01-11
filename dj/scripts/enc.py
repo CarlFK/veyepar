@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
-# encodes to ogg
-
+"""
+assembles raw cuts into final, titles, tweaks audio, encodes to format for upload.
+"""
 import os,sys,subprocess
 import xml.etree.ElementTree
 
@@ -438,7 +439,7 @@ class enc(process):
         if self.options.debug_log:
             mlt_xml = mlt_xml.replace('<','&lt;').replace('>','&gt;')
             mlt_xml = mlt_xml.replace('&','&amp;')
-            episode.description += "\n%s\n" % (mlt_xml)
+            episode.description += "\n%s\n" % (mlt_xml,)
             episode.save()
 
         return mlt_pathname
@@ -525,7 +526,7 @@ class enc(process):
                   ret = enc_one("dv")
                   if ret:
                       dv_pathname = os.path.join( 
-                          self.tmp_dir,"%s.dv"%(episode.slug))
+                          self.tmp_dir,"%s.dv" % (episode.slug,))
                       cmds=["ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --channels 1 %s -o %s" % (dv_pathname, out_pathname)]
                       if self.options.rm_temp:
                           cmds.append( ["rm", dv_pathname] )
@@ -573,15 +574,15 @@ class enc(process):
 
         return ret
 
-  def dv2theora(self,episode,dvpathname,cls,rfs):
+  def dv2theora(self,episode,dv_path_name,cls,rfs):
         """
         transcode dv to ogv
-        """
+            """
         oggpathname = os.path.join(self.show_dir, "ogv", "%s.ogv"%episode.slug)
         # cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --speedlevel 0 --optimize --keyint 256 --channels 1".split()
         cmd="ffmpeg2theora --videoquality 5 -V 600 --audioquality 5 --keyint 256 --channels 1".split()
         cmd+=['--output',oggpathname]
-        cmd+=[dvpathname]
+        cmd+=[dv_path_name]
         return cmd
 
   def process_ep(self,episode):
@@ -599,7 +600,7 @@ class enc(process):
 # make a title slide
         svg_name = episode.show.client.title_svg \
                 if episode.show.client.title_svg \
-                else "%s_title.svg" % (episode.show.slug)
+                else "%s_title.svg" % (episode.show.slug,)
 
         template = os.path.join(self.show_dir, "bling", svg_name)
         # happy_filename = episode.slug.encode('utf-8')

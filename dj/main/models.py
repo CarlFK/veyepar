@@ -18,7 +18,7 @@ def fnify(text):
     fn = fn.replace(' ','_')
 
     # single _ between words.
-    # removes mutiple and leading spaces or underscores
+    # removes multiple and leading spaces or underscores
     fn = '_'.join([w for w in fn.split('_') if w])
 
     return fn

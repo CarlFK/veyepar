@@ -65,13 +65,11 @@ class tweet(process):
             d=status.AsDict()
             self.last_tweet = d
             self.last_tweet_url = "http://twitter.com/#!/squid/status/%s" % (d["id"], )
-            print self.last_tweet_url
-            
-            ret=True
+            print self.last_tweet_url]
+            ep.twitter_url = last_tweet_url
+            ep.save()
 
-        if self.options.lag:
-            print "lagging....", self.options.lag
-            time.sleep(self.options.lag)
+            ret=True
 
         return ret
 
@@ -92,9 +90,7 @@ class tweet(process):
         return ret
 
     def add_more_options(self, parser):
-        parser.add_option('--lag', type="int",
-           help="delay in seconds between tweets.")
-        parser.add_option('--twitter_user', 
+        parser.add_option('--twitter_user',
            help="account to tweet from if not specified in client.")
 
     def add_more_option_defaults(self, parser):
