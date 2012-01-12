@@ -395,7 +395,7 @@ class add_eps(process.process):
 
         # warning: location is the 2nd half of a hack:
         # veyepar json export only gives room key, not name
-        # so convert the int to a string and call it the name
+        # so convert the int to a string and call it the name.
         # lame.
 
         events=[]
@@ -591,6 +591,8 @@ class add_eps(process.process):
                 "You may publish" )
 
             event['license'] = event['license'].split('(')[1][5:-1]
+
+            event['emails']=None
 
             # save the original row so that we can sanity check end time.
             event['raw'] = row

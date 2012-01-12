@@ -134,7 +134,10 @@ fi
 ## remove apt proxy used for install 
 # squid-deb-proxy-client has been installed for production 
 # Acquire::http::Proxy "http://cp333:8000/";
-sed -i "/^Acquire::http::Proxy/s/^.*$//" /etc/apt/apt.conf
+CONF=/etc/apt/apt.conf
+if [ -f $CONF ]; then 
+  sed -i "/^Acquire::http::Proxy/s/^.*$//" $CONF
+fi
 
 ## turn off tracker indexing (slows down the box)
 if [ -f /home/$NUSER/.config/tracker/tracker.cfg ]; then
