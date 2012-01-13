@@ -14,7 +14,7 @@
    height="768"
    id="svg7306"
    version="1.1"
-   inkscape:version="0.48+devel r10824"
+   inkscape:version="0.48+devel r10867"
    sodipodi:docname="title-ddu2012.svg"
    inkscape:export-filename="/Users/idan/Dropbox/proj/djangocon.us 2011/art assets/titlecard.png"
    inkscape:export-xdpi="70.309998"
@@ -27,7 +27,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.95442708"
-     inkscape:cx="512"
+     inkscape:cx="383.65075"
      inkscape:cy="384"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
@@ -36,11 +36,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1274"
-     inkscape:window-height="950"
+     inkscape:window-width="1680"
+     inkscape:window-height="977"
      inkscape:window-x="0"
      inkscape:window-y="24"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:snap-global="true"
@@ -744,7 +744,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1401,5 +1401,17 @@
            width="877.57141"
            id="rect15472" /></flowRegion><flowPara
          style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:end;text-anchor:end;font-family:Maven Pro;-inkscape-font-specification:Maven Pro Bold"
-         id="title">THE DARK ARTS OF BUSINESS ANALYSIS: REQUIREMENTS GATHERING WITH MINDMAPS FOR A DRUPAL PROJECT</flowPara></flowRoot>  </g>
+         id="title">THE DARK ARTS OF BUSINESS ANALYSIS: REQUIREMENTS GATHERING WITH MINDMAPS FOR A DRUPAL PROJECT</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="PresenterBox"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+       transform="translate(-14,-2)"><flowRegion
+         id="flowRegion3378"><rect
+           id="rect3380"
+           width="717.70807"
+           height="75.437927"
+           x="251.45976"
+           y="566.83221" /></flowRegion><flowPara
+         id="flowPara3382"
+         style="font-size:48px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#803300;font-family:Maven Pro;-inkscape-font-specification:Maven Pro Bold">RAENA JACKSON ARMITAGE</flowPara></flowRoot>  </g>
 </svg>
