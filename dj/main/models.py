@@ -36,13 +36,13 @@ class Client(models.Model):
     postroll = models.CharField(max_length=135, blank=True,
         help_text="name of video to postpend (not implemented)")
     host_user = models.CharField(max_length=30, blank=True, null=True)
-    # tweet_prefix = models.CharField(max_length=30, blank=True, null=True)
+    tweet_prefix = models.CharField(max_length=30, blank=True, null=True)
     title_svg = models.CharField(max_length=30, blank=True, null=True,
         help_text='template for event/title/authors')
     credits = models.CharField(max_length=30, blank=True, 
         help_text='template for ending credits')
-    # contacts = models.CharField(max_length=30, blank=True, 
-    #    help_text='emails of people putting on the event.')
+    contacts = models.CharField(max_length=30, blank=True, 
+        help_text='emails of people putting on the event.')
     def __unicode__(self):
         return self.name
     @models.permalink
@@ -64,8 +64,8 @@ class Location(models.Model):
         help_text="dir name to store input files")
     dirname = models.CharField(max_length=135, blank=True,
         help_text="pat to raw files. overrieds show/slug.")
-    # channelcopy - models.CharField(max_length=2, blank=True,
-    #    help_text='audio adjustment for this room')
+    channelcopy = models.CharField(max_length=2, blank=True,
+        help_text='audio adjustment for this room')
     description = models.TextField(blank=True)
     lon = models.FloatField(null=True, blank=True )
     lat = models.FloatField(null=True, blank=True )

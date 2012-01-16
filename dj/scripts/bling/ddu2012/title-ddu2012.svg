@@ -14,7 +14,7 @@
    height="768"
    id="svg7306"
    version="1.1"
-   inkscape:version="0.48+devel r10867"
+   inkscape:version="0.48.2 r9819"
    sodipodi:docname="title-ddu2012.svg"
    inkscape:export-filename="/Users/idan/Dropbox/proj/djangocon.us 2011/art assets/titlecard.png"
    inkscape:export-xdpi="70.309998"
@@ -27,17 +27,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.95442708"
-     inkscape:cx="383.65075"
-     inkscape:cy="384"
+     inkscape:cx="454.89768"
+     inkscape:cy="425.90996"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1680"
-     inkscape:window-height="977"
+     inkscape:window-width="1280"
+     inkscape:window-height="776"
      inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
@@ -744,7 +744,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -752,8 +752,7 @@
      transform="translate(0,-284.36218)"
      id="layer1"
      inkscape:groupmode="layer"
-     inkscape:label="Background"
-     sodipodi:insensitive="true">
+     inkscape:label="Background">
     <rect
        y="284.8616"
        x="0.49943098"
@@ -938,9 +937,9 @@
     </g>
     <rect
        y="844.74854"
-       x="245.74309"
+       x="84.389748"
        height="70.03331"
-       width="728.62335"
+       width="884.29797"
        id="rect7785"
        style="opacity:0.75;fill:#ffffff;fill-rule:evenodd;stroke:none" />
     <g
@@ -1368,7 +1367,7 @@
        id="rect6549"
        width="884.29846"
        height="185.53848"
-       x="89.691315"
+       x="84.389748"
        y="612.5094" />
   </g>
   <g
@@ -1389,7 +1388,7 @@
            style="font-size:40px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;text-align:end;text-anchor:end;fill:#d1541f;fill-opacity:1;font-family:News Cycle;-inkscape-font-specification:News Cycle Medium" /></flowRegion><flowPara
          style="font-size:48px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#d1541f;fill-opacity:1;font-family:Maven Pro;-inkscape-font-specification:Maven Pro Bold"
          id="presenternames">RAENA JACKSON-ARMITAGE</flowPara></flowRoot>    <flowRoot
-       transform="translate(-26.264717,137.21391)"
+       transform="translate(-23.5,137.21391)"
        style="font-size:48px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:ChunkFive;-inkscape-font-specification:ChunkFive"
        id="titlebox"
        xml:space="preserve"><flowRegion
@@ -1405,13 +1404,13 @@
        xml:space="preserve"
        id="PresenterBox"
        style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
-       transform="translate(-14,-2)"><flowRegion
+       transform="translate(-34,0)"><flowRegion
          id="flowRegion3378"><rect
            id="rect3380"
-           width="717.70807"
-           height="75.437927"
-           x="251.45976"
+           width="906.30298"
+           height="66.008194"
+           x="82.772179"
            y="566.83221" /></flowRegion><flowPara
-         id="flowPara3382"
-         style="font-size:48px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#803300;font-family:Maven Pro;-inkscape-font-specification:Maven Pro Bold">RAENA JACKSON ARMITAGE</flowPara></flowRoot>  </g>
+         id="authors"
+         style="font-size:48px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#803300;font-family:Maven Pro;-inkscape-font-specification:Maven Pro Bold">Michael Strelan and Mark Matuschka </flowPara></flowRoot>  </g>
 </svg>

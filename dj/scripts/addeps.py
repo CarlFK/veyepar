@@ -451,7 +451,7 @@ class add_eps(process.process):
             event['authors'] = row.get('Presenters','')
 
             # https://github.com/zookeepr/zookeepr/issues/92
-            event['emails'] = ""
+            event['emails'] = row.get('Presenter_emails','')
 
             # https://github.com/zookeepr/zookeepr/issues/93
             event['released'] = True
@@ -862,10 +862,8 @@ class add_eps(process.process):
         return 
 
 
-
     def ddu(self, schedule, show):
-        print schedule[0]
-        return
+        # drupal down under 2012
         rooms = self.get_rooms(schedule,'room')
         self.add_rooms(rooms,show)
 
