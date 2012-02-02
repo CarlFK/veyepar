@@ -18,7 +18,9 @@ veyepar:
         encoder fail
 
   command line parameter to set cfg file.
-    test script has it's own cfg
+    test script has its own cfg
+
+  upload category - needs default
 
 encoding:
   soften jump cuts
@@ -30,7 +32,7 @@ model:
 ndv walpaper 
 
 upload:
-  grab blip rss for episode
+  # grab blip rss for episode
 
 recording sheets:
  [x] over time (adjust before addeps to suck in the extras)

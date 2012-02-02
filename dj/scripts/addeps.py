@@ -890,6 +890,85 @@ class add_eps(process.process):
         self.add_eps(events, show)
         return 
 
+
+    def fos_events( self, schedule ):
+ 
+        events = []
+        id = 0
+
+        # schedule[0] is <conference></conference>
+        for day in schedule[1:3]:
+            # >>> schedule[1].get('date')
+            # '2012-02-04'
+            start_date = day.get('date')
+            print start_date
+            for room in day:
+                for row in room:
+                    # >>> event.find('start').text
+                    # '10:30'
+                    # >>> [x.tag for x in event]
+                    tags = ['start', 'duration', 'room', 'slug', 'title', 'subtitle', 'track', 'type', 'language', 'abstract', 'description', 'persons', 'links']
+                    for tag in tags:
+                        print tag, row.find(tag).text
+
+                    event={}
+                    # event['id'] = row[0]
+                    event['name'] = row.find('title').text
+
+                    event['location'] = row.find('room').text
+
+                    dt_format='%Y-%m-%d %H:%M'
+                    event['start'] = datetime.datetime.strptime(
+                            "%s %s" % ( start_date,row.find('start').text),
+                            dt_format)
+
+                    event['duration'] = \
+                        "%s:00" % row.find('duration').text
+                    
+                    persons = [p.text for p in 
+                            row.find('persons').getchildren() ]
+                    event['authors'] = ', '.join(persons)
+
+                    event['emails'] = ''
+                    event['released'] = True
+                    event['license'] = self.options.license
+                    # event['description'] = row.find('description').text
+                    event['description'] = row.find('abstract').text
+
+                    event['conf_key'] = id
+
+                    event['conf_url'] = ''
+                    event['tags'] = ''
+
+                    # save the original row so that we can sanity check end time.
+                    event['raw'] = row
+
+                    events.append(event)
+                    id += 1
+         
+        return events
+
+
+    def fosdem2012(self, schedule, show):
+
+        # top of schedule is:
+        # <conference></conference>
+        # <day date="2012-02-04" index="1"></day>
+        # <day date="2012-02-05" index="2"></day>
+        # each day has a list of rooms
+
+        rooms = [ r.get('name') for r in schedule[1] ]
+        rooms = set( rooms )
+        # probabalby the same rooms the 2nd day.
+        rooms = list(rooms)
+        # ['Janson', 'K.1.105', 'Ferrer', 'H.1301', 'H.1302']
+        self.add_rooms(rooms,show)
+
+        events = self.fos_events(schedule)
+        self.add_eps(events, show)
+        return 
+
+       
     def one_show(self, show):
         # url='http://us.pycon.org/2010/conference/schedule/events.json'
         # url='http://pycon-au.org/2010/conference/schedule/events.json'
@@ -920,7 +999,8 @@ class add_eps(process.process):
             'pytexas_2011': 'http://www.pytexas.org/2011/schedule/json/',
             'pyconde2011': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
             'ddu_2012': "http://drupaldownunder.org/program/session-schedule/json",
-            'lca_2012': "http://lca2012.linux.org.au/programme/schedule/json"
+            'lca_2012': "http://lca2012.linux.org.au/programme/schedule/json",
+            'fosdem_2012': "http://tmp.fosdem.org/video.xml",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -940,6 +1020,11 @@ class add_eps(process.process):
             schedule = list(csv.reader(f))
             if 'desktopsummit.org' in url:
                 return self.desktopsummit(schedule,show)
+        elif url[-4:]=='.xml':
+            import xml.etree.ElementTree
+            x = f.read()
+            schedule=xml.etree.ElementTree.XML(x)
+            return self.fosdem2012(schedule,show)
         else:
             j=f.read()
             schedule = json.loads(j)

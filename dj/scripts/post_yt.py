@@ -32,7 +32,7 @@ class post(process):
 
     meta = {
         'title': ep.name,
-        'description': description,
+        'description': description[:250],
         }
 
     tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
