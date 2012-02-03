@@ -53,7 +53,7 @@ class post(process):
     if self.options.category:
         meta['category'] = self.options.category
         # http://gdata.youtube.com/schemas/2007/categories.cat
-        meta['category'] = "Education"
+        # meta['category'] = "Education"
 
     if self.options.hidden:
         meta['hidden'] = self.options.hidden
@@ -175,6 +175,8 @@ class post(process):
         parser.add_option('--hidden',
             help="availability on host: 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
 
+  def add_more_option_defaults(self, parser):
+      parser.set_defaults(category="Education")
 
 if __name__ == '__main__':
     p=post()
