@@ -433,11 +433,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1274"
-     inkscape:window-height="950"
+     inkscape:window-width="1280"
+     inkscape:window-height="952"
      inkscape:window-x="0"
      inkscape:window-y="24"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -482,6 +482,14 @@
        transform="translate(0,284.36218)"
        id="rect4029"
        inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;fill-rule:evenodd;stroke:none"
+       id="rect3247"
+       width="196.97681"
+       height="195.92906"
+       x="493.48978"
+       y="511.30151"
+       transform="translate(0,284.36218)" />
     <g
        transform="translate(449.09008,755.29488)"
        id="g4053">
