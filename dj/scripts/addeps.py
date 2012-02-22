@@ -1001,6 +1001,7 @@ class add_eps(process.process):
             'ddu_2012': "http://drupaldownunder.org/program/session-schedule/json",
             'lca_2012': "http://lca2012.linux.org.au/programme/schedule/json",
             'fosdem_2012': "http://tmp.fosdem.org/video.xml",
+            'pycon_2012': "https://us.pycon.org/2012/schedule/json/",
             }[self.options.show]
 
         if self.options.verbose: print url

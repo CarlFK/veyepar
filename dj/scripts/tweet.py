@@ -65,8 +65,8 @@ class tweet(process):
             d=status.AsDict()
             self.last_tweet = d
             self.last_tweet_url = "http://twitter.com/#!/squid/status/%s" % (d["id"], )
-            print self.last_tweet_url]
-            ep.twitter_url = last_tweet_url
+            print self.last_tweet_url
+            ep.twitter_url = self.last_tweet_url
             ep.save()
 
             ret=True

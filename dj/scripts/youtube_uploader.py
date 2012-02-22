@@ -57,8 +57,10 @@ class Uploader(object):
             keywords=gdata.media.Keywords(
                 text=','.join(self.meta['tags'] )),
             category=[gdata.media.Category(
-                label=self.meta['category'],
-                text=self.meta['category'],
+                # label=self.meta['category'],
+                # text=self.meta['category'],
+                label="Education",
+                text="Education",
                 scheme='http://gdata.youtube.com/schemas/2007/categories.cat',
                 )],
             player=None
@@ -105,7 +107,7 @@ class Uploader(object):
 
         except gdata.youtube.service.YouTubeError as e:
             import code
-            # code.interact(local=locals())
+            code.interact(local=locals())
             self.ret_text = e.__str__()
             ret = False
 

@@ -22,9 +22,10 @@
          <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
           <td> {{t.0.start|date:"h:i"}}</td>
           {% for episode in t.1 %}
-            <td style="white-space:normal">
+            <td style="white-space:normal;">
             {% if episode %}
-              <a href="E/{{episode.id}}/">{{ episode.name }}</a>
+<a style="background-color:{{episode.released|yesno:"#70ff70,#ff0000,#cccccc"}};"
+                href="E/{{episode.id}}/">{{ episode.name }}</a>
               {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> {{ episode.duration }} #}
               {{episode.authors}}
             {% endif %}

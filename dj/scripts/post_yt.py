@@ -17,7 +17,8 @@ class post(process):
 
   def process_ep(self, ep):
     if self.options.verbose: print ep.id, ep.name
-    if not ep.released:
+    if not ep.released and not self.options.release_all:
+        # --release will force the upload, overrides ep.released
         if self.options.verbose: print "not released:", ep.released
         return False
 
@@ -149,12 +150,17 @@ class post(process):
 
         ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
-        self.log_info(uploader.ret_text)
+        # self.log_info(uploader.ret_text)
 
         if ret:
 
+            if self.options.verbose: print uploader.new_url
             ep.host_url = uploader.new_url
             self.last_url = uploader.new_url # hook for tests so that it can be browsed
+
+            print dir(uploader)
+            import code
+            # code.interact(local=locals())
 
         else:
             print "error!"
@@ -174,6 +180,8 @@ class post(process):
             help = "-C list' to see full list" )
         parser.add_option('--hidden',
             help="availability on host: 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
+        parser.add_option('--release-all', action="store_true",
+            help="ignore the released setting.")
 
   def add_more_option_defaults(self, parser):
       parser.set_defaults(category="Education")

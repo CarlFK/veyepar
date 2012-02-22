@@ -46,7 +46,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     state_bumper.allow_tags = True
     state_bumper.short_description = 'bump'
 
-    list_display = (
+    list_display = ('id',
             'name', 'state',
         'slug','comment',
 )
@@ -60,8 +60,8 @@ class EpisodeAdmin(admin.ModelAdmin):
     # list_display = ( 'sequence', 'name', 'state', 'state_bumper', 'duration' )
     ordering = ('sequence', )
     date_hierarchy = 'start'
-    list_display_links = ('name',)
-    list_editable = ('state','slug',)
+    list_display_links = ('id',)
+    list_editable = ('state','name','slug',)
             # 'locked','locked_by', )
     # list_editable = ('state','duration')
     admin_order_field = ('sequence', 'name',)
