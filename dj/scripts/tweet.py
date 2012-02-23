@@ -66,8 +66,6 @@ class tweet(process):
             self.last_tweet = d
             self.last_tweet_url = "http://twitter.com/#!/squid/status/%s" % (d["id"], )
             print self.last_tweet_url
-            ep.twitter_url = self.last_tweet_url
-            ep.save()
 
             ret=True
 
@@ -87,6 +85,10 @@ class tweet(process):
         tweet = self.mk_tweet(prefix, ep.name, ep.authors, url)
 
         ret=self.tweet_tweet(user, tweet)
+        if ret:
+            ep.twitter_url = self.last_tweet_url
+            ep.save()
+
         return ret
 
     def add_more_options(self, parser):

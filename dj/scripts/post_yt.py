@@ -165,7 +165,16 @@ class post(process):
         else:
             print "error!"
 
-        ep.save()
+        # tring to fix the db timeout problem
+        # ep=Episode.objects.get(pk=ep.id)
+        try:
+            ep.save()
+        except DatabaseError, e:
+            from django.db import connection
+            connection.connection.close()
+            connection.connection = None
+            ep.save()
+
 
         return ret
 
