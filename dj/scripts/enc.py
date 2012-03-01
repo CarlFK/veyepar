@@ -468,19 +468,27 @@ class enc(process):
 
                   parms = {
                   	'abr': 128, 
-			'vbr': 1024,
-                        'dv_format': self.options.dv_format, 
-			'mlt': mlt_pathname, 
-			'tmp': tmp_pathname, 
-			'threads': self.options.threads, 
-			}
+                    'vbr': 1024,
+                    'dv_format': self.options.dv_format, 
+                    'mlt': mlt_pathname, 
+                    'tmp': tmp_pathname, 
+                    'threads': self.options.threads, 
+			              }
                   ffpreset_files = [
-                      '/usr/share/ffmpeg/libx264-ultrafast.ffpreset',
-                      '/usr/share/ffmpeg/libx264-faster.ffpreset',
                       '/usr/share/ffmpeg/libx264-hq.ffpreset',
+                      '/usr/share/ffmpeg/libx264-faster.ffpreset',
+                      '/usr/share/ffmpeg/libx264-ultrafast.ffpreset',
                       ]
 
-                  cmd="melt -verbose -progress -profile dv_%(dv_format)s %(mlt)s -consumer avformat:%(tmp)s deinterlace=bob threads=%(threads)s progressive=1 acodec=libmp3lame ab=%(abr)sk ar=48000 vcodec=libx264 b=%(vbr)sk" % parms 
+                  cmd="melt -verbose -progress "\
+                  "-profile dv_%(dv_format)s %(mlt)s "\
+                  "-consumer avformat:%(tmp)s "\
+                  "threads=%(threads)s "\
+                  "progressive=1 "\
+                  "properties=x264-medium vb=%(vbr)sk "\
+                  "acodec=libmp3lame ab=%(abr)sk " \
+                  % parms 
+                  # cmd="melt -verbose -progress -profile dv_%(dv_format)s %(mlt)s -consumer avformat:%(tmp)s deinterlace=bob threads=%(threads)s progressive=1 acodec=libmp3lame ab=%(abr)sk ar=48000 vcodec=libx264 vb=%(vbr)sk" % parms 
 
                   # pyohio: cmd="melt -progress -profile square_%s %s -consumer avformat:%s deinterlace=bob threads=%s aspect=@4/3 progressive=1 acodec=libmp3lame ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
                   # acodec=libfaac
@@ -492,7 +500,7 @@ class enc(process):
                           ffpreset=open(ffpreset_file).read().split('\n')
                           ffpreset = [i for i in ffpreset if i]
                           cmd = cmd.split()
-                          cmd.extend(ffpreset)
+                          # cmd.extend(ffpreset)
                           # first found is all we want, so bail
                           break
 

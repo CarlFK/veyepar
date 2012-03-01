@@ -257,8 +257,30 @@ pix_fmt=yuv411p" % parms
     p=play_vids.play_vids()
     p.main()
 
- def post(self):
+ def post_blip(self):
   # post it to blip test account (password is in pw.py)
+  """
+ python post.py -v --client test_client --show test_show \
+ --blip-user veyepar_test
+# --force \
+# --hidden=1
+  """
+  # import post_yt as post
+  import post_blip as post
+  p=post.post()
+  p.set_options(force=True, verbose=True, 
+      upload_formats=self.upload_formats,
+      debug_log=True,
+      host_user="veyepar_test",
+      )
+  p.main()
+ 
+  # post.py does: self.last_url = post_url.text
+  # self.run_cmd(["firefox",p.last_url])
+  return p.las
+
+ def post_yt(self):
+  # post it to youtube test account (password is in pw.py)
   """
  python post.py -v --client test_client --show test_show \
  --blip-user veyepar_test
@@ -319,7 +341,7 @@ pix_fmt=yuv411p" % parms
   print cmd
   self.run_cmd(cmd.split())
 
-  test_file = os.path.join(tmp_dir, "00000002.ppm" )
+  test_file = os.path.join(tmp_dir, "00000006.ppm" )
   gocr_outs = self.run_cmd(['gocr', test_file], True )
   text = gocr_outs['sout']
   print text
@@ -415,7 +437,7 @@ def main():
     # t.upload_formats="flv ogv m4v mp3"
     # t.upload_formats=["mp4"]
     t.upload_formats=["ogv","mp4"]
-    t.title = "Foo"
+    t.title = "foo"
 
     t.make_test_user()
     t.setup_test_data()
@@ -425,7 +447,7 @@ def main():
     t.add_dv()
     t.make_thumbs()
     t.make_cut_list()
-    # test missing dv files
+    ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     t.encode()
     t.ck_errors()
