@@ -490,9 +490,9 @@ class add_eps(process.process):
           room = row[key]
           # if room is None: room = "Plenary"
           if room == "Plenary": 
-              room = "Track I"
+              room = "Track I (D5)"
               row['room_name'] = "Mission City Ballroom"
-          room = "%s - %s" % ( row['room_name'], room )
+          # room = "%s - %s" % ( row['room_name'], room )
           if room not in rooms: 
               rooms.append(room)
               # print room, '-',row['room_name']
@@ -513,13 +513,17 @@ class add_eps(process.process):
             # if event['location'] is None: event['location'] = "Track 1" 
             # if event['location']=='Plenary': event['location'] = "Track 1" 
             if row['room'] == "Plenary": 
-              row['room'] = "Track I"
+              row['room'] = "Track I (D5)"
               row['room_name'] = "Mission City Ballroom"
-            event['location'] = "%s - %s" % ( 
-                    row['room_name'], row['room'] )
+            # event['location'] = "%s - %s" % ( 
+            #        row['room_name'], row['room'] )
+            event['location'] = row['room']
 
             event['start'] = datetime.datetime.strptime(
                     row['start_iso'], '%Y-%m-%dT%H:%M:%S' )
+
+            # if "Poster" in row["tags"]:
+            event['start'] += datetime.timedelta(hours=-3)
 
             break_min = 0 ## no time for breaks!
             seconds=(row['duration'] - break_min ) * 60
@@ -739,6 +743,7 @@ class add_eps(process.process):
         'conf_url', 'tags')
 
           if created or self.options.update:
+              print row['location']
               loc=Location.objects.get(name=row['location'])
               loc.active = True
               episode.location=loc
@@ -785,7 +790,7 @@ class add_eps(process.process):
     def symposium(self, schedule, show):
         # print "consumer symposium"
         rooms = self.get_rooms(schedule,'room')
-        self.add_rooms(rooms,show)
+        # self.add_rooms(rooms,show)
 
         events = self.symp_events(schedule)
         self.add_eps(events, show)
