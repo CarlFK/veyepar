@@ -17,7 +17,7 @@ class post(process):
 
   def process_ep(self, ep):
     if self.options.verbose: print ep.id, ep.name
-    if not ep.released and not self.options.release_all:
+    if not ep.released: # and not self.options.release_all:
         # --release will force the upload, overrides ep.released
         if self.options.verbose: print "not released:", ep.released
         return False
