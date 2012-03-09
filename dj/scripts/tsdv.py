@@ -42,8 +42,8 @@ class add_dv(process):
         # for now, the last dir is the date, and the file is time:
         filename='/'.join(filename.split('/')[-2:])
 
-        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
-        # start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
+        # start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
+        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
         # 2012-01-14/10:01:34.dv
 
         # dt = dv.filename[:-3]

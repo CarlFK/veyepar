@@ -15,8 +15,20 @@ import gdata.youtube.service
 from gdata.youtube.service import YouTubeError
 
 import pw
+import progressbar
 
-def progress(self, current, blocksize, total):
+
+widgets = [
+        'Upload: ',
+        progressbar.Percentage(), ' ',
+        progressbar.Bar(marker=progressbar.RotatingMarker()), ' ', 
+        progressbar.ETA(), ' ',
+        progressbar.FileTransferSpeed(),
+        ]
+
+
+
+def progress(current, blocksize, total):
     """
     Displaies upload percent done, bytes sent, total bytes.
     """
@@ -34,16 +46,33 @@ def progress(self, current, blocksize, total):
 
 
 class ProgressFile(file):
-    def __init__(self, cb, *args, **kw):
-        self.cb = cb
-        file(self, *args, **kw)
+    def __init__(self, *args, **kw):
+        file.__init__(self, *args, **kw)
+
+        self.seek(0, 2)
+        self.len = self.tell()
+        self.seek(0)
+
+        self.pbar = progressbar.ProgressBar(
+            widgets=widgets, maxval=self.len)
+        self.pbar.start()
+
+    def size(self):
+        return self.len
+
+    def __len__(self):
+        return self.size()
 
     def read(self, size=-1):
+        if (size > 1e3):
+                size = int(1e3)
         try:
-            self.cb(self.tell(), size, self.size())
+            self.pbar.update(self.tell())
             return file.read(self, size)
         finally:
-            self.cb(self.tell(), size, self.size())
+            self.pbar.update(self.tell())
+            if self.tell() >= self.len:
+                self.pbar.finish()
 
 class Uploader(object):
 
@@ -126,10 +155,9 @@ class Uploader(object):
 
         # actually upload
         pathname= self.files[0]['pathname']
-        print pathname
-        pf = ProgressFile(progress,pathname,'r')
+
+        pf = ProgressFile(pathname, 'r')
         try:
-            # self.new_entry = yt_service.InsertVideoEntry(video_entry, pathname)
             self.new_entry = yt_service.InsertVideoEntry(video_entry, pf)
             self.ret_text = self.new_entry.__str__()
             link = self.new_entry.GetHtmlLink()

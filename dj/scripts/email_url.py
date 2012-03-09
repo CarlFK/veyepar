@@ -9,7 +9,7 @@ from process import process
 
 class email_url(process):
 
-    ready_state = 6
+    ready_state = 5
 
     def process_ep(self, ep):
         if self.options.verbose: print ep

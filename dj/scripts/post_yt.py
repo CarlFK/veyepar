@@ -43,10 +43,10 @@ class post(process):
 
     meta['tags'] = [tag for tag in tags if tag] 
 
-    if ep.license: 
-        meta['license'] = str(ep.license)
-    elif self.options.license:
-        meta['license'] = self.options.license
+    # if ep.license: 
+    #    meta['license'] = str(ep.license)
+    # elif self.options.license:
+    #    meta['license'] = self.options.license
 
     if self.options.rating:
         meta['rating'] = self.options.rating
@@ -54,7 +54,7 @@ class post(process):
     if self.options.category:
         meta['category'] = self.options.category
         # http://gdata.youtube.com/schemas/2007/categories.cat
-        # meta['category'] = "Education"
+        meta['category'] = "Education"
 
     if self.options.hidden:
         meta['hidden'] = self.options.hidden
