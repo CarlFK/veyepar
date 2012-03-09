@@ -24,7 +24,6 @@ class Episode_Form_Preshow(forms.ModelForm):
                   'name', 'slug', 
                   'show','location', 
                   'start', 'duration', 
-                  'sequence',
                   'authors', 
                   'emails',
                   'released', 
@@ -34,6 +33,8 @@ class Episode_Form_small(forms.ModelForm):
     class Meta:
 	model = Episode
         fields = ('state', 'locked', 'locked_by', 'start', 'duration',
+                  'emails',
+                  'released', 
                   'normalise', 'channelcopy',
                   'thumbnail', 'description', 'comment')
 

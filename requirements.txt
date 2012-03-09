@@ -3,6 +3,7 @@ svn+http://code.djangoproject.com/svn/django/trunk#egg=django
 # django==1.3
 vobject
 oauth2
+progressbar
 # svn+http://svn.dabodev.com/dabo/trunk/#egg=dabo
 hg+https://python-twitter.googlecode.com/hg/#egg=twitter
 feedparser
