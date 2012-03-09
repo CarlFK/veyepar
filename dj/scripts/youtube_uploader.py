@@ -16,6 +16,35 @@ from gdata.youtube.service import YouTubeError
 
 import pw
 
+def progress(self, current, blocksize, total):
+    """
+    Displaies upload percent done, bytes sent, total bytes.
+    """
+    elapsed = datetime.datetime.now() - self.start_time 
+    remaining_bytes = total-current
+    if elapsed.seconds: 
+        bps = current/elapsed.seconds
+        remaining_seconds = remaining_bytes / bps 
+        eta = datetime.datetime.now() + datetime.timedelta(seconds=remaining_seconds)
+        sys.stdout.write('\r%3i%%  %s of %s MB, %s KB/s, elap/remain: %s/%s, eta: %s' 
+          % (100*current/total, current/(1024**2), total/(1024**2), bps/1024, stot(elapsed.seconds), stot(remaining_seconds), eta.strftime('%H:%M:%S')))
+    else:
+        sys.stdout.write('\r%3i%%  %s of %s bytes: remaining: %s'
+          % (100*current/total, current, total, remaining_bytes, ))
+
+
+class ProgressFile(file):
+    def __init__(self, cb, *args, **kw):
+        self.cb = cb
+        file(self, *args, **kw)
+
+    def read(self, size=-1):
+        try:
+            self.cb(self.tell(), size, self.size())
+            return file.read(self, size)
+        finally:
+            self.cb(self.tell(), size, self.size())
+
 class Uploader(object):
 
     # input attributes:
@@ -98,8 +127,10 @@ class Uploader(object):
         # actually upload
         pathname= self.files[0]['pathname']
         print pathname
+        pf = ProgressFile(progress,pathname,'r')
         try:
-            self.new_entry = yt_service.InsertVideoEntry(video_entry, pathname)
+            # self.new_entry = yt_service.InsertVideoEntry(video_entry, pathname)
+            self.new_entry = yt_service.InsertVideoEntry(video_entry, pf)
             self.ret_text = self.new_entry.__str__()
             link = self.new_entry.GetHtmlLink()
             self.new_url = link.href.split('&')[0]
