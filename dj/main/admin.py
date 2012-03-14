@@ -48,7 +48,6 @@ class EpisodeAdmin(admin.ModelAdmin):
 
     list_display = ('id',
             'name', 'state',
-        'slug','comment',
 )
 
        
@@ -61,7 +60,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     ordering = ('sequence', )
     date_hierarchy = 'start'
     list_display_links = ('id',)
-    list_editable = ('state','name','slug',)
+    list_editable = ('state','name',)
             # 'locked','locked_by', )
     # list_editable = ('state','duration')
     admin_order_field = ('sequence', 'name',)

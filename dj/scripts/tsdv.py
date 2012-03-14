@@ -41,11 +41,6 @@ class add_dv(process):
           
         # for now, the last dir is the date, and the file is time:
         filename='/'.join(filename.split('/')[-2:])
-
-        # start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
-        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
-        # 2012-01-14/10:01:34.dv
-
         # dt = dv.filename[:-3]
         # dt.replace('/',' ')
         
@@ -53,18 +48,17 @@ class add_dv(process):
         # dv.filesize=st.st_size
 
         # get start from filesystem create timestamp
-        # start=datetime.datetime.fromtimestamp( st.st_mtime )
+        ts_start=datetime.datetime.fromtimestamp( st.st_mtime )
         # start=parse(dt)
+
+        # start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
+        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
+        # 2012-01-14/10:01:34.dv
+
 
         # use this to adjust for clock in wrong timezone
         start += datetime.timedelta(
                 hours=self.options.offset_hours,minutes=0)
-
-        if start.day in [8] and  dv.location.slug=='Track_2':
-        # if dv.location.slug=='Classroom_2':
-            print dv.location.slug
-            start += datetime.timedelta(hours=-3,minutes=0)
-
 
         frames = dv.filesize/self.bpf
         seconds = frames/self.fps 

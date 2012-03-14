@@ -1027,6 +1027,7 @@ class add_eps(process.process):
             'lca_2012': "http://lca2012.linux.org.au/programme/schedule/json",
             'fosdem_2012': "http://tmp.fosdem.org/video.xml",
             'pycon_2012': "https://us.pycon.org/2012/schedule/json/",
+            'xpycon_2012': "file://pc2012.json",
             }[self.options.show]
 
         if self.options.verbose: print url
