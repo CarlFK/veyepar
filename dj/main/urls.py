@@ -70,13 +70,16 @@ urlpatterns += patterns(
     url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
         name='orphan_dv'),
 
+    url(r'episode_logs/(?P<episode_id>\d+)/$', episode_logs, name='episode_logs'),
+
     url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/(?P<episode_id>\w+)/.*$', 
         episode_pdfs, name='pdf'),
-     url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/.*$', 
+
+    # this breaks episode_logs - do it right :)
+    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/.*$', 
         episode_pdfs, name='pdfs'),
 
 
-    url(r'episode_logs/(?P<episode_id>\w+)/$', episode_logs, name='episode_logs'),
 
     url(r'tests', tests, name='tests'),
 

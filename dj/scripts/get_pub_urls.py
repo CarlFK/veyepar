@@ -10,7 +10,8 @@ import json
 class get_pub_urls(process.process):
 
     def process_ep(self, episode):
-        if episode.host_url and not episode.public_url:
+        if episode.host_url and\
+                ((not episode.public_url) or self.options.update):
             print episode.host_url
             # urllib.urlencode({'host_url':'http://blip.tv/file/4881071'})
             # http://pyvideo.org/api/1.0/videos/urlforsource?
@@ -25,6 +26,10 @@ class get_pub_urls(process.process):
             episode.public_url = r['source_url']
             episode.save()
 
+
+    def add_more_options(self, parser):
+        parser.add_option('-u', '--update', action="store_true", 
+          help='check for updated PVO urls (takes longer)' )
 
 
 if __name__=='__main__': 

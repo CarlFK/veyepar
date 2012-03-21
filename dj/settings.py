@@ -98,9 +98,13 @@ VALIDATOR_APP_VALIDATORS = {
         'text/html': '/usr/bin/validate',
         'application/xml+xhtml': '/usr/bin/validate',
     }
-if False and DEBUG:
+if DEBUG:
+    INTERNAL_IPS = ('127.0.0.1',)
     MIDDLEWARE_CLASSES = \
-        ('lukeplant_me_uk.django.validator.middleware.ValidatorMiddleware', ) +\
+        (
+        # 'lukeplant_me_uk.django.validator.middleware.ValidatorMiddleware',
+         'debug_toolbar.middleware.DebugToolbarMiddleware',
+                ) +\
         MIDDLEWARE_CLASSES
 
 ROOT_URLCONF = 'dj.urls'
@@ -123,6 +127,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'main',
     'accounts',
+    "debug_toolbar",
 )
 
 try:    from local_settings import *

@@ -429,7 +429,7 @@ def play_list(request,show_id,location_slug=None):
         # pathname = os.path.join( settings.MEDIA_URL,client.slug,show.slug,ext,
         if settings.MEDIA_URL.startswith('file:/'):
             head=settings.MEDIA_URL
-            ext='flv'
+            ext='mp4'
         elif settings.MEDIA_URL.startswith('http:/'):
             head=settings.MEDIA_URL
             ext='mp4'
@@ -1063,6 +1063,7 @@ def episode(request, episode_no):
     	context_instance=RequestContext(request) )
     	
 def episode_logs(request, episode_id):
+    print episode_id
     episode = get_object_or_404(Episode, id=episode_id)
     logs = episode.log_set.all()
     return render_to_response('episode_logs.html',
