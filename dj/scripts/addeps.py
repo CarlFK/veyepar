@@ -127,7 +127,6 @@ def goog(show,url):
             end = datetime.datetime.strptime(goo_end,'%Y-%m-%dT%H:%M:%S.000-05:00')
 
 
-            delta = end - start
             minutes = delta.seconds/60 # - 5 for talk slot that includes break
             hours = minutes/60
             minutes -= hours*60
@@ -483,18 +482,17 @@ class add_eps(process.process):
           if room not in rooms: rooms.append(room)
       return rooms
 
-    def get_rooms(self, schedule, key):
-      rooms=[]
+    def get_rooms(self, schedule, key='room', plenary="Plenary"):
+      rooms=set()
       for row in schedule:
           if self.options.verbose: print row
           room = row[key]
-          # if room is None: room = "Plenary"
-          if room == "Plenary": 
+          # if room is None: room = plenary
+          if room == plenary:
               room = "Track I (D5)"
               row['room_name'] = "Mission City Ballroom"
           # room = "%s - %s" % ( row['room_name'], room )
-          if room not in rooms: 
-              rooms.append(room)
+          rooms.add(room)
               # print room, '-',row['room_name']
       return rooms
 
@@ -614,6 +612,56 @@ class add_eps(process.process):
             events.append(event)
 
         return events
+
+    def flourish_events(self, schedule ):
+        # flourish 2012
+
+        # these fields exist in both json and veyepar:
+        common_fields = [ 'name', 'description', 
+            'authors', 'contact', 
+            'start', 'end', 
+            'released', 'license', 'tags', 'conf_key', 'conf_url']
+
+        # mapping of json to veyepar:
+        field_map = [ 
+                ('emails','contact'), 
+                ('location','room'),
+                ]
+
+        events=[]
+        for row in schedule:
+            if self.options.verbose: print row
+            event={}
+
+            for k in common_fields:
+                try: 
+                    event[k] = row[k]
+                except KeyError:
+                    event[k] = 'missing'
+
+            for k1,k2 in field_map:
+                event[k1] = row[k2]
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], '%m/%d/%Y %H:%M:%S' )
+
+            event['end'] = datetime.datetime.strptime(
+                    event['end'], '%m/%d/%Y %H:%M:%S' )
+
+            delta = event['end'] - event['start']
+            seconds=delta.seconds
+
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            event['duration'] =  duration
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = row
+
+            events.append(event)
+
+        return events
+
 
 
 
@@ -889,10 +937,19 @@ class add_eps(process.process):
 
     def ddu(self, schedule, show):
         # drupal down under 2012
-        rooms = self.get_rooms(schedule,'room')
+        rooms = self.get_rooms(schedule)
         self.add_rooms(rooms,show)
 
         events = self.ddu_events(schedule)
+        self.add_eps(events, show)
+        return 
+
+
+    def flourish(self, schedule, show):
+        rooms = self.get_rooms(schedule)
+        self.add_rooms(rooms,show)
+
+        events = self.flourish_events(schedule)
         self.add_eps(events, show)
         return 
 
@@ -1028,6 +1085,7 @@ class add_eps(process.process):
             'fosdem_2012': "http://tmp.fosdem.org/video.xml",
             'pycon_2012': "https://us.pycon.org/2012/schedule/json/",
             'xpycon_2012': "file://pc2012.json",
+            'flourish_2012': "http://flourishconf.com/2012/schedule_json.php",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1062,6 +1120,10 @@ class add_eps(process.process):
         # j=file('schedule.json').read()
 
         # look at fingerprint of file, call appropiate parser
+
+        if self.options.show == 'flourish_2012':
+            # flourish_2012
+            return self.flourish(schedule,show)
 
         if self.options.show == 'pyconde2011':
             # pycon.de 2011 
