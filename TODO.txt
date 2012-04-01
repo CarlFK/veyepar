@@ -25,6 +25,7 @@ veyepar:
 encoding:
   soften jump cuts
   credits - hold for a few seconds at end.
+  channel_copy - document and verify current behaviour
 
 model:
   location.channel_copy
