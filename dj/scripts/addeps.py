@@ -7,32 +7,30 @@ fields:
 name - title of talk
 room - "room1" if there is only one room.
 start - datetime in some parsable format 
-duration in minutes
+duration -- int minutes or "hh:mm:ss" 
 end - datetime in some parsable format 
 authors - list of people's names.
 contact - list of email(s) of presenters.
 released - permission to release.
 license - CC license 
 description - used as the description of the video (paragraphs are fine)
-conf_key - PK in source database - uniquie used to update this item 
+conf_key - PK in source database - unique, used to update this item 
 conf_url - URL of talk page
 tags - comma seperated list - serch terms, including sub topics briefly discussed in your talk.
 """
 
 """
 NOTE: In general it is better to build the export as simple as posible, 
-even at the expense of deviatng from the above fields.  Exporting extra
+even at the expense of deviating from the above fields.  Exporting extra
 fields is just fine.  They will be ignored, or maybe I will use them in 
 a future version.
 
 For fields yuou don't have, plug in a value.  If you don't have 'released'
-give me a "Yes" and let the presenters know.
+give me "Yes" and then let the presenters know.
 
-Given historic problems with end and duration, give me what you have and 
-derive the other one if it isn't too much trouble.  
+End and Duration:  give me what you have in your database 
+and derive the other one if it isn't too much trouble.  
 I'll use it to verify the transformations.  
-
-
 """
 
 """
@@ -53,8 +51,9 @@ good.
 This is also good:
     json: Start: "2011-06-09 19:00:00"
     parser:  datetime.datetime.strptime( x, '%Y-%m-%d %H:%M:%S' )
-
-OSDC2010: easy to read, harder to parse/assemble into start durration.
+good.
+    
+Easy to read, harder to parse/assemble into start durration.
 http://2010.osdc.com.au/program/json
 # Day: "Tue 23 Nov"
 # Time: "09:00 - 17:00"
