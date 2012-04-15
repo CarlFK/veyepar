@@ -44,7 +44,7 @@ class add_dv(process):
         # dt = dv.filename[:-3]
         # dt.replace('/',' ')
         
-        # st = os.stat(pathname)    
+        st = os.stat(pathname)    
         # dv.filesize=st.st_size
 
         # get start from filesystem create timestamp
