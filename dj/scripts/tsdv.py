@@ -51,8 +51,8 @@ class add_dv(process):
         ts_start=datetime.datetime.fromtimestamp( st.st_mtime )
         # start=parse(dt)
 
-        # start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
-        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
+        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
+        # start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
         # 2012-01-14/10:01:34.dv
 
 
