@@ -32,9 +32,6 @@ model:
 
 ndv walpaper 
 
-upload:
-  # grab blip rss for episode
-
 recording sheets:
  [x] over time (adjust before addeps to suck in the extras)
 
@@ -46,11 +43,5 @@ live cd: mainly for slave
   avahi to find dvswitch
 
 title screen preview
-  extract mktitle from enc.py 
   so that they can be generated and displayed on web page.
-maybe use this to make room signs.
 
-move get_size from tsdv to adddv.
-
-tests: 
-  check file sizes of resulting test vids
