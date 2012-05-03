@@ -265,7 +265,6 @@ pix_fmt=yuv411p" % parms
 # --force \
 # --hidden=1
   """
-  # import post_yt as post
   import post_blip as post
   p=post.post()
   p.set_options(force=True, verbose=True, 
@@ -287,11 +286,10 @@ pix_fmt=yuv411p" % parms
 # --force \
 # --hidden=1
   """
-  # import post_yt as post
-  import post_blip as post
+  import post_yt as post
   p=post.post()
   p.set_options(force=True, verbose=True, 
-      upload_formats=self.upload_formats,
+      upload_formats=['mp4'],
       debug_log=True,
       host_user="veyepar_test",
       )
@@ -442,6 +440,7 @@ def main():
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
+    """
     t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
@@ -452,7 +451,8 @@ def main():
     t.encode()
     t.ck_errors()
     t.play_vid()
-    result['url'] = t.post()
+    """
+    result['url'] = t.post_yt()
     result['tweet'] = t.tweet()
     t.csv()
     result['video'] = t.ocr_test()

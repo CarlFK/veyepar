@@ -25,48 +25,50 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 class add_dv(process):
 
     def one_dv(self, dir, dv ):
+
+        """
+        get the start of this clip
+        dv.filename generally looks like this: room/2012-01-14/10:01:34.dv
+        parse the dir and filename strings.
+        get filesystem_create also
+        report differences
+        generally use the parsed
+        """
         
         pathname = os.path.join(dir,dv.filename)
         print pathname
-        filename = dv.filename
 
-        # time-n gets used to avoid name colisions. 
-        # for start/end, dupe time is fine, so drop the -n for parsing 
-        if filename[-5]=='-': filename = filename[:-5] + filename[-3:] 
+        # get timestamp from filesystem
+        st = os.stat(pathname)    
+        ts_start=datetime.datetime.fromtimestamp( st.st_mtime )
+
+        # parse string into datetime
+        filename = dv.filename
+        
+        # remove extention
+        filename,ext = os.path.splitext(filename)
+
+        # dvswitch appends -n in the event of filename colisions. 
+        # for start, dupe time is fine, so drop the -n for parsing 
+        if filename[-2]=='-': filename = filename[:-2] 
   
-        # find a dir that looks like a date: 
-        # shoud use os.split, but it is weird
-        # for d in filename.split('/'):
-        # make this work when really needed.
-          
         # for now, the last dir is the date, and the file is time:
         filename='/'.join(filename.split('/')[-2:])
-        # dt = dv.filename[:-3]
-        # dt.replace('/',' ')
-        
-        st = os.stat(pathname)    
-        # dv.filesize=st.st_size
 
-        # get start from filesystem create timestamp
-        ts_start=datetime.datetime.fromtimestamp( st.st_mtime )
-        # start=parse(dt)
+        # swap : for _ (so either : or _ can be used in the filename)
+        filename.replace(':','_')
 
-        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S.dv')
-        # start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H:%M:%S.dv')
-        # 2012-01-14/10:01:34.dv
+        # parse
+        start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S')
 
+        # adjust for clock in wrong timezone
+        start += datetime.timedelta(hours=self.options.offset_hours)
 
-        # use this to adjust for clock in wrong timezone
-        start += datetime.timedelta(
-                hours=self.options.offset_hours,minutes=0)
-
+        # calc duration from size
         frames = dv.filesize/self.bpf
         seconds = frames/self.fps 
 
-        # hours = int(seconds / 3600)
-        # minutes = int((seconds - hours*3600)/60)
-        # seconds = seconds - (hours*3600 + minutes*60)
-        # duration = "%02d:%02d:%02d" % (hours, minutes,seconds)
+        # store duration in fancy human readable format (bad idea) 
         hms = seconds//3600, (seconds%3600)//60, seconds%60
         duration = "%02d:%02d:%02d" % hms
 
