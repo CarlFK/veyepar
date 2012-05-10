@@ -662,6 +662,50 @@ class add_eps(process.process):
         return events
 
 
+    def chipy_events(self, schedule ):
+        # flourish 2012
+
+        # these fields exist in both json and veyepar:
+        common_fields = [ 'description', 
+            'durration', 
+            'released', ]
+
+        # mapping of json to veyepar:
+        field_map = [ 
+                ('title', 'name'),
+                ('start_time', 'start'),
+                ('presenter', 'authors'),
+                ('contact_email','contact'), 
+                ]
+
+        events=[]
+        for row in schedule:
+            if self.options.verbose: print row
+            event={}
+
+            for k in common_fields:
+                try: 
+                    event[k] = row[k]
+                except KeyError:
+                    event[k] = 'missing'
+
+            for k1,k2 in field_map:
+                event[k2] = row[k1]
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], '%m/%d/%Y %H:%M:%S' )
+
+            # event['duration'] =  duration
+            event['location'] = 'room_1'
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = row
+
+            events.append(event)
+
+        return events
+
+
 
 
     def goth_events(self, schedule ):
@@ -953,6 +997,15 @@ class add_eps(process.process):
         return 
 
 
+    def chipy(self, schedule, show):
+        rooms = ['room_1']
+        self.add_rooms(rooms,show)
+
+        events = self.chipy_events(schedule)
+        self.add_eps(events, show)
+        return 
+
+
 
     def zoo(self, schedule, show):
         rooms = self.zoo_cages(schedule)
@@ -1085,6 +1138,7 @@ class add_eps(process.process):
             'pycon_2012': "https://us.pycon.org/2012/schedule/json/",
             'xpycon_2012': "file://pc2012.json",
             'flourish_2012': "http://flourishconf.com/2012/schedule_json.php",
+            'chipy_may2012': "http://72.14.188.25:8095/meetings/1/topics.json",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1119,6 +1173,10 @@ class add_eps(process.process):
         # j=file('schedule.json').read()
 
         # look at fingerprint of file, call appropiate parser
+
+        if self.options.show == 'chipy_may2012':
+            # chipy
+            return self.chipy(schedule,show)
 
         if self.options.show == 'flourish_2012':
             # flourish_2012

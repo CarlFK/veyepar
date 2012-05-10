@@ -28,7 +28,8 @@ class add_dv(process):
 
         """
         get the start of this clip
-        dv.filename generally looks like this: room/2012-01-14/10:01:34.dv
+        dv.filename generally looks like this: 2012-01-14/10:01:34.dv
+        dir is generally ~/Videos/veyepar/client/show/dv/room   
         parse the dir and filename strings.
         get filesystem_create also
         report differences
@@ -37,6 +38,7 @@ class add_dv(process):
         
         pathname = os.path.join(dir,dv.filename)
         print pathname
+        print dv.filename
 
         # get timestamp from filesystem
         st = os.stat(pathname)    
@@ -74,6 +76,11 @@ class add_dv(process):
 
         dv.start = start
         dv.duration = duration
+
+        print start
+        print ts_start
+        print ts_start - start
+        print
 
         if not self.options.test:
             dv.save()
