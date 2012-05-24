@@ -2,12 +2,17 @@ Builds a dvswitch/veyepar node builder.
 
 steps:
 
-1. sudo ./install.sh
-2. disconnect from primary lan
-3. connect to video lan
-4. ifconfig eth0 192.168.0.1
-5. sudo service isc-dhcp-server start
-6. hook up empty nodes, pxe boot, select "hands off install" and wait.
+1. start with a vanallia Ubuntu box.
+2. sudo apt-get install git-core
+3. git clone git://github.com/CarlFK/veyepar.git
+4. cd /veyepar/setup/pxe
+5. sudo ./install.sh
+
+6. disconnect from primary lan
+7. connect to video lan
+8. ifconfig eth0 192.168.0.1
+9. sudo service isc-dhcp-server start
+10. hook up empty nodes, pxe boot, select "hands off install" and wait.
    takes about 20 minutes once the cache is warm.
 
 
