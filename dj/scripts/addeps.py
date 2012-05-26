@@ -53,7 +53,7 @@ This is also good:
     parser:  datetime.datetime.strptime( x, '%Y-%m-%d %H:%M:%S' )
 good.
     
-Easy to read, harder to parse/assemble into start durration.
+Easy to read, harder to parse/assemble into start duration.
 http://2010.osdc.com.au/program/json
 # Day: "Tue 23 Nov"
 # Time: "09:00 - 17:00"
@@ -69,8 +69,8 @@ I can fix my consumer easier than I can get someone else's website updated.
 import datetime 
 import urllib2,csv
 import HTMLParser
-# from dateutil.parser import parse
-# import pprint
+from dateutil.parser import parse
+import pprint
 
 try:
     import simplejson as json
@@ -210,7 +210,7 @@ class add_eps(process.process):
           else:
             print row
 
-    def  talk_time(self, day,time):
+    def  talk_time(self, day, time):
 # Day: "Wed 24 Nov"
 # Time: "09:00 - 10:00"
         start_ts, end_ts = time.split('-')
@@ -535,7 +535,6 @@ class add_eps(process.process):
             event['description'] = row['description']
             event['conf_key'] = row['id']
 
-            event['conf_url'] = row['url']
             if event['conf_url'] is None: event['conf_url'] = ""
 
             event['tags'] = ''
@@ -667,7 +666,7 @@ class add_eps(process.process):
 
         # these fields exist in both json and veyepar:
         common_fields = [ 'description', 
-            'durration', 
+            'duration', 
             'released', ]
 
         # mapping of json to veyepar:
@@ -789,6 +788,29 @@ class add_eps(process.process):
  
         return events
 
+    def generic_events(self, schedule, common_fields, field_maps ):
+     
+        events=[]
+        for row in schedule:
+            if self.options.verbose: print row
+            event={}
+
+            for k in common_fields:
+                try: 
+                    event[k] = row[k]
+                except KeyError:
+                    event[k] = 'missing'
+
+            for k1,k2 in field_maps:
+                event[k1] = row[k2]
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = row
+
+            events.append(event)
+
+        return events
+
 
     def add_rooms(self, rooms, show):
       seq=0
@@ -834,7 +856,6 @@ class add_eps(process.process):
         'conf_url', 'tags')
 
           if created or self.options.update:
-              print row['location']
               loc=Location.objects.get(name=row['location'])
               loc.active = True
               episode.location=loc
@@ -886,8 +907,6 @@ class add_eps(process.process):
         events = self.symp_events(schedule)
         self.add_eps(events, show)
         return 
-
-
 
     def pyconde2011(self, schedule, show):
         # importing from some other instance
@@ -973,6 +992,54 @@ class add_eps(process.process):
 
             events.append(event)
  
+
+        self.add_eps(events, show)
+        return 
+
+    def ictev(self, schedule, show):
+        # drupal down under 2012
+        rooms = self.get_rooms(schedule, "Room", )
+        self.add_rooms(rooms,show)
+        # print rooms
+
+        # these fields exist in both json and veyepar:
+        common_fields = [ ]
+
+        # mapping of json to veyepar:
+        field_maps = [ 
+                ('location','Room'),
+                ('name','Title'),
+                ('tags','Keywords'),
+                ('duration','Duration'),
+                ('conf_key','Nid'),
+                ('conf_url','Link')
+                ]
+
+        events = self.generic_events(schedule, common_fields, field_maps)
+
+        for event in events:
+            row = event['raw']
+
+            if self.options.verbose: print "event", event
+
+            # authors is either a string or a dict
+            # if isinstance(event['authors'],dict):
+            #    event['authors'] = ", ".join( event['authors'].values() )
+            
+            # 
+            start, duration = self.talk_time(row['Day'],row['Time'])
+            event['start'] = start
+            event['duration'] = duration
+
+            event['released'] = True
+
+            event['license'] =  ''
+            event['authors'] =  ''
+            event['tags'] =  ''
+            event['description'] =  ''
+
+            event['emails']=None
+
 
         self.add_eps(events, show)
         return 
@@ -1139,6 +1206,7 @@ class add_eps(process.process):
             'xpycon_2012': "file://pc2012.json",
             'flourish_2012': "http://flourishconf.com/2012/schedule_json.php",
             'chipy_may2012': "http://72.14.188.25:8095/meetings/1/topics.json",
+            'ictev_2012': "http://ictev.vic.edu.au/program/2012/json",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1214,6 +1282,45 @@ class add_eps(process.process):
         if url.endswith('programme/schedule/json'):
             # Zookeepr
             return self.zoo(schedule,show)
+
+        if url.endswith('/program/2012/json'):
+            # some drupal thing
+            # 'ictev_2012': "http://ictev.vic.edu.au/program/2012/json",
+
+            # dig out the data from the nodes:[data]
+            schedule = [s['node'] for s in schedule['nodes']]
+            # pprint.pprint( schedule )
+
+            return self.ictev(schedule,show)
+
+            # try to print out what keys match and don't match
+            s_keys = schedule[0].keys()
+            print s_keys
+            for k in s_keys:
+                print "('%s','')," % k
+            v_keys=('id',
+                'location','sequence',
+                'name','slug', 'authors','emails', 'description',
+                'start','duration', 
+                'released', 'license', 'tags',
+                'conf_key', 'conf_url',
+                'host_url', 'publiv_url',
+        )    
+
+            for f,g in field_maps:
+                print "('%s','%s')," % (g,f)
+
+            print "keys match 1:1"
+            print [k for k in v_keys if k in s_keys]
+            print "stray cats"
+            print [k for k in v_keys if k not in s_keys]
+
+
+        # schedule = schedule['nodes']
+        # self.addlocs(schedule,show)
+        # self.addeps(schedule, show)
+        return
+
 
         if url.endswith('program/session-schedule/json'):
             # ddu 2012
