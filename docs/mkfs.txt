@@ -1,0 +1,1 @@
+ mkfs.ext4 -L disk25 -O sparse_super,extent,uninit_bg -E lazy_itable_init=1 -m 0 /dev/sda
