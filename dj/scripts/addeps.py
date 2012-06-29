@@ -131,7 +131,7 @@ def goog(show,url):
             minutes -= hours*60
 
             duration="%s:%s:00" % ( hours,minutes) 
-            released = True
+            # released = True
 
             # print name, authors, location, start, duration
             print "%s: %s - %s" % ( authors, location, start.time() )
@@ -486,10 +486,11 @@ class add_eps(process.process):
       for row in schedule:
           if self.options.verbose: print row
           room = row[key]
+          if room is None: room = "None"
           # if room is None: room = plenary
-          if room == plenary:
-              room = "Track I (D5)"
-              row['room_name'] = "Mission City Ballroom"
+          # if room == plenary:
+          #    room = "Track I (D5)"
+          #    row['room_name'] = "Mission City Ballroom"
           # room = "%s - %s" % ( row['room_name'], room )
           rooms.add(room)
               # print room, '-',row['room_name']
@@ -665,87 +666,73 @@ class add_eps(process.process):
         # flourish 2012
 
         # these fields exist in both json and veyepar:
-        common_fields = [ 'description', 
-            'duration', 
-            'released', ]
+        common_fields = [ 
+                'description', 
+            ]
 
         # mapping of json to veyepar:
-        field_map = [ 
+        field_maps = [ 
                 ('title', 'name'),
                 ('start_time', 'start'),
-                ('presenter', 'authors'),
-                ('contact_email','contact'), 
+                ('length', 'duration'),
+                ('presentors', 'authors'),
+                ('presentors', 'emails'), 
+                ('id', 'conf_key'), 
+                ('', 'conf_url'), 
+                ('', 'tags'), 
                 ]
 
-        events=[]
-        for row in schedule:
-            if self.options.verbose: print row
-            event={}
-
-            for k in common_fields:
-                try: 
-                    event[k] = row[k]
-                except KeyError:
-                    event[k] = 'missing'
-
-            for k1,k2 in field_map:
-                event[k2] = row[k1]
+        events = self.generic_events(schedule, common_fields, field_maps)
+        for event in events:
+            # print event['raw']
+            # print (event['location'], event['start'])
+            # event['conf_key'] = hash(str(event['location']) + event['start'])
 
             event['start'] = datetime.datetime.strptime(
-                    event['start'], '%m/%d/%Y %H:%M:%S' )
+                    event['start'], '%Y-%m-%d %H:%M:%S' )
 
-            # event['duration'] =  duration
+
+            event['authors'] =  event['authors'][0]['name']
+            event['emails'] =  event['emails'][0]['email']
             event['location'] = 'room_1'
-
-            # save the original row so that we can sanity check end time.
-            event['raw'] = row
-
-            events.append(event)
+            event['released'] = True
+            event['license'] = ''
 
         return events
-
-
-
 
     def goth_events(self, schedule ):
         # PyGotham
 
-        # ['outline', 'title', 'room_number', 'duration_minutes', 'talktype', 'levels', 'full_name', 'talk_end_time', 'talk_day_time', 'desc']
+        # mapping of json to veyepar:
+        field_maps = [ 
+                ('room_number','location'),
+                ('title','name'),
+                ('full_name','authors'),
+                ('talktype',''),
+                ('levels',''),
+                ('key','conf_key'),
+                ('talk_day_time','start'),
+                ('duration_minutes','duration'),
+                ('talk_end_time','end'),
+                ('outline',''),
+                ('desc','description'),
+                ('','conf_url'),
+                ('','released'),
+                ('','emails'),
+                ('','license'),
+                ('','tags'),
+               ]
 
-        events=[]
-
-        for pk,row in enumerate(schedule):
-            if self.options.verbose: print pk, row
-            event={}
-            # event['id'] = row['id']
-            event['id'] = row['key']
-            event['name'] = row['title']
-            
-            event['location'] = row['room_number']
+        events = self.generic_events(schedule, [], field_maps)
+        for event in events:
 
             event['start'] = datetime.datetime.strptime(
-                    row['talk_day_time'], '%Y-%m-%d %H:%M:%S' )
+                    event['start'], '%Y-%m-%d %H:%M:%S' )
 
-            seconds=(row['duration_minutes'] -10) * 60
+            seconds=(event['duration'] -10) * 60
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             duration = "%02d:%02d:%02d" % hms
             event['duration'] =  duration
-
-            event['authors'] = row['full_name']
-            event['emails'] = '' # row['contact']
-            event['released'] = False
-            event['license'] = ''
-            event['description'] = row['desc']
-            event['conf_key'] = row['key']
-
-            event['conf_url'] = ''
-
-            event['tags'] = ''
-
-            # save the original row so that we can sanity check end time.
-            event['raw'] = row
-
-            events.append(event)
 
         return events
 
@@ -788,6 +775,35 @@ class add_eps(process.process):
  
         return events
 
+    def dump_keys(self, schedule):
+
+        # try to print out what keys match and don't match
+        s_keys = schedule[0].keys()
+        print s_keys
+        for k in s_keys:
+            print "('%s','')," % k
+
+        v_keys=('id',
+            'location','sequence',
+            'name','slug', 'authors','emails', 'description',
+            'start','duration', 
+            'released', 'license', 'tags',
+            'conf_key', 'conf_url',
+            'host_url', 'publiv_url',
+    )    
+
+        for f,g in field_maps:
+            print "('%s','%s')," % (g,f)
+
+        print "keys match 1:1"
+        print [k for k in v_keys if k in s_keys]
+        print "stray cats"
+        print [k for k in v_keys if k not in s_keys]
+
+
+        # schedule = schedule['nodes']
+        return
+
     def generic_events(self, schedule, common_fields, field_maps ):
      
         events=[]
@@ -801,8 +817,11 @@ class add_eps(process.process):
                 except KeyError:
                     event[k] = 'missing'
 
-            for k1,k2 in field_maps:
-                event[k1] = row[k2]
+            for jk,vk in field_maps:
+                if jk: 
+                    event[vk] = row[jk]
+                else:
+                    event[vk] = ''
 
             # save the original row so that we can sanity check end time.
             event['raw'] = row
@@ -933,9 +952,113 @@ class add_eps(process.process):
     def pygotham(self, schedule, show):
         # pygotham 2011
         rooms = self.get_rooms(schedule,'room_number')
+        rooms = list(rooms)
+        rooms.sort()
+        print rooms
         self.add_rooms(rooms,show)
 
+        return self.dump_keys(schedule)
         events = self.goth_events(schedule)
+        self.add_eps(events, show)
+        return 
+
+    def scipy_events_v1(self, schedule ):
+        # SciPy 2012, ver 1
+
+        # mapping of json to veyepar:
+        field_maps = [ 
+            ('Room','location'),
+            ('Name','name'),
+            ('speaker',''),
+            ('Authors','authors'),
+            ('Contact','emails'),
+            ('Tags','tags'),
+            ('abstract','description'),
+            ('Start','start'),
+            ('Duration','duration'),
+            ('End','end'),
+            ('Affiliations',''),
+            ('','conf_key'),
+            ('','conf_url'),
+            ('','released'),
+            ('','license'),
+               
+            ]
+
+        events = self.generic_events(schedule, [], field_maps)
+        for event in events:
+            # print event['raw']
+            # print (event['location'], event['start'])
+            event['conf_key'] = hash(str(event['location']) + event['start'])
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], '%Y-%m-%dT%H:%M:%S' )
+
+            # seconds=int(event['duration']) * 60
+            # hms = seconds//3600, (seconds%3600)//60, seconds%60
+            # duration = "%02d:%02d:%02d" % hms
+            # event['duration'] =  duration
+
+        return events
+
+    def scipy_events(self, schedule ):
+        # SciPy 2012, ver 3
+
+        common_fields = [ 'name', 'description', 
+            'authors', 
+            'start', 'duration', 'end', 
+            'released', 'license', 'tags', 'conf_key', ]
+
+        # mapping of json to veyepar:
+        field_maps = [ 
+            ('contact','emails'), 
+            ('','conf_url'),
+            ('room','location'),
+            ]
+
+        events = self.generic_events(schedule, common_fields, field_maps)
+        for event in events:
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], '%Y-%m-%d %H:%M:%S' )
+            event['released'] = event['released']!="0"
+
+        return events
+
+
+    def scipy_v1(self, schedule, show):
+        # scipy ver 1 2011
+
+        # schedule is {'talks':[talk1, 2, 3...]}
+        schedule = schedule['talks']
+        rooms = self.get_rooms_v1(schedule,'Room')
+        rooms = list(rooms)
+        rooms.sort()
+        print rooms
+        self.add_rooms(rooms,show)
+
+        # return self.dump_keys(schedule)
+        events = self.scipy_events(schedule)
+        self.add_eps(events, show)
+        return 
+
+
+
+    def scipy_v2(self, schedule, show):
+        # scipy ver 2 2011
+
+        for row in schedule:
+            if row['room'] is None:
+                row['room'] = "None"
+
+        rooms = self.get_rooms(schedule)
+        rooms = list(rooms)
+        rooms.sort()
+        print rooms
+        self.add_rooms(rooms,show)
+
+        # return self.dump_keys(schedule)
+
+        events = self.scipy_events(schedule)
         self.add_eps(events, show)
         return 
 
@@ -979,7 +1102,7 @@ class add_eps(process.process):
 
             event['authors'] = row[5]
             event['emails'] = ''
-            event['released'] = True
+            # event['released'] = True
             event['license'] = self.options.license
             event['description'] = ''
             event['conf_key'] = row[0]
@@ -1006,7 +1129,8 @@ class add_eps(process.process):
         common_fields = [ ]
 
         # mapping of json to veyepar:
-        field_maps = [ 
+        # thise are veyepar to json - need to be flipped to make work
+        backward_field_maps = [ 
                 ('location','Room'),
                 ('name','Title'),
                 ('tags','Keywords'),
@@ -1031,7 +1155,7 @@ class add_eps(process.process):
             event['start'] = start
             event['duration'] = duration
 
-            event['released'] = True
+            # event['released'] = True
 
             event['license'] =  ''
             event['authors'] =  ''
@@ -1065,6 +1189,11 @@ class add_eps(process.process):
 
 
     def chipy(self, schedule, show):
+
+        # schedule is al meetings ever
+        schedule = schedule[-1]['topic_set']
+        pprint.pprint( schedule[0] )
+
         rooms = ['room_1']
         self.add_rooms(rooms,show)
 
@@ -1131,7 +1260,7 @@ class add_eps(process.process):
                     event['authors'] = ', '.join(persons)
 
                     event['emails'] = ''
-                    event['released'] = True
+                    # event['released'] = True
                     event['license'] = self.options.license
                     # event['description'] = row.find('description').text
                     event['description'] = row.find('abstract').text
@@ -1196,7 +1325,7 @@ class add_eps(process.process):
         else:
             url = { 
             'djangocon2011': 'http://djangocon.us/schedule/json/',
-            'pygotham': 'http://pygotham.org/talkvote/full_schedule/',
+            'pygotham_2012': 'http://pygotham.org/talkvote/full_schedule/',
             'pytexas_2011': 'http://www.pytexas.org/2011/schedule/json/',
             'pyconde2011': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
             'ddu_2012': "http://drupaldownunder.org/program/session-schedule/json",
@@ -1207,6 +1336,11 @@ class add_eps(process.process):
             'flourish_2012': "http://flourishconf.com/2012/schedule_json.php",
             'chipy_may2012': "http://72.14.188.25:8095/meetings/1/topics.json",
             'ictev_2012': "http://ictev.vic.edu.au/program/2012/json",
+            # 'scipy_2012_v1': "file://scipy_talks.json",
+            # 'scipy_2012_v2': "http://conference.scipy.org/scipy2012/talks/test.php",
+            # 'scipy_2012': "http://conference.scipy.org/scipy2012/talks/schedule_json.php",
+            'scipy_2012': "http://conference.scipy.org/scipy2012/schedule/schedule_json.php",
+            'chipy_june2012': "http://chipy.org/api/meetings/",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1241,6 +1375,18 @@ class add_eps(process.process):
         # j=file('schedule.json').read()
 
         # look at fingerprint of file, call appropiate parser
+
+        if self.options.show == 'scipy_2012':
+            # scipy ver 1
+            return self.scipy_v2(schedule,show)
+
+        if self.options.show == 'scipy_2012_v1':
+            # scipy ver 1
+            return self.scipy_v1(schedule,show)
+
+        if self.options.show == 'chipy_june2012':
+            # chipy
+            return self.chipy(schedule,show)
 
         if self.options.show == 'chipy_may2012':
             # chipy
@@ -1292,34 +1438,6 @@ class add_eps(process.process):
             # pprint.pprint( schedule )
 
             return self.ictev(schedule,show)
-
-            # try to print out what keys match and don't match
-            s_keys = schedule[0].keys()
-            print s_keys
-            for k in s_keys:
-                print "('%s','')," % k
-            v_keys=('id',
-                'location','sequence',
-                'name','slug', 'authors','emails', 'description',
-                'start','duration', 
-                'released', 'license', 'tags',
-                'conf_key', 'conf_url',
-                'host_url', 'publiv_url',
-        )    
-
-            for f,g in field_maps:
-                print "('%s','%s')," % (g,f)
-
-            print "keys match 1:1"
-            print [k for k in v_keys if k in s_keys]
-            print "stray cats"
-            print [k for k in v_keys if k not in s_keys]
-
-
-        # schedule = schedule['nodes']
-        # self.addlocs(schedule,show)
-        # self.addeps(schedule, show)
-        return
 
 
         if url.endswith('program/session-schedule/json'):

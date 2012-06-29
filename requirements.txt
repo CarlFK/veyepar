@@ -16,3 +16,6 @@ Pinax==0.9a2.dev6
 hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
 # ElementTree
 
+progressbar
+bobo
+
