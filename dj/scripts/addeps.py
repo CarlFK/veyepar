@@ -1034,7 +1034,6 @@ class add_eps(process.process):
         rooms = self.get_rooms_v1(schedule,'Room')
         rooms = list(rooms)
         rooms.sort()
-        print rooms
         self.add_rooms(rooms,show)
 
         # return self.dump_keys(schedule)

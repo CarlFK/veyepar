@@ -154,7 +154,7 @@ class Episode(models.Model):
         help_text="length in hh:mm:ss")
     end = models.DateTimeField(blank=True, null=False,
         help_text="(calculated if start and duration are set.)")
-    name = models.CharField(max_length=150, 
+    name = models.CharField(max_length=170, 
         help_text="Talk title (synced from primary source)")
     slug = models.CharField(max_length=135,
         help_text="file name friendly version of name")

@@ -3,14 +3,13 @@ svn+http://code.djangoproject.com/svn/django/trunk#egg=django
 # django==1.3
 vobject
 oauth2
-progressbar
 django-debug-toolbar
 # svn+http://svn.dabodev.com/dabo/trunk/#egg=dabo
 hg+https://python-twitter.googlecode.com/hg/#egg=twitter
 feedparser
 
---extra-index-url=http://dist.pinaxproject.com/dev/
-Pinax==0.9a2.dev6
+# --extra-index-url=http://dist.pinaxproject.com/dev/
+# Pinax==0.9a2.dev6
 
 
 hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
@@ -18,4 +17,5 @@ hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
 
 progressbar
 bobo
+slumber
 
