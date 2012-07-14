@@ -688,6 +688,7 @@ class add_eps(process.process):
             # print (event['location'], event['start'])
             # event['conf_key'] = hash(str(event['location']) + event['start'])
 
+            print event['start']
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
 
@@ -1341,6 +1342,7 @@ class add_eps(process.process):
             # 'scipy_2012': "http://conference.scipy.org/scipy2012/talks/schedule_json.php",
             'scipy_2012': "http://conference.scipy.org/scipy2012/schedule/schedule_json.php",
             'chipy_june2012': "http://chipy.org/api/meetings/",
+            'chipy_july_2012': "http://chipy.org/api/meetings/",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1384,7 +1386,8 @@ class add_eps(process.process):
             # scipy ver 1
             return self.scipy_v1(schedule,show)
 
-        if self.options.show == 'chipy_june2012':
+        # if self.options.show == 'chipy_june2012':
+        if self.options.show == 'chipy_july_2012':
             # chipy
             return self.chipy(schedule,show)
 
