@@ -42,7 +42,7 @@ from accounts.forms import LoginForm
 
 
 
-def make_test_data(title):
+def make_test_data(title="Test Episode"):
     desc = """
 Sample files and episode:  
 file 0 and 4 are outside the range
@@ -818,6 +818,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                 start = episode.end
             else:
                 # firt Episode of the show
+                print locations
                 location = locations[0].id
                 sequence = 1
                 # today at 6pm

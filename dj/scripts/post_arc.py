@@ -30,11 +30,10 @@ class post(process):
     descriptions = [ep.authors, ep.description, show.description, client.description]
     descriptions = [d for d in descriptions if d]
     description = "\n".join(descriptions)
-    # description = "<br/>\n".join(description.split('\n'))
 
     meta = {
         'title': ep.name,
-        'description': description[:250],
+        'description': description,
         }
 
     tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]

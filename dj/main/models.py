@@ -134,7 +134,33 @@ class Quality(models.Model):
     def __unicode__(self):
         return self.name
 
-STATES=((0,'borked'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'email'),(6,'tweet'),(7,'done'))
+# STATES=((0,'borked'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'email'),(6,'tweet'),(7,'done'))
+STATES=[i for i in enumerate([
+'borked',
+'edit',
+'encode',
+'rsync',
+'post',
+'review 1',
+'email',
+'review 2',
+'make public',
+'tweet',
+'done'])]
+
+[(0, 'borked'),
+ (1, 'edit'), # enter cutlist data
+ (2, 'encode'), # assemble raw assets into final cut
+ (3, 'push to queue'), # push to data center box
+ (4, 'post'), # push to yourube and archive.org
+ (5, 'review 1'), # staff check to see if they exist on yourube/archive
+ (6, 'email'), # send private url to presenter, ask for feedback, 
+ (7, 'review 2'), # staff wait for presenter to say good
+ (8, 'make public'), # flip private to public
+ (9, 'tweet'), # tell world
+ (10, 'done')]
+
+
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
@@ -183,9 +209,9 @@ class Episode(models.Model):
     host_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL of page video is hosted")
     public_url = models.CharField(max_length=135, null=True,blank=True,
-        help_text = "URL public should use (like pmc or some aggregator")
-    host_metta = models.TextField(blank=True, 
-            help_text="metta right after upload")
+        help_text = "URL public should use (like pvo or some aggregator")
+    archive_url = models.CharField(max_length=235, null=True,blank=True,
+        help_text = "URL public can use to dl (like archive.org")
     twitter_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL of tweet to email presenters for retweeting")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
