@@ -3,6 +3,7 @@
 # posts to youtube
 
 import youtube_uploader
+import archive_uploader
 
 import os
 
@@ -147,10 +148,21 @@ class post(process):
         uploader.old_url = ep.host_url # for replacing.
      
         ret = uploader.upload()
-
+        
         ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
         # self.log_info(uploader.ret_text)
+
+        # shim to upload to archive.org too.. yuck.
+
+        uploader = archive_uploader.Uploader()
+
+        uploader.pathname = files[0]['pathname']
+        uploader.upload_user = 'cfkarsten'
+        uploader.bucket_id = "nextdayvideo"
+        uploader.key_id = "%s/%s/%s" % ( 
+                client.slug, show.slug, episode.slug )
+        uploader.upload() 
 
         if ret:
 

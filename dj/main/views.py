@@ -645,13 +645,14 @@ def show_stats(request, show_id, ):
 
     # gather raw_file stats
     for rf in raw_files:
-        dt = rf.start.date()
-        loc = rf.location.id
+        if rf.start is not None:
+            dt = rf.start.date()
+            loc = rf.location.id
 
-        add_rf_to_stat(rf,show_stat)
-        add_rf_to_stat(rf,dates[dt])
-        add_rf_to_stat(rf,locations[loc])
-        add_rf_to_stat(rf,stats[(dt, loc)])
+            add_rf_to_stat(rf,show_stat)
+            add_rf_to_stat(rf,dates[dt])
+            add_rf_to_stat(rf,locations[loc])
+            add_rf_to_stat(rf,stats[(dt, loc)])
         
 
     # make lists out of the dics cuz I can't figur out how to get at the dict
@@ -717,7 +718,7 @@ def show_stats(request, show_id, ):
     rows = zip(dates,rows)
 
     max_title_len = max( len(ep.name) for ep in episodes )
-    max_authors_len = max( len(ep.authors) for ep in episodes )
+    max_authors_len = max( len(ep.authors) for ep in episodes if ep.authors is not None)
 
     max_name_len = 0
     max_authors_len = 0
@@ -725,7 +726,8 @@ def show_stats(request, show_id, ):
         if len(ep.name) > max_name_len:
             max_name_len = len(ep.name)
             max_name_ep = ep
-        if len(ep.authors) > max_authors_len:
+        if ep.authors is not None and \
+                len(ep.authors) > max_authors_len:
             max_authors_len = len(ep.authors)
             max_authors_ep = ep
 
