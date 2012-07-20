@@ -24,7 +24,7 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
 class add_dv(process):
 
-    def one_dv(self, dir, dv ):
+    def one_dv(self, dir, dv, offset_hours ):
 
         """
         get the start of this clip
@@ -65,6 +65,8 @@ class add_dv(process):
 
         # adjust for clock in wrong timezone
         start += datetime.timedelta(hours=self.options.offset_hours)
+        if offset_hours:
+            start += datetime.timedelta(hours=offset_hours)
 
         # calc duration from size
         frames = dv.filesize/self.bpf
@@ -77,9 +79,9 @@ class add_dv(process):
         dv.start = start
         dv.duration = duration
 
-        print start
-        print ts_start
-        print ts_start - start
+        print "start:\t%s" % start
+        print "ts_start:\t%s" % ts_start
+        print "delta:\t%s" % (ts_start - start)
         print
 
         if not self.options.test:
@@ -88,7 +90,8 @@ class add_dv(process):
 
     def one_loc(self,show, location,dir):
       for dv in Raw_File.objects.filter(show=show, location=location):
-        self.one_dv(dir,dv)
+        print dv
+        self.one_dv(dir,dv, location.hours_offset)
 
     def one_show(self, show):
       self.set_dirs(show)

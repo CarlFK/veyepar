@@ -308,7 +308,10 @@ class enc(process):
                 except KeyError:
                     pass
 
-            if cl.end:
+            if self.options.test:
+                out_frame="300"
+                clip.attrib['out']=str(out_frame)
+            elif cl.end:
                 out_frame=time2f(cl.end,self.fps) 
                 clip.attrib['out']=str(out_frame)
             else:
@@ -450,14 +453,16 @@ class enc(process):
               out_pathname = os.path.join(
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
-              # cmds=["melt -verbose -progress -profile square_%s %s -consumer avformat:%s acodec=%s ab=128k ar=44100 vcodec=%s minrate=0 b=900k progressive=1" % ( self.options.dv_format, mlt_pathname, out_pathname, acodec, vcodec)]
               if ext=='webm': 
                   cmds=["/usr/bin/melt"   "/tmp/kde-carl/kdenliveY27808.mlt -profile dv_ntsc -consumer avformat:/home/carl/kdenlive/untitled.webm progress=1 acodec=libvorbis ab=128k ar=44100 vcodec=libvpx minrate=0 b=600k aspect=@4/3 maxrate=1800k g=120 qmax=42 qmin=10 threads=2"% (fix_me)]
+
               if ext=='flv': 
                   cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
+
               if ext=='flac': 
                   # 16kHz/mono 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s ar=16000" % ( mlt_pathname, out_pathname)]
+
               if ext=='mp3': 
                   cmds=["melt -verbose -progress %s -consumer avformat:%s" % ( mlt_pathname, out_pathname)]
 
@@ -473,7 +478,13 @@ class enc(process):
                     'mlt': mlt_pathname, 
                     'tmp': tmp_pathname, 
                     'threads': self.options.threads, 
+                    'test': '',
 			              }
+
+                  if self.options.test:
+                      # parms['test'] = " out=300 "
+                      pass
+
                   ffpreset_files = [
                       '/usr/share/ffmpeg/libx264-hq.ffpreset',
                       '/usr/share/ffmpeg/libx264-faster.ffpreset',
@@ -482,17 +493,13 @@ class enc(process):
 
                   cmd="melt -verbose -progress "\
                   "-profile dv_%(dv_format)s %(mlt)s "\
+                  " %(test)s" \
                   "-consumer avformat:%(tmp)s "\
                   "threads=%(threads)s "\
                   "progressive=1 "\
                   "properties=x264-medium vb=%(vbr)sk "\
                   "acodec=libmp3lame ab=%(abr)sk " \
                   % parms 
-                  # cmd="melt -verbose -progress -profile dv_%(dv_format)s %(mlt)s -consumer avformat:%(tmp)s deinterlace=bob threads=%(threads)s progressive=1 acodec=libmp3lame ab=%(abr)sk ar=48000 vcodec=libx264 vb=%(vbr)sk" % parms 
-
-                  # pyohio: cmd="melt -progress -profile square_%s %s -consumer avformat:%s deinterlace=bob threads=%s aspect=@4/3 progressive=1 acodec=libmp3lame ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, self.options.threads, )
-                  # acodec=libfaac
-                  # cmd="melt -progress -profile square_%s %s -consumer avformat:%s aspect=@4/3 progressive=1 acodec=libfaac ar=48000 ab=256k vcodec=libx264 b=1024k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
 
                   # search for a ffpreset file from the list of possibles
                   for ffpreset_file in ffpreset_files:
@@ -541,9 +548,10 @@ class enc(process):
                   else:
                       return ret
 
+              # run encoder:
               ret = self.run_cmds(episode, cmds)
-              if ret and not os.path.exists(out_pathname) \
-                     and not self.options.test:
+
+              if ret and not os.path.exists(out_pathname):
                    print "melt returned %ret, but no output: %s" % \
                        ( ret, out_pathname )
                    ret=False

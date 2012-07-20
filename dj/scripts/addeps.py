@@ -1021,6 +1021,7 @@ class add_eps(process.process):
         for event in events:
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
+            event['duration'] = event['duration'] + ":00"
             event['released'] = event['released']!="0"
 
         return events

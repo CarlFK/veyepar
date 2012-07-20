@@ -58,9 +58,10 @@ class process(object):
         print cmd
         print ' '.join(cmd)
 
-    if self.options.test:
-        print "TEST: not running command"
-        return True
+    # this seems dumb, so removing.
+    # if self.options.test:
+    #    print "TEST: not running command"
+    #    return True
 
     p=subprocess.Popen(cmd)
     p.wait()

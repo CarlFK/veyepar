@@ -162,7 +162,7 @@ class post(process):
         uploader.bucket_id = "nextdayvideo"
         uploader.key_id = "%s/%s/%s" % ( 
                 client.slug, show.slug, episode.slug )
-        uploader.upload() 
+        ret = uploader.upload() 
 
         if ret:
 

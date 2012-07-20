@@ -45,3 +45,4 @@ live cd: mainly for slave
 title screen preview
   so that they can be generated and displayed on web page.
 
+tsdv - read offset from location table
