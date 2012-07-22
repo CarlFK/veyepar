@@ -569,7 +569,7 @@ def show_stats(request, show_id, ):
     client=show.client
     episodes=Episode.objects.filter(show=show,location__active=True)
     lockeds=Episode.objects.filter(show=show, locked__isnull=False).order_by('locked')
-    raw_files=Raw_File.objects.filter(show=show)
+    raw_files=Raw_File.objects.filter(show=show,location__active=True)
     locations=show.locations.filter(active=True).order_by('sequence')
     
     empty_stat = {'count':0,'minutes':0, 

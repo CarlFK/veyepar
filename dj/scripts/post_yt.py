@@ -57,15 +57,14 @@ class post(process):
         # http://gdata.youtube.com/schemas/2007/categories.cat
         meta['category'] = "Education"
 
-    if self.options.hidden:
-        meta['hidden'] = self.options.hidden
-
     if ep.location.lat and ep.location.lon:
         meta['latlon'] = (ep.location.lat, ep.location.lon)
 
 
     # private is implemnted different in youtube and blip.
-    # plit want's a number, yt wants Truthy
+    # blip want's a number, yt wants Truthy
+    # if self.options.hidden:
+    #    meta['hidden'] = self.options.hidden
     meta['hidden'] = ep.hidden or self.options.hidden
 
     # find a thumbnail

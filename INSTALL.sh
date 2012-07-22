@@ -9,7 +9,7 @@
 sudo apt-get --assume-yes install python-software-properties
 
 # trunk gstreamer - used for mkthumbs
-sudo apt-add-repository --assume-yes ppa:gstreamer-developers/ppa
+sudo apt-add-repository --yes ppa:gstreamer-developers/ppa
 
 # sunab tracks melt trunk, 
 # kxstudio has melt stable 
@@ -18,7 +18,7 @@ sudo apt-add-repository --assume-yes ppa:gstreamer-developers/ppa
 
 # j^ theora dev ffmpeg2theora trunk
 # http://ppa.launchpad.net/j/ppa/ubuntu/dists/
-sudo apt-add-repository --assume-yes ppa:j/ppa
+sudo apt-add-repository --yes ppa:j/ppa
 # sudo apt-add-repository 'deb http://ppa.launchpad.net/j/ppa/ubuntu maverick main'
 
 # I think this is an another melt source.
