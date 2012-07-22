@@ -78,7 +78,7 @@ sox -b 16 -r 16k -e signed -c 1 -t raw \
     goforward.wav
 
 cd ..
-cp pw_samp.py pw.py
+cp sample_pw.py pw.py
 cp sample_veyepar.cfg veyepar.cfg
 cd ../..
 
