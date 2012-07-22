@@ -50,7 +50,7 @@ source /usr/local/bin/virtualenvwrapper.sh
 #   mkdir ~/.virtualenvs
 #fi
 
-mkvirtualenv veyepar
+mkvirtualenv --system-site-packages veyepar
 printf "workon veyepar\n" >> ~/.bashrc
 
 git clone git://github.com/CarlFK/veyepar.git
