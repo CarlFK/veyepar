@@ -158,9 +158,9 @@ class post(process):
 
         uploader.pathname = files[0]['pathname']
         uploader.upload_user = 'cfkarsten'
-        uploader.bucket_id = "nextdayvideo"
+        uploader.bucket_id = pw.archive[uploader.upload_user]['bucket_id']
         uploader.key_id = "%s/%s/%s" % ( 
-                client.slug, show.slug, episode.slug )
+                client.slug, show.slug, ep.slug )
         ret = uploader.upload() 
 
         if ret:

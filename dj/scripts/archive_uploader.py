@@ -36,6 +36,7 @@ class Uploader(object):
     def upload(self):
 
         service = self.auth()
+        # bucket = service.create_bucket(self.bucket_id)
         bucket = service.get_bucket(self.bucket_id)
         key = boto.s3.key.Key(bucket)
         key.key = self.key_id
@@ -45,6 +46,7 @@ class Uploader(object):
             key.set_contents_from_filename(self.pathname)
 
             self.new_url = key.generate_url(0)
+            print self.new_url 
             ret = True
 
         except:

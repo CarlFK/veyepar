@@ -440,6 +440,7 @@ def main():
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
+    """
     t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
@@ -450,6 +451,7 @@ def main():
     t.encode()
     t.ck_errors()
     t.play_vid()
+    """
     result['url'] = t.post_yt()
     result['tweet'] = t.tweet()
     t.csv()
