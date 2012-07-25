@@ -12,6 +12,9 @@ import gdata.geo
 import gdata.youtube
 import gdata.youtube.service
 
+from gdata.media import YOUTUBE_NAMESPACE
+from atom import ExtensionElement
+
 from gdata.youtube.service import YouTubeError
 
 import pw
@@ -123,7 +126,8 @@ class Uploader(object):
                 )],
             player=None
             )
-        if self.meta['hidden']:
+
+        if self.private:
             media_group.private=gdata.media.Private()
 
         return media_group
@@ -162,6 +166,7 @@ class Uploader(object):
             self.ret_text = self.new_entry.__str__()
             link = self.new_entry.GetHtmlLink()
             self.new_url = link.href.split('&')[0]
+            print self.new_url
             ret = True
 
         except gdata.youtube.service.YouTubeError as e:
@@ -203,12 +208,13 @@ if __name__ == '__main__':
      'description': "test description",
      'tags': ['tag1', 'tag2'],
      'category': "Education",
-     'hidden': 0,
      'latlon': (37.0,-122.0)
     }
 
     u.files = ['/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4']
-    u.user = 'ndv'
+    # u.user = 'ndv'
+    u.user = 'cfkarsten'
+    u.private = True
 
     ret = u.upload()
 
@@ -220,4 +226,25 @@ if __name__ == '__main__':
     # pdb.set_trace()
 
 
+"""
+https://code.google.com/p/gdata-python-client/issues/detail?id=350
+Support YouTube access controls 
 
+http://stackoverflow.com/questions/6770362/upload-a-video-to-youtube-using-the-python-api-and-set-it-as-unlisted
+
+##############################33
+from gdata.media import YOUTUBE_NAMESPACE
+from atom import ExtensionElement
+
+# set video as unlisted
+kwargs = {
+    "namespace": YOUTUBE_NAMESPACE,
+    "attributes": {'action': 'list', 'permission': 'denied'},
+}
+extension = ([ExtensionElement('accessControl', **kwargs)])
+
+# create the gdata.youtube.YouTubeVideoEntry
+video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group,
+    geo=where, extension_elements=extension)
+
+"""

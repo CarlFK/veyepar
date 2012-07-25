@@ -292,12 +292,14 @@ pix_fmt=yuv411p" % parms
       upload_formats=['mp4'],
       debug_log=True,
       host_user="cfkarsten",
-      private=True,
       )
+  p.private=True
   p.main()
  
   # post.py does: self.last_url = post_url.text
+  # print p.last_url
   # self.run_cmd(["firefox",p.last_url])
+
   return p.last_url
 
  def tweet(self):

@@ -66,7 +66,8 @@ class post(process):
     # blip want's a number, yt wants Truthy
     # if self.options.hidden:
     #    meta['hidden'] = self.options.hidden
-    meta['hidden'] = ep.hidden or self.options.hidden
+    # meta['hidden'] = ep.hidden or self.options.hidden
+    private = ep.hidden or self.options.hidden
 
     # find a thumbnail
     # check for episode.tumb used in the following:
@@ -144,10 +145,13 @@ class post(process):
         uploader.thumb = thumb
         uploader.meta = meta
         uploader.user = host_user
+        uploader.private = private
 
         uploader.old_url = ep.host_url # for replacing.
      
-        # ret = uploader.upload()
+        ret = uploader.upload()
+
+        self.last_url = uploader.new_entry.id.text
         
         ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
@@ -167,8 +171,8 @@ class post(process):
         if ret:
 
             if self.options.verbose: print uploader.new_url
-            ep.host_url = uploader.new_url
-            self.last_url = uploader.new_url # hook for tests so that it can be browsed
+            ep.archive_url = uploader.new_url
+            self.archive_url = uploader.new_url # hook for tests so that it can be browsed
 
             print dir(uploader)
             # import code
