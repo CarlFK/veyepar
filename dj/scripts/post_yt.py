@@ -7,6 +7,7 @@ import archive_uploader
 
 import os
 
+from django.db import DatabaseError
 import pw
 from process import process
 
@@ -146,7 +147,7 @@ class post(process):
 
         uploader.old_url = ep.host_url # for replacing.
      
-        ret = uploader.upload()
+        # ret = uploader.upload()
         
         ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
@@ -170,7 +171,7 @@ class post(process):
             self.last_url = uploader.new_url # hook for tests so that it can be browsed
 
             print dir(uploader)
-            import code
+            # import code
             # code.interact(local=locals())
 
         else:

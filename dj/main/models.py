@@ -209,7 +209,7 @@ class Episode(models.Model):
         help_text='hidden (does not show up on public episode list')
     thumbnail = models.CharField(max_length=135,blank=True, 
         help_text="filename.png" )
-    host_url = models.CharField(max_length=135, null=True,blank=True,
+    host_url = models.CharField(max_length=235, null=True,blank=True,
         help_text = "URL of page video is hosted")
     public_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL public should use (like pvo or some aggregator")

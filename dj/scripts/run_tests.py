@@ -291,7 +291,8 @@ pix_fmt=yuv411p" % parms
   p.set_options(force=True, verbose=True, 
       upload_formats=['mp4'],
       debug_log=True,
-      host_user="veyepar_test",
+      host_user="cfkarsten",
+      private=True,
       )
   p.main()
  
@@ -440,20 +441,18 @@ def main():
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    """
-    t.make_source_dvs()
-    t.make_source_footer()
-    t.add_dv()
-    t.make_thumbs()
-    t.make_cut_list()
+    # t.make_source_dvs()
+    # t.make_source_footer()
+    # t.add_dv()
+    # t.make_thumbs()
+    # t.make_cut_list()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     t.encode()
-    t.ck_errors()
-    t.play_vid()
-    """
+    # t.ck_errors()
+    # t.play_vid()
     result['url'] = t.post_yt()
-    result['tweet'] = t.tweet()
+    # result['tweet'] = t.tweet()
     t.csv()
     result['video'] = t.ocr_test()
     # result['audio'] = t.sphinx_test()
