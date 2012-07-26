@@ -5,24 +5,28 @@
 <meta charset="utf-8" />
 
 <script type="text/javascript" src="{{STATIC_URL}}admin/js/urlify.js"></script>
-<script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui/ui/jquery-ui-1.8.22.custom.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/login_form.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/fnitize.js"></script>
 
 {% block head %}{% endblock %}
 
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/base.css">
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/login_form.css"> 
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/login_form.css">
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/main.css">
+<link rel="stylesheet" type="text/css"
+      href="{{STATIC_URL}}js/jquery-ui/themes/ui-lightness/jquery.ui.all.css">
 
 </head>
 <body>
 {% include "accounts/login_form.html" %}
 
 <p class="shortcuts">
-<a href="/admin/">admin</a> 
-<a href="/databrowse/">databrowse</a> 
-<a href="/main/">main</a> 
+<a href="/admin/">admin</a>
+<a href="/databrowse/">databrowse</a>
+<a href="/main/">main</a>
 <a href="/main/clients/">Clients</a>
 </p>
 {% block content %}

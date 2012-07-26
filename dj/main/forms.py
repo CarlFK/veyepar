@@ -3,7 +3,7 @@
 
 from django import forms
 from main.models import Episode, Location
-from django.contrib.admin import widgets                                       
+from django.contrib.admin import widgets
 
 
 class Episode_Form(forms.ModelForm):
@@ -11,6 +11,9 @@ class Episode_Form(forms.ModelForm):
         model = Episode
 
 class Episode_Form_Preshow(forms.ModelForm):
+    authors = forms.CharField(max_length=255, required=False)
+    emails = forms.CharField(max_length=255, required=False)
+
     def __init__(self, *args, **kwargs):
         locations = kwargs.get('locations', Location.objects.all())
         if kwargs.has_key('locations'):
@@ -21,12 +24,12 @@ class Episode_Form_Preshow(forms.ModelForm):
     class Meta:
         model = Episode
         fields = (
-                  'name', 'slug', 
-                  'show','location', 
-                  'start', 'duration', 
-                  'authors', 
+                  'name', 'slug',
+                  'show','location',
+                  'start', 'duration',
+                  'authors',
                   'emails',
-                  'released', 
+                  'released',
                   'description', 'tags')
 
 class Episode_Form_small(forms.ModelForm):
@@ -34,7 +37,7 @@ class Episode_Form_small(forms.ModelForm):
 	model = Episode
         fields = ('state', 'locked', 'locked_by', 'start', 'duration',
                   'emails',
-                  'released', 
+                  'released',
                   'normalise', 'channelcopy',
                   'thumbnail', 'description', 'comment')
 
