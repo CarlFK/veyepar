@@ -1,5 +1,9 @@
 
-test files:
+
+I think it is the same problem here:
+https://groups.google.com/forum/?fromgroups#!topic/youtube-api-gdata/_E93pqoWOt0
+
+my test files:
 https://github.com/CarlFK/veyepar/tree/master/tests/you_tube
 
 to run test:
