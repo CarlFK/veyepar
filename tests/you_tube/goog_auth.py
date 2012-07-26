@@ -1,50 +1,39 @@
-# youtube_uploader.py 
-# youtbe specific code
-
-# caled from post_yt.py 
-# which someday will be jsut post.py with a yt parameter.
+# goog_auth.py
+# tests authinticating to google
 
 # http://code.google.com/apis/youtube/1.0/developers_guide_python.html
 # http://code.google.com/apis/youtube/2.0/reference.html
 
-import gdata.youtube
 import gdata.youtube.service
 
 from goog_auth_pw import pw
-
-class Uploader(object):
-
-    # input attributes:
-    files = []
-    thumb = ''
-    meta = {}
-    upload_user = ''
-    old_url = ''
-    user=''
-    private=False
-
-    # return attributes:
-    ret_text = ''
-    new_url = ''
-
-    def auth(self):
-         
-        yt_service = gdata.youtube.service.YouTubeService()
-
-        print pw
-        yt_service.email = pw['email']
-        yt_service.password = pw['password']
-        yt_service.source = 'video eyebaal review'
-        yt_service.developer_key = pw["dev_key"]
-        yt_service.client_id = "ndv"
-
-        yt_service.ProgrammaticLogin()
-
-        return yt_service
-       
 if __name__ == '__main__':
-    u = Uploader()
+
+    yt_service = gdata.youtube.service.YouTubeService()
+
+    yt_service.email = pw['email']
+    yt_service.password = pw['password']
+
+    yt_service.ProgrammaticLogin()
+
+    print yt_service
+   
+    """
+    What sucess looks like:
+(veyepar)carl@dc10:~/src/veyepar/tests/you_tube$ python goog_auth.py 
+<gdata.youtube.service.YouTubeService object at 0x1079ed0>
+
+    What fial looks like:
+Traceback (most recent call last):
+  File "goog_auth.py", line 47, in <module>
     ret = u.auth()
+  File "goog_auth.py", line 41, in auth
+    yt_service.ProgrammaticLogin()
+  File "/home/carl/goog_auth_test/local/lib/python2.7/site-packages/gdata/service.py", line 793, in ProgrammaticLogin
+    raise BadAuthentication, 'Incorrect username or password'
+gdata.service.BadAuthentication: Incorrect username or password
+
+    """
 
     # import code
     # code.interact(local=locals())
