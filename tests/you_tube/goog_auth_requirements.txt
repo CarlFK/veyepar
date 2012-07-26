@@ -1,0 +1,2 @@
+hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
+
