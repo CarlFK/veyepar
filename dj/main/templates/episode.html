@@ -29,25 +29,25 @@
 <td>First Raw Start</td><td>{% if same_dates %}{{clrffs.0.0.raw_file.start|date:"H:i"}}{% else %}{{clrffs.0.0.faw_file.start}}{% endif %}</td></tr>
 <tr><td>Duration</td><td>{{episode.duration}}</td></tr>
 <tr><td>End</td><td> {% if same_dates %}{{episode.end|date:"H:i"}}{% else %}{{episode.end}}{% endif %} </td>
-<td>Last Raw End</td> {% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %} <td>{% if same_dates %} {{end|date:"H:i"}} {% else %} {{end}} {% endif %}</td> {% endwith %} {% endwith %} 
+<td>Last Raw End</td> {% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %} <td>{% if same_dates %} {{end|date:"H:i"}} {% else %} {{end}} {% endif %}</td> {% endwith %} {% endwith %}
 </tr>
 </tbody>
 </table>
 {% if episode.conf_url %}
   <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
 {% endif %}
-<a href="{% url admin:main_episode_change episode.id%}">admin</a> 
-<a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a> 
-<a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a> 
-<a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a> 
+<a href="{% url admin:main_episode_change episode.id%}">admin</a>
+<a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a>
+<a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
+<a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a>
 {% if episode.host_url %}
-  <a href="{{episode.host_url}}">host</a> 
+  <a href="{{episode.host_url}}">host</a>
   {# <a href="http://blip.tv/file/{{episode.host_url}}?skin=rss">rss</a> #}
   {#<a href={{episode.host_url}}>host</a> #}
 {% endif %}
-<a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release</a> 
+<a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release</a>
 {% if episode.public_url %}
-  <a href={{episode.public_url}}>public</a> 
+  <a href={{episode.public_url}}>public</a>
 {% endif %}
 <br/>
 <a href={% url episode_logs episode.id %}>logs</a><br/>
@@ -68,7 +68,7 @@
 {% endif %}
 <table border=1>
 <tbody>
-{{ episode_form }}  
+{{ episode_form }}
 </tbody>
 </table>
 
@@ -103,7 +103,7 @@
 <tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a></td></tr>
 <tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></td></tr>
 <tr><td> <video src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
-    poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" 
+    poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png"
     ></video>
     </td></tr>
      </tbody>
@@ -112,7 +112,7 @@
     <table border=1>
     <tbody>
       <tr> <th></th> <th>Raw File</th> <th>Cut List</th> </tr>
- 
+
       <tr><td></td>
         <td>{#{ clrfform.trash.label_tag }}{{ clrfform.trash }#}</td>
         <td>{{ clrfform.apply.label_tag }}{{ clrfform.apply }}
@@ -125,11 +125,11 @@
       <tr> <td>Comments:</td> <td>{#{clrfform.rf_comment}#}</td> <td>{{clrfform.cl_comment}}</td> </tr>
       <tr> <td>
          {{ clrfform.split.label_tag }}{{ clrfform.split }}
-</td> 
-      <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">admin</a></td> 
+</td>
+      <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">admin</a></td>
       <td>
-<a href="{% url admin:main_cut_list_change cl.id%}">admin</a> 
-	 </td> 
+<a href="{% url admin:main_cut_list_change cl.id%}">admin</a>
+	 </td>
       </tr>
 
     </tbody>
