@@ -6,6 +6,11 @@ yt_service.ProgrammaticLogin() fails on some boxes but not others.  I can't figu
 I think it is the same problem here:
 https://groups.google.com/forum/?fromgroups#!topic/youtube-api-gdata/_E93pqoWOt0
 
+clue:
+"Info=WebLoginRequired"
+I get that on the Next Day Video account, 
+but not my personal cfkarsten account.
+
 my test files:
 https://github.com/CarlFK/veyepar/tree/master/tests/you_tube
 
