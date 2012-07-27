@@ -797,10 +797,15 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                 episode = form.save()
                 # setup next form
                 # use saved Episode as a base for defaults
+                if episode.sequence is None:
+                    sequence=2
+                else:
+                    print episode.sequence
+                    sequence=episode.sequence+1
                 inits={
                     'show':show.id,
                     'location':episode.location.id,
-                    'sequence':episode.sequence+1,
+                    'sequence':sequence,
                     'start':episode.end,
                     'duration':episode.duration,
                     'state':1,
@@ -816,7 +821,10 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                 episode = episodes[len(episodes)-1]
                 print episode
                 location = episode.location.id
-                sequence = episode.sequence+1
+                if episode.sequence is None:
+                    sequence = 2
+                else:
+                    sequence = episode.sequence+1
                 start = episode.end
             else:
                 # firt Episode of the show
