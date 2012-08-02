@@ -1,0 +1,12 @@
+{# tests.html #}
+{% extends "base.html" %}
+{% block content %}
+
+<p>Upload tester:</p>
+<form action="" method="POST"> {% csrf_token %}
+  <span id=command_buttons>
+  <input type="submit" name="consume" value="consume Test Data" />
+  </span>
+</form>
+
+{% endblock %}

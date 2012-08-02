@@ -171,6 +171,9 @@ class post(process):
         if ret:
 
             if self.options.verbose: print uploader.new_url
+            # this is pretty gross.
+            # store the youtube rul and archive url's here.
+            ep.host_url = self.last_url
             ep.archive_url = uploader.new_url
             self.archive_url = uploader.new_url # hook for tests so that it can be browsed
 

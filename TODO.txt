@@ -1,4 +1,10 @@
-
+client checklist:
+  release on talk submission
+  data driven schedule, api (json)
+  AV - audio
+  slide show for between talks
+  title slide for videos
+  room access times
 
 dvswitch:
   everything: default host/port

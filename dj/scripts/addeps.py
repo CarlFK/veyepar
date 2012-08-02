@@ -503,7 +503,8 @@ class add_eps(process.process):
         for row in schedule:
             if self.options.verbose: print row
             event={}
-            event['id'] = row['id']
+            event['id'] = row['conf_url']
+            # event['id'] = row['id']
             event['name'] = row['title']
             
             # event['location'] = row['room']
@@ -521,7 +522,7 @@ class add_eps(process.process):
                     row['start_iso'], '%Y-%m-%dT%H:%M:%S' )
 
             # if "Poster" in row["tags"]:
-            event['start'] += datetime.timedelta(hours=-3)
+            # event['start'] += datetime.timedelta(hours=-3)
 
             break_min = 0 ## no time for breaks!
             seconds=(row['duration'] - break_min ) * 60
@@ -534,9 +535,13 @@ class add_eps(process.process):
             event['released'] = row['released']
             event['license'] = row['license'] 
             event['description'] = row['description']
-            event['conf_key'] = row['id']
+            event['conf_key'] = row['url']
+            event['conf_url'] = row['url']
 
+            if event['conf_key'] is None: event['conf_key'] = ""
             if event['conf_url'] is None: event['conf_url'] = ""
+
+            event['conf_key'] = event['conf_key'][-5:]
 
             event['tags'] = ''
 
@@ -1343,6 +1348,7 @@ class add_eps(process.process):
             'scipy_2012': "http://conference.scipy.org/scipy2012/schedule/schedule_json.php",
             'chipy_june2012': "http://chipy.org/api/meetings/",
             'chipy_july_2012': "http://chipy.org/api/meetings/",
+            'pyohio_2012': "file://pyohio_2012.json",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1369,14 +1375,18 @@ class add_eps(process.process):
             return self.fosdem2012(schedule,show)
         else:
             j=f.read()
-            schedule = json.loads(j)
-
+            # schedule = json.loads(j)
+            schedule = eval(j)
 
         # save for later
         file('schedule.json','w').write(j) 
         # j=file('schedule.json').read()
 
         # look at fingerprint of file, call appropiate parser
+
+        if self.options.show == 'pyohio_2012':
+            # pyohio
+            return self.pyohio(schedule,show)
 
         if self.options.show == 'scipy_2012':
             # scipy ver 1
