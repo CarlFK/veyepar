@@ -211,17 +211,26 @@ if __name__ == '__main__':
      'latlon': (37.0,-122.0)
     }
 
+    u.meta = {
+     'title': "Python @ Life",
+     'description': "test " * 100,
+     'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
+
+     'category': "Education",
+     'latlon': (37.0,-122.0)
+    }
+
+
     u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4', 'ext':'mp4'}]
-    u.user = 'ndv'
-    # u.user = 'cfkarsten'
+    u.user = 'cfkarsten'
     # u.private = True
 
     ret = u.upload()
 
-    print "print u.new_entry.id.text"
+    print u.new_entry.id.text
 
-    import code
-    code.interact(local=locals())
+    # import code
+    # code.interact(local=locals())
     # import pdb
     # pdb.set_trace()
 
