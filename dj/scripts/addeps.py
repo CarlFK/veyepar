@@ -1375,8 +1375,8 @@ class add_eps(process.process):
             return self.fosdem2012(schedule,show)
         else:
             j=f.read()
-            # schedule = json.loads(j)
-            schedule = eval(j)
+            schedule = json.loads(j)
+            # schedule = eval(j)
 
         # save for later
         file('schedule.json','w').write(j) 
