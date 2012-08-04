@@ -87,6 +87,7 @@ class Uploader(object):
     old_url = ''
     user=''
     private=False
+    debug_mode=False
 
     # return attributes:
     ret_text = ''
@@ -157,11 +158,11 @@ class Uploader(object):
         print self.meta['tags']
         video_entry.AddDeveloperTags(self.meta['tags'])
 
-        # actually upload
         pathname= self.files[0]['pathname']
 
         pf = ProgressFile(pathname, 'r')
         try:
+            # actually upload
             self.new_entry = yt_service.InsertVideoEntry(video_entry, pf)
             self.ret_text = self.new_entry.__str__()
             link = self.new_entry.GetHtmlLink()
@@ -170,10 +171,11 @@ class Uploader(object):
             ret = True
 
         except gdata.youtube.service.YouTubeError as e:
-            import code
-            code.interact(local=locals())
-            self.ret_text = e.__str__()
+            self.ret_text = 'request: %s\nerror: %s' % (video_entry.ToString(), e.__str__())
             ret = False
+            if self.debug_mode:
+                import code
+                code.interact(local=locals())
 
         return ret
     
@@ -203,31 +205,34 @@ class Uploader(object):
 
 if __name__ == '__main__':
     u = Uploader()
-    u.meta = {
-     'title': "test title",
-     'description': "test description",
-     'tags': ['tag1', 'tag2'],
-     'category': "Education",
-     'latlon': (37.0,-122.0)
-    }
 
     u.meta = {
-     'title': "Python @ Life",
-     'description': "test " * 100,
-     'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
-
-     'category': "Education",
-     'latlon': (37.0,-122.0)
+      'title': "test title",
+      'description': "test description",
+      #'description': "test " * 100,
+      #'tags': ['tag1', 'tag2'],
+      'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
+      'category': "Education",
+      'latlon': (37.0,-122.0)
     }
+    """
+    u.meta = {
+      'title': "Python @ Life",
+      'description': "test " * 100,
+      'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
+      'category': "Education",
+      'latlon': (37.0,-122.0)
+    }
+    """
+    print u.meta
 
-
-    u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4', 'ext':'mp4'}]
-    u.user = 'cfkarsten'
+    u.files = [{'pathname':'/home/juser/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4', 'ext':'mp4'}]
+    u.user = 'veyepar_test'
     # u.private = True
 
     ret = u.upload()
-
-    print u.new_entry.id.text
+    if ret: print u.new_entry.id.text
+    print u.ret_text
 
     # import code
     # code.interact(local=locals())

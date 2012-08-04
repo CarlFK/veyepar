@@ -12,6 +12,7 @@ import pw
 # http://archive.org/details/nextdayvideo.test/foobar 
 
 import boto
+import sys
 
 class Uploader(object):
 
@@ -20,6 +21,7 @@ class Uploader(object):
     upload_user = ''
     bucket_id = ""
     key_id = ""
+    debug_mode = False
 
     # return attributes:
     ret_text = ''
@@ -50,10 +52,11 @@ class Uploader(object):
             ret = True
 
         except:
-            self.ret_text = "error."
-            import code
-            code.interact(local=locals())
+            self.ret_text = "internet archive error: ", sys.exc_info()[0]
             ret = False
+            if self.debug_mode:
+                import code
+                code.interact(local=locals())
 
         return ret
 
