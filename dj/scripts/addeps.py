@@ -852,6 +852,11 @@ class add_eps(process.process):
           show.save()
           
     def add_eps(self, episodes, show):
+
+      if self.options.test:
+          print "test mode, not adding to db"
+          return 
+
       seq=0
       for row in episodes:
           if self.options.verbose: print row
@@ -1349,6 +1354,7 @@ class add_eps(process.process):
             'chipy_june2012': "http://chipy.org/api/meetings/",
             'chipy_july_2012': "http://chipy.org/api/meetings/",
             'pyohio_2012': "file://pyohio_2012.json",
+            'chipy_aug_2012': "http://chipy.org/api/meetings/",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1376,6 +1382,7 @@ class add_eps(process.process):
         else:
             j=f.read()
             schedule = json.loads(j)
+            # if it is a python prety printed list:
             # schedule = eval(j)
 
         # save for later
@@ -1397,7 +1404,8 @@ class add_eps(process.process):
             return self.scipy_v1(schedule,show)
 
         # if self.options.show == 'chipy_june2012':
-        if self.options.show == 'chipy_july_2012':
+        # if self.options.show == 'chipy_july_2012':
+        if self.options.show == 'chipy_aug_2012':
             # chipy
             return self.chipy(schedule,show)
 
