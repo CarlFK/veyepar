@@ -138,30 +138,20 @@ class Quality(models.Model):
         return self.name
 
 # STATES=((0,'borked'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'email'),(6,'tweet'),(7,'done'))
-STATES=[i for i in enumerate([
-'borked',
-'edit',
-'encode',
-'rsync',
-'post',
-'review 1',
-'email',
-'review 2',
-'make public',
-'tweet',
-'done'])]
-
-[(0, 'borked'),
+STATES=[
+ (0, 'borked'),
  (1, 'edit'), # enter cutlist data
  (2, 'encode'), # assemble raw assets into final cut
  (3, 'push to queue'), # push to data center box
  (4, 'post'), # push to yourube and archive.org
- (5, 'review 1'), # staff check to see if they exist on yourube/archive
- (6, 'email'), # send private url to presenter, ask for feedback, 
- (7, 'review 2'), # staff wait for presenter to say good
- (8, 'make public'), # flip private to public
- (9, 'tweet'), # tell world
- (10, 'done')]
+ (5, 'richard'), # push urls and description to PyVideo.org
+ (6, 'review 1'), # staff check to see if they exist on yourube/archive
+ (7, 'email'), # send private url to presenter, ask for feedback, 
+ (8, 'review 2'), # staff wait for presenter to say good
+ (9, 'make public'), # flip private to public
+ (10, 'tweet'), # tell world
+ (11, 'done')
+ ]
 
 
 class Episode(models.Model):

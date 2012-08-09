@@ -1,12 +1,13 @@
 #!/usr/bin/python
 
-# push 1 file to data center box
+# push encoded files to data center box
+# uses rsync. 
 
 import os, subprocess
 
 from process import process
 
-from main.models import Show, Location, Episode, Raw_File, Cut_List
+from main.models import Show, Location, Episode
 
 class push(process):
 
@@ -16,8 +17,6 @@ class push(process):
         if self.options.verbose: print ep.id, ep.name
 
         # get a list of video files to upload
-        # blip supports multiple formats, youtube does not.
-        # youtube and such will only upload the first file.
         files = []
         for ext in self.options.upload_formats:
             src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))

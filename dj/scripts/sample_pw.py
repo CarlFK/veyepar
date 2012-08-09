@@ -26,8 +26,9 @@ archive={
         }   
 
 # http://richard.readthedocs.org/en/latest/admin/api.html
-pyvideo={
+richard={
         'user_name':{
+            'url': 'http://localhost:8000/api/v1/', 
             'key':'abc'},
         }   
 
