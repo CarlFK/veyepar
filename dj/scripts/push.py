@@ -43,6 +43,16 @@ class push(process):
                 print "testing, not coppying, returing False"
                 ret = False
             else:
+"""
+sending incremental file list
+rsync: change_dir#3 "/home/veyepar/Videos/veyepar/chipy/chipy_aug_2012" failed: No such file or directory (2)
+rsync error: errors selecting input/output files, dirs (code 3) at main.c(632) [receiver=3.0.3]
+rsync: connection unexpectedly closed (9 bytes received so far) [sender]
+rsync error: error in rsync protocol data stream (code 12) at io.c(601) [sender=3.0.8]
+ret: 12
+"""
+# So I guess 12 means "target dir does't exist"
+
                 p = subprocess.Popen( cmd )
                 ret = p.wait()
                 if self.options.verbose: print "ret:", ret
