@@ -23,7 +23,8 @@ class add_to_richard(process):
     def process_ep(self, ep):
         if self.options.verbose: print "post_to_richard", ep.id, ep.name
 
-        # get the thumb url from youtube
+        # get the metadata from youtube
+        # like thumb url and video embed code
         json_data = scrapevideo(ep.host_url)
         yt_meta = json.loads( json_data )
         #  pprint.pprint( yt_meta )
