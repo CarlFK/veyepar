@@ -26,6 +26,8 @@ class push(process):
         # dest_path = "/home/veyepar/Videos/veyepar/enthought/scipy_2012/mp4"
         for f in files:
 
+            # Ryans data center box, 
+            # veyepar user and /home dir
             user="veyepar"
             host =  'nextdayvideo.com'
             dest_host = '%s@%s' % (user,host)
