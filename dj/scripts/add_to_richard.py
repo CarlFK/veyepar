@@ -30,7 +30,7 @@ class add_to_richard(process):
         #  pprint.pprint( yt_meta )
         
         host = pw.richard[self.options.host_user]
-        # pprint.pprint(host)
+        pprint.pprint(host)
 
         # Create an api object with the target api root url.
         api = slumber.API(host['url'])
@@ -93,12 +93,50 @@ class add_to_richard(process):
     'embed': yt_meta['object_embed_code'],
 }
 
+        video_data = {
+ 'category': u'Chipy_aug_2012',
+ 'copyright_text': u'',
+ 'description': u'',
+ 'embed': u'<object width="640" height="390"><param name="movie" value="http://youtube.com/v/0CZgmbl47xw?version=3&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://youtube.com/v/0CZgmbl47xw?version=3&amp;hl=en_US" type="application/x-shockwave-flash" width="640" height="390" allowscriptaccess="always" allowfullscreen="true"></embed></object>',
+ 'language': 'English',
+ 'quality_notes': '',
+ 'recorded': '2012-08-09T20:00:00',
+ 'slug': u'Mono_to_IronPython',
+ 'source_url': u'https://www.youtube.com/watch?v=0CZgmbl47xw',
+ 'speakers': [u'Fawad Halim'],
+ 'state': 1,
+ 'summary': u'Introduction to Mono, what it means in relation to .NET, with a segway into IronPython.',
+ 'tags': [u''],
+ 'thumbnail_url': u'http://i1.ytimg.com/vi/0CZgmbl47xw/hqdefault.jpg',
+ 'title': u'Mono to IronPython',
+ 'video_flv_length': None,
+ 'video_flv_url': u'',
+ 'video_mp4_download_only': True,
+ 'video_mp4_length': None,
+ 'video_mp4_url': u'http://test.bucket.s3.us.archive.org/chipy/chipy_aug_2012/Mono_to_IronPython?Signature=%2FejIq9oN0LEH5OR6OSiRzqr8td8%3D&Expires=1344725073&AWSAccessKeyId=FEWGReWX3QbNk0h3',
+ 'video_ogv_length': None,
+ 'video_ogv_url': u'',
+ 'video_webm_length': None,
+ 'video_webm_url': u'',
+ 'whiteboard': u''}
+
         pprint.pprint(video_data)
 
         # Let's create this video with an HTTP POST.
-        vid = api.video.post(video_data, 
+        try:
+            print "trying..."
+            vid = api.video.post(video_data, 
                 username=host['user'],
                 api_key=host['api_key'])
+        except Exception as exc:
+            # TODO: OMG gross.
+            error_lines = [line for line in exc.content.splitlines()
+                           if 'exception_value' in line]
+            if error_lines:
+                for line in error_lines:
+                    print line
+            raise
+
 
         print "Created video: ", vid
         ep.public_url = vid
