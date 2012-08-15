@@ -208,7 +208,7 @@ video_data = {
     'embed': '<object>whatever</object>'
 }
 
-video_data = {
+x_video_data = {
  # 'category': u'Chipy_aug_2012',
     'category': 'CarlCon 2012',
  'copyright_text': u'',
@@ -242,6 +242,7 @@ try:
     vid = api.video.post(video_data, username=USERNAME, api_key=API_KEY)
 except Exception as exc:
     # TODO: OMG gross.
+    print exc.content
     error_lines = [line for line in exc.content.splitlines()
                    if 'exception_value' in line]
     if error_lines:

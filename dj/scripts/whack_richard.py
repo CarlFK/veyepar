@@ -7,6 +7,7 @@ import pw
 
 # test data is defined by this list of categories:
 test_categories = [ 
+    'carlcon-2012',
     'test_show', 
     'chipy_aug_2012',
     'scipy_2012']

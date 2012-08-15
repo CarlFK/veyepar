@@ -106,7 +106,7 @@ class add_to_richard(process):
  'speakers': [u'Fawad Halim'],
  'state': 1,
  'summary': u'Introduction to Mono, what it means in relation to .NET, with a segway into IronPython.',
- 'tags': [u''],
+ 'tags': [],
  'thumbnail_url': u'http://i1.ytimg.com/vi/0CZgmbl47xw/hqdefault.jpg',
  'title': u'Mono to IronPython',
  'video_flv_length': None,
@@ -129,7 +129,10 @@ class add_to_richard(process):
                 username=host['user'],
                 api_key=host['api_key'])
         except Exception as exc:
+            print "caught!"
             # TODO: OMG gross.
+            import code
+            code.interact(local=locals())
             error_lines = [line for line in exc.content.splitlines()
                            if 'exception_value' in line]
             if error_lines:
