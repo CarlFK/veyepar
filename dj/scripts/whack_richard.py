@@ -6,10 +6,15 @@ import slumber
 import pw
 
 # test data is defined by this list of categories:
-test_categories = [ 'test_show', 'carlcon-2012', 'chipy_aug_2012',
-            'scipy_2012']
+test_categories = [ 
+    'test_show', 
+#    'carlcon-2012', 
+    'chipy_aug_2012',
+    'scipy_2012']
 
-host = pw.richard['test']
+host_user = 'willkg'
+# host_user = 'test'
+host = pw.richard[host_user]
 pprint.pprint(host)
 
 api = slumber.API(host['url'])

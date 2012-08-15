@@ -41,7 +41,6 @@ class add_to_richard(process):
         # I am going to regret this later.
         # To the future me: Sorry.
 
-
         cats = api.category.get()
         found = False
         for cat in cats['objects']:
@@ -82,12 +81,12 @@ class add_to_richard(process):
     'video_ogv_url': u'',
     'video_ogv_length': None,
     'video_mp4_url': ep.archive_url,
+    'video_mp4_download_only': True,
     'video_mp4_length': None,
     'video_webm_url': u'',
     'video_webm_length': None,
     'video_flv_url': u'',
     'video_flv_length': None,
-    # 'embed': yt_meta['embed_code'],
     'embed': yt_meta['object_embed_code'],
 }
 
