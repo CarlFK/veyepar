@@ -1,12 +1,13 @@
-import pw
+# x2.prg
+# aka the gist.
 
-USERNAME = 'willkg'
-API_KEY = 'a50ad70ab3d8334c4c60dddb0992d774c0db4a98'
-# PYVIDEO_URL = 'http://localhost:8000/api/v1/'
+# PYVIDEO_URL = 'http://localhost:8081/api/v1/'
+# USERNAME = 'carl'
+# API_KEY = 'a50ad70ab3d8334c4c60dddb0992d774c0db4a98'
 
 PYVIDEO_URL = 'http://pyvideo.org:9000/api/v1/'
-
-
+USERNAME = 'willkg'
+API_KEY = 'b8a9ffda15c76a438599683ce9346fcacfb27786'
 
 VIDEO = {
     # 1 if LIVE and 2 if DRAFT.
@@ -37,10 +38,10 @@ VIDEO = {
 
     # This is the slug. Should be like the title, but lowercase
     # letters, numbers and hyphens only.
-    # 
+    #
     # Two videos can't have the same slug, so if you bump into
     # something like that, add a 2 at the end.
-    # 
+    #
     # e.g. 'big-data-de-duping'
     u'slug': u'',
 
@@ -124,9 +125,8 @@ CATEGORY = {
 
     # Slug for the conference. Lowercase letters, numbers and hyphens.
     # e.g. "pycon-us-2012"
-    u'slug': u'',
+    u'slug': u'bostonpy',
 }
-
 
 # This is just a lib that makes doing REST stuff easier.
 import slumber
@@ -143,29 +143,48 @@ video = api.video.get(limit=1)
 cat_data = {
     'kind': 1,
     'name': 'CarlCon',
-    'title': 'CarlCon 2013',
+    'title': 'CarlCon 2012',
     'description': 'Where awesome people get to be Carl for a day.',
     'url': 'http://carlcon.us/',
     'whiteboard': '',
     'start_date': '2012-07-11',
-    'slug': 'carlcon-2013'
+    'slug': 'carlcon-2012'
 }
 
-# Let's create a category.
-cat = api.category.post(cat_data, username=USERNAME, api_key=API_KEY)
+# hunt down any previous data that looks like the data we are working with
+# and kill it.
+cats = api.category.get()
+for cat in cats['objects']:
+    if cat['slug'] == cat_data['slug']:
+        cat_id = cat['id']
+        api.category(cat_id).delete(username=USERNAME, api_key=API_KEY)
 
-print "Created category: ", cat
+# Let's create a category.
+try:
+    cat = api.category.post(cat_data, username=USERNAME, api_key=API_KEY)
+    pass
+except Exception as exc:
+    # TODO: OMG gross.
+    error_lines = [line for line in exc.content.splitlines()
+                   if 'exception_value' in line]
+    if error_lines:
+        for line in error_lines:
+            print line
+    raise
+
+
+# print "Created category: ", cat
 
 # Let's populate a video object and push it.
 video_data = {
     'state': 1,
     'whiteboard': '',
     'title': 'Carl with Pants',
-    'category': 'CarlCon 2013',
+    'category': 'CarlCon 2012',
     'summary': '<p>Carl shows off his magic pants again.</p>',
     'description': '<p>In a death-defying display of crazed agility, Carl shows off his magic pants and how he can take them off and put them on using only a straw.</p>\n<p>This video covers</p><ul><li>pants</li><li>straws</li></ul>',
     'quality_notes': '',
-    'slug': 'carl-with-pants-2',
+    'slug': 'carl-with-pants',
     'source_url': 'http://youtube.com/whatever',
     'copyright_text': '',
     'tags': ["pants"],
@@ -189,7 +208,32 @@ video_data = {
     'embed': '<object>whatever</object>'
 }
 
-# Let's create this video with an HTTP POST.
-vid = api.video.post(video_data, username=USERNAME, api_key=API_KEY)
+# api.video(vid['id']).delete(username=USERNAME, api_key=API_KEY)
+try:
+    # Let's create this video with an HTTP POST.
+    # Oh wait--I hate everything I did! DELETE IT ALL!
+    vid = api.video.post(video_data, username=USERNAME, api_key=API_KEY)
+except Exception as exc:
+    # TODO: OMG gross.
+    error_lines = [line for line in exc.content.splitlines()
+                   if 'exception_value' in line]
+    if error_lines:
+        for line in error_lines:
+            print line
+    raise
 
 print "Created video: ", vid
+
+# Oh Noes! We made a mistake and forgot to add Ryan.
+vid['speakers'].append('Ryan "Flying Monkey" Verner')
+
+try:
+    vid = api.video(vid['id']).put(video_data, username=USERNAME, api_key=API_KEY)
+except Exception as exc:
+    # TODO: OMG gross.
+    error_lines = [line for line in exc.content.splitlines()
+                   if 'exception_value' in line]
+    if error_lines:
+        for line in error_lines:
+            print line
+    raise
