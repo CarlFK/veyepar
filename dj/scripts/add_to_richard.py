@@ -23,17 +23,32 @@ class add_to_richard(process):
     def process_ep(self, ep):
         if self.options.verbose: print "post_to_richard", ep.id, ep.name
 
+        ### remove some day....
+        if ep.host_url.startswith("http://gdata.youtube.com/feeds/api/videos/"):
+            yt_id = ep.host_url.split('/')[-1]
+            ep.host_url="http://youtube.com/watch?v=%s" % (yt_id,)
+            
         # get the metadata from youtube
         # like thumb url and video embed code
-        json_data = scrapevideo(ep.host_url)
-        yt_meta = json.loads( json_data )
-        #  pprint.pprint( yt_meta )
+        yt_meta = scrapevideo(ep.host_url)
+        if self.options.verbose: 
+            pprint.pprint( yt_meta )
         
+        speakers = '' if ep.authors is None else ep.authors.split(',')
+
+        tags = ep.tags.split(',')
+        # remove blacklisted tags, 
+        # and tags with a / in them.
+        tags = [t for t in tags if t not in [
+             u'enthought', u'scipy_2012', u'Introductory/Intermediate',
+             ] and '/' not in t ]
+
         host = pw.richard[self.options.host_user]
         pprint.pprint(host)
 
         # Create an api object with the target api root url.
-        api = slumber.API(host['url'])
+        endpoint = 'http://%(host)s/api/v1/' % host 
+        api = slumber.API(endpoint)
 
         # make sure the category exists.
         # This seems like a terible way to doing this, 
@@ -41,13 +56,17 @@ class add_to_richard(process):
         # I am going to regret this later.
         # To the future me: Sorry.
 
+        print "Show slug:", ep.show.slug
         cats = api.category.get()
         found = False
         for cat in cats['objects']:
+            print cat['slug']
             if cat['slug']  ==  ep.show.slug:
                found = True
+               print "found it!"
 
         if not found:
+            # The category doesn't exist yet, so create it
             cat_data = {
                 'kind': 1,
                 'name': ep.show.name,
@@ -58,9 +77,22 @@ class add_to_richard(process):
                 'start_date': '2012-07-16',
                 'slug': ep.show.slug
             }
-            cat = api.category.post(cat_data, 
-                    username=host['user'],
-                    api_key=host['api_key'])
+            try:
+                cat = api.category.post(cat_data, 
+                    username=host['user'], api_key=host['api_key'])
+                pass
+            except Exception as exc:
+                # TODO: OMG gross.
+                if exc.content.startswith('\n<!DOCTYPE html>'):
+                    error_lines = [line for line in exc.content.splitlines()
+                            if 'exception_value' in line]
+                    for line in error_lines:
+                         print line
+                else:
+                    print "exc.content:", exc.content.__repr__()
+
+                raise
+
 
 
         # Let's populate a video object and push it.
@@ -72,9 +104,8 @@ class add_to_richard(process):
     'slug': ep.slug,
     'source_url': ep.host_url,
     'copyright_text': ep.license,
-    'tags': ep.tags.split(','),
-    'speakers': ep.authors.split(','),
-    # 'added': '2012-06-15T20:34:32',
+    'tags': tags,
+    'speakers': speakers,
     'recorded': ep.start.isoformat(),
     'language': 'English',
     'whiteboard': u'',
@@ -92,57 +123,29 @@ class add_to_richard(process):
     'video_flv_length': None,
     'embed': yt_meta['object_embed_code'],
 }
-
-        video_data = {
- 'category': u'Chipy_aug_2012',
- 'copyright_text': u'',
- 'description': u'',
- 'embed': u'<object width="640" height="390"><param name="movie" value="http://youtube.com/v/0CZgmbl47xw?version=3&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://youtube.com/v/0CZgmbl47xw?version=3&amp;hl=en_US" type="application/x-shockwave-flash" width="640" height="390" allowscriptaccess="always" allowfullscreen="true"></embed></object>',
- 'language': 'English',
- 'quality_notes': '',
- 'recorded': '2012-08-09T20:00:00',
- 'slug': u'Mono_to_IronPython',
- 'source_url': u'https://www.youtube.com/watch?v=0CZgmbl47xw',
- 'speakers': [u'Fawad Halim'],
- 'state': 1,
- 'summary': u'Introduction to Mono, what it means in relation to .NET, with a segway into IronPython.',
- 'tags': [],
- 'thumbnail_url': u'http://i1.ytimg.com/vi/0CZgmbl47xw/hqdefault.jpg',
- 'title': u'Mono to IronPython',
- 'video_flv_length': None,
- 'video_flv_url': u'',
- 'video_mp4_download_only': True,
- 'video_mp4_length': None,
- 'video_mp4_url': u'http://test.bucket.s3.us.archive.org/chipy/chipy_aug_2012/Mono_to_IronPython?Signature=%2FejIq9oN0LEH5OR6OSiRzqr8td8%3D&Expires=1344725073&AWSAccessKeyId=FEWGReWX3QbNk0h3',
- 'video_ogv_length': None,
- 'video_ogv_url': u'',
- 'video_webm_length': None,
- 'video_webm_url': u'',
- 'whiteboard': u''}
-
-        pprint.pprint(video_data)
+        if self.options.verbose: pprint.pprint(video_data)
 
         # Let's create this video with an HTTP POST.
+        
         try:
-            print "trying..."
             vid = api.video.post(video_data, 
-                username=host['user'],
-                api_key=host['api_key'])
+                    username=host['user'], api_key=host['api_key'])
         except Exception as exc:
-            print "caught!"
             # TODO: OMG gross.
-            import code
-            code.interact(local=locals())
-            error_lines = [line for line in exc.content.splitlines()
-                           if 'exception_value' in line]
-            if error_lines:
+            if exc.content.startswith('\n<!DOCTYPE html>'):
+                error_lines = [line for line in exc.content.splitlines()
+                        if 'exception_value' in line]
                 for line in error_lines:
-                    print line
+                     print line
+            else:
+                print exc.content
+
             raise
 
 
-        print "Created video: ", vid
-        ep.public_url = vid
+        pvo_url = "http://%s/video/%s/%s" % (host['host'], vid['id'],vid['slug'])
+        if self.options.verbose: print pvo_url
+        ep.public_url = pvo_url
 
         ep.save()
 
