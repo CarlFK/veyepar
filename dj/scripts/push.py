@@ -45,7 +45,7 @@ class push(process):
                 print "testing, not coppying, returing False"
                 ret = False
             else:
-"""
+                """
 sending incremental file list
 rsync: change_dir#3 "/home/veyepar/Videos/veyepar/chipy/chipy_aug_2012" failed: No such file or directory (2)
 rsync error: errors selecting input/output files, dirs (code 3) at main.c(632) [receiver=3.0.3]

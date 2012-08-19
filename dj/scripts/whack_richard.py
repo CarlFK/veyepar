@@ -12,8 +12,8 @@ test_categories = [
 #    'chipy_aug_2012',
     'scipy_2012']
 
-host_user = 'test'
-# host_user = 'willkg'
+# host_user = 'test'
+host_user = 'willkg'
 
 host = pw.richard[host_user]
 pprint.pprint(host)

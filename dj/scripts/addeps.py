@@ -318,7 +318,7 @@ class add_eps(process.process):
                       print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
                       for f,a1,a2 in diff_fields:
                           print 'veyepar %s: %s' % (f,a1)
-                          print '  event %s: %s' % (f,a2)
+                          print ' source %s: %s' % (f,a2[:60])
                       print
 
 
@@ -882,7 +882,8 @@ class add_eps(process.process):
           fields=(
         'name', 'authors', 'emails', 'description',
         'start','duration', 
-        'released', 'license', 
+        'released', 
+        'license', 
         'conf_url', 'tags')
 
           if created or self.options.update:
@@ -892,6 +893,10 @@ class add_eps(process.process):
               for f in fields:
                   setattr( episode, f, row[f] )
                   # print( f, row[f] )
+
+              if not episode.released:
+                  episode.released = row['released']
+
               episode.save()
               loc.save()
           else:
@@ -906,7 +911,7 @@ class add_eps(process.process):
                   print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
                   for f,a1,a2 in diff_fields:
                       print 'veyepar %s: %s' % (f,a1)
-                      print '  event %s: %s' % (f,a2)
+                      print ' source %s: %s' % (f,unicode(a2)[:60])
                   print
 
 
@@ -1032,7 +1037,14 @@ class add_eps(process.process):
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
             event['duration'] = event['duration'] + ":00"
+
+            # released flag fliping back to False?
+            # investigate later, ignore for now.
             event['released'] = event['released']!="0"
+            # del(event['released'])
+
+            if event['description'] is None:
+                event['description'] = "None"
 
         return events
 
@@ -1064,7 +1076,6 @@ class add_eps(process.process):
         rooms = self.get_rooms(schedule)
         rooms = list(rooms)
         rooms.sort()
-        print rooms
         self.add_rooms(rooms,show)
 
         # return self.dump_keys(schedule)
@@ -1355,6 +1366,7 @@ class add_eps(process.process):
             'chipy_july_2012': "http://chipy.org/api/meetings/",
             'pyohio_2012': "file://pyohio_2012.json",
             'chipy_aug_2012': "http://chipy.org/api/meetings/",
+            'pycon_au_2012': "http://2012.pycon-au.org/programme/schedule/json",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1396,7 +1408,7 @@ class add_eps(process.process):
             return self.pyohio(schedule,show)
 
         if self.options.show == 'scipy_2012':
-            # scipy ver 1
+            # scipy ver 2
             return self.scipy_v2(schedule,show)
 
         if self.options.show == 'scipy_2012_v1':

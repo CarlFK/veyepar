@@ -57,10 +57,10 @@ class add_to_richard(process):
         # To the future me: Sorry.
 
         print "Show slug:", ep.show.slug
-        cats = api.category.get()
+        cats = api.category.get(limit=0)
         found = False
         for cat in cats['objects']:
-            print cat['slug']
+            print "|",cat['id'], cat['slug'],
             if cat['slug']  ==  ep.show.slug:
                found = True
                print "found it!"
@@ -83,7 +83,7 @@ class add_to_richard(process):
                 pass
             except Exception as exc:
                 # TODO: OMG gross.
-                if exc.content.startswith('\n<!DOCTYPE html>'):
+                if exc.content.startswlth('\n<!DOCTYPE html>'):
                     error_lines = [line for line in exc.content.splitlines()
                             if 'exception_value' in line]
                     for line in error_lines:
@@ -101,7 +101,7 @@ class add_to_richard(process):
     'title': ep.name,
     'category': ep.show.name,
     'summary': ep.description,
-    'slug': ep.slug,
+    #'slug': ep.slug,
     'source_url': ep.host_url,
     'copyright_text': ep.license,
     'tags': tags,

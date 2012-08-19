@@ -24,7 +24,10 @@
 </th>
 
             {% for item in locations %}
-<td> <span><b>{{ item.loc.slug }}</b></span><br/>
+            <td> <span><b>
+                        <a href="{% url admin:main_location_change item.loc.id%}">{{ item.loc.slug }}</a>
+                </b></span><br/>
+
 <span> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}"> {{item.count}} </a> </span>
 <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
