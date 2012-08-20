@@ -114,6 +114,7 @@ class Uploader(object):
         tags = self.meta['tags']
         tags = [tag for tag in tags if " " not in tag]
         tags =','.join(tags) 
+        print tags
 
         media_group = gdata.media.Group(
             title=gdata.media.Title(
@@ -161,7 +162,12 @@ class Uploader(object):
 
         # add some more metadata -  more tags
         print self.meta['tags']
-        video_entry.AddDeveloperTags(self.meta['tags'])
+
+        tags = self.meta['tags']
+        tags = [tag for tag in tags if " " not in tag]
+        tags =','.join(tags) 
+        print tags
+        video_entry.AddDeveloperTags(tags)
 
         pathname= self.files[0]['pathname']
 
