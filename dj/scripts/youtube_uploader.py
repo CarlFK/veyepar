@@ -111,6 +111,7 @@ class Uploader(object):
     def media_group(self):
         # prepare a media group object to hold our video's meta-data
 
+        tags = self.meta['tags']
         tags = [tag for tag in tags if " " not in tag]
         tags =','.join(tags) 
 
