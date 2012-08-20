@@ -121,7 +121,7 @@ class Uploader(object):
                 description_type='plain',
                 text=self.meta['description']),
             keywords=gdata.media.Keywords(
-                text=tags )),
+                text=tags ),
             category=[gdata.media.Category(
                 # label=self.meta['category'],
                 # text=self.meta['category'],
