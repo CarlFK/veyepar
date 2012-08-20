@@ -110,6 +110,10 @@ class Uploader(object):
        
     def media_group(self):
         # prepare a media group object to hold our video's meta-data
+
+        tags = [tag for tag in tags if " " not in tag]
+        tags =','.join(tags) 
+
         media_group = gdata.media.Group(
             title=gdata.media.Title(
                 text=self.meta['title']),
@@ -117,7 +121,7 @@ class Uploader(object):
                 description_type='plain',
                 text=self.meta['description']),
             keywords=gdata.media.Keywords(
-                text=','.join(self.meta['tags'] )),
+                text=tags )),
             category=[gdata.media.Category(
                 # label=self.meta['category'],
                 # text=self.meta['category'],
