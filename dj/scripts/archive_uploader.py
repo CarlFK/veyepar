@@ -10,7 +10,6 @@ import pw
 """
 archive={
         "user_name":{
-            'bucket_id':'your.test.bucket',
             'access': "abc",
             "secret": "123"
             }   
