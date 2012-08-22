@@ -20,10 +20,13 @@ yt = {
 
 archive={
         "user_name":{
-'access': "abc",
-"secret": "123"
-}
-        }   
+            'bucket_id':'your.test.bucket',
+            'access': "abc",
+            "secret": "123"
+            }
+        }
+
+
 
 # http://richard.readthedocs.org/en/latest/admin/api.html
 richard={

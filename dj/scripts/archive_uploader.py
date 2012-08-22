@@ -6,6 +6,17 @@
 # which someday will be jsut post.py with a arc parameter.
 
 import pw
+# pw.py looks like this:
+"""
+archive={
+        "user_name":{
+            'bucket_id':'your.test.bucket',
+            'access': "abc",
+            "secret": "123"
+            }   
+        }   
+"""
+
 
 # following http://docs.pythonboto.org/en/latest/s3_tut.html
 # http://archive.org/catalog.php?history=1&identifier=nextdayvideo.test
@@ -47,16 +58,16 @@ class Uploader(object):
             # actually upload
             key.set_contents_from_filename(self.pathname)
 
+            if self.debug_mode:
+                import code
+                code.interact(local=locals())
+
             self.new_url = key.generate_url(0)
-            print self.new_url 
             ret = True
 
         except:
             self.ret_text = "internet archive error: ", sys.exc_info()[0]
             ret = False
-            if self.debug_mode:
-                import code
-                code.interact(local=locals())
 
         return ret
 
@@ -66,6 +77,7 @@ if __name__ == '__main__':
     u.upload_user = 'cfkarsten'
     u.bucket_id = 'test.bucket'
     u.key_id='test'
+    u.debug_mode = True
 
     ret = u.upload()
 
