@@ -41,7 +41,7 @@ class Uploader(object):
 
         auth = pw.archive[self.upload_user]
         connection = boto.connect_s3( auth['access'], auth['secret'], 
-                host='s3.us.archive.org', is_secure=False)
+                host='s3.us.archive.org', is_secure=False, calling_format=boto.s3.connection.OrdinaryCallingFormat())
 
         return connection
 
