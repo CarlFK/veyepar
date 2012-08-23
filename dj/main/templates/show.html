@@ -42,6 +42,7 @@
         <th>state</th>
         <th>episode.name</th>
         <th>episode.authors</th>
+        <th>released</th>
       </tr>
     </thead>
 
@@ -65,6 +66,7 @@
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>
 {#        <td><a href="E/{{episode.id}}/claim_lock">[LOCK]</a></td> #}
+        <td>{{episode.released}}</td>
       </tr>
     {% endfor %}
   </table>

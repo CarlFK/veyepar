@@ -22,6 +22,8 @@ archive={
 # http://archive.org/details/nextdayvideo.test/foobar 
 
 import boto
+import boto.s3.connection
+
 import sys
 
 class Uploader(object):
@@ -41,7 +43,8 @@ class Uploader(object):
 
         auth = pw.archive[self.upload_user]
         connection = boto.connect_s3( auth['access'], auth['secret'], 
-                host='s3.us.archive.org', is_secure=False, calling_format=boto.s3.connection.OrdinaryCallingFormat())
+                host='s3.us.archive.org', is_secure=False, 
+                calling_format=boto.s3.connection.OrdinaryCallingFormat())
 
         return connection
 
