@@ -158,8 +158,6 @@ class post(process):
         # self.log_info(uploader.ret_text)
 
         if youtube_success:
-            # why was new_entry.id.text being used?
-            #self.last_url = uploader.new_entry.id.text
             # save new youtube url
             self.last_url = uploader.new_url
             ep.host_url = self.last_url
@@ -167,12 +165,15 @@ class post(process):
             # shim to upload to archive.org too.. yuck.
             uploader = archive_uploader.Uploader()
 
-            uploader.pathname = files[0]['pathname']
             uploader.upload_user = 'cfkarsten'
             uploader.bucket_id = pw.archive[uploader.upload_user]['bucket_id']
-            uploader.key_id = "%s/%s/%s" % ( 
-                    client.slug, show.slug, ep.slug )
 
+            uploader.pathname = files[0]['pathname']
+            uploader.key_id = "%s/%s/%s.%s" % ( 
+                    client.slug, show.slug, ep.slug, files[0]['ext']
+                    )
+
+            # actually upload mp4
             archive_success = uploader.upload() 
             if archive_success:
                 if self.options.verbose: print uploader.new_url
@@ -181,11 +182,26 @@ class post(process):
                 ep.archive_url = uploader.new_url
                 self.archive_url = uploader.new_url # hook for tests so that it can be browsed
 
-                #print dir(uploader)
-                # import code
-                # code.interact(local=locals())
+                uploader.pathname = files[1]['pathname']
+                uploader.key_id = "%s/%s/%s.%s" % ( 
+                    client.slug, show.slug, ep.slug, files[1]['ext']
+                    )
+
+                # actually upload again!!!
+                # ogv maybe?
+                archive_success = uploader.upload() 
+                if archive_success:
+                    if self.options.verbose: print uploader.new_url
+                    # this is pretty gross.
+                    # store the archive url
+                    ep.archive_url = uploader.new_url
+                    self.archive_url = uploader.new_url # hook for tests so that it can be browsed
+
+                else:
+                    print "internet archive error #2"
+
             else:
-                print "internet archive error"
+                print "internet archive error #1"
 
         else:
             print "youtube error! zomg"

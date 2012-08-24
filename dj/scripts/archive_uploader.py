@@ -51,8 +51,8 @@ class Uploader(object):
     def upload(self):
 
         service = self.auth()
-        # bucket = service.create_bucket(self.bucket_id)
-        bucket = service.get_bucket(self.bucket_id)
+        bucket = service.create_bucket(self.bucket_id)
+        # bucket = service.get_bucket(self.bucket_id)
         key = boto.s3.key.Key(bucket)
         key.key = self.key_id
 
@@ -76,9 +76,11 @@ class Uploader(object):
 if __name__ == '__main__':
     u = Uploader()
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4'
+    u.pathname = '/home/juser/Videos/veyepar/chipy/chipy_aug_2012/ogv/Mono_to_IronPython.ogv'
     u.upload_user = 'cfkarsten'
-    u.bucket_id = 'test.bucket'
-    u.key_id='test'
+    u.bucket_id = 'nextdayvideo'
+    # u.key_id='test'
+    u.key_id='Mono_to_IronPython.ogv'
     u.debug_mode = True
 
     ret = u.upload()
