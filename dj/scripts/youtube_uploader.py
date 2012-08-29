@@ -114,7 +114,6 @@ class Uploader(object):
         tags = self.meta['tags']
         tags = [tag for tag in tags if " " not in tag]
         tags =','.join(tags) 
-        print tags
 
         media_group = gdata.media.Group(
             title=gdata.media.Title(
@@ -161,11 +160,8 @@ class Uploader(object):
             video_entry.geo = self.geo()
 
         # add some more metadata -  more tags
-        # print "#2", self.meta['tags']
-
         tags = self.meta['tags']
         tags = [tag for tag in tags if " " not in tag]
-        print "#3", tags
         video_entry.AddDeveloperTags(tags)
 
         pathname= self.files[0]['pathname']
@@ -177,7 +173,7 @@ class Uploader(object):
             self.ret_text = self.new_entry.__str__()
             link = self.new_entry.GetHtmlLink()
             self.new_url = link.href.split('&')[0]
-            print self.new_url
+            # print self.new_url
             ret = True
 
         except gdata.youtube.service.YouTubeError as e:

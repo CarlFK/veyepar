@@ -151,6 +151,7 @@ class post(process):
 
         uploader.old_url = ep.host_url # for replacing.
      
+        # down to next layer of code that will do the uplaading 
         youtube_success = uploader.upload()
 
         ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
@@ -189,7 +190,7 @@ class post(process):
                     self.archive_url = uploader.new_url # hook for tests so that it can be browsed
 
                 else:
-                    print "internet archive error #1"
+                    print "internet archive error!"
 
         else:
             print "youtube error! zomg"

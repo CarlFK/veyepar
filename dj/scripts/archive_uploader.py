@@ -62,10 +62,13 @@ class Uploader(object):
         key = boto.s3.key.Key(bucket)
         key.key = self.key_id
 
+        pf = ProgressFile(self.pathname, 'r')
+
         try:
             # actually upload
-            key.set_contents_from_file(self.pathname)
-            # key.set_contents_from_filename(self.pathname)
+            #key.set_contents_from_file(pf)
+            #key.set_contents_from_file(self.pathname)
+            key.set_contents_from_filename(self.pathname)
 
             if self.debug_mode:
                 import code
