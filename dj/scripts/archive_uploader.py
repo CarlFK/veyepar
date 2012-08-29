@@ -5,6 +5,12 @@
 
 # which someday will be jsut post.py with a arc parameter.
 
+import progressbar
+from youtube_uploader import widgets
+from youtube_uploader import progress
+from youtube_uploader import ProgressFile
+
+
 import pw
 # pw.py looks like this:
 """
@@ -51,14 +57,15 @@ class Uploader(object):
     def upload(self):
 
         service = self.auth()
-        bucket = service.create_bucket(self.bucket_id)
-        # bucket = service.get_bucket(self.bucket_id)
+        # bucket = service.create_bucket(self.bucket_id)
+        bucket = service.get_bucket(self.bucket_id)
         key = boto.s3.key.Key(bucket)
         key.key = self.key_id
 
         try:
             # actually upload
-            key.set_contents_from_filename(self.pathname)
+            key.set_contents_from_file(self.pathname)
+            # key.set_contents_from_filename(self.pathname)
 
             if self.debug_mode:
                 import code
@@ -76,11 +83,9 @@ class Uploader(object):
 if __name__ == '__main__':
     u = Uploader()
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4'
-    u.pathname = '/home/juser/Videos/veyepar/chipy/chipy_aug_2012/ogv/Mono_to_IronPython.ogv'
     u.upload_user = 'cfkarsten'
-    u.bucket_id = 'nextdayvideo'
-    # u.key_id='test'
-    u.key_id='Mono_to_IronPython.ogv'
+    u.bucket_id = 'nextdayvideo.test'
+    u.key_id='test'
     u.debug_mode = True
 
     ret = u.upload()

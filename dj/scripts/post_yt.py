@@ -168,40 +168,28 @@ class post(process):
             uploader.upload_user = 'cfkarsten'
             uploader.bucket_id = pw.archive[uploader.upload_user]['bucket_id']
 
-            uploader.pathname = files[0]['pathname']
-            uploader.key_id = "%s/%s/%s.%s" % ( 
-                    client.slug, show.slug, ep.slug, files[0]['ext']
-                    )
+            for f in files:
 
-            # actually upload mp4
-            archive_success = uploader.upload() 
-            if archive_success:
-                if self.options.verbose: print uploader.new_url
-                # this is pretty gross.
-                # store the archive url
-                ep.archive_url = uploader.new_url
-                self.archive_url = uploader.new_url # hook for tests so that it can be browsed
-
-                uploader.pathname = files[1]['pathname']
+                uploader.pathname = f['pathname']
                 uploader.key_id = "%s/%s/%s.%s" % ( 
-                    client.slug, show.slug, ep.slug, files[1]['ext']
+                    client.slug, show.slug, ep.slug, f['ext']
                     )
 
-                # actually upload again!!!
-                # ogv maybe?
+                # actually upload 
                 archive_success = uploader.upload() 
                 if archive_success:
                     if self.options.verbose: print uploader.new_url
                     # this is pretty gross.
                     # store the archive url
-                    ep.archive_url = uploader.new_url
+                    if f['ext'] == "mp4":
+                        ep.archive_mp4_url = uploader.new_url
+                    elif f['ext'] == "ogv":
+                        ep.archive_ogv_url = uploader.new_url
+
                     self.archive_url = uploader.new_url # hook for tests so that it can be browsed
 
                 else:
-                    print "internet archive error #2"
-
-            else:
-                print "internet archive error #1"
+                    print "internet archive error #1"
 
         else:
             print "youtube error! zomg"

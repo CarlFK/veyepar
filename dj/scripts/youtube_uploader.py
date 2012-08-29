@@ -161,12 +161,11 @@ class Uploader(object):
             video_entry.geo = self.geo()
 
         # add some more metadata -  more tags
-        print self.meta['tags']
+        # print "#2", self.meta['tags']
 
         tags = self.meta['tags']
         tags = [tag for tag in tags if " " not in tag]
-        tags =','.join(tags) 
-        print tags
+        print "#3", tags
         video_entry.AddDeveloperTags(tags)
 
         pathname= self.files[0]['pathname']
@@ -221,8 +220,8 @@ if __name__ == '__main__':
       'title': "test title",
       'description': "test description",
       #'description': "test " * 100,
-      #'tags': ['tag1', 'tag2'],
-      'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
+      'tags': ['tag1', 'tag2'],
+      # 'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
       'category': "Education",
       'latlon': (37.0,-122.0)
     }
@@ -237,7 +236,7 @@ if __name__ == '__main__':
     """
     print u.meta
 
-    u.files = [{'pathname':'/home/juser/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4', 'ext':'mp4'}]
+    u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4', 'ext':'mp4'}]
     u.user = 'veyepar_test'
     # u.private = True
 

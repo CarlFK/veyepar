@@ -433,11 +433,9 @@ def main():
 
     result={}
 
-
     t=Run_Tests() 
-    # t.upload_formats="flv ogv m4v mp3"
-    # t.upload_formats=["mp4"]
-    t.upload_formats=["ogv","mp4"]
+    t.upload_formats=["mp4"]
+    # t.upload_formats=["ogv","mp4"]
     t.title = "foo"
 
     t.make_test_user()
@@ -445,9 +443,9 @@ def main():
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
     # t.make_source_dvs()
     # t.make_source_footer()
-    # t.add_dv()
+    t.add_dv()
     # t.make_thumbs()
-    # t.make_cut_list()
+    t.make_cut_list()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     t.encode()

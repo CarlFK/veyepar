@@ -204,6 +204,8 @@ class Episode(models.Model):
     public_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL public should use (like pvo or some aggregator")
     archive_ogv_url = models.CharField(max_length=235, null=True,blank=True,
+        help_text = "URL public should use (like pvo or some aggregator")
+    archive_url = models.CharField(max_length=235, null=True,blank=True,
         help_text = "URL public can use to dl an ogv (like archive.org")
     archive_mp4_url = models.CharField(max_length=235, null=True,blank=True,
         help_text = "URL public can use to dl an mp4. (like archive.org")
