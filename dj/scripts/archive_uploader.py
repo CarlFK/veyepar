@@ -66,9 +66,7 @@ class Uploader(object):
 
         try:
             # actually upload
-            #key.set_contents_from_file(pf)
-            #key.set_contents_from_file(self.pathname)
-            key.set_contents_from_filename(self.pathname)
+            key.set_contents_from_file(pf)
 
             if self.debug_mode:
                 import code

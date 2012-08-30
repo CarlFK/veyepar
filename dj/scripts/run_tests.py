@@ -448,7 +448,7 @@ def main():
     t.make_cut_list()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
-    t.encode()
+    # t.encode()
     # t.ck_errors()
     # t.play_vid()
     result['url'] = t.post_yt()

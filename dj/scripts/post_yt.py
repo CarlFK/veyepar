@@ -43,6 +43,7 @@ class post(process):
     authors = [ a.replace(' ','') for a in authors ]
     tags += authors 
 
+    # remove any empty tags
     meta['tags'] = [tag for tag in tags if tag] 
 
     # if ep.license: 
@@ -64,6 +65,7 @@ class post(process):
 
     # private is implemnted different in youtube and blip.
     # blip want's a number, yt wants Truthy
+    # yt has publid, unlisted, private
     # if self.options.hidden:
     #    meta['hidden'] = self.options.hidden
     # meta['hidden'] = ep.hidden or self.options.hidden
@@ -127,8 +129,9 @@ class post(process):
     # password always comes from pw.py
    
     host_user =  self.options.host_user if self.options.host_user \
-                    else client.host_user if client.host_user \
-                    else pw.host.keys()[0]
+                    else client.host_user 
+                    # if client.host_user 
+                    # else pw.host.keys()[0]
 
     if self.options.test:
         print 'test mode:'
@@ -159,6 +162,8 @@ class post(process):
         # self.log_info(uploader.ret_text)
 
         if youtube_success:
+            if self.options.verbose: print uploader.new_url
+
             # save new youtube url
             self.last_url = uploader.new_url
             ep.host_url = self.last_url
@@ -166,7 +171,8 @@ class post(process):
             # shim to upload to archive.org too.. yuck.
             uploader = archive_uploader.Uploader()
 
-            uploader.upload_user = 'cfkarsten'
+            uploader.upload_user = host_user
+            # uploader.upload_user = 'cfkarsten'
             uploader.bucket_id = pw.archive[uploader.upload_user]['bucket_id']
 
             for f in files:
