@@ -40,8 +40,12 @@ class add_to_richard(process):
         # remove blacklisted tags, 
         # and tags with a / in them.
         tags = [t for t in tags if t not in [
-             u'enthought', u'scipy_2012', u'Introductory/Intermediate',
-             ] and '/' not in t ]
+             u'enthought', 
+             u'scipy_2012', 
+             u'Introductory/Intermediate',
+             ] 
+             and '/' not in t 
+             and t]
 
         host = pw.richard[self.options.host_user]
         pprint.pprint(host)
