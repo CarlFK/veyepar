@@ -15,7 +15,7 @@ import pw
 # pw.py looks like this:
 """
 archive={
-        "user_name":{
+        "user":{
             'access': "abc",
             "secret": "123"
             }   
