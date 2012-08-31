@@ -58,6 +58,7 @@ ret: 12
                 p = subprocess.Popen( cmd )
                 ret = p.wait()
                 if self.options.verbose: print "ret:", ret
+                ret = ret == 0
 
         # tring to fix the db timeout problem
         # ep=Episode.objects.get(pk=ep.id)

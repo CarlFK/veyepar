@@ -291,7 +291,7 @@ pix_fmt=yuv411p" % parms
   p.set_options(force=True, verbose=True, 
       upload_formats=['mp4'],
       debug_log=True,
-      host_user="cfkarsten",
+      host_user="test",
       )
   p.private=True
   p.main()
@@ -302,6 +302,20 @@ pix_fmt=yuv411p" % parms
 
   return p.last_url
 
+ def add_to_richard(self):
+  # add the test to pyvideo.org:9000 test instance
+  import add_to_richard
+  p=add_to_richard.add_to_richard()
+  p.set_options(force=True, verbose=True, 
+      upload_formats=['mp4'],
+      host_user="test",
+      )
+  p.private=True
+  p.main()
+  ret = p.pvo_url
+
+  return ret
+
  def tweet(self):
   # tell the world (test account)
   import tweet
@@ -310,6 +324,7 @@ pix_fmt=yuv411p" % parms
   p.main()
   tweet_url = "http://twitter.com/#!/squid/status/%s" % (p.last_tweet["id"],)
   return tweet_url
+
 
  def csv(self):
   # make csv and other data files
@@ -438,22 +453,23 @@ def main():
     # t.upload_formats=["ogv","mp4"]
     t.title = "foo"
 
-    t.make_test_user()
-    t.setup_test_data()
+    # t.make_test_user()
+    # t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
     # t.make_source_dvs()
     # t.make_source_footer()
-    t.add_dv()
+    # t.add_dv()
     # t.make_thumbs()
-    t.make_cut_list()
+    # t.make_cut_list()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     # t.encode()
     # t.ck_errors()
     # t.play_vid()
-    result['url'] = t.post_yt()
+    # result['url'] = t.post_yt()
     # result['tweet'] = t.tweet()
     # t.csv()
+    result['richard'] = t.add_to_richard()
     # result['video'] = t.ocr_test()
     # result['audio'] = t.sphinx_test()
     # result['sizes'] = t.size_test()

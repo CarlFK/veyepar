@@ -112,16 +112,16 @@ class add_to_richard(process):
     'quality_notes': '',
     'description': u'',
     'thumbnail_url': yt_meta['thumbnail_url'],
-    'video_ogv_url': u'',
+    'video_ogv_url': ep.archive_ogv_url,
     'video_ogv_length': None,
-    'video_mp4_url': ep.archive_url,
-    'video_mp4_download_only': True,
+    'video_mp4_url': ep.archive_mp4_url,
+    'video_mp4_download_only': False,
     'video_mp4_length': None,
     'video_webm_url': u'',
     'video_webm_length': None,
     'video_flv_url': u'',
     'video_flv_length': None,
-    'embed': yt_meta['object_embed_code'],
+    'embed': yt_meta.get('object_embed_code',''),
 }
         if self.options.verbose: pprint.pprint(video_data)
 
@@ -130,7 +130,16 @@ class add_to_richard(process):
         try:
             vid = api.video.post(video_data, 
                     username=host['user'], api_key=host['api_key'])
+
+            self.pvo_url = "http://%s/video/%s/%s" % (
+                    host['host'], vid['id'],vid['slug'])
+            if self.options.verbose: print self.pvo_url
+            ep.public_url = self.pvo_url
+            ret = self.pvo_url
+
         except Exception as exc:
+            print exc
+            ret = False
             # TODO: OMG gross.
             if exc.content.startswith('\n<!DOCTYPE html>'):
                 error_lines = [line for line in exc.content.splitlines()
@@ -142,14 +151,8 @@ class add_to_richard(process):
 
             raise
 
-
-        pvo_url = "http://%s/video/%s/%s" % (host['host'], vid['id'],vid['slug'])
-        if self.options.verbose: print pvo_url
-        ep.public_url = pvo_url
-
         ep.save()
 
-        ret = True
         return ret
 
 if __name__ == '__main__':

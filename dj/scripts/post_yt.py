@@ -7,9 +7,9 @@ import archive_uploader
 
 import os
 
-from django.db import DatabaseError
 import pw
 from process import process
+from django.db import DatabaseError
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
@@ -149,7 +149,8 @@ class post(process):
         uploader.files = files
         uploader.thumb = thumb
         uploader.meta = meta
-        uploader.user = host_user
+        uploader.upload_user = pw.archive[host_user]['user']
+        #uploader.user = host_user
         uploader.private = private
 
         uploader.old_url = ep.host_url # for replacing.
@@ -171,9 +172,10 @@ class post(process):
             # shim to upload to archive.org too.. yuck.
             uploader = archive_uploader.Uploader()
 
-            uploader.upload_user = host_user
+            uploader.upload_user = pw.archive[host_user]['user']
+            # uploader.upload_user = host_user
             # uploader.upload_user = 'cfkarsten'
-            uploader.bucket_id = pw.archive[uploader.upload_user]['bucket_id']
+            uploader.bucket_id = pw.archive[host_user]['bucket_id']
 
             for f in files:
 
