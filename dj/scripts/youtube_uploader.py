@@ -83,7 +83,6 @@ class Uploader(object):
     files = []
     thumb = ''
     meta = {}
-    upload_user = ''
     old_url = ''
     user=''
     private=False
@@ -102,7 +101,7 @@ class Uploader(object):
         yt_service.password = gauth['password']
         yt_service.source = 'video eyebaal review'
         yt_service.developer_key = gauth['dev_key']
-        yt_service.client_id = self.user
+        yt_service.client_id = gauth['user']
 
         yt_service.ProgrammaticLogin()
 
@@ -176,7 +175,7 @@ class Uploader(object):
             # print self.new_url
             ret = True
 
-        except gdata.youtube.service.YouTubeError as e:
+        except gdata.youtube.service.YouTubeError, e:
             self.ret_text = 'request: %s\nerror: %s' % (video_entry.ToString(), e.__str__())
             ret = False
             if self.debug_mode:
@@ -233,7 +232,7 @@ if __name__ == '__main__':
     print u.meta
 
     u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4', 'ext':'mp4'}]
-    u.user = 'veyepar_test'
+    u.user = 'test'
     # u.private = True
 
     ret = u.upload()
