@@ -149,35 +149,30 @@ class post(process):
         uploader.files = files
         uploader.thumb = thumb
         uploader.meta = meta
-        uploader.upload_user = pw.yt[host_user]['user']
-        #uploader.user = host_user
+        # uploader.upload_user = pw.yt[host_user]['user']
+        uploader.user = host_user
         uploader.private = private
 
         uploader.old_url = ep.host_url # for replacing.
      
         # down to next layer of code that will do the uplaading 
-        """
         youtube_success = uploader.upload()
 
         ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
         # self.log_info(uploader.ret_text)
 
-        """
-        youtube_success = True
         if youtube_success:
-            # if self.options.verbose: print uploader.new_url
+            if self.options.verbose: print uploader.new_url
 
             # save new youtube url
-            # self.last_url = uploader.new_url
-            # ep.host_url = self.last_url
+            self.last_url = uploader.new_url
+            ep.host_url = self.last_url
 
             # shim to upload to archive.org too.. yuck.
             uploader = archive_uploader.Uploader()
 
-            # uploader.upload_user = pw.archive[host_user]['user']
             uploader.upload_user = host_user
-            # uploader.upload_user = 'cfkarsten'
             uploader.bucket_id = pw.archive[host_user]['bucket_id']
 
             for f in files:

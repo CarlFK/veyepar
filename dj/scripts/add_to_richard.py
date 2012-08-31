@@ -66,8 +66,7 @@ class add_to_richard(process):
         for cat in cats['objects']:
             print "|",cat['id'], cat['slug'],
             if cat['slug']  ==  ep.show.slug:
-               found = True
-               print "found it!"
+                found = True
 
         if not found:
             # The category doesn't exist yet, so create it
@@ -78,16 +77,16 @@ class add_to_richard(process):
                 'description': '',
                 'url': 'http://conference.scipy.org/scipy2012/',
                 'whiteboard': '',
+                # I think start_date should be blank, or .today()
                 'start_date': '2012-07-16',
                 'slug': ep.show.slug
             }
             try:
                 cat = api.category.post(cat_data, 
                     username=host['user'], api_key=host['api_key'])
-                pass
             except Exception as exc:
                 # TODO: OMG gross.
-                if exc.content.startswlth('\n<!DOCTYPE html>'):
+                if exc.content.startswith('\n<!DOCTYPE html>'):
                     error_lines = [line for line in exc.content.splitlines()
                             if 'exception_value' in line]
                     for line in error_lines:
@@ -97,13 +96,15 @@ class add_to_richard(process):
 
                 raise
 
-
+        # cat is now the category we want to use
+        # either it was existing, or was just added.
+        category_key = cat['title']
 
         # Let's populate a video object and push it.
         video_data = {
     'state': 1,
     'title': ep.name,
-    'category': ep.show.name,
+    'category': category_key,
     'summary': ep.description,
     #'slug': ep.slug,
     'source_url': ep.host_url,
@@ -142,8 +143,11 @@ class add_to_richard(process):
             ret = self.pvo_url
 
         except Exception as exc:
-            print exc
+            print "exc:", exc
             ret = False
+            import code
+            code.interact(local=locals())
+
             # TODO: OMG gross.
             if exc.content.startswith('\n<!DOCTYPE html>'):
                 error_lines = [line for line in exc.content.splitlines()
@@ -151,7 +155,7 @@ class add_to_richard(process):
                 for line in error_lines:
                      print line
             else:
-                print exc.content
+                print "exc.content:", exc.content
 
             raise
 
