@@ -60,30 +60,35 @@ class add_to_richard(process):
         # I am going to regret this later.
         # To the future me: Sorry.
 
-        print "Show slug:", ep.show.slug
+        if self.options.verbose: print "Show slug:", ep.show.slug
         cats = api.category.get(limit=0)
         found = False
         for cat in cats['objects']:
-            print "|",cat['id'], cat['slug'],
+            if self.options.verbose: print cat['id'], cat['slug']
             if cat['slug']  ==  ep.show.slug:
                 found = True
+                if self.options.verbose: print "found"
+                break
 
         if not found:
             # The category doesn't exist yet, so create it
+
+            if self.options.verbose:  print "creating..."
             cat_data = {
                 'kind': 1,
                 'name': ep.show.name,
                 'title': ep.show.name,
                 'description': '',
-                'url': 'http://conference.scipy.org/scipy2012/',
+                'url': '',
                 'whiteboard': '',
                 # I think start_date should be blank, or .today()
-                'start_date': '2012-07-16',
+                # 'start_date': '2012-07-16',
                 'slug': ep.show.slug
             }
             try:
                 cat = api.category.post(cat_data, 
                     username=host['user'], api_key=host['api_key'])
+                if self.options.verbose:  print "created", cat
             except Exception as exc:
                 # TODO: OMG gross.
                 if exc.content.startswith('\n<!DOCTYPE html>'):
@@ -102,11 +107,11 @@ class add_to_richard(process):
 
         # Let's populate a video object and push it.
         video_data = {
-    'state': 1,
+    'state': 1, # 1=live, 2=draft
     'title': ep.name,
     'category': category_key,
     'summary': ep.description,
-    #'slug': ep.slug,
+    #'slug': ep.slug,  ## richard will provide a better slug.
     'source_url': ep.host_url,
     'copyright_text': ep.license,
     'tags': tags,

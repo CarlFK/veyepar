@@ -316,6 +316,18 @@ pix_fmt=yuv411p" % parms
 
   return ret
 
+ def email_url(self):
+  # add the test to pyvideo.org:9000 test instance
+  import email_url
+  p=email_url.email_url()
+  p.set_options(force=True, verbose=True, 
+      host_user="test",
+      )
+  ret = p.main()
+
+  return ret
+
+
  def tweet(self):
   # tell the world (test account)
   import tweet
@@ -451,7 +463,7 @@ def main():
     t=Run_Tests() 
     t.upload_formats=["mp4"]
     # t.upload_formats=["ogv","mp4"]
-    t.title = "foo"
+    t.title = "How to be a Canadian"
 
     # t.make_test_user()
     # t.setup_test_data()
@@ -467,9 +479,10 @@ def main():
     # t.ck_errors()
     # t.play_vid()
     # result['url'] = t.post_yt()
+    result['richard'] = t.add_to_richard()
+    result['email'] = t.email_url()
     # result['tweet'] = t.tweet()
     # t.csv()
-    result['richard'] = t.add_to_richard()
     # result['video'] = t.ocr_test()
     # result['audio'] = t.sphinx_test()
     # result['sizes'] = t.size_test()

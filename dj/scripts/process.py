@@ -192,12 +192,12 @@ class process(object):
 
             if self.options.verbose: print ep.name
             self.log_in(ep)
-            good = self.process_ep(ep)
+            ret = self.process_ep(ep)
             # .process is long running (maybe, like encode or post) 
             # so refresh episode in case its .stop was set 
             # (would be set in some other process, like the UI)
             ep=Episode.objects.get(pk=e.id)
-            if good:
+            if ret:
                 # if the process doesn't fail,
                 # and it was part of the normal process, 
                 # don't bump if the process was forced, 
@@ -222,9 +222,8 @@ class process(object):
                 # re-set the stop flag.
                 ep.stop = False
                 ep.save()
-                return
 
-            if self.options.lag:
+            elif self.options.lag:
                 if ep != eps[-1]: # don't lag on the last (or only) one.
                     print "lagging....", self.options.lag
                     time.sleep(self.options.lag)
@@ -233,6 +232,9 @@ class process(object):
             if self.options.verbose:
                 print '#%s: "%s" is in state %s, ready is %s' % (
                     ep.id, ep.name, ep.state, self.ready_state)
+            ret = None # idk, not sure this matters.
+
+        return ret
 
 
   def one_show(self, show):
@@ -275,23 +277,24 @@ class process(object):
             episodes = episodes.filter(id__in=self.args)
 
         self.start=datetime.datetime.now()
-        self.process_eps(episodes)
+        ret = self.process_eps(episodes)
         self.end=datetime.datetime.now()
         work_time = self.end-self.start
         if work_time.seconds:
             print "run time: %s minutes" % (work_time.seconds/60)
 
-        return
+        return ret
 
   def poll(self):
         done=False
         while not done:
-            self.work()
+            ret = self.work()
             if self.stop:
                 done=True
             else: 
                 if self.options.verbose: print "sleeping...."
                 time.sleep(int(self.options.poll))
+        return ret
 
 
   def list(self):
@@ -415,11 +418,13 @@ class process(object):
     self.parse_args()
 
     if self.options.list:
-        self.list()
+        ret = self.list()
     elif self.options.poll:
-        self.poll()
+        ret = self.poll()
     else:
-        self.work()
+        ret = self.work()
+
+    return ret
 
 if __name__ == '__main__':
     p=process()

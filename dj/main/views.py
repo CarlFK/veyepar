@@ -91,7 +91,9 @@ episode:     XXXXXXXXX
 
     ep.sequence = 1
     ep.description = desc
-    ep.authors = 'test author'
+    ep.authors = "Nuk the Magnificent"
+    ep.emails = "cfkarsten@gmail.com"
+    # ep.authors = 'test author'
     ep.tags ="tag1,tag_2,tag 3"
     ep.save()
 

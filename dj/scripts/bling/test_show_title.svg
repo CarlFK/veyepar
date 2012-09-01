@@ -9,10 +9,10 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.0 r9654"
+   inkscape:version="0.48.2 r9819"
    width="800"
    height="600"
-   sodipodi:docname="test_show_title2.svg">
+   sodipodi:docname="test_show_title.svg">
   <metadata
      id="metadata14">
     <rdf:RDF>
@@ -48,10 +48,10 @@
      id="namedview10"
      showgrid="false"
      inkscape:zoom="0.695"
-     inkscape:cx="400"
+     inkscape:cx="228.77698"
      inkscape:cy="300"
-     inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-x="191"
+     inkscape:window-y="478"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg2" />
   <rect
@@ -82,7 +82,7 @@
      xml:space="preserve"
      id="titlebox"
      style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-     transform="matrix(0.83353328,0,0,1.6285501,56.232642,48.539808)"><flowRegion
+     transform="matrix(0.83353328,0,0,1.6285501,56.232642,-23.402638)"><flowRegion
        id="flowRegion2776"><rect
          id="rect2778"
          width="684.7511"
@@ -91,4 +91,16 @@
          y="121.71946"
          style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
        id="title"
-       style="font-weight:normal">UR DOING IT WRONG for god sake, you really need to please RTFM, RTFM!</flowPara></flowRoot></svg>
+       style="font-weight:normal">UR DOING IT WRONG for god sake, you really need to please RTFM, RTFM!</flowPara></flowRoot>  <flowRoot
+     transform="translate(-177.94531,127.94936)"
+     style="font-size:40px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:News Cycle;-inkscape-font-specification:News Cycle Medium"
+     id="presenterbox"
+     xml:space="preserve"><flowRegion
+       id="flowRegion15503"><rect
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;text-align:center;text-anchor:middle;font-family:News Cycle;-inkscape-font-specification:News Cycle Medium"
+         y="213"
+         x="101"
+         height="112"
+         width="956"
+         id="rect15505" /></flowRegion><flowPara
+       id="presenternames">John Q. Speaker</flowPara></flowRoot></svg>
