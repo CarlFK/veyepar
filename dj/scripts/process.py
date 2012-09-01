@@ -193,10 +193,12 @@ class process(object):
             if self.options.verbose: print ep.name
             self.log_in(ep)
             ret = self.process_ep(ep)
+            if self.options.verbose: print "process_ep:", ret
             # .process is long running (maybe, like encode or post) 
             # so refresh episode in case its .stop was set 
             # (would be set in some other process, like the UI)
             ep=Episode.objects.get(pk=e.id)
+
             if ret:
                 # if the process doesn't fail,
                 # and it was part of the normal process, 
@@ -224,7 +226,7 @@ class process(object):
                 ep.save()
 
             elif self.options.lag:
-                if ep != eps[-1]: # don't lag on the last (or only) one.
+                if ep != episodes[-1]: # don't lag on the last one.
                     print "lagging....", self.options.lag
                     time.sleep(self.options.lag)
 
@@ -234,7 +236,7 @@ class process(object):
                     ep.id, ep.name, ep.state, self.ready_state)
             ret = None # idk, not sure this matters.
 
-        return ret
+    return ret
 
 
   def one_show(self, show):

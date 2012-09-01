@@ -20,7 +20,7 @@ from process import process
 
 class tweet(process):
 
-    ready_state = 9
+    ready_state = 10
 
     def shorten(self, url):
         return url # hack because auth broke:
@@ -80,8 +80,8 @@ class tweet(process):
         user =  client.host_user if client.host_user else 'nextdayvideo'
 
         # url="http://nextdayvideo.blip.tv/file/%s" % ep.host_url
-        url = ep.host_url
-        prefix = "#%s #VIDEO" % show.client.slug
+        url = ep.public_url
+        prefix = "#%s #VIDEO" % show.slug
         tweet = self.mk_tweet(prefix, ep.name, ep.authors, url)
 
         ret=self.tweet_tweet(user, tweet)
@@ -96,7 +96,9 @@ class tweet(process):
            help="account to tweet from if not specified in client.")
 
     def add_more_option_defaults(self, parser):
-        parser.set_defaults(lag=120)
+        # lag doesn't work right now.
+        # parser.set_defaults(lag=120)
+        pass
 
 if __name__ == '__main__':
     p=tweet()
