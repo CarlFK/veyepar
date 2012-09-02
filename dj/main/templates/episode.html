@@ -72,6 +72,7 @@
 </tbody>
 </table>
 
+
 {% if user.is_authenticated %}
   <input type="submit" value="Save" />
 {% else %}
@@ -129,6 +130,7 @@
       <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">admin</a></td>
       <td>
 <a href="{% url admin:main_cut_list_change cl.id%}">admin</a>
+<a href="{% url admin:main_cut_list_change cl.id%}delete/">delete</a>
 	 </td>
       </tr>
 
@@ -157,6 +159,8 @@
 {% endfor %}
 </tbody>
 </table>
+
+{{ episode_form.state }}
 
 {% if user.is_authenticated %}
   <input type="submit" value="Save" />

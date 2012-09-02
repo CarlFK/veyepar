@@ -40,6 +40,7 @@ ndv walpaper
 
 recording sheets:
  [x] over time (adjust before addeps to suck in the extras)
+ hostname:____
 
 live cd: mainly for slave
   user in video group

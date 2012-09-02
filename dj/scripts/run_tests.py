@@ -480,7 +480,7 @@ def main():
     # t.play_vid()
     # result['url'] = t.post_yt()
     result['richard'] = t.add_to_richard()
-    result['email'] = t.email_url()
+    # result['email'] = t.email_url()
     # result['tweet'] = t.tweet()
     # t.csv()
     # result['video'] = t.ocr_test()

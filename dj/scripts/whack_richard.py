@@ -7,13 +7,14 @@ import pw
 
 # test data is this list of categories:
 test_categories = [ 
-#    'carlcon-2012',
-    'test_show', 
+    'carlcon-2012',
+#    'test_show', 
 #    'chipy_aug_2012',
 #    'scipy_2012'
 ]
 
-host_user = 'test'
+# host_user = 'test' # pvo:9000, carlfk
+host_user = 'local_test'  # localhost:9000, carl
 
 host = pw.richard[host_user]
 pprint.pprint(host)
