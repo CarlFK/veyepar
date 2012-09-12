@@ -910,7 +910,7 @@ class add_eps(process.process):
               if diff_fields:
                   print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
                   for f,a1,a2 in diff_fields:
-                      print 'veyepar %s: %s' % (f,a1)
+                      print 'veyepar %s: %s' % (f,unicode(a1)[:60])
                       print ' source %s: %s' % (f,unicode(a2)[:60])
                   print
 

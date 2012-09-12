@@ -11,9 +11,12 @@ dvswitch:
   dvsource-dvgrab - save unmixed stream
   dvsink-file - default file name: yyyy-mm-ddd/hh_mm_ss.i.dv
 
-run sink-playdv on slave as a monitor for cam op.
+Show twinpact feed on slave display.
+  note: slave display is also used to play a sponsor slide roll between talks.
 
 veyepar:
+
+  store images of recording sheets
   next/prev (match recording sheet: same room/day)
   split long talk (tutorials) into parts.
   error handeling:
@@ -24,9 +27,21 @@ veyepar:
         encoder fail
 
   command line parameter to set cfg file.
-    test script has its own cfg
+    give test script its own cfg
 
   upload category - needs default
+
+  upload in draft state:
+      it is not meant for public viewing yet.
+      there is no security blocking access
+      if you have the URL, you can view it
+      presenters will be mailed the URL, they can pass it on if they want.
+      at some point we will want everone to see it, the we flip from draft to public
+     
+      YouTube: access control settings - needs to be implemnted.
+      archive: not sure there is a UI for people to use, so dooesn't matter  
+      richard: state:2 api is broken.
+
 
 encoding:
   soften jump cuts
@@ -34,9 +49,14 @@ encoding:
   channel_copy - document and verify current behaviour
 
 model:
-  location.channel_copy
+   (nothing!)
 
-ndv walpaper 
+walpaper 
+  logos:
+    NextDayVideo, 
+    Linux, DVswitch, Python, Django, MLT
+
+   
 
 recording sheets:
  [x] over time (adjust before addeps to suck in the extras)
@@ -52,4 +72,4 @@ live cd: mainly for slave
 title screen preview
   so that they can be generated and displayed on web page.
 
-tsdv - read offset from location table
+

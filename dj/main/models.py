@@ -137,7 +137,6 @@ class Quality(models.Model):
     def __unicode__(self):
         return self.name
 
-# STATES=((0,'borked'),(1,'edit'),(2,'encode'),(3,'review'),(4,'post',),(5,'email'),(6,'tweet'),(7,'done'))
 STATES=[
  (0, 'borked'),
  (1, 'edit'), # enter cutlist data
@@ -147,7 +146,7 @@ STATES=[
  (5, 'richard'), # push urls and description to PyVideo.org
  (6, 'review 1'), # staff check to see if they exist on yourube/archive
  (7, 'email'), # send private url to presenter, ask for feedback, 
- (8, 'review 2'), # staff wait for presenter to say good
+ (8, 'review 2'), # wait for presenter to say good, or timeout
  (9, 'make public'), # flip private to public
  (10, 'tweet'), # tell world
  (11, 'done')

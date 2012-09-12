@@ -267,3 +267,33 @@ video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group,
     geo=where, extension_elements=extension)
 
 """
+Traceback (most recent call last):|||||||||          | ETA:  0:02:04 482.80 kB/s
+
+
+
+
+  File "post_yt.py", line 159, in process_ep
+    youtube_success = uploader.upload()
+  File "/home/videoteam/veyepar/dj/scripts/youtube_uploader.py", line 171, in upload
+    self.new_entry = yt_service.InsertVideoEntry(video_entry, pf)
+  File "/home/videoteam/.virtualenvs/veyepar/local/lib/python2.7/site-packages/gdata/youtube/service.py", line 659, in InsertVideoEntry
+    converter=gdata.youtube.YouTubeVideoEntryFromString)
+  File "/home/videoteam/.virtualenvs/veyepar/local/lib/python2.7/site-packages/gdata/service.py", line 1236, in Post
+    media_source=media_source, converter=converter)
+  File "/home/videoteam/.virtualenvs/veyepar/local/lib/python2.7/site-packages/gdata/service.py", line 1303, in PostOrPut
+    multipart[2]], headers=extra_headers, url_params=url_params)
+  File "/home/videoteam/.virtualenvs/veyepar/local/lib/python2.7/site-packages/atom/__init__.py", line 93, in optional_warn_function
+    return f(*args, **kwargs)
+  File "/home/videoteam/.virtualenvs/veyepar/local/lib/python2.7/site-packages/atom/service.py", line 186, in request
+    data=data, headers=all_headers)
+  File "/home/videoteam/.virtualenvs/veyepar/local/lib/python2.7/site-packages/gdata/auth.py", line 731, in perform_request
+    return http_client.request(operation, url, data=data, headers=headers)
+  File "/home/videoteam/.virtualenvs/veyepar/local/lib/python2.7/site-packages/atom/http.py", line 174, in request
+    return connection.getresponse()
+  File "/usr/lib/python2.7/httplib.py", line 1027, in getresponse
+    response.begin()
+  File "/usr/lib/python2.7/httplib.py", line 407, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+    raise BadStatusLine(line)
+"""

@@ -34,7 +34,8 @@ class add_to_richard(process):
         if self.options.verbose: 
             pprint.pprint( yt_meta )
         
-        speakers = '' if ep.authors is None else ep.authors.split(',')
+        # speakers = [] if ep.authors is None else ep.authors.split(',')
+        speakers = ep.authors.split(',') if ep.authors else []
 
         tags = ep.tags.split(',')
         # remove blacklisted tags, 
@@ -135,17 +136,24 @@ class add_to_richard(process):
 }
         if self.options.verbose: pprint.pprint(video_data)
 
-        # Let's create this video with an HTTP POST.
-        
-        try:
-            vid = api.video.post(video_data, 
-                    username=host['user'], api_key=host['api_key'])
 
-            self.pvo_url = "http://%s/video/%s/%s" % (
-                    host['host'], vid['id'],vid['slug'])
-            if self.options.verbose: print self.pvo_url
-            ep.public_url = self.pvo_url
-            ret = self.pvo_url
+        try:
+            if ep.public_url:
+                # update
+                vid_id = ep.public_url.split('/video/')[1].split('/')[0]
+                vid = api.video(vid_id).put(video_data, 
+                    username=host['user'], api_key=host['api_key'])
+                ret = vid
+            else:
+                # add
+                vid = api.video.post(video_data, 
+                        username=host['user'], api_key=host['api_key'])
+
+                self.pvo_url = "http://%s/video/%s/%s" % (
+                        host['host'], vid['id'],vid['slug'])
+                if self.options.verbose: print self.pvo_url
+                ep.public_url = self.pvo_url
+                ret = self.pvo_url
 
         except Exception as exc:
             print "exc:", exc
