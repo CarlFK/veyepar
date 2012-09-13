@@ -1088,7 +1088,7 @@ def episode(request, episode_no):
 def episode_logs(request, episode_id):
     print episode_id
     episode = get_object_or_404(Episode, id=episode_id)
-    logs = episode.log_set.all()
+    logs = episode.log_set.order_by('start')
     return render_to_response('episode_logs.html',
         {'episode':episode,
          'logs':logs,
