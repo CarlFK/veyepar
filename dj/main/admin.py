@@ -124,7 +124,24 @@ admin.site.register(Episode, EpisodeAdmin)
 
 class Cut_ListAdmin(admin.ModelAdmin):
     list_display = ('sequence', 'episode', 'raw_file',)
+    list_filter = ('episode__show',)
     admin_order_field = list_display
+
+    actions = ['un_apply' ] + admin.ModelAdmin.actions
+    def un_apply(self, request, queryset):
+        rows_updated = queryset.update(apply=False)
+        msg = ungettext(
+            'Cleared Apply in %(count)d %(name)s successfully.',
+            'Cleared Apply in %(count)d %(name_plural)s successfully.',
+            rows_updated
+        ) % {
+            'count': rows_updated,
+            'name': self.model._meta.verbose_name.title(),
+            'name_plural': self.model._meta.verbose_name_plural.title()
+        }
+        messages.success(request, msg)
+    un_apply.short_discription = "Un-Apply All"
+
 admin.site.register(Cut_List, Cut_ListAdmin)
 
 class StateAdmin(admin.ModelAdmin):

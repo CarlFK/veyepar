@@ -16,6 +16,9 @@ Show twinpact feed on slave display.
 
 veyepar:
 
+  chrome - figure out file formats 
+  how to keep it from being so agressive about buffering if Play isn't hit 
+
   store images of recording sheets
   next/prev (match recording sheet: same room/day)
   split long talk (tutorials) into parts.
@@ -45,8 +48,11 @@ veyepar:
 
 encoding:
   soften jump cuts
+  create list of cut times relitive to start of final video
+     - mainly used for Lighting talks to index each talk
   credits - hold for a few seconds at end.
   channel_copy - document and verify current behaviour
+  
 
 model:
    (nothing!)
@@ -72,4 +78,7 @@ live cd: mainly for slave
 title screen preview
   so that they can be generated and displayed on web page.
 
-
+dvswitch process management:
+  bug people:
+  Tim A to fix Kill button
+  Ryan V to make sure he has updated his scripts to use _ in dv filenames

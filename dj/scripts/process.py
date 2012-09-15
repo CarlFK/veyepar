@@ -168,6 +168,7 @@ class process(object):
     return 
 
   def process_eps(self, episodes):
+    ret = None 
     for e in episodes:
       # next line requires the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
@@ -235,7 +236,6 @@ class process(object):
             if self.options.verbose:
                 print '#%s: "%s" is in state %s, ready is %s' % (
                     ep.id, ep.name, ep.state, self.ready_state)
-            ret = None # idk, not sure this matters.
 
     return ret
 

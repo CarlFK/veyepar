@@ -1367,6 +1367,7 @@ class add_eps(process.process):
             'pyohio_2012': "file://pyohio_2012.json",
             'chipy_aug_2012': "http://chipy.org/api/meetings/",
             'pycon_au_2012': "http://2012.pycon-au.org/programme/schedule/json",
+            'chipy_sep_2012': "http://chipy.org/api/meetings/",
             }[self.options.show]
 
         if self.options.verbose: print url
@@ -1417,7 +1418,8 @@ class add_eps(process.process):
 
         # if self.options.show == 'chipy_june2012':
         # if self.options.show == 'chipy_july_2012':
-        if self.options.show == 'chipy_aug_2012':
+        # if self.options.show == 'chipy_aug_2012':
+        if self.options.show == 'chipy_sep_2012':
             # chipy
             return self.chipy(schedule,show)
 
