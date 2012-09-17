@@ -399,8 +399,8 @@ class enc(process):
             playlist.insert(pos,new)
 
         channelcopy = episode.channelcopy or \
+            episode.location.channelcopy or 
             self.options.channelcopy
-            # episode.location.channelcopy or 
 
         if channelcopy:
             if self.options.verbose: print 'channelcopy:', channelcopy

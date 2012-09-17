@@ -28,11 +28,15 @@ veyepar:
         inkscape svg/png fail
         input files missing
         encoder fail
+      webm parameters
 
   command line parameter to set cfg file.
     give test script its own cfg
 
   upload category - needs default
+
+  upload to youtube
+     delete old when replaced by new encode.
 
   upload in draft state:
       it is not meant for public viewing yet.
@@ -65,8 +69,9 @@ walpaper
    
 
 recording sheets:
- [x] over time (adjust before addeps to suck in the extras)
- hostname:____
+  [x] over time (adjust before addeps to suck in the extras)
+  hostname:____
+  audio on R or L
 
 live cd: mainly for slave
   user in video group

@@ -1,9 +1,9 @@
 #!/bin/bash -xe
 
 ssh -p 222 veyepar@nextdayvideo.com /home/veyepar/veyepar/dj/dumpdata.sh
-
-scp -P 222 veyepar@nextdayvideo.com:veyepar/dj/veyepar_main.json .
 # ./manage.py  dumpdata --settings dj.settings >vp_old.json 
+scp -P 222 veyepar@nextdayvideo.com:veyepar/dj/veyepar_main.json .
+
 touch veyepar.db 
 mv  veyepar.db  ~/temp
 

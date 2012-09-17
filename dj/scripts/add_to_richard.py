@@ -61,12 +61,13 @@ class add_to_richard(process):
         # I am going to regret this later.
         # To the future me: Sorry.
 
-        if self.options.verbose: print "Show slug:", ep.show.slug
+        if self.options.verbose: print "Show slug:", ep.show.slug, ep.show.client.name
         cats = api.category.get(limit=0)
         found = False
         for cat in cats['objects']:
-            if self.options.verbose: print cat['id'], cat['slug']
-            if cat['slug']  ==  ep.show.slug:
+            if self.options.verbose: print cat['id'], cat['slug'], cat['name']
+            # if cat['slug']  ==  ep.show.slug:
+            if cat['name']  ==  ep.show.client.name:
                 found = True
                 if self.options.verbose: print "found"
                 break
@@ -77,14 +78,14 @@ class add_to_richard(process):
             if self.options.verbose:  print "creating..."
             cat_data = {
                 'kind': 1,
-                'name': ep.show.name,
-                'title': ep.show.name,
+                'name': ep.show.client.name,
+                'title': ep.show.client.name,
                 'description': '',
                 'url': '',
                 'whiteboard': '',
                 # I think start_date should be blank, or .today()
                 # 'start_date': '2012-07-16',
-                'slug': ep.show.slug
+                'slug': ep.show.client.slug
             }
             try:
                 cat = api.category.post(cat_data, 
