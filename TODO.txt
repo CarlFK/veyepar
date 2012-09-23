@@ -36,6 +36,8 @@ veyepar:
   upload category - needs default
 
   upload to youtube
+     use testing server for testing
+     https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      delete old when replaced by new encode.
 
   upload in draft state:

@@ -169,6 +169,7 @@ class process(object):
 
   def process_eps(self, episodes):
     ret = None 
+    sleepytime=False
     for e in episodes:
       # next line requires the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
@@ -195,17 +196,18 @@ class process(object):
             if self.options.verbose: print ep.name
      
             if self.options.lag:
-                if ep != episodes[0]: # don't lag on the first one.
-                    # this is at the top of the loop because 
-                    # we can cleanly detect the first, 
-                    # but no the last
-                    # and we only want to lag between the fence posts.
+                if sleepytime: 
+                    # don't lag on the first one that needs processing,
+                    # we only want to lag between the fence posts.
                     print "lagging....", self.options.lag
                     time.sleep(self.options.lag)
+                else:
+                     sleepytime = True
 
             self.log_in(ep)
             ret = self.process_ep(ep)
             if self.options.verbose: print "process_ep:", ret
+
             # .process is long running (maybe, like encode or post) 
             # so refresh episode in case its .stop was set 
             # (would be set in some other process, like the UI)
