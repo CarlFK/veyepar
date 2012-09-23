@@ -9,6 +9,7 @@
 
 """
 Currently none of the pirvate states have been implemented.
+So this just bumps the state forward.
 See TODO.txt for details
 """
 

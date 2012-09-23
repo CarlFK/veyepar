@@ -81,7 +81,7 @@ live cd: mainly for slave
   avahi to find dvswitch
 
 title screen preview
-  so that they can be generated and displayed on web page.
+  email to presenters before the show
 
 dvswitch process management:
   bug people:
@@ -100,3 +100,6 @@ for unit tests:
     to make sure the encoder didn't muck it up.
     
 
+Transcriptions
+    Need a place to host transcriptions
+    mix transcriptions with video for sub titling 

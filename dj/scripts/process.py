@@ -193,6 +193,16 @@ class process(object):
                 self.show_dir, 'dv', ep.location.slug )
 
             if self.options.verbose: print ep.name
+     
+            if self.options.lag:
+                if ep != episodes[0]: # don't lag on the first one.
+                    # this is at the top of the loop because 
+                    # we can cleanly detect the first, 
+                    # but no the last
+                    # and we only want to lag between the fence posts.
+                    print "lagging....", self.options.lag
+                    time.sleep(self.options.lag)
+
             self.log_in(ep)
             ret = self.process_ep(ep)
             if self.options.verbose: print "process_ep:", ret
@@ -226,11 +236,6 @@ class process(object):
                 # re-set the stop flag.
                 ep.stop = False
                 ep.save()
-
-            elif self.options.lag:
-                if ep != episodes[-1]: # don't lag on the last one.
-                    print "lagging....", self.options.lag
-                    time.sleep(self.options.lag)
 
         else:
             if self.options.verbose:
