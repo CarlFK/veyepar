@@ -84,9 +84,12 @@ class Uploader(object):
 if __name__ == '__main__':
     u = Uploader()
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4'
-    u.upload_user = 'cfkarsten'
-    u.bucket_id = 'nextdayvideo.test'
-    u.key_id='test'
+    u.pathname = '/home/carl/cr.mpeg'
+    u.upload_user = 'ndv'
+    # u.upload_user = 'cfkarsten'
+    # u.bucket_id = 'nextdayvideo.test'
+    u.bucket_id = 'nextdayvideo'
+    u.key_id='computereach'
     u.debug_mode = True
 
     ret = u.upload()

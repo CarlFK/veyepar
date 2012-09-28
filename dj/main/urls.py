@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import url, patterns
 
-from django.views.generic import list_detail
+# from django.views.generic import list_detail
 
 from views import *
 

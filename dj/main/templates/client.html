@@ -8,12 +8,12 @@
 {% block content %}
 
   <table class="shortcuts">
-    <a href="{% url admin:main_client_change client.id%}">client admin</a>
+    <a href="{% url 'admin:main_client_change' client.id%}">client admin</a>
   </table>
 
     <table class=tpick>
         {% for show in shows%}
-            <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}><td> {{show.sequence}}</td><td> <a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a></td></tr>
+            <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}><td> {{show.sequence}}</td><td> <a href="{% url 'episode_list' client.slug show.slug%}">{{ show.name }}</a></td></tr>
         {% endfor %}
     </table>
 

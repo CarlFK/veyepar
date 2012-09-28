@@ -31,7 +31,7 @@
 {% for ep in eps %}
   <tr>
      <td><a href="/admin/main/episode/{{ep.id}}/">{{ep.name}} admin</a></td>
-     <td><a href="{% url episode ep.id %}">{{ep.name}}</a></td>
+     <td><a href="{% url 'episode' ep.id %}">{{ep.name}}</a></td>
   </tr>
   <tr>
      <td>{{ep.location}}</td>

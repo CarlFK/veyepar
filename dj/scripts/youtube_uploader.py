@@ -267,10 +267,8 @@ video_entry = gdata.youtube.YouTubeVideoEntry(media=my_media_group,
     geo=where, extension_elements=extension)
 
 """
+"""
 Traceback (most recent call last):|||||||||          | ETA:  0:02:04 482.80 kB/s
-
-
-
 
   File "post_yt.py", line 159, in process_ep
     youtube_success = uploader.upload()
