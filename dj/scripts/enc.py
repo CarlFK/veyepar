@@ -5,7 +5,10 @@ assembles raw cuts into final, titles, tweaks audio, encodes to format for uploa
 """
 import os,sys,subprocess
 import xml.etree.ElementTree
+import xml.etree.ElementTree as ET
 
+
+import pprint
 from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
@@ -217,8 +220,7 @@ class enc(process):
 
     return png_name
 
-
-  def mkmlt(self,title_img,credits_img,episode,cls,rfs):
+  def mkmlt_1(self,title_img,credits_img,episode,cls,rfs):
         """
         assemble a mlt playlist from:
         mlt template, title screen image, 
@@ -234,6 +236,11 @@ class enc(process):
         mlt_pathname = os.path.join(self.work_dir,"%s.mlt"%episode.slug)
 
 # parse the xml into a tree of nodes
+        mlt_template_name = os.path.join(self.show_dir,"bling/chiweb/chiweb.mlt")
+        # print mlt_template_name
+        mlt = open(mlt_template_name).read()
+        # print mlt
+
         tree= xml.etree.ElementTree.XMLID(mlt)
 
 # set the title to the title slide we just made
@@ -447,6 +454,161 @@ class enc(process):
 
         return mlt_pathname
 
+
+  def mkmlt_2(self,title_img,credits_img,episode,cls,rfs):
+        """
+        assemble a mlt playlist from:
+        enc.mlt, title screen image, 
+        filter parameters (currently just audio) 
+        and cutlist+raw filenames
+        """
+
+        # output file name
+        # this gets used twice: 
+        # once to get melt to scan the files and count total frames of content
+        # then the trailer gets added to the xml
+        # and a final version gets written out.  whacky.
+        mlt_pathname = os.path.join(self.work_dir,"%s.mlt"%episode.slug)
+
+# parse the xml into a tree of nodes
+        mlt_template_name = os.path.join(self.show_dir,"bling/enc.mlt")
+        print mlt_template_name
+        mlt = open(mlt_template_name).read()
+        # print mlt
+
+        # tree= xml.etree.ElementTree.XMLID(mlt)
+        root= xml.etree.ElementTree.fromstring(mlt)
+ 
+# set the title to the title slide we just made
+        # title=tree[1]['title']
+        # title=tree[1]['936de132-10c9-11e2-88e7-002314f4e314']
+        track2 = root.findall(
+                "./tractor/multitrack/playlist[@id='Track 2']")[0]
+        title = track2.findall( 
+                "./producer/[@id='936de132-10c9-11e2-88e7-002314f4e314']")[0]
+        # import code
+        # code.interact(local=locals())
+        title.attrib['resource']=title_img
+
+# get the dvfile placeholder(s) and remove from the tree
+        # dvfile=tree[1]['producer0']
+        # pprint.pprint(tree)
+        track3 = root.findall("./tractor/multitrack/playlist[@id='Track 3']")[0]
+
+        # dvfile=tree[1]['fe5f13c8-1301-11e2-942e-002314f4e314']
+        # print "dvfile", dvfile
+        # del(dvfile)
+        dvfiles = track3.findall("./producer")
+        dvfile=dvfiles[0]
+        for dvfile in dvfiles:
+            track3.remove(dvfile)
+
+# add in the dv files
+# add in the clips
+        pos = 1
+        for cl in cls:
+          if cl.raw_file.duration:
+            dv_filename = cl.raw_file.filename
+            if self.options.load_temp:
+                src_pathname = os.path.join(self.episode_dir,dv_filename)
+                dst_path = os.path.join(
+                  self.tmp_dir,episode.slug,os.path.dirname(dv_filename))
+                rawpathname = os.path.join(
+                  self.tmp_dir,episode.slug,dv_filename)
+                  # self.tmp_dir,episode.slug,rf.filename.replace(':','_'))
+                cmds = [['mkdir', '-p', dst_path],
+                        ['rsync', '--progress', '--size-only',  
+                            src_pathname, rawpathname]]
+                self.run_cmds(episode,cmds)
+            else:
+                if dv_filename.startswith('\\'):
+                    rawpathname = dv_filename
+                else:
+                    rawpathname = os.path.join(self.episode_dir,dv_filename)
+
+            # check for missing input file
+            # typically due to incorrect fs mount
+            if not os.path.exists(rawpathname):
+                print "can't find rawpathname", rawpathname
+                return False
+
+            dvfile.attrib['id']="producer%s" % cl.id
+            dvfile.attrib['resource']=rawpathname
+            new=xml.etree.ElementTree.Element('producer', dvfile.attrib )
+ 
+            # set start/end on the clips if they are set in the db
+            # else remove them, 
+            # ignoroe the error if they are not there to remove
+
+            if cl.start:
+                in_frame=time2f(cl.start,self.fps)
+                dvfile.attrib['in']=str(in_frame)
+            else:
+                try:
+                    del( dvfile.attrib['in'] )
+                except KeyError:
+                    pass
+
+            if self.options.test:
+                out_frame="300"
+                dvfile.attrib['out']=str(out_frame)
+            elif cl.end:
+                out_frame=time2f(cl.end,self.fps) 
+                dvfile.attrib['out']=str(out_frame)
+            else:
+                try:
+                    del( dvfile.attrib['out'] )
+                except KeyError:
+                    pass           
+             
+            track3.insert(pos,new)
+            pos+=1
+
+
+# add volume tweeks
+        """
+    <filter mlt_service="channelcopy" from="1" to="0" />
+    <filter mlt_service="volume" max_gain="30" normalise="28" />
+                {'mlt_service':'volume', 
+                'max_gain':'20', 
+                'limiter':'20',
+                'normalise':self.options.normalise} )
+            """
+        playlist = track3
+
+        normalise = episode.normalise or '-12db'
+        if normalise and normalise!='0':
+            if self.options.verbose: print "normalise:", normalise
+            new=xml.etree.ElementTree.Element('filter', 
+                {'mlt_service':'volume', 
+                'normalise':normalise} )
+            playlist.insert(pos,new)
+
+        channelcopy = episode.channelcopy or \
+            episode.location.channelcopy or \
+            self.options.channelcopy
+
+        if channelcopy:
+            if self.options.verbose: print 'channelcopy:', channelcopy
+            # channelcopy should be 01 or 10.
+            # or m/'mono' to kick in this hack
+            if channelcopy=='m':
+                new=xml.etree.ElementTree.Element('filter', 
+                    {'mlt_service':'mono', 'channels':'2'} )
+            else:
+                fro,to=list(channelcopy)
+                new=xml.etree.ElementTree.Element('filter', 
+                    {'mlt_service':'channelcopy', 
+                    'from':fro, 'to':to} )
+            playlist.insert(pos,new)
+
+        if self.options.verbose: xml.etree.ElementTree.dump(root)
+
+        mlt_xml = xml.etree.ElementTree.tostring(root)
+        open(mlt_pathname,'w').write(mlt_xml)
+
+        return mlt_pathname
+
   def enc_all(self, mlt_pathname, episode):
 
         def enc_one(ext):
@@ -641,7 +803,7 @@ class enc(process):
 
 # make a .mlt file for this episode
         print "title_img", title_img
-        mlt = self.mkmlt(title_img,credits_img,episode,cls,rfs)
+        mlt = self.mkmlt_2(title_img,credits_img,episode,cls,rfs)
         if not mlt:
             episode.state = 0
             episode.save()
