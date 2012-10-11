@@ -485,10 +485,8 @@ class enc(process):
         track2 = root.findall(
                 "./tractor/multitrack/playlist[@id='Track 2']")[0]
         title = track2.findall( 
-                "./producer/[@id='936de132-10c9-11e2-88e7-002314f4e314']")[0]
-        # import code
-        # code.interact(local=locals())
-        title.attrib['resource']=title_img
+                "./producer/[@id='936de132-10c9-11e2-88e7-002314f4e314']/")[0]
+        title.text=title_img
 
 # get the dvfile placeholder(s) and remove from the tree
         # dvfile=tree[1]['producer0']
