@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" ?>
+<mlt>
+	<profile description="DV/DVD NTSC" display_aspect_den="3" display_aspect_num="4" frame_rate_den="1001" frame_rate_num="30000" height="480" progressive="0" sample_aspect_den="9" sample_aspect_num="8" width="720"/>
+	<tractor id="tractor0">
+		<multitrack>
+			<playlist id="Background Track">
+				<producer id="089f3416-1312-11e2-bba2-002314f4e314" in="0" length="394" novdpau="1" out="393">
+					<property name="mlt_service">color</property>
+				</producer>
+			</playlist>
+			<playlist id="Track 3">
+				<blank length="120.0"/>
+				<producer id="fe5f13c8-1301-11e2-942e-002314f4e314" in="30" length="90" novdpau="1" out="89">
+					<property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv</property>
+				</producer>
+				<producer id="2284727a-1302-11e2-942e-002314f4e314" in="30" length="90" novdpau="1" out="89">
+					<property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_06.dv</property>
+				</producer>
+				<producer id="3293222e-1302-11e2-942e-002314f4e314" in="30" length="91" novdpau="1" out="90">
+					<property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_09.dv</property>
+				</producer>
+			</playlist>
+			<playlist id="Track 2">
+				<producer id="52d57992-10c3-11e2-a856-002314f4e314" in="0" length="60" novdpau="1" out="59">
+					<property name="resource">/home/carl/src/veyepar/dj/scripts/bling/chiweb/VideoBumperSlide.001.png</property>
+				</producer>
+				<blank length="30.0"/>
+				<producer id="936de132-10c9-11e2-88e7-002314f4e314" in="0" length="120" novdpau="1" out="119">
+					<property name="resource">/home/carl/src/veyepar/dj/scripts/bling/chiweb/sample.png</property>
+				</producer>
+			</playlist>
+			<playlist id="Track 1">
+				<blank length="30.0"/>
+				<producer id="6e3765ce-10c3-11e2-a856-002314f4e314" in="0" length="90" novdpau="1" out="89">
+					<property name="resource">/home/carl/src/veyepar/dj/scripts/bling/chiweb/VideoBumperSlide.002.png</property>
+				</producer>
+			</playlist>
+		</multitrack>
+		<filter gain="1" in="120" mlt_service="volume" out="179" track="1"/>
+		<transition in="120" out="179">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">1</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+		</transition>
+		<transition in="120" out="179">
+			<property name="mlt_service">mix</property>
+			<property name="a_track">0</property>
+			<property name="b_track">1</property>
+			<property name="combine">1</property>
+			<property name="always_active">1</property>
+		</transition>
+		<filter gain="1" in="180" mlt_service="volume" out="239" track="1"/>
+		<transition in="180" out="239">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">1</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+		</transition>
+		<transition in="180" out="239">
+			<property name="mlt_service">mix</property>
+			<property name="a_track">0</property>
+			<property name="b_track">1</property>
+			<property name="combine">1</property>
+			<property name="always_active">1</property>
+		</transition>
+		<filter gain="1" in="240" mlt_service="volume" out="300" track="1"/>
+		<transition in="240" out="300">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">1</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+		</transition>
+		<transition in="240" out="300">
+			<property name="mlt_service">mix</property>
+			<property name="a_track">0</property>
+			<property name="b_track">1</property>
+			<property name="combine">1</property>
+			<property name="always_active">1</property>
+		</transition>
+		<transition in="0" out="59">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">2</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+		</transition>
+		<transition in="90" out="150">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">2</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+		</transition>
+		<transition in="150" out="209">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">2</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:0; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+			<property name="softness">0.3</property>
+		</transition>
+		<transition in="241" out="301">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">2</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:0; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+			<property name="softness">0.3</property>
+		</transition>
+		<transition in="301" out="390">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">2</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+		</transition>
+		<transition in="30" out="60">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">3</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:0; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+			<property name="softness">0.3</property>
+		</transition>
+		<transition in="60" out="90">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">3</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:100; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+		</transition>
+		<transition in="90" out="119">
+			<property name="mlt_service">composite</property>
+			<property name="a_track">0</property>
+			<property name="b_track">3</property>
+			<property name="progressive">1</property>
+			<property name="geometry">0=0%,0%:100%x100%:100; -1=0%,0%:100%x100%:0; </property>
+			<property name="halign">centre</property>
+			<property name="valign">centre</property>
+			<property name="distort">0</property>
+			<property name="fill">1</property>
+			<property name="softness">0.3</property>
+		</transition>
+	</tractor>
+</mlt>
