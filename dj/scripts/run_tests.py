@@ -463,7 +463,8 @@ def main():
     t=Run_Tests() 
     t.upload_formats=["mp4"]
     # t.upload_formats=["ogv","mp4"]
-    t.title = "How to be a Canadian"
+    # t.title = "How to be a Canadian"
+    t.title = "Chi Web Conf"
 
     # t.make_test_user()
     # t.setup_test_data()
@@ -475,11 +476,11 @@ def main():
     # t.make_cut_list()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
-    # t.encode()
+    t.encode()
     # t.ck_errors()
-    # t.play_vid()
+    t.play_vid()
     # result['url'] = t.post_yt()
-    result['richard'] = t.add_to_richard()
+    # result['richard'] = t.add_to_richard()
     # result['email'] = t.email_url()
     # result['tweet'] = t.tweet()
     # t.csv()

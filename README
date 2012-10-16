@@ -47,9 +47,8 @@ review settings,  pal/ntsc is one of the more important ones.
 4. create the dirs for the .dv files:
 veyepar/dj/scripts$ python mkdirs.py  # Makes the dir tree to put files into
 
-4.1. copy the bling into the show's bling dir.
-veyepar/dj/scripts$ cp -r bling/ ~/Videos/veyepar/test_client/test_show/bling/
-This creates a title.svg for this show.  So edit the show copy:
+4.1. Put in place the show's title.svg:
+mkdirs.py (previous step) drops a copy in the show dir:
 ~/Videos/veyepar/test_client/test_show/bling$ inkscape title.svg
 
 Do some sanity checks:
@@ -61,7 +60,7 @@ meeting announcement: meant for usergroup meetings, doesn't scale well to a larg
 
 recording sheets: pdf to be printed and put next to each recoreding station runing DVswitch.  
 
-use DVswitch to record talks.  Note the actual start/end time on the recoding sheet.
+Use DVswitch to record talks.  Note the actual start/end time on the recoding sheet.
 
 4.2. put the dv files into the dirs
 Use your mad file copy skilz to rsync, mv, whatever.  
@@ -85,23 +84,19 @@ veyepar/dj/scripts$ python mkthumbs.py - find thumbs, ocr untill we find some te
 (This now happens automatically when you browse to an Episode that does not have a cutlist.  I am leaving this here because their may be a performance hit for larger 100+ Episode shows.)
 Create cutlist records for each intersection of a dv file and episodes start/end time and location.
 veyepar/dj/scripts$ python assocdv.py: # creates cutlist items for dv files that might belong to an episode
-        eps = Episode.objects.filter(
-            Q(start__lte=dv.end)|Q(start__isnull=True),
-            Q(end__gte=dv.start)|Q(end__isnull=True),
-            location=dv.location).exclude(slug='orphans' )
 
-8. make low quality versions of all the dv files so you can preview each file in a browser using <video> (not necessary, didn't work too well, I used mplayer.)
+8. make low quality versions of all the dv files so you can preview each file in a browser using <video> (not necessary, skip if you are rushing.)
 veyepar/dj/scripts$ python dvogg.py:# makes .ogg for all dv in a show
 
 9. Post production editing
 
 9.1 for each episode, look at what .dv files have been assigned to it.  
 
-browse http://0.0.0.0:8080/main/E/1 
+browse http://0.0.0.0:8080/main/E/1  (for a fresh system, else find your show)
 
-If there are ones missing, either use fixdv.py to fix batches, or use django's admin UI to add one by one.  
+DV files that might belong to the talk are marked to be included.  un mark [x]Apply the ones that should not be included.
 
-If it belongs to some other event, mark "Cut List - Delete [x]"  This deletes the cutlist entry in the db, not the file.  Nothing deletes the file.
+If there are ones missing, .. get help.   Either use fixdv.py to fix batches, or use django's admin UI to add one by one.  
 
 If a dv needs junk trimmed from the start or end, put the time offset in "Cut List - Start/End" 
 1 or 0:0:1 means trim 1 second from start.  1:2:3 means the clip ends 1 hour 2 min 3 seconds from the start of the file, so in this case 1h 2m 3 seconds would be used.
@@ -112,9 +107,15 @@ Set Episode.state to Encode (2)
 enc.py:# encodes to ogg, flv, m4v
 adds titles too.
 
-11. post em:
-post.py:# posts to blip.tv, 
+11. 
+upload 
+push.py - sends copy to private cloud stoage.
+post_yt.py - sends to youtube (and archive.. eww, terible hack.)
+post_blip.py - posts to blip.tv, 
 pw.py holds user/passwords, not checked in, make one from pw_samp.py
+
+
+
 
 12. tweet 
 tweet.py

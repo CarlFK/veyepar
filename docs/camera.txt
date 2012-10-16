@@ -1,4 +1,5 @@
 turn off auto focus
-turn off image stabalazation (works well if hand held, screws up smooth pans  when on a tripd)
+turn off image stabalazation 
+    (works well if hand held, screws up smooth pans  when on a tripd)
 white balance
 enable mics (dvx-100: the on cam mics need phantom)

@@ -21,3 +21,4 @@ progressbar
 boto
 slumber
 
+requests

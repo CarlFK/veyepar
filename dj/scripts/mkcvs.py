@@ -92,12 +92,15 @@ class csv(process):
     # blip_pathname = os.path.join( self.show_dir, "txt", basename+"_blip.xml" )
 
     if self.options.verbose: 
-        print "filenames:" + "\n%s"*6 % (
-            json_pathname, csv_pathname, txt_pathname, wget_pathname, 
-            html_pathname, blip_pathname )
+        print "filenames:" 
+        for n in ( json_pathname, csv_pathname, txt_pathname, 
+                wget_pathname, html_pathname, ):
+            print n
+
+# fields to export:
+    fields="id conf_key conf_url state name slug primary host_url public_url source archive_mp4_url".split()
 
 # setup csv 
-    fields="id conf_key conf_url state name primary host_url public_url blip source embed".split()
     csv = DictWriter(open(csv_pathname, "w"),fields)
     # write out field names
     csv.writerow(dict(zip(fields,fields)))
@@ -115,7 +118,7 @@ class csv(process):
 
     # write out episode data
     for ep in episodes:
-        if not ep.host_url: 
+        if not ep.archive_mp4_url: 
             # skip episodes that have not been uploaded yet.
             continue
 
@@ -158,6 +161,8 @@ class csv(process):
         # txt.write("%s %s\n" % (row['blip'],row['name']))
         # html.write('<a href="%(blip)s">%(name)s</a>\n%(blip)s\n'%row)
         # wget.writelines(["%s\n" % c['url'] for c in blip_meta['contents']])
+        wget.writelines("wget %s -o %s.mp4\n" % (
+            ep.archive_mp4_url, ep.slug) )
 
         if self.options.verbose: 
             json.dump(json_data,open(json_pathname, "w"),indent=2)

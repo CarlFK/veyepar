@@ -22,11 +22,9 @@ class email_url(process):
     %(url)s
 
     Look at it, make sure the title is spelled right, let me know if it is OK.
-    Many of the descriptions are still formated in reST which does not display correctly on pyvideo.org.  We are working on getting them polished up. 
-    
     If you are satisfied, tweet it, blog it, whatever it.  No point in making videos if no one watches them.
     
-    As soon as I hear back from you, or in a few days, it will be tweeted on @NextDayVideo which is what the attendees were told to follow.  It will also be sent to the conference organizers in hopes that they add it to the conference website.  
+    As soon as I hear back from you, or in a few days, it will be tweeted on @NextDayVideo which is what the attendees were told to follow.  It will also be sent to the event organizers in hopes that they add it to the event website.  
     
     Reference: #%(id)s  %(slug)s
 

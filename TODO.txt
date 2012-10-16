@@ -16,7 +16,7 @@ Show twinpact feed on slave display.
 
 veyepar:
 
-  chrome - figure out file formats 
+  chrome doesn't play ogv. figure out what file formats to use for thumbs.
   how to keep it from being so agressive about buffering if Play isn't hit 
 
   store images of recording sheets
@@ -38,7 +38,7 @@ veyepar:
   upload to youtube
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
-     delete old when replaced by new encode.
+     delete old version when replaced by new encode.
 
   upload in draft state:
       it is not meant for public viewing yet.
@@ -59,6 +59,7 @@ encoding:
   credits - hold for a few seconds at end.
   channel_copy - document and verify current behaviour
   
+slug - trunkcate on word boundry when over X chars.
 
 model:
    (nothing!)
@@ -74,6 +75,7 @@ recording sheets:
   [x] over time (adjust before addeps to suck in the extras)
   hostname:____
   audio on R or L
+  [x] sound check for each talk
 
 live cd: mainly for slave
   user in video group

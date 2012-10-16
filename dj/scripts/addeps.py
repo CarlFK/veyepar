@@ -68,9 +68,11 @@ I can fix my consumer easier than I can get someone else's website updated.
 
 import datetime 
 import urllib2,csv
+import requests
 import HTMLParser
 from dateutil.parser import parse
 import pprint
+
 
 try:
     import simplejson as json
@@ -81,7 +83,7 @@ except ImportError:
 # import gdata.calendar.service
 
 # for google calandar:
-# import pw 
+import pw 
 # import lxml.etree
 
 import process
@@ -784,7 +786,11 @@ class add_eps(process.process):
     def dump_keys(self, schedule):
 
         # try to print out what keys match and don't match
-        s_keys = schedule[0].keys()
+
+        s_keys = set()
+        for s in schedule:
+            s_keys.update(s.keys())
+
         print s_keys
         for k in s_keys:
             print "('%s','')," % k
@@ -798,16 +804,21 @@ class add_eps(process.process):
             'host_url', 'publiv_url',
     )    
 
-        for f,g in field_maps:
-            print "('%s','%s')," % (g,f)
+        # for f,g in field_maps:
+        #    print "('%s','%s')," % (g,f)
 
         print "keys match 1:1"
         print [k for k in v_keys if k in s_keys]
         print "stray cats"
-        print [k for k in v_keys if k not in s_keys]
+        for k in [k for k in v_keys if k not in s_keys]:
+            print "('%s','')," % k
+        print
 
+        for k in v_keys:
+            k2 = k if k in s_keys else ''
+            print "('%s','%s')," % (k2,k)
+        print
 
-        # schedule = schedule['nodes']
         return
 
     def generic_events(self, schedule, common_fields, field_maps ):
@@ -825,7 +836,11 @@ class add_eps(process.process):
 
             for jk,vk in field_maps:
                 if jk: 
-                    event[vk] = row[jk]
+                    try:
+                        event[vk] = row[jk]
+                    except: 
+                        # event[vk] = None
+                        pass
                 else:
                     event[vk] = ''
 
@@ -859,7 +874,7 @@ class add_eps(process.process):
 
       seq=0
       for row in episodes:
-          if self.options.verbose: print row
+          if self.options.verbose: pprint.pprint( row )
           # episode,created = Episode.objects.get_or_create(
           #        show=show, conf_key=row['conf_key'], )
           episodes = Episode.objects.filter(
@@ -1078,7 +1093,6 @@ class add_eps(process.process):
         rooms.sort()
         self.add_rooms(rooms,show)
 
-        # return self.dump_keys(schedule)
 
         events = self.scipy_events(schedule)
         self.add_eps(events, show)
@@ -1214,7 +1228,7 @@ class add_eps(process.process):
 
         # schedule is al meetings ever
         schedule = schedule[-1]['topic_set']
-        pprint.pprint( schedule[0] )
+        # pprint.pprint( schedule[0] )
 
         rooms = ['room_1']
         self.add_rooms(rooms,show)
@@ -1321,6 +1335,85 @@ class add_eps(process.process):
         return 
 
        
+    def sched_eps(self,show):
+        """
+        """
+
+    def sched(self,schedule,show):
+        # pprint.pprint(schedule)
+
+        rooms = self.get_rooms(schedule, "venue")
+        self.add_rooms(rooms,show)
+        field_maps = [
+                ('id','id'),
+                ('venue','location'),
+                # ('','sequence'),
+                ('name','name'),
+                # ('','slug'),
+                ('speakers','authors'),
+                ('','emails'),
+                ('description','description'),
+                ('event_start','start'),
+                ('','duration'),
+                ('','released'),
+                ('','license'),
+                ('','tags'),
+                ('event_key','conf_key'),
+                ('','conf_url'),
+                ('','host_url'),
+                ('','publiv_url'),
+            ]
+
+        events = self.generic_events(schedule, [], field_maps)
+
+        for event in events:
+            if self.options.verbose: print "event", event
+            row = event['raw']
+            
+            event['released'] = True
+            if 'speakers' not in row.keys(): 
+                # del(event)
+                # continue
+                pass
+
+            if 'speakers' in row.keys(): 
+                # pprint.pprint( row['speakers'] )
+                authors = ', '.join( s['name'] for s in row['speakers'] )
+            else:
+                authors = ''
+
+            event['authors'] = authors
+            # print authors
+
+            if 'description' not in row.keys(): 
+                event['description']=''
+
+            start = parse(event['start'])        
+            end = parse(row['event_end'])
+
+            delta = end - start
+            minutes = delta.seconds/60 # - 5 for talk slot that includes break
+
+            duration="00:%s:00" % ( minutes) 
+
+            event['start'] = start
+            event['end'] = end
+            event['duration'] = duration
+
+            # event['released'] = True
+
+            event['license'] =  ''
+            # event['authors'] =  ''
+            # event['tags'] =  ''
+            #event['description'] =  ''
+
+            # event['emails']=None
+
+
+        self.add_eps(events, show)
+
+        return 
+
     def one_show(self, show):
         # url='http://us.pycon.org/2010/conference/schedule/events.json'
         # url='http://pycon-au.org/2010/conference/schedule/events.json'
@@ -1344,6 +1437,22 @@ class add_eps(process.process):
 
         if self.args:
             url = self.args[0]
+        elif self.options.show =="chicagowebconf2012" :
+            """
+        curl -v "http://chicagowebconf2012.sched.org/api/session/export?api_key=7c4cedc783503a7959546b606694127a&format=json&fields=name,session_type,description&strip_html=Y&custom_data=Y"|jsonlint -f
+        """
+            url = "http://%(conference)s.sched.org/api/session/export"  \
+                    % pw.sched[self.options.show]
+            payload = {
+                "api_key": pw.sched[self.options.show]['apikey'],
+                "format":"json",
+                # "fields":"name,session_type,description",
+                "strip_html":"Y",
+                "custom_data":"Y",
+                }
+            print url
+            # pprint.pprint(payload)
+
         else:
             url = { 
             'djangocon2011': 'http://djangocon.us/schedule/json/',
@@ -1368,17 +1477,23 @@ class add_eps(process.process):
             'chipy_aug_2012': "http://chipy.org/api/meetings/",
             'pycon_au_2012': "http://2012.pycon-au.org/programme/schedule/json",
             'chipy_sep_2012': "http://chipy.org/api/meetings/",
+            'chipy_oct_2012': "http://chipy.org/api/meetings/",
+            # 'pyconde2012': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
+            'pyconde2012': 'https://stage.2012.de.pycon.org/episodes.json',
             }[self.options.show]
+            payload = None
 
         if self.options.verbose: print url
 
         if url.startswith('file'):
             f = open(url[7:])
         else:
-            req = urllib2.Request(url)
+
+            response = requests.get(url, params=payload)
+            # req = urllib2.Request(url)
             # req.add_header('Content-Type', 'application/json')
-            req.add_header('Accept', 'application/json')
-            response = urllib2.urlopen(req)
+            # req.add_header('Accept', 'application/json')
+            # response = urllib2.urlopen(req)
 
             # f=urllib2.urlopen(url)
             f = response
@@ -1393,16 +1508,25 @@ class add_eps(process.process):
             schedule=xml.etree.ElementTree.XML(x)
             return self.fosdem2012(schedule,show)
         else:
-            j=f.read()
-            schedule = json.loads(j)
+            # j=f.read()
+            j = f.text
+            # schedule = json.loads(j)
+            schedule = response.json
             # if it is a python prety printed list:
             # schedule = eval(j)
 
         # save for later
-        file('schedule.json','w').write(j) 
+        # file('schedule.json','w').write(j) 
         # j=file('schedule.json').read()
 
-        # look at fingerprint of file, call appropiate parser
+        # look at fingerprint of file, (or cheat and use the showname)
+        #   call appropiate parser
+
+        if self.options.show =='chicagowebconf2012':
+            # Sched.org Conference Mobile Apps
+            # Chicago Web Conf 2012
+            # return self.dump_keys(schedule)
+            return self.sched(schedule,show)
 
         if self.options.show == 'pyohio_2012':
             # pyohio
@@ -1419,7 +1543,8 @@ class add_eps(process.process):
         # if self.options.show == 'chipy_june2012':
         # if self.options.show == 'chipy_july_2012':
         # if self.options.show == 'chipy_aug_2012':
-        if self.options.show == 'chipy_sep_2012':
+        # if self.options.show == 'chipy_sep_2012':
+        if self.options.show == 'chipy_oct_2012':
             # chipy
             return self.chipy(schedule,show)
 
@@ -1435,6 +1560,10 @@ class add_eps(process.process):
             # pycon.de 2011 
             return self.pyohio(schedule,show)
             # return self.pyconde2011(schedule,show)
+
+        if self.options.show == 'pyconde2012':
+            # pycon.de 2012 
+            return self.pyohio(schedule,show)
 
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
