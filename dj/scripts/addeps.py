@@ -160,6 +160,157 @@ def goog(show,url):
 
 class add_eps(process.process):
 
+    # helpers 
+
+    def dump_keys(self, schedule):
+
+        # try to print out what keys match and don't match
+        # prints out the veyepar side of the field map list
+        # so you can cut/paste it into the show specific code.
+
+        s_keys = set()
+        for s in schedule:
+            s_keys.update(s.keys())
+
+        print s_keys
+        for k in s_keys:
+            print "('%s','')," % k
+
+        v_keys=('id',
+            'location','sequence',
+            'name','slug', 'authors','emails', 'description',
+            'start','duration', 
+            'released', 'license', 'tags',
+            'conf_key', 'conf_url',
+            'host_url', 'publiv_url',
+    )    
+
+        # for f,g in field_maps:
+        #    print "('%s','%s')," % (g,f)
+
+        print "keys match 1:1"
+        print [k for k in v_keys if k in s_keys]
+        print "stray cats"
+        for k in [k for k in v_keys if k not in s_keys]:
+            print "('%s','')," % k
+        print
+
+        for k in v_keys:
+            k2 = k if k in s_keys else ''
+            print "('%s','%s')," % (k2,k)
+        print
+
+        return
+
+    def add_rooms(self, rooms, show):
+      seq=0
+      for room in rooms:
+          if self.options.verbose: print room
+          loc,created = Location.objects.get_or_create(
+                  name=room,)
+          loc.active = False
+          if created: 
+              seq+=1
+              loc.sequence=seq
+              loc.save()
+          show.locations.add(loc)
+          show.save()
+          
+
+    def generic_events(self, schedule, field_maps ):
+
+        # copies the show's data
+        # into veyepar data
+
+        # 
+     
+        events=[]
+        for row in schedule:
+            if self.options.verbose: print row
+            event={}
+
+            for jk,vk in field_maps:
+                if jk: 
+                    try:
+                        event[vk] = row[jk]
+                    except: 
+                        # event[vk] = None
+                        pass
+                else:
+                    event[vk] = ''
+
+            # save the original row so that we can sanity check end time.
+            # or transform data 
+            event['raw'] = row
+
+            events.append(event)
+
+        return events
+
+    def add_eps(self, episodes, show):
+
+      if self.options.test:
+          print "test mode, not adding to db"
+          return 
+
+      seq=0
+      for row in episodes:
+          if self.options.verbose: pprint.pprint( row )
+          # episode,created = Episode.objects.get_or_create(
+          #        show=show, conf_key=row['conf_key'], )
+          episodes = Episode.objects.filter(
+                  show=show, conf_key=row['conf_key'], )
+
+          # if created:
+          if episodes:
+              created = False
+              episode = episodes[0]
+          else:
+              episode = Episode.objects.create(
+                  show=show, conf_key=row['conf_key'], 
+                  start=row['start'], duration=row['duration'],
+                  )
+              episode.sequence=seq
+              episode.state=1
+              seq+=1
+              created = True
+
+          fields=(
+        'name', 'authors', 'emails', 'description',
+        'start','duration', 
+        'released', 
+        'license', 
+        'conf_url', 'tags')
+
+          if created or self.options.update:
+              loc=Location.objects.get(name=row['location'])
+              loc.active = True
+              episode.location=loc
+              for f in fields:
+                  setattr( episode, f, row[f] )
+                  # print( f, row[f] )
+
+              if not episode.released:
+                  episode.released = row['released']
+
+              episode.save()
+              loc.save()
+          else:
+              # check for diffs
+              # report if different
+              diff_fields=[]
+              for f in fields:
+                  a1,a2 = getattr(episode,f), row[f]
+                  if (a1 or a2) and (a1 != a2): 
+                      diff_fields.append((f,a1,a2))
+              if diff_fields:
+                  print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
+                  for f,a1,a2 in diff_fields:
+                      print 'veyepar %s: %s' % (f,unicode(a1)[:60])
+                      print ' source %s: %s' % (f,unicode(a2)[:60])
+                  print
+
+
     def addlocs(self, schedule, show):
       """ pycon 2010 
       seq=0
@@ -503,7 +654,7 @@ class add_eps(process.process):
         events=[]
 
         for row in schedule:
-            if self.options.verbose: print row
+            if self.options.verbose: pprint.pprint( row )
             event={}
             event['id'] = row['conf_url']
             # event['id'] = row['id']
@@ -689,7 +840,7 @@ class add_eps(process.process):
                 ('', 'tags'), 
                 ]
 
-        events = self.generic_events(schedule, common_fields, field_maps)
+        events = self.generic_events(schedule, field_maps)
         for event in events:
             # print event['raw']
             # print (event['location'], event['start'])
@@ -731,7 +882,7 @@ class add_eps(process.process):
                 ('','tags'),
                ]
 
-        events = self.generic_events(schedule, [], field_maps)
+        events = self.generic_events(schedule, field_maps)
         for event in events:
 
             event['start'] = datetime.datetime.strptime(
@@ -782,153 +933,6 @@ class add_eps(process.process):
             events.append(event)
  
         return events
-
-    def dump_keys(self, schedule):
-
-        # try to print out what keys match and don't match
-
-        s_keys = set()
-        for s in schedule:
-            s_keys.update(s.keys())
-
-        print s_keys
-        for k in s_keys:
-            print "('%s','')," % k
-
-        v_keys=('id',
-            'location','sequence',
-            'name','slug', 'authors','emails', 'description',
-            'start','duration', 
-            'released', 'license', 'tags',
-            'conf_key', 'conf_url',
-            'host_url', 'publiv_url',
-    )    
-
-        # for f,g in field_maps:
-        #    print "('%s','%s')," % (g,f)
-
-        print "keys match 1:1"
-        print [k for k in v_keys if k in s_keys]
-        print "stray cats"
-        for k in [k for k in v_keys if k not in s_keys]:
-            print "('%s','')," % k
-        print
-
-        for k in v_keys:
-            k2 = k if k in s_keys else ''
-            print "('%s','%s')," % (k2,k)
-        print
-
-        return
-
-    def generic_events(self, schedule, common_fields, field_maps ):
-     
-        events=[]
-        for row in schedule:
-            if self.options.verbose: print row
-            event={}
-
-            for k in common_fields:
-                try: 
-                    event[k] = row[k]
-                except KeyError:
-                    event[k] = 'missing'
-
-            for jk,vk in field_maps:
-                if jk: 
-                    try:
-                        event[vk] = row[jk]
-                    except: 
-                        # event[vk] = None
-                        pass
-                else:
-                    event[vk] = ''
-
-            # save the original row so that we can sanity check end time.
-            event['raw'] = row
-
-            events.append(event)
-
-        return events
-
-
-    def add_rooms(self, rooms, show):
-      seq=0
-      for room in rooms:
-          if self.options.verbose: print room
-          loc,created = Location.objects.get_or_create(
-                  name=room,)
-          loc.active = False
-          if created: 
-              seq+=1
-              loc.sequence=seq
-              loc.save()
-          show.locations.add(loc)
-          show.save()
-          
-    def add_eps(self, episodes, show):
-
-      if self.options.test:
-          print "test mode, not adding to db"
-          return 
-
-      seq=0
-      for row in episodes:
-          if self.options.verbose: pprint.pprint( row )
-          # episode,created = Episode.objects.get_or_create(
-          #        show=show, conf_key=row['conf_key'], )
-          episodes = Episode.objects.filter(
-                  show=show, conf_key=row['conf_key'], )
-
-          # if created:
-          if episodes:
-              created = False
-              episode = episodes[0]
-          else:
-              episode = Episode.objects.create(
-                  show=show, conf_key=row['conf_key'], 
-                  start=row['start'], duration=row['duration'],
-                  )
-              episode.sequence=seq
-              episode.state=1
-              seq+=1
-              created = True
-
-          fields=(
-        'name', 'authors', 'emails', 'description',
-        'start','duration', 
-        'released', 
-        'license', 
-        'conf_url', 'tags')
-
-          if created or self.options.update:
-              loc=Location.objects.get(name=row['location'])
-              loc.active = True
-              episode.location=loc
-              for f in fields:
-                  setattr( episode, f, row[f] )
-                  # print( f, row[f] )
-
-              if not episode.released:
-                  episode.released = row['released']
-
-              episode.save()
-              loc.save()
-          else:
-              # check for diffs
-              # report if different
-              diff_fields=[]
-              for f in fields:
-                  a1,a2 = getattr(episode,f), row[f]
-                  if (a1 or a2) and (a1 != a2): 
-                      diff_fields.append((f,a1,a2))
-              if diff_fields:
-                  print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
-                  for f,a1,a2 in diff_fields:
-                      print 'veyepar %s: %s' % (f,unicode(a1)[:60])
-                      print ' source %s: %s' % (f,unicode(a2)[:60])
-                  print
-
 
     def pctech(self, schedule, show):
         # importing from some other instance
@@ -988,7 +992,6 @@ class add_eps(process.process):
         print rooms
         self.add_rooms(rooms,show)
 
-        return self.dump_keys(schedule)
         events = self.goth_events(schedule)
         self.add_eps(events, show)
         return 
@@ -1016,7 +1019,7 @@ class add_eps(process.process):
                
             ]
 
-        events = self.generic_events(schedule, [], field_maps)
+        events = self.generic_events(schedule, field_maps)
         for event in events:
             # print event['raw']
             # print (event['location'], event['start'])
@@ -1047,7 +1050,7 @@ class add_eps(process.process):
             ('room','location'),
             ]
 
-        events = self.generic_events(schedule, common_fields, field_maps)
+        events = self.generic_events(schedule, field_maps)
         for event in events:
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
@@ -1175,7 +1178,7 @@ class add_eps(process.process):
                 ('conf_url','Link')
                 ]
 
-        events = self.generic_events(schedule, common_fields, field_maps)
+        events = self.generic_events(schedule, field_maps)
 
         for event in events:
             row = event['raw']
@@ -1335,10 +1338,6 @@ class add_eps(process.process):
         return 
 
        
-    def sched_eps(self,show):
-        """
-        """
-
     def sched(self,schedule,show):
         # pprint.pprint(schedule)
 
@@ -1364,7 +1363,7 @@ class add_eps(process.process):
                 ('','publiv_url'),
             ]
 
-        events = self.generic_events(schedule, [], field_maps)
+        events = self.generic_events(schedule, field_maps)
 
         for event in events:
             if self.options.verbose: print "event", event
@@ -1398,6 +1397,66 @@ class add_eps(process.process):
 
             event['start'] = start
             event['end'] = end
+            event['duration'] = duration
+
+            # event['released'] = True
+
+            event['license'] =  ''
+            # event['authors'] =  ''
+            # event['tags'] =  ''
+            #event['description'] =  ''
+
+            # event['emails']=None
+
+
+        self.add_eps(events, show)
+
+        return 
+
+
+    def pyconde2012(self,schedule,show):
+        # pprint.pprint(schedule)
+
+        rooms = self.get_rooms(schedule )
+        self.add_rooms(rooms,show)
+        field_maps = [
+            ('conf_key','id'),
+            ('room','location'),
+            ('','sequence'),
+            ('name','name'),
+            ('','slug'),
+            ('authors','authors'),
+            ('contact','emails'),
+            ('description','description'),
+            ('start','start'),
+            ('duration','duration'),
+            ('released','released'),
+            ('license','license'),
+            ('tags','tags'),
+            ('conf_key','conf_key'),
+            ('conf_url','conf_url'),
+            ('','host_url'),
+            ('','publiv_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events:
+            if self.options.verbose: print "event", event
+            raw = event['raw']
+            
+            # event['released'] = True
+
+
+            event['authors'] =  ', '.join( event['authors'] )
+
+            start = parse(event['start'])        
+            # end = parse(row['event_end'])
+
+            duration="00:%s:00" % ( event['duration'] ) 
+
+            event['start'] = start
+            # event['end'] = end
             event['duration'] = duration
 
             # event['released'] = True
@@ -1479,17 +1538,27 @@ class add_eps(process.process):
             'chipy_sep_2012': "http://chipy.org/api/meetings/",
             'chipy_oct_2012': "http://chipy.org/api/meetings/",
             # 'pyconde2012': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
-            'pyconde2012': 'https://stage.2012.de.pycon.org/episodes.json',
+            # 'pyconde2012': 'https://stage.2012.de.pycon.org/episodes.json',
+            'pyconde2012': 'https://2012.de.pycon.org/episodes.json',
+            'pyconca2012': 'http://pycon.ca/talk.json',
             }[self.options.show]
             payload = None
 
         if self.options.verbose: print url
 
+
         if url.startswith('file'):
             f = open(url[7:])
         else:
+            session = requests.session()
 
-            response = requests.get(url, params=payload)
+            if self.options.show =="pyconca2012" :
+                session.post('http://pycon.ca/login', {'username': pw.username, 'password': pw.password, 'login.submit':'required but meaningless'})
+
+            response = session.get(url, params=payload, )
+            # response = requests.get(url, params=payload)
+            # response = requests.get(url, params=payload, verify=False)
+            # response = session.get(url, params=payload, verify=False)
             # req = urllib2.Request(url)
             # req.add_header('Content-Type', 'application/json')
             # req.add_header('Accept', 'application/json')
@@ -1516,14 +1585,25 @@ class add_eps(process.process):
             # schedule = eval(j)
 
         # save for later
-        # file('schedule.json','w').write(j) 
+        file('schedule.json','w').write(j) 
         # j=file('schedule.json').read()
+
+        if self.options.keys: return self.dump_keys(schedule)
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
 
+        if self.options.show =='pyconca2012':
+            # talks = r.json['data']['talk_list']
+            # return talks, session
+            return self.pyconca2012(schedule,show)
+
+        if self.options.show == 'pyconde2012':
+            # pycon.de 2012 
+            return self.pyconde2012(schedule,show)
+
         if self.options.show =='chicagowebconf2012':
-            # Sched.org Conference Mobile Apps
+            # Sched.org Conference Mobcaile Apps
             # Chicago Web Conf 2012
             # return self.dump_keys(schedule)
             return self.sched(schedule,show)
@@ -1560,10 +1640,6 @@ class add_eps(process.process):
             # pycon.de 2011 
             return self.pyohio(schedule,show)
             # return self.pyconde2011(schedule,show)
-
-        if self.options.show == 'pyconde2012':
-            # pycon.de 2012 
-            return self.pyohio(schedule,show)
 
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
@@ -1633,6 +1709,8 @@ class add_eps(process.process):
           help='csv file' )
         parser.add_option('-u', '--update', action="store_true", 
           help='update when diff, else print' )
+        parser.add_option('-k', '--keys', action="store_true", 
+          help='dump keys of input stream' )
         parser.add_option('-L', '--license', 
           help= "http://creativecommons.org/licenses/" )
 
