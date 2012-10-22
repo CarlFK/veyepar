@@ -305,6 +305,7 @@ class add_eps(process.process):
                       diff_fields.append((f,a1,a2))
               if diff_fields:
                   print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
+                  print diff_fields
                   for f,a1,a2 in diff_fields:
                       print 'veyepar %s: %s' % (f,unicode(a1)[:60])
                       print ' source %s: %s' % (f,unicode(a2)[:60])
@@ -1419,6 +1420,7 @@ class add_eps(process.process):
 
         rooms = self.get_rooms(schedule )
         self.add_rooms(rooms,show)
+
         field_maps = [
             ('conf_key','id'),
             ('room','location'),
@@ -1445,33 +1447,77 @@ class add_eps(process.process):
             if self.options.verbose: print "event", event
             raw = event['raw']
             
-            # event['released'] = True
-
-
             event['authors'] =  ', '.join( event['authors'] )
 
-            start = parse(event['start'])        
-            # end = parse(row['event_end'])
-
-            duration="00:%s:00" % ( event['duration'] ) 
-
-            event['start'] = start
-            # event['end'] = end
-            event['duration'] = duration
-
-            # event['released'] = True
+            event['start'] = parse(event['start'])        
+            event['duration'] = "00:%s:00" % ( event['duration'] ) 
 
             event['license'] =  ''
-            # event['authors'] =  ''
-            # event['tags'] =  ''
-            #event['description'] =  ''
-
-            # event['emails']=None
 
 
         self.add_eps(events, show)
 
         return 
+
+    def pyconca2012(self,schedule,show):
+        pprint.pprint(schedule)
+
+        schedule = schedule['data']['talk_list']
+        # return talks, session
+        
+        # not sure if we need this, 
+        schedule = [t for t in schedule if t['schedule_slot_id'] is not None]
+
+        rooms = self.get_rooms(schedule )
+        self.add_rooms(rooms,show)
+
+        field_maps = [
+            ('conf_key','id'),
+            ('room','location'),
+            ('','sequence'),
+            ('title','name'),
+            ('','slug'),
+            ('authors','authors'),
+            ('contact','emails'),
+            ('description','description'),
+            ('start','start'),
+            ('duration','duration'),
+            ('released','released'),
+            ('license','license'),
+            ('tags','tags'),
+            ('conf_key','conf_key'),
+            ('conf_url','conf_url'),
+            ('','host_url'),
+            ('','publiv_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events:
+            if self.options.verbose: print "event", event
+            raw = event['raw']
+            if self.options.verbose: pprint.pprint(raw)
+            
+            event['authors'] = \
+              raw['speaker_first_name'] +' ' + raw['speaker_last_name']
+            event['contact'] = raw['user']['email']
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'],'%Y-%m-%dT%H:%M:%S-05:00')
+
+            event['duration'] = "00:%s:00" % ( event['duration'] ) 
+
+            # event['released'] = True
+
+            event['license'] =  ''
+
+
+        self.add_eps(events, show)
+
+        return 
+
+#################################################3
+# main entry point 
 
     def one_show(self, show):
         # url='http://us.pycon.org/2010/conference/schedule/events.json'
@@ -1552,8 +1598,16 @@ class add_eps(process.process):
         else:
             session = requests.session()
 
+            # addeps = {
+            #  'pyconca2012': { 'user':'carlfk', 'password':'7da95f9' }
+
             if self.options.show =="pyconca2012" :
-                session.post('http://pycon.ca/login', {'username': pw.username, 'password': pw.password, 'login.submit':'required but meaningless'})
+
+                auth = pw.addeps[self.options.show]
+
+                session.post('http://pycon.ca/login', 
+                  {'username': auth['user'], 'password': auth['password'], 
+                   'login.submit':'required but meaningless'})
 
             response = session.get(url, params=payload, )
             # response = requests.get(url, params=payload)
@@ -1594,8 +1648,6 @@ class add_eps(process.process):
         #   call appropiate parser
 
         if self.options.show =='pyconca2012':
-            # talks = r.json['data']['talk_list']
-            # return talks, session
             return self.pyconca2012(schedule,show)
 
         if self.options.show == 'pyconde2012':
