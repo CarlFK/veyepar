@@ -1,3 +1,7 @@
+pyconde
+ 10 d-i time/zone string US/Central
+
+
 client checklist:
   release on talk submission
   data driven schedule, api (json)

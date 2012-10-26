@@ -1460,12 +1460,12 @@ class add_eps(process.process):
         return 
 
     def pyconca2012(self,schedule,show):
-        pprint.pprint(schedule)
+        # pprint.pprint(schedule)
 
         schedule = schedule['data']['talk_list']
         # return talks, session
         
-        # not sure if we need this, 
+        # remove rejected talks
         schedule = [t for t in schedule if t['schedule_slot_id'] is not None]
 
         rooms = self.get_rooms(schedule )
@@ -1478,17 +1478,15 @@ class add_eps(process.process):
             ('title','name'),
             ('','slug'),
             ('authors','authors'),
-            ('contact','emails'),
-            ('description','description'),
+            ('','emails'),
+            ('abstract','description'),
             ('start','start'),
             ('duration','duration'),
-            ('released','released'),
-            ('license','license'),
-            ('tags','tags'),
+            ('','released'),
+            ('','license'),
+            ('','tags'),
             ('conf_key','conf_key'),
             ('conf_url','conf_url'),
-            ('','host_url'),
-            ('','publiv_url'),
             ]
 
         events = self.generic_events(schedule, field_maps)
@@ -1500,7 +1498,7 @@ class add_eps(process.process):
             
             event['authors'] = \
               raw['speaker_first_name'] +' ' + raw['speaker_last_name']
-            event['contact'] = raw['user']['email']
+            event['emails'] = raw['user']['email']
 
             event['start'] = datetime.datetime.strptime(
                     event['start'],'%Y-%m-%dT%H:%M:%S-05:00')

@@ -141,11 +141,11 @@ class enc(process):
     tree=xml.etree.ElementTree.XMLID(raw_svg)
 
     for key in texts:
-        if self.options.verbose: print key
+        if self.options.verbose: print "looking for:", key
         # tollerate template where tokens have been removed
         if tree[1].has_key(key):
             if self.options.verbose: 
-                print "org", tree[1][key].text
+                print "fond in svg:", tree[1][key].text
                 # print "new", texts[key].encode()
             tree[1][key].text=texts[key]
 

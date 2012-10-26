@@ -12,3 +12,8 @@ temp
 blip_uploader.cfg
 veyepar.cfg
 veyepar.db
+*.png
+*.gif
+*.pdf
+*.jpg
+
