@@ -1,6 +1,8 @@
 pyconde
  10 d-i time/zone string US/Central
 
+push metadata to pvo before show, mark "coming soon"
+  this will allow presenters to review.
 
 client checklist:
   release on talk submission
