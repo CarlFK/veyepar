@@ -283,6 +283,8 @@ class process(object):
             episodes = episodes.filter(show__in=shows)
         if self.options.day:
             episodes = episodes.filter(start__day=self.options.day)
+        if self.options.room:
+            episodes = episodes.filter(location_name=self.options.room)
         if self.args:
             episodes = episodes.filter(id__in=self.args)
 
