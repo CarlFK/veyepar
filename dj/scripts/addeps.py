@@ -1448,6 +1448,7 @@ class add_eps(process.process):
             raw = event['raw']
             
             event['authors'] =  ', '.join( event['authors'] )
+            event['emails'] =  ', '.join( event['emails'] )
 
             event['start'] = parse(event['start'])        
             event['duration'] = "00:%s:00" % ( event['duration'] ) 

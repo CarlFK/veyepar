@@ -119,7 +119,7 @@ class add_to_richard(process):
     'tags': tags,
     'speakers': speakers,
     'recorded': ep.start.isoformat(),
-    'language': 'English',
+    'language': 'German',
     'whiteboard': u'',
     'quality_notes': '',
     'description': u'',

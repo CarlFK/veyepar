@@ -5,9 +5,9 @@ tsdv.py - timestamp dv
 sets start/end times of dv files
 
 Gets start from one of:
+the file name (assumes yy_mm_dd/hh_mm_ss.dv format)
 the file system time stamp, 
 the first frame of the dv
-the file name (assumes hh_mm_ss.dv format)
 
 duration (in seconds) based on file size / BBF*FPS 
 last frame
@@ -22,7 +22,7 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
-class add_dv(process):
+class ts_dv(process):
 
     def one_dv(self, dir, dv, offset_hours ):
 
@@ -41,8 +41,8 @@ class add_dv(process):
         print dv.filename
 
         # get timestamp from filesystem
-        st = os.stat(pathname)    
-        ts_start=datetime.datetime.fromtimestamp( st.st_mtime )
+        # st = os.stat(pathname)    
+        # ts_start=datetime.datetime.fromtimestamp( st.st_mtime )
 
         # parse string into datetime
         filename = dv.filename
@@ -80,8 +80,8 @@ class add_dv(process):
         dv.duration = duration
 
         print "start:\t%s" % start
-        print "ts_start:\t%s" % ts_start
-        print "delta:\t%s" % (ts_start - start)
+        # print "ts_start:\t%s" % ts_start
+        # print "delta:\t%s" % (ts_start - start)
         print
 
         if not self.options.test:
@@ -91,11 +91,15 @@ class add_dv(process):
     def one_loc(self,show, location,dir):
       for dv in Raw_File.objects.filter(show=show, location=location):
         print dv
-        self.one_dv(dir,dv, location.hours_offset)
+        if not dv.start:
+          self.one_dv(dir,dv, location.hours_offset)
 
     def one_show(self, show):
       self.set_dirs(show)
-      for loc in Location.objects.filter(show=show):
+      locs = Location.objects.filter(show=show)
+      if self.options.room:
+          locs = locs.filter(name=self.options.room)
+      for loc in locs:
         dir=os.path.join(self.show_dir,'dv',loc.slug)
         print show,loc,dir
         self.one_loc(show, loc, dir)
@@ -120,6 +124,6 @@ class add_dv(process):
 
 
 if __name__=='__main__': 
-    p=add_dv()
+    p=ts_dv()
     p.main()
 
