@@ -1,0 +1,10 @@
+# examples of bad data:
+
+# the video is just Lightning Talks, so don't include the other stuff.
+Title   Lightning Talks, Raffle, Closing Announcements
+
+# 3 sets of Lightning Talks, all the same title, make it hard to figure out which is which.  add "Friday Afteroon" or "1,2,3" or something.
+Title   Lightning Talks
+Title   Lightning Talks
+Title   Lightning Talks
+
