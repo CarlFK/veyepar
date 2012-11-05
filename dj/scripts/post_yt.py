@@ -179,7 +179,7 @@ class post(process):
 
                 uploader.pathname = f['pathname']
                 uploader.key_id = "%s/%s/%s.%s" % ( 
-                    client.slug, show.slug, ep.slug, f['ext']
+                        client.slug, show.slug, ep.slug[:30], f['ext']
                     )
 
                 # actually upload 

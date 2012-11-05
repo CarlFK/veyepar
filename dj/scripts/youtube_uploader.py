@@ -214,7 +214,7 @@ if __name__ == '__main__':
     u.meta = {
       'title': "test title",
       'description': "test description",
-      #'description': "test " * 100,
+      'description': "test " * 100,
       'tags': ['tag1', 'tag2'],
       # 'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
       'category': "Education",

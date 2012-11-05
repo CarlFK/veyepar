@@ -19,7 +19,7 @@ Show twinpact feed on slave display.
 
 veyepar:
 
-  chrome doesn't play ogv. figure out what file formats to use for thumbs.
+  chrome doesn't play ogv. figure out what file formats to use for thumbs.  maybe now it does.
   how to keep it from being so agressive about buffering if Play isn't hit 
 
   store images of recording sheets
@@ -36,12 +36,13 @@ veyepar:
   command line parameter to set cfg file.
     give test script its own cfg
 
-  upload category - needs default
+  upload category - needs default, currently hardcoded to "Education"
 
   upload to youtube
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      delete old version when replaced by new encode.
+     invalid tags = fail and loop forever.
 
   upload in draft state:
       it is not meant for public viewing yet.
@@ -52,8 +53,8 @@ veyepar:
      
       YouTube: access control settings - needs to be implemnted.
       archive: not sure there is a UI for people to use, so dooesn't matter  
-      richard: state:2 api is broken.
-
+      richard: 
+        state:2 api is broken.
 
 encoding:
   soften jump cuts
@@ -62,10 +63,13 @@ encoding:
   credits - hold for a few seconds at end.
   channel_copy - document and verify current behaviour
   
-slug - trunkcate on word boundry when over X chars.
+slugify talk titles- 
+  trunkcate on word boundry when over X chars.
+  de-unicode
 
 model:
-   (nothing!)
+  child table of output files
+    mp4, ogv, mp3, facc...
 
 walpaper 
   logos:
@@ -75,10 +79,7 @@ walpaper
    
 
 recording sheets:
-  [x] over time (adjust before addeps to suck in the extras)
   hostname:____
-  audio on R or L
-  [x] sound check for each talk
 
 live cd: mainly for slave
   user in video group
@@ -91,8 +92,6 @@ title screen preview
   email to presenters before the show
 
 dvswitch process management:
-  bug people:
-  Tim A to fix Kill button
   Ryan V 
      get scripts propperly checked into veyepr repo
      make sure his scripts to use _ in dv filenames

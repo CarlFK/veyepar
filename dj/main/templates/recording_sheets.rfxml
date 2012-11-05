@@ -66,11 +66,11 @@
 						<y>'73.0 pt'</y>
 					</String>
 					<String>
-						<expr>"[  ] Sound levels on DVswitch"</expr>
+						<expr>"[  ] Sound levels on DVswitch  L[   ]  R[   ]" </expr>
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
-						<x>'19.0 pt'</x>
+						<x>'13.0 pt'</x>
 						<y>'23.0 pt'</y>
 					</String>
 					<String>
@@ -78,7 +78,7 @@
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
-						<x>'19.0 pt'</x>
+						<x>'13.0 pt'</x>
 						<y>'7.0 pt'</y>
 					</String>
 					<String>
@@ -165,7 +165,7 @@
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
-						<x>'19.0 pt'</x>
+						<x>'13.0 pt'</x>
 						<y>'39.0 pt'</y>
 					</String>
 				</Objects>
@@ -218,7 +218,7 @@
 				<expr>"%s: %s" % (self.client_name, self.show_name)</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>15</FontSize>
-				<width>'240.0 pt'</width>
+				<width>'386.0 pt'</width>
 				<x>'2.0 pt'</x>
 				<y>'55.0 pt'</y>
 			</String>
@@ -227,8 +227,8 @@
 				<expr>"Recording Sheet"</expr>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>15</FontSize>
-				<width>'240.0 pt'</width>
-				<x>'296.0 pt'</x>
+				<width>'135.0 pt'</width>
+				<x>'396.0 pt'</x>
 				<y>'55.0 pt'</y>
 			</String>
 			<String>
@@ -300,9 +300,10 @@
 				<expr>self.episode_start.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>13</FontSize>
+				<height>'14.0 pt'</height>
 				<width>'53.0 pt'</width>
 				<x>'3.0 pt'</x>
-				<y>'104.0 pt'</y>
+				<y>'69.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_end.strftime("%H:%M")</expr>
@@ -332,8 +333,8 @@
 				<FontSize>10</FontSize>
 				<height>'14.0 pt'</height>
 				<width>'48.0 pt'</width>
-				<x>'76.0 pt'</x>
-				<y>'115.0 pt'</y>
+				<x>'26.0 pt'</x>
+				<y>'50.0 pt'</y>
 			</String>
 			<String>
 				<expr>"[  ] Edit"</expr>
@@ -349,8 +350,8 @@
 				<FontSize>7</FontSize>
 				<height>'11.0 pt'</height>
 				<width>'24.0 pt'</width>
-				<x>'50.8 pt'</x>
-				<y>'116.6 pt'</y>
+				<x>'0.8 pt'</x>
+				<y>'51.6 pt'</y>
 			</String>
 			<String>
 				<expr>"id:"</expr>
@@ -388,7 +389,7 @@
 				<ScalePercent>(100.0, 150.0)</ScalePercent>
 				<width>'124.0 pt'</width>
 				<x>'1 pt'</x>
-				<y>'31.6 pt'</y>
+				<y>'24.6 pt'</y>
 			</String>
 			<String>
 				<expr>"Presenter initials for intent to release:  _____________"</expr>
@@ -419,10 +420,10 @@
 				<expr>self.episode_start.strftime("%I:%M %p").strip('0').lower()</expr>
 				<FontName>'Helvetica'</FontName>
 				<FontSize>8</FontSize>
-				<height>'12.0 pt'</height>
+				<height>'8.0 pt'</height>
 				<width>'53.0 pt'</width>
-				<x>'7.0 pt'</x>
-				<y>'117.0 pt'</y>
+				<x>'3.0 pt'</x>
+				<y>'62.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_end.strftime("%I:%M %p").strip('0').lower()</expr>
@@ -471,8 +472,17 @@
 				<FontSize>10</FontSize>
 				<height>'11.0 pt'</height>
 				<width>'44.0 pt'</width>
-				<x>'1.0 pt'</x>
-				<y>'46.0 pt'</y>
+				<x>'124.0 pt'</x>
+				<y>'29.0 pt'</y>
+			</String>
+			<String>
+				<expr>"[  ] Sound check"</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<height>'12.0 pt'</height>
+				<width>'113.0 pt'</width>
+				<x>'3.0 pt'</x>
+				<y>'115.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>

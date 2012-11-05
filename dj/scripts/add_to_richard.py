@@ -106,6 +106,7 @@ class add_to_richard(process):
         # cat is now the category we want to use
         # either it was existing, or was just added.
         category_key = cat['title']
+        category_key = 'PyCon DE 2012'
 
         # Let's populate a video object and push it.
         video_data = {
