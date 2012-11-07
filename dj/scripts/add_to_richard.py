@@ -7,8 +7,10 @@ import slumber
 
 import pprint
 
+from django.template.defaultfilters import \
+        linebreaks, urlize, force_escape
+
 from steve.util import scrapevideo
-import json
 
 import pw
 
@@ -108,12 +110,18 @@ class add_to_richard(process):
         category_key = cat['title']
         category_key = 'PyCon DE 2012'
 
+     
+        description = (
+            linebreaks(
+            urlize(
+            force_escape(ep.description))))
+
         # Let's populate a video object and push it.
         video_data = {
     'state': 1, # 1=live, 2=draft
     'title': ep.name,
     'category': category_key,
-    'summary': ep.description,
+    'summary': description,
     #'slug': ep.slug,  ## richard will provide a better slug.
     'source_url': ep.host_url,
     'copyright_text': ep.license,

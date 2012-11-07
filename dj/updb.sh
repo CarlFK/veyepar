@@ -5,8 +5,8 @@ if grep ^DATABASES local_settings.py; then
     exit
 fi
 
-ssh -p 222 veyepar@nextdayvideo.com /home/veyepar/veyepar/dj/dumpdata.sh
-scp -P 222 veyepar@nextdayvideo.com:veyepar/dj/veyepar_main.json .
+# ssh -p 222 veyepar@nextdayvideo.com /home/veyepar/veyepar/dj/dumpdata.sh
+# scp -P 222 veyepar@nextdayvideo.com:veyepar/dj/veyepar_main.json .
 
 touch veyepar.db 
 mv  veyepar.db  ~/temp
