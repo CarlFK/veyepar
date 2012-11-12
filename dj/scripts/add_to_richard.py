@@ -68,8 +68,7 @@ class add_to_richard(process):
         found = False
         for cat in cats['objects']:
             if self.options.verbose: print cat['id'], cat['slug'], cat['name']
-            # if cat['slug']  ==  ep.show.slug:
-            if cat['name']  ==  ep.show.client.name:
+            if cat['name']  ==  ep.show.name:
                 found = True
                 if self.options.verbose: print "found"
                 break
@@ -80,19 +79,23 @@ class add_to_richard(process):
             if self.options.verbose:  print "creating..."
             cat_data = {
                 'kind': 1,
-                'name': ep.show.client.name,
-                'title': ep.show.client.name,
+                'name': ep.show.name,
+                # 'name': ep.show.client.name,
+                'title': ep.show.name,
+                # 'title': ep.show.client.name,
                 'description': '',
                 'url': '',
                 'whiteboard': '',
                 # I think start_date should be blank, or .today()
                 # 'start_date': '2012-07-16',
-                'slug': ep.show.client.slug
+                # 'slug': ep.show.client.slug
+                # 'slug': ep.show.slug
             }
             try:
-                cat = api.category.post(cat_data, 
-                    username=host['user'], api_key=host['api_key'])
-                if self.options.verbose:  print "created", cat
+                # cat = api.category.post(cat_data, 
+                #    username=host['user'], api_key=host['api_key'])
+                # if self.options.verbose:  print "created", cat
+                pass
             except Exception as exc:
                 # TODO: OMG gross.
                 if exc.content.startswith('\n<!DOCTYPE html>'):
@@ -107,14 +110,15 @@ class add_to_richard(process):
 
         # cat is now the category we want to use
         # either it was existing, or was just added.
-        category_key = cat['title']
-        category_key = 'PyCon DE 2012'
-
+        # category_key = cat['title']
+        # category_key = 'PyCon DE 2012'
+        category_key = 'PyCon CA 2012'
      
         description = (
             linebreaks(
             urlize(
             force_escape(ep.description))))
+        slug = ep.slug.replace("_","-").lower()
 
         # Let's populate a video object and push it.
         video_data = {
@@ -122,13 +126,14 @@ class add_to_richard(process):
     'title': ep.name,
     'category': category_key,
     'summary': description,
-    #'slug': ep.slug,  ## richard will provide a better slug.
+    # 'slug': slug,  
     'source_url': ep.host_url,
     'copyright_text': ep.license,
     'tags': tags,
     'speakers': speakers,
     'recorded': ep.start.isoformat(),
-    'language': 'German',
+    'language': 'English',
+     #'language': 'German',
     'whiteboard': u'',
     'quality_notes': '',
     'description': u'',

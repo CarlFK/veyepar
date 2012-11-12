@@ -58,6 +58,8 @@ veyepar:
         state:2 api is broken.
         html-atize desceription.
 
+   Stop - make it work again
+
 encoding:
   soften jump cuts
   create list of cut times relitive to start of final video

@@ -133,7 +133,6 @@ def goog(show,url):
             minutes -= hours*60
 
             duration="%s:%s:00" % ( hours,minutes) 
-            # released = True
 
             # print name, authors, location, start, duration
             print "%s: %s - %s" % ( authors, location, start.time() )
@@ -234,8 +233,8 @@ class add_eps(process.process):
                     try:
                         event[vk] = row[jk]
                     except: 
-                        # event[vk] = None
-                        pass
+                        event[vk] = None
+                        # pass
                 else:
                     event[vk] = ''
 
@@ -283,6 +282,7 @@ class add_eps(process.process):
         'conf_url', 'tags')
 
           if created or self.options.update:
+              if self.options.verbose: pprint.pprint( row )
               loc=Location.objects.get(name=row['location'])
               loc.active = True
               episode.location=loc
@@ -606,7 +606,7 @@ class add_eps(process.process):
             event['emails'] = row.get('Presenter_emails','')
 
             # https://github.com/zookeepr/zookeepr/issues/93
-            event['released'] = True
+            # event['released'] = True
 
             event['license'] = self.options.license
             event['description'] = row['Description']
@@ -855,7 +855,7 @@ class add_eps(process.process):
             event['authors'] =  event['authors'][0]['name']
             event['emails'] =  event['emails'][0]['email']
             event['location'] = 'room_1'
-            event['released'] = True
+            # event['released'] = True
             event['license'] = ''
 
         return events
@@ -920,7 +920,7 @@ class add_eps(process.process):
 
             event['authors'] = src_event['presenters']
             event['emails'] = ''
-            event['released'] = True
+            # event['released'] = True
             event['license'] = self.options.license
             event['description'] = src_event['summary']
             event['conf_key'] = src_event['id']
@@ -1059,7 +1059,7 @@ class add_eps(process.process):
 
             # released flag fliping back to False?
             # investigate later, ignore for now.
-            event['released'] = event['released']!="0"
+            # event['released'] = event['released']!="0"
             # del(event['released'])
 
             if event['description'] is None:
@@ -1370,7 +1370,7 @@ class add_eps(process.process):
             if self.options.verbose: print "event", event
             row = event['raw']
             
-            event['released'] = True
+            # event['released'] = True
             if 'speakers' not in row.keys(): 
                 # del(event)
                 # continue
@@ -1483,7 +1483,7 @@ class add_eps(process.process):
             ('abstract','description'),
             ('start','start'),
             ('duration','duration'),
-            ('','released'),
+            ('video_releaase','released'),
             ('','license'),
             ('','tags'),
             ('conf_key','conf_key'),
@@ -1506,7 +1506,7 @@ class add_eps(process.process):
 
             event['duration'] = "00:%s:00" % ( event['duration'] ) 
 
-            # event['released'] = True
+            event['released'] = raw['video_release'] 
 
             event['license'] =  ''
 
