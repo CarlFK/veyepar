@@ -771,7 +771,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     # state = request.REQUEST.get('state')
     # raise Exception((client_slug, show_slug, state, start_day, location_slug))
     locations=show.locations.filter(active=True).order_by('sequence')
-    episodes=Episode.objects.filter(show=show).order_by('sequence')
+    episodes=Episode.objects.filter(show=show).order_by('start')
 
     kwargs = {'location': location_slug, 'start__day':start_day, 'state':state}
     # raise Exception(episodes.filter(**kwargs))

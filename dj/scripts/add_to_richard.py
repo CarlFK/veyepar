@@ -42,7 +42,8 @@ class add_to_richard(process):
         tags = ep.tags.split(',')
         # remove blacklisted tags, 
         # and tags with a / in them.
-        tags = [t for t in tags if t not in [
+        # and strip spaces 
+        tags = [t.strip() for t in tags if t not in [
              u'enthought', 
              u'scipy_2012', 
              u'Introductory/Intermediate',
@@ -167,6 +168,7 @@ class add_to_richard(process):
                 self.pvo_url = "http://%s/video/%s/%s" % (
                         host['host'], vid['id'],vid['slug'])
                 if self.options.verbose: print self.pvo_url
+                print self.pvo_url
                 ep.public_url = self.pvo_url
                 ret = self.pvo_url
 

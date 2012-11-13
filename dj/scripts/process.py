@@ -36,8 +36,8 @@ class process(object):
 
   extra_options={} 
 
-  # set to True to stop processing at the end of episode
-  # will not abort an encode, upload or anything like that.
+  # set stop to True to stop processing at the end of episode
+  # will not abort a process, like an encode, upload or anything like that.
   # it just exits these loops: 
   #    for e in es: (process episodes) and do while not Done: (poll)
   stop = False 
@@ -45,7 +45,8 @@ class process(object):
   ready_state=None
 
 # defaults to ntsc stuff
-  fps=29.98
+  # fps=29.98
+  fps=30000/1001.0
   bpf=120000
 
   def run_cmd(self,cmd):
@@ -233,11 +234,12 @@ class process(object):
             self.log_out(ep)
             if ep.stop: 
                 if self.options.verbose: print ".STOP set on the episode."
-                # send message to .poll 
+                # send message to .process_eps which bubbles up to .poll 
                 self.stop = True
                 # re-set the stop flag.
                 ep.stop = False
                 ep.save()
+                break
 
         else:
             if self.options.verbose:
@@ -250,8 +252,8 @@ class process(object):
   def one_show(self, show):
 
     """
-
-"""
+ 
+    """
     self.set_dirs(show)
 
     locs = Location.objects.filter(show=show)

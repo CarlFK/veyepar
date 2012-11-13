@@ -45,6 +45,9 @@ veyepar:
      delete old version when replaced by new encode.
      invalid tags = fail and loop forever.
 
+  state - need something to handle Canceled talks, breaks, etc.  
+    disposition?  
+
   upload in draft state:
       it is not meant for public viewing yet.
       there is no security blocking access
@@ -58,7 +61,7 @@ veyepar:
         state:2 api is broken.
         html-atize desceription.
 
-   Stop - make it work again
+   Stop - make it work again - fixed.. confirm.
 
 encoding:
   soften jump cuts
@@ -113,3 +116,7 @@ for unit tests:
 Transcriptions
     Need a place to host transcriptions
     mix transcriptions with video for sub titling 
+
+OCR - http://software-carpentry.org
+
+
