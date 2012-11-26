@@ -123,7 +123,8 @@ class EpisodeAdmin(admin.ModelAdmin):
 admin.site.register(Episode, EpisodeAdmin)
 
 class Cut_ListAdmin(admin.ModelAdmin):
-    list_display = ('sequence', 'episode', 'raw_file',)
+    list_display = ('sequence', 'episode', 'apply', 'raw_file',)
+    list_editable = ('apply',)
     list_filter = ('episode__show',)
     admin_order_field = list_display
 

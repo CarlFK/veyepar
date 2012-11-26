@@ -52,7 +52,6 @@ class add_to_richard(process):
              and t]
 
         host = pw.richard[self.options.host_user]
-        pprint.pprint(host)
 
         # Create an api object with the target api root url.
         endpoint = 'http://%(host)s/api/v1/' % host 
@@ -112,8 +111,8 @@ class add_to_richard(process):
         # cat is now the category we want to use
         # either it was existing, or was just added.
         # category_key = cat['title']
-        # category_key = 'PyCon DE 2012'
-        category_key = 'PyCon CA 2012'
+        category_key = 'PyCon DE 2012'
+        # category_key = 'PyCon CA 2012'
      
         description = (
             linebreaks(

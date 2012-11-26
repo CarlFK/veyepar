@@ -1597,14 +1597,12 @@ class add_eps(process.process):
         else:
             session = requests.session()
 
-            # addeps = {
-            #  'pyconca2012': { 'user':'carlfk', 'password':'7da95f9' }
-
             if self.options.show =="pyconca2012" :
 
                 auth = pw.addeps[self.options.show]
 
-                session.post('http://pycon.ca/login', 
+                # session.post('http://pycon.ca/login', 
+                session.post('http://2012.pycon.ca/login', 
                   {'username': auth['user'], 'password': auth['password'], 
                    'login.submit':'required but meaningless'})
 
@@ -1641,6 +1639,8 @@ class add_eps(process.process):
         file('schedule.json','w').write(j) 
         # j=file('schedule.json').read()
 
+
+        if self.options.verbose: pprint.pprint(schedule) 
         if self.options.keys: return self.dump_keys(schedule)
 
         # look at fingerprint of file, (or cheat and use the showname)

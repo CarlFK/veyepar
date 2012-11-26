@@ -14,8 +14,6 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
-# STATICFILES_URL='foo'
-# STATICFILES_ROOT='foo'
 # STATICFILES_DIRS = [os.path.expanduser('~/Videos/veyepar'),]
 STATIC_URL = "/static/"
 MEDIA_URL = "file:///%s/"%os.path.expanduser('~/Videos/veyepar')

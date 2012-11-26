@@ -59,7 +59,11 @@ veyepar:
       archive: not sure there is a UI for people to use, so dooesn't matter  
       richard: 
         state:2 api is broken.
-        html-atize desceription.
+        reference back to veyepar page (hidden to public)
+        reference to conference site page (for slides)
+      
+      save raw json per episode 
+      
 
    Stop - make it work again - fixed.. confirm.
 

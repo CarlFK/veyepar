@@ -36,7 +36,10 @@
 {% if episode.conf_url %}
   <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
 {% endif %}
-<a href="{% url 'admin:main_episode_change' episode.id%}">admin</a>
+Admin: <a href="{% url 'admin:main_episode_change' episode.id%}">episode</a>
+<a href="{% url 'admin:main_cut_list_changelist' %}?episode__id__exact={{episode.id}}">cut list</a>
+<br>
+
 <a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a>
 <a href="{% url 'raw_list' episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
 <a href="{% url 'enc_list' episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a>
