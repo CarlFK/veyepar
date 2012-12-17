@@ -7,6 +7,10 @@
 
 {% block content %}
 
+<a href="{% url 'client' client.slug %}">{{ client.name }}</a>
+<a href="{% url 'episode_list' client.slug show.slug%}">{{ show.name }}</a>
+<br/>
+
 {% if prev_episode %}
   <a href="/main/E/{{ prev_episode.id }}">Prev: {{prev_episode.state }} {{prev_episode.name }}</a>
 {% else %}

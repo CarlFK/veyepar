@@ -38,6 +38,10 @@ sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugi
 # for encoder node
 # python-psycopg2 inkscape ffmpeg2theora python-imaging python-virtualenv virtualenvwrapper
 
+# for web server 
+# python-psycopg2 python-imaging python-virtualenv virtualenvwrapper 
+# ttf-dejavu-core (for pdfs)
+
 
 # curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv 
 
@@ -73,9 +77,10 @@ cd static
 wget -N http://0x80.org/wordlist/webster-dictionary.txt
 ln -s webster-dictionary.txt dictionary.txt
 
-sox -b 16 -r 16k -e signed -c 1 -t raw \
-    /usr/share/sphinx2/model/lm/turtle/goforward.16k \
-    goforward.wav
+# removed because sphinx no longer installs - pulled from deb repos
+# sox -b 16 -r 16k -e signed -c 1 -t raw \
+#    /usr/share/sphinx2/model/lm/turtle/goforward.16k \
+#    goforward.wav
 
 cd ..
 cp sample_pw.py pw.py

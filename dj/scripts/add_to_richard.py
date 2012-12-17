@@ -63,6 +63,8 @@ class add_to_richard(process):
         # I am going to regret this later.
         # To the future me: Sorry.
 
+
+        """
         if self.options.verbose: print "Show slug:", ep.show.slug, ep.show.client.name
         cats = api.category.get(limit=0)
         found = False
@@ -111,8 +113,11 @@ class add_to_richard(process):
         # cat is now the category we want to use
         # either it was existing, or was just added.
         # category_key = cat['title']
-        category_key = 'PyCon DE 2012'
-        # category_key = 'PyCon CA 2012'
+        """
+
+        # category_key = 'PyCon DE 2012'
+        # category_key = 'PyCon DE 2012'
+        category_key = 'ChiPy'
      
         description = (
             linebreaks(

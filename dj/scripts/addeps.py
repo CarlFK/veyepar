@@ -824,13 +824,9 @@ class add_eps(process.process):
     def chipy_events(self, schedule ):
         # flourish 2012
 
-        # these fields exist in both json and veyepar:
-        common_fields = [ 
-                'description', 
-            ]
-
         # mapping of json to veyepar:
         field_maps = [ 
+                ('description', 'description'),
                 ('title', 'name'),
                 ('start_time', 'start'),
                 ('length', 'duration'),
@@ -855,7 +851,7 @@ class add_eps(process.process):
             event['authors'] =  event['authors'][0]['name']
             event['emails'] =  event['emails'][0]['email']
             event['location'] = 'room_1'
-            # event['released'] = True
+            event['released'] = True
             event['license'] = ''
 
         return events
@@ -1581,7 +1577,7 @@ class add_eps(process.process):
             'chipy_aug_2012': "http://chipy.org/api/meetings/",
             'pycon_au_2012': "http://2012.pycon-au.org/programme/schedule/json",
             'chipy_sep_2012': "http://chipy.org/api/meetings/",
-            'chipy_oct_2012': "http://chipy.org/api/meetings/",
+            'chipy_dec_2012': "http://chipy.org/api/meetings/",
             # 'pyconde2012': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
             # 'pyconde2012': 'https://stage.2012.de.pycon.org/episodes.json',
             'pyconde2012': 'https://2012.de.pycon.org/episodes.json',
@@ -1636,7 +1632,7 @@ class add_eps(process.process):
             # schedule = eval(j)
 
         # save for later
-        file('schedule.json','w').write(j) 
+        # file('schedule.json','w').write(j) 
         # j=file('schedule.json').read()
 
 
@@ -1675,7 +1671,7 @@ class add_eps(process.process):
         # if self.options.show == 'chipy_july_2012':
         # if self.options.show == 'chipy_aug_2012':
         # if self.options.show == 'chipy_sep_2012':
-        if self.options.show == 'chipy_oct_2012':
+        if self.options.client == 'chipy':
             # chipy
             return self.chipy(schedule,show)
 

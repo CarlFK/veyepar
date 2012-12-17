@@ -20,6 +20,12 @@ Show twinpact feed on slave display.
 
 veyepar:
 
+  last active date - 
+    for shows - 
+      put top 4 sows on the client page, 
+      link to stats.
+  
+
   chrome doesn't play ogv. figure out what file formats to use for thumbs.  maybe now it does.
   how to keep it from being so agressive about buffering if Play isn't hit 
 
@@ -123,4 +129,7 @@ Transcriptions
 
 OCR - http://software-carpentry.org
 
+encoding 
+    flag for odd audio (like missing or very low)
+        DD - There is a new audiolevel filter. See output of melt -query filter=audiolevel
 
