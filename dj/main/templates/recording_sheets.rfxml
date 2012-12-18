@@ -263,6 +263,17 @@
 	<Detail>
 		<Height>132.0</Height>
 		<Objects>
+			<String>
+				<expr>"NOT Released"</expr>
+				<fontcolor>(.9, .9, .9)</fontcolor>
+				<FontName>'Helvetica-Bold'</FontName>
+				<fontsize>60</fontsize>
+				<height>'49.0 pt'</height>
+				<Show>not self.episode_released</Show>
+				<width>'415.0 pt'</width>
+				<x>'119.0 pt'</x>
+				<y>'39.0 pt'</y>
+			</String>
 			<Rectangle>
 				<FillColor>(0.953, 0.953, 0.953)</FillColor>
 				<height>'18.0 pt'</height>

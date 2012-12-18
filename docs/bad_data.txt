@@ -8,3 +8,7 @@ Title   Lightning Talks
 Title   Lightning Talks
 Title   Lightning Talks
 
+# The json should be browsable.  I should be able to hit it with FF/JsonView or Chrome and see the data rendred.  
+# I don't want to see everything on one line or "Would you like to save this file?" 
+#
+# 

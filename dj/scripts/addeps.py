@@ -246,14 +246,15 @@ class add_eps(process.process):
 
         return events
 
-    def add_eps(self, episodes, show):
+    def add_eps(self, schedule, show):
 
       if self.options.test:
           print "test mode, not adding to db"
           return 
 
       seq=0
-      for row in episodes:
+      import pdb; pdb.set_trace()
+      for row in schedule:
           if self.options.verbose: pprint.pprint( row )
           # episode,created = Episode.objects.get_or_create(
           #        show=show, conf_key=row['conf_key'], )
@@ -1440,6 +1441,7 @@ class add_eps(process.process):
         events = self.generic_events(schedule, field_maps)
 
         for event in events:
+
             if self.options.verbose: print "event", event
             raw = event['raw']
             

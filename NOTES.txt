@@ -24,6 +24,10 @@ setup: postgresql install/config.  nfs install/config, apache...
  mkfs.ext4 -L disk25 -O sparse_super,extent,uninit_bg -E lazy_itable_init=1 -m 0 /dev/abc
 
  /etc/default/rcS and change 'fsckfix' to yes
-that tells it to shut the fuck up and do whatever without prompting you
+that tells it to shut up and do whatever without prompting you
 
-bios: don't stop on error
+bios: 
+  don't stop on error
+  pxe enabled on nic
+  HD first boot device
+
