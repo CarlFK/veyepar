@@ -4,8 +4,8 @@
 
 """
 fields:
-name - title of talk
-room - "room1" if there is only one room.
+name - title 
+room - room as described by the venue
 start - datetime in some parsable format 
 duration -- int minutes or "hh:mm:ss" 
 end - datetime in some parsable format 
@@ -253,7 +253,7 @@ class add_eps(process.process):
           return 
 
       seq=0
-      import pdb; pdb.set_trace()
+      # import pdb; pdb.set_trace()
       for row in schedule:
           if self.options.verbose: pprint.pprint( row )
           # episode,created = Episode.objects.get_or_create(
@@ -854,6 +854,7 @@ class add_eps(process.process):
             event['location'] = 'room_1'
             event['released'] = True
             event['license'] = ''
+            event['duration'] = event['duration'] + ":00"
 
         return events
 
@@ -1579,7 +1580,7 @@ class add_eps(process.process):
             'chipy_aug_2012': "http://chipy.org/api/meetings/",
             'pycon_au_2012': "http://2012.pycon-au.org/programme/schedule/json",
             'chipy_sep_2012': "http://chipy.org/api/meetings/",
-            'chipy_dec_2012': "http://chipy.org/api/meetings/",
+            'chipy_jan_2013': "http://chipy.org/api/meetings/",
             # 'pyconde2012': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
             # 'pyconde2012': 'https://stage.2012.de.pycon.org/episodes.json',
             'pyconde2012': 'https://2012.de.pycon.org/episodes.json',
@@ -1674,10 +1675,6 @@ class add_eps(process.process):
         # if self.options.show == 'chipy_aug_2012':
         # if self.options.show == 'chipy_sep_2012':
         if self.options.client == 'chipy':
-            # chipy
-            return self.chipy(schedule,show)
-
-        if self.options.show == 'chipy_may2012':
             # chipy
             return self.chipy(schedule,show)
 

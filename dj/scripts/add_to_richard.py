@@ -4,6 +4,7 @@
 
 # This is just a lib that makes doing REST stuff easier.
 import slumber
+import requests
 
 import pprint
 
@@ -32,7 +33,14 @@ class add_to_richard(process):
             
         # get the metadata from youtube
         # like thumb url and video embed code
-        yt_meta = scrapevideo(ep.host_url)
+        while True:
+            # keep trying untill it doesn't error doh!
+            try:
+                yt_meta = scrapevideo(ep.host_url)
+                break
+            except KeyError as e: 
+                print "KeyError", e
+            
         if self.options.verbose: 
             pprint.pprint( yt_meta )
         
@@ -56,6 +64,8 @@ class add_to_richard(process):
         # Create an api object with the target api root url.
         endpoint = 'http://%(host)s/api/v1/' % host 
         api = slumber.API(endpoint)
+        ### api = slumber.API(endpoint, session=requests.session(
+        ###   params={"username": host['user'], "api_key": host['api_key']}))
 
         # make sure the category exists.
         # This seems like a terible way to doing this, 
@@ -161,12 +171,19 @@ class add_to_richard(process):
             if ep.public_url:
                 # update
                 vid_id = ep.public_url.split('/video/')[1].split('/')[0]
-                vid = api.video(vid_id).put(video_data, 
+                updated = api.video(vid_id).put(video_data,
                     username=host['user'], api_key=host['api_key'])
-                ret = vid
+                ret = updated
             else:
                 # add
-                vid = api.video.post(video_data, 
+                vid = api.video.post(video_data,
+                        username=host['user'], api_key=host['api_key'])
+                # set to draft
+                updated = api.video(vid['id']).put({
+                    'state':2, 
+                    'category': vid['category'],
+                    'title': vid['title'],
+                            },  
                         username=host['user'], api_key=host['api_key'])
 
                 self.pvo_url = "http://%s/video/%s/%s" % (

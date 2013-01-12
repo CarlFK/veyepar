@@ -1,7 +1,33 @@
+audio:
+  Peaking 3/4 up the scale.  
+  Higher is OK, as long as it doesn't hit the top aka clipping.  
+  Clipping is REALLY BAD.  
+  Primry audio on Right channel
+  Fall back audio on Left channel (direct feed from camera mic)
 
 Recording Sheets:
+  [x] pre day checks: batterys, laptops date/time, sound 
+  
+  for each talk:
+    [x] sound check 
   Double check the Title and Presenters names, 
-     mark a ? if there are issues.
+     circle if there are issues, mark down correct info when time permits.
+
+  In DVswitch, cut at anticipated start and end of talk.  
+    If correct, mark down time on Sheet.  
+    If not, cut again until you get it right.
+    If not happy with any cuts, back up to start time that contains start
+      write that on sheet with a ? 
+
+
+If presenter gives an email address, check it is the same as printed on Recording sheat.  If not, cut and maybe mark time of cut and email address.
+
+VGA switch box:
+  Buttons above lights cycle lights thourgh 3 states: Red, Green, Off.
+  Red-Red = pre-sow system setup and debugging
+  Red-Green = between talks, LCD for presenter setup, Spam for projector
+  Green-Gree = All systems GO!  Presenter's laptop to both LCD and proj.
 
 MC: 
   don't clap when you are holding a mic (BANG BANG BANG!!!)
+

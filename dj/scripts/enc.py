@@ -238,12 +238,14 @@ class enc(process):
 # parse the xml into a tree of nodes
         mlt_template_name = os.path.join(self.show_dir,"bling/chiweb/chiweb.mlt")
         # print mlt_template_name
-        mlt = open(mlt_template_name).read()
+        # mlt = open(mlt_template_name).read()
         # print mlt
 
         tree= xml.etree.ElementTree.XMLID(mlt)
 
 # set the title to the title slide we just made
+        # import code; code.interact(local=locals())
+
         title=tree[1]['title']
         title.attrib['resource']=title_img
 
@@ -801,7 +803,8 @@ class enc(process):
 
 # make a .mlt file for this episode
         print "title_img", title_img
-        mlt = self.mkmlt_2(title_img,credits_img,episode,cls,rfs)
+        # mlt = self.mkmlt_2(title_img,credits_img,episode,cls,rfs)
+        mlt = self.mkmlt_1(title_img,credits_img,episode,cls,rfs)
         if not mlt:
             episode.state = 0
             episode.save()
