@@ -30,7 +30,9 @@ class process(object):
   Abstract class for processing.
   Provides basic options and itarators.
   Only operates on episodes in ready_state,
-  if processing returns True, 
+  or all if ready_state is None.
+  if read_sate is not None and .processing() returns True, 
+      bump the episode's state:
       state=ready_state+1
   """
 

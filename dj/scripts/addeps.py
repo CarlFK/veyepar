@@ -1368,7 +1368,6 @@ class add_eps(process.process):
             if self.options.verbose: print "event", event
             row = event['raw']
             
-            # event['released'] = True
             if 'speakers' not in row.keys(): 
                 # del(event)
                 # continue
@@ -1379,7 +1378,6 @@ class add_eps(process.process):
                 authors = ', '.join( s['name'] for s in row['speakers'] )
             else:
                 authors = ''
-
             event['authors'] = authors
             # print authors
 
@@ -1398,14 +1396,13 @@ class add_eps(process.process):
             event['end'] = end
             event['duration'] = duration
 
-            # event['released'] = True
+            # event['released'] = False
+            event['released'] = True
 
             event['license'] =  ''
-            # event['authors'] =  ''
             # event['tags'] =  ''
             #event['description'] =  ''
 
-            # event['emails']=None
 
 
         self.add_eps(events, show)
@@ -1540,7 +1537,14 @@ class add_eps(process.process):
 
         if self.args:
             url = self.args[0]
-        elif self.options.show =="chicagowebconf2012" :
+        elif self.options.show in ['chicagowebconf2012"',
+                                    "cusec2013" , ]:
+            """
+            curl -v "http://cusec2013.sched.org/api/session/export?api_key=1aeb5294e85a403085664ed9524fa46f&format=json&fields=name,session_type,description&strip_html=Y&custom_data=Y"
+            | jsonlint -f
+            API key: 1aeb5294e85a403085664ed9524fa46f
+            """
+
             """
         curl -v "http://chicagowebconf2012.sched.org/api/session/export?api_key=7c4cedc783503a7959546b606694127a&format=json&fields=name,session_type,description&strip_html=Y&custom_data=Y"|jsonlint -f
         """
@@ -1652,7 +1656,8 @@ class add_eps(process.process):
             # pycon.de 2012 
             return self.pyconde2012(schedule,show)
 
-        if self.options.show =='chicagowebconf2012':
+        # if self.options.show =='chicagowebconf2012':
+        if url.endswith(".sched.org/api/session/export"):
             # Sched.org Conference Mobcaile Apps
             # Chicago Web Conf 2012
             # return self.dump_keys(schedule)

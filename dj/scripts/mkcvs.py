@@ -18,7 +18,7 @@ from main.models import Client, Show, Location, Episode
 
 class csv(process):
 
-  ready_state = 6
+  # ready_state = 6
 
   def blip_meta(self, video_id):
         """@brief Return information about the video
@@ -88,6 +88,8 @@ class csv(process):
     csv_pathname = os.path.join( self.show_dir, "txt", basename+".csv" )
     txt_pathname = os.path.join( self.show_dir, "txt", basename+".txt" )
     wget_pathname = os.path.join( self.show_dir, "txt", basename+".wget" )
+    sh_pathname = os.path.join( self.show_dir, "txt", basename+".sh" )
+    curl_pathname = os.path.join( self.show_dir, "txt", basename+"_test.sh" )
     html_pathname = os.path.join( self.show_dir, "txt", basename+".html" )
     # blip_pathname = os.path.join( self.show_dir, "txt", basename+"_blip.xml" )
 
@@ -108,6 +110,8 @@ class csv(process):
 # setup txt
     txt=open(txt_pathname, "w")
     wget=open(wget_pathname, "w")
+    sh=open(sh_pathname, "w")
+    curl=open(curl_pathname, "w")
     # xml=open(blip_pathname, "w")
 
 # setup html (not full html, just some snippits)
@@ -115,6 +119,10 @@ class csv(process):
 
 # setup json (list written to file at end.)
     json_data=[]
+
+    # file headers
+    sh.writelines("#! /bin/bash -ex\n\n")
+    curl.writelines("#! /bin/bash -ex\n\n")
 
     # write out episode data
     for ep in episodes:
@@ -161,8 +169,16 @@ class csv(process):
         # txt.write("%s %s\n" % (row['blip'],row['name']))
         # html.write('<a href="%(blip)s">%(name)s</a>\n%(blip)s\n'%row)
         # wget.writelines(["%s\n" % c['url'] for c in blip_meta['contents']])
-        wget.writelines("wget %s -o %s.mp4\n" % (
+        wget.writelines( ep.archive_mp4_url + "\n" )
+
+        sh.writelines("wget -N '%s' -O %s.mp4\n" % (
             ep.archive_mp4_url, ep.slug) )
+
+        curl.writelines("echo Checking %s ...\n" % (
+            ep.slug) )
+        curl.writelines("curl -s --head  '%s' |grep -q '200 OK'\n" % (
+            ep.archive_mp4_url, ) )
+        curl.writelines("echo Passed.\n")
 
         if self.options.verbose: 
             json.dump(json_data,open(json_pathname, "w"),indent=2)
