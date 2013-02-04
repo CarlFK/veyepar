@@ -607,7 +607,7 @@ class add_eps(process.process):
             event['emails'] = row.get('Presenter_emails','')
 
             # https://github.com/zookeepr/zookeepr/issues/93
-            # event['released'] = True
+            event['released'] = True
 
             event['license'] = self.options.license
             event['description'] = row['Description']
@@ -1589,6 +1589,7 @@ class add_eps(process.process):
             # 'pyconde2012': 'https://stage.2012.de.pycon.org/episodes.json',
             'pyconde2012': 'https://2012.de.pycon.org/episodes.json',
             'pyconca2012': 'http://pycon.ca/talk.json',
+            'lca2013': 'http://lca2013.linux.org.au/programme/schedule/json',
             }[self.options.show]
             payload = None
 
