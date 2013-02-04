@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import admin
 admin.autodiscover()
 
-from django.contrib import databrowse
+import django_databrowse as databrowse
 from main.models import *
 
 databrowse.site.register(Client)

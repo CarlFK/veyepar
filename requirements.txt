@@ -22,3 +22,6 @@ boto
 slumber
 
 requests
+
+django-databrowse
+

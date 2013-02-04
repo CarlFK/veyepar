@@ -121,11 +121,11 @@ INSTALLED_APPS = (
      # 'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'django.contrib.databrowse',
     'django.contrib.staticfiles',
     'main',
     'accounts',
     "debug_toolbar",
+    'django_databrowse',
 )
 
 try:    from local_settings import *
