@@ -45,6 +45,8 @@ def logax(request):
                 l = login(request,user)
         else:
             ret = {'error_no':-1, 'error_text':'form error'}
+    else:
+        ret = {'error_no':-2, 'error_text':'not POST'}
     response = HttpResponse(simplejson.dumps(ret,indent=1))
     response['Content-Type'] = 'application/json'
     return response

@@ -8,9 +8,9 @@ fi
 
 # rm -rf ~/Videos/veyepar/test_client/
 # rm ../veyepar.db
-if [ ! -e ../veyepar.db ]; then
-  ../manage.py syncdb --noinput
-fi
+# if [ ! -e ../veyepar.db ]; then
+  # ../manage.py syncdb --noinput
+# fi
 
 # delete previous scripts
 rm ~/Videos/veyepar/test_client/test_show/tmp/Test_Episode.sh

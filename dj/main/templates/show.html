@@ -8,26 +8,26 @@
 {% block content %}
 
 <table class="shortcuts">
-<tr><td><a href="{% url 'overlaping_episodes' show.id %}">overlaping_episodes</a></td></tr>
-<tr><td><a href="{% url 'orphan_dv' show.id %}">orphan_dv</a></td></tr>
-<tr><td><a href="{% url 'schedule' show.id show.slug %}">schedule</a></td></tr>
-<tr><td><a href="{% url 'pdfs' 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf">recording_sheets.pdf</a></td></tr>
-<tr><td><a href="{% url 'pdfs' 'release_agreements' show.id %}{{show.slug}}_release.pdf">release.pdf</a></td></tr>
-<tr><td><a href="{% url 'pdfs' 'talk_signs' show.id %}{{show.slug}}_room_signs.pdf">room_signs.pdf</a></td></tr>
-<tr><td><a href="{% url 'meet_ann' show.id %}">meeting announcement</a></td></tr>
-<tr><td><a href="{% url 'show_stats' show.id %}" title="{{show.name}}">show stats</a></td></tr>
-<tr><td><a href="{% url 'eps_xfer' client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
+<tr><td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td></tr>
+<tr><td><a href="{% url orphan_dv show.id %}">orphan_dv</a></td></tr>
+<tr><td><a href="{% url schedule show.id show.slug %}">schedule</a></td></tr>
+<tr><td><a href="{% url pdfs 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf">recording_sheets.pdf</a></td></tr>
+<tr><td><a href="{% url pdfs 'release_agreements' show.id %}{{show.slug}}_release.pdf">release.pdf</a></td></tr>
+<tr><td><a href="{% url pdfs 'talk_signs' show.id %}{{show.slug}}_room_signs.pdf">room_signs.pdf</a></td></tr>
+<tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
+<tr><td><a href="{% url show_stats show.id %}" title="{{show.name}}">show stats</a></td></tr>
+<tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
 <tr><td><a href=
 {%if location_slug %}
-  "{% url 'play_list' show.id location_slug %}{{show.slug}}.m3u"
+  "{% url play_list show.id location_slug %}{{show.slug}}.m3u"
 {%else%}
-  "{% url 'play_list' show.id %}{{show.slug}}.m3u"
+  "{% url play_list show.id %}{{show.slug}}.m3u"
 {%endif%}
 >play_list <span style="color: #000; text-decoration: none;"
 >state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
-<tr><td><a href="{% url 'admin:main_show_change' show.id %}">show admin</a></td></tr>
-<tr><td><a href="{% url 'admin:main_episode_changelist' %}?show__id__exact={{show.id}}">episodes admin</a></td></tr>
-<tr><td><a href="{% url 'admin:main_client_change' client.id %}">client admin</a></td></tr>
+<tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>
+<tr><td><a href="{% url admin:main_episode_changelist %}?show__id__exact={{show.id}}">episodes admin</a></td></tr>
+<tr><td><a href="{% url admin:main_client_change client.id %}">client admin</a></td></tr>
 </table>
 <hr />
 
@@ -53,9 +53,9 @@
 
         <td><a href="
         {%if location_slug %}
-         {% url 'episode_list' client.slug show.slug %}
+         {% url episode_list client.slug show.slug %}
         {% else %}
-         {% url 'episode_list' client_slug=client.slug show_slug=show.slug location_slug=episode.location.slug %}
+         {% url episode_list client_slug=client.slug show_slug=show.slug location_slug=episode.location.slug %}
         {% endif %}
          ">{{episode.location}}</a></td>
 

@@ -75,9 +75,9 @@ import pprint
 
 
 try:
-    import simplejson as json
-except ImportError:
     import json
+except ImportError:
+    import simplejson as json
 
 # import gdata.calendar.client
 # import gdata.calendar.service
@@ -1585,6 +1585,7 @@ class add_eps(process.process):
             'pycon_au_2012': "http://2012.pycon-au.org/programme/schedule/json",
             'chipy_sep_2012': "http://chipy.org/api/meetings/",
             'chipy_jan_2013': "http://chipy.org/api/meetings/",
+            'chipy_feb_2013': "http://chipy.org/api/meetings/",
             # 'pyconde2012': 'http://de.pycon.org/2011/site_media/media/wiki/mediafiles/pyconde2011_talks.json',
             # 'pyconde2012': 'https://stage.2012.de.pycon.org/episodes.json',
             'pyconde2012': 'https://2012.de.pycon.org/episodes.json',
