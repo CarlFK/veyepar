@@ -468,8 +468,8 @@ def main():
     # t.title = "How to be a Canadian"
     t.title = "Let's make a Test"
 
-    # t.make_test_user()
-    # t.setup_test_data()
+    t.make_test_user()
+    t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
     t.make_source_dvs()
     t.make_source_footer()

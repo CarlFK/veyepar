@@ -727,7 +727,7 @@ class enc(process):
             if it is on the list, encode that format.
             """
             if self.options.verbose: 
-                print "checking %s in [%s]" % (ext,self.options.upload_formats)
+                print "checking %s in %s" % (ext,self.options.upload_formats)
             if ext in self.options.upload_formats:
                 # ret = enc_one(ext, acodec, vcodec)
                 ret = enc_one(ext)
