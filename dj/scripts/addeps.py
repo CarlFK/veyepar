@@ -16,7 +16,7 @@ license - CC license
 description - used as the description of the video (paragraphs are fine)
 conf_key - PK in source database - unique, used to update this item 
 conf_url - URL of talk page
-tags - comma seperated list - serch terms, including sub topics briefly discussed in your talk.
+tags - comma seperated list - serch terms, including sub topics briefly discussed in the talk.
 """
 
 """
@@ -35,7 +35,7 @@ I'll use it to verify the transformations.
 
 """
 datetime and json:
-There is a issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code. easy to read data is good too.  
+There is a issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code.  Easy to read data is good too.  
 
 Here is PyCon 2010's impemtation:
 datetime objects are represented as a time tuple of six elements:
@@ -961,6 +961,16 @@ class add_eps(process.process):
         self.add_eps(events, show)
         return 
 
+
+    def symposium2(self, schedule, show):
+        # print "consumer symposium"
+        rooms = self.get_rooms(schedule,'room')
+        # self.add_rooms(rooms,show)
+
+        events = self.symp_events(schedule)
+        self.add_eps(events, show)
+        return 
+
     def pyconde2011(self, schedule, show):
         # importing from some other instance
         rooms = self.get_rooms(schedule,'room')
@@ -1539,15 +1549,6 @@ class add_eps(process.process):
             url = self.args[0]
         elif self.options.show in ['chicagowebconf2012"',
                                     "cusec2013" , ]:
-            """
-            curl -v "http://cusec2013.sched.org/api/session/export?api_key=1aeb5294e85a403085664ed9524fa46f&format=json&fields=name,session_type,description&strip_html=Y&custom_data=Y"
-            | jsonlint -f
-            API key: 1aeb5294e85a403085664ed9524fa46f
-            """
-
-            """
-        curl -v "http://chicagowebconf2012.sched.org/api/session/export?api_key=7c4cedc783503a7959546b606694127a&format=json&fields=name,session_type,description&strip_html=Y&custom_data=Y"|jsonlint -f
-        """
             url = "http://%(conference)s.sched.org/api/session/export"  \
                     % pw.sched[self.options.show]
             payload = {
@@ -1591,6 +1592,7 @@ class add_eps(process.process):
             'pyconde2012': 'https://2012.de.pycon.org/episodes.json',
             'pyconca2012': 'http://pycon.ca/talk.json',
             'lca2013': 'http://lca2013.linux.org.au/programme/schedule/json',
+            'pycon2013': 'https://us.pycon.org/2013/schedule/conference.json',
             }[self.options.show]
             payload = None
 
@@ -1599,29 +1601,18 @@ class add_eps(process.process):
 
         if url.startswith('file'):
             f = open(url[7:])
+            # kinda broke this - meld it in with the response object 
         else:
             session = requests.session()
 
             if self.options.show =="pyconca2012" :
-
                 auth = pw.addeps[self.options.show]
-
-                # session.post('http://pycon.ca/login', 
                 session.post('http://2012.pycon.ca/login', 
-                  {'username': auth['user'], 'password': auth['password'], 
-                   'login.submit':'required but meaningless'})
+                  {'username': auth['user'], 
+                      'password': auth['password'], 
+                      'login.submit':'required but meaningless'})
 
             response = session.get(url, params=payload, )
-            # response = requests.get(url, params=payload)
-            # response = requests.get(url, params=payload, verify=False)
-            # response = session.get(url, params=payload, verify=False)
-            # req = urllib2.Request(url)
-            # req.add_header('Content-Type', 'application/json')
-            # req.add_header('Accept', 'application/json')
-            # response = urllib2.urlopen(req)
-
-            # f=urllib2.urlopen(url)
-            f = response
 
         if url[-4:]=='.csv':
             schedule = list(csv.reader(f))
@@ -1629,14 +1620,12 @@ class add_eps(process.process):
                 return self.desktopsummit(schedule,show)
         elif url[-4:]=='.xml':
             import xml.etree.ElementTree
-            x = f.read()
+            x = response.read()
             schedule=xml.etree.ElementTree.XML(x)
             return self.fosdem2012(schedule,show)
         else:
-            # j=f.read()
-            j = f.text
-            # schedule = json.loads(j)
-            schedule = response.json
+            j = response.text
+            schedule = response.json()
             # if it is a python prety printed list:
             # schedule = eval(j)
 
@@ -1644,12 +1633,16 @@ class add_eps(process.process):
         # file('schedule.json','w').write(j) 
         # j=file('schedule.json').read()
 
-
         if self.options.verbose: pprint.pprint(schedule) 
+        # if self.options.verbose: print j[:40]
         if self.options.keys: return self.dump_keys(schedule)
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if url.endswith("/schedule/conference.json"):
+            # this is Ver pycon2013
+            return self.symposium2(schedule,show)
 
         if self.options.show =='pyconca2012':
             return self.pyconca2012(schedule,show)
