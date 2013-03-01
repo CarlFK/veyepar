@@ -965,9 +965,10 @@ class add_eps(process.process):
     def symposium2(self, schedule, show):
         # print "consumer symposium"
         rooms = self.get_rooms(schedule,'room')
+        print rooms
         # self.add_rooms(rooms,show)
 
-        events = self.symp_events(schedule)
+        events = self.symp2_events(schedule)
         self.add_eps(events, show)
         return 
 
