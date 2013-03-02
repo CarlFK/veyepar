@@ -5,6 +5,8 @@
 # d-i preseed/late_command  string cd /tmp;apt-get install wget;wget http://shaz/late_command.sh; chmod u+x late_command.sh; chroot /target ./late_command.sh
 
 set -xe
+
+# next line set by pxe install.sh: sed -i "/@user@/s//$NUSER/g"
 NUSER=@user@
 
 # url=(hostname) of pxe server

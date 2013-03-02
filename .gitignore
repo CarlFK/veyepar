@@ -1,5 +1,6 @@
 dictionary.txt
 pw.*
+auth.json
 goog_auth_pw.py
 local_settings.py
 vp.db

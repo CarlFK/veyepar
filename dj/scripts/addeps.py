@@ -962,15 +962,6 @@ class add_eps(process.process):
         return 
 
 
-    def symposium2(self, schedule, show):
-        # print "consumer symposium"
-        rooms = self.get_rooms(schedule,'room')
-        print rooms
-        # self.add_rooms(rooms,show)
-
-        events = self.symp2_events(schedule)
-        self.add_eps(events, show)
-        return 
 
     def pyconde2011(self, schedule, show):
         # importing from some other instance
@@ -1522,6 +1513,59 @@ class add_eps(process.process):
 
         return 
 
+
+    def symposion2(self, schedule, show):
+        # pycon.us 2013
+        # pprint.pprint(schedule)
+
+        rooms = self.get_rooms(schedule )
+        pprint.pprint(rooms)
+
+        self.add_rooms(rooms,show)
+
+        field_maps = [
+            ('conf_key','id'),
+            ('room','location'),
+            ('','sequence'),
+            ('title','name'),
+            ('','slug'),
+            ('authors','authors'),
+            ('','emails'),
+            ('abstract','description'),
+            ('start','start'),
+            ('duration','duration'),
+            ('video_releaase','released'),
+            ('','license'),
+            ('','tags'),
+            ('conf_key','conf_key'),
+            ('conf_url','conf_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events:
+            if self.options.verbose: print "event", event
+            raw = event['raw']
+            if self.options.verbose: pprint.pprint(raw)
+            
+            event['authors'] = \
+              raw['speaker_first_name'] +' ' + raw['speaker_last_name']
+            event['emails'] = raw['user']['email']
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'],'%Y-%m-%dT%H:%M:%S-05:00')
+
+            event['duration'] = "00:%s:00" % ( event['duration'] ) 
+
+            event['released'] = raw['video_release'] 
+
+            event['license'] =  ''
+
+
+        self.add_eps(events, show)
+
+        return 
+
 #################################################3
 # main entry point 
 
@@ -1643,7 +1687,7 @@ class add_eps(process.process):
 
         if url.endswith("/schedule/conference.json"):
             # this is Ver pycon2013
-            return self.symposium2(schedule,show)
+            return self.symposion2(schedule,show)
 
         if self.options.show =='pyconca2012':
             return self.pyconca2012(schedule,show)
