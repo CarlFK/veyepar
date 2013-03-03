@@ -3,7 +3,7 @@
 # things to do to make this work:
 # ssh-copy-id pyvideo.org
 # rsync dump_x.sh pyvideo.org:
-# ./manage.sh dumpdata auth > auth.json
+# ./manage.py dumpdata auth > auth.json
 
 # instance is a dir/site/db on pyvideo.org
 # carl@stark:~$ ls /srv

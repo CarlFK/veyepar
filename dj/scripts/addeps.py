@@ -1637,7 +1637,8 @@ class add_eps(process.process):
             'pyconde2012': 'https://2012.de.pycon.org/episodes.json',
             'pyconca2012': 'http://pycon.ca/talk.json',
             'lca2013': 'http://lca2013.linux.org.au/programme/schedule/json',
-            'pycon2013': 'https://us.pycon.org/2013/schedule/conference.json',
+            'pycon2013': ['https://us.pycon.org/2013/schedule/conference.json',
+                "https://us.pycon.org/2013/schedule/conference_posters.json"],
             }[self.options.show]
             payload = None
 
