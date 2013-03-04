@@ -3,7 +3,7 @@
 # push metadata to richard (like pyvideo.org)
 
 # This is just a lib that makes doing REST stuff easier.
-import slumber
+# import slumber
 import requests
 
 import pprint

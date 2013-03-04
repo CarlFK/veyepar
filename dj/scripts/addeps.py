@@ -918,7 +918,6 @@ class add_eps(process.process):
 
             event['authors'] = src_event['presenters']
             event['emails'] = ''
-            # event['released'] = True
             event['license'] = self.options.license
             event['description'] = src_event['summary']
             event['conf_key'] = src_event['id']
@@ -1142,7 +1141,6 @@ class add_eps(process.process):
 
             event['authors'] = row[5]
             event['emails'] = ''
-            # event['released'] = True
             event['license'] = self.options.license
             event['description'] = ''
             event['conf_key'] = row[0]
@@ -1194,8 +1192,6 @@ class add_eps(process.process):
             start, duration = self.talk_time(row['Day'],row['Time'])
             event['start'] = start
             event['duration'] = duration
-
-            # event['released'] = True
 
             event['license'] =  ''
             event['authors'] =  ''
@@ -1526,40 +1522,38 @@ class add_eps(process.process):
         field_maps = [
             ('conf_key','id'),
             ('room','location'),
-            ('','sequence'),
-            ('title','name'),
-            ('','slug'),
+            ('name','name'),
             ('authors','authors'),
-            ('','emails'),
-            ('abstract','description'),
+            ('contact','emails'),
+            ('description','description'),
             ('start','start'),
             ('duration','duration'),
-            ('video_releaase','released'),
-            ('','license'),
-            ('','tags'),
+            ('released','released'),
+            ('license','license'),
+            ('kind','tags'),
             ('conf_key','conf_key'),
             ('conf_url','conf_url'),
-            ]
+           ]
 
         events = self.generic_events(schedule, field_maps)
 
         for event in events:
-            if self.options.verbose: print "event", event
             raw = event['raw']
+            if self.options.verbose: print "event", event
             if self.options.verbose: pprint.pprint(raw)
             
-            event['authors'] = \
-              raw['speaker_first_name'] +' ' + raw['speaker_last_name']
-            event['emails'] = raw['user']['email']
-
             event['start'] = datetime.datetime.strptime(
-                    event['start'],'%Y-%m-%dT%H:%M:%S-05:00')
+                    event['start'],'%Y-%m-%dT%H:%M:%S')
 
-            event['duration'] = "00:%s:00" % ( event['duration'] ) 
+            event['authors'] = ", ".join(event['authors'])
+            event['emails'] = ", ".join(event['emails'])
 
-            event['released'] = raw['video_release'] 
+            if event['duration'] is None: event['duration']=5
 
-            event['license'] =  ''
+            seconds=(int(event['duration'] )) * 60
+            seconds=(int(event['duration'] )) * 60
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            event['duration'] = "%02d:%02d:%02d" % hms
 
 
         self.add_eps(events, show)
@@ -1637,8 +1631,7 @@ class add_eps(process.process):
             'pyconde2012': 'https://2012.de.pycon.org/episodes.json',
             'pyconca2012': 'http://pycon.ca/talk.json',
             'lca2013': 'http://lca2013.linux.org.au/programme/schedule/json',
-            'pycon2013': ['https://us.pycon.org/2013/schedule/conference.json',
-                "https://us.pycon.org/2013/schedule/conference_posters.json"],
+            'pycon2013': 'https://us.pycon.org/2013/schedule/conference.json',
             }[self.options.show]
             payload = None
 

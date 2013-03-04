@@ -465,22 +465,21 @@ def main():
     t=Run_Tests() 
     t.upload_formats=["mp4"]
     # t.upload_formats=["ogv","mp4"]
-    # t.title = "How to be a Canadian"
     t.title = "Let's make a Test"
 
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    t.make_source_dvs()
-    t.make_source_footer()
+    # t.make_source_dvs()
+    # t.make_source_footer()
     t.add_dv()
-    t.make_thumbs()
+    # t.make_thumbs()
     t.make_cut_list()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     t.encode()
     # t.ck_errors()
-    t.play_vid()
+    # t.play_vid()
     # result['url'] = t.post_yt()
     # result['richard'] = t.add_to_richard()
     # result['email'] = t.email_url()

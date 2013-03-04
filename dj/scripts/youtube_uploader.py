@@ -231,7 +231,7 @@ if __name__ == '__main__':
     """
     print u.meta
 
-    u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4', 'ext':'mp4'}]
+    u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4', 'ext':'mp4'}]
     u.user = 'test'
     # u.private = True
 

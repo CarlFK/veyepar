@@ -77,6 +77,10 @@ cd static
 wget -N http://0x80.org/wordlist/webster-dictionary.txt
 ln -s webster-dictionary.txt dictionary.txt
 
+wget https://www.dropbox.com/sh/02zhv4v7lrdzmmg/W3Jqcs25HK/Synthview%20-%20Novecentowide-Bold.otf
+wget https://www.dropbox.com/sh/02zhv4v7lrdzmmg/imS01PwStJ/Synthview%20-%20Novecentowide-Light.otf
+mv *.otf ~/.fonts/
+
 # removed because sphinx no longer installs - pulled from deb repos
 # sox -b 16 -r 16k -e signed -c 1 -t raw \
 #    /usr/share/sphinx2/model/lm/turtle/goforward.16k \
