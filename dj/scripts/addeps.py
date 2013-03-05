@@ -291,6 +291,8 @@ class add_eps(process.process):
                   setattr( episode, f, row[f] )
                   # print( f, row[f] )
 
+              # no support for un-releasing.
+              # once it is marked for released, it stays that way.
               if not episode.released:
                   episode.released = row['released']
 
@@ -1560,6 +1562,45 @@ class add_eps(process.process):
 
         return 
 
+    def pycon2013(self,schedule,show):
+
+        # self.symposion2(schedule,show)
+
+        # merge in Zac's poster schedule
+        # first make 4 poster roomos
+        for i in range(1,5):
+            room = "Poster-%s" % i
+            loc,created = Location.objects.get_or_create(
+                  name=room,)
+            loc.active = False
+            if created: 
+                loc.sequence=20+i
+                loc.save()
+            show.locations.add(loc)
+            show.save()
+         
+        f=open('schedules/postervideo.csv')
+        poster_schedule = csv.DictReader(f)
+        for poster in poster_schedule:
+            pprint.pprint(poster)
+            episode = Episode.objects.get(
+                  show=show, conf_key=str( 1000+int(poster['poster_id'])))
+            print episode.name
+
+            room = "Poster-%s" % poster['camera']
+            loc = Location.objects.get( name = room )
+            episode.location = loc
+
+            # don't really care about end, use durration=5
+            start,end = poster['time'].split('-')
+            h,m = start.split(':')
+            episode.start = episode.start.replace(
+                    hour=int(h),minute=int(m))
+            episode.save()
+
+        return 
+
+        
 #################################################3
 # main entry point 
 
@@ -1639,8 +1680,9 @@ class add_eps(process.process):
 
 
         if url.startswith('file'):
+            # kinda broke this 
+            # nees to be meld in with the response object 
             f = open(url[7:])
-            # kinda broke this - meld it in with the response object 
         else:
             session = requests.session()
 
@@ -1681,7 +1723,7 @@ class add_eps(process.process):
 
         if url.endswith("/schedule/conference.json"):
             # this is Ver pycon2013
-            return self.symposion2(schedule,show)
+            return self.pycon2013(schedule,show)
 
         if self.options.show =='pyconca2012':
             return self.pyconca2012(schedule,show)
