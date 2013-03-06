@@ -19,21 +19,28 @@ class email_title(process):
             png_url = "http://veyepar.nextdayvideo.com/static/%s/%s/titles/%s.png" % ( ep.show.client.slug, ep.show.slug, ep.slug )
             subject = "Video metadata for: %s" % ep.name
             body = """
-    According to the released field in the database, your talk is going
-    to be recorded and posted online.  If this is a problem, please 
-    contact the conference organizers.
+    Hi - This is Veyepar, the automated video processing system.
 
-    Please review the text:
+    Please review the following meta data about your talk so that mistakes can be corrected now and not after the video has gone live.
+
+    Released: %(released)s
+    True means your talk is going to be recorded and posted online.  
+    False means it may get recorded and processed, 
+    but it will not be uploaded.
+
+    The video will be titled with the following image:
+    %(png_url)s
+
+    And the main page for the video will be here:
     %(public_url)s
 
-    Problems with the text will need to be fixed in the conference database.
+    Problems with the text will need to be fixed in the conference database
+    that drives this page:
+    %(conf_url)s
 
-    Also have a look at the attached title slide to verify that it rendered 
-    correctly.   If there is a problem with it, first check here for 
-    the latest version to see if the problem has already been corrected:
-    %(png_url)s
-    
-    and then ontact me by repling to this message.
+    If everyting looks good, you don't need to do anything.
+    Good luck with your talk, and you will get another email when 
+    the video is posted.
 
     Reference: #%(id)s  %(slug)s
 
@@ -42,6 +49,8 @@ class email_title(process):
         'description':ep.description, 
         'png_url':png_url, 
         'public_url':ep.public_url,
+        'conf_url':ep.conf_url,
+        'released':ep.released,
         'id':ep.id, 'slug':ep.slug })
 
             sender = 'Carl Karsten <carl@nextdayvideo.com>'

@@ -1564,7 +1564,7 @@ class add_eps(process.process):
 
     def pycon2013(self,schedule,show):
 
-        # self.symposion2(schedule,show)
+        self.symposion2(schedule,show)
 
         # merge in Zac's poster schedule
         # first make 4 poster roomos
@@ -1582,10 +1582,10 @@ class add_eps(process.process):
         f=open('schedules/postervideo.csv')
         poster_schedule = csv.DictReader(f)
         for poster in poster_schedule:
-            pprint.pprint(poster)
+            if self.options.verbose: pprint.pprint(poster)
             episode = Episode.objects.get(
                   show=show, conf_key=str( 1000+int(poster['poster_id'])))
-            print episode.name
+            if self.options.verbose: print episode.name
 
             room = "Poster-%s" % poster['camera']
             loc = Location.objects.get( name = room )

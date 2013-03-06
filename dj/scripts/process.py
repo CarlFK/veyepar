@@ -7,7 +7,7 @@ import ConfigParser
 import os,sys,subprocess,socket
 import datetime,time
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dj.settings")
 sys.path.insert(0, '..' )
 from django.conf import settings
 
