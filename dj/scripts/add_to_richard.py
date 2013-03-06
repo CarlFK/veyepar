@@ -12,6 +12,7 @@ from steve.restapi import API
 from process import process as Process
 import pprint
 import pw
+from main.models import Show, Location, Episode
 
 
 class RichardProcess(Process):
@@ -47,7 +48,6 @@ class RichardProcess(Process):
         
         video_data = self.create_pyvideo_episode_dict(ep)
         # perhaps we could just update the dict based on scraped_meta
-        # but I fear change
         scraped_metadata = self.get_scrapevideo_metadata(ep)
         video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
         video_data['embed'] = scraped_metadata.get('object_embed_code','')
@@ -59,15 +59,7 @@ class RichardProcess(Process):
                 vid_id = ep.public_url.split('/video/')[1].split('/')[0]
                 ret = self.update_pyvideo(vid_id, video_data)
             else:
-                # FIXME: using chatty hack due to slumber kruft.
-                # creating videos in draft mode was barfing with slumber.
-                # now that we are using steve we should revisit that
-                vid = self.create_video(video_data)
-                # update video to draft mode
-                self.update_pyvideo(vid['id'], {'state':2,
-                    'category': vid['category'],
-                    'title': vid['title'],})
-
+                vid = self.create_pyvideo(video_data)
                 self.pvo_url = "http://%s/video/%s/%s" % (host['host'], vid['id'],vid['slug'])
                 print self.pvo_url
                 ep.public_url = self.pvo_url
@@ -78,9 +70,6 @@ class RichardProcess(Process):
             ret = False
             import code
             code.interact(local=locals())
-
-            # print redundant?
-            print exc.errors
             raise
 
         ep.save()
@@ -99,10 +88,9 @@ class RichardProcess(Process):
 
         """
         host = pw.richard[self.options.host_user]
-        pyvideo_endpoint = 'http://{hostname}/v1/api/'.format(hostname=host['host'])
+        pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
         api = API(pyvideo_endpoint)
-        updated = api.video(vid_id).put(video_data, username=host['user'], api_key=host['api_key'])
-        return updated
+        return api.video(vid_id).post(video_data, username=host['user'], api_key=host['api_key'])
 
     def create_pyvideo(self, video_data):
         """ adds a new video to pyvideo
@@ -112,7 +100,7 @@ class RichardProcess(Process):
 
         """
         host = pw.richard[self.options.host_user]
-        pyvideo_endpoint = 'http://{hostname}/v1/api/'.format(hostname=host['host'])
+        pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
         video_data['added'] = datetime.datetime.now().isoformat()
         video = create_video(pyvideo_endpoint, host['user'], host['api_key'], video_data)
         if self.options.verbose: print video
@@ -122,11 +110,12 @@ class RichardProcess(Process):
         """ creates a pyvideo category if it doesn't exist otherwise does nothing
 
         :arg category: video category for pyvideo
+        :returns: dict of category response from pyvideo
 
         """
         host = pw.richard[self.options.host_user]
-        pyvideo_endpoint = 'http://{hostname}/v1/api/'.format(hostname=host['host'])
-        create_category_if_missing(pyvideo_endpoint, host['user'], host['api_key'], {'title': category})
+        pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
+        return create_category_if_missing(pyvideo_endpoint, host['user'], host['api_key'], {'title': category})
 
     def create_pyvideo_episode_dict(self, ep, state=1):
         """ create dict for pyvideo based on Episode
@@ -136,7 +125,7 @@ class RichardProcess(Process):
         from scrapping.
 
         :arg ep: Episode to convert in to a pyvideo dict
-        :arg state: pyvideo state. 1=live, 2=draft. defaults to 1
+        :arg state: pyvideo state. 1=live, 2=draft. defaults to 2
         :returns: dict of Episode information for use by pyvideo
 
         """
@@ -164,7 +153,7 @@ class RichardProcess(Process):
         return video_data
 
     def clean_pyvideo_summary(self, ep):
-        return (linebreaks(urlize(force_escape(ep.description))))
+        return linebreaks(urlize(force_escape(ep.description)))
 
     def clean_pyvideo_speakers(self, ep):
         """ sanitize veyepar authors to create pyvideo speakers
