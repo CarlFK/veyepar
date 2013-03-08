@@ -6,7 +6,8 @@ import datetime
 from django.template.defaultfilters import linebreaks, urlize, force_escape
 from steve.richardapi import create_category_if_missing, create_video
 from steve.util import scrapevideo
-from steve.restapi import API
+from steve.restapi import API, get_content
+
 
 # for when you do the pep8 overhaul
 from process import process as Process
@@ -41,10 +42,12 @@ class RichardProcess(Process):
             print "RichardProcess", ep.id, ep.name
             print "Show slug:", ep.show.slug, ep.show.client.name
 
-        host = pw.richard[self.options.host_user]
+        self.host = pw.richard[self.options.host_user]
+        self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
+        self.api = API(self.pyvideo_endpoint)
 
         # FIXME using chatty hack due to problems with category handling
-        self.create_pyvideo_category_if_missing(self.category_key)
+        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.category_key})
         
         video_data = self.create_pyvideo_episode_dict(ep)
         # perhaps we could just update the dict based on scraped_meta
@@ -56,11 +59,12 @@ class RichardProcess(Process):
 
         try:
             if self.is_already_in_pyvideo(ep):
+                print 'episode already exists in pyvideo', ep.public_url
                 vid_id = ep.public_url.split('/video/')[1].split('/')[0]
-                ret = self.update_pyvideo(vid_id, video_data)
+                ret = self.fetch_and_update_pyvideo(vid_id, video_data)
             else:
                 vid = self.create_pyvideo(video_data)
-                self.pvo_url = "http://%s/video/%s/%s" % (host['host'], vid['id'],vid['slug'])
+                self.pvo_url = "http://%s/video/%s/%s" % (self.host['host'], vid['id'],vid['slug'])
                 print self.pvo_url
                 ep.public_url = self.pvo_url
                 ret = self.pvo_url
@@ -76,21 +80,17 @@ class RichardProcess(Process):
 
         return ret
 
-    def update_pyvideo(self, vid_id, video_data):
-        """ updates the video in pyvideo
-
-        wrapper around the steve.restapi since steve.richardapi doesn't have
-        an update_video equivalent yet
+    def fetch_and_update_pyvideo(self, vid_id, new_data):
+        """ fetches the record from pyvideo and updates it with the new_data
 
         :arg vid_id: pyvideo id
-        :arg video_data: dict containing updated information
+        :arg video_data: dict containing updated video data
         :returns: dict of response from pyvideo
 
         """
-        host = pw.richard[self.options.host_user]
-        pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
-        api = API(pyvideo_endpoint)
-        return api.video(vid_id).post(video_data, username=host['user'], api_key=host['api_key'])
+        old_video = get_content(self.api.video(vid_id).get())
+        old_video.update(new_data)
+        return self.api.video(vid_id).put(data=old_video)
 
     def create_pyvideo(self, video_data):
         """ adds a new video to pyvideo
@@ -99,23 +99,11 @@ class RichardProcess(Process):
         :returns: dict of video response from pyvideo
 
         """
-        host = pw.richard[self.options.host_user]
-        pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
         video_data['added'] = datetime.datetime.now().isoformat()
-        video = create_video(pyvideo_endpoint, host['user'], host['api_key'], video_data)
+        video = create_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], video_data)
         if self.options.verbose: print video
         return video
 
-    def create_pyvideo_category_if_missing(self, category):
-        """ creates a pyvideo category if it doesn't exist otherwise does nothing
-
-        :arg category: video category for pyvideo
-        :returns: dict of category response from pyvideo
-
-        """
-        host = pw.richard[self.options.host_user]
-        pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
-        return create_category_if_missing(pyvideo_endpoint, host['user'], host['api_key'], {'title': category})
 
     def create_pyvideo_episode_dict(self, ep, state=1):
         """ create dict for pyvideo based on Episode
@@ -125,7 +113,7 @@ class RichardProcess(Process):
         from scrapping.
 
         :arg ep: Episode to convert in to a pyvideo dict
-        :arg state: pyvideo state. 1=live, 2=draft. defaults to 2
+        :arg state: pyvideo state. 1=live, 2=draft. defaults to 1
         :returns: dict of Episode information for use by pyvideo
 
         """
@@ -192,15 +180,13 @@ class RichardProcess(Process):
         until no error is raised
 
         :arg ep: Episode of video to scrape
-        :returns: dict of metadata
+        :returns: dict of metadata, or {}
 
         """
 
-        # FIXME: side effect. this munges host_url if it is a gdata youtube link
-        # is this munging necessary or something that could happen in a vidscraper suite?
-        if ep.host_url.startswith("http://gdata.youtube.com/feeds/api/videos/"):
-            yt_id = ep.host_url.split('/')[-1]
-            ep.host_url="http://youtube.com/watch?v=%s" % (yt_id,)
+        if ep.host_url is None:
+            # there's nothing to scrape
+            return {}
 
         # FIXME: error handling kinda crazy here
         while True:
