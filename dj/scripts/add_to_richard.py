@@ -2,193 +2,66 @@
 
 # push metadata to richard (like pyvideo.org)
 
-# This is just a lib that makes doing REST stuff easier.
-# import slumber
-import requests
-
-import pprint
-
-from django.template.defaultfilters import \
-        linebreaks, urlize, force_escape
-
 from steve.util import scrapevideo
+from steve.restapi import API, get_content
 
+
+# for when you do the pep8 overhaul
+from process import process as Process
+import pprint
 import pw
-
-from process import process
-
 from main.models import Show, Location, Episode
 
-class add_to_richard(process):
+
+class RichardProcess(Process):
 
     ready_state = 5
 
+    # pyvideo categories are either Show.name or Client.name
+    # chipy is an example of something that uses the Client.name.
+    # pycon 2013 is an example of something that uses the Show.name.
+    # 
+    # hardcoding category until we figure out a better system
+    category_key = 'ChiPy'
+
+
     def process_ep(self, ep):
-        if self.options.verbose: print "post_to_richard", ep.id, ep.name
+        """ adds Episode to pyvideo
 
-        ### remove some day....
-        if ep.host_url.startswith("http://gdata.youtube.com/feeds/api/videos/"):
-            yt_id = ep.host_url.split('/')[-1]
-            ep.host_url="http://youtube.com/watch?v=%s" % (yt_id,)
-            
-        # get the metadata from youtube
-        # like thumb url and video embed code
-        while True:
-            # keep trying untill it doesn't error doh!
-            try:
-                yt_meta = scrapevideo(ep.host_url)
-                break
-            except KeyError as e: 
-                print "KeyError", e
-            
-        if self.options.verbose: 
-            pprint.pprint( yt_meta )
+        :arg ep: Episode to add to pyvideo
+        :returns: different things based on what is happening
+                  a video dictionary for updated videos
+                  a pyvideo url for newly added videos
+                  False if there was an exception during processing
+
+        """
+        if self.options.verbose:
+            print "RichardProcess", ep.id, ep.name
+            print "Show slug:", ep.show.slug, ep.show.client.name
+
+        self.host = pw.richard[self.options.host_user]
+        self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
+        self.api = API(self.pyvideo_endpoint)
+
+        # FIXME using chatty hack due to problems with category handling
+        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.category_key})
         
-        # speakers = [] if ep.authors is None else ep.authors.split(',')
-        speakers = ep.authors.split(',') if ep.authors else []
+        video_data = self.create_pyvideo_episode_dict(ep)
+        # perhaps we could just update the dict based on scraped_meta
+        scraped_metadata = self.get_scrapevideo_metadata(ep)
+        video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
+        video_data['embed'] = scraped_metadata.get('object_embed_code','')
 
-        tags = ep.tags.split(',')
-        # remove blacklisted tags, 
-        # and tags with a / in them.
-        # and strip spaces 
-        tags = [t.strip() for t in tags if t not in [
-             u'enthought', 
-             u'scipy_2012', 
-             u'Introductory/Intermediate',
-             ] 
-             and '/' not in t 
-             and t]
-
-        host = pw.richard[self.options.host_user]
-
-        # Create an api object with the target api root url.
-        endpoint = 'http://%(host)s/api/v1/' % host 
-        api = slumber.API(endpoint)
-        ### api = slumber.API(endpoint, session=requests.session(
-        ###   params={"username": host['user'], "api_key": host['api_key']}))
-
-        # make sure the category exists.
-        # This seems like a terible way to doing this, 
-        # but I need to get something working today!!!
-        # I am going to regret this later.
-        # To the future me: Sorry.
-
-
-        """
-        if self.options.verbose: print "Show slug:", ep.show.slug, ep.show.client.name
-        cats = api.category.get(limit=0)
-        found = False
-        for cat in cats['objects']:
-            if self.options.verbose: print cat['id'], cat['slug'], cat['name']
-            if cat['name']  ==  ep.show.name:
-                found = True
-                if self.options.verbose: print "found"
-                break
-
-        if not found:
-            # The category doesn't exist yet, so create it
-
-            if self.options.verbose:  print "creating..."
-            cat_data = {
-                'kind': 1,
-                'name': ep.show.name,
-                # 'name': ep.show.client.name,
-                'title': ep.show.name,
-                # 'title': ep.show.client.name,
-                'description': '',
-                'url': '',
-                'whiteboard': '',
-                # I think start_date should be blank, or .today()
-                # 'start_date': '2012-07-16',
-                # 'slug': ep.show.client.slug
-                # 'slug': ep.show.slug
-            }
-            try:
-                # cat = api.category.post(cat_data, 
-                #    username=host['user'], api_key=host['api_key'])
-                # if self.options.verbose:  print "created", cat
-                pass
-            except Exception as exc:
-                # TODO: OMG gross.
-                if exc.content.startswith('\n<!DOCTYPE html>'):
-                    error_lines = [line for line in exc.content.splitlines()
-                            if 'exception_value' in line]
-                    for line in error_lines:
-                         print line
-                else:
-                    print "exc.content:", exc.content.__repr__()
-
-                raise
-
-        # cat is now the category we want to use
-        # either it was existing, or was just added.
-        # category_key = cat['title']
-        """
-
-        # category_key = 'PyCon DE 2012'
-        # category_key = 'PyCon DE 2012'
-        category_key = 'ChiPy'
-     
-        description = (
-            linebreaks(
-            urlize(
-            force_escape(ep.description))))
-        slug = ep.slug.replace("_","-").lower()
-
-        # Let's populate a video object and push it.
-        video_data = {
-    'state': 1, # 1=live, 2=draft
-    'title': ep.name,
-    'category': category_key,
-    'summary': description,
-    # 'slug': slug,  
-    'source_url': ep.host_url,
-    'copyright_text': ep.license,
-    'tags': tags,
-    'speakers': speakers,
-    'recorded': ep.start.isoformat(),
-    'language': 'English',
-     #'language': 'German',
-    'whiteboard': u'',
-    'quality_notes': '',
-    'description': u'',
-    'thumbnail_url': yt_meta['thumbnail_url'],
-    'video_ogv_url': ep.archive_ogv_url,
-    'video_ogv_length': None,
-    'video_mp4_url': ep.archive_mp4_url,
-    'video_mp4_download_only': False,
-    'video_mp4_length': None,
-    'video_webm_url': u'',
-    'video_webm_length': None,
-    'video_flv_url': u'',
-    'video_flv_length': None,
-    'embed': yt_meta.get('object_embed_code',''),
-}
         if self.options.verbose: pprint.pprint(video_data)
 
-
         try:
-            if ep.public_url:
-                # update
+            if self.is_already_in_pyvideo(ep):
+                print 'episode already exists in pyvideo', ep.public_url
                 vid_id = ep.public_url.split('/video/')[1].split('/')[0]
-                updated = api.video(vid_id).put(video_data,
-                    username=host['user'], api_key=host['api_key'])
-                ret = updated
+                ret = self.fetch_and_update_pyvideo(vid_id, video_data)
             else:
-                # add
-                vid = api.video.post(video_data,
-                        username=host['user'], api_key=host['api_key'])
-                # set to draft
-                updated = api.video(vid['id']).put({
-                    'state':2, 
-                    'category': vid['category'],
-                    'title': vid['title'],
-                            },  
-                        username=host['user'], api_key=host['api_key'])
-
-                self.pvo_url = "http://%s/video/%s/%s" % (
-                        host['host'], vid['id'],vid['slug'])
-                if self.options.verbose: print self.pvo_url
+                vid = self.create_pyvideo(video_data)
+                self.pvo_url = "http://%s/video/%s/%s" % (self.host['host'], vid['id'],vid['slug'])
                 print self.pvo_url
                 ep.public_url = self.pvo_url
                 ret = self.pvo_url
@@ -198,23 +71,141 @@ class add_to_richard(process):
             ret = False
             import code
             code.interact(local=locals())
-
-            # TODO: OMG gross.
-            if exc.content.startswith('\n<!DOCTYPE html>'):
-                error_lines = [line for line in exc.content.splitlines()
-                        if 'exception_value' in line]
-                for line in error_lines:
-                     print line
-            else:
-                print "exc.content:", exc.content
-
             raise
 
         ep.save()
 
         return ret
 
+    def fetch_and_update_pyvideo(self, vid_id, new_data):
+        """ fetches the record from pyvideo and updates it with the new_data
+
+        :arg vid_id: pyvideo id
+        :arg video_data: dict containing updated video data
+        :returns: dict of response from pyvideo
+
+        """
+        old_video = get_content(self.api.video(vid_id).get())
+        old_video.update(new_data)
+        return self.api.video(vid_id).put(data=old_video)
+
+    def create_pyvideo(self, video_data):
+        """ adds a new video to pyvideo
+
+        :arg video_data: a dict with video data for pyvideo
+        :returns: dict of video response from pyvideo
+
+        """
+        video_data['added'] = datetime.datetime.now().isoformat()
+        video = create_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], video_data)
+        if self.options.verbose: print video
+        return video
+
+
+    def create_pyvideo_episode_dict(self, ep, state=1):
+        """ create dict for pyvideo based on Episode
+
+        This creates a dict of based on information available in an Episode
+        object. This does not populate information that has to be derived
+        from scrapping.
+
+        :arg ep: Episode to convert in to a pyvideo dict
+        :arg state: pyvideo state. 1=live, 2=draft. defaults to 1
+        :returns: dict of Episode information for use by pyvideo
+
+        """
+
+        # clean up messy Episode data
+        speakers = self.clean_pyvideo_speakers(ep)
+        tags = self.clean_pyvideo_tags(ep)
+        summary = self.clean_pyvideo_summary(ep)
+        
+        video_data = {
+            'state': state,
+            'title': ep.name,
+            'category': self.category_key,
+            'summary': summary,
+            'source_url': ep.host_url,
+            'copyright_text': ep.license,
+            'tags': tags,
+            'speakers': speakers,
+            'recorded': ep.start.isoformat(),
+            'language': 'English',
+            'video_ogv_url': ep.archive_ogv_url,
+            'video_mp4_url': ep.archive_mp4_url,
+            'video_mp4_download_only': False,
+        }
+        return video_data
+
+    def clean_pyvideo_summary(self, ep):
+        # return linebreaks(urlize(force_escape(ep.description)))
+        return ep.description
+
+    def clean_pyvideo_speakers(self, ep):
+        """ sanitize veyepar authors to create pyvideo speakers
+
+        :arg ep: Episode with authors
+        :returns: list of pyvideo speakers
+
+        """
+        # speakers = [] if ep.authors is None else ep.authors.split(',')
+        return ep.authors.split(',') if ep.authors else []
+
+    def clean_pyvideo_tags(self, ep):
+        """ sanitize veyepar tags for use by pyvideo
+
+        :arg ep: Episode with veyepar tags
+        :returns: list of pyvideo tags
+
+        """
+
+        # remove blacklisted tags, and tags with a / in them. and strip spaces 
+        tags = ep.tags.split(',')
+        tags = [t.strip() for t in tags if t not in [
+             u'enthought', 
+             u'scipy_2012', 
+             u'Introductory/Intermediate',
+             ] 
+             and '/' not in t 
+             and t]
+        return tags
+
+    def get_scrapevideo_metadata(self, ep):
+        """ scrapes metadata from the host_url of the episode
+
+        This is a wrapper around steve's scrapevideo. It preps
+        the host_url if necessary, and repeatedly calls scrapevideo
+        until no error is raised
+
+        :arg ep: Episode of video to scrape
+        :returns: dict of metadata, or {}
+
+        """
+
+        if ep.host_url is None:
+            # there's nothing to scrape
+            return {}
+
+        # FIXME: error handling kinda crazy here
+        while True:
+            # keep trying until it doesn't error doh!
+            try:
+                scraped_meta = scrapevideo(ep.host_url)
+                break
+            except KeyError as e: 
+                print "KeyError", e
+            
+        if self.options.verbose: 
+            pprint.pprint( scraped_meta )
+
+        return scraped_meta
+
+    def is_already_in_pyvideo(self, ep):
+        # its truthiness implies that the video already exists in pyvideo
+        return ep.public_url
+
+
 if __name__ == '__main__':
-    p=add_to_richard()
+    p = RichardProcess()
     p.main()
 
