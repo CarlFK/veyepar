@@ -4,7 +4,7 @@
 
 import datetime
 from django.template.defaultfilters import linebreaks, urlize, force_escape
-from steve.richardapi import create_category_if_missing, create_video
+from steve.richardapi import create_category_if_missing, create_video, update_video, MissingRequiredData
 from steve.util import scrapevideo
 from steve.restapi import API, get_content
 
@@ -25,9 +25,7 @@ class RichardProcess(Process):
     # pycon 2013 is an example of something that uses the Show.name.
     # 
     # hardcoding category until we figure out a better system
-
-    category_key = 'ChiPy'
-    # category_key = 'PyCon 2013'
+    category_key = 'Test Category'
 
 
     def process_ep(self, ep):
@@ -48,16 +46,11 @@ class RichardProcess(Process):
         self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
         self.api = API(self.pyvideo_endpoint)
 
-        """
-        FIXME LATER - removed for now, not needed for PyCon.
-        # FIXME using chatty hack due to problems with category handling
         if self.options.verbose: 
             print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.category_key}
 
-        create_category_if_missing(self.pyvideo_endpoint, 
-                self.host['user'], self.host['api_key'], 
-                {'title': self.category_key})
-        """
+        # FIXME using chatty hack due to problems with category handling
+        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.category_key})
         
         video_data = self.create_pyvideo_episode_dict(ep)
         # perhaps we could just update the dict based on scraped_meta
@@ -67,61 +60,62 @@ class RichardProcess(Process):
 
         if self.options.verbose: pprint.pprint(video_data)
 
-        if self.is_already_in_pyvideo(ep):
-            vid_id = ep.public_url.split('/video/')[1].split('/')[0]
-            if self.options.verbose: 
-                print 'episode already exists in pyvideo', ep.public_url, vid_id
-            ret = self.fetch_and_update_pyvideo(vid_id, video_data)
-        else:
-            vid = self.create_pyvideo(video_data)
-            self.pvo_url = "http://%s/video/%s/%s" % (self.host['host'], vid['id'],vid['slug'])
-            print self.pvo_url
-            ep.public_url = self.pvo_url
-            ret = self.pvo_url
+        try:
 
-        # except Exception as exc:
-        if self.options.debug:
-            # print "exc:", exc
-            ret = False
+            if self.is_already_in_pyvideo(ep):
+                vid_id = ep.public_url.split('/video/')[1].split('/')[0]
+                print 'updating episode in pyvideo', ep.public_url, vid_id
+                ret = self.update_pyvideo(vid_id, video_data)
+            else:
+                self.pvo_url = self.create_pyvideo(video_data)
+                print 'new pyvideo url', self.pvo_url
+                ep.public_url = self.pvo_url
+                ret = self.pvo_url
+
+        except Exception as exc:
+            print "exc:", exc
             import code
             code.interact(local=locals())
-            # raise
+            raise exc
 
         ep.save()
 
         return ret
 
-    def fetch_and_update_pyvideo(self, vid_id, new_data):
-        """ fetches the record from pyvideo and updates it with the new_data
+    def update_pyvideo(self, vid, new_data):
+        """ updates a pyvideo record
+        :arg vid: video id for pyvideo
+        :arg new_data: dict of fields to update
 
-        :arg vid_id: pyvideo id
-        :arg video_data: dict containing updated video data
-        :returns: dict of response from pyvideo
+        :returns: a dict from the updated video
 
         """
-        print vid_id
-        old_video = self.api.video(vid_id).get()
-        print old_video
-        old_content = get_content(old_video)
-        old_video.update(new_data)
-
-        if self.options.verbose: 
-            pprint.pprint(old_video)
-
-        return self.api.video(vid_id).put(data=old_video)
+        try:
+            # fetch current record
+            response = self.api.video(vid).get()
+            video_data = get_content(response)
+            # update dict with new information
+            video_data.update(new_data)
+            # update in pyvideo
+            return update_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], vid, video_data)
+        except MissingRequiredData as e:
+            print 'Missing required fields', e.errors
+            raise e
 
     def create_pyvideo(self, video_data):
-        """ adds a new video to pyvideo
+        """ creates a pyvideo record
+        :arg video_data: dict of video information to be added
 
-        :arg video_data: a dict with video data for pyvideo
-        :returns: dict of video response from pyvideo
+        :returns: a pyvideo url for the video
 
         """
-        video_data['added'] = datetime.datetime.now().isoformat()
-        video = create_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], video_data)
-        if self.options.verbose: print video
-        return video
-
+        try:
+            video_data['added'] = datetime.datetime.now().isoformat()
+            vid = create_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], video_data)
+            return 'http://%s/video/%s/%s' % (self.host['host'], vid['id'],vid['slug'])
+        except MissingRequiredData as e:
+            print 'Missing required fields', e.errors
+            raise e
 
     def create_pyvideo_episode_dict(self, ep, state=1):
         """ create dict for pyvideo based on Episode
@@ -203,7 +197,7 @@ class RichardProcess(Process):
 
         """
 
-        if ep.host_url is None:
+        if ep.host_url is None or ep.host_url == '':
             # there's nothing to scrape
             return {}
 
