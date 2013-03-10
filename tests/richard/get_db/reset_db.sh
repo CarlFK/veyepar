@@ -9,12 +9,13 @@
 # carl@stark:~$ ls /srv
 # flourish  pyvideo  test_pyvideo
 
-instance=test_pyvideo
+instance=pyvideo
 
 # dump data from db to file on remote filesystem
-ssh pyvideo.org ./dump_x.sh $instance
+#ssh pyvideo.org ./dump_x.sh $instance
+
 # pull that file to local filesystem
-rsync -vP pyvideo.org:richard_${instance}_videos.json .
+#rsync -vP pyvideo.org:richard_${instance}_videos.json .
 
 # blow away and reset previous local database
 mv database.db ~/temp/

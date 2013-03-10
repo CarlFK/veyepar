@@ -7,7 +7,7 @@ fi
 
 # If the current user doesn't have ssh key access, 
 # BatchMode will cause this to fail and continue to the wget
-ssh -o BatchMode=yes -p 222 veyepar@nextdayvideo.com /home/veyepar/veyepar/dj/dumpdata.sh
+#ssh -o BatchMode=yes -p 222 veyepar@nextdayvideo.com /home/veyepar/veyepar/dj/dumpdata.sh
 
 # scp -P 222 veyepar@nextdayvideo.com:veyepar/dj/veyepar_main.json .
 wget -N http://veyepar.nextdayvideo.com/site_media/static/veyepar/db/veyepar_main.json

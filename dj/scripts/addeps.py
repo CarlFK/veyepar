@@ -638,19 +638,13 @@ class add_eps(process.process):
           if room not in rooms: rooms.append(room)
       return rooms
 
-    def get_rooms(self, schedule, key='room', plenary="Plenary"):
+    def get_rooms(self, schedule, key='room'):
       rooms=set()
       for row in schedule:
           if self.options.verbose: print row
           room = row[key]
           if room is None: room = "None"
-          # if room is None: room = plenary
-          # if room == plenary:
-          #    room = "Track I (D5)"
-          #    row['room_name'] = "Mission City Ballroom"
-          # room = "%s - %s" % ( row['room_name'], room )
           rooms.add(room)
-              # print room, '-',row['room_name']
       return rooms
 
 
@@ -1516,8 +1510,9 @@ class add_eps(process.process):
         # pycon.us 2013
         # pprint.pprint(schedule)
 
-        rooms = self.get_rooms(schedule )
-        pprint.pprint(rooms)
+        
+        rooms = self.get_rooms(schedule)
+        # pprint.pprint(rooms)
 
         self.add_rooms(rooms,show)
 
@@ -1557,46 +1552,59 @@ class add_eps(process.process):
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             event['duration'] = "%02d:%02d:%02d" % hms
 
+            if raw['kind']=='phlenary':
+                event['locaton'] = "Mission"
+
 
         self.add_eps(events, show)
 
         return 
 
+        # If we need short names?
+        rooms = {
+            'Grand Ballroom AB':'AB',
+            'Grand Ballroom CD':'CD',
+            'Grand Ballroom EF':'EF',
+            'Grand Ballroom GH':'GH',
+            'Great America':'Great America',
+            'Great America Floor 2B R1':'R1',
+            'Great America Floor 2B R2':'R2',
+            'Great America Floor 2B R3':'R3',
+            'Great America J':'J',
+            'Great America K':'K',
+            'Mission City':'Mission City',
+            'Mission City M1':'M1',
+            'Mission City M2':'M2',
+            'Mission City M3':'M3',
+            'Poster Room':'Poster',
+            }
+
+
     def pycon2013(self,schedule,show):
 
-        self.symposion2(schedule,show)
+        for s in schedule:
+            if s['room'] == 'Grand Ballroom GH, Great America, Grand Ballroom CD, Grand Ballroom EF, Grand Ballroom AB, Mission City':
+                s['room'] = "Mission City"
+
 
         # merge in Zac's poster schedule
-        # first make 4 poster roomos
-        for i in range(1,5):
-            room = "Poster-%s" % i
-            loc,created = Location.objects.get_or_create(
-                  name=room,)
-            loc.active = False
-            if created: 
-                loc.sequence=20+i
-                loc.save()
-            show.locations.add(loc)
-            show.save()
-         
         f=open('schedules/postervideo.csv')
         poster_schedule = csv.DictReader(f)
         for poster in poster_schedule:
-            if self.options.verbose: pprint.pprint(poster)
-            episode = Episode.objects.get(
-                  show=show, conf_key=str( 1000+int(poster['poster_id'])))
-            if self.options.verbose: print episode.name
+          conf_key=1000+int(poster['poster_id'])
+          for s in schedule:
+           if s['kind']=='poster':
+            if s['conf_key']==conf_key:
 
-            room = "Poster-%s" % poster['camera']
-            loc = Location.objects.get( name = room )
-            episode.location = loc
+                # set the room to Poster-[1,2,3,4]
+                s['room'] = "Poster-%s" % poster['camera']
 
-            # don't really care about end, use durration=5
-            start,end = poster['time'].split('-')
-            h,m = start.split(':')
-            episode.start = episode.start.replace(
-                    hour=int(h),minute=int(m))
-            episode.save()
+                # don't care about end, use durration=5
+                start,end = poster['time'].split('-')
+                h,m = start.split(':')
+                s['start'] = datetime.datetime(2013, 03, 17, int(h), int(m)).isoformat()
+
+        self.symposion2(schedule,show)
 
         return 
 

@@ -2,27 +2,32 @@
 
 # push metadata to richard (like pyvideo.org)
 
+import datetime
+from django.template.defaultfilters import linebreaks, urlize, force_escape
+from steve.richardapi import create_category_if_missing, create_video
 from steve.util import scrapevideo
 from steve.restapi import API, get_content
 
-
-# for when you do the pep8 overhaul
-from process import process as Process
 import pprint
 import pw
+
+from process import process as Process
 from main.models import Show, Location, Episode
 
 
 class RichardProcess(Process):
 
     ready_state = 5
+    # ready_state = None
 
     # pyvideo categories are either Show.name or Client.name
     # chipy is an example of something that uses the Client.name.
     # pycon 2013 is an example of something that uses the Show.name.
     # 
     # hardcoding category until we figure out a better system
+
     category_key = 'ChiPy'
+    # category_key = 'PyCon 2013'
 
 
     def process_ep(self, ep):
@@ -43,8 +48,16 @@ class RichardProcess(Process):
         self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
         self.api = API(self.pyvideo_endpoint)
 
+        """
+        FIXME LATER - removed for now, not needed for PyCon.
         # FIXME using chatty hack due to problems with category handling
-        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.category_key})
+        if self.options.verbose: 
+            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.category_key}
+
+        create_category_if_missing(self.pyvideo_endpoint, 
+                self.host['user'], self.host['api_key'], 
+                {'title': self.category_key})
+        """
         
         video_data = self.create_pyvideo_episode_dict(ep)
         # perhaps we could just update the dict based on scraped_meta
@@ -54,24 +67,25 @@ class RichardProcess(Process):
 
         if self.options.verbose: pprint.pprint(video_data)
 
-        try:
-            if self.is_already_in_pyvideo(ep):
+        if self.is_already_in_pyvideo(ep):
+            vid_id = ep.public_url.split('/video/')[1].split('/')[0]
+            if self.options.verbose: 
                 print 'episode already exists in pyvideo', ep.public_url
-                vid_id = ep.public_url.split('/video/')[1].split('/')[0]
-                ret = self.fetch_and_update_pyvideo(vid_id, video_data)
-            else:
-                vid = self.create_pyvideo(video_data)
-                self.pvo_url = "http://%s/video/%s/%s" % (self.host['host'], vid['id'],vid['slug'])
-                print self.pvo_url
-                ep.public_url = self.pvo_url
-                ret = self.pvo_url
+            ret = self.fetch_and_update_pyvideo(vid_id, video_data)
+        else:
+            vid = self.create_pyvideo(video_data)
+            self.pvo_url = "http://%s/video/%s/%s" % (self.host['host'], vid['id'],vid['slug'])
+            print self.pvo_url
+            ep.public_url = self.pvo_url
+            ret = self.pvo_url
 
-        except Exception as exc:
-            print "exc:", exc
+        # except Exception as exc:
+        if self.options.debug:
+            # print "exc:", exc
             ret = False
             import code
             code.interact(local=locals())
-            raise
+            # raise
 
         ep.save()
 
