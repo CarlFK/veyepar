@@ -70,7 +70,7 @@ class RichardProcess(Process):
         if self.is_already_in_pyvideo(ep):
             vid_id = ep.public_url.split('/video/')[1].split('/')[0]
             if self.options.verbose: 
-                print 'episode already exists in pyvideo', ep.public_url
+                print 'episode already exists in pyvideo', ep.public_url, vid_id
             ret = self.fetch_and_update_pyvideo(vid_id, video_data)
         else:
             vid = self.create_pyvideo(video_data)
@@ -99,8 +99,15 @@ class RichardProcess(Process):
         :returns: dict of response from pyvideo
 
         """
-        old_video = get_content(self.api.video(vid_id).get())
+        print vid_id
+        old_video = self.api.video(vid_id).get()
+        print old_video
+        old_content = get_content(old_video)
         old_video.update(new_data)
+
+        if self.options.verbose: 
+            pprint.pprint(old_video)
+
         return self.api.video(vid_id).put(data=old_video)
 
     def create_pyvideo(self, video_data):
