@@ -25,7 +25,8 @@ class RichardProcess(Process):
     # pycon 2013 is an example of something that uses the Show.name.
     # 
     # hardcoding category until we figure out a better system
-    category_key = 'Test Category'
+    # category_key = self.options.pyvideo_category
+    # 'PyCon US 2013'
 
 
     def process_ep(self, ep):
@@ -47,12 +48,12 @@ class RichardProcess(Process):
         self.api = API(self.pyvideo_endpoint)
 
         if self.options.verbose: 
-            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.category_key}
+            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.options.category_key}
 
         # FIXME using chatty hack due to problems with category handling
-        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.category_key})
+        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.options.category_key})
         
-        video_data = self.create_pyvideo_episode_dict(ep)
+        video_data = self.create_pyvideo_episode_dict(ep, state=2)
         # perhaps we could just update the dict based on scraped_meta
         scraped_metadata = self.get_scrapevideo_metadata(ep)
         video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
@@ -138,7 +139,7 @@ class RichardProcess(Process):
         video_data = {
             'state': state,
             'title': ep.name,
-            'category': self.category_key,
+            'category': self.options.category_key,
             'summary': summary,
             'source_url': ep.host_url,
             'copyright_text': ep.license,
@@ -218,6 +219,10 @@ class RichardProcess(Process):
     def is_already_in_pyvideo(self, ep):
         # its truthiness implies that the video already exists in pyvideo
         return ep.public_url
+
+    def add_more_options(self, parser):
+        parser.add_option('--category-key', 
+           help="Name of category in pyvideo.org, ex 'PyCon US 2013'")
 
 
 if __name__ == '__main__':

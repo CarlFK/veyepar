@@ -73,6 +73,7 @@ import HTMLParser
 from dateutil.parser import parse
 import pprint
 
+import fixunicode
 
 try:
     import json
@@ -276,7 +277,9 @@ class add_eps(process.process):
               created = True
 
           fields=(
-        'name', 'authors', 'emails', 'description',
+        'name', 'authors', 
+        'emails', 
+        'description',
         'start','duration', 
         'released', 
         'license', 
@@ -547,6 +550,7 @@ class add_eps(process.process):
       return rooms
 
     def snake_bites(self, schedule, location):
+        print "Snake Bites"
 
         # warning: location is the 2nd half of a hack:
         # veyepar json export only gives room key, not name
@@ -556,9 +560,16 @@ class add_eps(process.process):
         events=[]
 
         fields=('location','sequence','conf_key','host_url',
-            'name','slug', 'authors','emails', 'description',
+            'name','slug', 'authors',
+            'emails', 
+            'description',
+            'released', 'license',
             'start','duration', 
-            'released', 'license', 'conf_key', 'conf_url', 'tags')
+            'conf_key', 
+            'conf_url', 'tags',
+            # 'public_url'
+            )
+
 
         for row in schedule:
             pk = row['pk']
@@ -572,7 +583,7 @@ class add_eps(process.process):
             if not event['conf_key']: event['conf_key'] = pk
             # event['location'] = location
             event['start'] = datetime.datetime.strptime(
-                    row['start'], '%Y-%m-%d %H:%M:%S' )
+                    row['start'], '%Y-%m-%dT%H:%M:%S' )
 
             events.append(event)
 
@@ -1100,6 +1111,7 @@ class add_eps(process.process):
 
 
     def veyepar(self, schedule, show):
+        print "veyepar"
         # importing from some other instance
         rooms = self.snake_holes(schedule)
         # hack because the veyepar export doesn't give room name
@@ -1686,11 +1698,14 @@ class add_eps(process.process):
 
         if self.options.verbose: print url
 
-
         if url.startswith('file'):
             # kinda broke this 
             # nees to be meld in with the response object 
             f = open(url[7:])
+            j = json.load(f)
+            pprint.pprint(j)
+            self.veyepar(j, show)
+            return 
         else:
             session = requests.session()
 
@@ -1714,7 +1729,8 @@ class add_eps(process.process):
             return self.fosdem2012(schedule,show)
         else:
             j = response.text
-            schedule = response.json()
+            schedule = response.json
+            # schedule = response.json()
             # if it is a python prety printed list:
             # schedule = eval(j)
 

@@ -291,7 +291,7 @@ pix_fmt=yuv411p" % parms
   import post_yt as post
   p=post.post()
   p.set_options(force=True, verbose=True, 
-      upload_formats=['mp4'],
+      upload_formats=['mp4', "dv"],
       debug_log=True,
       host_user="test",
       )
