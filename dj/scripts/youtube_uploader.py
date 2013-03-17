@@ -86,6 +86,7 @@ class Uploader(object):
     old_url = ''
     user=''
     private=False
+    unlisted=False
     debug_mode=False
 
     # return attributes:
@@ -133,7 +134,7 @@ class Uploader(object):
             )
 
         if self.private:
-            media_group.private=gdata.media.Private()
+            media_group.unlisted=gdata.media.Private()
 
         return media_group
 
@@ -152,8 +153,12 @@ class Uploader(object):
 
         yt_service = self.auth()
 
+        if self.unlisted:
+            acl = [ExtensionElement('accessControl',namespace=YOUTUBE_NAMESPACE,attributes={'action':'list','permission':'denied'})]
+        else:
+            acl = []
         video_entry = gdata.youtube.YouTubeVideoEntry(
-                media=self.media_group())
+                media=self.media_group(), extension_elements=acl)
 
         if self.meta.has_key('latlon'):
             video_entry.geo = self.geo()
@@ -233,7 +238,8 @@ if __name__ == '__main__':
 
     u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4', 'ext':'mp4'}]
     u.user = 'test'
-    # u.private = True
+    #u.private = True
+    u.unlisted = True
 
     ret = u.upload()
     if ret: print u.new_entry.id.text
