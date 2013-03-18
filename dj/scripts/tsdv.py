@@ -58,7 +58,7 @@ class ts_dv(process):
         filename='/'.join(filename.split('/')[-2:])
 
         # swap : for _ (so either : or _ can be used in the filename)
-        filename.replace(':','_')
+        filename = filename.replace(':','_')
 
         # parse
         start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S')
