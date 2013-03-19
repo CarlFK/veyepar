@@ -93,7 +93,7 @@ class RichardProcess(Process):
         """
         try:
             # fetch current record
-            response = self.api.video(vid).get()
+            response = self.api.video(vid).get(username=self.host['user'], api_key=self.host['api_key'])
             video_data = get_content(response)
             # update dict with new information
             video_data.update(new_data)

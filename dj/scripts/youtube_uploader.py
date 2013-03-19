@@ -85,8 +85,8 @@ class Uploader(object):
     meta = {}
     old_url = ''
     user=''
-    private=False
-    unlisted=False
+    # private=False
+    unlisted=True
     debug_mode=False
 
     # return attributes:

@@ -1560,7 +1560,6 @@ class add_eps(process.process):
             if event['duration'] is None: event['duration']=5
 
             seconds=(int(event['duration'] )) * 60
-            seconds=(int(event['duration'] )) * 60
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             event['duration'] = "%02d:%02d:%02d" % hms
 
@@ -1620,7 +1619,40 @@ class add_eps(process.process):
 
         return 
 
+    def pydata_2013(self,show):
+        print "pydata_2013"
+        f = open('schedules/pydata2013/day1.csv' )
+        schedule = list(csv.reader(f))
+        # room = "Track %s" % i
+        events = []
+        pk = 1
+        for s in schedule:
+            # ['IPython-parallel', ' Min Ragan-Kelley', ' IPython', ' A1', ' 10:45am'],
+            e = { 'conf_key': pk,
+                'room':s[3].strip(),
+                'location':s[3].strip(),
+                'name':s[0],
+                'authors':s[1].strip(),
+                'emails':'pwang@continuum.io',
+                'description':s[2].strip(),
+                'start':parse("Mar 18, 2013" + s[4]),
+                'duration':"0:90:00",
+                'released':True,
+                'license':"",
+                'conf_url':"",
+                'tags':'',
+                }
+# 'conf_key':
+            pprint.pprint( schedule )
+            pprint.pprint( e )
+            events.append(e)
+            pk +=1
         
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
 #################################################3
 # main entry point 
 
@@ -1647,6 +1679,11 @@ class add_eps(process.process):
 
         if self.args:
             url = self.args[0]
+
+        elif self.options.show == "pydata_sv_2013":
+            self.pydata_2013(show)
+            return 
+
         elif self.options.show in ['chicagowebconf2012"',
                                     "cusec2013" , ]:
             url = "http://%(conference)s.sched.org/api/session/export"  \
