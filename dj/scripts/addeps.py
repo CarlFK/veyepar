@@ -1621,13 +1621,40 @@ class add_eps(process.process):
 
     def pydata_2013(self,show):
         print "pydata_2013"
-        f = open('schedules/pydata2013/day1.csv' )
-        schedule = list(csv.reader(f))
+        # f = open('schedules/pydata2013/day1.csv' )
+        f = open('schedules/pydata2013/PyData Talks and Speakers.csv', 'rU' )
+        schedule = csv.DictReader(f)
+        # schedule = list(csv.reader(f))
         # room = "Track %s" % i
         events = []
         pk = 1
         for s in schedule:
+            pprint.pprint(s)
             # ['IPython-parallel', ' Min Ragan-Kelley', ' IPython', ' A1', ' 10:45am'],
+            # Title,Name,Email,Company,Room,Start,End,Date
+            e = { 'conf_key': pk,
+                'room':s['Room'].strip(),
+                'location':s['Room'].strip(),
+                'name':s['Title'],
+                'authors':s['Name'].strip(),
+                'emails':s['Email'],
+                'description':s['Company'].strip(),
+                'start':parse(s['Date'] + ' ' + s['Start']),
+                'end':parse(s['Date'] + ' ' + s['End']),
+                'duration':"0:50:00",
+                'released':True,
+                'license':"",
+                'conf_url':"",
+                'tags':'',
+                }
+             
+
+            seconds=(e['end'] - e['start']).seconds 
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            e['duration'] =  duration
+
+            """
             e = { 'conf_key': pk,
                 'room':s[3].strip(),
                 'location':s[3].strip(),
@@ -1643,6 +1670,8 @@ class add_eps(process.process):
                 'tags':'',
                 }
 # 'conf_key':
+            """
+
             pprint.pprint( schedule )
             pprint.pprint( e )
             events.append(e)
