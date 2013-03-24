@@ -149,7 +149,7 @@ class RichardProcess(Process):
             'language': 'English',
             'video_ogv_url': ep.archive_ogv_url,
             'video_mp4_url': ep.archive_mp4_url,
-            'video_mp4_download_only': False,
+            'video_mp4_download_only': True,
         }
         return video_data
 

@@ -38,7 +38,7 @@ def parse_args():
     parser.add_option('--start', type=int,
             help="start frame", )
     parser.add_option('--count', type=int,
-            help="start frame", )
+            help="number of frames", )
     parser.add_option('--in-name',
             help="in_name", )
     parser.add_option('--out-name',

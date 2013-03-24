@@ -26,7 +26,7 @@ veyepar:
       link to stats.
   
 
-  chrome doesn't play ogv. figure out what file formats to use for thumbs.  maybe now it does.
+  chrome doesn't play ogv maybe? figure out what file formats to use for thumbs.  maybe now it does.
   how to keep it from being so agressive about buffering if Play isn't hit 
 
   store images of recording sheets
@@ -50,7 +50,10 @@ veyepar:
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      delete old version when replaced by new encode.
      invalid tags = fail and loop forever.
-
+     
+  don't email presenter untill youtube is done processing.
+    review_1.py is a good place to do this.
+  
   state - need something to handle Canceled talks, breaks, etc.  
     disposition?  
 
@@ -61,7 +64,6 @@ veyepar:
       presenters will be mailed the URL, they can pass it on if they want.
       at some point we will want everone to see it, the we flip from draft to public
      
-      YouTube: access control settings - needs to be implemnted.
       archive: not sure there is a UI for people to use, so dooesn't matter  
       richard: 
         state:2 api is broken.

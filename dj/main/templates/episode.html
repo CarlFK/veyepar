@@ -35,6 +35,10 @@
 <tr><td>End</td><td> {% if same_dates %}{{episode.end|date:"H:i"}}{% else %}{{episode.end}}{% endif %} </td>
 <td>Last Raw End</td> {% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %} <td>{% if same_dates %} {{end|date:"H:i"}} {% else %} {{end}} {% endif %}</td> {% endwith %} {% endwith %}
 </tr>
+<tr>
+    <td>Segments</td> <td>{{chaps}}</td>
+</tr>
+
 </tbody>
 </table>
 {% if episode.conf_url %}

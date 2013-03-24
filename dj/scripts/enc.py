@@ -99,12 +99,8 @@ mlt="""
 
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
-    if ':' in time:
-        sec = reduce(lambda x, i: x*60 + i, 
-            map(float, time.split(':')))  
-    else:
-        # print time, len(time), [c for c in time]
-        sec = float(time)
+    sec = reduce(lambda x, i: x*60 + i, 
+        map(float, time.split(':')))  
     return sec
 
 def time2f(time,fps):

@@ -271,7 +271,21 @@ class Cut_List(models.Model):
         return "%s - %s" % (self.raw_file, self.episode.name)
     class Meta:
         ordering = ["sequence"]
-    
+    def duration(self):
+        # calc size of clip in secconds 
+        # may be size of raw, but take into account trimming start/end
+        def to_sec(time, default=0):
+            # convert h:m:s to s
+            if time:
+                sec = reduce(lambda x, i: x*60 + i, 
+                    map(float, time.split(':'))) 
+            else:
+                sec=default
+            return sec
+        start = to_sec( self.start )
+        end = to_sec( self.end, to_sec(self.raw_file.duration))
+        dur = end-start
+        return dur 
 
 class State(models.Model):
     sequence = models.IntegerField(default=1)

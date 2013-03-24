@@ -60,8 +60,7 @@ class add_dv(process):
       if self.options.whack:
           Raw_File.objects.filter(show=show).delete()
       self.set_dirs(show)
-      # eps = Episode.objects.filter(show=show)
-      for loc in Location.objects.filter(show=show):
+      for loc in Location.objects.filter(show=show, active=True):
         print loc
         self.one_loc(show,loc)
 

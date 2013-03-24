@@ -1001,6 +1001,18 @@ def episode(request, episode_no):
     if not cuts:
         cuts = mk_cuts(episode)
 
+    chaps,chap = [],0 
+    for cut in cuts:
+        if cut.apply:
+            chaps.append(chap)
+            chap+=int(cut.duration())
+    # chaps starts at 0, add the end also.
+    chaps.append(chap)
+
+    chaps = [ "%s:%s:%s" %  
+            (seconds//3600, (seconds%3600)//60, seconds%60)
+            for seconds in chaps]
+
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
         episode_form = Episode_Form_small(request.POST, instance=episode) 
@@ -1077,6 +1089,7 @@ def episode(request, episode_no):
 
     return render_to_response('episode.html',
         {'episode':episode,
+        'chaps':chaps,
         'client':client, 'show':show, 'location':location,
         'prev_episode':prev_episode,
         'next_episode':next_episode,
