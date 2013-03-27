@@ -17,4 +17,4 @@ veyepar.db
 *.gif
 *.pdf
 *.jpg
-
+venv/
