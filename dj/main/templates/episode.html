@@ -5,12 +5,11 @@
 <title>veyepar: {{episode.name}}</title>
 {% endblock %}
 
-<script>
-$(function() { 
-  $( "#accordian").accordian();
-});
-{% block content %}
 
+{% block content %}
+<script> $( function () {
+  ( "#function").accordian(); 
+});</script>
 <a href="{% url client client.slug %}">{{ client.name }}</a>
 <a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a>
 <br/>
