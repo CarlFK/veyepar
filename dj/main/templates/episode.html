@@ -5,6 +5,10 @@
 <title>veyepar: {{episode.name}}</title>
 {% endblock %}
 
+<script>
+$(function() { 
+  $( "#accordian").accordian();
+});
 {% block content %}
 
 <a href="{% url client client.slug %}">{{ client.name }}</a>
@@ -88,7 +92,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
 {{ clrfformset.management_form }}
 <table border=1>
-<tbody>
+<tbody id="accordian">
 {% for cl,clrfform in clrffs %}
 
   {% if clrfform.errors %}
