@@ -81,7 +81,8 @@ class tweet(process):
 
         # url="http://nextdayvideo.blip.tv/file/%s" % ep.host_url
         url = ep.public_url
-        prefix = "#%s #VIDEO" % show.slug
+        # prefix = "#%s #VIDEO" % show.slug
+        prefix = "#%s" % show.slug
         tweet = self.mk_tweet(prefix, ep.name, ep.authors, url)
 
         ret=self.tweet_tweet(user, tweet)

@@ -1009,8 +1009,8 @@ def episode(request, episode_no):
     # chaps starts at 0, add the end also.
     chaps.append(chap)
 
-    chaps = [ "%s:%s:%s" %  
-            (seconds//3600, (seconds%3600)//60, seconds%60)
+    chaps = [ (int(seconds*29.27), "%s:%s:%s" %  
+            (seconds//3600, (seconds%3600)//60, seconds%60) )
             for seconds in chaps]
 
     clrfFormSet = formset_factory(clrfForm, extra=0)

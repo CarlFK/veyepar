@@ -158,7 +158,7 @@ class post(process):
         # down to next layer of code that will do the uplaading 
         youtube_success = uploader.upload()
 
-        ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
+        # ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
         # self.log_info(uploader.ret_text)
 

@@ -1084,7 +1084,6 @@ class add_eps(process.process):
         rooms.sort()
         self.add_rooms(rooms,show)
 
-        # return self.dump_keys(schedule)
         events = self.scipy_events(schedule)
         self.add_eps(events, show)
         return 
@@ -1517,6 +1516,60 @@ class add_eps(process.process):
 
         return 
 
+    def lanyrd(self, schedule, show):
+        # http://lanyrd.com 
+        field_maps = [
+            ('id','id'),
+            # ('','location'),
+            # ('','sequence'),
+            ('title','name'),
+            ('speakers','authors'),
+            # ('','emails'),
+            ('abstract','description'),
+            ('start_time','start'),
+            ('end_time','end'),
+            # ('','duration'),
+            # ('','released'),
+            # ('','license'),
+            # ('','tags'),
+            ('id','conf_key'),
+            ('web_url','conf_url'),
+            # ('','host_url'),
+            # ('','publiv_url'),
+            ]
+
+
+        events =[]
+        for day in schedule['sessions']:
+            pprint.pprint(day)
+            events += self.generic_events(day['sessions'], field_maps)
+            # for session in day['sessions']:
+                #[u'speakers', u'title', u'event_id', u'start_time', u'space', u'topics', u'times', u'abstract', u'web_url', u'end_time', u'id', u'day']
+
+        rooms = ['room_1']
+        self.add_rooms(rooms,show)
+
+        # pprint.pprint(events[-2])
+        for event in events: 
+
+            event['authors'] = ", ".join( 
+                    a['name'] for a in event['authors'])
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'],'%Y-%m-%d %H:%M:%S')
+            event['end'] = datetime.datetime.strptime(
+                    event['end'],'%Y-%m-%d %H:%M:%S')
+            delta = end_dt - start_dt
+            minutes = delta.seconds/60 
+            event['duration'] = "00:%s:00" % ( minutes) 
+
+            # not done, more needed here.
+
+
+        self.add_eps(events, show)
+
+        return 
+
 
     def symposion2(self, schedule, show):
         # pycon.us 2013
@@ -1759,6 +1812,8 @@ class add_eps(process.process):
             'pyconca2012': 'http://pycon.ca/talk.json',
             'lca2013': 'http://lca2013.linux.org.au/programme/schedule/json',
             'pycon2013': 'https://us.pycon.org/2013/schedule/conference.json',
+            'write_the_docs_2013': 'file://schedules/writethedocs.json',
+            # 'write_the_docs_2013': 'http://lanyrd.com/2013/writethedocs/schedule/ad9911ddf35b5f0e.v1.json',
             }[self.options.show]
             payload = None
 
@@ -1768,10 +1823,10 @@ class add_eps(process.process):
             # kinda broke this 
             # nees to be meld in with the response object 
             f = open(url[7:])
-            j = json.load(f)
-            pprint.pprint(j)
-            self.veyepar(j, show)
-            return 
+            schedule = json.load(f)
+            # pprint.pprint(j)
+            # self.veyepar(j, show)
+            # return 
         else:
             session = requests.session()
 
@@ -1784,21 +1839,21 @@ class add_eps(process.process):
 
             response = session.get(url, params=payload, )
 
-        if url[-4:]=='.csv':
-            schedule = list(csv.reader(f))
-            if 'desktopsummit.org' in url:
-                return self.desktopsummit(schedule,show)
-        elif url[-4:]=='.xml':
-            import xml.etree.ElementTree
-            x = response.read()
-            schedule=xml.etree.ElementTree.XML(x)
-            return self.fosdem2012(schedule,show)
-        else:
-            j = response.text
-            schedule = response.json
-            # schedule = response.json()
-            # if it is a python prety printed list:
-            # schedule = eval(j)
+            if url[-4:]=='.csv':
+                schedule = list(csv.reader(f))
+                if 'desktopsummit.org' in url:
+                    return self.desktopsummit(schedule,show)
+            elif url[-4:]=='.xml':
+                import xml.etree.ElementTree
+                x = response.read()
+                schedule=xml.etree.ElementTree.XML(x)
+                return self.fosdem2012(schedule,show)
+            else:
+                j = response.text
+                schedule = response.json
+                # schedule = response.json()
+                # if it is a python prety printed list:
+                # schedule = eval(j)
 
         # save for later
         # file('schedule.json','w').write(j) 
@@ -1811,9 +1866,13 @@ class add_eps(process.process):
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
 
+        if self.options.show =='write_the_docs_2013':
+            return self.lanyrd(schedule,show)
+
         if url.endswith("/schedule/conference.json"):
             # this is Ver pycon2013
             return self.pycon2013(schedule,show)
+
 
         if self.options.show =='pyconca2012':
             return self.pyconca2012(schedule,show)
@@ -1826,7 +1885,6 @@ class add_eps(process.process):
         if url.endswith(".sched.org/api/session/export"):
             # Sched.org Conference Mobcaile Apps
             # Chicago Web Conf 2012
-            # return self.dump_keys(schedule)
             return self.sched(schedule,show)
 
         if self.options.show == 'pyohio_2012':
