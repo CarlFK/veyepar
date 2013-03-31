@@ -41,7 +41,13 @@ $(function() {
 <td>Last Raw End</td> {% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %} <td>{% if same_dates %} {{end|date:"H:i"}} {% else %} {{end}} {% endif %}</td> {% endwith %} {% endwith %}
 </tr>
 <tr>
-    <td>Segments</td> <td>{{chaps}}</td>
+    <td>Segments</td> <td>
+        {% for chap in chaps %}
+          {% if chap %}
+            {{chap.1.1}}
+          {%endif%}
+        {%endfor%}
+    </td>
 </tr>
 
 </tbody>
@@ -98,7 +104,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {{ clrfformset.management_form }}
 <table border=1>
 <tbody id="accordian">
-{% for cl,clrfform in clrffs %}
+{% for cl,chap,clrfform in clrffs %}
 
   {% if clrfform.errors %}
   <tr> <td> {% for field in clrfform %}{{ field.errors }}{% endfor %} </td></tr>
@@ -136,9 +142,10 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 </td>
       </tr>
 
-     <tr> <td>Start</td><td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td> <td>{{ clrfform.start }}</td> </tr>
+      <tr> <td>Start</td><td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td> <td>{{ clrfform.start }}{{chap.0}}</td>
+      </tr>
       <tr> <td>Duration:</td> <td>{{cl.raw_file.duration}}</td> </tr>
-      <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}</td> </tr>
+      <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}{{chap.1}}</td> </tr>
       <tr> <td>Comments:</td> <td>{#{clrfform.rf_comment}#}</td> <td>{{clrfform.cl_comment}}</td> </tr>
       <tr> <td>
          {{ clrfform.split.label_tag }}{{ clrfform.split }}

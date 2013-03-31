@@ -31,6 +31,7 @@ class Raw_FileAdmin(admin.ModelAdmin):
     list_display_links = ('filename',)
     list_filter = ('location',)
     search_fields = ['filename']
+    date_hierarchy = 'start'
 admin.site.register(Raw_File, Raw_FileAdmin)
 
 class QualityAdmin(admin.ModelAdmin):

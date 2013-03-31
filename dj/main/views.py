@@ -1001,17 +1001,19 @@ def episode(request, episode_no):
     if not cuts:
         cuts = mk_cuts(episode)
 
-    chaps,chap = [],0 
+    # making stuff up as I go along, so this is not to well thought out
+    start_chap = (0,"00:00:00") # frame, timestamp
+    chaps,frame_total = [],0 
     for cut in cuts:
         if cut.apply:
-            chaps.append(chap)
-            chap+=int(cut.duration())
-    # chaps starts at 0, add the end also.
-    chaps.append(chap)
-
-    chaps = [ (int(seconds*29.27), "%s:%s:%s" %  
-            (seconds//3600, (seconds%3600)//60, seconds%60) )
-            for seconds in chaps]
+            frame_total+=int(cut.duration())
+            end_chap = (int(frame_total*29.27), "%s:%s:%s" %  
+              (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
+            chaps.append((start_chap,end_chap))
+            # setup for next chapter
+            start_chap=end_chap
+        else:
+            chaps.append(())
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 
@@ -1095,7 +1097,7 @@ def episode(request, episode_no):
         'next_episode':next_episode,
         'same_dates':same_dates,
         'episode_form':episode_form,
-        'clrffs':zip(cuts,clrfformset.forms),
+        'clrffs':zip(cuts,chaps,clrfformset.forms),
         'clrfformset':clrfformset,
         },
     	context_instance=RequestContext(request) )
