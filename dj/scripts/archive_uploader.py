@@ -1,7 +1,8 @@
-# youtube_uploader.py 
+# archive_uploader.py 
 # archive.org specific code
 
 # caled from post_arc.py 
+# that is a lie.  it is really called from post_yt.py.  
 
 # which someday will be jsut post.py with a arc parameter.
 
