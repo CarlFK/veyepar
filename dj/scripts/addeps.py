@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # adds episodes from an external source, like a json file or url.
 
@@ -72,6 +72,7 @@ import requests
 import HTMLParser
 from dateutil.parser import parse
 import pprint
+from django.utils.html import strip_tags
 
 import fixunicode
 
@@ -1563,6 +1564,7 @@ class add_eps(process.process):
             minutes = delta.seconds/60 
             event['duration'] = "00:%s:00" % ( minutes) 
 
+            event['description'] = strip_tags(event['description'])
             # not done, more needed here.
 
 
