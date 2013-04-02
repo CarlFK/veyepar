@@ -1521,7 +1521,7 @@ class add_eps(process.process):
         # http://lanyrd.com 
         field_maps = [
             ('id','id'),
-            # ('','location'),
+            ('room','location'),
             # ('','sequence'),
             ('title','name'),
             ('speakers','authors'),
@@ -1532,7 +1532,7 @@ class add_eps(process.process):
             # ('','duration'),
             # ('','released'),
             # ('','license'),
-            # ('','tags'),
+            ('topics','tags'),
             ('id','conf_key'),
             ('web_url','conf_url'),
             # ('','host_url'),
@@ -1560,11 +1560,16 @@ class add_eps(process.process):
                     event['start'],'%Y-%m-%d %H:%M:%S')
             event['end'] = datetime.datetime.strptime(
                     event['end'],'%Y-%m-%d %H:%M:%S')
-            delta = end_dt - start_dt
+            delta = event['end'] - event['start']
             minutes = delta.seconds/60 
             event['duration'] = "00:%s:00" % ( minutes) 
 
             event['description'] = strip_tags(event['description'])
+
+            # Bogus, but needed to pass
+            event['emails'] = 'not set'
+            event['released'] = False
+            event['license'] =  ''
             # not done, more needed here.
 
 
