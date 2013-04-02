@@ -91,7 +91,7 @@ if __name__ == '__main__':
     # u.bucket_id = 'nextdayvideo.test'
     u.bucket_id = 'nextdayvideo'
     u.key_id='computereach'
-    u.debug_mode = True
+    u.debug_mode = False ## drops to a >>> prompt after upload
 
     ret = u.upload()
 
