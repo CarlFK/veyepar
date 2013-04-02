@@ -73,6 +73,7 @@ import HTMLParser
 from dateutil.parser import parse
 import pprint
 from django.utils.html import strip_tags
+from django.template.defaultfilters import slugify
 
 import fixunicode
 
@@ -288,7 +289,11 @@ class add_eps(process.process):
 
           if created or self.options.update:
               if self.options.verbose: pprint.pprint( row )
-              loc=Location.objects.get(name=row['location'])
+              # Create room if it doesn't exist
+              loc,loc_created = Location.objects.get_or_create(
+                    name=row['location'], defaults={
+                        'slug':slugify(row['location'])
+                    })
               loc.active = True
               episode.location=loc
               for f in fields:
@@ -1521,7 +1526,7 @@ class add_eps(process.process):
         # http://lanyrd.com 
         field_maps = [
             ('id','id'),
-            ('room','location'),
+            #('','location'),
             # ('','sequence'),
             ('title','name'),
             ('speakers','authors'),
@@ -1567,6 +1572,7 @@ class add_eps(process.process):
             event['description'] = strip_tags(event['description'])
 
             # Bogus, but needed to pass
+            event['location'] = 'room_1'
             event['emails'] = 'not set'
             event['released'] = False
             event['license'] =  ''
