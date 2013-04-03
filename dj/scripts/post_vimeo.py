@@ -155,8 +155,7 @@ class post(process):
             ep.host_url = uploader.new_url
             self.last_url = uploader.new_url # hook for tests so that it can be browsed
 
-            print dir(uploader)
-            import code
+            # import code
             # code.interact(local=locals())
 
         else:

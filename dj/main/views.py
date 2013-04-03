@@ -958,7 +958,8 @@ def mk_cuts(episode,
     started=False ## magic to figure out when talk really started
     for dv in dvs:
         seq+=1
-        if dv.get_minutes() > short_clip_time : 
+        if seq>1 and dv.get_minutes() > short_clip_time : 
+            # never pre-select the first clip.  
             started = True
         cl,created = Cut_List.objects.get_or_create(
             episode=episode,

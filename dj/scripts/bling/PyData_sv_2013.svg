@@ -224,6 +224,7 @@
 
 
 
+
 </g>
 <text
    transform="matrix(1 0 0 1 525.9326 700.6455)"
@@ -243,6 +244,7 @@
 
 
 
+
 <g
    id="g3661">
 	<text
@@ -251,6 +253,7 @@
    font-family="'GothamLight'"
    font-size="13.3313"
    id="text3663">Platinum Sponsor</text>
+
 
 
 
@@ -545,6 +548,7 @@
 
 
 
+
 <g
    id="g3778">
 	
@@ -801,6 +805,7 @@
 
 
 
+
 <text
    transform="matrix(1 0 0 1 106.3286 667.8369)"
    fill="#4577BC"
@@ -813,6 +818,7 @@
 
 
 
+
 <text
    transform="matrix(1 0 0 1 109.2192 618.0146)"
    fill="#49484A"
@@ -822,6 +828,7 @@
    font-family="'CenturyGothic-Bold'"
    font-size="22.7977"
    id="text3926">Num</text>
+
 
 
 
@@ -980,15 +987,15 @@
      id="title"
      style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;font-family:Sans;-inkscape-font-specification:Sans">Enabling High Throughput Immunobiology by Integrating Django, numpy, matplotlib, and SQLAlchemy</flowPara></flowRoot><flowRoot
    xml:space="preserve"
-   transform="translate(21.389063,196.01647)"
+   transform="translate(4.671875,196.01647)"
    id="flowRoot4320"
-   style="-inkscape-font-specification:Sans;font-family:Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:40px;text-anchor:middle;text-align:center;writing-mode:lr;line-height:125%"><flowRegion
+   style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Sans;-inkscape-font-specification:Sans"><flowRegion
      id="flowRegion4322"><rect
        id="rect4324"
        width="907.85345"
        height="96.340622"
        x="54.957798"
        y="242.3266"
-       style="-inkscape-font-specification:Sans;font-family:Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:40px;text-anchor:middle;text-align:center;writing-mode:lr;line-height:125%" /></flowRegion><flowPara
-     style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#489bb7;font-family:Sans;-inkscape-font-specification:Sans;text-anchor:middle;text-align:center;writing-mode:lr;line-height:125%"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+     style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#489bb7;font-family:Sans;-inkscape-font-specification:Sans"
      id="presenternames">Angelica Pando, Dave Himrod, Steve Kannan</flowPara></flowRoot></svg>
