@@ -121,12 +121,11 @@ class post(process):
         files.append({'ext':'tt', 'pathname':log_pathname})
 
         
-    # look for username in [options, client, first in pw.py]
+    # look for username in [options, client, ]
     # password always comes from pw.py
    
     host_user =  self.options.host_user if self.options.host_user \
-                    else client.host_user if client.host_user \
-                    else pw.host.keys()[0]
+                    else client.host_user if client.host_user 
 
     if self.options.test:
         print 'test mode:'
