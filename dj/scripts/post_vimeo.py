@@ -2,7 +2,7 @@
 
 # posts to vimeo
 
-import vimeo_uploader as uploader
+import vimeo_uploader as vimeo_uploader
 
 import os
 
@@ -137,7 +137,7 @@ class post(process):
 
     else:
    
-        uploader = uploader.Uploader()
+        uploader = vimeo_uploader.Uploader()
 
         uploader.files = files
         uploader.thumb = thumb
