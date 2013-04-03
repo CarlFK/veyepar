@@ -58,7 +58,7 @@ class Uploader(object):
         t = client.vimeo_videos_upload_getTicket()
         vup = vimeo.convenience.VimeoUploader(client, t, quota=quota)
         
-        vup.upload(self.files[0])
+        vup.upload(self.files[0]['pathname'])
 
         vc = vup.complete()
         self.vc = vc
