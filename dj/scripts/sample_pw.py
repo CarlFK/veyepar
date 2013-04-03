@@ -36,3 +36,13 @@ richard={
             'key':'abc'},
         }   
 
+vimeo={
+        'user_key':{
+            'user':'email@address.com',       
+            'password':'what-a-human-types',
+            'client_id':    '40 char string of hex chars',
+            'client_secret':'40 char string of hex chars',
+            'access':       '32 char string of hex chars',
+            'access_secret':'40 char string of hex chars'
+            }
+        }

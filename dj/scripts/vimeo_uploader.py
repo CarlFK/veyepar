@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
     u = Uploader()
     u.user='continuum'
-    u.files = ['/home/carl/temp/vimeo/test.mp4']
+    u.files = ['test.mp4']
     u.meta = {
       'title': "test title",
       'description': "test description",
