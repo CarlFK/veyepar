@@ -125,7 +125,8 @@ class post(process):
     # password always comes from pw.py
    
     host_user =  self.options.host_user if self.options.host_user \
-                    else client.host_user if client.host_user 
+                    else client.host_user 
+                    # if client.host_user 
 
     if self.options.test:
         print 'test mode:'
