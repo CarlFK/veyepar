@@ -1574,10 +1574,10 @@ class add_eps(process.process):
             # Bogus, but needed to pass
             event['location'] = 'room_1'
             event['emails'] = 'not set'
-            event['released'] = False
+            event['released'] = True
             event['license'] =  ''
-            # not done, more needed here.
 
+            event['tags'] = ", ".join( event['tags'])
 
         self.add_eps(events, show)
 
