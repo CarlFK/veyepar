@@ -1695,7 +1695,7 @@ class add_eps(process.process):
         events = []
         pk = 1
         for s in schedule:
-            pprint.pprint(s)
+            # pprint.pprint(s)
             # ['IPython-parallel', ' Min Ragan-Kelley', ' IPython', ' A1', ' 10:45am'],
             # Title,Name,Email,Company,Room,Start,End,Date
             e = { 'conf_key': pk,
@@ -1738,8 +1738,8 @@ class add_eps(process.process):
 # 'conf_key':
             """
 
-            pprint.pprint( schedule )
-            pprint.pprint( e )
+            # pprint.pprint( schedule )
+            # pprint.pprint( e )
             events.append(e)
             pk +=1
         

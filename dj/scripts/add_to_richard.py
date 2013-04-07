@@ -55,11 +55,27 @@ class RichardProcess(Process):
         
         video_data = self.create_pyvideo_episode_dict(ep, state=2)
         # perhaps we could just update the dict based on scraped_meta
-        scraped_metadata = self.get_scrapevideo_metadata(ep)
-        video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
-        video_data['embed'] = scraped_metadata.get('object_embed_code','')
+        # scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
+        # video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
+
+        print ep.id, ep.host_url
+
+        if "youtube" in ep.host_url:  
+            video_data['embed'] = \
+                    scraped_metadata.get('object_embed_code','')
+        elif "vimeo" in ep.host_url:  
+            # video_data['embed'] = scraped_metadata.get('embed_code','')
+            params = {'vimeo_id': ep.host_url.split('/')[-1]}
+            video_data['embed'] ="""<object width="640" height="480"><param name="allowfullscreen" value="true"><param name="allowscriptaccess" value="always"><param name="movie" value="http://vimeo.com/moogaloop.swf?show_byline=1&amp;fullscreen=1&amp;clip_id=%(vimeo_id)s&amp;color=&amp;server=vimeo.com&amp;show_title=1&amp;show_portrait=0"><embed src="http://vimeo.com/moogaloop.swf?show_byline=1&amp;fullscreen=1&amp;clip_id=%(vimeo_id)s&amp;color=&amp;server=vimeo.com&amp;show_title=1&amp;show_portrait=0" allowscriptaccess="always" height="480" width="640" allowfullscreen="true" type="application/x-shockwave-flash"></embed></object>""" % params 
 
         if self.options.verbose: pprint.pprint(video_data)
+
+        if \
+            not video_data['video_mp4_url'] \
+            or not video_data['source_url'] \
+            or not video_data['embed']:
+                import code
+                code.interact(local=locals())
 
         try:
 
@@ -186,7 +202,7 @@ class RichardProcess(Process):
              and t]
         return tags
 
-    def get_scrapevideo_metadata(self, ep):
+    def get_scrapevideo_metadata(self, host_url):
         """ scrapes metadata from the host_url of the episode
 
         This is a wrapper around steve's scrapevideo. It preps
@@ -198,7 +214,7 @@ class RichardProcess(Process):
 
         """
 
-        if ep.host_url is None or ep.host_url == '':
+        if host_url is None or host_url == '':
             # there's nothing to scrape
             return {}
 
@@ -206,7 +222,7 @@ class RichardProcess(Process):
         while True:
             # keep trying until it doesn't error doh!
             try:
-                scraped_meta = scrapevideo(ep.host_url)
+                scraped_meta = scrapevideo(host_url)
                 break
             except KeyError as e: 
                 print "KeyError", e

@@ -208,6 +208,8 @@ class process(object):
                      sleepytime = True
 
             self.log_in(ep)
+
+            if not self.options.quiet: print self.__class__.__name__, ep.id, ep.name
             ret = self.process_ep(ep)
             if self.options.verbose: print "process_ep:", ret
 
@@ -394,6 +396,7 @@ class process(object):
               help='ogg, ogv, mp4, flv, dv' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
+    parser.add_option('-q', '--quiet', action="store_true" )
     parser.add_option('--debug-log', action="store_true",
               help="append logs to .description so it gets posted to blip" )
     parser.add_option('--test', action="store_true",

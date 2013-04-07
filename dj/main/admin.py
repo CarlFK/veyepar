@@ -49,7 +49,7 @@ class EpisodeAdmin(admin.ModelAdmin):
 
     list_display = ('id',
             'name', 'state',
-            'conf_url',
+            'public_url',
 )
 
        

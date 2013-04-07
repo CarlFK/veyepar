@@ -6,9 +6,9 @@ from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
-class push(process):
+class fix(process):
 
-    # this will bump everything past the review1 step
+    # this will bump everything from 6 to 6+1
     ready_state = 6
 
     def process_ep(self, ep):
@@ -21,6 +21,6 @@ class push(process):
         return ret
 
 if __name__ == '__main__':
-    p=push()
+    p=fix()
     p.main()
 
