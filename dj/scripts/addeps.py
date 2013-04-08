@@ -1547,7 +1547,6 @@ class add_eps(process.process):
 
         events =[]
         for day in schedule['sessions']:
-            pprint.pprint(day)
             events += self.generic_events(day['sessions'], field_maps)
             # for session in day['sessions']:
                 #[u'speakers', u'title', u'event_id', u'start_time', u'space', u'topics', u'times', u'abstract', u'web_url', u'end_time', u'id', u'day']
