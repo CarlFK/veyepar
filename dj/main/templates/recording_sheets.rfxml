@@ -294,12 +294,12 @@
 				<FontName>'Helvetica'</FontName>
 				<FontSize>10</FontSize>
 				<height>'12.0 pt'</height>
-				<width>'19.0 pt'</width>
-				<x>'74.4 pt'</x>
+				<width>'31.0 pt'</width>
+				<x>'69.4 pt'</x>
 				<y>'2.7 pt'</y>
 			</String>
 			<Memo>
-				<expr>"Title: %s\nPresenter(s): %s" % (self.episode_name, self.episode_authors)</expr>
+				<expr>"Title: [_] %s\nPresenter(s): %s" % (self.episode_name, self.episode_authors)</expr>
 				<FontSize>12</FontSize>
 				<height>'72.0 pt'</height>
 				<vAnchor>'bottom'</vAnchor>
@@ -369,7 +369,7 @@
 				<FontName>'Helvetica'</FontName>
 				<FontSize>7</FontSize>
 				<height>'8.0 pt'</height>
-				<width>'15.0 pt'</width>
+				<width>'11.0 pt'</width>
 				<x>'59.4 pt'</x>
 				<y>'2.6 pt'</y>
 			</String>
@@ -473,7 +473,7 @@
 				<FontSize>10</FontSize>
 				<height>'12.0 pt'</height>
 				<width>'29.0 pt'</width>
-				<x>'96.4 pt'</x>
+				<x>'101.4 pt'</x>
 				<y>'2.7 pt'</y>
 			</String>
 			<String>
@@ -535,9 +535,9 @@
 	</PageForeground>
 
 	<TestCursor>
-		<record episode_primary="201" episode_conf_key="u&apos;abc&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="101" episode_emails="u&apos;p@ulmcnett.com&apos;" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_duration="u&apos;04:10:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" />
-		<record episode_primary="202" episode_conf_key="u&apos;def&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="123" episode_emails="u&apos;&apos;" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" />
-		<record episode_primary="203" episode_conf_key="u&apos;ghi&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="123" episode_emails="None" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" />
+		<record episode_primary="3201" episode_conf_key="u&apos;abc&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3101" episode_emails="u&apos;p@ulmcnett.com&apos;" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_duration="u&apos;04:10:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" />
+		<record episode_primary="3202" episode_conf_key="u&apos;def&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3123" episode_emails="u&apos;&apos;" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" />
+		<record episode_primary="3203" episode_conf_key="u&apos;ghi&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3123" episode_emails="None" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" />
 	</TestCursor>
 
 </Report>
