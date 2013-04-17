@@ -88,12 +88,12 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% else %}
   <p>(Not logged in)</p>
 {% endif %}
+
 <table border=1>
 <tbody>
 {{ episode_form }}
 </tbody>
 </table>
-
 
 {% if user.is_authenticated %}
   <input type="submit" value="Save" />
@@ -183,7 +183,11 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 </tbody>
 </table>
 
-{# { episode_form.state } #}
+<table border=1>
+<tbody>
+{{ add_cutlist_to_ep }}
+</tbody>
+</table>
 
 {% if user.is_authenticated %}
   <input type="submit" value="Save" />
