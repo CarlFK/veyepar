@@ -25,7 +25,6 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 
 class mk_public(process):
 
-    # this will bump everything past the review1 step
     ready_state = 9
 
     def up_richard(self, ep):
@@ -62,7 +61,8 @@ class mk_public(process):
         # set pyvideo state to live
  
         ret = True
-        if self.up_richard(ep):
+        if ep.show.slug == "write_the_docs_2013" or self.up_richard(ep):
+        # if self.up_richard(ep):
             if self.up_youtube(ep):
                 ret = True
 

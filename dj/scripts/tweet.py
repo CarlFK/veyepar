@@ -80,9 +80,15 @@ class tweet(process):
         user =  client.host_user if client.host_user else 'nextdayvideo'
 
         # url="http://nextdayvideo.blip.tv/file/%s" % ep.host_url
-        url = ep.public_url
+        url = ep.public_url if ep.public_url \
+                else ep.host_url
+
         # prefix = "#%s #VIDEO" % show.slug
-        prefix = "#%s" % show.slug
+        if client.slug=="eric":
+            prefix = "#writethedocs"
+        else:
+            prefix = "#%s" % show.slug
+
         tweet = self.mk_tweet(prefix, ep.name, ep.authors, url)
 
         ret=self.tweet_tweet(user, tweet)

@@ -49,7 +49,7 @@ veyepar:
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      delete old version when replaced by new encode.
-     invalid tags = fail and loop forever.
+     invalid tags cause fail and loop forever - fix this.
      
   don't email presenter untill youtube is done processing.
     review_1.py is a good place to do this.
@@ -57,23 +57,22 @@ veyepar:
   state - need something to handle Canceled talks, breaks, etc.  
     disposition?  
 
-  upload in draft state:
-      it is not meant for public viewing yet.
-      there is no security blocking access
-      if you have the URL, you can view it
-      presenters will be mailed the URL, they can pass it on if they want.
-      at some point we will want everone to see it, the we flip from draft to public
-     
-      archive: not sure there is a UI for people to use, so dooesn't matter  
+  flag - do not overwrite when syncing with conf db
+
+  tweet hashtag - client or show or both?
+  pyvideo.org category - client or show or both?
+  (are these two the same thing?)
+
       richard: 
-        state:2 api is broken.
         reference back to veyepar page (hidden to public)
         reference to conference site page (for slides)
       
       save raw json per episode 
       
 
-   Stop - make it work again - fixed.. confirm.
+   Stop - make it work again - 
+     I think it is a buffering problem - 
+     the code needs to poll the db, not look at the local cashed value
 
 encoding:
   soften jump cuts
@@ -89,13 +88,13 @@ slugify talk titles-
 model:
   child table of output files
     mp4, ogv, mp3, facc...
+    text: irc logs, transcript, tweets
 
 walpaper 
   logos:
     NextDayVideo, 
     Linux, DVswitch, Python, Django, MLT
 
-   
 
 recording sheets:
   hostname:____
