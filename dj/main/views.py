@@ -590,10 +590,20 @@ def show_stats(request, show_id, ):
                'files':0, 'bytes':0, 
                'loc':None, 'date':None }
  
+    # get the range of dates used by this show
+    # which is a combonation of scheduled dates and dates of videos
+    # there really shouldn't be video files outside the range 
+    # so those should be cleaned up.
     dates=[] 
-    for ep in episodes:
+
+    for ep in raw_files:
         dt = ep.start.date()
         if dt not in dates: dates.append(dt)
+
+    for rf in episodes:
+        dt = rf.start.date()
+        if dt not in dates: dates.append(dt)
+
     dates.sort()
     
     # show totals:
@@ -1002,6 +1012,8 @@ def episode(request, episode_no):
     if not cuts:
         cuts = mk_cuts(episode)
 
+    offset =  cuts[0].raw_file.start - episode.start 
+
     # making stuff up as I go along, so this is not to well thought out
     start_chap = (0,"00:00:00") # frame, timestamp
     chaps,frame_total = [],0 
@@ -1118,6 +1130,7 @@ def episode(request, episode_no):
 
     return render_to_response('episode.html',
         {'episode':episode,
+        'offset':offset,
         'chaps':chaps,
         'client':client, 'show':show, 'location':location,
         'prev_episode':prev_episode,

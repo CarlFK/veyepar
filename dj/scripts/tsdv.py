@@ -76,10 +76,11 @@ class ts_dv(process):
         # it's fun!
         start = {'fn':parse_name,
                  'fs':fs_time,
-                 'frame':frame_time,}[self.options.time_source](pathname)
+                 'frame':frame_time,
+                 }[self.options.time_source](pathname)
 
         # adjust for clock in wrong timezone
-        # TODO: why are there 2 of these:
+        # use both location and command line (the 2 get added)
         start += datetime.timedelta(hours=self.options.offset_hours)
         if offset_hours:
             start += datetime.timedelta(hours=offset_hours)
@@ -107,7 +108,7 @@ class ts_dv(process):
     def one_loc(self,show, location,dir):
       for dv in Raw_File.objects.filter(show=show, location=location):
         print dv
-        if not dv.start:
+        if not dv.start or self.options.force:
           self.one_dv(dir,dv, location.hours_offset)
 
     def one_show(self, show):
