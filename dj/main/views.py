@@ -734,7 +734,7 @@ def show_stats(request, show_id, ):
         row=[]
         for loc in locations: 
             stat = calc_stat(stats[(dt,loc['loc'].id)])
-            row.append(stat)
+            row.append((stat,loc))
         rows.append(row)
     
     states = zip( show_stat['states'], STATES)
@@ -768,6 +768,26 @@ def show_stats(request, show_id, ):
           'max_authors_ep':max_authors_ep,
         },
 	context_instance=RequestContext(request) )
+
+
+def dv_set(request, location_slug, start_date):
+    # Show files collected for a given location and date
+    # aka a set, corisponds to a set of recording sheets.
+    print location_slug, start_date
+    rfs=Raw_File.objects.filter(
+            location__slug=location_slug,
+            start__startswith=start_date).order_by('start')
+ 
+    dvs=[]
+    for rf in rfs:
+        eps = scheduled_episodes(rf)
+        dvs.append([rf,eps])
+    
+    return render_to_response('orphan_dv.html',
+        {
+          'rfs':dvs,
+	},
+        context_instance=RequestContext(request) )
 
 
 def episodes(request, client_slug=None, show_slug=None, location_slug=None,
@@ -915,8 +935,18 @@ def overlaping_episodes(request,show_id):
     return render_to_response('overlaping_episodes.html',
         {
           'episodes':elist,
-	},
-        context_instance=RequestContext(request) )
+        },
+            context_instance=RequestContext(request) )
+
+def scheduled_episodes(rf):
+    # find episodes that overlap the file
+
+    eps = Episode.objects.filter(
+        Q(start__lte=rf.end)|Q(start__isnull=True),
+        Q(end__gte=rf.start)|Q(end__isnull=True),
+        location=rf.location)
+
+    return eps
 
 
 def orphan_dv(request,show_id):
@@ -926,21 +956,16 @@ def orphan_dv(request,show_id):
     
     show=get_object_or_404(Show,id=show_id)
     # rfs=Raw_File.objects.filter(location=location,show=show).order_by('start')
-    rfs_all=Raw_File.objects.filter(show=show).order_by('start')
-    rfs=[]
-    for rf in rfs_all:
+    rfs=Raw_File.objects.filter(show=show).order_by('start')
+    orphans=[]
+    for rf in rfs:
         if rf.cut_list_set.count()==0:
-          dv=rf
-          eps = Episode.objects.filter(
-            Q(start__lte=dv.end)|Q(start__isnull=True),
-            Q(end__gte=dv.start)|Q(end__isnull=True),
-            location=dv.location)
-
-          rfs.append([rf,eps])
+            eps = scheduled_episodes(rf)
+            orphans.append([rf,eps])
     
     return render_to_response('orphan_dv.html',
         {
-          'rfs':rfs,
+          'rfs':orphans,
 	},
         context_instance=RequestContext(request) )
 
@@ -1012,7 +1037,10 @@ def episode(request, episode_no):
     if not cuts:
         cuts = mk_cuts(episode)
 
-    offset =  cuts[0].raw_file.start - episode.start 
+    if cuts:
+        offset =  abs( cuts[0].raw_file.start - episode.start )
+    else:
+        offset = None
 
     # making stuff up as I go along, so this is not to well thought out
     start_chap = (0,"00:00:00") # frame, timestamp

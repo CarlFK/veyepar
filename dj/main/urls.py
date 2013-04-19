@@ -69,17 +69,16 @@ urlpatterns += patterns(
         name='overlaping_episodes'),
     url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
         name='orphan_dv'),
+    url(r'dv_set/(?P<location_slug>[\w+\-]+)/(?P<start_date>[\w+\-]+)/$', 
+        dv_set, name='dv_set'),
 
     url(r'episode_logs/(?P<episode_id>\d+)/$', episode_logs, name='episode_logs'),
 
     url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/(?P<episode_id>\w+)/.*$', 
         episode_pdfs, name='pdf'),
 
-    # this breaks episode_logs - do it right :)
     url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/.*$', 
         episode_pdfs, name='pdfs'),
-
-
 
     url(r'tests', tests, name='tests'),
 

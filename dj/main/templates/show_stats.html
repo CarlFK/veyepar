@@ -50,7 +50,7 @@
                  {% endif %}
 </td>
 
-          {% for item in row %}
+          {% for item,loc in row %}
              <td style="background-color:#{{item.alarm_color}};">  
                {% if item.count %}
 
@@ -67,7 +67,7 @@
                  ]<br/>
                  <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                   <span class="left">files: {{item.files}}</span><span class="right">{{item.gig}} g</span><br/>
+                 <span class="left">files: <a style="display: inline-block;" href="/main/dv_set/{{loc.loc.slug}}/{{item.date|date:"Y-m-d"}}/">{{item.files}}</a></span><span class="right">{{item.gig}} g</span><br/>
                    {% if item.alarm >= 0 %} <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance}} g</span> {% endif %}
                  {% endif %}
                {% endif %}
