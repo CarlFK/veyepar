@@ -19,6 +19,8 @@ mlt="""
   <producer id="title" resource="title.png" in="0" out="149" />
   <producer id="producer0" resource="/home/juser/vid/t2.dv" />
   <producer id="footer" resource="footer.png" in="0" out="0" /> 
+  
+  <producer id="endtone" resource="ladspa.1047" 0="250" 1="0.5" in="0" out="0" />
 
   <playlist id="playlist0">
     <entry producer="title"/>
@@ -54,6 +56,7 @@ mlt="""
 
   <playlist id="playlist2">
     <entry id="foot1" producer="footer"/>
+    <entry id="endtone1" producer="endtone"/>
   </playlist>
 
   <tractor id="tractor0">
@@ -377,10 +380,15 @@ class enc(process):
         pf.set('in',x1)
         pf.set('out',end)
 
+        pf = tree[1]['endtone1']
+        pf.set('in',x1)
+        pf.set('out',end)
+
         # 2. 
         pf = tree[1]['footer']
         pf.set('out',"90")
 
+        # add a tone to the end for testing audio encoder
         pf = tree[1]['foot0']
         pf.set('in',str(end))
         pf.set('out',str(x3))
@@ -656,7 +664,7 @@ class enc(process):
                   "threads=%(threads)s "\
                   "progressive=1 "\
                   "properties=x264-medium vb=%(vbr)sk "\
-                  "acodec=libmp3lame ab=%(abr)sk " \
+                  "acodec=aac ab=%(abr)sk " \
                   % parms 
 
                   # search for a ffpreset file from the list of possibles

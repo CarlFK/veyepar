@@ -1611,7 +1611,11 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
 
+        events = [ e for e in events if e['conf_key']==115]
+
         for event in events:
+            print event
+
             raw = event['raw']
             if self.options.verbose: print "event", event
             if self.options.verbose: pprint.pprint(raw)

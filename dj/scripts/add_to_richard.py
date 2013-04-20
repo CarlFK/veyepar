@@ -61,6 +61,8 @@ class RichardProcess(Process):
         print ep.id, ep.host_url
 
         if "youtube" in ep.host_url:  
+            scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
+            video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
             video_data['embed'] = \
                     scraped_metadata.get('object_embed_code','')
         elif "vimeo" in ep.host_url:  
