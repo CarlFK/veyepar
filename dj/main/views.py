@@ -870,8 +870,8 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                     sequence = episode.sequence+1
                 start = episode.end
             else:
-                # firt Episode of the show
-                print locations
+                # first Episode of the show
+                print "locations", locations
                 location = locations[0].id
                 sequence = 1
                 # today at 6pm

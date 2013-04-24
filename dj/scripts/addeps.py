@@ -141,7 +141,8 @@ def goog(show,url):
             print "%s: %s - %s" % ( authors, location, start.time() )
 
             seq+=1
-            episode,created = Episode.objects.get_or_create(
+            # broke this, use add_eps()
+            episode,created = xEpisode.objects.get_or_create(
                   show=show, 
                   location=location,
                   start=start,
@@ -250,78 +251,98 @@ class add_eps(process.process):
         return events
 
     def add_eps(self, schedule, show):
+        """
+        Given a list of dicts, update the db.
+        The dicts are the result of the transformation 
+          that is somewhere else in this land of yuck.
+        """
 
-      if self.options.test:
-          print "test mode, not adding to db"
-          return 
+        # options:
+        # test - do nothing.  Test is for testing the transfromations.
+        # update - update the db.  
+        #   no update will show diff between real and db
 
-      seq=0
-      # import pdb; pdb.set_trace()
-      for row in schedule:
-          if self.options.verbose: pprint.pprint( row )
-          # episode,created = Episode.objects.get_or_create(
-          #        show=show, conf_key=row['conf_key'], )
-          episodes = Episode.objects.filter(
-                  show=show, conf_key=row['conf_key'], )
+        # Notes:
+        # location - the ID of the location record.
 
-          # if created:
-          if episodes:
-              created = False
-              episode = episodes[0]
-          else:
-              episode = Episode.objects.create(
-                  show=show, conf_key=row['conf_key'], 
-                  start=row['start'], duration=row['duration'],
-                  )
-              episode.sequence=seq
-              episode.state=1
-              seq+=1
-              created = True
+        # TODO:
+        # add a "lock" to prevent updates to a record.
+        # need to figure out what to do with colisions.
+ 
+        # only these fields in the dict are used, the rest are ignored.
+        fields=(
+                'name', 'authors', 
+                'emails', 
+                'description',
+                'start','duration', 
+                'released', 
+                'license', 
+                'conf_url', 'tags')
 
-          fields=(
-        'name', 'authors', 
-        'emails', 
-        'description',
-        'start','duration', 
-        'released', 
-        'license', 
-        'conf_url', 'tags')
 
-          if created or self.options.update:
-              if self.options.verbose: pprint.pprint( row )
-              # Create room if it doesn't exist
-              loc,loc_created = Location.objects.get_or_create(
-                    name=row['location'], defaults={
-                        'slug':slugify(row['location'])
-                    })
-              loc.active = True
-              episode.location=loc
-              for f in fields:
-                  setattr( episode, f, row[f] )
-                  # print( f, row[f] )
+        if self.options.test:
+            print "test mode, not adding to db"
+            return 
 
-              # no support for un-releasing.
-              # once it is marked for released, it stays that way.
-              if not episode.released:
-                  episode.released = row['released']
+        seq=0
+        for row in schedule:
+            if self.options.verbose: pprint.pprint( row )
 
-              episode.save()
-              loc.save()
-          else:
-              # check for diffs
-              # report if different
-              diff_fields=[]
-              for f in fields:
-                  a1,a2 = getattr(episode,f), row[f]
-                  if (a1 or a2) and (a1 != a2): 
-                      diff_fields.append((f,a1,a2))
-              if diff_fields:
-                  print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
-                  print diff_fields
-                  for f,a1,a2 in diff_fields:
-                      print 'veyepar %s: %s' % (f,unicode(a1)[:60])
-                      print ' source %s: %s' % (f,unicode(a2)[:60])
-                  print
+            # try to find an existing item in the db
+            # this assumes we have some handle on the data
+
+            episodes = Episode.objects.filter(
+                      show=show, conf_key=row['conf_key'], )
+
+            if episodes:
+                if len(episodes)>1:
+                    # There should not be more than 1.
+                    # this means the uniquie ID is not unique,
+                    # and there is a dube in the veyepar db.
+                    # import pdb; pdb.set_trace()
+                    import code
+                    code.interact(local=locals())
+                    # then continue on.  
+
+                episode = episodes[0]
+                # have an existing episode, 
+                # either update it or diff it.
+
+            else:
+                episode = None
+
+            if self.options.update:
+                if episode is None:
+                    episode = Episode.objects.create(
+                          show=show, conf_key=row['conf_key'], 
+                          )
+                    episode.sequence=seq
+                    episode.state=1
+                    seq+=1
+
+                episode.location=Location.objects.get(name=row['location'])
+                for f in fields:
+                    setattr( episode, f, row[f] )
+
+                episode.save()
+            else:
+                if episode is None:
+                    print "pk not found", row['conf_key']
+                else:
+                    # check for diffs
+                    # report if different
+                    diff_fields=[]
+                    for f in fields:
+                        a1,a2 = getattr(episode,f), row[f]
+                        if (a1 or a2) and (a1 != a2): 
+                            diff_fields.append((f,a1,a2))
+                    if diff_fields:
+                        print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
+                        print diff_fields
+                        for f,a1,a2 in diff_fields:
+                            print 'veyepar %s: %s' % (f,unicode(a1)[:60])
+                            print ' source %s: %s' % (f,unicode(a2)[:60])
+                        print
 
 
     def addlocs(self, schedule, show):
@@ -409,138 +430,6 @@ class add_eps(process.process):
     def str2bool(self, tf):
         return {'true':True, 
                 "false":False}[tf]
-
-    def addeps(self, schedule, show):
-      seq=0
-
-      for row in schedule:
-        # row = row['node']
-        if self.options.verbose: print row
-
-        if row['room']:
-          # name = lxml.etree.fromstring('<foo>' + row['Title'] + '</foo>').text
-          name = row['title'] 
-          room = row['room']
-          locations = Location.objects.filter(name=room)
-          if locations: location=locations[0]
-          else: continue
-          conf_key = row['id']
-          start = datetime.datetime(*row['start'])
-          duration="00:%s:00" % row['duration']
-          # start, duration = self.talk_time(row['Day'],row['Time'])
-          authors=row.get('presenters','')
-          released=row['released']
-          license=row['license']
-          description = row['description']
-          conf_key = row['conf_key']
-          conf_url = row.get('conf_url', "" )
-
-          # tags = row['Keywords']
-          tags = None
-          # print row
-          if name in ['Registration','Lunch']:
-              continue
-
-          if self.options.test:
-              print location
-              print name
-              print conf_key
-              print start
-              print authors
-              print duration
-              print description
-              print tags
-              print
-          else:
-              episode,created = Episode.objects.get_or_create(
-                  show=show, conf_key=conf_key, )
-
-              if created:
-                  episode.sequence=seq
-                  seq+=1
-                  episode.state=1
-
-              if created or self.options.update:
-                  episode.location=location 
-                  episode.name=name
-                  episode.conf_key=conf_key
-                  episode.conf_url=conf_url
-                  episode.authors=authors
-                  episode.released=released
-                  episode.start=start
-                  episode.duration=duration
-                  episode.description=description
-                  episode.save()
-              else:
-                  # check for diffs
-                  # report if different
-                  fields = [ 'location', 'name', 'conf_key', 'authors', 
-                      'released', 'start', 'duration', 'description',]
-                  diff_fields=[]
-                  for f in fields:
-                      a1,a2 = episode.__getattribute__(f), locals()[f]
-                      if a1 != a2: diff_fields.append((f,a1,a2))
-                  if diff_fields:
-                      print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
-                      for f,a1,a2 in diff_fields:
-                          print 'veyepar %s: %s' % (f,a1)
-                          print ' source %s: %s' % (f,a2[:60])
-                      print
-
-
-      """ pycon 2010
-      seq=0
-      eps = d['events']
-      for ep_id in eps:
-        ep=eps[ep_id]
-        seq+=1
-        if self.options.verbose: print ep
-
-        room = ep['room']
-        if room in [ None, 'None', '1' ]:
-            room='1'
-        #if room == '57': 
-        #    room='47'
-        
-        print  str(room)
-        print  locs[str(room)]
-        location = locs[str(room)]['loc']
-        
-        name = ep['title']
-        slug=fnify(name)
-        authors=ep['presenters']
-        conf_key=str(ep['id'])
-        start = datetime.datetime(*ep['start'])
-        end = start + datetime.timedelta(minutes=ep['duration'])
-        print name
-        print start
-        print end
-        print ep['duration']
-
-        if self.options.test:
-            episode = Episode.objects.get(
-                show=show, conf_key=conf_key)
-            if episode.location != location:
-                print  episode.name, episode.location, location
-                if self.options.force:
-                    episode.location = location
-                    episode.state = 2
-                    episode.save()
-        else:
-            episode,created = Episode.objects.get_or_create(
-                show=show, conf_key=conf_key)
-            if created:
-                episode.sequence=seq
-            episode.location=location 
-            episode.name=name
-            episode.slug=fnify(name)
-            episode.conf_key=conf_key
-            episode.authors=authors
-            episode.start=start
-            episode.end=end
-            episode.state=self.state_done
-            episode.save()
-       """
 
     def snake_holes(self, schedule):
         # importing from veyepar 
@@ -1611,10 +1500,8 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
 
-        events = [ e for e in events if e['conf_key']==115]
-
         for event in events:
-            print event
+            # print event
 
             raw = event['raw']
             if self.options.verbose: print "event", event
@@ -1989,11 +1876,6 @@ class add_eps(process.process):
             print [k for k in v_keys if k not in s_keys]
 
             return self.ddu(schedule,show)
-
-        # schedule = schedule['nodes']
-        # self.addlocs(schedule,show)
-        # self.addeps(schedule, show)
-        return
 
     def add_more_options(self, parser):
         parser.add_option('-f', '--filename', default="talks.csv",
