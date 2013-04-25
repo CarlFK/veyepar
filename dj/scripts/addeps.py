@@ -206,6 +206,15 @@ class add_eps(process.process):
         return
 
     def add_rooms(self, rooms, show):
+
+      if self.options.test:
+            print "test mode, not adding locations to db\n"
+            return 
+
+      if not self.options.update:
+            print "no --update, not adding locations to db\n"
+            return 
+
       seq=0
       for room in rooms:
           if self.options.verbose: print room
@@ -222,10 +231,18 @@ class add_eps(process.process):
 
     def generic_events(self, schedule, field_maps ):
 
-        # copies the show's data
-        # into veyepar data
+        # step one in transforming the show's data into veyepar data
 
-        # 
+        # field_maps is a list of (source,dest) field names 
+        # if source is empty, the create the dest as ''
+        # if there is an error (like key does not exist in source), 
+        #   create dest as None
+
+        # TODO:
+        # consider only creating destination when there is proper source.
+        # current code make add_eps() simpler.
+        # something has to contend with whacky source, 
+        #  currently it is this. 
      
         events=[]
         for row in schedule:
@@ -252,9 +269,9 @@ class add_eps(process.process):
 
     def add_eps(self, schedule, show):
         """
-        Given a list of dicts, update the db.
-        The dicts are the result of the transformation 
-          that is somewhere else in this land of yuck.
+        Given a list of dicts, 
+           diff aginst current veyepar db 
+           or update the db.
         """
 
         # options:
@@ -263,7 +280,10 @@ class add_eps(process.process):
         #   no update will show diff between real and db
 
         # Notes:
-        # location - the ID of the location record.
+        # location - room name as stored in Location model.
+        #   considering changing it to the ID of the location record.
+        #
+        # raw - the row from the input file before any transormations.
 
         # TODO:
         # add a "lock" to prevent updates to a record.
@@ -279,6 +299,9 @@ class add_eps(process.process):
                 'license', 
                 'conf_url', 'tags')
 
+        fields=(
+                'released', 
+                )
 
         if self.options.test:
             print "test mode, not adding to db"
@@ -326,22 +349,28 @@ class add_eps(process.process):
 
                 episode.save()
             else:
+                # this is the show diff part.
                 if episode is None:
-                    print "pk not found", row['conf_key']
+                    print "pk not found in db:", row['conf_key']
                 else:
                     # check for diffs
-                    # report if different
                     diff_fields=[]
                     for f in fields:
                         a1,a2 = getattr(episode,f), row[f]
                         if (a1 or a2) and (a1 != a2): 
                             diff_fields.append((f,a1,a2))
+                    # report if different
                     if diff_fields:
-                        print 'veyepar #id name: #%s %s' % (episode.id, episode.name)
-                        print diff_fields
+                        print 'veyepar #id name: #%s %s' % (
+                                episode.id, episode.name)
+                        if self.options.verbose: 
+                            pprint.pprint( diff_fields )
                         for f,a1,a2 in diff_fields:
                             print 'veyepar %s: %s' % (f,unicode(a1)[:60])
                             print ' source %s: %s' % (f,unicode(a2)[:60])
+                            print "http://veyepar.nextdayvideo.com:8080/main/show_stats/81/E/%s/" % ( episode.id, )
+                            print episode.conf_url
+
                         print
 
 

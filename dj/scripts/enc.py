@@ -13,6 +13,8 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
+# http://mltframework.blogspot.com/2012/04/time-properties.html
+
 mlt="""
 <mlt>
 

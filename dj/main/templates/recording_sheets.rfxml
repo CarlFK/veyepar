@@ -131,7 +131,7 @@
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'30.0 pt'</y>
+						<y>'25.0 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] Review - done"</expr>
@@ -139,7 +139,7 @@
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'11.0 pt'</y>
+						<y>'6.0 pt'</y>
 					</String>
 					<String>
 						<expr>"Post production:"</expr>
@@ -167,6 +167,14 @@
 						<width>'243.0 pt'</width>
 						<x>'13.0 pt'</x>
 						<y>'39.0 pt'</y>
+					</String>
+					<String>
+						<expr>"[  ] Scanned"</expr>
+						<fontname>'Helvetica'</fontname>
+						<FontSize>13</FontSize>
+						<width>'118.0 pt'</width>
+						<x>'415.0 pt'</x>
+						<y>'45.0 pt'</y>
 					</String>
 				</Objects>
 			</GroupHeader>
