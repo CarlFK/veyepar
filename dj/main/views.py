@@ -1048,7 +1048,7 @@ def episode(request, episode_no):
     for cut in cuts:
         if cut.apply:
             frame_total+=int(cut.duration())
-            end_chap = (int(frame_total*29.27), "%s:%s:%s" %  
+            end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
               (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
             chaps.append((start_chap,end_chap))
             # setup for next chapter
@@ -1113,8 +1113,11 @@ def episode(request, episode_no):
             if bump_ep:
                episode = nextepisode
                episode_form = Episode_Form_small(instance=episode) 
+
             cuts = Cut_List.objects.filter(
-                episode=episode).order_by('raw_file__trash','raw_file__start')
+                episode=episode).order_by(
+                        'sequence', 'raw_file__trash','raw_file__start')
+
             init = [{'clid':cut.id,
                 'trash':cut.raw_file.trash,
                 'sequence':cut.sequence,
