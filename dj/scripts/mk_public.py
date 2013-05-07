@@ -7,7 +7,7 @@
 # public = advertised, it is ready for the world to view.  
 #     It will be tweeted at @NextDayVideo
 
-from steve.richardapi import update_video
+from steve.richardapi import update_video, MissingRequiredData
 from steve.restapi import API, get_content
 
 import youtube_uploader
@@ -20,6 +20,7 @@ import atom
 import pw
 
 from process import process
+import pprint
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
@@ -28,14 +29,28 @@ class mk_public(process):
     ready_state = 9
 
     def up_richard(self, ep):
+
         self.host = pw.richard[self.options.host_user]
         self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
         self.api = API(self.pyvideo_endpoint)
+
         vid_id = ep.public_url.split('/video/')[1].split('/')[0]
+
         response = self.api.video(vid_id).get(username=self.host['user'], api_key=self.host['api_key'])
+
         video_data = get_content(response)
         video_data['state'] = 1
-        return update_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], vid_id, video_data)
+
+        pprint.pprint(video_data)
+
+
+        try: 
+            update_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], vid_id, video_data)
+        except MissingRequiredData, e:
+            import code
+            code.interact(local=locals())
+
+        return 
 
     def up_youtube(self, ep):
 

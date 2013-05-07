@@ -1,2 +1,4 @@
 # write_the_docs_2013.svg
 wget http://fontfabric.com/downloadfont/hagin.zip
+
+http://www.dafont.com/pastel-crayon.font
