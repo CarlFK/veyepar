@@ -22,7 +22,7 @@ mlt="""
   <producer id="producer0" resource="/home/juser/vid/t2.dv" />
   <producer id="footer" resource="footer.png" in="0" out="0" /> 
   
-  <producer id="endtone" resource="ladspa.1047" 0="250" 1="0.5" in="0" out="0" />
+  <producer id="endtone" resource="ladspa.1047" o="250" i="0.5" in="0" out="0" />
 
   <playlist id="playlist0">
     <entry producer="title"/>
@@ -385,6 +385,8 @@ class enc(process):
         pf = tree[1]['endtone1']
         pf.set('in',x1)
         pf.set('out',end)
+        pf.set('0',"250")
+        pf.set('1',"0.5")
 
         # 2. 
         pf = tree[1]['footer']

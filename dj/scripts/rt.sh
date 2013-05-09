@@ -18,4 +18,4 @@ fi
 
 python run_tests.py --client test_client --show test_show
 
-display ~/Videos/veyepar/test_client/test_show/titles/Lets_make_a_Test.png
+# display ~/Videos/veyepar/test_client/test_show/titles/Lets_make_a_Test.png
