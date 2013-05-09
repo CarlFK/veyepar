@@ -1,0 +1,82 @@
+https://console.aws.amazon.com/ec2
+start www and mission (a room name)
+ 
+ 
+ sudo apt-get install apache2-utils
+ 
+ $ htpasswd -nbd username password
+username:bxlJF9JC7Shec
+ 
+ 
+sudo cp streaming-system/tools/flumotion-config/pusher/collector.xml /usr/local/etc/flumotion/managers/default/planet.xml
+ 
+sudo vim /usr/local/etc/flumotion/managers/default/planet.xml
+ 
+%(flumotion-user)s:%(flumotion-password-crypt)s
+username:bxlJF9JC7Shec
+ 
+flumotion-user/password is just a username and password needed to secure the encoder/collector - basically "login information"
+use the htpasswd command to create flumotion-password-crypt from the flumotion-password 
+ 
+      <property name="uri">dvswitch://%(flumotion-mixer)s:2000</property>
+      <property name="uri">dvswitch://ndv-mx04:2000</property>
+ 
+ 
+      <property name="username">%(flumotion-user)s</property>
+      for flumotion-user, just choose a random username that isn't easibly guessable
+ 
+      <property name="password">%(flumotion-password)s</property>
+for flumotion-password, just choose a random password that isn't easibly guessable
+ 
+      <property name="host">%(flumotion-encoder)s</property>
+flumotion-encoder is the IP address (or DNS name) of the ec2 encoding machine
+(mission from above)
+ec2-54-224-130-74.compute-1.amazonaws.com
+ 
+ 
+See:
+ubuntu@mission:$ more /usr/local/etc/flumotion/managers/default/planet.xm
+ec2-54-224-130-74.compute-1.amazonaws.com
+You want the plaintext password (not one of the ecrypted one's)
+Lines 131-133
+ 
+/usr/local/etc/flumotion/workers/default.xml
+
+sudo service flumotion restart
+
+
+https://github.com/timvideos/gst-dvswitch.git
+cd gst-dvswitch
+./autogen.sh
+make
+sudo make install
+
+sudo ln -s /usr/local/lib/gstreamer-0.10/libgstdvswitch.so /usr/lib/gstreamer-0.10/
+
+import boto
+ec2 = boto.connect_ec2("AKIAJDEKDIZINSLQXBYA","NL0cvF1VrYQ+PKgbfgxKLXPFuHdSqHi1n3HwbqIu")
+>>> ec2.get_all_instances(instance_ids=['i-b59966c7'])[0].instances[0].public_dns_name
+
+
+EC2 Instance: mission (i-b59966c7) 
+
+
+ubuntu@mission:~$ sudo service flumotion start
+
+ubuntu@mission:~/timvideos/tools/watchdog$ python watchdog_wrapper.py  -m pycovideopassword1@localhost:7531
+ mithro-: I run the watchdog in tmux
+ mithro-: as it needs a terminal for now
+ mithro-: need to fix that
+
+ python streaming-system/tools/register/register_wrapper.py -g GROUP -r REGISTER_URL -s SECRET
+
+
+
+ python tools/register/fake_register.py --server="http://pycon.timvideos.us/tracker/endpoint/register" --secret="your secret from config.private.json" --group=ab,av,mission
+
+python fake_register.py --group=mission,ab,av
+
+
+mplayer http://my.ec2instance:8080/webcast-high.webm
+
+
