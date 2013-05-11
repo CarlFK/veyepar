@@ -1,4 +1,4 @@
-Top level doc!
+random notes, good stuff migrated to install.txt
 
 1. config machines
 2. boot machines and start processes
@@ -8,7 +8,7 @@ Intermixed are some notes for future improvements. (like using boto to get hostn
 ===============
 1. config machines 
 
-1a for collector machine (thats all that we have here so far)
+1a. for collector machine (thats all that we have notes so far)
 
  sudo vim /usr/local/etc/flumotion/managers/default/planet.xml
 
@@ -68,7 +68,8 @@ Turn on the encoder machine in EC2,
 
 ubuntu@mission:$ sudo service flumotion start
 
-ubuntu@mission:~/timvideos/tools/watchdog$ python watchdog_wrapper.py  -m user:pw@localhost:7531
+ubuntu@mission:~/streaming-system/tools/watchdog$ 
+python watchdog_wrapper.py  -m user:pw@localhost:7531
 
  mithro-: I run the watchdog in tmux as it needs a terminal for now
 

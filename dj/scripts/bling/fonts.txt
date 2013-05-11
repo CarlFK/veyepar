@@ -2,3 +2,6 @@
 wget http://fontfabric.com/downloadfont/hagin.zip
 
 http://www.dafont.com/pastel-crayon.font
+
+http://www.handmadefont.com/roke1984.php
+http://nodepdx.org/font/roke1984.ttf
