@@ -83,6 +83,9 @@ class Uploader(object):
         return ret
 
 if __name__ == '__main__':
+
+    # connection.create_bucket('codersquid.testvideos', headers={'x-archive-meta-collection':'opensource_movies'})
+
     u = Uploader()
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4'
     u.pathname = '/home/carl/cr.mpeg'
