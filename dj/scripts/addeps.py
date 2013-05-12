@@ -1746,6 +1746,7 @@ class add_eps(process.process):
             'pycon2013': 'https://us.pycon.org/2013/schedule/conference.json',
             'write_the_docs_2013': 'file://schedules/writethedocs.json',
             # 'write_the_docs_2013': 'http://lanyrd.com/2013/writethedocs/schedule/ad9911ddf35b5f0e.v1.json',
+            'nodepdx2013': 'file://schedules/nodepdx2013.json',
             }[self.options.show]
             payload = None
 
@@ -1797,6 +1798,9 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.show =='nodepdx2013':
+            return self.lanyrd(schedule,show)
 
         if self.options.show =='write_the_docs_2013':
             return self.lanyrd(schedule,show)
