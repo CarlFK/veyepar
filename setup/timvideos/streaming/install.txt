@@ -1,12 +1,22 @@
-random notes, good stuff migrated to install.txt
+top level doc.
 
-1. config machines
-2. boot machines and start processes
+3 machines:
+A. Mixer (DVswitch)
+B. Collecter (local to A)
+C. Encoder (EC2)
 
-Intermixed are some notes for future improvements. (like using boto to get hostname via ec2 api)
+
+1. install apps 
+2. config machines
+3. start processes
+
 
 ===============
 1. config machines 
+
+A - apt-get install dvswitch dvsource....(see dvswitch docs)
+
+B - 
 
 1a. for collector machine (thats all that we have notes so far)
 
@@ -40,10 +50,14 @@ for flumotion-password, random password that isn't easibly guessable
  
       <property name="host">%(flumotion-encoder)s</property>
 flumotion-encoder is the IP address (or DNS name) of the ec2 encoding machine
-ec2-54-224-130-74.compute-1.amazonaws.com
- 
+(mission from above)
+EC2 Instance: mission (i-b59966c7) 
+$ python get_aws_host.py 
+ec2-54-224-159-216.compute-1.amazonaws.com
+
 
 ubuntu@mission:$ more /usr/local/etc/flumotion/managers/default/planet.xm
+ec2-54-224-130-74.compute-1.amazonaws.com
 You want the plaintext password (not one of the ecrypted one's)
 Lines 131-133
  
@@ -78,5 +92,6 @@ start watchdog on collector
 ===========
 test streams
 mplayer http://my.ec2instance:8080/webcast-high.webm
-mplayer http://ec2-54-224-159-216.compute-1.amazonaws.com:8080/webcast-high.webm
+mplayer \
+  http://ec2-54-224-159-216.compute-1.amazonaws.com:8080/webcast-high.webm
 
