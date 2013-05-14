@@ -80,3 +80,4 @@ test streams
 mplayer http://my.ec2instance:8080/webcast-high.webm
 mplayer http://ec2-54-224-159-216.compute-1.amazonaws.com:8080/webcast-high.webm
 
+/usr/local/var/log/flumotion/worker.default.log

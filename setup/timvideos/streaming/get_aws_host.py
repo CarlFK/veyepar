@@ -3,6 +3,7 @@ import pw
 
 id='i-b59966c7' # misson
 id='i-5dba412f' # america
+id='i-45ba4137' # cd
 
 creds = pw.stream['aws']
 ec2 = boto.connect_ec2( creds['id'], creds['key'] )

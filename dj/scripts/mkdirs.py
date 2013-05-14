@@ -33,7 +33,8 @@ class mkdirs(process):
         client = Client.objects.get(slug=self.options.client)
         show = Show.objects.get(client=client,slug=self.options.show)
         self.set_dirs(show)
-        for d in "dv tmp/dv titles titles/svg titles/png bling ogg ogv mp4 m4v mp3 flv txt thumb ".split():
+        dirs =  "dv tmp/dv titles bling ogv mp4 m4v mp3 flv txt thumb"
+        for d in dirs.split():
             full_dir = os.path.join(self.show_dir,d)
             ret = self.mkdir(full_dir)
             if ret: 

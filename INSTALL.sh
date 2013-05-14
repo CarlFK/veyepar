@@ -68,8 +68,10 @@ pip install -r requirements.txt
 # mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 # mv ~/.virtualenvs/veyepar/dabo/locale/ ~/.virtualenvs/veyepar/lib/python2.6/site-packages/dabo
 cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
-svn checkout http://svn.dabodev.com/dabo/trunk dabo-svn
-ln -s dabo-svn/dabo 
+# svn checkout http://svn.dabodev.com/dabo/trunk dabo-svn
+# ln -s dabo-svn/dabo 
+git clone git@github.com:dabodev/dabo.git dabo-master
+ln -s dabo-master/dabo 
 cd -
 
 # grab some text files I don't want to check into the repo

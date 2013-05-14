@@ -67,7 +67,7 @@ I can fix my consumer easier than I can get someone else's website updated.
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
 
 import datetime 
-import urllib2,csv
+import csv
 import requests
 import HTMLParser
 from dateutil.parser import parse
@@ -293,14 +293,11 @@ class add_eps(process.process):
         fields=(
                 'name', 'authors', 
                 'emails', 
-                'description',
+                # 'description',
                 'start','duration', 
                 'released', 
-                'license', 
-                'conf_url', 'tags')
-
-        fields=(
-                'released', 
+                # 'license', 
+                # 'conf_url', 'tags'
                 )
 
         if self.options.test:
@@ -338,6 +335,8 @@ class add_eps(process.process):
                 if episode is None:
                     episode = Episode.objects.create(
                           show=show, conf_key=row['conf_key'], 
+                          start=row['start'],
+                          duration=row['duration'],
                           )
                     episode.sequence=seq
                     episode.state=1
@@ -1440,6 +1439,66 @@ class add_eps(process.process):
 
         return 
 
+    def nodepdx(self, schedule, show):
+        # Troy's json
+        field_maps = [
+            #('','location'),
+            # ('','sequence'),
+            ('title','name'),
+            ('speaker','authors'),
+            ('email','emails'),
+            # ('abstract','description'),
+            ('start_time','start'),
+            ('end_time','end'),
+            ('duration','duration'),
+            ('released','released'),
+            # ('','license'),
+            # ('topics','tags'),
+            ('start_time','conf_key'),
+            # ('web_url','conf_url'),
+            # ('','host_url'),
+            # ('','publiv_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        rooms = ['room_1']
+        self.add_rooms(rooms,show)
+
+        for event in events: 
+
+            # create an ID from day, hour, minute
+            event['conf_key'] = \
+                event['conf_key'][9] \
+                + event['conf_key'][11:13] \
+                + event['conf_key'][14:16]
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'],'%Y-%m-%d %H:%M:%S')
+
+            event['end'] = datetime.datetime.strptime(
+                    event['end'],'%Y-%m-%d %H:%M:%S')
+            delta = event['end'] - event['start']
+            minutes = delta.seconds/60 
+
+            durration = int( event['duration'].split()[0] )
+            if minutes != durration:
+                raise "wtf duration"
+
+            event['duration'] = "00:%s:00" % (durration) 
+
+            # Bogus, but needed to pass
+            event['location'] = 'room_1'
+            event['license'] =  ''
+
+            # event['tags'] = ", ".join( event['tags'])
+            pprint.pprint(event)
+
+        self.add_eps(events, show)
+
+        return 
+
+
     def lanyrd(self, schedule, show):
         # http://lanyrd.com 
         field_maps = [
@@ -1464,6 +1523,7 @@ class add_eps(process.process):
 
 
         events =[]
+        # flatten out nested json (I think..)
         for day in schedule['sessions']:
             events += self.generic_events(day['sessions'], field_maps)
             # for session in day['sessions']:
@@ -1746,20 +1806,16 @@ class add_eps(process.process):
             'pycon2013': 'https://us.pycon.org/2013/schedule/conference.json',
             'write_the_docs_2013': 'file://schedules/writethedocs.json',
             # 'write_the_docs_2013': 'http://lanyrd.com/2013/writethedocs/schedule/ad9911ddf35b5f0e.v1.json',
-            'nodepdx2013': 'file://schedules/nodepdx2013.json',
+            'nodepdx2013': 'file://schedules/nodepdx.2013.schedule.json',
+            'chipy_may_2013': "http://chipy.org/api/meetings/",
             }[self.options.show]
             payload = None
 
         if self.options.verbose: print url
 
         if url.startswith('file'):
-            # kinda broke this 
-            # nees to be meld in with the response object 
             f = open(url[7:])
             schedule = json.load(f)
-            # pprint.pprint(j)
-            # self.veyepar(j, show)
-            # return 
         else:
             session = requests.session()
 
@@ -1800,7 +1856,7 @@ class add_eps(process.process):
         #   call appropiate parser
 
         if self.options.show =='nodepdx2013':
-            return self.lanyrd(schedule,show)
+            return self.nodepdx(schedule,show)
 
         if self.options.show =='write_the_docs_2013':
             return self.lanyrd(schedule,show)

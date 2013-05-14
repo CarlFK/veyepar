@@ -18,7 +18,7 @@ A - apt-get install dvswitch dvsource....(see dvswitch docs)
 
 B - 
 
-1a. for collector machine (thats all that we have notes so far)
+1a. for collector machine 
 
  sudo vim /usr/local/etc/flumotion/managers/default/planet.xml
 
@@ -62,6 +62,14 @@ You want the plaintext password (not one of the ecrypted one's)
 Lines 131-133
  
 set user/pw in /usr/local/etc/flumotion/workers/default.xml
+
+Reusing existing encoder
+1) pick an encoder; 
+2) start encoder in ec2 / aws (I've been logging in, there is of course some way to do this through the API); 
+3) get the encoder's public dns / dns_name; 
+4) configure the collector's config line (manager/default/planet.xml) with the encoder's public dns (note: large assumption that all the user/pws are the same, they don't have to be); 
+5) restart flumotion on the collector, 
+(re)start flumotion on the encoder
 
 =============
 2. start machines for production 

@@ -796,6 +796,8 @@ class enc(process):
                 if episode.show.client.title_svg \
                 else "%s_title.svg" % (episode.show.slug,)
 
+        print svg_name
+
         template = os.path.join(self.show_dir, "bling", svg_name)
         # happy_filename = episode.slug.encode('utf-8')
         happy_filename = episode.slug
