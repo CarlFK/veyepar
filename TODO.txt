@@ -20,11 +20,25 @@ Show twinpact feed on slave display.
 
 veyepar:
 
+  store auth users (not pw) in client file.
+    This will define what hosts and accounts are used for everything under 
+    a client.  This should keep me from pushing node data into pyvideo.
+    accounts:
+      richard
+      youtube, vimio, archive
+      twitter
+      smtp - google (for email)
+      schedule feed: sched.org, lanyard, chipy, symposium 
+        (1:1 client:data source auth, I hope...)
+      
+
   last active date - 
     for shows - 
       put top 4 sows on the client page, 
       link to stats.
   
+  mk_cuts - look at previous episode, 
+    if it ran late, assume current ran late too.
 
   chrome doesn't play ogv maybe? figure out what file formats to use for thumbs.  maybe now it does.
   how to keep it from being so agressive about buffering if Play isn't hit 

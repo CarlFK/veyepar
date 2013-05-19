@@ -17,8 +17,8 @@ from main.models import Show, Location, Episode
 
 class RichardProcess(Process):
 
-    ready_state = 5
-    # ready_state = None
+    # ready_state = 5
+    ready_state = None
 
     # pyvideo categories are either Show.name or Client.name
     # chipy is an example of something that uses the Client.name.
@@ -48,7 +48,7 @@ class RichardProcess(Process):
         self.api = API(self.pyvideo_endpoint)
 
         if self.options.verbose: 
-            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.options.category_key}
+            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'category_key': self.options.category_key}
 
         # FIXME using chatty hack due to problems with category handling
         create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.options.category_key})
@@ -60,11 +60,15 @@ class RichardProcess(Process):
 
         print ep.id, ep.host_url
 
-        if "youtube" in ep.host_url:  
+        if ep.host_url is None:
+            video_data['thumbnail_url'] = "http://veyepar.nextdayvideo.com/static/%s/%s/titles/%s.png" % ( ep.show.client.slug, ep.show.slug, ep.slug )
+
+        elif "youtube" in ep.host_url:  
             scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
             video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
             video_data['embed'] = \
                     scraped_metadata.get('object_embed_code','')
+
         elif "vimeo" in ep.host_url:  
             # video_data['embed'] = scraped_metadata.get('embed_code','')
             params = {'vimeo_id': ep.host_url.split('/')[-1]}
@@ -77,7 +81,7 @@ class RichardProcess(Process):
             or not video_data['source_url'] \
             or not video_data['embed']:
                 import code
-                code.interact(local=locals())
+                # code.interact(local=locals())
 
         try:
 
@@ -113,8 +117,11 @@ class RichardProcess(Process):
             # fetch current record
             response = self.api.video(vid).get(username=self.host['user'], api_key=self.host['api_key'])
             video_data = get_content(response)
+            if self.options.verbose: pprint.pprint( video_data )
+            new_data['duration']=3
             # update dict with new information
             video_data.update(new_data)
+            if self.options.verbose: pprint.pprint( video_data )
             # update in pyvideo
             return update_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], vid, video_data)
         except MissingRequiredData as e:
@@ -194,14 +201,18 @@ class RichardProcess(Process):
         """
 
         # remove blacklisted tags, and tags with a / in them. and strip spaces 
-        tags = ep.tags.split(',')
-        tags = [t.strip() for t in tags if t not in [
-             u'enthought', 
-             u'scipy_2012', 
-             u'Introductory/Intermediate',
-             ] 
-             and '/' not in t 
-             and t]
+        if ep.tags is None:
+            tags = ''
+        else:
+            tags = ep.tags.split(',')
+            tags = [t.strip() for t in tags if t not in [
+                 u'enthought', 
+                 u'scipy_2012', 
+                 u'Introductory/Intermediate',
+                 ] 
+                 and '/' not in t 
+                 and t]
+
         return tags
 
     def get_scrapevideo_metadata(self, host_url):

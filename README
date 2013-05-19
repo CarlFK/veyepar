@@ -50,13 +50,23 @@ veyepar/dj/scripts$ python mkdirs.py  # Makes the dir tree to put files into
 4.1. Put in place the show's title.svg:
 mkdirs.py (previous step) drops a copy in the show dir:
 ~/Videos/veyepar/test_client/test_show/bling$ inkscape title.svg
+show stats: shows longest title and name
+
+mk_titles.py - makes title screens for all videos
 
 Do some sanity checks:
 browse to the show page:
 check "overlapping episodes" - there shouldn't be any.
 show stats: grid of days by room.  should look like your show
 schedule: crude grid of events in a room and time slot. 
+review titles
 meeting announcement: meant for usergroup meetings, doesn't scale well to a large event.
+
+cloud_sync.sh - rsync titles to nextdayvideo.com
+
+add_to_richard.py = creates landing page for videos
+
+email_title.py - emails url of title and landing page to presenters for review.
 
 recording sheets: pdf to be printed and put next to each recoreding station runing DVswitch.  
 
@@ -73,10 +83,10 @@ Adds the .dv filenames to the raw files table
 6.1 start/end
 veyepar/dj/scripts$ python tsdv.py - timestamp dv
 Gets start from one of:
-the file name (assumes hh:mm:ss.dv format)
+the file name (assumes hh_mm_ss.dv format)
 There is code to read the time stamp from the .dv file frames, but that doesn't work well at all.  
 
-6.2 ocr/thumbnail
+6.2 ocr/thumbnail (don't bother, not used for anything any more)
 use ocr to find some text, which makes for a good thumnail.
 veyepar/dj/scripts$ python mkthumbs.py - find thumbs, ocr untill we find some text, saves png.
 
@@ -86,7 +96,7 @@ Create cutlist records for each intersection of a dv file and episodes start/end
 veyepar/dj/scripts$ python assocdv.py: # creates cutlist items for dv files that might belong to an episode
 
 8. make low quality versions of all the dv files so you can preview each file in a browser using <video> (not necessary, skip if you are rushing.)
-veyepar/dj/scripts$ python dvogg.py:# makes .ogg for all dv in a show
+veyepar/dj/scripts$ python dv2ogv.py:# makes .ogv for all dv in a show
 
 9. Post production editing
 

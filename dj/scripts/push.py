@@ -15,6 +15,7 @@ class push(process):
 
     def process_ep(self, ep):
         if self.options.verbose: print ep.id, ep.name
+        return True
 
         # get a list of video files to upload
         files = []

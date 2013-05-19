@@ -971,18 +971,18 @@ def orphan_dv(request,show_id):
 
 def mk_cuts(episode, 
         short_clip_time = 0,
-        start_slop=0, end_slop=0):
+        start_slop=5, end_slop=30):
 
     """
     short_clip_time - threshold for the person kinda maybe starts talking and doesn't.  cut, cut, cut = small clips that need to be discarded.
     so include them in the time window, but default to not included.
 
-    start/end slop - extra time added to the start/end of the schedule to accommodate talks not starting or ending on time. 
+    start/end slop - minutes time added to the start/end of the schedule to accommodate talks not starting or ending on time. 
 
     """
 
     # Get the overlaping dv,
-    # plus some fuzz: 5 min before and 10 after.
+    # plus some fuzz: start/end_slop
     dvs = Raw_File.objects.filter(
             end__gte=episode.start - datetime.timedelta(minutes=start_slop),
             start__lte=episode.end + datetime.timedelta(minutes=end_slop),
