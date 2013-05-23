@@ -3,17 +3,19 @@
 # push metadata to richard (like pyvideo.org)
 
 import datetime
-from django.template.defaultfilters import linebreaks, urlize, force_escape
+import pprint
+from urlparse import urlparse, parse_qs
+from process import process as Process
+
 from steve.richardapi import create_category_if_missing, create_video, update_video, MissingRequiredData
 from steve.util import scrapevideo
 from steve.restapi import API, get_content
 
-import pprint
-import pw
+from django.template.defaultfilters import linebreaks, urlize, force_escape
 
-from process import process as Process
 from main.models import Show, Location, Episode
 
+import pw
 
 class RichardProcess(Process):
 
@@ -118,7 +120,6 @@ class RichardProcess(Process):
             response = self.api.video(vid).get(username=self.host['user'], api_key=self.host['api_key'])
             video_data = get_content(response)
             if self.options.verbose: pprint.pprint( video_data )
-            new_data['duration']=3
             # update dict with new information
             video_data.update(new_data)
             if self.options.verbose: pprint.pprint( video_data )
@@ -161,6 +162,10 @@ class RichardProcess(Process):
         tags = self.clean_pyvideo_tags(ep)
         summary = self.clean_pyvideo_summary(ep)
         
+        # strip off parameters that archive adds.
+        # maybe this should go into archive_uploader.py ?
+        o = urlparse(ep.archive_mp4_url)
+        mp4url = "%(scheme)s://%(netloc)s%(path)s" % o._asdict()
         video_data = {
             'state': state,
             'title': ep.name,
@@ -172,8 +177,9 @@ class RichardProcess(Process):
             'speakers': speakers,
             'recorded': ep.start.isoformat(),
             'language': 'English',
+            'duration': int(ep.get_minutes()),
             'video_ogv_url': ep.archive_ogv_url,
-            'video_mp4_url': ep.archive_mp4_url,
+            'video_mp4_url': mp4url, 
             'video_mp4_download_only': True,
         }
         return video_data

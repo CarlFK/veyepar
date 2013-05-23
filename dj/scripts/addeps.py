@@ -293,9 +293,9 @@ class add_eps(process.process):
         fields=(
                 'name', 'authors', 
                 'emails', 
-                # 'description',
-                'start','duration', 
-                'released', 
+                'description',
+                # 'start','duration', 
+                # 'released', 
                 # 'license', 
                 # 'conf_url', 'tags'
                 )
@@ -312,7 +312,11 @@ class add_eps(process.process):
             # this assumes we have some handle on the data
 
             episodes = Episode.objects.filter(
-                      show=show, conf_key=row['conf_key'], )
+                      show=show, 
+                      start__day = row['start'].day,
+                      authors=row['authors'], 
+                      )
+                      # conf_key=row['conf_key'], 
 
             if episodes:
                 if len(episodes)>1:
@@ -350,7 +354,8 @@ class add_eps(process.process):
             else:
                 # this is the show diff part.
                 if episode is None:
-                    print "pk not found in db:", row['conf_key']
+                    print "pk not found in db:", row['conf_key'], row['name']
+
                 else:
                     # check for diffs
                     diff_fields=[]
@@ -1441,13 +1446,16 @@ class add_eps(process.process):
 
     def nodepdx(self, schedule, show):
         # Troy's json
+
+        html_parser = HTMLParser.HTMLParser()
+
         field_maps = [
             #('','location'),
             # ('','sequence'),
             ('title','name'),
             ('speaker','authors'),
             ('email','emails'),
-            # ('abstract','description'),
+            ('abstract','description'),
             ('start_time','start'),
             ('end_time','end'),
             ('duration','duration'),
@@ -1491,8 +1499,11 @@ class add_eps(process.process):
             event['location'] = 'room_1'
             event['license'] =  ''
 
+            event['description'] = html_parser.unescape( 
+                    strip_tags(event['description']) )
+
             # event['tags'] = ", ".join( event['tags'])
-            pprint.pprint(event)
+            # pprint.pprint(event)
 
         self.add_eps(events, show)
 

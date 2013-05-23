@@ -156,7 +156,8 @@ class post(process):
         uploader.old_url = ep.host_url # for replacing.
      
         # down to next layer of code that will do the uplaading 
-        youtube_success = uploader.upload()
+        # youtube_success = uploader.upload()
+        youtube_success = True
 
         # ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
@@ -166,8 +167,8 @@ class post(process):
             if self.options.verbose: print uploader.new_url
 
             # save new youtube url
-            self.last_url = uploader.new_url
-            ep.host_url = self.last_url
+            ## self.last_url = uploader.new_url
+            ## ep.host_url = self.last_url
 
             # shim to upload to archive.org too.. yuck.
             uploader = archive_uploader.Uploader()
@@ -178,9 +179,9 @@ class post(process):
             for f in files:
 
                 uploader.pathname = f['pathname']
-                uploader.key_id = "%s/%s/%s.%s" % ( 
-                        client.slug, show.slug, ep.slug[:30], f['ext']
-                    )
+                uploader.key_id = "%s.%s" % ( ep.slug[:30], f['ext'] )
+                # uploader.key_id = "%s/%s/%s.%s" % ( 
+                #        client.slug, show.slug, ep.slug[:30], f['ext'])
 
                 # actually upload 
                 archive_success = uploader.upload() 

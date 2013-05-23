@@ -1,4 +1,4 @@
-push metadata to pvo before show, mark "coming soon"
+ metadata to pvo before show, mark "coming soon"
   this will allow presenters to review.
 
 client checklist:
@@ -37,15 +37,18 @@ veyepar:
       put top 4 sows on the client page, 
       link to stats.
   
-  mk_cuts - look at previous episode, 
+  views.mk_cuts - look at previous episode, 
     if it ran late, assume current ran late too.
 
   chrome doesn't play ogv maybe? figure out what file formats to use for thumbs.  maybe now it does.
   how to keep it from being so agressive about buffering if Play isn't hit 
 
   store images of recording sheets
+
   next/prev (match recording sheet: same room/day)
+
   split long talk (tutorials) into parts.
+
   error handeling:
       log error, continue with next episode. 
       encode errors:   
@@ -103,6 +106,12 @@ model:
   child table of output files
     mp4, ogv, mp3, facc...
     text: irc logs, transcript, tweets
+
+  change duration from "hh:mm:ss" to float(sec)
+  
+  BuckID / Richard Category
+    Sometimes this is per client, sometimes per show.
+    thought: one field in each, if Show blank, look to client.
 
 walpaper 
   logos:

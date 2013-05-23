@@ -245,6 +245,11 @@ class Episode(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_minutes(self):
+        delta = self.end - self.start
+        minutes = delta.days*60*24 + delta.seconds/60.0
+        return minutes
+
     class Meta:
         ordering = ["sequence"]
 

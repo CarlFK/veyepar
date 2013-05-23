@@ -36,10 +36,12 @@ import sys
 class Uploader(object):
 
     # input attributes:
-    pathname = ''
-    upload_user = ''
-    bucket_id = ""
-    key_id = ""
+    pathname = ''  # path to video file to upload`
+
+    upload_user = '' # key to lookup user/pw in pw.py
+    bucket_id = "" # archive/s3 butcket - There is some limit on size?
+    key_id = "" # slug used to make URL
+
     debug_mode = False
 
     # return attributes:
@@ -87,13 +89,17 @@ if __name__ == '__main__':
     # connection.create_bucket('codersquid.testvideos', headers={'x-archive-meta-collection':'opensource_movies'})
 
     u = Uploader()
-    u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4'
     u.pathname = '/home/carl/cr.mpeg'
+    u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4'
+    u.pathname = '/home/carl/mnt/mx04/Videos/veyepar/troy/nodepdx2013/mp4/ship_it.mp4'
+
     u.upload_user = 'ndv'
     # u.upload_user = 'cfkarsten'
     # u.bucket_id = 'nextdayvideo.test'
-    u.bucket_id = 'nextdayvideo'
-    u.key_id='computereach'
+    u.bucket_id = 'nodepdx2013conference'
+    # u.key_id='test'
+
+    u.key_id='shipit.mp4'
     u.debug_mode = False ## drops to a >>> prompt after upload
 
     ret = u.upload()

@@ -124,8 +124,11 @@ post_yt.py - sends to youtube (and archive.. eww, terible hack.)
 post_blip.py - posts to blip.tv, 
 pw.py holds user/passwords, not checked in, make one from pw_samp.py
 
+add_to_richard.py - adds video url's to landing page
 
+email_url.py - emails presenter the richard URL again, this time encouraging them to advertise the URL to their social network, or report back any problmes they see.
 
+mk_public.py - changes state from draft/hidden to public in youtube and richard
 
 12. tweet 
 tweet.py
