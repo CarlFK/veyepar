@@ -33,6 +33,29 @@ import boto.s3.connection
 
 import sys
 
+"""
+# bucket creation code
+
+def get_connection(access, secret, host='s3.us.archive.org'):
+    connection = boto.connect_s3(
+            access,
+            secret,
+            host=host,
+            is_secure=False,
+            calling_format=boto.s3.connection.OrdinaryCallingFormat())
+    return connection
+def make_bucket_for_show(conn):
+    headers = {
+            'x-archive-meta-mediatype':'movies',
+            'x-archive-meta-collection':'opensource_movies',
+            'x-archive-meta-year':'2013',
+            'x-archive-meta-subject':'node.js;conference',
+            'x-archive-meta-licenseurl':'http://creativecommons.org/licenses/by/3.0/us/',
+            'x-archive-meta-description':'The <a href=http://nodepdx.org/>nodepdx</a> 2013 conference'
+    }
+    return conn.create_bucket('nodepdx2013conference', headers=headers)
+"""
+
 class Uploader(object):
 
     # input attributes:
