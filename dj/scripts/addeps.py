@@ -75,6 +75,7 @@ import pprint
 from django.utils.html import strip_tags
 from django.template.defaultfilters import slugify
 
+
 import fixunicode
 
 try:
@@ -193,7 +194,7 @@ class add_eps(process.process):
 
         print "keys match 1:1"
         print [k for k in v_keys if k in s_keys]
-        print "stray cats"
+
         for k in [k for k in v_keys if k not in s_keys]:
             print "('%s','')," % k
         print
@@ -202,6 +203,15 @@ class add_eps(process.process):
             k2 = k if k in s_keys else ''
             print "('%s','%s')," % (k2,k)
         print
+ 
+        # lines to mix n match in the editor
+        for k in s_keys:
+            print "('%s'," % (k,)
+        print
+        for k in v_keys:
+            print "'%s')," % k
+        print
+
 
         return
 
@@ -294,10 +304,10 @@ class add_eps(process.process):
                 'name', 'authors', 
                 'emails', 
                 'description',
-                # 'start','duration', 
-                # 'released', 
+                'start','duration', 
+                'released', 
                 # 'license', 
-                # 'conf_url', 'tags'
+                'conf_url', 'tags'
                 )
 
         if self.options.test:
@@ -1092,7 +1102,62 @@ class add_eps(process.process):
         self.add_eps(events, show)
         return 
 
+    def ictev_2013(self, schedule, show):
+        field_maps = [
+            ('Room', 'location'),
+            ('Title', 'name'),
+            ('Timestamp', 'start'),
+            ('Nid', 'conf_key'),
+            ('Presenter', 'authors'),
+            ('Keywords', 'tags'),
+            ('Link', 'conf_url'),
+            ('Duration', 'duration'),
+            ('Description', 'description'),
+           ]
+
+            # ('Day',
+            # ('Time', 'start'),
+# 'emails'),
+# 'released'),
+# 'license'),
+# 'host_url'),
+
+        events = self.generic_events(schedule, field_maps)
+
+        rooms = set(row['location'] for row in events)
+        self.add_rooms(rooms,show)
+
+        html_parser = HTMLParser.HTMLParser()
+
+        for event in events: 
+
+            event['conf_key'] = event['conf_key'].split('</a>')[0].split('>')[1]
+ 
+            event['name'] = html_parser.unescape(strip_tags( event['name'] ))
+
+            event['start'] = datetime.datetime.fromtimestamp( 
+                int(event['start'])) + datetime.timedelta(hours=14)
+
+            event['duration'] = "00:%s:00" % ( event['duration'], )
+
+            event['conf_url'] = strip_tags(event['conf_url'])
+
+            # Bogus, but needed to pass
+            event['license'] =  ''
+            event['emails'] =  ''
+            event['released'] =  True
+
+            event['tags'] = "" # strip_tags( event['tags'])
+            # pprint.pprint(event)
+
+        self.add_eps(events, show)
+
+        return 
+
+
     def ictev(self, schedule, show):
+        print "ictev"
+
         # drupal down under 2012
         rooms = self.get_rooms(schedule, "Room", )
         self.add_rooms(rooms,show)
@@ -1138,6 +1203,24 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
         return 
+
+    def unfold_origami_unicorn(self, schedule):
+        # dig out the data from  
+        # {'phpcode_2':{label: "Duration", content: "45"}
+
+        ret_rows = []
+        for s in schedule:
+            row = {}
+            for k in s:
+                v = s[k]
+                field_name = v['label']
+                value = v['content']
+                print "#1", field_name, value
+                row[field_name] = value
+            pprint.pprint(row)
+            ret_rows.append(row)    
+
+        return ret_rows
 
 
     def ddu(self, schedule, show):
@@ -1797,6 +1880,8 @@ class add_eps(process.process):
             'flourish_2012': "http://flourishconf.com/2012/schedule_json.php",
             'chipy_may2012': "http://72.14.188.25:8095/meetings/1/topics.json",
             'ictev_2012': "http://ictev.vic.edu.au/program/2012/json",
+            # 'ictev_2013': "http://ictev.vic.edu.au/program/2013/json",
+            'ictev_2013': "file://schedules/ictev2013.json",
             # 'scipy_2012_v1': "file://scipy_talks.json",
             # 'scipy_2012_v2': "http://conference.scipy.org/scipy2012/talks/test.php",
             # 'scipy_2012': "http://conference.scipy.org/scipy2012/talks/schedule_json.php",
@@ -1826,7 +1911,9 @@ class add_eps(process.process):
 
         if url.startswith('file'):
             f = open(url[7:])
-            schedule = json.load(f)
+            j = f.read()
+            # schedule = json.load(f)
+            schedule = json.loads(j)
         else:
             session = requests.session()
 
@@ -1850,8 +1937,8 @@ class add_eps(process.process):
                 return self.fosdem2012(schedule,show)
             else:
                 j = response.text
-                schedule = response.json
-                # schedule = response.json()
+                # schedule = response.json
+                schedule = response.json()
                 # if it is a python prety printed list:
                 # schedule = eval(j)
 
@@ -1956,6 +2043,17 @@ class add_eps(process.process):
             # pprint.pprint( schedule )
 
             return self.ictev(schedule,show)
+
+        if self.options.show == 'ictev_2013':
+            # some drupal thing
+            # 'ictev_2013': "http://ictev.vic.edu.au/program/2013/json",
+
+            schedule =  self.unfold_origami_unicorn( schedule )
+            # pprint.pprint( schedule )
+            # return self.dump_keys(schedule)
+
+            return self.ictev_2013(schedule,show)
+
 
 
         if url.endswith('program/session-schedule/json'):

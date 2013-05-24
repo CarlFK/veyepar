@@ -324,6 +324,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
                 # location__name='Cartoon 2'
                 # ).order_by('location','start')
 
+    print "#1", episodes
     for ep in episodes:
         print ep.location
 

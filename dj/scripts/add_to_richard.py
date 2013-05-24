@@ -19,8 +19,8 @@ import pw
 
 class RichardProcess(Process):
 
-    # ready_state = 5
-    ready_state = None
+    ready_state = 5
+    # ready_state = None
 
     # pyvideo categories are either Show.name or Client.name
     # chipy is an example of something that uses the Client.name.
@@ -91,6 +91,7 @@ class RichardProcess(Process):
                 vid_id = ep.public_url.split('/video/')[1].split('/')[0]
                 print 'updating episode in pyvideo', ep.public_url, vid_id
                 ret = self.update_pyvideo(vid_id, video_data)
+                ret = True
             else:
                 self.pvo_url = self.create_pyvideo(video_data)
                 print 'new pyvideo url', self.pvo_url
@@ -166,6 +167,7 @@ class RichardProcess(Process):
         # maybe this should go into archive_uploader.py ?
         o = urlparse(ep.archive_mp4_url)
         mp4url = "%(scheme)s://%(netloc)s%(path)s" % o._asdict()
+
         video_data = {
             'state': state,
             'title': ep.name,
