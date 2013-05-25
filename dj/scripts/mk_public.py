@@ -41,16 +41,13 @@ class mk_public(process):
         video_data = get_content(response)
         video_data['state'] = 1
 
-        pprint.pprint(video_data)
-
-
         try: 
             update_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], vid_id, video_data)
         except MissingRequiredData, e:
             import code
             code.interact(local=locals())
 
-        return 
+        return True
 
     def up_youtube(self, ep):
 
@@ -67,6 +64,7 @@ class mk_public(process):
             attributes={'action':'list','permission':'allowed'})]
 
         updated_entry = yt_service.UpdateVideoEntry(new_entry) 
+
         return True
 
 
@@ -75,10 +73,11 @@ class mk_public(process):
         # set youtube to public
         # set pyvideo state to live
  
-        ret = True
-        if ep.show.slug == "write_the_docs_2013" or self.up_richard(ep):
-        # if self.up_richard(ep):
+        ret = False
+        if self.up_richard(ep):
+            if self.options.verbose: print "Richard public...."
             if self.up_youtube(ep):
+                if self.options.verbose: print "and Youtube public."
                 ret = True
 
         return ret
