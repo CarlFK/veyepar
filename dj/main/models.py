@@ -174,7 +174,7 @@ class Episode(models.Model):
         help_text="(calculated if start and duration are set.)")
     name = models.CharField(max_length=170, 
         help_text="Talk title (synced from primary source)")
-    slug = models.CharField(max_length=135,
+    slug = models.CharField(max_length=135, blank=True,
         help_text="file name friendly version of name")
     released = models.NullBooleanField(null=True,blank=True,
         help_text="has someone authorised pubication")

@@ -86,6 +86,8 @@ class tweet(process):
         # prefix = "#%s #VIDEO" % show.slug
         if client.slug=="eric":
             prefix = "#writethedocs"
+        elif client.slug=="troy":
+            prefix = "#nodePDX"
         else:
             prefix = "#%s" % show.slug
 

@@ -34,7 +34,6 @@ import operator
 from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List,Raw_File
-from main.models import fnify
 from main.models import STATES, ANN_STATES
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep
 

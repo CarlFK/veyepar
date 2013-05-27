@@ -28,7 +28,10 @@ class post(process):
     show = ep.show
     client = show.client
 
-    descriptions = [ep.authors, ep.description, show.description, client.description]
+    descriptions = [ep.authors, 
+            ep.public_url, ep.conf_url,
+            ep.description, 
+            show.description, client.description]
     descriptions = [d for d in descriptions if d]
     description = "\n".join(descriptions)
     # description = "<br/>\n".join(description.split('\n'))
@@ -133,27 +136,28 @@ class post(process):
                     # if client.host_user 
                     # else pw.host.keys()[0]
 
+    youtube_success = False
+    archive_success = False
+
+    uploader = youtube_uploader.Uploader()
+
+    uploader.user = host_user
+    uploader.files = files
+    uploader.thumb = thumb
+    uploader.meta = meta
+    uploader.private = private
+
+    uploader.old_url = ep.host_url # for replacing.
+ 
     if self.options.test:
         print 'test mode:'
         print 'files %s' % files
         print 'meta %s' % meta
         print 'thumb %s' % thumb
-        print
+        print 'skipping youtube_upoad uploader.upload()'
 
     else:
-        archive_success = False
-        youtube_success = False
-   
-        uploader = youtube_uploader.Uploader()
-
-        uploader.user = host_user
-        uploader.files = files
-        uploader.thumb = thumb
-        uploader.meta = meta
-        uploader.private = private
-
-        uploader.old_url = ep.host_url # for replacing.
-     
+    
         # down to next layer of code that will do the uplaading 
         youtube_success = uploader.upload()
         # youtube_success = True
@@ -169,37 +173,48 @@ class post(process):
             self.last_url = uploader.new_url
             ep.host_url = self.last_url
 
-            # shim to upload to archive.org too.. yuck.
-            uploader = archive_uploader.Uploader()
-
-            uploader.upload_user = host_user
-            uploader.bucket_id = pw.archive[host_user]['bucket_id']
-
-            for f in files:
-
-                uploader.pathname = f['pathname']
-                uploader.key_id = "%s.%s" % ( ep.slug[:30], f['ext'] )
-                # uploader.key_id = "%s/%s/%s.%s" % ( 
-                #        client.slug, show.slug, ep.slug[:30], f['ext'])
-
-                # actually upload 
-                archive_success = uploader.upload() 
-                if archive_success:
-                    if self.options.verbose: print uploader.new_url
-                    # this is pretty gross.
-                    # store the archive url
-                    if f['ext'] == "mp4":
-                        ep.archive_mp4_url = uploader.new_url
-                    elif f['ext'] == "ogv":
-                        ep.archive_ogv_url = uploader.new_url
-
-                    self.archive_url = uploader.new_url # hook for tests so that it can be browsed
-
-                else:
-                    print "internet archive error!"
-
         else:
             print "youtube error! zomg"
+
+    # upload to archive.org too.. yuck.
+    # this should be in post_arc.py, but 
+    # but I don't want 2 processes uploading at the same time.
+    # bcause bandwidth? 
+
+    uploader = archive_uploader.Uploader()
+
+    uploader.upload_user = host_user
+    uploader.bucket_id = pw.archive[host_user]['bucket_id']
+
+    for f in files:
+
+        uploader.pathname = f['pathname']
+        uploader.key_id = "%s.%s" % ( ep.slug[:30], f['ext'] )
+        # uploader.key_id = "%s/%s/%s.%s" % ( 
+        #        client.slug, show.slug, ep.slug[:30], f['ext'])
+
+        # actually upload 
+
+        if self.options.test:
+            print 'test mode...'
+            print 'skipping archive_uploader .upload()'
+
+        else:
+
+            archive_success = uploader.upload() 
+            if archive_success:
+                if self.options.verbose: print uploader.new_url
+                # this is pretty gross.
+                # store the archive url
+                if f['ext'] == "mp4":
+                    ep.archive_mp4_url = uploader.new_url
+                elif f['ext'] == "ogv":
+                    ep.archive_ogv_url = uploader.new_url
+
+                self.archive_url = uploader.new_url # hook for tests so that it can be browsed
+
+            else:
+                print "internet archive error!"
 
         # tring to fix the db timeout problem
         # ep=Episode.objects.get(pk=ep.id)

@@ -4,13 +4,18 @@
 # caled from post_arc.py 
 # that is a lie.  it is really called from post_yt.py.  
 
-# which someday will be jsut post.py with a arc parameter.
+
+import sys
+import pprint
+
+import boto
+import boto.s3.connection
 
 import progressbar
+
 from youtube_uploader import widgets
 from youtube_uploader import progress
 from youtube_uploader import ProgressFile
-
 
 import pw
 # pw.py looks like this:
@@ -28,33 +33,44 @@ archive={
 # http://archive.org/catalog.php?history=1&identifier=nextdayvideo.test
 # http://archive.org/details/nextdayvideo.test/foobar 
 
-import boto
-import boto.s3.connection
 
-import sys
 
-"""
-# bucket creation code
+def auth(upload_user):
 
-def get_connection(access, secret, host='s3.us.archive.org'):
-    connection = boto.connect_s3(
-            access,
-            secret,
-            host=host,
-            is_secure=False,
+    auth = pw.archive[upload_user]
+    connection = boto.connect_s3( auth['access'], auth['secret'], 
+            host='s3.us.archive.org', is_secure=False, 
             calling_format=boto.s3.connection.OrdinaryCallingFormat())
+
     return connection
-def make_bucket_for_show(conn):
+
+
+def make_bucket(conn, bucket_id, meta):
+
     headers = {
             'x-archive-meta-mediatype':'movies',
             'x-archive-meta-collection':'opensource_movies',
-            'x-archive-meta-year':'2013',
-            'x-archive-meta-subject':'node.js;conference',
-            'x-archive-meta-licenseurl':'http://creativecommons.org/licenses/by/3.0/us/',
-            'x-archive-meta-description':'The <a href=http://nodepdx.org/>nodepdx</a> 2013 conference'
+            'x-archive-meta-year':meta['year'],
+            'x-archive-meta-subject':meta['subject'],
+            'x-archive-meta-licenseurl':meta['licenseurl'],
+            'x-archive-meta-description':meta['description'],
     }
-    return conn.create_bucket('nodepdx2013conference', headers=headers)
-"""
+
+    # print conn, bucket_id
+    # pprint.pprint(headers)
+    return conn.create_bucket(bucket_id, headers=headers)
+
+def hacky_test():
+
+    meta = {
+            'year':'2013',
+            'subject':"PS:One;hackerspace",
+            'licenseurl':'http://creativecommons.org/licenses/by/3.0/us/',
+            'description':"<a href=http://pumpingstationone.org>Pumping Station One</a> is a hackerspace located in Chicago. Its mission is to foster a collaborative environment wherein people can explore and create intersections between technology, science, art, and culture."
+    }
+
+    conn =  auth("cfkarsten")
+    print make_bucket(conn, "ndvps1", meta)
 
 class Uploader(object):
 
@@ -70,15 +86,6 @@ class Uploader(object):
     # return attributes:
     ret_text = ''
     new_url = ''
-
-    def auth(self):
-
-        auth = pw.archive[self.upload_user]
-        connection = boto.connect_s3( auth['access'], auth['secret'], 
-                host='s3.us.archive.org', is_secure=False, 
-                calling_format=boto.s3.connection.OrdinaryCallingFormat())
-
-        return connection
 
     def upload(self):
 

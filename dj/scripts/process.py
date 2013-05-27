@@ -228,8 +228,10 @@ class process(object):
                 # huh?!  
                 # so..  ummm... 
                 # 1. you can't bump None
-                # 2. if it wasn't forced:, bump.
+                # 2. don't bump when in test mode
+                # 3. if it wasn't forced:, bump.
                 if self.ready_state is not None \
+                        and not self.options.test \
                         and not self.options.force:
                     # bump state
                     ep.state += 1
