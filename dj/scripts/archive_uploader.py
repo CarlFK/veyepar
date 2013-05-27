@@ -89,8 +89,7 @@ class Uploader(object):
 
     def upload(self):
 
-        service = self.auth()
-        # bucket = service.create_bucket(self.bucket_id)
+        service = auth(self.upload_user)
         bucket = service.get_bucket(self.bucket_id)
         key = boto.s3.key.Key(bucket)
         key.key = self.key_id

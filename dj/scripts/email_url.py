@@ -13,6 +13,7 @@ class email_url(process):
 
     def process_ep(self, ep):
         if self.options.verbose: print ep
+
         url = ep.public_url or ep.host_url
         if ep.emails and ep.released and url:
             tos = ep.emails.split(',')

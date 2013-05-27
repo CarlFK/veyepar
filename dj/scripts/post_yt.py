@@ -151,6 +151,7 @@ class post(process):
  
     if self.options.test:
         print 'test mode:'
+        print "user key:", host_user
         print 'files %s' % files
         print 'meta %s' % meta
         print 'thumb %s' % thumb
