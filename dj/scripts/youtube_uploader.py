@@ -7,6 +7,8 @@
 # http://code.google.com/apis/youtube/1.0/developers_guide_python.html
 # http://code.google.com/apis/youtube/2.0/reference.html
 
+from urlparse import urlparse, parse_qs
+
 import gdata.media
 import gdata.geo
 import gdata.youtube
@@ -108,6 +110,29 @@ class Uploader(object):
 
         return yt_service
        
+    def get_id_from_url(self, url):
+        o = urlparse(url)
+        q = parse_qs(o.query)
+        id = q['v'][0]
+        return id
+
+    def set_permission(self, url, permission="allowed" ):
+
+        yt_service = self.auth()
+
+        id = self.get_id_from_url(url)
+        uri= 'http://gdata.youtube.com/feeds/api/users/default/uploads/%s' % (id,)
+        entry=yt_service.GetYouTubeVideoEntry(uri=uri)
+
+        entry.extension_elements = [ExtensionElement('accessControl',
+            namespace=YOUTUBE_NAMESPACE,
+            attributes={'action':'list','permission':permission})]
+
+        updated_entry = yt_service.UpdateVideoEntry(entry) 
+
+        return True
+
+
     def media_group(self):
         # prepare a media group object to hold our video's meta-data
 
@@ -154,9 +179,12 @@ class Uploader(object):
         yt_service = self.auth()
 
         if self.unlisted:
-            acl = [ExtensionElement('accessControl',namespace=YOUTUBE_NAMESPACE,attributes={'action':'list','permission':'denied'})]
+            acl = [ExtensionElement(
+                'accessControl',namespace=YOUTUBE_NAMESPACE,
+                attributes={'action':'list','permission':'denied'})]
         else:
             acl = []
+
         video_entry = gdata.youtube.YouTubeVideoEntry(
                 media=self.media_group(), extension_elements=acl)
 

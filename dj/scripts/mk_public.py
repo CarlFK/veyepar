@@ -30,20 +30,23 @@ class mk_public(process):
 
     def up_richard(self, ep):
 
-        self.host = pw.richard[self.options.host_user]
-        self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
-        self.api = API(self.pyvideo_endpoint)
+        host = pw.richard[self.options.host_user]
+        endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
+        api = API(endpoint)
 
-        vid_id = ep.public_url.split('/video/')[1].split('/')[0]
+        vid = ep.public_url.split('/video/')[1].split('/')[0]
 
-        response = self.api.video(vid_id).get(username=self.host['user'], api_key=self.host['api_key'])
+        response = api.video(vid).get(
+                username=host['user'], api_key=host['api_key'])
 
         video_data = get_content(response)
         video_data['state'] = 1
 
         try: 
-            update_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], vid_id, video_data)
+            update_video(endpoint, host['user'], host['api_key'], 
+                    vid, video_data)
         except MissingRequiredData, e:
+            # this shouldn't happen, prolly debugging something.
             import code
             code.interact(local=locals())
 
@@ -53,32 +56,21 @@ class mk_public(process):
 
         uploader = youtube_uploader.Uploader()
         uploader.user = self.options.host_user
-        yt_service = uploader.auth()
-
-        id = ep.host_url.split('=')[1]
-        uri= 'http://gdata.youtube.com/feeds/api/users/default/uploads/%s' % (id,)
-        new_entry=yt_service.GetYouTubeVideoEntry(uri=uri)
-
-        new_entry.extension_elements = [ExtensionElement('accessControl',
-            namespace=YOUTUBE_NAMESPACE,
-            attributes={'action':'list','permission':'allowed'})]
-
-        updated_entry = yt_service.UpdateVideoEntry(new_entry) 
-
-        return True
-
+        return uploader.set_permission( ep.host_url )
 
     def process_ep(self, ep):
         if self.options.verbose: print ep.id, ep.name
         # set youtube to public
-        # set pyvideo state to live
+        # set richard state to live
  
-        ret = False
-        if self.up_richard(ep):
-            if self.options.verbose: print "Richard public...."
-            if self.up_youtube(ep):
-                if self.options.verbose: print "and Youtube public."
-                ret = True
+        ret = True  # if something breaks, this will be false
+        if ep.public_url:
+            ret = ret and self.up_richard(ep)
+            if self.options.verbose: print "Richard public."
+
+        if ep.host_url:
+            ret = ret and self.up_youtube(ep)
+            if self.options.verbose: print "Youtube public."
 
         return ret
 
