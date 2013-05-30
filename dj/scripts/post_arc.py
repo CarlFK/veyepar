@@ -5,11 +5,32 @@
 import archive_uploader
 
 import os
+import datetime
 
 import pw
 from process import process
 
-from main.models import Show, Location, Episode, Raw_File, Cut_List
+from main.models import Client
+
+def make_bucket(client_slug):
+
+    client = Client.objects.get(slug=client_slug)
+
+    bucket_id = client.bucket_id
+    meta = { 
+            'year':str(datetime.datetime.now().year),
+            'subject':client.tags,
+            'description':client.description,
+            'licenseurl':'http://creativecommons.org/licenses/by/3.0/us/',
+    }   
+
+    conn =  archive_uploader.auth(client.archive_id)
+
+    # print (conn, bucket_id, meta)
+    print archive_uploader.make_bucket(conn, bucket_id, meta)
+
+    return 
+
 
 class post(process):
 

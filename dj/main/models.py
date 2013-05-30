@@ -29,25 +29,44 @@ class Client(models.Model):
     active = models.BooleanField(help_text="Turn off to hide from UI.")
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
-    tags = models.TextField(null=True,blank=True,)
+    contacts = models.CharField(max_length=30, blank=True, 
+        help_text='emails of people putting on the event.')
+
     description = models.TextField(blank=True)
+    tags = models.TextField(null=True,blank=True,)
+    tweet_prefix = models.CharField(max_length=30, blank=True, null=True)
+    bucket_id = models.CharField(max_length=30, blank=True, null=True)
+
+    # video encoding 
+    title_svg = models.CharField(max_length=30, blank=True, null=True,
+        help_text='template for event/title/authors')
     preroll = models.CharField(max_length=135, blank=True, 
         help_text="name of video to prepend (not implemented)")
     postroll = models.CharField(max_length=135, blank=True,
         help_text="name of video to postpend (not implemented)")
-    host_user = models.CharField(max_length=30, blank=True, null=True)
-    tweet_prefix = models.CharField(max_length=30, blank=True, null=True)
-    title_svg = models.CharField(max_length=30, blank=True, null=True,
-        help_text='template for event/title/authors')
     credits = models.CharField(max_length=30, blank=True, 
         help_text='template for ending credits')
-    contacts = models.CharField(max_length=30, blank=True, 
-        help_text='emails of people putting on the event.')
+
+    # accounts to post to
+    host_user = models.CharField(max_length=30, blank=True, null=True,
+            help_text = "depricated - do not use.")
+
+    youtube_id = models.CharField(max_length=10, blank=True, null=True,
+            help_text = "key to lookup user/pw/etc from pw store" )
+    archive_id = models.CharField(max_length=10, blank=True, null=True)
+    vimeo_id = models.CharField(max_length=10, blank=True, null=True)
+    blip_id = models.CharField(max_length=10, blank=True, null=True)
+    richard_id = models.CharField(max_length=10, blank=True, null=True)
+    email_id = models.CharField(max_length=10, blank=True, null=True)
+    tweet_id = models.CharField(max_length=10, blank=True, null=True)
+
     def __unicode__(self):
         return self.name
+
     @models.permalink
     def get_absolute_url(self):
         return ('client', [self.slug,])
+
     class Meta:
         ordering = ["sequence"]
 
