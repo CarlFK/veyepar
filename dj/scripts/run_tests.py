@@ -104,8 +104,10 @@ class Run_Tests(object):
            'audio_frames':frames}
        if i%2:
            parms['audio-track'] = "-producer noise"
+           parms['bgcolour'] = "red"
        else:
            parms['audio-track'] = "static/goforward.wav" 
+           parms['bgcolour'] = "blue"
 
        print parms
 
@@ -125,7 +127,7 @@ class Run_Tests(object):
        cmd = "melt \
 -profile %(format)s \
  -audio-track %(audio-track)s out=%(audio_frames)s \
- -video-track %(input_file)s out=%(video_frames)s \
+ -video-track %(input_file)s bgcolour=%(bgcolour)s out=%(video_frames)s \
 meta.attr.titles=1 \
 meta.attr.titles.markup=#timecode# \
 -attach data_show dynamic=1 \
@@ -470,7 +472,7 @@ def main():
     # t.make_test_user()
     # t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    # t.make_source_dvs()
+    t.make_source_dvs()
     # t.make_source_footer()
     # t.add_dv()
     # t.make_thumbs()

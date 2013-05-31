@@ -47,7 +47,7 @@ class Client(models.Model):
     credits = models.CharField(max_length=30, blank=True, 
         help_text='template for ending credits')
 
-    # accounts to post to
+    # remote accounts to post to
     host_user = models.CharField(max_length=30, blank=True, null=True,
             help_text = "depricated - do not use.")
 

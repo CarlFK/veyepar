@@ -19,14 +19,14 @@ def make_bucket(client_slug):
     bucket_id = client.bucket_id
     meta = { 
             'year':str(datetime.datetime.now().year),
-            'subject':client.tags,
+            'subject':";".join(client.tags.split()),
             'description':client.description,
             'licenseurl':'http://creativecommons.org/licenses/by/3.0/us/',
     }   
 
     conn =  archive_uploader.auth(client.archive_id)
 
-    # print (conn, bucket_id, meta)
+    print (conn, bucket_id, meta)
     print archive_uploader.make_bucket(conn, bucket_id, meta)
 
     return 

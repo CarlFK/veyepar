@@ -51,7 +51,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             'state',
             'name', 
             'archive_mp4_url',
-            'public_url',
+            'host_url',
 )
 
        

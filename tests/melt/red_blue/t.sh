@@ -6,7 +6,7 @@ melt -verbose \
  -producer noise \
  out=30 \
  -video-track \
- source.txt \
+ $0 \
  out=30 \
  meta.attr.titles=1 \
  meta.attr.titles.markup=#timecode# \

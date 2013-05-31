@@ -77,7 +77,7 @@ class Uploader(object):
     # input attributes:
     pathname = ''  # path to video file to upload`
 
-    upload_user = '' # key to lookup user/pw in pw.py
+    user = '' # key to lookup user/pw in pw.py
     bucket_id = "" # archive/s3 butcket - There is some limit on size?
     key_id = "" # slug used to make URL
 
@@ -89,7 +89,7 @@ class Uploader(object):
 
     def upload(self):
 
-        service = auth(self.upload_user)
+        service = auth(self.user)
         bucket = service.get_bucket(self.bucket_id)
         key = boto.s3.key.Key(bucket)
         key.key = self.key_id
@@ -122,13 +122,14 @@ if __name__ == '__main__':
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4'
     u.pathname = '/home/carl/mnt/mx04/Videos/veyepar/troy/nodepdx2013/mp4/ship_it.mp4'
 
-    u.upload_user = 'ndv'
-    # u.upload_user = 'cfkarsten'
-    # u.bucket_id = 'nextdayvideo.test'
-    u.bucket_id = 'nodepdx2013conference'
+    u.user = 'ndv'
+    # u.user = 'cfkarsten'
+    u.bucket_id = 'nextdayvideo.test'
+    # u.bucket_id = 'nodepdx2013conference'
     # u.key_id='test'
 
-    u.key_id='shipit.mp4'
+    # u.key_id='shipit.mp4'
+    u.key_id='test.mp4'
     u.debug_mode = False ## drops to a >>> prompt after upload
 
     ret = u.upload()

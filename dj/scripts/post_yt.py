@@ -15,7 +15,8 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 
 class post(process):
 
-  ready_state = 4
+  # ready_state = 4
+  ready_state = None
 
   def process_ep(self, ep):
     if self.options.verbose: print ep.id, ep.name
@@ -106,13 +107,17 @@ class post(process):
     files = []
     for ext in self.options.upload_formats:
         src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
-        files.append({'ext':ext,'pathname':src_pathname})
+        if os.path.exists(src_pathname):
+            files.append({'ext':ext,'pathname':src_pathname})
+        else:
+            # crapy place to abort, but meh, works for now.
+            return False
 
     if self.options.debug_log:
 
         # put the mlt and .sh stuff into the log 
         # blip and firefox want it to be xml, so jump though some hoops
-        log = "<log>\n"
+        eog = "<log>\n"
         mlt_pathname = os.path.join( self.show_dir, 'tmp', "%s.mlt"%(ep.slug,))
         log += open(mlt_pathname).read()
         sh_pathname = os.path.join( self.show_dir, 'tmp', "%s.sh"%(ep.slug,))
@@ -128,20 +133,13 @@ class post(process):
         files.append({'ext':'tt', 'pathname':log_pathname})
 
         
-    # look for username in [options, client, first in pw.py]
-    # password always comes from pw.py
    
-    host_user =  self.options.host_user if self.options.host_user \
-                    else client.host_user 
-                    # if client.host_user 
-                    # else pw.host.keys()[0]
-
     youtube_success = False
     archive_success = False
 
     uploader = youtube_uploader.Uploader()
 
-    uploader.user = host_user
+    uploader.user = client.youtube_id
     uploader.files = files
     uploader.thumb = thumb
     uploader.meta = meta
@@ -149,9 +147,13 @@ class post(process):
 
     uploader.old_url = ep.host_url # for replacing.
  
-    if self.options.test:
+    if ep.host_url:
+        print "skipping youtube, already there."
+        youtube_success = True
+
+    elif self.options.test:
         print 'test mode:'
-        print "user key:", host_user
+        print "user key:", uploader.user
         print 'files %s' % files
         print 'meta %s' % meta
         print 'thumb %s' % thumb
@@ -184,8 +186,8 @@ class post(process):
 
     uploader = archive_uploader.Uploader()
 
-    uploader.upload_user = host_user
-    uploader.bucket_id = pw.archive[host_user]['bucket_id']
+    uploader.user = client.archive_id
+    uploader.bucket_id = client.bucket_id
 
     for f in files:
 
@@ -196,7 +198,11 @@ class post(process):
 
         # actually upload 
 
-        if self.options.test:
+        if ep.archive_mp4_url:
+            print "skipping archive, already there."
+            archive_success = True
+
+        elif self.options.test:
             print 'test mode...'
             print 'skipping archive_uploader .upload()'
 
