@@ -15,8 +15,7 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 
 class post(process):
 
-  # ready_state = 4
-  ready_state = None
+  ready_state = 4
 
   def process_ep(self, ep):
     if self.options.verbose: print ep.id, ep.name
@@ -147,17 +146,17 @@ class post(process):
 
     uploader.old_url = ep.host_url # for replacing.
  
-    if ep.host_url:
-        print "skipping youtube, already there."
-        youtube_success = True
-
-    elif self.options.test:
+    if self.options.test:
         print 'test mode:'
         print "user key:", uploader.user
         print 'files %s' % files
         print 'meta %s' % meta
         print 'thumb %s' % thumb
         print 'skipping youtube_upoad uploader.upload()'
+
+    # elif ep.host_url:
+    #    print "skipping youtube, already there."
+    #    youtube_success = True
 
     else:
     
@@ -198,13 +197,13 @@ class post(process):
 
         # actually upload 
 
-        if ep.archive_mp4_url:
-            print "skipping archive, already there."
-            archive_success = True
-
-        elif self.options.test:
+        if self.options.test:
             print 'test mode...'
             print 'skipping archive_uploader .upload()'
+
+        # elif ep.archive_mp4_url:
+        #    print "skipping archive, already there."
+        #    archive_success = True
 
         else:
 

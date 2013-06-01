@@ -14,7 +14,11 @@ class email_url(process):
     def process_ep(self, ep):
         if self.options.verbose: print ep
 
+        # If there is a Richard (pyvideo) url, use that;
+        #  else use the youtube url.
         url = ep.public_url or ep.host_url
+
+        # If there is a URL, email and it is released, send email
         if ep.emails and ep.released and url:
             tos = ep.emails.split(',')
             subject = "Video up: %s" % ep.name
