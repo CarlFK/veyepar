@@ -186,7 +186,7 @@ class add_eps(process.process):
             'start','duration', 
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
-            'host_url', 'publiv_url',
+            'host_url', 'public_url',
     )    
 
         # for f,g in field_maps:
@@ -306,7 +306,7 @@ class add_eps(process.process):
                 'description',
                 'start','duration', 
                 'released', 
-                # 'license', 
+                'license', 
                 'conf_url', 'tags'
                 )
 
@@ -324,9 +324,8 @@ class add_eps(process.process):
             episodes = Episode.objects.filter(
                       show=show, 
                       start__day = row['start'].day,
-                      authors=row['authors'], 
+                      conf_key=row['conf_key'], 
                       )
-                      # conf_key=row['conf_key'], 
 
             if episodes:
                 if len(episodes)>1:
@@ -347,6 +346,8 @@ class add_eps(process.process):
 
             if self.options.update:
                 if episode is None:
+                    print "adding conf_key: %(conf_key)s, name:%(name)s" % row
+
                     episode = Episode.objects.create(
                           show=show, conf_key=row['conf_key'], 
                           start=row['start'],
@@ -355,6 +356,8 @@ class add_eps(process.process):
                     episode.sequence=seq
                     episode.state=1
                     seq+=1
+                else:
+                    print "updating conf_key: %(conf_key)s, name:%(name)s" % row
 
                 episode.location=Location.objects.get(name=row['location'])
                 for f in fields:
@@ -363,8 +366,8 @@ class add_eps(process.process):
                 episode.save()
             else:
                 # this is the show diff part.
-                if episode is None:
-                    print "pk not found in db:", row['conf_key'], row['name']
+                if episode is None: print \
+                    ":%(conf_key)s not found in db, name:%(name)s" % row
 
                 else:
                     # check for diffs
@@ -768,7 +771,6 @@ class add_eps(process.process):
 
 
     def chipy_events(self, schedule ):
-        # flourish 2012
 
         # mapping of json to veyepar:
         field_maps = [ 
@@ -785,14 +787,8 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
         for event in events:
-            # print event['raw']
-            # print (event['location'], event['start'])
-            # event['conf_key'] = hash(str(event['location']) + event['start'])
-
-            print event['start']
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
-
 
             event['authors'] =  event['authors'][0]['name']
             event['emails'] =  event['emails'][0]['email']
@@ -806,7 +802,6 @@ class add_eps(process.process):
     def goth_events(self, schedule ):
         # PyGotham
 
-        # mapping of json to veyepar:
         field_maps = [ 
                 ('room_number','location'),
                 ('title','name'),
@@ -1256,6 +1251,50 @@ class add_eps(process.process):
         return 
 
 
+    def chipy_v3(self, schedule, show):
+        schedule = schedule[-2]['topics']
+
+        field_maps = [ 
+                ('description', 'description'),
+                ('title', 'name'),
+                ('start_time', 'start'),
+                ('length', 'duration'),
+                ('presentors', 'authors'),
+                ('presentors', 'emails'), 
+                ('presentors', 'released'), 
+                ('license','license'),
+                ('', 'conf_key'), 
+                ('', 'conf_url'), 
+                ('tags', 'tags'), 
+                ]
+
+        events = self.generic_events(schedule, field_maps)
+        key_ctr = 0
+        for event in events:
+            key_ctr+=1
+
+            event['conf_key'] = str(key_ctr)
+
+            event['location'] = 'room_1'
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], '%Y-%m-%dT%H:%M:%S' )
+
+            event['authors'] =  ', '.join( 
+              [a['name'] for a in  event['authors'] ])
+            event['emails'] =  ', '.join( 
+              [a['email'] for a in  event['emails'] ])
+            event['released'] = len(
+              [1 for a in event['released'] if a['release']])
+
+        rooms = set(row['location'] for row in events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+        return 
+
+
 
     def zoo(self, schedule, show):
         rooms = self.zoo_cages(schedule)
@@ -1375,7 +1414,7 @@ class add_eps(process.process):
                 ('event_key','conf_key'),
                 ('','conf_url'),
                 ('','host_url'),
-                ('','publiv_url'),
+                ('','public_url'),
             ]
 
         events = self.generic_events(schedule, field_maps)
@@ -1449,7 +1488,7 @@ class add_eps(process.process):
             ('conf_key','conf_key'),
             ('conf_url','conf_url'),
             ('','host_url'),
-            ('','publiv_url'),
+            ('','public_url'),
             ]
 
         events = self.generic_events(schedule, field_maps)
@@ -1548,7 +1587,7 @@ class add_eps(process.process):
             ('start_time','conf_key'),
             # ('web_url','conf_url'),
             # ('','host_url'),
-            # ('','publiv_url'),
+            # ('','public_url'),
             ]
 
         events = self.generic_events(schedule, field_maps)
@@ -1612,7 +1651,7 @@ class add_eps(process.process):
             ('id','conf_key'),
             ('web_url','conf_url'),
             # ('','host_url'),
-            # ('','publiv_url'),
+            # ('','public_url'),
             ]
 
 
@@ -1825,6 +1864,7 @@ class add_eps(process.process):
 # main entry point 
 
     def one_show(self, show):
+
         # url='http://us.pycon.org/2010/conference/schedule/events.json'
         # url='http://pycon-au.org/2010/conference/schedule/events.json'
         # url='http://djangocon.us/schedule/json/'
@@ -1844,30 +1884,7 @@ class add_eps(process.process):
         # url='http://djangocon.us/schedule/json/'
         # url='http://pygotham.org/talkvote/full_schedule/'
         # url='http://www.pytexas.org/2011/schedule/json/'
-
-        if self.args:
-            url = self.args[0]
-
-        elif self.options.show == "pydata_sv_2013":
-            self.pydata_2013(show)
-            return 
-
-        elif self.options.show in ['chicagowebconf2012"',
-                                    "cusec2013" , ]:
-            url = "http://%(conference)s.sched.org/api/session/export"  \
-                    % pw.sched[self.options.show]
-            payload = {
-                "api_key": pw.sched[self.options.show]['apikey'],
-                "format":"json",
-                # "fields":"name,session_type,description",
-                "strip_html":"Y",
-                "custom_data":"Y",
-                }
-            print url
-            # pprint.pprint(payload)
-
-        else:
-            url = { 
+        """
             'djangocon2011': 'http://djangocon.us/schedule/json/',
             'pygotham_2012': 'http://pygotham.org/talkvote/full_schedule/',
             'pytexas_2011': 'http://www.pytexas.org/2011/schedule/json/',
@@ -1905,18 +1922,21 @@ class add_eps(process.process):
             'nodepdx2013': 'file://schedules/nodepdx.2013.schedule.json',
             'chipy_may_2013': "http://chipy.org/api/meetings/",
             }[self.options.show]
-            payload = None
-
+            """
+ 
+        client = show.client
+        url = show.schedule_url
         if self.options.verbose: print url
 
         if url.startswith('file'):
             f = open(url[7:])
             j = f.read()
-            # schedule = json.load(f)
             schedule = json.loads(j)
         else:
+
             session = requests.session()
 
+            # auth stuff goes here, kinda.
             if self.options.show =="pyconca2012" :
                 auth = pw.addeps[self.options.show]
                 session.post('http://2012.pycon.ca/login', 
@@ -1924,34 +1944,55 @@ class add_eps(process.process):
                       'password': auth['password'], 
                       'login.submit':'required but meaningless'})
 
+            if self.options.show in ['chicagowebconf2012"',
+                                        "cusec2013" , ]:
+                payload = {
+                    "api_key": pw.sched[self.options.show]['apikey'],
+                    "format":"json",
+                    # "fields":"name,session_type,description",
+                    "strip_html":"Y",
+                    "custom_data":"Y",
+                    }
+
+            else:
+                payload = None
+
             response = session.get(url, params=payload, )
 
             if url[-4:]=='.csv':
                 schedule = list(csv.reader(f))
                 if 'desktopsummit.org' in url:
                     return self.desktopsummit(schedule,show)
+
             elif url[-4:]=='.xml':
                 import xml.etree.ElementTree
                 x = response.read()
                 schedule=xml.etree.ElementTree.XML(x)
                 return self.fosdem2012(schedule,show)
+
             else:
                 j = response.text
                 # schedule = response.json
                 schedule = response.json()
                 # if it is a python prety printed list:
+                # (pyohio 2012)
                 # schedule = eval(j)
 
         # save for later
-        # file('schedule.json','w').write(j) 
-        # j=file('schedule.json').read()
+        filename="schedule/%s_%s.json" % ( client.slug, show.slug )
+        # file(filename,'w').write(j) 
+        # j=file(filename).read()
 
         if self.options.verbose: pprint.pprint(schedule) 
+
         # if self.options.verbose: print j[:40]
         if self.options.keys: return self.dump_keys(schedule)
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.client =='chipy':
+            return self.chipy_v3(schedule,show)
 
         if self.options.show =='nodepdx2013':
             return self.nodepdx(schedule,show)
@@ -1989,13 +2030,9 @@ class add_eps(process.process):
             # scipy ver 1
             return self.scipy_v1(schedule,show)
 
-        # if self.options.show == 'chipy_june2012':
-        # if self.options.show == 'chipy_july_2012':
-        # if self.options.show == 'chipy_aug_2012':
-        # if self.options.show == 'chipy_sep_2012':
         if self.options.client == 'chipy':
             # chipy
-            return self.chipy(schedule,show)
+            return self.chipy_v1(schedule,show)
 
         if self.options.show == 'flourish_2012':
             # flourish_2012
@@ -2055,7 +2092,6 @@ class add_eps(process.process):
             return self.ictev_2013(schedule,show)
 
 
-
         if url.endswith('program/session-schedule/json'):
             # ddu 2012
             schedule = [s['session'] for s in schedule['ddu2012']]
@@ -2068,7 +2104,7 @@ class add_eps(process.process):
                 'start','duration', 
                 'released', 'license', 'tags',
                 'conf_key', 'conf_url',
-                'host_url', 'publiv_url',
+                'host_url', 'public_url',
         )    
             print [k for k in v_keys if k in s_keys]
             print [k for k in v_keys if k not in s_keys]

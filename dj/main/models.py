@@ -106,6 +106,7 @@ class Show(models.Model):
         help_text="dir name to store input files")
     tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
+    schedule_url = models.CharField(max_length=235, null=True, blank=True)
     announcement_state = models.IntegerField(null=True, blank=True,
         choices=ANN_STATES, default=ANN_STATES[1][0], )
     @property

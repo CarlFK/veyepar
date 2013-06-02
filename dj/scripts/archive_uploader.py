@@ -125,10 +125,8 @@ if __name__ == '__main__':
     u.user = 'ndv'
     # u.user = 'cfkarsten'
     u.bucket_id = 'nextdayvideo.test'
-    # u.bucket_id = 'nodepdx2013conference'
     # u.key_id='test'
 
-    # u.key_id='shipit.mp4'
     u.key_id='test.mp4'
     u.debug_mode = False ## drops to a >>> prompt after upload
 
