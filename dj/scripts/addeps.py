@@ -774,13 +774,13 @@ class add_eps(process.process):
 
         # mapping of json to veyepar:
         field_maps = [ 
-                ('description', 'description'),
+                ('id', 'conf_key'), 
                 ('title', 'name'),
-                ('start_time', 'start'),
-                ('length', 'duration'),
+                ('description', 'description'),
                 ('presentors', 'authors'),
                 ('presentors', 'emails'), 
-                ('id', 'conf_key'), 
+                ('start_time', 'start'),
+                ('length', 'duration'),
                 ('', 'conf_url'), 
                 ('', 'tags'), 
                 ]
@@ -1252,40 +1252,39 @@ class add_eps(process.process):
 
 
     def chipy_v3(self, schedule, show):
+        room = schedule[-2]['where']['name']
         schedule = schedule[-2]['topics']
 
         field_maps = [ 
-                ('description', 'description'),
+                ('id', 'conf_key'), 
                 ('title', 'name'),
-                ('start_time', 'start'),
-                ('length', 'duration'),
+                ('description', 'description'),
                 ('presentors', 'authors'),
                 ('presentors', 'emails'), 
                 ('presentors', 'released'), 
                 ('license','license'),
-                ('', 'conf_key'), 
+                ('start_time', 'start'),
+                ('length', 'duration'),
                 ('', 'conf_url'), 
-                ('tags', 'tags'), 
+                ('', 'tags'), 
                 ]
 
         events = self.generic_events(schedule, field_maps)
-        key_ctr = 0
         for event in events:
-            key_ctr+=1
 
-            event['conf_key'] = str(key_ctr)
-
-            event['location'] = 'room_1'
+            event['location'] = room
 
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['authors'] =  ', '.join( 
-              [a['name'] for a in  event['authors'] ])
+                    [ a['name'] for a in  event['authors'] ])
             event['emails'] =  ', '.join( 
-              [a['email'] for a in  event['emails'] ])
-            event['released'] = len(
-              [1 for a in event['released'] if a['release']])
+                    [ a['email'] for a in  event['emails'] ])
+            event['released'] = all( 
+                    [ a['release'] for a in event['released'] ])
+
+            event['conf_url'] = "http://www.chipy.org/"
 
         rooms = set(row['location'] for row in events)
         self.add_rooms(rooms,show)
