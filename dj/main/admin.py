@@ -7,6 +7,7 @@ from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('sequence', 'name', 'description',)
     list_display_links = ('name',)
+    list_editable = ('sequence', )
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
 admin.site.register(Client, ClientAdmin)
