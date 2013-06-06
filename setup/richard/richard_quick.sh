@@ -5,7 +5,7 @@
 
 # Example:
 # richard_quick.sh /srv/dev_pyvideo test_pyvideo 7000 anything.pyvideo.org
-# richard_quick.sh /srv/psone psone 7001 video.pumpingstationone.org
+# ./richard_quick.sh /srv/psone psone 7001 video.pumpingstationone.org
 
 SITE_ROOT="$1"
 SITE_NAME="$(basename $SITE_ROOT)"
@@ -14,24 +14,32 @@ PACKAGE_NAME="$2"
 GUNICORN_PORT="$3"
 DOMAIN_NAME="$4"
 
-if [ ! -d "$BASE_DIR" ] ; then
-    sudo mkdir -p "$BASE_DIR"
-    sudo chown -R $USER "$BASE_DIR"
+sudo apt-get install \
+    git-core \
+    nginx \
+    python-virtualenv \
+    python-psycopg2 \
+    postgresql-9.1 \
+    postgresql-client-common
+
+
+if [ ! -d "$SITE_ROOT" ] ; then
+    sudo mkdir -p "$SITE_ROOT"
+    sudo chown -R $USER "$SITE_ROOT"
 fi
 
-echo <<END_PSQL
-Make the database user:
+# Make the database user:
 sudo -u postgres createuser -P $SITE_NAME
 
-Make the database with:
+# Make the database with:
 sudo -u postgres createdb -O $SITE_NAME $SITE_NAME
 
-Fix the password if needed:
-sudo -u postgres psql -c "ALTER USER $SITE_NAME PASSWORD NEWPASSWORD"
-END_PSQL
-psql -P $PACKAGE_NAME $PACKAGE_NAME
+# Fix the password if needed:
+# sudo -u postgres psql -c "ALTER USER $SITE_NAME PASSWORD NEWPASSWORD"
 
-pushd "$BASE_DIR" >/dev/null
+psql -W $PACKAGE_NAME $PACKAGE_NAME
+
+pushd "$SITE_ROOT" >/dev/null
 git clone git://github.com/willkg/richard.git
 mkdir -p document_root/static document_root/media config templates venv
 virtualenv venv

@@ -20,7 +20,8 @@ class email_url(process):
 
         # If there is a URL, email and it is released, send email
         if ep.emails and ep.released and url:
-            tos = ep.emails.split(',')
+            # split on comma, strip spaces
+            tos = [e.strip() for e in ep.emails.split(',')]
             subject = "Video up: %s" % ep.name
             body = """
     The video of your talk is posted:

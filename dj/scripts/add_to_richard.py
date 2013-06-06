@@ -25,11 +25,9 @@ class RichardProcess(Process):
     # pyvideo categories are either Show.name or Client.name
     # chipy is an example of something that uses the Client.name.
     # pycon 2013 is an example of something that uses the Show.name.
-    # 
-    # hardcoding category until we figure out a better system
-    # category_key = self.options.pyvideo_category
-    # 'PyCon US 2013'
-
+    # it is now stored in the client table: .category_key
+    # PyCon2013 will need to be updated for 2014. 
+    # or add a field to Show, maybe.
 
     def process_ep(self, ep):
         """ adds Episode to pyvideo
@@ -45,15 +43,16 @@ class RichardProcess(Process):
             print "RichardProcess", ep.id, ep.name
             print "Show slug:", ep.show.slug, ep.show.client.name
 
-        self.host = pw.richard[self.options.host_user]
+        self.host = pw.richard[ep.show.client.richard_id]
+
         self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
         self.api = API(self.pyvideo_endpoint)
 
         if self.options.verbose: 
-            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'category_key': self.options.category_key}
+            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'category_key': ep.show.client.category_key}
 
         # FIXME using chatty hack due to problems with category handling
-        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': self.options.category_key})
+        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': ep.show.client.category_key})
         
         video_data = self.create_pyvideo_episode_dict(ep, state=2)
         # perhaps we could just update the dict based on scraped_meta
@@ -171,7 +170,7 @@ class RichardProcess(Process):
         video_data = {
             'state': state,
             'title': ep.name,
-            'category': self.options.category_key,
+            'category': ep.show.client.category_key,
             'summary': summary,
             'source_url': ep.host_url,
             'copyright_text': ep.license,
@@ -256,11 +255,6 @@ class RichardProcess(Process):
     def is_already_in_pyvideo(self, ep):
         # its truthiness implies that the video already exists in pyvideo
         return ep.public_url
-
-    def add_more_options(self, parser):
-        parser.add_option('--category-key', 
-           help="Name of category in pyvideo.org, ex 'PyCon US 2013'")
-
 
 if __name__ == '__main__':
     p = RichardProcess()

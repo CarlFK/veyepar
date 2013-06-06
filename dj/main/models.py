@@ -36,6 +36,8 @@ class Client(models.Model):
     tags = models.TextField(null=True,blank=True,)
     tweet_prefix = models.CharField(max_length=30, blank=True, null=True)
     bucket_id = models.CharField(max_length=30, blank=True, null=True)
+    category_key = models.CharField(max_length=30, blank=True, null=True,
+            help_text = "Category for Richard")
 
     # video encoding 
     title_svg = models.CharField(max_length=30, blank=True, null=True,
