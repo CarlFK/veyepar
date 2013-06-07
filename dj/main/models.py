@@ -106,6 +106,8 @@ class Show(models.Model):
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,
         help_text="dir name to store input files")
+    category_key = models.CharField(max_length=30, blank=True, null=True,
+            help_text = "Category for Richard")
     tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
     schedule_url = models.CharField(max_length=235, null=True, blank=True)
