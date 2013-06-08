@@ -9,7 +9,7 @@
 sudo apt-get --assume-yes install python-software-properties
 
 # trunk gstreamer - used for mkthumbs
-sudo apt-add-repository --yes ppa:gstreamer-developers/ppa
+# sudo apt-add-repository --yes ppa:gstreamer-developers/ppa
 
 # sunab tracks melt trunk, 
 # kxstudio has melt stable 
@@ -18,14 +18,11 @@ sudo apt-add-repository --yes ppa:gstreamer-developers/ppa
 
 # j^ theora dev ffmpeg2theora trunk
 # http://ppa.launchpad.net/j/ppa/ubuntu/dists/
-sudo apt-add-repository --yes ppa:j/ppa
-# sudo apt-add-repository 'deb http://ppa.launchpad.net/j/ppa/ubuntu maverick main'
+# sudo apt-add-repository --yes ppa:j/ppa
 
 # I think this is an another melt source.
 # sudo apt-add-repository ppa:freshmedia/ppa
 
-# sudo apt-add-repository 'deb http://packages.medibuntu.org/ '$(lsb_release -cs)' free non-free'
-# once natty is released:
 # sudo apt-add-repository 'http://packages.medibuntu.org free non-free'
 
 sudo apt-get --assume-yes update

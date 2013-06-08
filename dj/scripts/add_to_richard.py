@@ -19,15 +19,8 @@ import pw
 
 class RichardProcess(Process):
 
-    ready_state = 5
-    # ready_state = None
-
-    # pyvideo categories are either Show.name or Client.name
-    # chipy is an example of something that uses the Client.name.
-    # pycon 2013 is an example of something that uses the Show.name.
-    # it is now stored in the client table: .category_key
-    # PyCon2013 will need to be updated for 2014. 
-    # or add a field to Show, maybe.
+    # ready_state = 5
+    ready_state = None
 
     def process_ep(self, ep):
         """ adds Episode to pyvideo
@@ -43,16 +36,25 @@ class RichardProcess(Process):
             print "RichardProcess", ep.id, ep.name
             print "Show slug:", ep.show.slug, ep.show.client.name
 
+        # pyvideo categories are stored in Client and Show
+        # chipy is an example of something that uses Client,
+        # pycon 2014 and 300SoC are in Show.
+        self.category_key = ep.show.category_key \
+                or ep.show.client.category_key
+
         self.host = pw.richard[ep.show.client.richard_id]
 
         self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
         self.api = API(self.pyvideo_endpoint)
 
         if self.options.verbose: 
-            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'category_key': ep.show.client.category_key}
+            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'category_key': self.category_key}
 
         # FIXME using chatty hack due to problems with category handling
-        create_category_if_missing(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'title': ep.show.client.category_key})
+        if not self.options.test:
+            create_category_if_missing( self.pyvideo_endpoint, 
+                    self.host['user'], self.host['api_key'], 
+                    {'title': self.category_key})
         
         video_data = self.create_pyvideo_episode_dict(ep, state=2)
         # perhaps we could just update the dict based on scraped_meta
@@ -89,13 +91,18 @@ class RichardProcess(Process):
             if self.is_already_in_pyvideo(ep):
                 vid_id = ep.public_url.split('/video/')[1].split('/')[0]
                 print 'updating episode in pyvideo', ep.public_url, vid_id
-                ret = self.update_pyvideo(vid_id, video_data)
-                ret = True
+                if not self.options.test:
+                    ret = self.update_pyvideo(vid_id, video_data)
+                else: 
+                    ret = False
             else:
-                self.pvo_url = self.create_pyvideo(video_data)
-                print 'new pyvideo url', self.pvo_url
-                ep.public_url = self.pvo_url
-                ret = self.pvo_url
+                if not self.options.test:
+                    self.pvo_url = self.create_pyvideo(video_data)
+                    print 'new pyvideo url', self.pvo_url
+                    ep.public_url = self.pvo_url
+                    ret = self.pvo_url
+                else: 
+                    ret = False
 
         except Exception as exc:
             print "exc:", exc
@@ -161,16 +168,12 @@ class RichardProcess(Process):
         speakers = self.clean_pyvideo_speakers(ep)
         tags = self.clean_pyvideo_tags(ep)
         summary = self.clean_pyvideo_summary(ep)
+        mp4url = self.clean_archive_mp4_url(ep)
         
-        # strip off parameters that archive adds.
-        # maybe this should go into archive_uploader.py ?
-        o = urlparse(ep.archive_mp4_url)
-        mp4url = "%(scheme)s://%(netloc)s%(path)s" % o._asdict()
-
         video_data = {
             'state': state,
             'title': ep.name,
-            'category': ep.show.client.category_key,
+            'category': self.category_key,
             'summary': summary,
             'source_url': ep.host_url,
             'copyright_text': ep.license,
@@ -185,19 +188,36 @@ class RichardProcess(Process):
         }
         return video_data
 
+    def clean_archive_mp4_url(self, ep):
+        # strip off parameters that archive adds.
+        # maybe this should go into archive_uploader.py ?
+
+        if ep.archive_mp4_url:
+            o = urlparse(ep.archive_mp4_url)
+            mp4url = "%(scheme)s://%(netloc)s%(path)s" % o._asdict()
+        else:
+            mp4url = ""
+
+        return mp4url
+
     def clean_pyvideo_summary(self, ep):
-        # return linebreaks(urlize(force_escape(ep.description)))
+        # Richard wants markdown
+        # so if ep data is in html or somthing, convert to markdown.
+        # best to get event site to provide markdown.
+        # desc = linebreaks(urlize(force_escape(ep.description)))
         return ep.description
 
     def clean_pyvideo_speakers(self, ep):
         """ sanitize veyepar authors to create pyvideo speakers
 
-        :arg ep: Episode with authors
-        :returns: list of pyvideo speakers
+        :arg ep: Episode with authors, comma sepperated 
+        :returns: list of speakers
 
         """
         # speakers = [] if ep.authors is None else ep.authors.split(',')
-        return ep.authors.split(',') if ep.authors else []
+        speakers = ep.authors.split(',') if ep.authors else []
+        speakers = [ s.strip() for s in speakers ]
+        return speakers
 
     def clean_pyvideo_tags(self, ep):
         """ sanitize veyepar tags for use by pyvideo
@@ -212,13 +232,13 @@ class RichardProcess(Process):
             tags = ''
         else:
             tags = ep.tags.split(',')
-            tags = [t.strip() for t in tags if t not in [
-                 u'enthought', 
-                 u'scipy_2012', 
-                 u'Introductory/Intermediate',
-                 ] 
-                 and '/' not in t 
-                 and t]
+            tags = [t.strip() for t in tags 
+                    if t not in [
+                     u'enthought', u'scipy_2012', 
+                     u'Introductory/Intermediate',
+                     ] 
+                     and '/' not in t 
+                     and t]
 
         return tags
 
