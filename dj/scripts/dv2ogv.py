@@ -54,6 +54,10 @@ class mkpreview(process):
 
         return
 
+    def add_more_options(self, parser):
+        parser.add_option('-f', '--filename', default="talks.csv",
+          help='csv file' )
+
 
 if __name__=='__main__': 
     p=mkpreview()

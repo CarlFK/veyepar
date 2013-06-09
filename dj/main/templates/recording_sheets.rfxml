@@ -273,14 +273,15 @@
 		<Objects>
 			<String>
 				<expr>"NOT Released"</expr>
-				<fontcolor>(.9, .9, .9)</fontcolor>
+				<fontcolor>(.93, .93, .93)</fontcolor>
 				<FontName>'Helvetica-Bold'</FontName>
 				<fontsize>60</fontsize>
 				<height>'49.0 pt'</height>
+				<rotation>10</rotation>
 				<Show>not self.episode_released</Show>
 				<width>'415.0 pt'</width>
 				<x>'119.0 pt'</x>
-				<y>'39.0 pt'</y>
+				<y>'10.0 pt'</y>
 			</String>
 			<Rectangle>
 				<FillColor>(0.953, 0.953, 0.953)</FillColor>
@@ -485,16 +486,6 @@
 				<y>'2.7 pt'</y>
 			</String>
 			<String>
-				<expr>"[  ] late"</expr>
-				<FontColor>(.5, .5, .5)</FontColor>
-				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>10</FontSize>
-				<height>'11.0 pt'</height>
-				<width>'44.0 pt'</width>
-				<x>'124.0 pt'</x>
-				<y>'29.0 pt'</y>
-			</String>
-			<String>
 				<expr>"[  ] Sound check"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
@@ -507,8 +498,16 @@
 	</Detail>
 
 	<PageFooter>
-		<Height>23.1</Height>
+		<Height>103.8</Height>
 		<Objects>
+			<Rectangle>
+				<FillColor>(0.953, 0.953, 0.953)</FillColor>
+				<height>'18.0 pt'</height>
+				<StrokeColor>(.7, .7, .7 )</StrokeColor>
+				<width>'85.0 pt'</width>
+				<x>'452.5 pt'</x>
+				<y>'37.3 pt'</y>
+			</Rectangle>
 			<Rectangle>
 				<FillColor>(0.902, 0.902, 0.980)</FillColor>
 				<height>'16.0 pt'</height>
@@ -516,7 +515,7 @@
 				<StrokeWidth>.5</StrokeWidth>
 				<vAnchor>'bottom'</vAnchor>
 				<Width>self.Bands["pageHeader"]["Width"]</Width>
-				<y>'4.0 pt'</y>
+				<y>'0.0 pt'</y>
 			</Rectangle>
 			<String>
 				<expr>self.show_name</expr>
@@ -524,7 +523,7 @@
 				<FontSize>11</FontSize>
 				<width>'240.0 pt'</width>
 				<x>'3.0 pt'</x>
-				<y>'8.0 pt'</y>
+				<y>'4.0 pt'</y>
 			</String>
 			<String>
 				<Align>'right'</Align>
@@ -533,7 +532,105 @@
 				<FontSize>11</FontSize>
 				<width>'110.0 pt'</width>
 				<x>'426.0 pt'</x>
-				<y>'8.0 pt'</y>
+				<y>'4.0 pt'</y>
+			</String>
+			<String>
+				<expr>"[  ] Sound check"</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<height>'12.0 pt'</height>
+				<width>'113.0 pt'</width>
+				<x>'0.0 pt'</x>
+				<y>'90.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Start: _____________________"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<height>'11.0 pt'</height>
+				<ScalePercent>(100.0, 150.0)</ScalePercent>
+				<width>'122.0 pt'</width>
+				<x>'1.0 pt'</x>
+				<y>'62.6 pt'</y>
+			</String>
+			<String>
+				<expr>"End: _______________________"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<height>'11.0 pt'</height>
+				<ScalePercent>(100.0, 150.0)</ScalePercent>
+				<width>'124.0 pt'</width>
+				<x>'1 pt'</x>
+				<y>'23.6 pt'</y>
+			</String>
+			<String>
+				<expr>"Released: [  ] yes  [  ] no."</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<height>'14.0 pt'</height>
+				<Show>not self.episode_released</Show>
+				<width>'243.0 pt'</width>
+				<x>'129.0 pt'</x>
+				<y>'28.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Presenter initials for intent to release:  _____________"</expr>
+				<FontName>'Helvetica'</FontName>
+				<FontSize>10</FontSize>
+				<height>'14.0 pt'</height>
+				<Show>not self.episode_released</Show>
+				<width>'243.0 pt'</width>
+				<x>'129.3 pt'</x>
+				<y>'19.0 pt'</y>
+			</String>
+			<String>
+				<expr>"[  ] [  ] [  ] misc."</expr>
+				<FontColor>(.5, .5, .5)</FontColor>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<width>'80.0 pt'</width>
+				<x>'460.0 pt'</x>
+				<y>'44.0 pt'</y>
+			</String>
+			<Rectangle>
+				<FillColor>(0.953, 0.953, 0.953)</FillColor>
+				<height>'19.0 pt'</height>
+				<width>'139.0 pt'</width>
+				<x>'400.5 pt'</x>
+				<y>'17.3 pt'</y>
+			</Rectangle>
+			<String>
+				<expr>"[  ] Edit"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'53.0 pt'</width>
+				<x>'405.0 pt'</x>
+				<y>'22.3 pt'</y>
+			</String>
+			<String>
+				<expr>"[  ] Review"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'71.0 pt'</width>
+				<x>'467.2 pt'</x>
+				<y>'21.3 pt'</y>
+			</String>
+			<String>
+				<expr>"Unscheduled talk"</expr>
+				<fontcolor>(0.8, 0.8, 0.8)</fontcolor>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<width>'163.0 pt'</width>
+				<x>'124.5 pt'</x>
+				<y>'90.0 pt'</y>
+			</String>
+			<String>
+				<expr>"[  ] Added to Veyepar"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>13</FontSize>
+				<width>'143.0 pt'</width>
+				<x>'398.0 pt'</x>
+				<y>'92.3 pt'</y>
 			</String>
 		</Objects>
 	</PageFooter>
