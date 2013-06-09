@@ -2111,18 +2111,10 @@ class add_eps(process.process):
             return self.ddu(schedule,show)
 
     def add_more_options(self, parser):
-        parser.add_option('-f', '--filename', default="talks.csv",
-          help='csv file' )
         parser.add_option('-u', '--update', action="store_true", 
           help='update when diff, else print' )
         parser.add_option('-k', '--keys', action="store_true", 
           help='dump keys of input stream' )
-        parser.add_option('-L', '--license', 
-          help= "http://creativecommons.org/licenses/" )
-
-    def add_more_option_defaults(self, parser):
-        parser.set_defaults(license='CC BY-SA')
-
 
     def work(self):
       if self.options.client and self.options.show:
