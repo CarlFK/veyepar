@@ -498,7 +498,7 @@
 	</Detail>
 
 	<PageFooter>
-		<Height>103.8</Height>
+		<Height>108.0</Height>
 		<Objects>
 			<Rectangle>
 				<FillColor>(0.953, 0.953, 0.953)</FillColor>
@@ -506,7 +506,7 @@
 				<StrokeColor>(.7, .7, .7 )</StrokeColor>
 				<width>'85.0 pt'</width>
 				<x>'452.5 pt'</x>
-				<y>'37.3 pt'</y>
+				<y>'60.3 pt'</y>
 			</Rectangle>
 			<Rectangle>
 				<FillColor>(0.902, 0.902, 0.980)</FillColor>
@@ -590,7 +590,7 @@
 				<FontSize>10</FontSize>
 				<width>'80.0 pt'</width>
 				<x>'460.0 pt'</x>
-				<y>'44.0 pt'</y>
+				<y>'67.0 pt'</y>
 			</String>
 			<Rectangle>
 				<FillColor>(0.953, 0.953, 0.953)</FillColor>
@@ -621,7 +621,7 @@
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'163.0 pt'</width>
-				<x>'124.5 pt'</x>
+				<x>'134.5 pt'</x>
 				<y>'90.0 pt'</y>
 			</String>
 			<String>
@@ -629,8 +629,26 @@
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>13</FontSize>
 				<width>'143.0 pt'</width>
-				<x>'398.0 pt'</x>
-				<y>'92.3 pt'</y>
+				<x>'403.0 pt'</x>
+				<y>'45.3 pt'</y>
+			</String>
+			<String>
+				<expr>"Lighting Talks"</expr>
+				<fontcolor>(0.8, 0.8, 0.8)</fontcolor>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<width>'163.0 pt'</width>
+				<x>'144.5 pt'</x>
+				<y>'67.0 pt'</y>
+			</String>
+			<String>
+				<expr>"Keynote"</expr>
+				<fontcolor>(0.8, 0.8, 0.8)</fontcolor>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<width>'163.0 pt'</width>
+				<x>'144.5 pt'</x>
+				<y>'46.0 pt'</y>
 			</String>
 		</Objects>
 	</PageFooter>

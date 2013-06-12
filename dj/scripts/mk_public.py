@@ -30,7 +30,7 @@ class mk_public(process):
 
     def up_richard(self, ep):
 
-        host = pw.richard[self.options.host_user]
+        host = pw.richard[ep.show.client.richard_id]
         endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
         api = API(endpoint)
 
@@ -55,7 +55,7 @@ class mk_public(process):
     def up_youtube(self, ep):
 
         uploader = youtube_uploader.Uploader()
-        uploader.user = self.options.host_user
+        uploader.user = ep.show.client.youtube_id
         return uploader.set_permission( ep.host_url )
 
     def process_ep(self, ep):

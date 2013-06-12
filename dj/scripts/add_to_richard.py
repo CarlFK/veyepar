@@ -17,10 +17,10 @@ from main.models import Show, Location, Episode
 
 import pw
 
-class RichardProcess(Process):
+class Richard(Process):
 
-    # ready_state = 5
-    ready_state = None
+    ready_state = 5
+    # ready_state = None
 
     def process_ep(self, ep):
         """ adds Episode to pyvideo
@@ -277,6 +277,6 @@ class RichardProcess(Process):
         return ep.public_url
 
 if __name__ == '__main__':
-    p = RichardProcess()
+    p = Richard()
     p.main()
 
