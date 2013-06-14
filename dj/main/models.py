@@ -101,7 +101,7 @@ class Location(models.Model):
 ANN_STATES=((1,'preview'),(2,'review'),(3,'approved')) 
 class Show(models.Model):
     client = models.ForeignKey(Client)
-    locations = models.ManyToManyField(Location)
+    locations = models.ManyToManyField(Location, blank=True)
     sequence = models.IntegerField(default=1)
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,

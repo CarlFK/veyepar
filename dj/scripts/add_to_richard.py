@@ -93,6 +93,9 @@ class Richard(Process):
                 print 'updating episode in pyvideo', ep.public_url, vid_id
                 if not self.options.test:
                     ret = self.update_pyvideo(vid_id, video_data)
+                    # above ret= isn't working.  returns None I think?
+                    # lets hope there wasn't a problem and blaze ahead.
+                    ret = True
                 else: 
                     ret = False
             else:

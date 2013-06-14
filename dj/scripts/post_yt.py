@@ -18,6 +18,7 @@ class post(process):
   ready_state = 4
 
   def process_ep(self, ep):
+  def collect_data(self, ep):
     if self.options.verbose: print ep.id, ep.name
     if not ep.released: # and not self.options.release_all:
         # --release will force the upload, overrides ep.released
@@ -133,6 +134,7 @@ class post(process):
 
         
    
+    def process_ep(self, ep):
     youtube_success = False
     archive_success = False
 
@@ -178,6 +180,7 @@ class post(process):
         else:
             print "youtube error! zomg"
 
+  def process_ep(self, ep):
     # upload to archive.org too.. yuck.
     # this should be in post_arc.py, but 
     # but I don't want 2 processes uploading at the same time.
@@ -233,6 +236,7 @@ class post(process):
             ep.save()
 
 
+  def process_ep(self, ep):
         return youtube_success and archive_success
 
   def add_more_options(self, parser):

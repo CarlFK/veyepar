@@ -971,7 +971,7 @@ def orphan_dv(request,show_id):
 
 def mk_cuts(episode, 
         short_clip_time = 0,
-        start_slop=5, end_slop=30):
+        start_slop=0, end_slop=0):
 
     """
     short_clip_time - threshold for the person kinda maybe starts talking and doesn't.  cut, cut, cut = small clips that need to be discarded.

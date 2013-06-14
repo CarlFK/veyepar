@@ -54,6 +54,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             'archive_mp4_url',
             'host_url',
 )
+    list_editable = ('state',)
 
        
 	# 'sequence', 'name', 'state', 'state_bumper', 
@@ -63,7 +64,6 @@ class EpisodeAdmin(admin.ModelAdmin):
     #     'start','end',)
     # list_display = ( 'sequence', 'name', 'state', 'state_bumper', 'duration' )
     list_display_links = ('id',)
-    # list_editable = ('start',)
     ordering = ('sequence', )
     date_hierarchy = 'start'
             # 'locked','locked_by', )

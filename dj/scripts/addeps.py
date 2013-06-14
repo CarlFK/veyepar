@@ -1252,8 +1252,10 @@ class add_eps(process.process):
 
 
     def chipy_v3(self, schedule, show):
-        room = schedule[-2]['where']['name']
-        schedule = schedule[-2]['topics']
+        schedule = schedule[-1]  ## last one on list is next meeting
+
+        room = schedule['where']['name']
+        schedule = schedule['topics']
 
         field_maps = [ 
                 ('id', 'conf_key'), 
