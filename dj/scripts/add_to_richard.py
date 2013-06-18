@@ -235,7 +235,8 @@ class Richard(Process):
             tags = ''
         else:
             tags = ep.tags.split(',')
-            tags = [t.strip() for t in tags 
+            tags = [t.strip() for t in tags]
+            tags = [t for t in tags 
                     if t not in [
                      u'enthought', u'scipy_2012', 
                      u'Introductory/Intermediate',
