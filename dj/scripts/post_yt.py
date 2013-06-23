@@ -15,234 +15,240 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 
 class post(process):
 
-  ready_state = 4
+    ready_state = 4
 
-  def process_ep(self, ep):
-  def collect_data(self, ep):
-    if self.options.verbose: print ep.id, ep.name
-    if not ep.released: # and not self.options.release_all:
-        # --release will force the upload, overrides ep.released
-        if self.options.verbose: print "not released:", ep.released
-        return False
+    def construct_description(self, ep):
+        show = ep.show
+        client = show.client
 
-    loc = ep.location
-    show = ep.show
-    client = show.client
-
-    descriptions = [ep.authors, 
-            ep.public_url, ep.conf_url,
-            ep.description, 
-            show.description, client.description]
-    descriptions = [d for d in descriptions if d]
-    description = "\n".join(descriptions)
-    # description = "<br/>\n".join(description.split('\n'))
-
-    meta = {
-        'title': ep.name,
-        'description': description[:250],
-        }
-
-    tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
-    authors = ep.authors.split(',')
-    authors = [ a.replace(' ','') for a in authors ]
-    tags += authors 
-
-    # remove any empty tags
-    meta['tags'] = [tag for tag in tags if tag] 
-
-    # if ep.license: 
-    #    meta['license'] = str(ep.license)
-    # elif self.options.license:
-    #    meta['license'] = self.options.license
-
-    if self.options.rating:
-        meta['rating'] = self.options.rating
-
-    if self.options.category:
-        meta['category'] = self.options.category
-        # http://gdata.youtube.com/schemas/2007/categories.cat
-        meta['category'] = "Education"
-
-    if ep.location.lat and ep.location.lon:
-        meta['latlon'] = (ep.location.lat, ep.location.lon)
+        descriptions = [ep.authors,
+                ep.public_url, ep.conf_url,
+                ep.description,
+                show.description, client.description]
+        descriptions = [d for d in descriptions if d]
+        description = "\n".join(descriptions)
+        # description = "<br/>\n".join(description.split('\n'))
 
 
-    # private is implemnted different in youtube and blip.
-    # blip want's a number, yt wants Truthy
-    # yt has publid, unlisted, private
-    # if self.options.hidden:
-    #    meta['hidden'] = self.options.hidden
-    # meta['hidden'] = ep.hidden or self.options.hidden
-    private = ep.hidden or self.options.hidden
-
-    # find a thumbnail
-    # check for episode.tumb used in the following:
-    # 1. absololute path (dumb?)
-    # 2. in tumb dir (smart)
-    # 3. relitive to show dir (not completely wonky)
-    # 4. in tumb dir, same name as episode.png (smart)
-    # if none of those, then grab the thumb from the first cut list file
-    found=False
-    for thumb in [ 
-          ep.thumbnail,
-          os.path.join(self.show_dir,'thumb',ep.thumbnail),
-          os.path.join(self.show_dir,ep.thumbnail),
-          os.path.join(self.show_dir,'thumb',ep.slug+".png"),]:
-          if os.path.isfile(thumb): 
-              found=True
-              break
-    if not found:
-         for cut in Cut_List.objects.filter(
-                 episode=ep,apply=True).order_by('sequence'):
-             basename = cut.raw_file.basename()        
-             thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
-             if os.path.exists(thumb): 
-                 found=True
-                 break
-    if not found: thumb=''
-
-    # get a list of video files to upload
-    # blip supports multiple formats, youtube does not.
-    # youtube and such will only upload the first file.
-    files = []
-    for ext in self.options.upload_formats:
-        src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
-        if os.path.exists(src_pathname):
-            files.append({'ext':ext,'pathname':src_pathname})
-        else:
-            # crapy place to abort, but meh, works for now.
+    def collect_data(self, ep):
+        if self.options.verbose: print ep.id, ep.name
+        if not ep.released: # and not self.options.release_all:
+            # --release will force the upload, overrides ep.released
+            if self.options.verbose: print "not released:", ep.released
             return False
 
-    if self.options.debug_log:
+                meta = {
+            'title': ep.name,
+            'description': description[:250],
+            }
 
-        # put the mlt and .sh stuff into the log 
-        # blip and firefox want it to be xml, so jump though some hoops
-        eog = "<log>\n"
-        mlt_pathname = os.path.join( self.show_dir, 'tmp', "%s.mlt"%(ep.slug,))
-        log += open(mlt_pathname).read()
-        sh_pathname = os.path.join( self.show_dir, 'tmp', "%s.sh"%(ep.slug,))
-        shs = open(sh_pathname).read().split('\n')
-        shs = [ "<line>\n%s\n</line>\n" % l for l in shs if l]
-        log += "<shell_script>\n%s</shell_script>\n" % ''.join(shs)
-        log += "</log>"
+        tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
+        authors = ep.authors.split(',')
+        authors = [ a.replace(' ','') for a in authors ]
+        tags += authors
 
-        # blip says: try something like a tt or srt file
-        log_pathname = os.path.join( self.show_dir, 'tmp', "%s.tt"%(ep.slug,))
-        log_file=open(log_pathname,'w').write(log)
-        # add the log to the list of files to be posted 
-        files.append({'ext':'tt', 'pathname':log_pathname})
+        # remove any empty tags
+        meta['tags'] = [tag for tag in tags if tag]
 
-        
-   
-    def process_ep(self, ep):
-    youtube_success = False
-    archive_success = False
+        # if ep.license:
+        #    meta['license'] = str(ep.license)
+        # elif self.options.license:
+        #    meta['license'] = self.options.license
 
-    uploader = youtube_uploader.Uploader()
+        if self.options.rating:
+            meta['rating'] = self.options.rating
 
-    uploader.user = client.youtube_id
-    uploader.files = files
-    uploader.thumb = thumb
-    uploader.meta = meta
-    uploader.private = private
+        if self.options.category:
+            meta['category'] = self.options.category
+            # http://gdata.youtube.com/schemas/2007/categories.cat
+            meta['category'] = "Education"
 
-    uploader.old_url = ep.host_url # for replacing.
- 
-    if self.options.test:
-        print 'test mode:'
-        print "user key:", uploader.user
-        print 'files %s' % files
-        print 'meta %s' % meta
-        print 'thumb %s' % thumb
-        print 'skipping youtube_upoad uploader.upload()'
+        if ep.location.lat and ep.location.lon:
+            meta['latlon'] = (ep.location.lat, ep.location.lon)
 
-    # elif ep.host_url:
-    #    print "skipping youtube, already there."
-    #    youtube_success = True
 
-    else:
-    
-        # down to next layer of code that will do the uplaading 
-        youtube_success = uploader.upload()
-        # youtube_success = True
+        # private is implemnted different in youtube and blip.
+        # blip want's a number, yt wants Truthy
+        # yt has publid, unlisted, private
+        # if self.options.hidden:
+        #    meta['hidden'] = self.options.hidden
+        # meta['hidden'] = ep.hidden or self.options.hidden
+        private = ep.hidden or self.options.hidden
 
-        # ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
+        # find a thumbnail
+        # check for episode.tumb used in the following:
+        # 1. absololute path (dumb?)
+        # 2. in tumb dir (smart)
+        # 3. relitive to show dir (not completely wonky)
+        # 4. in tumb dir, same name as episode.png (smart)
+        # if none of those, then grab the thumb from the first cut list file
+        found=False
+        for thumb in [
+              ep.thumbnail,
+              os.path.join(self.show_dir,'thumb',ep.thumbnail),
+              os.path.join(self.show_dir,ep.thumbnail),
+              os.path.join(self.show_dir,'thumb',ep.slug+".png"),]:
+            if os.path.isfile(thumb):
+                found=True
+                break
+        if not found:
+            for cut in Cut_List.objects.filter(
+                    episode=ep,apply=True).order_by('sequence'):
+                basename = cut.raw_file.basename()
+                thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
+                if os.path.exists(thumb):
+                    found=True
+                    break
+        if not found: thumb=''
 
-        # self.log_info(uploader.ret_text)
+        # get a list of video files to upload
+        # blip supports multiple formats, youtube does not.
+        # youtube and such will only upload the first file.
+        files = []
+        for ext in self.options.upload_formats:
+            src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
+            if os.path.exists(src_pathname):
+                files.append({'ext':ext,'pathname':src_pathname})
+            else:
+                # crapy place to abort, but meh, works for now.
+                return False
 
-        if youtube_success:
-            if self.options.verbose: print uploader.new_url
+        if self.options.debug_log:
 
-            # save new youtube url
-            self.last_url = uploader.new_url
-            ep.host_url = self.last_url
+            # put the mlt and .sh stuff into the log
+            # blip and firefox want it to be xml, so jump though some hoops
+            eog = "<log>\n"
+            mlt_pathname = os.path.join( self.show_dir, 'tmp', "%s.mlt"%(ep.slug,))
+            log += open(mlt_pathname).read()
+            sh_pathname = os.path.join( self.show_dir, 'tmp', "%s.sh"%(ep.slug,))
+            shs = open(sh_pathname).read().split('\n')
+            shs = [ "<line>\n%s\n</line>\n" % l for l in shs if l]
+            log += "<shell_script>\n%s</shell_script>\n" % ''.join(shs)
+            log += "</log>"
 
-        else:
-            print "youtube error! zomg"
+            # blip says: try something like a tt or srt file
+            log_pathname = os.path.join( self.show_dir, 'tmp', "%s.tt"%(ep.slug,))
+            log_file=open(log_pathname,'w').write(log)
+            # add the log to the list of files to be posted
+            files.append({'ext':'tt', 'pathname':log_pathname})
 
-  def process_ep(self, ep):
-    # upload to archive.org too.. yuck.
-    # this should be in post_arc.py, but 
-    # but I don't want 2 processes uploading at the same time.
-    # bcause bandwidth? 
 
-    uploader = archive_uploader.Uploader()
 
-    uploader.user = client.archive_id
-    uploader.bucket_id = client.bucket_id
+        def do_yt(self,ep,files,private,meta):
 
-    for f in files:
+        youtube_success = False
 
-        uploader.pathname = f['pathname']
-        uploader.key_id = "%s.%s" % ( ep.slug[:30], f['ext'] )
-        # uploader.key_id = "%s/%s/%s.%s" % ( 
-        #        client.slug, show.slug, ep.slug[:30], f['ext'])
+        uploader = youtube_uploader.Uploader()
 
-        # actually upload 
+        uploader.user = ep.show.client.youtube_id
+        uploader.files = files
+        uploader.meta = meta
+        uploader.private = private
+
+        # for replacing.
+        # (currently not implemented in youtube_uploader
+        uploader.old_url = ep.host_url
 
         if self.options.test:
-            print 'test mode...'
-            print 'skipping archive_uploader .upload()'
+            print 'test mode:'
+            print "user key:", uploader.user
+            print 'files %s' % files
+            print 'meta %s' % meta
+            print 'skipping youtube_upoad.py uploader.upload()'
 
-        # elif ep.archive_mp4_url:
-        #    print "skipping archive, already there."
-        #    archive_success = True
+        # elif ep.host_url:
+        #    print "skipping youtube, already there."
+        #    youtube_success = True
 
         else:
 
-            archive_success = uploader.upload() 
-            if archive_success:
-                if self.options.verbose: print uploader.new_url
-                # this is pretty gross.
-                # store the archive url
-                if f['ext'] == "mp4":
-                    ep.archive_mp4_url = uploader.new_url
-                elif f['ext'] == "ogv":
-                    ep.archive_ogv_url = uploader.new_url
+            # down to next layer of code that will do the uploading
+            youtube_success = uploader.upload()
 
-                self.archive_url = uploader.new_url # hook for tests so that it can be browsed
+
+            if youtube_success:
+                if self.options.verbose: print uploader.new_url
+
+                # save new youtube url
+                ep.host_url = self.last_url
+                # for test framework
+                self.last_url = uploader.new_url
 
             else:
-                print "internet archive error!"
+                print "youtube error! zomg"
+                ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
-        # tring to fix the db timeout problem
-        # ep=Episode.objects.get(pk=ep.id)
-        try:
-            ep.save()
-        except DatabaseError, e:
-            from django.db import connection
-            connection.connection.close()
-            connection.connection = None
-            ep.save()
+        return youtube_success
+
+    def do_arc(self, ep, files, meta):
+        # upload to archive.org too.. yuck.
+        # this should be in post_arc.py, but
+        # but I don't want 2 processes uploading at the same time.
+        # bcause bandwidth?
+
+        uploader = archive_uploader.Uploader()
+
+        uploader.user = ep.show.client.archive_id
+        uploader.bucket_id = ep.show.client.bucket_id
+
+        for f in files:
+
+            uploader.pathname = f['pathname']
+            uploader.key_id = "%s.%s" % ( ep.slug[:30], f['ext'] )
+
+            if self.options.test:
+                print 'test mode...'
+                print 'skipping archive_uploader .upload()'
+
+            # elif ep.archive_mp4_url:
+            #    print "skipping archive, already there."
+            #    archive_success = True
+
+            else:
+
+                # actually upload
+                archive_success = uploader.upload()
+                if archive_success:
+                    if self.options.verbose: print uploader.new_url
+                    # this is pretty gross.
+                    # store the archive url
+                    if f['ext'] == "mp4":
+                        ep.archive_mp4_url = uploader.new_url
+                    elif f['ext'] == "ogv":
+                        ep.archive_ogv_url = uploader.new_url
+
+                    # hook for tests so that it can be browsed
+                    self.archive_url = uploader.new_url
+
+                else:
+                    print "internet archive error!"
 
 
-  def process_ep(self, ep):
-        return youtube_success and archive_success
+        def process_ep(self, ep):
 
-  def add_more_options(self, parser):
-        parser.add_option('--host-user', 
+            # collect data needed for uploading
+            files = self.get_files(ep)
+            meta=get_metadata(ep)
+
+            # upload
+            youtube_success = self.do_yt(ep,file,private=True,meta)
+            archive_success = self.do_arc(ep,file,meta)
+
+            # tring to fix the db timeout problem
+                try:
+                    ep.save()
+                except DatabaseError, e:
+                    from django.db import connection
+                    connection.connection.close()
+                    connection.connection = None
+                    ep.save()
+
+            return youtube_success and archive_success
+
+    def add_more_options(self, parser):
+        parser.add_option('--host-user',
             help='video host account name (pass stored in pw.py)')
-        parser.add_option('--rating', 
+        parser.add_option('--rating',
             help="TV rating")
         parser.add_option('-T', '--topics',
             help="list of topics (user defined)")
@@ -253,10 +259,9 @@ class post(process):
         parser.add_option('--release-all', action="store_true",
             help="ignore the released setting.")
 
-  def add_more_option_defaults(self, parser):
-      parser.set_defaults(category="Education")
+    def add_more_option_defaults(self, parser):
+        parser.set_defaults(category="Education")
 
 if __name__ == '__main__':
     p=post()
     p.main()
-
