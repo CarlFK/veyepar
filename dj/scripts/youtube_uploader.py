@@ -87,7 +87,7 @@ class Uploader(object):
     meta = {}
     old_url = ''
     user=''
-    # private=False
+    private=False
     unlisted=True
     debug_mode=False
 
@@ -138,7 +138,7 @@ class Uploader(object):
 
         tags = self.meta['tags']
         tags = [tag for tag in tags if " " not in tag]
-        tags =','.join(tags) 
+        tags = ','.join(tags) 
 
         media_group = gdata.media.Group(
             title=gdata.media.Title(
@@ -264,9 +264,10 @@ if __name__ == '__main__':
     """
     print u.meta
 
-    u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4', 'ext':'mp4'}]
-    u.user = 'test'
-    #u.private = True
+    # u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4', 'ext':'mp4'}]
+    u.files = [{'pathname':'/home/carl/temp/Sketchnotes_Communicate_Complex_Ideas_Quickly.mp4', 'ext':'mp4'}]
+    u.user = 'ndv'
+    u.private = False
     u.unlisted = True
 
     ret = u.upload()

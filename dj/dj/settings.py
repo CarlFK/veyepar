@@ -105,7 +105,7 @@ if DEBUG:
     MIDDLEWARE_CLASSES = \
         (
         # 'lukeplant_me_uk.django.validator.middleware.ValidatorMiddleware',
-         'debug_toolbar.middleware.DebugToolbarMiddleware',
+        # 'debug_toolbar.middleware.DebugToolbarMiddleware',
                 ) +\
         MIDDLEWARE_CLASSES
 

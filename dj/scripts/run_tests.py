@@ -209,8 +209,8 @@ pix_fmt=yuv411p" % parms
   p=mkthumbs.add_dv()
   p.main()
 
-  import dvogg
-  p=dvogg.mkpreview()
+  import dv2ogv
+  p=dv2ogv.mkpreview()
   p.main()
 
   return
@@ -293,9 +293,8 @@ pix_fmt=yuv411p" % parms
   import post_yt as post
   p=post.post()
   p.set_options(force=True, verbose=True, 
-      upload_formats=['mp4', "dv"],
+      upload_formats=self.upload_formats,
       debug_log=True,
-      host_user="test",
       )
   p.private=True
   p.main()
@@ -311,8 +310,7 @@ pix_fmt=yuv411p" % parms
   import add_to_richard
   p=add_to_richard.add_to_richard()
   p.set_options(force=True, verbose=True, 
-      upload_formats=['mp4'],
-      host_user="test",
+      upload_formats=self.upload_formats,
       )
   p.private=True
   p.main()
@@ -472,7 +470,7 @@ def main():
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    t.make_source_dvs()
+    # t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
     t.make_thumbs()
@@ -482,7 +480,7 @@ def main():
     t.encode()
     # t.ck_errors()
     # t.play_vid()
-    # result['url'] = t.post_yt()
+    result['url'] = t.post_yt()
     # result['richard'] = t.add_to_richard()
     # result['email'] = t.email_url()
     # result['tweet'] = t.tweet()

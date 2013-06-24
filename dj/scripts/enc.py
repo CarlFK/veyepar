@@ -851,6 +851,8 @@ class enc(process):
     else:
         print "No cutlist found."
 
+    if self.options.test: ret = False
+
     return ret
 
 

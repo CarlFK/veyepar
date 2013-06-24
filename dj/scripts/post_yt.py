@@ -6,6 +6,7 @@ import youtube_uploader
 import archive_uploader
 
 import os
+import pprint
 
 import pw
 from process import process
@@ -18,6 +19,9 @@ class post(process):
     ready_state = 4
 
     def construct_description(self, ep):
+        # collect strings from various sources
+        # build a wad of text to use as public facing description 
+
         show = ep.show
         client = show.client
 
@@ -25,84 +29,34 @@ class post(process):
                 ep.public_url, ep.conf_url,
                 ep.description,
                 show.description, client.description]
+
+        # remove blanks
         descriptions = [d for d in descriptions if d]
+        # combine wiht CRs between each item
         description = "\n".join(descriptions)
         # description = "<br/>\n".join(description.split('\n'))
 
+        return description 
 
-    def collect_data(self, ep):
-        if self.options.verbose: print ep.id, ep.name
-        if not ep.released: # and not self.options.release_all:
-            # --release will force the upload, overrides ep.released
-            if self.options.verbose: print "not released:", ep.released
-            return False
+    def get_tags(self,ep):
 
-                meta = {
-            'title': ep.name,
-            'description': description[:250],
-            }
+        tags = [ ep.show.client.slug, ep.show.slug, ] 
 
-        tags = [ self.options.topics, client.slug, client.tags, show.slug, ep.tags ]
-        authors = ep.authors.split(',')
-        authors = [ a.replace(' ','') for a in authors ]
-        tags += authors
+        for more_tags in [ ep.show.client.tags, ep.tags, ep.authors ]:
+            if more_tags is not None:
+                tags += more_tags.split(',')
+
+        # remove spaces
+        tags = [ tag.replace(' ','') for tag in tags ]
 
         # remove any empty tags
-        meta['tags'] = [tag for tag in tags if tag]
+        tags = filter(None, tags)
 
-        # if ep.license:
-        #    meta['license'] = str(ep.license)
-        # elif self.options.license:
-        #    meta['license'] = self.options.license
+        return tags
 
-        if self.options.rating:
-            meta['rating'] = self.options.rating
-
-        if self.options.category:
-            meta['category'] = self.options.category
-            # http://gdata.youtube.com/schemas/2007/categories.cat
-            meta['category'] = "Education"
-
-        if ep.location.lat and ep.location.lon:
-            meta['latlon'] = (ep.location.lat, ep.location.lon)
-
-
-        # private is implemnted different in youtube and blip.
-        # blip want's a number, yt wants Truthy
-        # yt has publid, unlisted, private
-        # if self.options.hidden:
-        #    meta['hidden'] = self.options.hidden
-        # meta['hidden'] = ep.hidden or self.options.hidden
-        private = ep.hidden or self.options.hidden
-
-        # find a thumbnail
-        # check for episode.tumb used in the following:
-        # 1. absololute path (dumb?)
-        # 2. in tumb dir (smart)
-        # 3. relitive to show dir (not completely wonky)
-        # 4. in tumb dir, same name as episode.png (smart)
-        # if none of those, then grab the thumb from the first cut list file
-        found=False
-        for thumb in [
-              ep.thumbnail,
-              os.path.join(self.show_dir,'thumb',ep.thumbnail),
-              os.path.join(self.show_dir,ep.thumbnail),
-              os.path.join(self.show_dir,'thumb',ep.slug+".png"),]:
-            if os.path.isfile(thumb):
-                found=True
-                break
-        if not found:
-            for cut in Cut_List.objects.filter(
-                    episode=ep,apply=True).order_by('sequence'):
-                basename = cut.raw_file.basename()
-                thumb=os.path.join(self.episode_dir, "%s.png"%(basename))
-                if os.path.exists(thumb):
-                    found=True
-                    break
-        if not found: thumb=''
-
+    def get_files(self, ep):
         # get a list of video files to upload
-        # blip supports multiple formats, youtube does not.
+        # blip and archive support multiple formats, youtube does not.
         # youtube and such will only upload the first file.
         files = []
         for ext in self.options.upload_formats:
@@ -111,13 +65,15 @@ class post(process):
                 files.append({'ext':ext,'pathname':src_pathname})
             else:
                 # crapy place to abort, but meh, works for now.
+                # maybe this is the place to use raise?
+                print "not found:", src_pathname
                 return False
 
         if self.options.debug_log:
 
             # put the mlt and .sh stuff into the log
             # blip and firefox want it to be xml, so jump though some hoops
-            eog = "<log>\n"
+            log = "<log>\n"
             mlt_pathname = os.path.join( self.show_dir, 'tmp', "%s.mlt"%(ep.slug,))
             log += open(mlt_pathname).read()
             sh_pathname = os.path.join( self.show_dir, 'tmp', "%s.sh"%(ep.slug,))
@@ -132,9 +88,36 @@ class post(process):
             # add the log to the list of files to be posted
             files.append({'ext':'tt', 'pathname':log_pathname})
 
+        return files
+
+    def collect_metadata(self, ep):
+
+        meta = {}
+        meta['title'] = ep.name
+        meta['description'] = self.construct_description(ep)
+        meta['tags'] = self.get_tags(ep)
+
+        # if ep.license:
+        #    meta['license'] = str(ep.license)
+
+        # meta['rating'] = self.options.rating
+
+        # http://gdata.youtube.com/schemas/2007/categories.cat
+        meta['category'] = "Education"
+
+        if ep.location.lat and ep.location.lon:
+            meta['latlon'] = (ep.location.lat, ep.location.lon)
+
+        # private is implemnted different in youtube and blip.
+        # blip want's a number, yt wants Truthy
+        # yt has public, unlisted, private
+        # archive doesn't have any of this
+        meta['hidden'] = ep.hidden 
+
+        return meta
 
 
-        def do_yt(self,ep,files,private,meta):
+    def do_yt(self,ep,files,private,meta):
 
         youtube_success = False
 
@@ -170,7 +153,7 @@ class post(process):
                 if self.options.verbose: print uploader.new_url
 
                 # save new youtube url
-                ep.host_url = self.last_url
+                ep.host_url = uploader.new_url
                 # for test framework
                 self.last_url = uploader.new_url
 
@@ -223,44 +206,42 @@ class post(process):
                 else:
                     print "internet archive error!"
 
+            return archive_success
 
-        def process_ep(self, ep):
+    def process_ep(self, ep):
 
-            # collect data needed for uploading
-            files = self.get_files(ep)
-            meta=get_metadata(ep)
+        if not ep.released: # and not self.options.release_all:
+            # --release will force the upload, overrides ep.released
+            if self.options.verbose: print "not released:", ep.released
+            return False
 
-            # upload
-            youtube_success = self.do_yt(ep,file,private=True,meta)
-            archive_success = self.do_arc(ep,file,meta)
+        # collect data needed for uploading
+        files = self.get_files(ep)
+        if self.options.verbose: 
+            print "[files]:",
+            pprint.pprint(files)
 
-            # tring to fix the db timeout problem
-                try:
-                    ep.save()
-                except DatabaseError, e:
-                    from django.db import connection
-                    connection.connection.close()
-                    connection.connection = None
-                    ep.save()
+        meta = self.collect_metadata(ep)
+        if self.options.verbose: pprint.pprint(meta)
 
-            return youtube_success and archive_success
+        # upload
+        youtube_success = self.do_yt(ep,files,True,meta)
+        archive_success = self.do_arc(ep,files,meta)
+
+        # tring to fix the db timeout problem
+        try:
+            ep.save()
+        except DatabaseError, e:
+            from django.db import connection
+            connection.connection.close()
+            connection.connection = None
+            ep.save()
+
+        return youtube_success and archive_success
 
     def add_more_options(self, parser):
-        parser.add_option('--host-user',
-            help='video host account name (pass stored in pw.py)')
-        parser.add_option('--rating',
-            help="TV rating")
-        parser.add_option('-T', '--topics',
-            help="list of topics (user defined)")
-        parser.add_option('-C', '--category',
-            help = "-C list' to see full list" )
-        parser.add_option('--hidden',
-            help="availability on host: 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
         parser.add_option('--release-all', action="store_true",
             help="ignore the released setting.")
-
-    def add_more_option_defaults(self, parser):
-        parser.set_defaults(category="Education")
 
 if __name__ == '__main__':
     p=post()
