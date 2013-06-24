@@ -28,12 +28,9 @@ archive={
         }   
 """
 
-
 # following http://docs.pythonboto.org/en/latest/s3_tut.html
 # http://archive.org/catalog.php?history=1&identifier=nextdayvideo.test
 # http://archive.org/details/nextdayvideo.test/foobar 
-
-
 
 def auth(upload_user):
 
@@ -108,7 +105,16 @@ class Uploader(object):
             ret = True
 
         except:
+
+            """
+              $ curl s3.us.archive.org -v -H x-archive-simulate-error:SlowDown
+              To see a list of errors s3 can simulate, you can do:
+              $ curl s3.us.archive.org -v -H x-archive-simulate-error:help
+            """
+
             self.ret_text = "internet archive error: ", sys.exc_info()[0]
+            import code
+            code.interact(local=locals())
             ret = False
 
         return ret
@@ -126,6 +132,10 @@ if __name__ == '__main__':
     # u.user = 'cfkarsten'
     u.bucket_id = 'nextdayvideo.test'
     # u.key_id='test'
+
+    # for testing
+    # http://archive.org/~vmb/abouts3.html#testcollection
+    # x-archive-meta-collection:test_collection 
 
     u.key_id='test.mp4'
     u.debug_mode = False ## drops to a >>> prompt after upload

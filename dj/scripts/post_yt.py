@@ -112,6 +112,7 @@ class post(process):
         # blip want's a number, yt wants Truthy
         # yt has public, unlisted, private
         # archive doesn't have any of this
+        # ACLs are fake. permissions are: World readable, Item uploader writable.
         meta['hidden'] = ep.hidden 
 
         return meta
@@ -190,6 +191,7 @@ class post(process):
             else:
 
                 # actually upload
+                uploader.debug_mode=True
                 archive_success = uploader.upload()
                 if archive_success:
                     if self.options.verbose: print uploader.new_url
@@ -202,6 +204,9 @@ class post(process):
 
                     # hook for tests so that it can be browsed
                     self.archive_url = uploader.new_url
+                    # for test framework
+                    self.last_url = uploader.new_url
+
 
                 else:
                     print "internet archive error!"
@@ -225,7 +230,8 @@ class post(process):
         if self.options.verbose: pprint.pprint(meta)
 
         # upload
-        youtube_success = self.do_yt(ep,files,True,meta)
+        # youtube_success = self.do_yt(ep,files,True,meta)
+        youtube_success = True
         archive_success = self.do_arc(ep,files,meta)
 
         # tring to fix the db timeout problem
