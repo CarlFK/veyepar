@@ -11,22 +11,22 @@ import pprint
 import boto
 import boto.s3.connection
 
-import progressbar
+try:
+    # print a visible progress bar as the file is read
+    from xyoutube_uploader import ProgressFile
+except ImportError:
+    ProgressFile = open
 
-from youtube_uploader import widgets
-from youtube_uploader import progress
-from youtube_uploader import ProgressFile
-
-import pw
-# pw.py looks like this:
-"""
-archive={
-        "user":{
-            'access': "abc",
-            "secret": "123"
+try:
+    # read credentials from a file
+    from xpw import archive 
+except ImportError:
+    archive={
+            "test":{
+                'access': "abc",
+                "secret": "123"
+                }   
             }   
-        }   
-"""
 
 # following http://docs.pythonboto.org/en/latest/s3_tut.html
 # http://archive.org/catalog.php?history=1&identifier=nextdayvideo.test
@@ -38,7 +38,7 @@ archive={
 
 def auth(upload_user):
 
-    auth = pw.archive[upload_user]
+    auth = archive[upload_user] ## from dict of credentials 
     connection = boto.connect_s3( auth['access'], auth['secret'], 
             host='s3.us.archive.org', is_secure=False, 
             calling_format=boto.s3.connection.OrdinaryCallingFormat())
@@ -116,7 +116,7 @@ if __name__ == '__main__':
 
     u = Uploader()
 
-    u.user = 'ndv'
+    u.user = 'test'
     u.bucket_id = 'nextdayvideo.test'
     u.key_id='test.mp4'
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4'
