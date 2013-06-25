@@ -32,6 +32,10 @@ archive={
 # http://archive.org/catalog.php?history=1&identifier=nextdayvideo.test
 # http://archive.org/details/nextdayvideo.test/foobar 
 
+# for testing
+# http://archive.org/~vmb/abouts3.html#testcollection
+# x-archive-meta-collection:test_collection 
+
 def auth(upload_user):
 
     auth = pw.archive[upload_user]
@@ -53,21 +57,8 @@ def make_bucket(conn, bucket_id, meta):
             'x-archive-meta-description':meta['description'],
     }
 
-    # print conn, bucket_id
-    # pprint.pprint(headers)
     return conn.create_bucket(bucket_id, headers=headers)
 
-def hacky_test():
-
-    meta = {
-            'year':'2013',
-            'subject':"PS:One;hackerspace",
-            'licenseurl':'http://creativecommons.org/licenses/by/3.0/us/',
-            'description':"<a href=http://pumpingstationone.org>Pumping Station One</a> is a hackerspace located in Chicago. Its mission is to foster a collaborative environment wherein people can explore and create intersections between technology, science, art, and culture."
-    }
-
-    conn =  auth("cfkarsten")
-    print make_bucket(conn, "ndvps1", meta)
 
 class Uploader(object):
 
@@ -104,41 +95,32 @@ class Uploader(object):
             self.new_url = key.generate_url(0)
             ret = True
 
-        except:
+        except Exception as e:
 
             """
               $ curl s3.us.archive.org -v -H x-archive-simulate-error:SlowDown
               To see a list of errors s3 can simulate, you can do:
               $ curl s3.us.archive.org -v -H x-archive-simulate-error:help
             """
+            print e
+            self.ret_text = "internet archive error: %s" % ( e.body )
 
-            self.ret_text = "internet archive error: ", sys.exc_info()[0]
             import code
             code.interact(local=locals())
+
             ret = False
 
         return ret
 
 if __name__ == '__main__':
 
-    # connection.create_bucket('codersquid.testvideos', headers={'x-archive-meta-collection':'opensource_movies'})
-
     u = Uploader()
-    u.pathname = '/home/carl/cr.mpeg'
-    u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4'
-    u.pathname = '/home/carl/mnt/mx04/Videos/veyepar/troy/nodepdx2013/mp4/ship_it.mp4'
 
     u.user = 'ndv'
-    # u.user = 'cfkarsten'
     u.bucket_id = 'nextdayvideo.test'
-    # u.key_id='test'
-
-    # for testing
-    # http://archive.org/~vmb/abouts3.html#testcollection
-    # x-archive-meta-collection:test_collection 
-
     u.key_id='test.mp4'
-    u.debug_mode = False ## drops to a >>> prompt after upload
+    u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4'
+    u.debug_mode = False ## True drops to a >>> prompt after upload
 
     ret = u.upload()
 
