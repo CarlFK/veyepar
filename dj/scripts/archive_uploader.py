@@ -11,16 +11,20 @@ import pprint
 import boto
 import boto.s3.connection
 
+# The following 2 imports are wrapped in try/except so that 
+# this code will run without any additional files.
 try:
     # print a visible progress bar as the file is read
-    from xyoutube_uploader import ProgressFile
+    from youtube_uploader import ProgressFile
 except ImportError:
     ProgressFile = open
 
 try:
     # read credentials from a file
-    from xpw import archive 
+    from pw import archive 
 except ImportError:
+    # you can fill in your credentials here
+    # but better to put in pw.py so that they don't leak
     archive={
             "test":{
                 'access': "abc",
@@ -85,8 +89,11 @@ class Uploader(object):
         pf = ProgressFile(self.pathname, 'r')
 
         try:
+
             # actually upload
-            key.set_contents_from_file(pf)
+            ret = key.set_contents_from_file(pf)
+            # ret is the number of bytes in the file
+
 
             if self.debug_mode:
                 import code

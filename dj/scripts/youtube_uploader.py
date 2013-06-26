@@ -5,7 +5,10 @@
 # which someday will be jsut post.py with a yt parameter.
 
 # http://code.google.com/apis/youtube/1.0/developers_guide_python.html
-# http://code.google.com/apis/youtube/2.0/reference.html
+# https://developers.google.com/youtube/2.0/reference
+
+# "In API response feeds, descriptions are truncated to 500 characters unless one of the following conditions is true:..."
+# https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_media:description
 
 from urlparse import urlparse, parse_qs
 
@@ -145,7 +148,7 @@ class Uploader(object):
                 text=self.meta['title']),
             description=gdata.media.Description(
                 description_type='plain',
-                text=self.meta['description']),
+                text=self.meta['description'][:500]),
             keywords=gdata.media.Keywords(
                 text=tags ),
             category=[gdata.media.Category(
@@ -194,18 +197,20 @@ class Uploader(object):
         # add some more metadata -  more tags
         tags = self.meta['tags']
         tags = [tag for tag in tags if " " not in tag]
-        video_entry.AddDeveloperTags(tags)
+        # https://developers.google.com/youtube/2.0/developers_guide_protocol#Assigning_Developer_Tags 
+        # video_entry.AddDeveloperTags(tags)
+
 
         pathname= self.files[0]['pathname']
 
         pf = ProgressFile(pathname, 'r')
         try:
-            # actually upload
+            # down to the next moduel layer to upload
             self.new_entry = yt_service.InsertVideoEntry(video_entry, pf)
+
             self.ret_text = self.new_entry.__str__()
             link = self.new_entry.GetHtmlLink()
             self.new_url = link.href.split('&')[0]
-            # print self.new_url
             ret = True
 
         except gdata.youtube.service.YouTubeError, e:
@@ -245,34 +250,39 @@ if __name__ == '__main__':
     u = Uploader()
 
     u.meta = {
+      'description': ("test " * 500) + "1", # 2501 chars
       'title': "test title",
-      'description': "test description",
-      'description': "test " * 100,
-      'tags': ['tag1', 'tag2'],
-      # 'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
+      'tags': [u'eric', u'write_the_docs_2013', u'JenniferHartnett-Henderson'],
       'category': "Education",
-      'latlon': (37.0,-122.0)
+      'latlon': (37.0,-122.0),
     }
+
     """
+      'title': u'Sketchnotes: Communicate Complex Ideas Quickly',
+      'tags': ['tag1', 'tag2'],
     u.meta = {
       'title': "Python @ Life",
-      'description': "test " * 100,
+      'description': ("test " * 100) + "1", # 501 chars
       'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
       'category': "Education",
       'latlon': (37.0,-122.0)
     }
     """
-    print u.meta
 
-    # u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4', 'ext':'mp4'}]
-    u.files = [{'pathname':'/home/carl/temp/Sketchnotes_Communicate_Complex_Ideas_Quickly.mp4', 'ext':'mp4'}]
+
+    print u.meta
+    print len(u.meta['description'])
+
+    u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4', 'ext':'mp4'}]
     u.user = 'ndv'
-    u.private = False
+    u.private = True
     u.unlisted = True
 
     ret = u.upload()
-    if ret: print u.new_entry.id.text
-    print u.ret_text
+
+    # print u.ret_text
+    print
+    print u.new_url
 
     # import code
     # code.interact(local=locals())

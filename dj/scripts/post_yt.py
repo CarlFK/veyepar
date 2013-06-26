@@ -14,6 +14,12 @@ from django.db import DatabaseError
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
+class FileNotFound(Exception):
+    def __init__(self, value):
+        self.value=value
+    def __str__(self):
+        return repr(self.value)
+
 class post(process):
 
     ready_state = 4
@@ -67,7 +73,8 @@ class post(process):
                 # crapy place to abort, but meh, works for now.
                 # maybe this is the place to use raise?
                 print "not found:", src_pathname
-                return False
+
+                raise FileNotFound(src_pathname)
 
         if self.options.debug_log:
 
@@ -137,8 +144,9 @@ class post(process):
             print 'test mode:'
             print "user key:", uploader.user
             print 'files %s' % files
-            print 'meta %s' % meta
+            print 'meta %s' % pprint.pformat(meta)
             print 'skipping youtube_upoad.py uploader.upload()'
+            print len(meta['description'])
 
         # elif ep.host_url:
         #    print "skipping youtube, already there."
@@ -147,6 +155,7 @@ class post(process):
         else:
 
             # down to next layer of code that will do the uploading
+            uploader.debug_mode=True
             youtube_success = uploader.upload()
 
 
@@ -191,7 +200,7 @@ class post(process):
             else:
 
                 # actually upload
-                uploader.debug_mode=True
+                # uploader.debug_mode=True
                 archive_success = uploader.upload()
                 if archive_success:
                     if self.options.verbose: print uploader.new_url
@@ -230,9 +239,11 @@ class post(process):
         if self.options.verbose: pprint.pprint(meta)
 
         # upload
-        # youtube_success = self.do_yt(ep,files,True,meta)
-        youtube_success = True
-        archive_success = self.do_arc(ep,files,meta)
+        if self.options.skip_yt: youtube_success = True
+        else: youtube_success = self.do_yt(ep,files,True,meta)
+
+        if self.options.skip_arc: archive_success = True
+        else: archive_success = self.do_arc(ep,files,meta)
 
         # tring to fix the db timeout problem
         try:
@@ -246,6 +257,12 @@ class post(process):
         return youtube_success and archive_success
 
     def add_more_options(self, parser):
+        parser.add_option('--skip-yt', action="store_true",
+            help="Don't try uploading to YouTube.")
+
+        parser.add_option('--skip-arc', action="store_true",
+            help="Don't try uploading to archive.org.")
+
         parser.add_option('--release-all', action="store_true",
             help="ignore the released setting.")
 
