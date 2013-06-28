@@ -7,7 +7,7 @@ from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
-class push(process):
+class review1(process):
 
     # this will bump everything past the review1 step
     ready_state = 6
@@ -22,6 +22,6 @@ class push(process):
         return ret
 
 if __name__ == '__main__':
-    p=push()
+    p=review1()
     p.main()
 

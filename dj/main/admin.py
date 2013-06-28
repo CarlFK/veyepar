@@ -51,6 +51,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_display = ('id',
             'state',
             'name', 
+            'emails',
             'archive_mp4_url',
             'host_url',
 )

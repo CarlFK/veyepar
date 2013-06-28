@@ -155,7 +155,7 @@ class post(process):
         else:
 
             # down to next layer of code that will do the uploading
-            uploader.debug_mode=True
+            # uploader.debug_mode=True
             youtube_success = uploader.upload()
 
 
