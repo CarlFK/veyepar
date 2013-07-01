@@ -24,9 +24,11 @@ class email_title(process):
     Please review the following meta data about your talk so that mistakes can be corrected now and not after the video has gone live.
 
     Released: %(released)s
-    True means your talk is going to be recorded and posted online.  
-    False means it may get recorded and processed, 
+    "True" means your talk is going to be recorded and posted online.  
+    "None" means it may get recorded and processed, 
     but it will not be made public.
+    "False" means you have requested not to be recoreded, however 
+    the data is still made avaible for review in case you cange your mind.
 
     The video will be titled with the following image:
     %(png_url)s
