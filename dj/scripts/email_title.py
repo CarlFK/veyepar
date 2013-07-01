@@ -28,7 +28,7 @@ class email_title(process):
     "None" means it may get recorded and processed, 
     but it will not be made public.
     "False" means you have requested not to be recoreded, however 
-    the data is still made avaible for review in case you cange your mind.
+    the data is available for review in case you change your mind.
 
     The video will be titled with the following image:
     %(png_url)s
