@@ -26,7 +26,7 @@ class email_title(process):
     Released: %(released)s
     True means your talk is going to be recorded and posted online.  
     False means it may get recorded and processed, 
-    but it will not be uploaded.
+    but it will not be made public.
 
     The video will be titled with the following image:
     %(png_url)s
