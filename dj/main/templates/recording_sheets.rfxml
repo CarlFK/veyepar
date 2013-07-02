@@ -617,7 +617,7 @@
 			</String>
 			<String>
 				<expr>"Unscheduled talk"</expr>
-				<fontcolor>(0.8, 0.8, 0.8)</fontcolor>
+				<fontcolor>(0.6, 0.6, 0.6)</fontcolor>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'163.0 pt'</width>
@@ -634,7 +634,7 @@
 			</String>
 			<String>
 				<expr>"Lighting Talks"</expr>
-				<fontcolor>(0.8, 0.8, 0.8)</fontcolor>
+				<fontcolor>(0.6, 0.6, 0.6)</fontcolor>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'163.0 pt'</width>
@@ -643,7 +643,7 @@
 			</String>
 			<String>
 				<expr>"Keynote"</expr>
-				<fontcolor>(0.8, 0.8, 0.8)</fontcolor>
+				<fontcolor>(0.6, 0.6, 0.6)</fontcolor>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'163.0 pt'</width>
