@@ -32,10 +32,6 @@ class Richard(Process):
                   False if there was an exception during processing
 
         """
-        if self.options.verbose:
-            print "RichardProcess", ep.id, ep.name
-            print "Show slug:", ep.show.slug, ep.show.client.name
-
         # pyvideo categories are stored in Client and Show
         # chipy is an example of something that uses Client,
         # pycon 2014 and 300SoC are in Show.
@@ -44,7 +40,8 @@ class Richard(Process):
 
         self.host = pw.richard[ep.show.client.richard_id]
 
-        self.pyvideo_endpoint = 'http://{hostname}/api/v1'.format(hostname=self.host['host'])
+        self.pyvideo_endpoint = \
+            'http://{hostname}/api/v1'.format(hostname=self.host['host'])
         self.api = API(self.pyvideo_endpoint)
 
         if self.options.verbose: 
@@ -61,10 +58,11 @@ class Richard(Process):
         # scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
         # video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
 
-        print ep.id, ep.host_url
-
         if ep.host_url is None:
-            video_data['thumbnail_url'] = "http://veyepar.nextdayvideo.com/static/%s/%s/titles/%s.png" % ( ep.show.client.slug, ep.show.slug, ep.slug )
+            pass
+            # half baked idea:
+            # use title slide as place holder image until video is produced.
+            #    video_data['thumbnail_url'] = "http://veyepar.nextdayvideo.com/static/%s/%s/titles/%s.png" % ( ep.show.client.slug, ep.show.slug, ep.slug )
 
         elif "youtube" in ep.host_url:  
             scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
@@ -136,7 +134,8 @@ class Richard(Process):
             # update in pyvideo
             return update_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], vid, video_data)
         except MissingRequiredData as e:
-            print 'Missing required fields', e.errors
+            print '#2, Missing required fields', e.errors
+            code.interact(local=locals())
             raise e
 
     def create_pyvideo(self, video_data):
@@ -151,7 +150,7 @@ class Richard(Process):
             vid = create_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], video_data)
             return 'http://%s/video/%s/%s' % (self.host['host'], vid['id'],vid['slug'])
         except MissingRequiredData as e:
-            print 'Missing required fields', e.errors
+            print '#3, Missing required fields', e.errors
             raise e
 
     def create_pyvideo_episode_dict(self, ep, state=1):
@@ -177,7 +176,7 @@ class Richard(Process):
             'state': state,
             'title': ep.name,
             'category': self.category_key,
-            'summary': summary,
+            # 'summary': summary,
             'source_url': ep.host_url,
             'copyright_text': ep.license,
             'tags': tags,

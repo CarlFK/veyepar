@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 # things to do to make this work:
 # ssh-copy-id pyvideo.org
@@ -12,6 +12,8 @@
 
 instance=pyvideo
 
+source /home/carl/.virtualenvs/richard/bin/activate 
+
 # dump data from db to file on remote filesystem
 ssh pyvideo.org ./dump_x.sh $instance
 
@@ -19,15 +21,15 @@ ssh pyvideo.org ./dump_x.sh $instance
 rsync -vP pyvideo.org:richard_${instance}_videos.json .
 
 # blow away and reset previous local database
-mv database.db ~/temp/
-/home/carl/src/richard/venv/bin/python ./manage.py syncdb --migrate --noinput
+mv database.db ~/temp/ || /bin/true
+python ./manage.py syncdb --migrate --noinput
 # ./manage.py load_sampledata
 
 # load data from remote
-/home/carl/src/richard/venv/bin/python ./manage.py loaddata richard_${instance}_videos.json
+python ./manage.py loaddata richard_${instance}_videos.json
 
 # load user/pw from local static 
-/home/carl/src/richard/venv/bin/python ./manage.py loaddata auth.json
+python ./manage.py loaddata auth.json
 
 # run local server
 ./runsrv.sh
