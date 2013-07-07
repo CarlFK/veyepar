@@ -230,7 +230,6 @@ class add_eps(process.process):
           if self.options.verbose: print room
           loc,created = Location.objects.get_or_create(
                   name=room,)
-          loc.active = False
           if created: 
               seq+=1
               loc.sequence=seq
@@ -563,7 +562,8 @@ class add_eps(process.process):
             # https://github.com/zookeepr/zookeepr/issues/93
             event['released'] = True
 
-            event['license'] = self.options.license
+            event['license'] = "CC-BY-SA"
+
             event['description'] = row['Description']
             # from /zookeepr/controllers/schedule.py
             # row['Id'] = schedule.id
@@ -1938,12 +1938,16 @@ class add_eps(process.process):
             session = requests.session()
 
             # auth stuff goes here, kinda.
-            if self.options.show =="pyconca2012" :
+            if self.options.show =="pyconca2013" :
                 auth = pw.addeps[self.options.show]
-                session.post('http://2012.pycon.ca/login', 
+                print auth
+                # ret = session.post('http://2012.pycon.ca/login', 
+                ret = session.post(
+                        'https://2013.pycon.ca/en/account/login/',
                   {'username': auth['user'], 
                       'password': auth['password'], 
                       'login.submit':'required but meaningless'})
+                print "ret:", ret
 
             if self.options.show in ['chicagowebconf2012"',
                                         "cusec2013" , ]:
@@ -2113,6 +2117,8 @@ class add_eps(process.process):
             return self.ddu(schedule,show)
 
     def add_more_options(self, parser):
+        parser.add_option('--schedule', 
+          help='URI of schedule data - gets stored in new show record' )
         parser.add_option('-u', '--update', action="store_true", 
           help='update when diff, else print' )
         parser.add_option('-k', '--keys', action="store_true", 
@@ -2130,6 +2136,7 @@ class add_eps(process.process):
                              client=client,slug=self.options.show)
         if created:
           show.name = self.options.show.capitalize()
+          show.schedule_url = self.options.schedule
           show.save()
         
         if self.options.whack:
