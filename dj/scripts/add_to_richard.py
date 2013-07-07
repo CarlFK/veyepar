@@ -19,8 +19,8 @@ import pw
 
 class Richard(Process):
 
-    ready_state = 5
-    # ready_state = None
+    # ready_state = 5
+    ready_state = None
 
     def process_ep(self, ep):
         """ adds Episode to pyvideo
@@ -176,7 +176,7 @@ class Richard(Process):
             'state': state,
             'title': ep.name,
             'category': self.category_key,
-            # 'summary': summary,
+            'summary': summary,
             'source_url': ep.host_url,
             'copyright_text': ep.license,
             'tags': tags,
