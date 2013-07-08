@@ -282,6 +282,20 @@ pix_fmt=yuv411p" % parms
   # self.run_cmd(["firefox",p.last_url])
   return p.las
 
+ def push(self):
+  # rsync to data center box
+  print "testing push.py..."
+  import push
+  p=push.push()
+  p.set_options(force=True, verbose=True, 
+      upload_formats=self.upload_formats,
+      )
+  p.main()
+  ret = p.ret
+
+  return ret
+
+
  def post_yt(self):
   # post it to youtube test account (password is in pw.py)
   """
@@ -470,7 +484,7 @@ def main():
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    # t.make_source_dvs()
+    t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
     t.make_thumbs()
@@ -480,8 +494,9 @@ def main():
     t.encode()
     # t.ck_errors()
     # t.play_vid()
+    result['push'] = t.push()
     result['url'] = t.post_yt()
-    # result['richard'] = t.add_to_richard()
+    result['richard'] = t.add_to_richard()
     # result['email'] = t.email_url()
     # result['tweet'] = t.tweet()
     # t.csv()

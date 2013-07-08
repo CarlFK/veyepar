@@ -14,8 +14,6 @@ class push(process):
     ready_state = 3
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
-        return True
 
         # get a list of video files to upload
         files = []
@@ -39,14 +37,19 @@ class push(process):
 
             dest = "%s:%s" %( dest_host, dest_path )
 
+            # 'ssh -p 222' = use ssh on port 222
+
             cmd = ['rsync',  '-rtvP', '-e', 'ssh -p 222', 
                     f['pathname'], dest ] 
-            if self.options.verbose: print cmd
-            if self.options.test:
-                print "testing, not coppying, returing False"
-                ret = False
-            else:
-                """
+
+            ret = self.run_cmd(cmd)
+
+            self.ret = ret ## for test runner
+
+            # rync errors we should contend with
+            # 12 = "target dir does't exist" ??
+            # man rsync says 12=Error in rsync protocol data stream
+            """
 sending incremental file list
 rsync: change_dir#3 "/home/veyepar/Videos/veyepar/chipy/chipy_aug_2012" failed: No such file or directory (2)
 rsync error: errors selecting input/output files, dirs (code 3) at main.c(632) [receiver=3.0.3]
@@ -54,15 +57,11 @@ rsync: connection unexpectedly closed (9 bytes received so far) [sender]
 rsync error: error in rsync protocol data stream (code 12) at io.c(601) [sender=3.0.8]
 ret: 12
 """
-# So I guess 12 means "target dir does't exist"
-
-                p = subprocess.Popen( cmd )
-                ret = p.wait()
-                if self.options.verbose: print "ret:", ret
-                ret = ret == 0
 
         # tring to fix the db timeout problem
+        # this is bad - it steps on the current values im memory:
         # ep=Episode.objects.get(pk=ep.id)
+        # this seems to work:
         try:
             ep.save()
         except DatabaseError, e:
