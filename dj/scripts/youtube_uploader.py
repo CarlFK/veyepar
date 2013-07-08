@@ -10,7 +10,14 @@
 # "In API response feeds, descriptions are truncated to 500 characters unless one of the following conditions is true:..."
 # https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_media:description
 
-from urlparse import urlparse, parse_qs
+import os
+from urlparse import urlparse
+
+try:
+    from urlparse import parse_qs
+except ImportError:
+    # fall back for Python 2.5
+    from cgi import parse_qs
 
 import gdata.media
 import gdata.geo
@@ -22,9 +29,9 @@ from atom import ExtensionElement
 
 from gdata.youtube.service import YouTubeError
 
-import pw
 import progressbar
 
+import pw
 
 widgets = [
         'Upload: ',
@@ -269,12 +276,12 @@ if __name__ == '__main__':
     }
     """
 
+    veyepar_dir = os.path.expanduser('~/Videos/veyepar')
+    test_dir = os.path.join(veyepar_dir,"test_client/test_show/mp4")
+    test_file = os.path.join(test_dir,"Lets_make_a_Test.mp4")
 
-    print u.meta
-    print len(u.meta['description'])
-
-    u.files = [{'pathname':'/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4', 'ext':'mp4'}]
-    u.user = 'ndv'
+    u.files = [{'pathname':test_file, 'ext':'mp4'}]
+    u.user = 'test'
     u.private = True
     u.unlisted = True
 
