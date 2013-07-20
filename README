@@ -126,9 +126,28 @@ pw.py holds user/passwords, not checked in, make one from pw_samp.py
 
 add_to_richard.py - adds video url's to landing page
 
+12. visually review: richard, youtube, archive, title slide, encoding quality.  If good, manualy move state to email.  Once satified that everything is in place and no longer needs every video to be reviewed, run review_1.py to move evertyhing to next step. 
+
 email_url.py - emails presenter the richard URL again, this time encouraging them to advertise the URL to their social network, or report back any problmes they see.
+
+13. If needed, wait for presenter to reply.  for instance, if they never singed a release.  Move state to public when it is ready for public consumption.  Either using the web UI for each one, or review_2.py for all.
 
 mk_public.py - changes state from draft/hidden to public in youtube and richard
 
+
 12. tweet 
 tweet.py
+
+
+HACKING ON THE CODE
+There are no useful docs for setting up a development environment. 
+
+If you want to hack on this:
+Ubuntu LTS, likely any ubuntu/debian in the last 3 years.
+
+Build the encoder binary: https://github.com/CarlFK/veyepar/blob/master/setup/melt/mkmlt.sh 
+Setup a box for production using the steps at the top of this file.
+
+The test suite is often in a broken state, tyically it will error.  If it completes but shows tests failing, that is typically a real problem that should be addressed asap.
+
+
