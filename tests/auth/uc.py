@@ -25,8 +25,8 @@ token = session.cookies['csrftoken']
 print token
 
 login_data = {
-        'username':auth['user'], 
-        'password':auth['password'], 
+        'login-email':auth['user'], 
+        'login-password':auth['password'], 
         'csrfmiddlewaretoken':token,
         'next':'/'}
 

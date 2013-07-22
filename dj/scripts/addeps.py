@@ -1772,6 +1772,10 @@ class add_eps(process.process):
 
     def pycon2013(self,schedule,show):
 
+        # remvoe the schedule wrapper that protects json 
+        # from evil list constructors.
+        schedule = schedule['schedule']
+
         for s in schedule:
             if s['room'] == 'Grand Ballroom GH, Great America, Grand Ballroom CD, Grand Ballroom EF, Grand Ballroom AB, Mission City':
                 s['room'] = "Mission City"
@@ -1941,12 +1945,35 @@ class add_eps(process.process):
             if self.options.show =="pyconca2013" :
                 auth = pw.addeps[self.options.show]
                 print auth
-                # ret = session.post('http://2012.pycon.ca/login', 
-                ret = session.post(
-                        'https://2013.pycon.ca/en/account/login/',
-                  {'username': auth['user'], 
-                      'password': auth['password'], 
-                      'login.submit':'required but meaningless'})
+
+                # # scrape csrf token out of login page
+                # result = requests.get(auth['login_page'])
+                # soup = BeautifulSoup(x.text)
+                # token = soup.find('input', 
+                #        dict(name='csrfmiddlewaretoken'))['value']
+
+                # better than parsing html:
+                # get the token from the headers
+                session.get(auth['login_page'])
+                token = session.cookies['csrftoken']
+
+                # note to future self, keynames change.
+                # 2012 it was 'username'
+                # 2013 is now 'login-email'
+                # maybe this needs to be stored somewhere dynamic,
+                # not hardcoded?
+                # I suspect it will live in this file somewhere,
+                #  it is a detail similar to the keynames in the json.
+                login_data = {
+                        'login-email':auth['user'], 
+                        'login-password':auth['password'], 
+                        'csrfmiddlewaretoken':token, 
+                        'next':'/'}
+
+                ret = session.post(auth['login_page'], 
+                        data=login_data, 
+                        headers={'Referer':auth['login_page']})
+
                 print "ret:", ret
 
             if self.options.show in ['chicagowebconf2012"',
@@ -1963,6 +1990,9 @@ class add_eps(process.process):
                 payload = None
 
             response = session.get(url, params=payload, )
+
+            print "response:", response
+            print "response.text:", response.text
 
             if url[-4:]=='.csv':
                 schedule = list(csv.reader(f))
@@ -2009,7 +2039,8 @@ class add_eps(process.process):
             # this is Ver pycon2013
             return self.pycon2013(schedule,show)
 
-
+        if self.options.show =='pyconca2012':
+            return self.pyconca2012(schedule,show)
         if self.options.show =='pyconca2012':
             return self.pyconca2012(schedule,show)
 
