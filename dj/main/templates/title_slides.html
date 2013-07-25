@@ -1,0 +1,14 @@
+{# show.html #}
+{% extends "base.html" %}
+
+{% block head %}
+  <title>veyepar - Show: {{client.name}} {{show.name}} </title>
+{% endblock %}
+
+{% block content %}
+
+{% for episode in episodes %}
+<a href="E/{{episode.id}}/"><img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"></a><br/>
+
+{% endfor %}
+{% endblock %}

@@ -38,7 +38,7 @@ class mk_title(enc):
 
             cmd = ['rsync',  '-rtvP', '-e', 'ssh -p 222',
                     f['pathname'], dest ]
-            self.run_cmd(cmd)
+            # self.run_cmd(cmd)
 
         return 
 
@@ -47,10 +47,15 @@ class mk_title(enc):
 
         title_img=self.mk_title(episode)
 
-        files = [{'pathname':title_img,'dest':'titles'}] 
-        self.rsync(episode, files)
+        if self.options.rsync:
+            files = [{'pathname':title_img,'dest':'titles'}] 
+            self.rsync(episode, files)
 
         return False # not sure what this means.. we don't bump state
+
+    def add_more_options(self, parser):
+        parser.add_option('--rsync', action="store_true",
+            help="upload to DS box.")
 
 if __name__ == '__main__':
     p=mk_title()
