@@ -10,7 +10,7 @@
 # carl@stark:~$ ls /srv
 # flourish  pyvideo  test_pyvideo
 
-instance=pyvideo
+instance=dev_pyvideo
 
 source /home/carl/.virtualenvs/richard/bin/activate 
 

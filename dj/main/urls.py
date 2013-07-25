@@ -77,6 +77,9 @@ urlpatterns += patterns(
     url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/(?P<episode_id>\w+)/.*$', 
         episode_pdfs, name='pdf'),
 
+    url(r'title_slides/(?P<show_id>\w+)/', 
+        title_slides, name='title_slides'),
+
     url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/.*$', 
         episode_pdfs, name='pdfs'),
 

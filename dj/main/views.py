@@ -796,6 +796,19 @@ def dv_set(request, location_slug, start_date):
         context_instance=RequestContext(request) )
 
 
+def title_slides(request, show_id, ):
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+    episodes=Episode.objects.filter(show=show, 
+        location__active=True)
+    return render_to_response('title_slides.html',
+            {
+          'client':client,
+          'show':show,
+          'episodes':episodes,
+          },
+        context_instance=RequestContext(request) )
+
 def episodes(request, client_slug=None, show_slug=None, location_slug=None,
               start_day=None, state=None):
 # def episodes(request, client_slug=None, show_slug=None):

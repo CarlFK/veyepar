@@ -112,7 +112,7 @@ class Uploader(object):
 
         yt_service.email = gauth['email']
         yt_service.password = gauth['password']
-        yt_service.source = 'video eyebaal review'
+        yt_service.source = 'video eyeball review'
         yt_service.developer_key = gauth['dev_key']
         yt_service.client_id = gauth['user']
 
@@ -223,6 +223,7 @@ class Uploader(object):
         except gdata.youtube.service.YouTubeError, e:
             self.ret_text = 'request: %s\nerror: %s' % (video_entry.ToString(), e.__str__())
             ret = False
+            print "e:", e
             if self.debug_mode:
                 import code
                 code.interact(local=locals())
@@ -285,10 +286,11 @@ if __name__ == '__main__':
     u.private = True
     u.unlisted = True
 
+    u.debug_mode=True
+
     ret = u.upload()
 
-    # print u.ret_text
-    print
+    print ret
     print u.new_url
 
     # import code

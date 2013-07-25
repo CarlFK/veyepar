@@ -273,7 +273,7 @@
 		<Objects>
 			<String>
 				<expr>"NOT Released"</expr>
-				<fontcolor>(.93, .93, .93)</fontcolor>
+				<fontcolor>(.88, .88, .88)</fontcolor>
 				<FontName>'Helvetica-Bold'</FontName>
 				<fontsize>60</fontsize>
 				<height>'49.0 pt'</height>
@@ -617,7 +617,7 @@
 			</String>
 			<String>
 				<expr>"Unscheduled talk"</expr>
-				<fontcolor>(.93, .93, .93)</fontcolor>
+				<fontcolor>(.88, .88, .88)</fontcolor>
 				<fontname>'Helvetica'</fontname>
 				<fontsize>40</fontsize>
 				<height>28</height>

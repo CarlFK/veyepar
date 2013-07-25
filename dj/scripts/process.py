@@ -175,9 +175,6 @@ class process(object):
     for e in episodes:
       # next line requires the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
-      if ep.locked and self.options.show_locks: 
-          print "locked: ", ep
-          print ep.locked, ep.locked_by
       if self.options.unlock: ep.locked=None
       if ep.locked and not self.options.force:
         if self.options.verbose:
@@ -403,10 +400,10 @@ class process(object):
     parser.add_option('--test', action="store_true",
               help="test mode - do not make changes to the db.  maybe. "
                 "(not fully implemented, for development use.")
+    parser.add_option('--ready-state', type="int",
+              help="set self.ready_state" )
     parser.add_option('--force', action="store_true",
               help="override ready state and lock, use with care." )
-    parser.add_option('--show-locks', action="store_true",
-              help="show locked status." )
     parser.add_option('--unlock', action="store_true",
               help="clear locked status, use with care." )
     parser.add_option('--whack', action="store_true",
@@ -429,6 +426,9 @@ class process(object):
     if "pal" in self.options.dv_format:
         self.fps=25.0
         self.bpf=144000 
+
+    if self.options.ready_state:
+        self.ready_state = self.options.ready_state
 
     return 
 

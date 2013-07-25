@@ -44,14 +44,8 @@ class mk_title(enc):
 
 
     def process_ep(self, episode):
-        # make a title slide
-        svg_name = episode.show.client.title_svg \
-                if episode.show.client.title_svg \
-                else "title.svg"
 
-        template = os.path.join(self.show_dir, "bling", svg_name)
-        title_base = os.path.join(self.show_dir, "titles", episode.slug)
-        title_img=self.mk_title_png(template, title_base, episode)
+        title_img=self.mk_title(episode)
 
         files = [{'pathname':title_img,'dest':'titles'}] 
         self.rsync(episode, files)

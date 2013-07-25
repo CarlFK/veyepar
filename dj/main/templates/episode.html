@@ -6,11 +6,15 @@
 {% endblock %}
 
 {% block content %}
+<script>
+$(function() { 
+  $( "#accordian").accordian();
+});
+</script>
 
 --client <a href="{% url client client.slug %}">{{ client.slug }}</a>
 --show <a href="{% url episode_list client.slug show.slug%}">{{ show.slug }}</a>
 <br/>
-
 
 {% if prev_episode %}
   <a href="/main/E/{{ prev_episode.id }}">Prev: {{prev_episode.state }} {{prev_episode.name }}</a>

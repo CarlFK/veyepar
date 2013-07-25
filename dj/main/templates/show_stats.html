@@ -8,6 +8,9 @@
 
 {% block content %}
 
+<a href="{% url client client.slug %}">{{ client.name }}</a>
+<a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a>
+</p>
 [
 {% for s in states %}
 <span class="{% if s.1.0 == 1 or s.1.0 == 3 %}human{% else %}process{% endif %}">{{s.1.1}}:<a href="{% url episode_list client_slug=client.slug show_slug=show.slug state=forloop.counter0 %}">{{s.0}}</a></span>

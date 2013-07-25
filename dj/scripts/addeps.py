@@ -1772,10 +1772,6 @@ class add_eps(process.process):
 
     def pycon2013(self,schedule,show):
 
-        # remvoe the schedule wrapper that protects json 
-        # from evil list constructors.
-        schedule = schedule['schedule']
-
         for s in schedule:
             if s['room'] == 'Grand Ballroom GH, Great America, Grand Ballroom CD, Grand Ballroom EF, Grand Ballroom AB, Mission City':
                 s['room'] = "Mission City"
@@ -1865,6 +1861,31 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
+    def pyconca2013(self,schedule,show):
+
+        # remvoe the schedule wrapper that protects json 
+        # from evil list constructors.
+        schedule = schedule['schedule']
+        
+        # move Pleanary events into the location where the equipment is
+        for event in schedule:
+            if "Colony Ballroom" in event['room']:
+                event['room']="Colony Ballroom"
+
+        return self.symposion2(schedule,show)
+
+
+    def pyohio2013(self,schedule,show):
+
+        # move Pleanary events into the location where the equipment is
+        for event in schedule:
+            if "Cartoon 1" in event['room']:
+                event['room']="Cartoon 1"
+
+        return self.symposion2(schedule,show)
+
+
+
 #################################################3
 # main entry point 
 
@@ -1942,7 +1963,7 @@ class add_eps(process.process):
             session = requests.session()
 
             # auth stuff goes here, kinda.
-            if self.options.show =="pyconca2013" :
+            if self.options.show in[ "pyconca2013", "pyohio2013" ]:
                 auth = pw.addeps[self.options.show]
                 print auth
 
@@ -2035,18 +2056,22 @@ class add_eps(process.process):
         if self.options.show =='write_the_docs_2013':
             return self.lanyrd(schedule,show)
 
-        if url.endswith("/schedule/conference.json"):
-            # this is Ver pycon2013
-            return self.pycon2013(schedule,show)
+        if self.options.show =='pyohio2013':
+            return self.pyohio2013(schedule,show)
 
-        if self.options.show =='pyconca2012':
-            return self.pyconca2012(schedule,show)
+        if self.options.show =='pyconca2013':
+            return self.pyconca2013(schedule,show)
+
         if self.options.show =='pyconca2012':
             return self.pyconca2012(schedule,show)
 
         if self.options.show == 'pyconde2012':
             # pycon.de 2012 
             return self.pyconde2012(schedule,show)
+
+        if url.endswith("/schedule/conference.json"):
+            # this is Ver pycon2013
+            return self.pycon2013(schedule,show)
 
         # if self.options.show =='chicagowebconf2012':
         if url.endswith(".sched.org/api/session/export"):

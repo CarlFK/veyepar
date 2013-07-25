@@ -3,7 +3,7 @@
 """
 assembles raw cuts into final, titles, tweaks audio, encodes to format for upload.
 """
-import os,sys,subprocess
+import os, sys, subprocess
 import xml.etree.ElementTree
 import xml.etree.ElementTree as ET
 
@@ -182,40 +182,19 @@ class enc(process):
         }
     return texts
 
-  def mk_title_png(self, source, output_base, episode):
+  def mk_title_png(self, svg_name, png_name, episode):
     """
     Make a title slide png file.
     melt uses librsvg which doesn't support flow, 
     wich is needed for long titles, so render it to a .png using inkscape
-    TODO: pass svg in and get png back over stdio 
-      so that files are not created.
-      but no clue how to do that, and files aren't so bad.
     """
 
-    raw_svg=open(source).read()
-    tree=xml.etree.ElementTree.XMLID(raw_svg)
-
-    texts = self.get_title_text( episode )
-  
-    cooked_svg = self.mk_title_svg(raw_svg, texts)
-
-    # save svg to a file
-    # (no clue how else to pass svg to inkscape)
-    # strip 'broken' chars because inkscape can't handle the truth
-    # output_base=''.join([ c for c in output_base if c.isalpha()])
-    # output_base=''.join([ c for c in output_base if ord(c)<128])
-    # output_base=output_base.encode('utf-8','ignore')
-
-    cooked_svg_name='%s.svg'%output_base
-    open(cooked_svg_name,'w').write(cooked_svg)
-
     # create png file
-    png_name="%s.png"%output_base
     # inkscape does not return an error code on failure
     # so clean up previous run and 
     # check for the existance of a new png
     if os.path.exists(png_name):  os.remove(png_name)
-    cmd=["inkscape", cooked_svg_name, "--export-png", png_name]
+    cmd=["inkscape", svg_name, "--export-png", png_name]
     ret = self.run_cmds(episode,[cmd])
     ret = os.path.exists(png_name)
 
@@ -223,10 +202,61 @@ class enc(process):
     if self.options.verbose: print png_name
 
     if not ret: 
-        print "svg:", cooked_svg_name
+        print "svg:", svg_name
         png_name=None
 
     return png_name
+
+  def mk_title(self, episode):
+  
+        # make a title slide
+
+        # if we find titles/custom/(slug).svg, use that
+        # else make one from the tempalte
+        custom_svg_name= os.path.join(
+                self.show_dir, "titles", "custom", episode.slug + ".svg")
+        print "custom:", custom_svg_name
+        if os.path.exists(custom_svg_name):
+            cooked_svg_name = custom_svg_name
+        else:
+
+            svg_name = episode.show.client.title_svg \
+                    if episode.show.client.title_svg \
+                    else "%s_title.svg" % (episode.show.slug,)
+
+            print svg_name
+
+            template = os.path.join(self.show_dir, "bling", svg_name)
+            # happy_filename = episode.slug.encode('utf-8')
+            happy_filename = episode.slug
+            # happy_filename = ''.join([c for c in happy_filename if c.isalpha()])
+            title_base = os.path.join(self.show_dir, "titles", happy_filename)
+            raw_svg=open(template).read()
+            tree=xml.etree.ElementTree.XMLID(raw_svg)
+            texts = self.get_title_text( episode )
+            cooked_svg = self.mk_title_svg(raw_svg, texts)
+
+            # save svg to a file
+            # strip 'broken' chars because inkscape can't handle the truth
+            # output_base=''.join([ c for c in output_base if c.isalpha()])
+            # output_base=''.join([ c for c in output_base if ord(c)<128])
+            # output_base=output_base.encode('utf-8','ignore')
+
+            cooked_svg_name = os.path.join(
+                self.show_dir, "titles", '%s.svg'%episode.slug)
+            open(cooked_svg_name,'w').write(cooked_svg)
+
+
+        png_name = os.path.join(
+                self.show_dir, "titles", '%s.png'%episode.slug)
+
+        title_img=self.mk_title_png(cooked_svg_name, png_name, episode)
+
+        if title_img is None: 
+            print "missing title png"
+            return False
+
+        return title_img
 
   def mkmlt_1(self,title_img,credits_img,episode,cls,rfs):
         """
@@ -791,22 +821,7 @@ class enc(process):
 
     if cls:
 
-# make a title slide
-        svg_name = episode.show.client.title_svg \
-                if episode.show.client.title_svg \
-                else "%s_title.svg" % (episode.show.slug,)
-
-        print svg_name
-
-        template = os.path.join(self.show_dir, "bling", svg_name)
-        # happy_filename = episode.slug.encode('utf-8')
-        happy_filename = episode.slug
-        # happy_filename = ''.join([c for c in happy_filename if c.isalpha()])
-        title_base = os.path.join(self.show_dir, "titles", happy_filename)
-        title_img=self.mk_title_png(template, title_base, episode)
-        if title_img is None: 
-            print "missing title png"
-            return False
+        title_img = self.mk_title(episode)
 
 # define credits
         credits_img = episode.show.client.credits \

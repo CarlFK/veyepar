@@ -6,7 +6,7 @@
 from django.core.mail import get_connection, EmailMessage
 
 from process import process
-
+from django.conf import settings
 
 class email_url(process):
 

@@ -14,6 +14,7 @@
 <tr><td><a href="{% url pdfs 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf">recording_sheets.pdf</a></td></tr>
 <tr><td><a href="{% url pdfs 'release_agreements' show.id %}{{show.slug}}_release.pdf">release.pdf</a></td></tr>
 <tr><td><a href="{% url pdfs 'talk_signs' show.id %}{{show.slug}}_room_signs.pdf">room_signs.pdf</a></td></tr>
+<tr><td><a href="{% url pdfs 'title_slides' show.id %}">title slides</a></td></tr>
 <tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
 <tr><td><a href="{% url show_stats show.id %}" title="{{show.name}}">show stats</a></td></tr>
 <tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
@@ -43,6 +44,7 @@
         <th>episode.name</th>
         <th>episode.authors</th>
         <th>released</th>
+        <th>public</th>
       </tr>
     </thead>
 
@@ -65,8 +67,8 @@
         <td>{{episode.state}}</td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>
-{#        <td><a href="E/{{episode.id}}/claim_lock">[LOCK]</a></td> #}
         <td>{{episode.released}}</td>
+        <td><a href="{{episode.public_url}}">public</a></td>
       </tr>
     {% endfor %}
   </table>

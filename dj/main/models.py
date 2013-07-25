@@ -215,7 +215,7 @@ class Episode(models.Model):
 
     channelcopy = models.CharField(max_length=2,null=True,blank=True,
           help_text='m=mono, 01=copy left to right, 10=right to left.' )
-    license = models.CharField(max_length=10, null=True,blank=True,
+    license = models.CharField(max_length=20, null=True,blank=True,
             default='CC BY-SA',
             help_text='see http://creativecommons.org/licenses/')
     hidden = models.NullBooleanField(null=True,blank=True,

@@ -16,7 +16,7 @@ except ImportError:
             'user':'test@example.com', 'password':'abc' },
         }
 
-auth=addeps['pyconca2013']
+auth=addeps['pyohio2013']
 print auth
 
 session = requests.session()
@@ -36,9 +36,11 @@ ret = session.post(auth['login_page'],
 
 print "ret:", ret
 
-response = session.get('https://2013.pycon.ca/en/schedule/conference.json')
+# response = session.get('https://2013.pycon.ca/en/schedule/conference.json')
+response = session.get('http://pyohio.org/schedule/json/')
 # print response.text
 j = response.json()
-print j['schedule'][0]['contact']
+# print j['schedule'][0]['contact']
+print j[0]['contact']
 
 
