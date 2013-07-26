@@ -20,18 +20,6 @@ Show twinpact feed on slave display.
 
 veyepar:
 
-  store auth users (not pw) in client file.
-    This will define what hosts and accounts are used for everything under 
-    a client.  This should keep me from pushing node data into pyvideo.
-    accounts:
-      richard
-      youtube, vimio, archive
-      twitter
-      smtp - google (for email)
-      schedule feed: sched.org, lanyard, chipy, symposium 
-        (1:1 client:data source auth, I hope...)
-      
-
   last active date - 
     for shows - 
       put top 4 sows on the client page, 
@@ -55,7 +43,8 @@ veyepar:
         inkscape svg/png fail
         input files missing
         encoder fail
-      webm parameters
+
+  webm parameters
 
   command line parameter to set cfg file.
     give test script its own cfg
@@ -66,7 +55,7 @@ veyepar:
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      delete old version when replaced by new encode.
-     invalid tags cause fail and loop forever - fix this.
+     invalid tags cause fail and loop forever - fix this. (fixed by not setting tags)
      
   don't email presenter untill youtube is done processing.
     review_1.py is a good place to do this.
@@ -74,7 +63,7 @@ veyepar:
   state - need something to handle Canceled talks, breaks, etc.  
     disposition?  
 
-  flag - do not overwrite when syncing with conf db
+  flag - do not overwrite when syncing with conf db - this is to handle when I know better than the conference data.
 
   tweet hashtag - client or show or both?
   pyvideo.org category - client or show or both?
@@ -90,6 +79,11 @@ veyepar:
    Stop - make it work again - 
      I think it is a buffering problem - 
      the code needs to poll the db, not look at the local cashed value
+
+  add 2 formal steps:
+     make title
+     email title
+     (currently are done outside of the formal workflow steps, so hard to fix one and re-do)   
 
 encoding:
   soften jump cuts
