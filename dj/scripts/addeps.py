@@ -1735,14 +1735,11 @@ class add_eps(process.process):
             event['authors'] = ", ".join(event['authors'])
             event['emails'] = ", ".join(event['emails'])
 
-            if event['duration'] is None: event['duration']=5
+            # if event['duration'] is None: event['duration']=5
 
             seconds=(int(event['duration'] )) * 60
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             event['duration'] = "%02d:%02d:%02d" % hms
-
-            if raw['kind']=='phlenary':
-                event['locaton'] = "Mission"
 
 
         self.add_eps(events, show)
@@ -1878,8 +1875,26 @@ class add_eps(process.process):
 
         # move Pleanary events into the location where the equipment is
         for event in schedule:
+
             if "Cartoon 1" in event['room']:
                 event['room']="Cartoon 1"
+
+            if event['conf_url'] is None:
+                event['conf_url'] = 'http://pyohio.org/schedule/'
+
+            if event['license'] == '':
+                event['license'] = 'CC BY-SA 2.5 CA'
+
+            if event['authors'] is None:
+                event['authors'] = []
+
+            if event['contact'] is None:
+                event['contact'] = ['eric@intellovations.com']
+
+            if event['name'] == "Lightning Talks":
+                event['name'] = "%s Lightning Talks" % (
+                        event['start'].strftime('%A') )
+
 
         return self.symposion2(schedule,show)
 
