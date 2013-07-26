@@ -1699,7 +1699,6 @@ class add_eps(process.process):
         # pycon.us 2013
         # pprint.pprint(schedule)
 
-        
         rooms = self.get_rooms(schedule)
         # pprint.pprint(rooms)
 

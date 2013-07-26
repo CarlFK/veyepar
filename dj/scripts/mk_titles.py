@@ -38,7 +38,7 @@ class mk_title(enc):
 
             cmd = ['rsync',  '-rtvP', '-e', 'ssh -p 222',
                     f['pathname'], dest ]
-            # self.run_cmd(cmd)
+            self.run_cmd(cmd)
 
         return 
 
