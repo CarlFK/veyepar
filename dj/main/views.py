@@ -1076,7 +1076,7 @@ def episode(request, episode_no):
             # setup for next chapter
             start_chap=end_chap
         else:
-            chaps.append(())
+            chaps.append(('',''))
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.user.is_authenticated() and request.method == 'POST': 

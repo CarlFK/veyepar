@@ -19,8 +19,8 @@ import pw
 
 class Richard(Process):
 
-    ready_state = 5
-    # ready_state = None
+    # ready_state = 5
+    ready_state = None
 
     def process_ep(self, ep):
         """ adds Episode to pyvideo
@@ -278,6 +278,14 @@ class Richard(Process):
     def is_already_in_pyvideo(self, ep):
         # its truthiness implies that the video already exists in pyvideo
         return ep.public_url
+
+
+    def add_more_options(self, parser):
+        # oh wait.. I am not sure how to implement this...
+        # parser.add_option('--all', action="store_true",
+        #    help="process all, regardless of state. (does not change state)")
+        pass
+
 
 if __name__ == '__main__':
     p = Richard()
