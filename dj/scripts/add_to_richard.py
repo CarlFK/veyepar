@@ -19,8 +19,8 @@ import pw
 
 class Richard(Process):
 
-    # ready_state = 5
-    ready_state = None
+    ready_state = 5
+    # ready_state = None
 
     def process_ep(self, ep):
         """ adds Episode to pyvideo

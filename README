@@ -53,6 +53,7 @@ mkdirs.py (previous step) drops a copy in the show dir:
 show stats: shows longest title and name
 
 mk_titles.py - makes title screens for all videos
+and uploads to datacenter
 
 Do some sanity checks:
 browse to the show page:

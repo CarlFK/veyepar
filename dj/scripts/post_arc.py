@@ -200,16 +200,6 @@ class post(process):
         return ret
 
   def add_more_options(self, parser):
-        parser.add_option('--host-user', 
-            help='video host account name (pass stored in pw.py)')
-        parser.add_option('--rating', 
-            help="TV rating")
-        parser.add_option('-T', '--topics',
-            help="list of topics (user defined)")
-        parser.add_option('-C', '--category',
-            help = "-C list' to see full list" )
-        parser.add_option('--hidden',
-            help="availability on host: 0=Available, 1=Hidden, 2=Available to family, 4=Available to friends/family.")
         parser.add_option('--release-all', action="store_true",
             help="ignore the released setting.")
 

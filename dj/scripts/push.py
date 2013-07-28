@@ -14,6 +14,7 @@ class push(process):
     ready_state = 3
 
     def process_ep(self, ep):
+        return True
 
         # get a list of video files to upload
         files = []

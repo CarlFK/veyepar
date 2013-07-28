@@ -72,7 +72,6 @@ class tweet(process):
         return ret
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
         show = ep.show
         client = show.client
 

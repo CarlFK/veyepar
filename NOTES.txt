@@ -19,7 +19,10 @@ overview of good video:
  or so to let the viewer know the slide hasn't changed
  it is easier for people to understand what a presenter is saying when they can see the body language.  especially for people who are not native.
 
-setup: postgresql install/config.  nfs install/config, apache...
+setup: postgresql install/config.  nfs install/config, nginx...
+
+install ssh keys when sshd is on default port
+ssh-copy-id "-p 222 veyepar@nextdayvideo.com"
 
  mkfs.ext4 -L disk25 -O sparse_super,extent,uninit_bg -E lazy_itable_init=1 -m 0 /dev/abc
 

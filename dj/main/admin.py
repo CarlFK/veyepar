@@ -5,7 +5,7 @@ from django.utils.translation import ungettext
 from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_List, State, Log, fnify
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('sequence', 'name', 'description',)
+    list_display = ('sequence', 'name', 'bucket_id',)
     list_display_links = ('name',)
     list_editable = ('sequence', )
     admin_order_field = ('sequence', 'name',)
