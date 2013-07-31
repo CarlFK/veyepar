@@ -107,6 +107,9 @@ model:
     Sometimes this is per client, sometimes per show.
     thought: one field in each, if Show blank, look to client.
 
+  location:
+    channel_copy - audio misconfiguration is often caused by venu issues
+
 walpaper 
   logos:
     NextDayVideo, 
