@@ -19,8 +19,10 @@ class email_url(process):
         #  else use the youtube url.
         url = ep.public_url or ep.host_url
 
+        emails = ep.emails or self.client.contacts
+
         # If there is a URL, email and it is released, send email
-        if ep.emails and ep.released and url:
+        if emails and ep.released and url:
             # split on comma, strip spaces
             tos = [e.strip() for e in ep.emails.split(',')]
             subject = "Video up: %s" % ep.name

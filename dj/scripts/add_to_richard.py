@@ -51,7 +51,8 @@ class Richard(Process):
         if not self.options.test:
             create_category_if_missing( self.pyvideo_endpoint, 
                     self.host['user'], self.host['api_key'], 
-                    {'title': self.category_key})
+                    {'title': self.category_key,
+                        'description':ep.show.description})
         
         video_data = self.create_pyvideo_episode_dict(ep, state=2)
         # perhaps we could just update the dict based on scraped_meta

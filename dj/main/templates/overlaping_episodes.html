@@ -9,7 +9,7 @@
     <table>
         {% for episode in episodes %}
             <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
-            <td>{{episode.id}}</td>
+                <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a><td>
             <td>{{episode.sequence}}</td>
 <td style="padding-left: {{episode.start_px}}px;">
 <div style="background: black;width:{{episode.width_px}}">.</div></td>
