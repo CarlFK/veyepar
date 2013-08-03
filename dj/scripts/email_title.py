@@ -19,7 +19,7 @@ class email_title(process):
         emails = ep.emails or ep.show.client.contacts
 
         if emails: 
-            tos = ep.emails.split(',')
+            tos = emails.split(',')
             subject = Template("{{ep.show.name}}: Video metadata for your talk {{ep.name}}").render(Context({'ep':ep}))
             png_url = "http://veyepar.nextdayvideo.com/static/%s/%s/titles/%s.png" % ( ep.show.client.slug, ep.show.slug, ep.slug )
             body = Template( """
@@ -67,6 +67,7 @@ http://veyepar.nextdayvideo.com:8080/main/E/{{ep.id}}/
                 }    
 
             if self.options.test:
+                print "tos:", tos
                 print "subject:", subject
                 print "body:", body
                 ret = False
