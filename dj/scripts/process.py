@@ -296,7 +296,7 @@ class process(object):
         ret = self.process_eps(episodes)
         self.end=datetime.datetime.now()
         work_time = self.end-self.start
-        if work_time.seconds:
+        if work_time.seconds or True:
             print "run time: %s minutes" % (work_time.seconds/60)
 
         return ret
