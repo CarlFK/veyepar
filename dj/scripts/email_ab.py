@@ -43,7 +43,7 @@ http://veyepar.nextdayvideo.com:8080/main/E/{{ep.id}}/
             
             body = Template( 
                     self.body_template + self.footer 
-                    ).render(Context({ 'ep':ep, }))
+                    ).render(Context(context))
 
             # sender = 'Carl Karsten <carl@nextdayvideo.com>'
             sender = settings.EMAIL_SENDER
