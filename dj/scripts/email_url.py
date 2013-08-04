@@ -13,18 +13,19 @@ class email_url(process):
     ready_state = 7
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep
 
         # If there is a Richard (pyvideo) url, use that;
         #  else use the youtube url.
         url = ep.public_url or ep.host_url
 
-        emails = ep.emails or self.client.contacts
+        # if there is no email, use the client's.
+        # like for lightning talks.
+        emails = ep.emails or ep.show.client.contacts
 
         # If there is a URL, email and it is released, send email
         if emails and ep.released and url:
             # split on comma, strip spaces
-            tos = [e.strip() for e in ep.emails.split(',')]
+            tos = [e.strip() for e in emails.split(',')]
             subject = "Video up: %s" % ep.name
             body = """
     The video of your talk is posted:
@@ -48,8 +49,10 @@ class email_url(process):
             connection = get_connection()
             # sender = 'Carl Karsten <carl@nextdayvideo.com>'
             sender = settings.EMAIL_SENDER
+            # reply to both the sender and the show contacts
+            reply_to = [sender] + ep.show.client.contacts.split(',')
             headers = {
-                # 'Reply-To': "ChiPy <chicago@python.org>"
+                'Reply-To': reply_to,
                 # 'From': sender,
                 }    
             email = EmailMessage(subject, body, sender, tos, headers=headers ) 
