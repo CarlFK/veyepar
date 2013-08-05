@@ -32,7 +32,6 @@ Released: {{ep.released}}
 * "False" means you have requested not to be recorded, however the data is available for review in case you change your mind.
 
 The video will be titled with the following image:
-{{png_url}}
 http://veyepar.nextdayvideo.com/static/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 
 And the main page for the video will be here:
@@ -46,7 +45,7 @@ If everything looks good, you don't need to do anything. Good luck with your tal
 
 Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}}. The conference organizers will give you instructions on where to check in before your talk.  
 """
-    py_name = "email_title.py
+    py_name = "email_title.py"
          
 if __name__ == '__main__':
     p=email_title()
