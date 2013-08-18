@@ -276,7 +276,7 @@ class Episode(models.Model):
 
     class Meta:
         ordering = ["sequence"]
-
+        unique_together = [("show", "slug")]
   
 
 class Cut_List(models.Model):

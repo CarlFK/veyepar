@@ -12,3 +12,8 @@ Title   Lightning Talks
 # I don't want to see everything on one line or "Would you like to save this file?" 
 #
 # 
+# Start time, but no date.  
+# Even if the show is only one day, the date needs to be set somewhere, and my system is not the place.
+#
+# html tags in the text.  Markdown in the description is OK.
+#

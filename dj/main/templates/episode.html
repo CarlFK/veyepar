@@ -47,8 +47,8 @@ $(function() {
 <tr>
     <td>Segments</td> <td>
         {% for chap in chaps %}
-          {% if chap %}
-            {{chap.1.1}}
+          {% if chap.0 %}
+            {{chap.0.1}}
           {%endif%}
         {%endfor%}
     </td>
@@ -111,7 +111,9 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% for cl,chap,clrfform in clrffs %}
 
   {% if clrfform.errors %}
-  <tr> <td> {% for field in clrfform %}{{ field.errors }}{% endfor %} </td></tr>
+  <tr> {% for field in clrfform %}
+          <td>{{field.name}}{{ field.errors }}</td>
+       {% endfor %} </tr>
   {% endif %}
 
   <tr>
@@ -200,4 +202,10 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% endif %}
 </form>
 
+{% for chap in chaps %}
+  {% if chap.0 %}
+  <p>({{chap.0.1}})  {{chap.2.comment}}</p>
+  {%endif%}
+{%endfor%}
+ 
 {% endblock %}

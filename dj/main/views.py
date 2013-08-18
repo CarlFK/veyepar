@@ -1065,14 +1065,14 @@ def episode(request, episode_no):
         offset = None
 
     # making stuff up as I go along, so this is not to well thought out
-    start_chap = (0,"00:00:00") # frame, timestamp
+    start_chap = (0,"00:00") # frame, timestamp
     chaps,frame_total = [],0 
     for cut in cuts:
         if cut.apply:
             frame_total+=int(cut.duration())
             end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
               (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
-            chaps.append((start_chap,end_chap))
+            chaps.append((start_chap,end_chap,cut))
             # setup for next chapter
             start_chap=end_chap
         else:
