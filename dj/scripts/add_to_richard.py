@@ -17,7 +17,7 @@ from main.models import Show, Location, Episode
 
 import pw
 
-class Richard(Process):
+class add_to_richard(Process):
 
     ready_state = 5
     # ready_state = None

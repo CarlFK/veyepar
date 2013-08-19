@@ -61,6 +61,7 @@ episode:     XXXXXXXXX
     client,create = Client.objects.get_or_create(
             name='test client',slug='test_client', 
             )
+    client.category_key='test' 
     client.youtube_id='test' 
     client.archive_id='test' 
     client.bucket_id='nextdayvideo.test' 
