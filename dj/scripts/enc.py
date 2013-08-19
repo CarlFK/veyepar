@@ -676,51 +676,26 @@ class enc(process):
 
               if ext=='mp4':
                   # High Quality Master 720x480 NTSC
-                  tmp_pathname = os.path.join(
-                      self.tmp_dir,"%s.%s"%(episode.slug,ext))
 
                   parms = {
-                  	'abr': 128, 
-                    'vbr': 1024,
                     'dv_format': self.options.dv_format, 
                     'mlt': mlt_pathname, 
-                    'tmp': tmp_pathname, 
+                    'out': out_pathname, 
                     'threads': self.options.threads, 
                     'test': '',
 			              }
 
-                  if self.options.test:
-                      # parms['test'] = " out=300 "
-                      pass
-
-                  ffpreset_files = [
-                      '/usr/share/ffmpeg/libx264-hq.ffpreset',
-                      '/usr/share/ffmpeg/libx264-faster.ffpreset',
-                      '/usr/share/ffmpeg/libx264-ultrafast.ffpreset',
-                      ]
-
                   cmd="melt -verbose -progress "\
                   "-profile dv_%(dv_format)s %(mlt)s "\
-                  " %(test)s" \
-                  "-consumer avformat:%(tmp)s "\
+                  "-consumer avformat:%(out)s "\
                   "threads=%(threads)s "\
                   "progressive=1 "\
-                  "properties=x264-medium vb=%(vbr)sk "\
-                  "acodec=aac ab=%(abr)sk " \
+                  "properties=x264-medium"\
                   % parms 
 
-                  # search for a ffpreset file from the list of possibles
-                  for ffpreset_file in ffpreset_files:
-                      if os.path.exists( ffpreset_file ):
-                          ffpreset=open(ffpreset_file).read().split('\n')
-                          ffpreset = [i for i in ffpreset if i]
-                          cmd = cmd.split()
-                          # cmd.extend(ffpreset)
-                          # first found is all we want, so bail
-                          break
-
+                  cmd = cmd.split()
                   cmds=[cmd]
-                  cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
+                  # cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
                   if self.options.rm_temp:
                       cmds.append( ["rm", tmp_pathname] )
 
