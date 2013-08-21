@@ -1156,6 +1156,9 @@ def episode(request, episode_no):
             print "clrf errors:", clrfformset.errors
             print add_cutlist_to_ep.errors
     else:
+        # hide emails if user is not logged n
+        if not request.user.is_authenticated(): 
+            episode.emails = None
         episode_form = Episode_Form_small(instance=episode) 
         # init data with things in the queryset that need editing
         # this part seems to work.

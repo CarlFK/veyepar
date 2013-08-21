@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from datetime import datetime
+import pprint
 
 # copied from process.py
 import os, sys, subprocess
@@ -56,7 +57,7 @@ class Run_Tests(object):
   # make sample data: location, client, show, episode
   from main.views import make_test_data, del_test_data
   del_test_data()
-  self.ep=make_test_data(self.title)
+  self.episode=make_test_data(self.title)
   return
 
  def make_dirs(self):
@@ -172,6 +173,7 @@ pix_fmt=yuv411p" % parms
    tf.write('\n'.join(text))
    tf.close()
    
+   # create dv file from text and generated noise
    cmd = "melt \
  -profile %(format)s \
  -audio-track -producer noise out=%(audio_frames)s \
@@ -180,6 +182,8 @@ pix_fmt=yuv411p" % parms
  pix_fmt=yuv411p" % parms
    self.run_cmd(cmd.split())
 
+   # grab a frame
+   # (not sure why)
    cmd = "mplayer \
            -frames 1 \
            -ao null \
@@ -244,6 +248,7 @@ pix_fmt=yuv411p" % parms
     upload_formats=self.upload_formats, 
     rm_temp=False, debug_log=False)
   p.main()
+  self.episode = p.episode
   return
 
  def ck_errors(self):
@@ -274,7 +279,6 @@ pix_fmt=yuv411p" % parms
   p.set_options(force=True, verbose=True, 
       upload_formats=self.upload_formats,
       debug_log=True,
-      host_user="veyepar_test",
       )
   p.main()
  
@@ -329,7 +333,6 @@ pix_fmt=yuv411p" % parms
   p.private=True
   p.main()
   ret = p.pvo_url
-
   return ret
 
  def email_url(self):
@@ -337,10 +340,8 @@ pix_fmt=yuv411p" % parms
   import email_url
   p=email_url.email_url()
   p.set_options(force=True, verbose=True, 
-      host_user="test",
       )
   ret = p.main()
-
   return ret
 
 
@@ -370,7 +371,7 @@ pix_fmt=yuv411p" % parms
   tmp_dir = os.path.join("/tmp/veyepar_test/")
   if not os.path.exists(tmp_dir): os.makedirs(tmp_dir)
 
-  blip_file = os.path.join(self.show_dir, 'mp4', "%s.mp4" % (self.title,) )
+  blip_file = os.path.join(self.show_dir, 'mp4', "%s.mp4" % (self.episode.slug,) )
   # blip_file = "Veyepar_test-TestEpisode897.m4v"
   parms = {
           "tmp_dir":tmp_dir,
@@ -400,7 +401,7 @@ pix_fmt=yuv411p" % parms
   # sphinx transcribe an output file, check for GO FORWARD TEN METERS
   # someday this will wget the m4v from blip to see what they made
 
-  blip_file = os.path.join(self.show_dir, 'mp4', "%s.mp4" % (self.title,) )
+  blip_file = os.path.join(self.show_dir, 'mp4', "%s.mp4" % (self.episode.slug,) )
   # blip_file = "Veyepar_test-TestEpisode897.m4v"
 
   tmp_dir = os.path.join("/tmp/veyepar_test/")
@@ -453,7 +454,7 @@ pix_fmt=yuv411p" % parms
      for size in sizes:
          ext,expected_size = size
          fullpathname = os.path.join( self.show_dir, ext,
-                 "%s.%s" % (self.title, ext))
+                 "%s.%s" % (self.episode.slug, ext))
          st = os.stat(fullpathname)
          actual_size=st.st_size
          delta = expected_size - actual_size
@@ -477,8 +478,7 @@ def main():
     result={}
 
     t=Run_Tests() 
-    t.upload_formats=["mp4"]
-    # t.upload_formats=["ogv","mp4"]
+    t.upload_formats=["ogv","mp4"]
     t.title = "Let's make a Test"
 
     t.make_test_user()
@@ -502,10 +502,10 @@ def main():
     # t.csv()
     # result['video'] = t.ocr_test()
     # result['audio'] = t.sphinx_test()
-    # result['sizes'] = t.size_test()
+    result['sizes'] = t.size_test()
 
     print 
-    print 'test results', result
+    print 'test results', pprint.format(result)
 
 if __name__=='__main__':
     main()

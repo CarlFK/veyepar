@@ -454,8 +454,7 @@ class enc(process):
             playlist.insert(pos,new)
 
         channelcopy = episode.channelcopy or \
-            episode.location.channelcopy or \
-            self.options.channelcopy
+            episode.location.channelcopy 
 
         if channelcopy:
             if self.options.verbose: print 'channelcopy:', channelcopy
@@ -631,8 +630,7 @@ class enc(process):
             playlist.insert(pos,new)
 
         channelcopy = episode.channelcopy or \
-            episode.location.channelcopy or \
-            self.options.channelcopy
+            episode.location.channelcopy 
 
         if channelcopy:
             if self.options.verbose: print 'channelcopy:', channelcopy
@@ -843,6 +841,9 @@ class enc(process):
 
     if self.options.test: ret = False
 
+    # save the episode so the test suite can get the slug 
+    self.episode = episode
+
     return ret
 
 
@@ -853,12 +854,9 @@ class enc(process):
           help='copy .dv to temp files' )
         parser.add_option('--rm-temp', 
           help='remove large temp files' )
-        parser.add_option('--channelcopy', 
-          help='copy one channel to another.' )
         parser.add_option('--threads')
 
   def add_more_option_defaults(self, parser):
-        parser.set_defaults(channelcopy='01')
         parser.set_defaults(threads=2)
 
 if __name__ == '__main__':

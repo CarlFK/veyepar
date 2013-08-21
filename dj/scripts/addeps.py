@@ -306,7 +306,8 @@ class add_eps(process.process):
                 'start','duration', 
                 'released', 
                 'license', 
-                'conf_url', 'tags'
+                'conf_url', 'tags',
+                'host_url', 
                 )
 
         if self.options.test:
@@ -365,8 +366,9 @@ class add_eps(process.process):
                 episode.save()
             else:
                 # this is the show diff part.
-                if episode is None: print \
-                    ":%(conf_key)s not found in db, name:%(name)s" % row
+                if episode is None: 
+                    print ":%(conf_key)s not in db, name:%(name)s" % row
+                    print
 
                 else:
                     # check for diffs
@@ -379,14 +381,13 @@ class add_eps(process.process):
                     if diff_fields:
                         print 'veyepar #id name: #%s %s' % (
                                 episode.id, episode.name)
+                        print "http://veyepar.nextdayvideo.com:8080/main/show_stats/81/E/%s/" % ( episode.id, )
+                        print episode.conf_url
                         if self.options.verbose: 
                             pprint.pprint( diff_fields )
                         for f,a1,a2 in diff_fields:
                             print 'veyepar %s: %s' % (f,unicode(a1)[:60])
                             print ' source %s: %s' % (f,unicode(a2)[:60])
-                            print "http://veyepar.nextdayvideo.com:8080/main/show_stats/81/E/%s/" % ( episode.id, )
-                            print episode.conf_url
-
                         print
 
 
@@ -1694,13 +1695,10 @@ class add_eps(process.process):
 
         return 
 
-
     def symposion2(self, schedule, show):
         # pycon.us 2013
-        # pprint.pprint(schedule)
 
         rooms = self.get_rooms(schedule)
-        # pprint.pprint(rooms)
 
         self.add_rooms(rooms,show)
 
@@ -1718,6 +1716,7 @@ class add_eps(process.process):
             ('kind','tags'),
             ('conf_key','conf_key'),
             ('conf_url','conf_url'),
+            ('video_url','host_url'),
            ]
 
         events = self.generic_events(schedule, field_maps)
@@ -1741,6 +1740,23 @@ class add_eps(process.process):
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             event['duration'] = "%02d:%02d:%02d" % hms
 
+            if event['name']=='Keynote':
+                event['name'] = \
+                        '%s Keynote - %s' % (
+                        self.show.name, event['authors'])
+                event['description']= \
+                        'Keynote - %s\n%s\n' % (
+                        event['authors'],
+                        event['start'].strftime('%A, %B %d %Y %I %p') )
+
+            if event['name'] == "Lightning Talks":
+                event['name'] = "%s %s Lightning Talks" % (
+                        self.show.name,
+                        event['start'].strftime('%A %p') )
+                event['description']= \
+                        "%s Lightning Talks\n%s" % (
+                        self.show.name,
+                        event['start'].strftime('%A, %B %d %Y %I %p') )
 
         self.add_eps(events, show)
 
@@ -1873,9 +1889,9 @@ class add_eps(process.process):
 
     def pyohio2013(self,schedule,show):
 
-        # move Pleanary events into the location where the equipment is
         for event in schedule:
 
+            # move Pleanary events into the location where the equipment is
             if "Cartoon 1" in event['room']:
                 event['room']="Cartoon 1"
 
@@ -1888,12 +1904,8 @@ class add_eps(process.process):
             if event['authors'] is None:
                 event['authors'] = []
 
-            if event['contact'] is None:
-                event['contact'] = ['eric@intellovations.com']
-
-            if event['name'] == "Lightning Talks":
-                event['name'] = "%s Lightning Talks" % (
-                        event['start'].strftime('%A') )
+            if event['emails'] is None:
+                event['emails'] = []
 
 
         return self.symposion2(schedule,show)
@@ -1979,7 +1991,6 @@ class add_eps(process.process):
             # auth stuff goes here, kinda.
             if self.options.show in[ "pyconca2013", "pyohio2013" ]:
                 auth = pw.addeps[self.options.show]
-                print auth
 
                 # # scrape csrf token out of login page
                 # result = requests.get(auth['login_page'])
@@ -2026,8 +2037,8 @@ class add_eps(process.process):
 
             response = session.get(url, params=payload, )
 
-            print "response:", response
-            print "response.text:", response.text
+            # print "response:", response
+            # print "response.text:", response.text
 
             if url[-4:]=='.csv':
                 schedule = list(csv.reader(f))
@@ -2223,6 +2234,7 @@ class add_eps(process.process):
             rfs.delete()
             Episode.objects.filter(show=show).delete()
 
+        self.show = show
         self.one_show(show)
 
 if __name__ == '__main__':

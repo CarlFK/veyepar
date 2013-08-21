@@ -19,8 +19,8 @@ import pw
 
 class add_to_richard(Process):
 
-    ready_state = 5
-    # ready_state = None
+    # ready_state = 5
+    ready_state = None
 
     def process_ep(self, ep):
         """ adds Episode to pyvideo
@@ -289,6 +289,6 @@ class add_to_richard(Process):
 
 
 if __name__ == '__main__':
-    p = Richard()
+    p = add_to_richard()
     p.main()
 
