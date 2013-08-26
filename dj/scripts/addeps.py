@@ -1725,13 +1725,14 @@ class add_eps(process.process):
             # print event
 
             raw = event['raw']
-            if self.options.verbose: print "event", event
             if self.options.verbose: pprint.pprint(raw)
+            if self.options.verbose: print "event", event
             
             event['start'] = datetime.datetime.strptime(
                     event['start'],'%Y-%m-%dT%H:%M:%S')
 
             event['authors'] = ", ".join(event['authors'])
+            print event['emails']
             event['emails'] = ", ".join(event['emails'])
 
             # if event['duration'] is None: event['duration']=5
@@ -1904,8 +1905,9 @@ class add_eps(process.process):
             if event['authors'] is None:
                 event['authors'] = []
 
-            if event['emails'] is None:
-                event['emails'] = []
+            if ('contact' not in event) or \
+                    (event['contact'] is None):
+                event['contact'] = []
 
 
         return self.symposion2(schedule,show)
