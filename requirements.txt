@@ -22,4 +22,5 @@ boto
 requests
 
 django-databrowse
+django-extensions
 

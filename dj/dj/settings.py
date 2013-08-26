@@ -132,6 +132,10 @@ INSTALLED_APPS = (
     'django_databrowse',
 )
 
+if DEBUG:
+    INSTALLED_APPS += ("django_extensions",)
+
+
 try:    from local_settings import *
 except ImportError:    pass
 
