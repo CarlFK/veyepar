@@ -453,8 +453,11 @@ class enc(process):
                 'normalise':normalise} )
             playlist.insert(pos,new)
 
+        # default defined here:
+        # 01 is copy Left to Right 
         channelcopy = episode.channelcopy or \
-            episode.location.channelcopy 
+            episode.location.channelcopy or \
+            "01"
 
         if channelcopy:
             if self.options.verbose: print 'channelcopy:', channelcopy
