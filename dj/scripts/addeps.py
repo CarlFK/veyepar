@@ -1732,7 +1732,6 @@ class add_eps(process.process):
                     event['start'],'%Y-%m-%dT%H:%M:%S')
 
             event['authors'] = ", ".join(event['authors'])
-            print event['emails']
             event['emails'] = ", ".join(event['emails'])
 
             # if event['duration'] is None: event['duration']=5
