@@ -26,7 +26,8 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 
 class mk_public(process):
 
-    ready_state = 9
+    ready_state = None
+    # ready_state = 9
 
     def up_richard(self, ep):
 
@@ -64,7 +65,9 @@ class mk_public(process):
         # set richard state to live
  
         ret = True  # if something breaks, this will be false
-        if ep.public_url:
+
+        # don't make public if there is no host_url (youtube)
+        if ep.public_url and ep.host_url:
             ret = ret and self.up_richard(ep)
             if self.options.verbose: print "Richard public."
 

@@ -18,4 +18,5 @@ veyepar.db
 *.pdf
 *.jpg
 venv/
+dj/scripts/schedules/
 

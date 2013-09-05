@@ -3,11 +3,7 @@
 # email_url.py
 # emails the video URL to the presenters
 
-from django.core.mail import get_connection, EmailMessage
-
-from process import process
 from email_ab import email_ab
-from django.conf import settings
 
 class email_url(email_ab):
 
@@ -22,9 +18,8 @@ class email_url(email_ab):
     If you are satisfied, tweet it, blog it, whatever it.  No point in making videos if no one watches them.
     
     As soon as you or someone approves your video, it will be tweeted on @NextDayVideo which is what the attendees were told to follow.  It will also be sent to the event organizers in hopes that they add it to the event website.  
-
     """ 
-    py_name = "email_url.py
+    py_name = "email_url.py"
 
     def more_context(self, ep):
 
