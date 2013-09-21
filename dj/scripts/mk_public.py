@@ -26,8 +26,7 @@ from main.models import Show, Location, Episode, Raw_File, Cut_List
 
 class mk_public(process):
 
-    ready_state = None
-    # ready_state = 9
+    ready_state = 9
 
     def up_richard(self, ep):
 

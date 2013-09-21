@@ -18,22 +18,6 @@
    width="800">
   <defs
      id="defs3106">
-    <pattern
-       inkscape:stockid="Stripes 1:1"
-       id="Strips1_1"
-       patternTransform="translate(0,0) scale(10,10)"
-       height="1"
-       width="2"
-       patternUnits="userSpaceOnUse"
-       inkscape:collect="always">
-      <rect
-         id="rect5548"
-         height="2"
-         width="1"
-         y="-0.5"
-         x="0"
-         style="fill:black;stroke:none" />
-    </pattern>
     <linearGradient
        id="linearGradient4666">
       <stop
@@ -383,7 +367,7 @@
      inkscape:cx="560.78623"
      inkscape:cy="342.17488"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="776"
@@ -496,19 +480,19 @@
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial Italic;fill:#000000">Presents</tspan></text>
     <flowRoot
        id="flowRoot2576-7"
-       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="matrix(0.75219771,0,0,0.77919408,-242.47375,365.66121)"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#999999;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="matrix(0.85785489,0,0,1.1053786,-277.30348,325.76203)"
        inkscape:label="#flowRoot2414"
        xml:space="preserve"><flowRegion
          id="flowRegion2416-5"><rect
            height="95.016434"
            id="rect2418-9"
-           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#999999;fill-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
            width="684.7511"
            x="68.642532"
            y="121.71946" /></flowRegion><flowPara
          id="date"
-         style="fill:#ffffff;fill-opacity:1">September 21, 2013</flowPara></flowRoot>    <g
+         style="fill:#999999;fill-opacity:1">September 21, 2013</flowPara></flowRoot>    <g
        id="layer1-9"
        transform="matrix(0.46051115,0,0,0.33154776,452.20385,817.41656)"
        inkscape:label="Layer 1">

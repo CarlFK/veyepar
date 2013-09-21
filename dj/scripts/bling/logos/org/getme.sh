@@ -1,4 +1,7 @@
 #!/bin/bash -ex
+wget -N http://freegeekchicago.org/sites/all/themes/freegeek/img/logos/logo-246.png -O freegeekchicago.png
+
+exit
 # wget -N http://pycon.ca/static/sponsors/freshbooks.png
 wget -N http://s3.amazonaws.com/chipy/img/chipmunk.png
 wget -N http://photos3.meetupstatic.com/photos/theme_head/6/9/3/4/full_1166932.jpeg -O chicago_dev_happyhour.jpg

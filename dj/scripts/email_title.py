@@ -37,13 +37,13 @@ http://veyepar.nextdayvideo.com/static/{{ep.show.client.slug}}/{{ep.show.slug}}/
 And the main page for the video will be here:
 {{ep.public_url}}
 
-Problems with the text will need to be fixed in the conference database that drives this page:
+Problems with the text will need to be fixed in the event database that drives this page:
 {{ep.conf_url}}
 Except for odd word wrap on the title image.  If it bothers you, let us know how you would like it and we will try to accommodate. 
 
 If everything looks good, you don't need to do anything. Good luck with your talk, expect another email when the video is posted.
 
-Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}}. The conference organizers will give you instructions on where to check in before your talk.  
+Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} and you have been alloted {{ep.duration}} (h:m:s). The event organizers will give you instructions on how to check in before your talk.  
 """
     py_name = "email_title.py"
          

@@ -307,7 +307,7 @@ class add_eps(process.process):
                 'released', 
                 'license', 
                 'conf_url', 'tags',
-                'host_url', 
+                # 'host_url',  # for pycon.ca youtube URLs
                 )
 
         if self.options.test:

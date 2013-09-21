@@ -48,7 +48,9 @@ class mk_title(enc):
         title_img=self.mk_title(episode)
 
         if self.options.rsync:
-            files = [{'pathname':title_img,'dest':'titles'}] 
+            svg = title_img[:-3] + "svg"
+            files = [{'pathname':title_img,'dest':'titles'}, 
+                    {'pathname':svg,'dest':'titles'}] 
             self.rsync(episode, files)
 
         return False # not sure what this means.. we don't bump state
