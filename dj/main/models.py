@@ -243,6 +243,7 @@ class Episode(models.Model):
     def get_absolute_url(self):
         return ('episode', [self.id])
 
+    """
     # better version of django's get_next.. (this handles nuls).
     def _get_next_or_previous_by_FIELD(self, field, is_next, **kwargs):
         from django.utils.encoding import smart_str
@@ -265,7 +266,8 @@ class Episode(models.Model):
         self._get_next_or_previous_by_FIELD('start', is_next=False, **kwargs)
     def my_get_next_by_start(self,**kwargs):
         self._get_next_or_previous_by_FIELD('start', is_next=True, **kwargs)
- 
+    """
+
     def __unicode__(self):
         return self.name
 

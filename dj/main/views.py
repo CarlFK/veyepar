@@ -1045,13 +1045,13 @@ def episode(request, episode_no):
         # why Start/End can't be null:
         # http://code.djangoproject.com/ticket/13611
         # prev_episode = episode.get_previous_by_start(show=show)
-        prev_episode = episode.get_previous_by_id(show=show)
+        prev_episode = episode.get_previous_by_start(show=show)
     except Episode.DoesNotExist:
         # at edge of the set of nulls or values.  
         prev_episode = None
            
     try:
-        next_episode = episode.get_next_by_id(show=show)
+        next_episode = episode.get_next_by_start(show=show)
     except Episode.DoesNotExist:
         next_episode = None
 
