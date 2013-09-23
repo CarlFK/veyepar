@@ -29,7 +29,7 @@ class Client(models.Model):
     active = models.BooleanField(help_text="Turn off to hide from UI.")
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,help_text="dir name to store input files")
-    contacts = models.CharField(max_length=30, blank=True, 
+    contacts = models.CharField(max_length=300, blank=True, 
         help_text='emails of people putting on the event.')
 
     description = models.TextField(blank=True)

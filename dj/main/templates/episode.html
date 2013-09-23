@@ -177,7 +177,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
   <table border=1>
   <tbody>
     <tr>
-    <td>{{cl.raw_file.ocrtext}}</td>
+    <td>{{cl.raw_file.ocrtext|linebreaks}}</td>
     </tr>
   </tbody>
   </table>

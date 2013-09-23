@@ -44,7 +44,7 @@
         <th>episode.name</th>
         <th>episode.authors</th>
         <th>released</th>
-        <th>public</th>
+        <th>host<br>index</th>
       </tr>
     </thead>
 
@@ -68,7 +68,10 @@
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>
         <td>{{episode.released}}</td>
-        <td><a href="{{episode.public_url}}">public</a></td>
+        <td>
+            {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a> {% endif %}
+            {%if episode.public_url %}<a href="{{episode.public_url}}">R</a> {% endif %}
+        </td>
       </tr>
     {% endfor %}
   </table>

@@ -51,11 +51,12 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_display = ('id',
             'state',
             'name', 
+            'released', 
             'emails',
-            'archive_mp4_url',
-            'host_url',
 )
-    list_editable = ('state',)
+    list_editable = ('state',
+            'emails',
+            )
 
        
 	# 'sequence', 'name', 'state', 'state_bumper', 

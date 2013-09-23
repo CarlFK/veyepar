@@ -183,7 +183,8 @@ pix_fmt=yuv411p" % parms
    self.run_cmd(cmd.split())
 
    # grab a frame
-   # (not sure why)
+   # make_test_data does:
+   # client.credits="00000001.png"
    cmd = "mplayer \
            -frames 1 \
            -ao null \
@@ -478,13 +479,13 @@ def main():
     result={}
 
     t=Run_Tests() 
-    t.upload_formats=["ogv","mp4"]
+    t.upload_formats=["mp4"]
     t.title = "Let's make a Test"
 
-    t.make_test_user()
-    t.setup_test_data()
+    # t.make_test_user()
+    # t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    t.make_source_dvs()
+    # t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
     t.make_thumbs()

@@ -22,15 +22,6 @@ mlt="""
   <producer id="producer0" resource="/home/juser/vid/t2.dv" />
   <producer id="footer" resource="footer.png" in="0" out="0" /> 
 
-  <producer id="endtone" in="0" out="50">
-    <property name="mlt_type">producer</property>
-    <property name="length">20</property>
-    <property name="eof">pause</property>
-    <property name="mlt_service">ladspa.1047</property>
-    <property name="0">400</property>
-    <property name="1">0.3</property>
-  </producer>
-
   <playlist id="playlist0">
     <entry producer="title"/>
   </playlist>
@@ -65,7 +56,6 @@ mlt="""
 
   <playlist id="playlist2">
     <entry id="foot1" producer="footer"/>
-    <entry id="endtone1" producer="endtone"/>
   </playlist>
 
   <tractor id="tractor0">
@@ -420,9 +410,9 @@ class enc(process):
         pf.set('out',end)
 
         # add a tone to the end for testing audio encoder
-        pf = tree[1]['endtone1']
-        pf.set('in',x1)
-        pf.set('out',end)
+        # pf = tree[1]['endtone1']
+        # pf.set('in',x1)
+        # pf.set('out',end)
         # 0 and 1 didn't like being in the static area, so they live here.
         # pf.set('0',"250")
         # pf.set('1',"0.5")
