@@ -110,14 +110,8 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <tbody id="accordian">
 {% for cl,chap,clrfform in clrffs %}
 
-  {% if clrfform.errors %}
-  <tr> {% for field in clrfform %}
-          <td>{{field.name}}{{ field.errors }}</td>
-       {% endfor %} </tr>
-  {% endif %}
-
-  <tr>
-  <td>
+  <tr id="{{cl.raw_file.id}}"> 
+    <td>
   {{clrfform.clid}}
   <b>~/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}</b>
   <table border=1>
@@ -140,7 +134,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
     <td>
     <table border=1>
     <tbody>
-      <tr> <th></th> <th>Raw File</th> <th>Cut List</th> </tr>
+        <tr> <th></th> <th><a href="#{{cl.raw_file.id}}">Raw File</a></th> <th>Cut List</th> </tr>
 
       <tr><td></td>
         <td>{#{ clrfform.trash.label_tag }}{{ clrfform.trash }#}</td>
@@ -170,6 +164,12 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
   </tbody>
   </table>
   </tr>
+
+  {% if clrfform.errors %}
+  <tr> {% for field in clrfform %}
+          <td>{{field.name}}{{ field.errors }}</td>
+       {% endfor %} </tr>
+  {% endif %}
 
   {% if cl.raw_file.ocrtext %}
   <tr>
