@@ -59,7 +59,6 @@ class mk_public(process):
         return uploader.set_permission( ep.host_url )
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
         # set youtube to public
         # set richard state to live
  
