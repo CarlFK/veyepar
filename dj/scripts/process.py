@@ -206,7 +206,10 @@ class process(object):
             self.log_in(ep)
 
             if not self.options.quiet: print self.__class__.__name__, ep.id, ep.name
-            ret = self.process_ep(ep)
+            if self.options.skip:
+                ret = True
+            else:
+                ret = self.process_ep(ep)
             if self.options.verbose: print "process_ep:", ret
 
             # .process is long running (maybe, like encode or post) 
@@ -408,6 +411,8 @@ class process(object):
               help="clear locked status, use with care." )
     parser.add_option('--whack', action="store_true",
               help="whack current episodes, use with care." )
+    parser.add_option('--skip', action="store_true",
+              help="skip processing and bump state." )
     parser.add_option('--lag', type="int",
         help="delay in seconds between processing episodes.")
     parser.add_option('--poll',
