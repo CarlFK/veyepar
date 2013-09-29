@@ -53,7 +53,10 @@ http://veyepar.nextdayvideo.com:8080/main/E/{{ep.id}}/
 
             # sender = 'Carl Karsten <carl@nextdayvideo.com>'
             sender = settings.EMAIL_SENDER
-            reply_to = [sender] + ep.show.client.contacts.split(',')
+            # make a list of addresses:
+            reply_tos = [sender] + ep.show.client.contacts.split(',')
+            # headers={Reply-To... needs to be a string of comma seperated 
+            reply_to = ','.join( reply_tos )
             headers = {
                      'Reply-To': reply_to,
                     # 'From': sender,
