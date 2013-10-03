@@ -1,4 +1,7 @@
 #!/bin/bash -ex
+wget -N http://www.chicagoerlang.com/images/logo.png -O erlang_fact_light.png
+exit
+
 wget -N http://freegeekchicago.org/sites/all/themes/freegeek/img/logos/logo-246.png -O freegeekchicago.png
 
 exit

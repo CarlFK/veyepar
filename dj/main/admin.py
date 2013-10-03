@@ -50,12 +50,15 @@ class EpisodeAdmin(admin.ModelAdmin):
 
     list_display = ('id',
             'state',
+            'sequence', 
             'name', 
             'released', 
             'emails',
 )
     list_editable = ('state',
-            'emails',
+            'sequence', 
+            'released', 
+            # 'emails',
             )
 
        

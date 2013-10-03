@@ -34,11 +34,12 @@ Released: {{ep.released}}
 The video will be titled with the following image:
 http://veyepar.nextdayvideo.com/static/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 
-And the main page for the video will be here:
-{{ep.public_url}}
+{% if ep.public_url%} And the main page for the video will be here:
+  {{ep.public_url}} {% endif %}
 
 Problems with the text will need to be fixed in the event database that drives this page:
-{{ep.conf_url}}
+{{ep.conf_url}} {{ep.show.schedule_url}}
+
 Except for odd word wrap on the title image.  If it bothers you, let us know how you would like it and we will try to accommodate. 
 
 If everything looks good, you don't need to do anything. Good luck with your talk, expect another email when the video is posted.

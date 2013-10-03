@@ -81,6 +81,8 @@ veyepar:
      I think it is a buffering problem - 
      the code needs to poll the db, not look at the local cashed value
 
+   zip title svg and images
+      http://bazaar.launchpad.net/~inkscape.dev/inkscape/trunk/view/head:/share/extensions/svg_and_media_zip_output.py#L208
 
 encoding:
   soften jump cuts

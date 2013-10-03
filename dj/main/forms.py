@@ -23,7 +23,7 @@ class Episode_Form_Preshow(forms.ModelForm):
 
     class Meta:
         model = Episode
-        fields = (
+        fields = ('sequence',
                   'name', 'slug',
                   'show','location',
                   'start', 'duration',
