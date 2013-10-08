@@ -87,11 +87,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
 
 <form action="" method="POST">{% csrf_token %}
-{% if user.is_authenticated %}
-  <input type="submit" value="Save" />
-{% else %}
-  <p>(Not logged in)</p>
-{% endif %}
+<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
 
 <table border=1>
 <tbody>
@@ -99,11 +95,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 </tbody>
 </table>
 
-{% if user.is_authenticated %}
-  <input type="submit" value="Save" />
-{% else %}
-  <p>(Not logged in)</p>
-{% endif %}
+<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
 
 {{ clrfformset.management_form }}
 <table border=1>
@@ -195,11 +187,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 </tbody>
 </table>
 
-{% if user.is_authenticated %}
-  <input type="submit" value="Save" />
-{% else %}
-  <p>(Not logged in)</p>
-{% endif %}
+<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
 </form>
 
 {% for chap in chaps %}
