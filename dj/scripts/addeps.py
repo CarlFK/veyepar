@@ -2091,8 +2091,11 @@ class add_eps(process.process):
         if self.options.show =='pyconca2012':
             return self.pyconca2012(schedule,show)
 
+        if self.options.show == 'pyconde2013':
+            # "same as last year"
+            return self.pyconde2012(schedule,show)
+
         if self.options.show == 'pyconde2012':
-            # pycon.de 2012 
             return self.pyconde2012(schedule,show)
 
         if url.endswith("/schedule/conference.json"):
