@@ -1468,6 +1468,7 @@ class add_eps(process.process):
 
 
     def pyconde2012(self,schedule,show):
+        # pycon 2012 adn 13
         # pprint.pprint(schedule)
 
         rooms = self.get_rooms(schedule )
