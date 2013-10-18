@@ -11,6 +11,8 @@ from steve.richardapi import create_category_if_missing, create_video, update_vi
 from steve.util import scrapevideo
 from steve.restapi import API, get_content
 
+import requests
+
 from django.template.defaultfilters import linebreaks, urlize, force_escape
 
 from main.models import Show, Location, Episode
@@ -182,7 +184,7 @@ class add_to_richard(Process):
             'tags': tags,
             'speakers': speakers,
             'recorded': ep.start.isoformat(),
-            'language': 'English',
+            'language': 'German',
             'duration': int(ep.get_minutes()),
             'video_ogv_url': ep.archive_ogv_url,
             'video_mp4_url': mp4url, 
@@ -269,6 +271,12 @@ class add_to_richard(Process):
                 break
             except KeyError as e: 
                 print "KeyError", e
+            except requests.exceptions.Timeout as e: 
+                # requests.exceptions.Timeout: HTTPConnectionPool(host='www.youtube.com', port=80): Request timed out. (timeout=3)
+                print "requests.exceptions.Timeout:", e
+                print "looping..."
+
+
             
         if self.options.verbose: 
             pprint.pprint( scraped_meta )
