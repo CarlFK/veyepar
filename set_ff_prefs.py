@@ -21,7 +21,7 @@ else:
     settings_path= os.path.join(home_dir, ".mozilla","firefox",d['path'],"user.js")
     config="""
 user_pref("capability.policy.policynames", "localfilelinks");
-user_pref("capability.policy.localfilelinks.sites", "http://localhost:8080");
+user_pref("capability.policy.localfilelinks.sites", "http://localhost:8080","http://veyepar.nextdayvideo.com:8080");
 user_pref("capability.policy.localfilelinks.checkloaduri.enabled", "allAccess");
 """
 
