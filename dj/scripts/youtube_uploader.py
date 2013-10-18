@@ -72,6 +72,10 @@ class ProgressFile(file):
             widgets=widgets, maxval=self.len)
         self.pbar.start()
 
+    @property
+    def name(self):
+        return super(ProgressFile, self).name.encode('ascii', 'replace')
+
     def size(self):
         return self.len
 
