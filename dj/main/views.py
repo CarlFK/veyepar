@@ -603,12 +603,13 @@ def show_stats(request, show_id, ):
     # so those should be cleaned up.
     dates=[] 
 
-    for ep in raw_files:
-        dt = ep.start.date()
+    for rf in raw_files:
+        print rf.id
+        dt = rf.start.date()
         if dt not in dates: dates.append(dt)
 
-    for rf in episodes:
-        dt = rf.start.date()
+    for ep in episodes:
+        dt = ep.start.date()
         if dt not in dates: dates.append(dt)
 
     dates.sort()
