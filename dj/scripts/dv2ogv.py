@@ -11,6 +11,16 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
 class mkpreview(process):
 
+    def rsync(self, f):
+
+        dest = "veyepar@nextdayvideo.com:static/veyepar/pyconde/pyconde2013/dv/KOMED_Saal/2013-10-15"
+
+        cmd = ['rsync',  '-tvP', '-e', 'ssh -p 222',
+            f['pathname'], dest ]
+        print cmd
+        self.run_cmd(cmd)
+
+
     def one_dv(self,loc_dir,dv):
         print dv.filename, 
         src = os.path.join(loc_dir,dv.filename)
@@ -26,6 +36,9 @@ class mkpreview(process):
                 print "testing"
             else:
                 p=subprocess.Popen(cmd).wait()
+                
+        self.rsync({'pathname':dst})
+
         return
    
     def process_ep(self, ep):
