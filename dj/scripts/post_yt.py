@@ -4,6 +4,7 @@
 
 import youtube_uploader
 import archive_uploader
+import rax_uploader
 
 import os
 import pprint
@@ -222,6 +223,55 @@ class post(process):
 
             return archive_success
 
+
+    def do_rax(self, ep, files, meta):
+        # upload to archive.org too.. yuck.
+        # this should be in post_arc.py, but
+        # but I don't want 2 processes uploading at the same time.
+        # bcause bandwidth?
+
+        uploader = rax_uploader.Uploader()
+
+        uploader.user = ep.show.client.rax_id
+        uploader.bucket_id = ep.show.client.bucket_id
+
+        for f in files:
+
+            uploader.pathname = f['pathname']
+
+            if self.options.test:
+                print 'test mode...'
+                print 'skipping rax_uploader .upload()'
+
+            # elif ep.rax_mp4_url:
+            #    print "skipping archive, already there."
+            #    rax_success = True
+
+            else:
+
+                # actually upload
+                # uploader.debug_mode=True
+                success = uploader.upload()
+                if success:
+                    if self.options.verbose: print uploader.new_url
+                    # this is pretty gross.
+                    # store the url
+                    if f['ext'] == "mp4":
+                        ep.rax_mp4_url = uploader.new_url
+                    elif f['ext'] == "ogv":
+                        ep.rax_ogv_url = uploader.new_url
+
+                    # hook for tests so that it can be browsed
+                    # self.rax_url = uploader.new_url
+                    # for test framework
+                    self.last_url = uploader.new_url
+
+
+                else:
+                    print "rax error!"
+
+            return success
+
     def process_ep(self, ep):
 
         if not ep.released: # and not self.options.release_all:
@@ -245,6 +295,9 @@ class post(process):
         if self.options.skip_arc: archive_success = True
         else: archive_success = self.do_arc(ep,files,meta)
 
+        if self.options.skip_rax: rax_success = True
+        else: rax_success = self.do_rax(ep,files,meta)
+
         # tring to fix the db timeout problem
         try:
             ep.save()
@@ -254,13 +307,16 @@ class post(process):
             connection.connection = None
             ep.save()
 
-        return youtube_success and archive_success
+        return youtube_success \
+                and archive_success \
+                and rax_success
 
     def add_more_options(self, parser):
         parser.add_option('--skip-yt', action="store_true",
             help="Don't try uploading to YouTube.")
-
         parser.add_option('--skip-arc', action="store_true",
+            help="Don't try uploading to archive.org.")
+        parser.add_option('--skip-rax', action="store_true",
             help="Don't try uploading to archive.org.")
 
         parser.add_option('--release-all', action="store_true",

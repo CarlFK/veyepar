@@ -58,6 +58,7 @@ class Client(models.Model):
     archive_id = models.CharField(max_length=10, blank=True, null=True)
     vimeo_id = models.CharField(max_length=10, blank=True, null=True)
     blip_id = models.CharField(max_length=10, blank=True, null=True)
+    rax_id = models.CharField(max_length=10, blank=True, null=True)
     richard_id = models.CharField(max_length=10, blank=True, null=True)
     email_id = models.CharField(max_length=10, blank=True, null=True)
     tweet_id = models.CharField(max_length=10, blank=True, null=True)
@@ -232,6 +233,8 @@ class Episode(models.Model):
         help_text = "URL public can use to dl an ogv (like archive.org")
     archive_mp4_url = models.CharField(max_length=255, null=True,blank=True,
         help_text = "URL public can use to dl an mp4. (like archive.org")
+    rax_mp4_url = models.CharField(max_length=255, null=True,blank=True,
+        help_text = "URL public can use to stream an mp4. (like rackspace cdn")
     twitter_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL of tweet to email presenters for retweeting")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')

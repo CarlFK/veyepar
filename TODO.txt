@@ -97,11 +97,17 @@ slugify talk titles-
   add -NNN to deal with colisions, like "keynote-1"
 
 model:
+  
+  episode:
+    languge (German...)
+
   child table of output files
     mp4, ogv, mp3, facc...
     text: irc logs, transcript, tweets
 
   change duration from "hh:mm:ss" to float(sec)
+  add a real duration of how long the encoded video is
+    - sum of segments is likely good enough
   
   BucketID / Richard Category
     Sometimes this is per client, sometimes per show.

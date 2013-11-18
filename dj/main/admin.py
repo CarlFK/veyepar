@@ -53,13 +53,13 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'sequence', 
             'start', 
             'name', 
-            'released', 
+            'duration', 
             'emails',
 )
     list_editable = ('state',
             # 'sequence', 
             'start', 
-            'released', 
+            'duration', 
             # 'emails',
             )
 
@@ -71,7 +71,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     #     'start','end',)
     # list_display = ( 'sequence', 'name', 'state', 'state_bumper', 'duration' )
     list_display_links = ('id',)
-    ordering = ('sequence', )
+    ordering = ('start', )
     date_hierarchy = 'start'
             # 'locked','locked_by', )
     # list_editable = ('state','duration')

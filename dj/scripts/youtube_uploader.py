@@ -9,6 +9,7 @@
 
 # "In API response feeds, descriptions are truncated to 500 characters unless one of the following conditions is true:..."
 # https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_media:description
+# removing the [:500] because I hope one is true
 
 import os
 from urlparse import urlparse
@@ -159,7 +160,8 @@ class Uploader(object):
                 text=self.meta['title']),
             description=gdata.media.Description(
                 description_type='plain',
-                text=self.meta['description'][:500]),
+                # text=self.meta['description'][:500]),
+                text=self.meta['description']),
             keywords=gdata.media.Keywords(
                 text=tags ),
             category=[gdata.media.Category(

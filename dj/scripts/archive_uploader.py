@@ -36,10 +36,8 @@ except ImportError:
 # following http://docs.pythonboto.org/en/latest/s3_tut.html
 # http://archive.org/catalog.php?history=1&identifier=nextdayvideo.test
 # http://archive.org/details/nextdayvideo.test/foobar 
-
-# for testing
+# http://boto.readthedocs.org/en/latest/ref/file.html#boto.file.connection.FileConnection.get_bucket
 # http://archive.org/~vmb/abouts3.html#testcollection
-# x-archive-meta-collection:test_collection 
 
 def auth(upload_user):
 
@@ -75,6 +73,7 @@ class Uploader(object):
     key_id = "" # slug used to make URL
 
     debug_mode = False
+    test = False
 
     # return attributes:
     ret_text = ''
@@ -83,7 +82,11 @@ class Uploader(object):
     def upload(self):
 
         service = auth(self.user)
-        bucket = service.get_bucket(self.bucket_id)
+
+        headers={}
+        if self.test:
+            headers['x-archive-meta-collection'] = 'test_collection'
+        bucket = service.get_bucket(self.bucket_id, headers=headers)
         key = boto.s3.key.Key(bucket)
         key.key = self.key_id
 
@@ -94,7 +97,6 @@ class Uploader(object):
             # actually upload
             ret = key.set_contents_from_file(pf)
             # ret is the number of bytes in the file
-
 
             if self.debug_mode:
                 import code
@@ -120,6 +122,7 @@ class Uploader(object):
 
         return ret
 
+
 if __name__ == '__main__':
 
     u = Uploader()
@@ -129,6 +132,7 @@ if __name__ == '__main__':
     u.key_id='test.mp4'
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4'
     u.debug_mode = False ## True drops to a >>> prompt after upload
+    u.test = True ## will be deleted in 30 days
 
     ret = u.upload()
 

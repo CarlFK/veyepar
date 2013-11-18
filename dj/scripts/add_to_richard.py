@@ -172,7 +172,7 @@ class add_to_richard(Process):
         speakers = self.clean_pyvideo_speakers(ep)
         tags = self.clean_pyvideo_tags(ep)
         summary = self.clean_pyvideo_summary(ep)
-        mp4url = self.clean_archive_mp4_url(ep)
+        # mp4url = self.clean_archive_mp4_url(ep)
         
         video_data = {
             'state': state,
@@ -184,11 +184,12 @@ class add_to_richard(Process):
             'tags': tags,
             'speakers': speakers,
             'recorded': ep.start.isoformat(),
-            'language': 'German',
+            # 'language': 'German',
+            'language': 'English',
             'duration': int(ep.get_minutes()),
             'video_ogv_url': ep.archive_ogv_url,
-            'video_mp4_url': mp4url, 
-            'video_mp4_download_only': True,
+            'video_mp4_url': ep.rax_mp4_url,
+            'video_mp4_download_only': False,
         }
         return video_data
 
