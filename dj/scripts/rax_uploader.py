@@ -5,13 +5,9 @@
 # that is a lie.  it is really called from post_yt.py.  
 
 
-import pprint
-
 import pyrax
 from pyrax.exceptions import PyraxException
-from urllib import quote
-
-from collections import defaultdict
+import urllib 
 
 # The following 2 imports are wrapped in try/except so that 
 # this code will run without any additional files.
@@ -20,14 +16,19 @@ try:
     # as data is read, it prints a visible progress bar 
     from youtube_uploader import ProgressFile
 except ImportError:
+    # or just use python's open for testing
     ProgressFile = open
 
 try:
     # read credentials from a file
     from pw import rax 
 except ImportError:
+    # https://mycloud.rackspace.com/account#settings
+    # Username:
+    # API Key:
+
     # you can fill in your credentials here
-    # but better to put in pw.py so that they don't leak
+    # but better to put in pw.py 
     rax={
             "test":{
                 'user': "abc",
@@ -49,23 +50,19 @@ class Uploader(object):
     # input attributes:
     pathname = ''  # path to video file to upload`
 
-    user = '' # key to lookup user/pw in pw.py
+    user = '' # key to lookup user/pw in rax{} typically stored in pw.py
     bucket_id = "testing" # archive/s3 butcket - There is some limit on size?
-    key_id = "" # slug used to make URL
 
     debug_mode = False
-    test = False
 
     # return attributes:
-    ret_text = ''
+    ret_text = ''  # TODO: return error text
     new_url = ''
 
     def upload(self):
 
         cf = auth(self.user)
         container = cf.get_container(self.bucket_id)
-
-        results = defaultdict(dict)
 
         pf = ProgressFile(self.pathname, 'r')
 
@@ -77,8 +74,11 @@ class Uploader(object):
             if self.debug_mode:
                 import code
                 code.interact(local=locals())
-
-            self.new_url = container.cdn_streaming_uri +"/"+ quote(obj.name)
+            
+            # urllib.quote  
+            # filenames may have chars that need to be quoted for a URL.
+            # cdn_streaming because.. video? (not sure really)
+            self.new_url = container.cdn_streaming_uri +"/"+ urllib.quote(obj.name)
             ret = True
 
         except Exception as e:
@@ -100,10 +100,8 @@ if __name__ == '__main__':
 
     u.user = 'test'
     u.bucket_id = 'testing' # we defined this on rackspace gui
-    u.key_id='test.mp4'
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4'
     u.debug_mode = False ## True drops to a >>> prompt after upload
-    u.test = True ## will be deleted in 30 days
 
     ret = u.upload()
 
