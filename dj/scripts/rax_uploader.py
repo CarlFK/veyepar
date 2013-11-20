@@ -6,6 +6,8 @@
 
 
 import pyrax
+pyrax.set_setting("identity_type", "rackspace")
+
 from pyrax.exceptions import PyraxException
 import urllib 
 
@@ -30,7 +32,7 @@ except ImportError:
     # you can fill in your credentials here
     # but better to put in pw.py 
     rax={
-            "test":{
+            "testact":{
                 'user': "abc",
                 "api_key": "123"
                 }   
@@ -39,8 +41,6 @@ except ImportError:
 def auth(upload_user="test"):
 
     auth = rax[upload_user] ## from dict of credentials 
-    
-    pyrax.set_setting("identity_type", "rackspace")
     pyrax.set_credentials( username=auth['user'], password=auth['api_key'])
     return pyrax.cloudfiles
 
@@ -48,10 +48,10 @@ def auth(upload_user="test"):
 class Uploader(object):
 
     # input attributes:
-    pathname = ''  # path to video file to upload`
+    pathname = ''  # path to video file to upload
 
     user = '' # key to lookup user/pw in rax{} typically stored in pw.py
-    bucket_id = "testing" # archive/s3 butcket - There is some limit on size?
+    bucket_id = "" # archive/s3 butcket, or container ID for rax
 
     debug_mode = False
 
@@ -98,8 +98,9 @@ if __name__ == '__main__':
 
     u = Uploader()
 
-    u.user = 'test'
-    u.bucket_id = 'testing' # we defined this on rackspace gui
+    # senseable values for testing.
+    u.user = 'testact'
+    u.bucket_id = 'testing' # define this on rackspace gui
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4'
     u.debug_mode = False ## True drops to a >>> prompt after upload
 
