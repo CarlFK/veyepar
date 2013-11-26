@@ -876,7 +876,6 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                     'state':1,
                     }
                 # roll the new episode into the query set
-                episodes=Episode.objects.filter(show=show).order_by('sequence')
             else:
                 # print form
                 inits=None # (prevents form from being created below)
@@ -929,6 +928,41 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         context_instance=RequestContext(request) )
 
  
+def approve_episode(request,episode_id, episode_slug, edit_key):
+    """
+    Allow someone to approve a video
+    Lets hope that the edit_key does not get abused.
+    """
+    episode=get_object_or_404( Episode, id=episode_id )
+    funny=episode.slug <> episode_slug
+    if episode.edit_key == edit_key:
+        if episode.state == 6: # review_2 -  TODO use state.slug?
+            if request.method == 'POST':
+                # all systems go! Approve the video!
+                episode.state += 1;
+                episode.save()
+
+                template = 'approved'
+
+            else:
+                # give the reviewer the Approve button
+                template = "approve"
+        else:
+
+            # not in review 2 state
+            # likely someone else already approved it
+            template = "not_ready"
+
+    else:
+        # bad key
+        # who knows what is going on here.
+        template = "bad_key"
+
+
+    return render_to_response("approve/%s.html"%template,
+                    { 'episode':episode,
+                    },
+                    context_instance=RequestContext(request) )
 
 def overlaping_episodes(request,show_id):
 

@@ -6,11 +6,10 @@
 {% endblock %}
 
 {% block content %}
-<script>
-$(function() { 
-  $( "#accordian").accordian();
-});
-</script>
+
+approve_episode 
+{{ episode.edit_key }}
+<a href={% url approve_episode episode.id episode.slug episode.edit_key %}>approve</a><br/>
 
 --client <a href="{% url client client.slug %}">{{ client.slug }}</a>
 --show <a href="{% url episode_list client.slug show.slug%}">{{ show.slug }}</a>

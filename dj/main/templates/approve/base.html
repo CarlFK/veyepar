@@ -1,0 +1,46 @@
+{# approve/base.html #}
+{% extends "base.html" %}
+
+{% block head %}
+<title>veyepar: approve {{episode.name}}</title>
+{% endblock %}
+
+{% block content %}
+
+<table>
+<tbody>
+<tr><td>Name</td><td><b>{{episode.name}}</b></td></tr>
+<tr><td>Author(s)</td><td>{{episode.authors}} </td></tr>
+<tr><td>Location</td><td>{{episode.location}} </td></tr>
+<tr><td>Date</td><td>{{episode.start|date:"b D d"}}</td></tr>
+<tr><td>state</td><td>{{episode.state}}</td></tr>
+<tr><td>url</td><td>
+{% if episode.public_url %}
+  <a href="{{episode.public_url}}">{{episode.public_url}}</a>
+{% else %}
+    {% if episode.host_url %}
+      <a href="{{episode.host_url}}">{{episode.host_url}}</a>
+    {% endif %}
+{% endif %}
+       </td></tr>
+
+</tbody>
+</table>
+
+{% block point  %}
+
+{% endblock %}
+
+If you were hoping to update the description, 
+{% if episode.conf_url %}
+the data is synced from the event's database, 
+so adjustments need to be made to 
+  <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
+  If you know how to adjust that, do it.
+  Otherwise,
+{% endif %}
+reply to the "subject:video up" email, 
+the Reply-To is set to the people that can help.
+Be sure to keep the reference URL in tact so that we can get to the edit page quickly.
+
+{% endblock %}

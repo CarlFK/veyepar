@@ -1,0 +1,13 @@
+{# approve.html #}
+
+{% extends "approve/base.html" %}
+
+{% block point %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <p><b>To approve the release of your video to the public, click 
+    <input type="submit" value="Approve" />
+    now.</b></p>
+</form> 
+
+{% endblock %}

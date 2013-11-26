@@ -17,6 +17,8 @@ class email_url(email_ab):
     Look at it, make sure the title is spelled right, let me know if it is OK.
     If you are satisfied, tweet it, blog it, whatever it.  No point in making videos if no one watches them.
     
+    To approve it, go here: http://veyepar.nextdayvideo.com:8080/main/E/{{ep.id}}/{{episode.slug}}/{{episode.edit_key}}
+
     As soon as you or someone approves your video, it will be tweeted on @NextDayVideo which is what the attendees were told to follow.  It will also be sent to the event organizers in hopes that they add it to the event website.  
     """ 
     py_name = "email_url.py"

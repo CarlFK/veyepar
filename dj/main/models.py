@@ -6,6 +6,7 @@ from django.db.models.signals import pre_save
 import os
 import socket
 import datetime
+import random
 
 def fnify(text):
     """
@@ -210,6 +211,8 @@ class Episode(models.Model):
     authors = models.TextField(null=True,blank=True,)
     emails = models.TextField(null=True,blank=True, 
         help_text="email(s) of the presenter(s)")
+    edit_key = models.CharField(max_length=32,blank=True,default='',
+        help_text="key to allow unauthenticated users to edit this item.")
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
     normalise = models.CharField(max_length=5,null=True,blank=True, )
@@ -278,6 +281,14 @@ class Episode(models.Model):
         delta = self.end - self.start
         minutes = delta.days*60*24 + delta.seconds/60.0
         return minutes
+
+    def x_save(self,*args,**kwargs):
+        # assign a key to all new items
+        # this will let people with the key edit stuff
+        # currently just bump the status from review2 to public
+        if not self.edit_key:
+            self.edit_key = str(random.randint(100000,999999))
+        return super(Episode.save,args,kwargs)
 
     class Meta:
         ordering = ["sequence"]

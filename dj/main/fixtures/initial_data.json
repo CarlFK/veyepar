@@ -30,7 +30,7 @@
     "pk": 4, 
     "model": "main.state", 
     "fields": {
-      "description": "upload to blip.tv", 
+      "description": "upload to public host(s)", 
       "slug": "post", 
       "sequence": 4
     }

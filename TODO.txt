@@ -14,9 +14,11 @@ veyepar:
 
   last active date - 
     for shows - 
-      put top 4 sows on the client page, 
+      sort shows by date on the client page, 
       link to stats.
-  
+      
+  move state data def from models.py to initial_data.json fixture.
+
   episode.html save.. UI to show user it got saved.
 
   views.mk_cuts - look at previous episode, 

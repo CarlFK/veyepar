@@ -1,0 +1,13 @@
+{# approve.html #}
+{% extends "approve/base.html" %}
+
+{% block head %}
+<title>veyepar: approve {{episode.name}}</title>
+{% endblock %}
+
+{% block point %}
+
+<p>This video is not waiting to be approved.</p>
+<p>It is currently in state: {{episode.state}}</p>
+
+{% endblock %}
