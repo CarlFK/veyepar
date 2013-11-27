@@ -937,7 +937,7 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
     # funny=episode.slug <> episode_slug
 
     if episode.edit_key == edit_key:
-        if episode.state == 6: # review_2 -  TODO use state.slug?
+        if episode.state == 8: # review_2 -  TODO use state.slug?
             if request.method == 'POST':
                 # all systems go! Approve the video!
                 episode.state += 1;
