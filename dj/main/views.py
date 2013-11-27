@@ -934,7 +934,8 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
     Lets hope that the edit_key does not get abused.
     """
     episode=get_object_or_404( Episode, id=episode_id )
-    funny=episode.slug <> episode_slug
+    # funny=episode.slug <> episode_slug
+
     if episode.edit_key == edit_key:
         if episode.state == 6: # review_2 -  TODO use state.slug?
             if request.method == 'POST':
