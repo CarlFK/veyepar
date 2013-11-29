@@ -811,6 +811,14 @@ def title_slides(request, show_id, ):
           },
         context_instance=RequestContext(request) )
 
+def episode_list(request, state=None):
+    episodes=Episode.objects.filter(state=state).order_by('start')
+    return render_to_response('episode_list.html',
+            { 'episodes':episodes,
+        },
+        context_instance=RequestContext(request) )
+
+
 def episodes(request, client_slug=None, show_slug=None, location_slug=None,
               start_day=None, state=None):
 # def episodes(request, client_slug=None, show_slug=None):
@@ -838,22 +846,6 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
       episodes = episodes.filter(state=state)
       #   if state=='0':
       #  episodes = episodes.filter(state__isnull=True)
-
-    
-    # calc total time and dv size
-    total_minutes=0
-    for e in episodes:
-        seconds = reduce(lambda x, i: x*60 + i,
-            map(float, e.duration.split(':')))
-        # add 5 min to each talk to accomdate talks going over 
-        # and recording break time 
-        minutes = seconds/60 
-        total_minutes += minutes
-    total_episodes = episodes.count()
-    total_hours = total_minutes / 60
-    total_gig = total_hours * 13
-    fudge_hours = (total_minutes + 5 * total_episodes) / 60
-    fudge_gig = fudge_hours *13
 
     if request.user.is_authenticated():
         if request.method == 'POST':
@@ -918,12 +910,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
           'locations':locations,
           'location_slug':location_slug,
           'episodes':episodes,
-          'total_episodes':total_episodes,
           'episode_form':form,
-          'total_hours': total_hours,
-          'total_gig': total_gig,
-          'fudge_hours': fudge_hours,
-          'fudge_gig': fudge_gig,
         },
         context_instance=RequestContext(request) )
 

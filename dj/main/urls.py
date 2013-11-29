@@ -17,6 +17,9 @@ urlpatterns = patterns(
          episodes, name='episode_list'),
 
     url(r'approve/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', approve_episode, name='approve_episode'),
+
+    url(r'state/(?P<state>\w+)/$', episode_list, name='episode_list'),
+    
     
     # url(r'^client/(?P<client_slug>[\w\-]+)/(?P<show_slug>[\w\-]+)/$', episodes, name='episode_list'),
 

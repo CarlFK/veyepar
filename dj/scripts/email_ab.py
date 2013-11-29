@@ -10,7 +10,7 @@ from django.template import Context, Template
 from process import process
 from django.conf import settings
 
-import os
+import random
 
 class email_ab(process):
 
@@ -33,7 +33,11 @@ http://veyepar.nextdayvideo.com:8080/main/E/{{ep.id}}/
         return {}
 
     def process_ep(self, ep):
-        print "proc..."
+
+        # setup key so presenter can later approve 
+        if ep.edit_key is None or not ep.edit_key.strip():
+            ep.edit_key = str(random.randint(10000000,99999999))
+            ep.save()
 
         # if there is no email, use the client's.
         # like for lightning talks.

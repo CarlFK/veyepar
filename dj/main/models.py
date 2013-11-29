@@ -282,14 +282,6 @@ class Episode(models.Model):
         minutes = delta.days*60*24 + delta.seconds/60.0
         return minutes
 
-    def x_save(self,*args,**kwargs):
-        # assign a key to all new items
-        # this will let people with the key edit stuff
-        # currently just bump the status from review2 to public
-        if not self.edit_key:
-            self.edit_key = str(random.randint(100000,999999))
-        return super(Episode.save,args,kwargs)
-
     class Meta:
         ordering = ["sequence"]
         # unique_together = [("show", "slug")]

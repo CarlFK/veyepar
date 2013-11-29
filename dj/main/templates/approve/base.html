@@ -31,7 +31,7 @@
 
 {% endblock %}
 
-If you were hoping to update the description, 
+<p>If you were hoping to update the description, 
 {% if episode.conf_url %}
 the data is synced from the event's database, 
 so adjustments need to be made to 
@@ -42,5 +42,12 @@ so adjustments need to be made to
 reply to the "subject:video up" email, 
 the Reply-To is set to the people that can help.
 Be sure to keep the reference URL in tact so that we can get to the edit page quickly.
+</p>
+
+{% if user.is_authenticated %}
+<hr>
+<a href="{% url admin:main_episode_change episode.id %}">admin</a> <br>
+<a href="E/{{episode.id}}/">{{ episode.name }}</a> <br>
+{% endif %}
 
 {% endblock %}
