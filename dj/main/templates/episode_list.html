@@ -1,0 +1,12 @@
+{# show.html #}
+{% extends "base.html" %}
+
+{% block head %}
+  <title>veyepar - Show: {{client.name}} {{show.name}} </title>
+{% endblock %}
+
+{% block content %}
+
+{% include "episodes_table.html" %}
+
+{% endblock %}

@@ -8,8 +8,10 @@
     <p><b>To approve the release of this video to the public, click 
     <input type="submit" value="Approve" />
     now.</b></p>
-    <p>(Warning: If you are seeing this, 
-    you have the creditials to modify data, even though you may not be logged in.)</p>
+    {% if not user.is_authenticated %}
+    <p>Warning: If you are seeing this, 
+    you have the creditials to modify data, even though you are not logged in.</p>
+    {% endif %}
 
 </form> 
 
