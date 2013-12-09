@@ -190,7 +190,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 </form>
 
 {% for chap in chaps %}
-  {% if chap.0 %}
+  {% if chap.0 and chap.2.comment%}
   <p>({{chap.0.1}})  {{chap.2.comment}}</p>
   {%endif%}
 {%endfor%}
