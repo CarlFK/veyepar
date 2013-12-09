@@ -10,8 +10,12 @@ import os
 import pprint
 
 import pw
+
 from process import process
 from django.db import DatabaseError
+from django.template.defaultfilters import slugify
+
+from add_to_richard import get_video_id
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
@@ -125,6 +129,22 @@ class post(process):
 
         return meta
 
+    def mk_key(self, ep, f):
+        # make a key for rackspace cdn object key value store 
+        #  <category-slug>/<video-id>_<title-of-video>.mp4
+        # if we have that data handy.
+        key = ''
+        if ep.show.client.category_key:
+            # warning: this does not take into account pvo collisions
+            # https://github.com/willkg/richard/blob/master/richard/videos/utils.py#L20  def generate_unique_slug(obj, slug_from, slug_field='slug'):
+            key += slugify( ep.show.client.category_key ) + '/'
+
+        if ep.public_url:
+            key += get_video_id( ep.public_url) + "_"
+
+        key += ep.slug[:50] + "." + f['ext']
+
+        return key
 
     def do_yt(self,ep,files,private,meta):
 
@@ -230,6 +250,8 @@ class post(process):
         # but I don't want 2 processes uploading at the same time.
         # bcause bandwidth?
 
+        success = False
+
         uploader = rax_uploader.Uploader()
 
         uploader.user = ep.show.client.rax_id
@@ -238,20 +260,30 @@ class post(process):
         for f in files:
 
             uploader.pathname = f['pathname']
+            uploader.key_id = self.mk_key(ep, f)
 
             if self.options.test:
                 print 'test mode...'
                 print 'skipping rax_uploader .upload()'
+                print 'key_id:', uploader.key_id
 
             # elif ep.rax_mp4_url:
             #    print "skipping archive, already there."
             #    rax_success = True
+
+                success = True
 
             else:
 
                 # actually upload
                 # uploader.debug_mode=True
                 success = uploader.upload()
+                
+                # possible errors:
+                # invalid container - halt, it will likely be invalid for all 
+                # transmission - retry
+                # bad name, mark as error and continue to next
+
                 if success:
                     if self.options.verbose: print uploader.new_url
                     # this is pretty gross.

@@ -52,6 +52,7 @@ class Uploader(object):
 
     user = '' # key to lookup user/pw in rax{} typically stored in pw.py
     bucket_id = "" # archive/s3 butcket, or container ID for rax
+    key_id = "" # orbject name (the key in a key value store)
 
     debug_mode = False
 
@@ -69,7 +70,8 @@ class Uploader(object):
         try:
 
             # actually upload
-            obj = container.upload_file(pf)
+            obj = container.upload_file(pf, obj_name = self.key_id)
+            
 
             if self.debug_mode:
                 import code
@@ -101,6 +103,7 @@ if __name__ == '__main__':
     # senseable values for testing.
     u.user = 'testact'
     u.bucket_id = 'testing' # define this on rackspace gui
+    u.key_id = "test/123_Lets_make_a_Test.mp4"
     u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4'
     u.debug_mode = False ## True drops to a >>> prompt after upload
 

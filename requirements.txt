@@ -11,6 +11,7 @@ feedparser
 # Pinax==0.9a2.dev6
 
 git+https://github.com/willkg/steve.git
+python-dateutil
 
 hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
 # ElementTree
@@ -24,3 +25,4 @@ requests
 django-databrowse
 django-extensions
 
+pyrax

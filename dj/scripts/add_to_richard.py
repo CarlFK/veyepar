@@ -19,6 +19,10 @@ from main.models import Show, Location, Episode
 
 import pw
 
+def get_video_id(url):
+        vid_id = url.split('/video/')[1].split('/')[0]
+        return vid_id
+
 class add_to_richard(Process):
 
     ready_state = 5
@@ -66,8 +70,14 @@ class add_to_richard(Process):
             # use title slide as place holder image until video is produced.
             #    video_data['thumbnail_url'] = "http://veyepar.nextdayvideo.com/static/%s/%s/titles/%s.png" % ( ep.show.client.slug, ep.show.slug, ep.slug )
 
-        elif "youtube" in ep.host_url:  
+        elif "youtube" in ep.host_url or "youtu.be" in ep.host_url:  
             scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
+            if "youtu.be" in ep.host_url:  
+                # for some reason this does not give object_embed_code
+                # so fix it with a hammer.
+                ep.host_url = scraped_metadata['link'] 
+                scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
+            
             video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
             video_data['embed'] = \
                     scraped_metadata.get('object_embed_code','')
@@ -89,14 +99,19 @@ class add_to_richard(Process):
         try:
 
             if self.is_already_in_pyvideo(ep):
-                vid_id = ep.public_url.split('/video/')[1].split('/')[0]
-                print 'updating episode in pyvideo', ep.public_url, vid_id
+                # vid_id = ep.public_url.split('/video/')[1].split('/')[0]
+                vid_id = get_video_id( ep.public_url)
                 if not self.options.test:
+                    print 'updating pyvideo', ep.public_url, vid_id
                     ret = self.update_pyvideo(vid_id, video_data)
                     # above ret= isn't working.  returns None I think?
                     # lets hope there wasn't a problem and blaze ahead.
                     ret = True
                 else: 
+                    print 'test mode, not updating pyvideo' 
+                    print ep.public_url, vid_id
+                    pprint.pprint(video_data)
+
                     ret = False
             else:
                 if not self.options.test:
