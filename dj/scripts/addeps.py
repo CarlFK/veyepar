@@ -1257,6 +1257,8 @@ class add_eps(process.process):
 
         room = schedule['where']['name']
         schedule = schedule['topics']
+        schedule = [s for s in schedule if s['approved']]
+
 
         field_maps = [ 
                 ('id', 'conf_key'), 
@@ -2055,8 +2057,9 @@ class add_eps(process.process):
 
             else:
                 j = response.text
-                # schedule = response.json
-                schedule = response.json()
+
+                schedule = response.json
+                # schedule = response.json()
                 # if it is a python prety printed list:
                 # (pyohio 2012)
                 # schedule = eval(j)
