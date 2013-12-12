@@ -105,6 +105,8 @@ class Show(models.Model):
     client = models.ForeignKey(Client)
     locations = models.ManyToManyField(Location, blank=True)
     sequence = models.IntegerField(default=1)
+    active = models.BooleanField( default=True,
+            help_text="Turn off to hide from UI.")
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135,
         help_text="dir name to store input files")

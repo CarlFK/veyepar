@@ -1259,7 +1259,6 @@ class add_eps(process.process):
         schedule = schedule['topics']
         schedule = [s for s in schedule if s['approved']]
 
-
         field_maps = [ 
                 ('id', 'conf_key'), 
                 ('title', 'name'),

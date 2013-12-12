@@ -33,7 +33,7 @@ import operator
 
 from dabo.dReportWriter import dReportWriter
 
-from main.models import Client,Show,Location,Episode,Cut_List,Raw_File
+from main.models import Client,Show,Location,Episode,Cut_List,Raw_File,State
 from main.models import STATES, ANN_STATES
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep
 
@@ -812,9 +812,13 @@ def title_slides(request, show_id, ):
         context_instance=RequestContext(request) )
 
 def episode_list(request, state=None):
-    episodes=Episode.objects.filter(state=state).order_by('start')
+
+    episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
+    states = State.objects.all()
+
     return render_to_response('episode_list.html',
             { 'episodes':episodes,
+                'states':states,
         },
         context_instance=RequestContext(request) )
 

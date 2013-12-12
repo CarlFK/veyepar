@@ -126,18 +126,29 @@ class Uploader(object):
         return yt_service
        
     def get_id_from_url(self, url):
+        print url
         o = urlparse(url)
-        q = parse_qs(o.query)
-        id = q['v'][0]
+        print o
+        if o.query:
+            # http://www.youtube.com/watch?v=akAtm7SnzWg
+            # http://www.youtube.com/watch?V=akAtm7SnzWg
+            q = parse_qs(o.query)
+            print q
+            id = q['v'][0]
+        else:
+            # http://youtu.be/akAtm7SnzWg
+            id = o.path[1:]
+
         return id
 
     def set_permission(self, url, permission="allowed" ):
 
         yt_service = self.auth()
 
-        id = self.get_id_from_url(url)
-        uri= 'http://gdata.youtube.com/feeds/api/users/default/uploads/%s' % (id,)
-        entry=yt_service.GetYouTubeVideoEntry(uri=uri)
+        video_id = self.get_id_from_url(url)
+        # uri= 'http://gdata.youtube.com/feeds/api/users/default/uploads/%s' % (id,)
+        # entry = yt_service.GetYouTubeVideoEntry(uri=uri)
+        entry = yt_service.GetYouTubeVideoEntry(video_id=video_id)
 
         entry.extension_elements = [ExtensionElement('accessControl',
             namespace=YOUTUBE_NAMESPACE,

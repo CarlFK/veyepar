@@ -37,8 +37,7 @@ http://veyepar.nextdayvideo.com/static/{{ep.show.client.slug}}/{{ep.show.slug}}/
 {% if ep.public_url%} And the main page for the video will be here:
   {{ep.public_url}} {% endif %}
 
-Problems with the text will need to be fixed in the event database that drives this page:
-{{ep.conf_url}} {{ep.show.schedule_url}}
+Problems with the text will need to be fixed in the event database that drives: {{ep.conf_url}} {{ep.show.schedule_url}}
 
 Except for odd word wrap on the title image.  If it bothers you, let us know how you would like it and we will try to accommodate. 
 
