@@ -29,7 +29,7 @@ Released: {{ep.released}}
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.
  {% endif %}
 * "None" means it may get recorded and processed, but it will not be made public.
-* "False" means you have requested not to be recorded, however the data is available for review in case you change your mind.
+* "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.
 
 The video will be titled with the following image:
 http://veyepar.nextdayvideo.com/static/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
