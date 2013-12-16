@@ -811,6 +811,18 @@ def title_slides(request, show_id, ):
           },
         context_instance=RequestContext(request) )
 
+def episodes_script(request, state=None, script=None):
+
+    episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
+
+    return render_to_response('episodes_script.html',
+            { 'episodes':episodes,
+                'script':script,
+        },
+        context_instance=RequestContext(request) )
+
+
+
 def episode_list(request, state=None):
 
     episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
