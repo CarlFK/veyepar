@@ -815,12 +815,14 @@ def episodes_script(request, state=None, script=None):
 
     episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
 
-    return render_to_response('episodes_script.html',
+    return render_to_response(
+            'episodes_script.txt',
             { 'episodes':episodes,
                 'script':script,
-        },
-        context_instance=RequestContext(request) )
-
+            },
+            context_instance=RequestContext(request),
+            mimetype="text/plain",
+            )
 
 
 def episode_list(request, state=None):
