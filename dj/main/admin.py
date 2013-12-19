@@ -80,7 +80,8 @@ class EpisodeAdmin(admin.ModelAdmin):
     search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True
-    actions = ['set_stopped', 'clear_locked', 're_slug' ] + admin.ModelAdmin.actions
+    actions = [ 'set_stopped', 'clear_locked', 're_slug', 'bump_state' ] \
+            + admin.ModelAdmin.actions
 
     def set_stopped(self, request, queryset):
         rows_updated = queryset.update(stop=True)
@@ -128,6 +129,26 @@ class EpisodeAdmin(admin.ModelAdmin):
         }
         messages.success(request, msg)
     set_stopped.short_discription = "reset slug"
+
+    def bump_state(self, request, queryset):
+        rows_updated = 0
+        for obj in queryset:
+            obj.state += 1
+            obj.save()
+            rows_updated +=1
+
+        msg = ungettext(
+            'bumpped state in %(count)d %(name)s successfully.',
+            'bumpped state in %(count)d %(name_plural)s successfully.',
+            rows_updated
+        ) % {
+            'count': rows_updated,
+            'name': self.model._meta.verbose_name.title(),
+            'name_plural': self.model._meta.verbose_name_plural.title()
+        }
+        messages.success(request, msg)
+    set_stopped.short_discription = "bump state"
+
 
     class Media:
         js = ("/static/js/jquery.js","/static/js/bumpbut.js",)
