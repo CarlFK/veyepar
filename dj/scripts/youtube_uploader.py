@@ -158,8 +158,9 @@ class Uploader(object):
 
         updated_entry = yt_service.UpdateVideoEntry(entry) 
 
-        import code
-        code.interact(local=locals())
+        if self.debug_mode:
+            import code
+            code.interact(local=locals())
 
         return True
 
@@ -377,7 +378,9 @@ def test_set_pub():
     video_url = "https://www.youtube.com/watch?v=-HdcDzsjZJo"
     u = Uploader()
     u.user="ndv"
+    u.debug=True
     u.set_permission(video_url, permission="allowed" )
+
 
 if __name__ == '__main__':
     # test_upload()
