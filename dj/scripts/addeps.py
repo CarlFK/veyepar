@@ -172,6 +172,13 @@ class add_eps(process.process):
         # prints out the veyepar side of the field map list
         # so you can cut/paste it into the show specific code.
 
+        # if the json object is one big key:value, pull the list out
+        try:
+            schedule=schedule['schedule']
+        except KeyError as k:
+            print k
+            if k != 'schedule': raise
+
         s_keys = set()
         for s in schedule:
             s_keys.update(s.keys())
@@ -1701,6 +1708,7 @@ class add_eps(process.process):
         # pycon.us 2013
 
         rooms = self.get_rooms(schedule)
+        if self.options.verbose: print rooms
 
         self.add_rooms(rooms,show)
 
@@ -1746,7 +1754,8 @@ class add_eps(process.process):
                 event['name'] = \
                         '%s Keynote - %s' % (
                         self.show.name, event['authors'])
-                event['description']= \
+                if not event['description']:
+                    event['description']= \
                         'Keynote - %s\n%s\n' % (
                         event['authors'],
                         event['start'].strftime('%A, %B %d %Y %I %p') )
@@ -1755,7 +1764,8 @@ class add_eps(process.process):
                 event['name'] = "%s %s Lightning Talks" % (
                         self.show.name,
                         event['start'].strftime('%A %p') )
-                event['description']= \
+                if not event['description']:
+                    event['description']= \
                         "%s Lightning Talks\n%s" % (
                         self.show.name,
                         event['start'].strftime('%A, %B %d %Y %I %p') )
@@ -1883,6 +1893,10 @@ class add_eps(process.process):
         
         # move Pleanary events into the location where the equipment is
         for event in schedule:
+
+            if not event['room']:
+                event['room']="None?"
+
             if "Colony Ballroom" in event['room']:
                 event['room']="Colony Ballroom"
 
@@ -1992,8 +2006,8 @@ class add_eps(process.process):
             session = requests.session()
 
             # auth stuff goes here, kinda.
-            if self.options.show in[ "pyconca2013", "pyohio2013" ]:
-                auth = pw.addeps[self.options.show]
+            auth = pw.addeps.get(self.options.show, None)
+            if auth is not None:
 
                 # # scrape csrf token out of login page
                 # result = requests.get(auth['login_page'])
@@ -2005,8 +2019,9 @@ class add_eps(process.process):
                 # get the token from the headers
                 session.get(auth['login_page'])
                 token = session.cookies['csrftoken']
+                if self.options.verbose: print "csrftoken:", token
 
-                # note to future self, keynames change.
+                # note to future self, form input names change.
                 # 2012 it was 'username'
                 # 2013 is now 'login-email'
                 # maybe this needs to be stored somewhere dynamic,
@@ -2023,7 +2038,7 @@ class add_eps(process.process):
                         data=login_data, 
                         headers={'Referer':auth['login_page']})
 
-                print "ret:", ret
+                if self.options.verbose: print "login ret:", ret
 
             if self.options.show in ['chicagowebconf2012"',
                                         "cusec2013" , ]:
@@ -2089,6 +2104,9 @@ class add_eps(process.process):
             return self.pyohio2013(schedule,show)
 
         if self.options.show =='pyconca2013':
+            return self.pyconca2013(schedule,show)
+
+        if self.options.show =='pytn2014':
             return self.pyconca2013(schedule,show)
 
         if self.options.show =='pyconca2012':

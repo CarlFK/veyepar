@@ -10,6 +10,8 @@
 from steve.richardapi import update_video, MissingRequiredData
 from steve.restapi import API, get_content
 
+from add_to_richard import get_video_id
+
 import youtube_uploader
 
 import gdata.youtube
@@ -34,7 +36,8 @@ class mk_public(process):
         endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
         api = API(endpoint)
 
-        vid = ep.public_url.split('/video/')[1].split('/')[0]
+        # vid = ep.public_url.split('/video/')[1].split('/')[0]
+        vid = get_video_id(ep.public_url)
 
         response = api.video(vid).get(
                 username=host['user'], api_key=host['api_key'])

@@ -131,7 +131,6 @@ class Uploader(object):
         print o
         if o.query:
             # http://www.youtube.com/watch?v=akAtm7SnzWg
-            # http://www.youtube.com/watch?V=akAtm7SnzWg
             q = parse_qs(o.query)
             print q
             id = q['v'][0]
@@ -141,7 +140,10 @@ class Uploader(object):
 
         return id
 
+
     def set_permission(self, url, permission="allowed" ):
+        # docs
+        # https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_yt:accessControl
 
         yt_service = self.auth()
 
@@ -155,6 +157,9 @@ class Uploader(object):
             attributes={'action':'list','permission':permission})]
 
         updated_entry = yt_service.UpdateVideoEntry(entry) 
+
+        import code
+        code.interact(local=locals())
 
         return True
 
@@ -271,7 +276,8 @@ class Uploader(object):
         for thumbnail in entry.media.thumbnail:
             print 'Thumbnail url: %s' % thumbnail.url
 
-if __name__ == '__main__':
+def test_upload():
+
     u = Uploader()
 
     u.meta = {
@@ -366,3 +372,14 @@ Traceback (most recent call last):|||||||||          | ETA:  0:02:04 482.80 kB/s
   File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
     raise BadStatusLine(line)
 """
+
+def test_set_pub():
+    video_url = "https://www.youtube.com/watch?v=-HdcDzsjZJo"
+    u = Uploader()
+    u.user="ndv"
+    u.set_permission(video_url, permission="allowed" )
+
+if __name__ == '__main__':
+    # test_upload()
+    test_set_pub()
+

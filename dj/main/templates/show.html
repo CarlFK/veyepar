@@ -16,6 +16,7 @@
 <tr><td><a href="{% url pdfs 'talk_signs' show.id %}{{show.slug}}_room_signs.pdf">room_signs.pdf</a></td></tr>
 <tr><td><a href="{% url pdfs 'title_slides' show.id %}">title slides</a></td></tr>
 <tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
+<tr><td><a href="{{show.schedule_url}}">{{show.schedule_url}}</a></td></tr>
 <tr><td><a href="{% url show_stats show.id %}" title="{{show.name}}">show stats</a></td></tr>
 <tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
 <tr><td><a href=
