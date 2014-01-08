@@ -304,10 +304,11 @@ def test_upload():
     veyepar_dir = os.path.expanduser('~/Videos/veyepar')
     test_dir = os.path.join(veyepar_dir,"test_client/test_show/mp4")
     test_file = os.path.join(test_dir,"Lets_make_a_Test.mp4")
+    test_file = os.path.join(test_dir,"Lets_make_a_Test.ogv")
 
     u.files = [{'pathname':test_file, 'ext':'mp4'}]
     u.user = 'test'
-    u.private = True
+    u.private = False
     u.unlisted = True
 
     u.debug_mode=True
@@ -375,10 +376,12 @@ Traceback (most recent call last):|||||||||          | ETA:  0:02:04 482.80 kB/s
 """
 
 def test_set_pub():
-    video_url = "https://www.youtube.com/watch?v=-HdcDzsjZJo"
+    # video_url = "https://www.youtube.com/watch?v=-HdcDzsjZJo"
+    # video_url = "https://www.youtube.com/watch?v=uPeNpOjFx-U"
+    video_url = "https://www.youtube.com/watch?v=4-1jg61P5nk"
     u = Uploader()
-    u.user="ndv"
-    u.debug=True
+    u.user="test"
+    # u.debug=True
     u.set_permission(video_url, permission="allowed" )
 
 

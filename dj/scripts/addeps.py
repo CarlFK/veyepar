@@ -1292,6 +1292,9 @@ class add_eps(process.process):
                     [ a['name'] for a in  event['authors'] ])
             event['emails'] =  ', '.join( 
                     [ a['email'] for a in  event['emails'] ])
+            if not event['emails']: # no email found
+                event['emails'] = "ChiPy <chicago@python.org>"
+
             event['released'] = all( 
                     [ a['release'] for a in event['released'] ])
 
@@ -2009,30 +2012,21 @@ class add_eps(process.process):
             auth = pw.addeps.get(self.options.show, None)
             if auth is not None:
 
-                # # scrape csrf token out of login page
+                # get the csrf token out of login page
+                session.get(auth['login_page'])
+                token = session.cookies['csrftoken']
+
+                # in case it does't get passed in the headers
                 # result = requests.get(auth['login_page'])
                 # soup = BeautifulSoup(x.text)
                 # token = soup.find('input', 
                 #        dict(name='csrfmiddlewaretoken'))['value']
 
-                # better than parsing html:
-                # get the token from the headers
-                session.get(auth['login_page'])
-                token = session.cookies['csrftoken']
                 if self.options.verbose: print "csrftoken:", token
 
-                # note to future self, form input names change.
-                # 2012 it was 'username'
-                # 2013 is now 'login-email'
-                # maybe this needs to be stored somewhere dynamic,
-                # not hardcoded?
-                # I suspect it will live in this file somewhere,
-                #  it is a detail similar to the keynames in the json.
-                login_data = {
-                        'login-email':auth['user'], 
-                        'login-password':auth['password'], 
-                        'csrfmiddlewaretoken':token, 
-                        'next':'/'}
+                # setup the values needed to log in:
+                login_data = auth['login_data']
+                login_data['csrfmiddlewaretoken'] = token 
 
                 ret = session.post(auth['login_page'], 
                         data=login_data, 
