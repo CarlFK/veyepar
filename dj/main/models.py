@@ -213,7 +213,10 @@ class Episode(models.Model):
     authors = models.TextField(null=True,blank=True,)
     emails = models.TextField(null=True,blank=True, 
         help_text="email(s) of the presenter(s)")
-    edit_key = models.CharField(max_length=32,blank=True,default='',
+    edit_key = models.CharField(max_length=32,
+            blank=True,
+            null=True,
+            default='',
         help_text="key to allow unauthenticated users to edit this item.")
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)

@@ -2,7 +2,7 @@
 # rackspace cdn (openhatch) specific code
 
 # caled from post_rak.py 
-# that is a lie.  it is really called from post_yt.py.  
+# that is a lie.  it is currently called from post_yt.py.  
 
 
 import pyrax
@@ -80,7 +80,8 @@ class Uploader(object):
             # urllib.quote  
             # filenames may have chars that need to be quoted for a URL.
             # cdn_streaming because.. video? (not sure really)
-            self.new_url = container.cdn_streaming_uri +"/"+ urllib.quote(obj.name)
+            # self.new_url = container.cdn_streaming_uri +"/"+ urllib.quote(obj.name)
+            self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name)
             ret = True
 
         except Exception as e:

@@ -75,6 +75,7 @@ import pprint
 from django.utils.html import strip_tags
 from django.template.defaultfilters import slugify
 
+import xml.etree.ElementTree
 
 import fixunicode
 
@@ -175,6 +176,9 @@ class add_eps(process.process):
         # if the json object is one big key:value, pull the list out
         try:
             schedule=schedule['schedule']
+        except TypeError as k:
+            # TypeError: list indices must be integers, not str
+            pass
         except KeyError as k:
             print k
             if k != 'schedule': raise
@@ -1343,7 +1347,11 @@ class add_eps(process.process):
                     # >>> event.find('start').text
                     # '10:30'
                     # >>> [x.tag for x in event]
-                    tags = ['start', 'duration', 'room', 'slug', 'title', 'subtitle', 'track', 'type', 'language', 'abstract', 'description', 'persons', 'links']
+                    tags = ['start', 'duration', 'room', 
+                            'slug', 'title', 'subtitle', 
+                            'track', 'type', 'language', 
+                            'abstract', 'description',
+                            'persons', 'links']
                     for tag in tags:
                         print tag, row.find(tag).text
 
@@ -1366,10 +1374,12 @@ class add_eps(process.process):
                     event['authors'] = ', '.join(persons)
 
                     event['emails'] = ''
-                    # event['released'] = True
+                    event['released'] = True
                     event['license'] = self.options.license
                     # event['description'] = row.find('description').text
                     event['description'] = row.find('abstract').text
+                    if event['description'] is None:
+                        event['description'] = ''
 
                     event['conf_key'] = id
 
@@ -1385,7 +1395,7 @@ class add_eps(process.process):
         return events
 
 
-    def fosdem2012(self, schedule, show):
+    def fosdem2014(self, schedule, show):
 
         # top of schedule is:
         # <conference></conference>
@@ -2057,11 +2067,10 @@ class add_eps(process.process):
                 if 'desktopsummit.org' in url:
                     return self.desktopsummit(schedule,show)
 
-            elif url[-4:]=='.xml':
-                import xml.etree.ElementTree
-                x = response.read()
-                schedule=xml.etree.ElementTree.XML(x)
-                return self.fosdem2012(schedule,show)
+            elif url.endswith('xml'):
+                schedule=xml.etree.ElementTree.XML(
+                        response.content)
+                # return self.fosdem2014(schedule,show)
 
             else:
                 j = response.text
@@ -2084,6 +2093,9 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.client =='fosdem':
+            return self.fosdem2014(schedule,show)
 
         if self.options.client =='chipy':
             return self.chipy_v3(schedule,show)
