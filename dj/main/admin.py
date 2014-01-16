@@ -25,6 +25,7 @@ class LocationAdmin(admin.ModelAdmin):
     list_editable = ('sequence', 'active', 'name','slug')
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
+    list_filter = ('show', )
 admin.site.register(Location, LocationAdmin)
 
 class Raw_FileAdmin(admin.ModelAdmin):

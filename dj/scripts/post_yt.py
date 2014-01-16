@@ -164,8 +164,8 @@ class post(process):
         if self.options.test:
             print 'test mode:'
             print "user key:", uploader.user
-            print 'files %s' % files
-            print 'meta %s' % pprint.pformat(meta)
+            print 'files = %s' % files
+            print 'meta = %s' % pprint.pformat(meta)
             print 'skipping youtube_upoad.py uploader.upload()'
             print len(meta['description'])
 

@@ -279,9 +279,8 @@ class Uploader(object):
 
 def test_upload():
 
-    u = Uploader()
 
-    u.meta = {
+    meta = {
       'description': ("test " * 500) + "1", # 2501 chars
       'title': "test title",
       'tags': [u'eric', u'write_the_docs_2013', u'JenniferHartnett-Henderson'],
@@ -301,12 +300,27 @@ def test_upload():
     }
     """
 
+    meta = {'category': 'Education',
+ 'description': u'Jessica McKellar\nhttp://pyvideo.org/video/1850/a-hands-on-introduction-to-python-for-beginning-p\nhttps://us.pycon.org/2013/schedule/presentation/1/\nBeginning programmers: welcome to PyCon! Jumpstart your Python and programming careers with this 3-hour interactive tutorial. By the end, you\'ll have hands-on exposure to many core programming concepts, be able to write useful Python programs, and have a roadmap for continuing to learn and practice programming in Python. This class assumes no prior programming experience.\n<a href="http://pycon.org">PyCon</a> is the largest annual gathering for the community using and developing the open-source <a href="http://python.org">Python</a> programming language. It is produced and underwritten by the <a href="http://www.python.org/psf/">Python Software Foundation</a>, the 501(c)(3) nonprofit organization dedicated to advancing and promoting Python. Through PyCon, the PSF advances its mission of growing the international community of Python programmers.\r\n\r\n',
+ 'hidden': None,
+ 'tags': [u'psf',
+          u'pycon2013',
+          u'pythonpyconpycon2013',
+          u'tutorial',
+          u'JessicaMcKellar'],
+ 'title': u'A hands-on introduction to Python for beginning programmers'}
+
+    # meta['description'] = meta['description'][:900]
+    meta['description'] = meta['description'].replace('<','')
+
     veyepar_dir = os.path.expanduser('~/Videos/veyepar')
     test_dir = os.path.join(veyepar_dir,"test_client/test_show/mp4")
     test_file = os.path.join(test_dir,"Lets_make_a_Test.mp4")
-    test_file = os.path.join(test_dir,"Lets_make_a_Test.ogv")
+    # test_file = os.path.join(test_dir,"Lets_make_a_Test.ogv")
 
+    u = Uploader()
     u.files = [{'pathname':test_file, 'ext':'mp4'}]
+    u.meta = meta
     u.user = 'test'
     u.private = False
     u.unlisted = True
@@ -386,6 +400,6 @@ def test_set_pub():
 
 
 if __name__ == '__main__':
-    # test_upload()
-    test_set_pub()
+    test_upload()
+    # test_set_pub()
 

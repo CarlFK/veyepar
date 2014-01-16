@@ -241,8 +241,8 @@ class add_eps(process.process):
           if self.options.verbose: print room
           loc,created = Location.objects.get_or_create(
                   name=room,)
+          seq+=1
           if created: 
-              seq+=1
               loc.sequence=seq
               loc.save()
           show.locations.add(loc)
@@ -1380,10 +1380,10 @@ class add_eps(process.process):
                     event['description'] = row.find('abstract').text
                     if event['description'] is None:
                         event['description'] = ''
+                    
+                    event['conf_key'] = row.get('id')
 
-                    event['conf_key'] = id
-
-                    event['conf_url'] = ''
+                    event['conf_url'] = 'https://fosdem.org/2014/schedule/event/%s/' % row.find('slug').text
                     event['tags'] = ''
 
                     # save the original row so that we can sanity check end time.
@@ -1404,11 +1404,27 @@ class add_eps(process.process):
         # each day has a list of rooms
 
         rooms = [ r.get('name') for r in schedule[1] ]
-        rooms = set( rooms )
+        # rooms = set( rooms )
         # probabalby the same rooms the 2nd day.
-        rooms = list(rooms)
+        # rooms = list(rooms)
         # ['Janson', 'K.1.105', 'Ferrer', 'H.1301', 'H.1302']
+
+        # import code
+        # code.interact(local=locals())
+
+        # return
+
         self.add_rooms(rooms,show)
+        
+        # sequance the rooms
+        # this will whack any manual edits
+        seq = 1
+        for room in rooms:
+            loc = Location.objects.get(name=room,)
+            loc.active=True
+            loc.sequence=seq
+            loc.save()
+            seq+=1
 
         events = self.fos_events(schedule)
         self.add_eps(events, show)
@@ -1477,7 +1493,7 @@ class add_eps(process.process):
             # event['released'] = False
             event['released'] = True
 
-            event['license'] =  ''
+            event['license'] =  self.options.license
             # event['tags'] =  ''
             #event['description'] =  ''
 

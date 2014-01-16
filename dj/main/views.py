@@ -355,7 +355,8 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
           'episode_primary':ep.conf_key,
           'episode_name':ep.name,
           'episode_authors':ep.authors,
-          'episode_emails':ep.emails,
+          'episode_emails':
+            ep.emails if request.user.is_authenticated() else '',
           'episode_start':ep.start,
           'episode_duration':ep.duration,
           'episode_end':ep.end,

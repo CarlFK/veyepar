@@ -167,7 +167,8 @@ class enc(process):
             'title': episode.name, 
             'authors': episode.authors,
             'presentertitle': "",
-            'date': episode.start.strftime("%B %d, %Y"),
+            # 'date': episode.start.strftime("%B %d, %Y"),
+            'date': episode.start.strftime("%-e %B %Y"),
             'time': episode.start.strftime("%H:%M"),
         }
     return texts
