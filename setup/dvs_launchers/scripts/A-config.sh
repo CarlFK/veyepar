@@ -1,10 +1,6 @@
 #!/bin/sh
 ROOMNAME="F509"
-BASEDV="/home/avuser/Desktop"
-LOCALDV="${BASEDV}/dv/cd"
-NFSDV="${BASEDV}/dv/nd"
-DATE=`date +%F`
-DVPORT="5000"
-DVHOST="192.168.128.101"
+LOCALDV="~/Videos"
+NFSDV="~/mnt/dv/"
 DVTWINPACT="192.168.128.102"
 

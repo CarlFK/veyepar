@@ -137,11 +137,6 @@ live cd: mainly for slave
   10.0.0.2
   avahi to find dvswitch
 
-dvswitch process management:
-  Ryan V 
-     get scripts propperly checked into veyepr repo
-     make sure his scripts to use _ in dv filenames
-
 for unit tests:
   get sphinx or some such speach recognition packaged and in a PPA
     sphinx2-bin fell out of the ubuntu repos due to not being maintained.
