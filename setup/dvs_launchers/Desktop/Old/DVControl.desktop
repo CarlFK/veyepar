@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Icon[en_US]=/
+Name[en_US]=DVControl
+Exec=/scripts/DVcontrol0.9.py
+Comment[en_US]=Python Based GUI for DVSwitch
+Name=DVControl
+Comment=Python Based GUI for DVSwitch
+Icon=/usr/share/pixmaps/python2.6.xpm

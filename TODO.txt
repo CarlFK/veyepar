@@ -6,6 +6,7 @@ client checklist:
   title slide for videos
   room access times
   internet access
+  hotel close to venue
 
 Show twinpact feed on slave display.
   note: slave display is also used to play a sponsor slide roll between talks.
@@ -20,9 +21,6 @@ veyepar:
   move state data def from models.py to initial_data.json fixture.
 
   episode.html save.. UI to show user it got saved.
-
-  views.mk_cuts - look at previous episode, 
-    if it ran late, assume current ran late too.
 
   chrome doesn't play ogv maybe? figure out what file formats to use for thumbs.  maybe now it does.
   how to keep it from being so agressive about buffering if Play isn't hit 
@@ -43,16 +41,19 @@ veyepar:
   webm parameters
 
   command line parameter to set cfg file.
+    option to disable reading config (tests should not read config)
     give test script its own cfg
 
-  upload category - needs default, currently hardcoded to "Education"
+  upload category - 
+     needs default, currently hardcoded to "Education"
 
   upload to youtube
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      delete old version when replaced by new encode.
      don't re-upload the same video (causes duplicate video error)
-     # invalid tags cause fail and loop forever - fix this. (fixed by not setting tags)
+     # invalid tags cause fail and loop forever - fix this. 
+         (fixed by not setting tags)
      
   don't email presenter until youtube is done processing.
     review_1.py is a good place to do this.
@@ -63,7 +64,8 @@ veyepar:
      (currently are done outside of the formal workflow steps, so hard to fix one and re-do)   
   state - really needs something new. like a bunch of "completed" flags.
 
-  flag - do not overwrite when syncing with conf db - this is to handle when I know better than the conference data.
+  flag - do not overwrite when syncing with conf db - 
+    this is to handle when I know better than the conference data.
 
   tweet hashtag - client or show or both?
   pyvideo.org category - client or show or both?
@@ -109,6 +111,7 @@ model:
 
   change duration from "hh:mm:ss" to float(sec)
   add a real duration of how long the encoded video is
+    - end-start is not accurate if chunks have been removed
     - sum of segments is likely good enough
   
   BucketID / Richard Category

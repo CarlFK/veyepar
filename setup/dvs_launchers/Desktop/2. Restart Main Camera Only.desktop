@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Icon[en_US]=gnome-panel-launcher
+Exec=/scripts/1-maincamera.sh
+Name=2. Restart Main Camera Only
+Icon=gnome-panel-launcher
