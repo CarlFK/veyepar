@@ -11,7 +11,8 @@ NUSER=$SUDO_USER
 NUSER=videoteam
 
 # default webroot for nginx
-WEBROOT=/usr/share/nginx/www
+# WEBROOT=/usr/share/nginx/www
+WEBROOT=/usr/share/nginx/html
 
 apt-get --force-yes --assume-yes install  \
     python-software-properties \
@@ -19,8 +20,8 @@ apt-get --force-yes --assume-yes install  \
 #    debconf
 
 # this has the squid-deb-proxy config that allows PPAs
-apt-add-repository --yes ppa:carlfk
-apt-get update
+# apt-add-repository --yes ppa:carlfk
+# apt-get update
 
 # debconf-set-selections -v <<< \
 #    "squid-deb-proxy squid-deb-proxy/ppa-enable boolean true" 

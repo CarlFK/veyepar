@@ -13,6 +13,7 @@ from django.forms import ModelForm
 from django.forms.formsets import formset_factory
 
 from django.db.models import Q
+from django.db.models import Max
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
@@ -22,7 +23,6 @@ from django.core.mail import get_connection, EmailMessage
 from django.utils import simplejson
 
 import datetime
-# from datetime import timedelta
 import os
 import csv
 from copy import deepcopy
@@ -517,7 +517,8 @@ def clients(request):
             form=Client_Form(request.POST)
             if form.is_valid():
                 form.save()
-                return HttpResponseRedirect(reverse(client, args=(form.cleaned_data['slug'],)))
+                return HttpResponseRedirect(
+                        reverse(client, args=(form.cleaned_data['slug'],)))
             else:
                 pass
                 # print form.errors
@@ -526,7 +527,9 @@ def clients(request):
     else:
         form=None
 
-    clients=Client.objects.all().order_by('sequence')
+    clients=Client.objects.annotate( 
+            max_date=Max('show__episode__start'))\
+            .order_by('-max_date')
 
     return render_to_response('clients.html',
         {'clients':clients,
@@ -563,7 +566,9 @@ def client(request,client_slug=None):
     else:
         form=None
 
-    shows=Show.objects.filter(client=client).order_by('sequence')
+    shows=Show.objects.filter(client=client)\
+            .annotate( max_date=Max('episode__start'))\
+            .order_by('-max_date')
 
     return render_to_response('client.html',
         {'client':client,
