@@ -1422,13 +1422,14 @@ class add_eps(process.process):
         
         # sequance the rooms
         # this will whack any manual edits
-        seq = 1
-        for room in rooms:
-            loc = Location.objects.get(name=room,)
-            loc.active=True
-            loc.sequence=seq
-            loc.save()
-            seq+=1
+        if self.options.update:
+            seq = 1
+            for room in rooms:
+                loc = Location.objects.get(name=room,)
+                loc.active=True
+                loc.sequence=seq
+                loc.save()
+                seq+=1
 
         events = self.fos_events(schedule)
         self.add_eps(events, show)
