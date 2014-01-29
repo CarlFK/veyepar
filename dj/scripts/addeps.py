@@ -1406,8 +1406,9 @@ class add_eps(process.process):
         rooms = [ r.get('name') for r in schedule[1] ]
 
         # remove (foo) stuff from 
-        for room in rooms:
-            room = room.split('(')[0].strip()
+        # for room in rooms:
+        #    room = room.split('(')[0].strip()
+
         # rooms = set( rooms )
         # probabalby the same rooms the 2nd day.
         # rooms = list(rooms)

@@ -85,8 +85,8 @@ class Location(models.Model):
         help_text="room name")
     slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="dir name to store input files")
-    dirname = models.CharField(max_length=135, blank=True,
-        help_text="pat to raw files. overrieds show/slug.")
+    # dirname = models.CharField(max_length=135, blank=True,
+    #    help_text="path to raw files. overrieds show/slug.")
     channelcopy = models.CharField(max_length=2, blank=True,
         help_text='audio adjustment for this room')
     hours_offset =  models.IntegerField(max_length=2, 
