@@ -27,7 +27,7 @@ sudo apt-get --assume-yes install python-software-properties
 
 sudo apt-get --assume-yes update
 
-sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder ffmpeg python-virtualenv screen sox melt 
+sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder ffmpeg python-virtualenv screen sox melt python-dev libxml2-dev libxslt-dev
 # sphinx2-bin 
 # libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 
 # pocketsphinx-utils
@@ -65,9 +65,7 @@ pip install -r requirements.txt
 # mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 # mv ~/.virtualenvs/veyepar/dabo/locale/ ~/.virtualenvs/veyepar/lib/python2.6/site-packages/dabo
 cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
-# svn checkout http://svn.dabodev.com/dabo/trunk dabo-svn
-# ln -s dabo-svn/dabo 
-git clone git@github.com:dabodev/dabo.git dabo-master
+git clone https://github.com/dabodev/dabo.git dabo-mastter
 ln -s dabo-master/dabo 
 cd -
 

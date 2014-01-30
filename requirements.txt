@@ -22,7 +22,7 @@ boto
 
 requests
 
-django-databrowse
+# django-databrowse
 django-extensions
 
 pyrax

@@ -129,7 +129,7 @@ INSTALLED_APPS = (
     'main',
     'accounts',
     "debug_toolbar",
-    'django_databrowse',
+    # 'django_databrowse',
 )
 
 if DEBUG:

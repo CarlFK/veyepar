@@ -1405,6 +1405,7 @@ class add_eps(process.process):
 
         rooms = [ r.get('name') for r in schedule[1] ]
 
+
         # remove (foo) stuff from 
         # for room in rooms:
         #    room = room.split('(')[0].strip()
@@ -1433,6 +1434,13 @@ class add_eps(process.process):
                 seq+=1
 
         events = self.fos_events(schedule)
+
+        # no recording in Java room saturday k4201
+        events = [ event for event in events if not (
+            event['start'] != datetime.datetime(2014,2,1) and
+                   event['location'] == 'k4201') ] 
+
+
         self.add_eps(events, show)
         return 
 
