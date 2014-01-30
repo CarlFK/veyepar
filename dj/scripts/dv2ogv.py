@@ -86,15 +86,14 @@ class mkpreview(process):
 
         return
 
+    """
+
     def add_more_options(self, parser):
         parser.add_option('-o', '--orphans', action='store_true',
           help='process orpahans (too?) (not implemented)' )
-
-    def add_more_options(self, parser):
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
 
-    """
 
 
 if __name__=='__main__': 

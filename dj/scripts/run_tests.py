@@ -224,11 +224,15 @@ pix_fmt=yuv411p" % parms
  def make_cut_list(self):
   # make cut list
   # this should associate clips2,3,4 with the test episode
+  # from main.views import mk_cuts
+  # cuts = mk_cuts(episode)
+  print "assing dv..."
   import assocdv
   p=assocdv.ass_dv()
   p.main()
   print p.cuts
   cut=p.cuts[1]
+  # cut=cuts[1]
   print cut
   # cut.start="0:0:1"
   # cut.end="0:0:10"
@@ -489,6 +493,7 @@ def main():
     t.make_source_footer()
     t.add_dv()
     t.make_thumbs()
+    print "making cut list..."
     t.make_cut_list()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
@@ -496,8 +501,8 @@ def main():
     t.ck_errors()
     # t.play_vid()
     result['push'] = t.push()
-    result['url'] = t.post_yt()
-    result['richard'] = t.add_to_richard()
+    # result['url'] = t.post_yt()
+    # result['richard'] = t.add_to_richard()
     # result['email'] = t.email_url()
     # result['tweet'] = t.tweet()
     # t.csv()
@@ -506,7 +511,8 @@ def main():
     result['sizes'] = t.size_test()
 
     print 
-    print 'test results', pprint.format(result)
+    print 'test results', 
+    pprint.pprint(result)
 
 if __name__=='__main__':
     main()

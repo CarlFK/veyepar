@@ -13,7 +13,7 @@ feedparser
 git+https://github.com/willkg/steve.git
 python-dateutil
 
-hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
+# hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
 # ElementTree
 
 progressbar

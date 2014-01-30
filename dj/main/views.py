@@ -1049,6 +1049,8 @@ def mk_cuts(episode,
 
     """
 
+    print episode, short_clip_time, start_slop, end_slop
+
     # Get the overlaping dv,
     # plus some fuzz: start/end_slop
     dvs = Raw_File.objects.filter(
@@ -1059,6 +1061,7 @@ def mk_cuts(episode,
     seq=0
     started=False ## magic to figure out when talk really started
     for dv in dvs:
+        print dv
         seq+=1
         if (seq>1 and dv.get_minutes() > short_clip_time) or \
               episode.start == dv.start: 

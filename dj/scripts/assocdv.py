@@ -16,6 +16,7 @@ class ass_dv(process.process):
     
     def process_ep(self, episode):
         self.cuts = mk_cuts(episode)
+        print "self.cuts", self.cuts
 
 if __name__=='__main__': 
     p=ass_dv()
