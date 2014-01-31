@@ -1437,9 +1437,8 @@ class add_eps(process.process):
 
         # no recording in Java room saturday k4201
         events = [ event for event in events if not (
-            event['start'] != datetime.datetime(2014,2,1) and
-                   event['location'] == 'k4201') ] 
-
+            event['start'].date() != datetime.datetime(2014,2,1) and \
+                    event['location'] == 'K4201') ] 
 
         self.add_eps(events, show)
         return 
