@@ -2,11 +2,14 @@
 # Veyepar instalation script
 
 # boot strap command to get this file and run it.
-# wget -N http://github.com/CarlFK/veyepar/raw/master/INSTALL.sh
+# wget --no-check-certificate -N http://github.com/CarlFK/veyepar/raw/master/INSTALL.sh
 # chmod u+x INSTALL.sh
 
+sudo apt-get --assume-yes install python
+
 # install apt-add-repository:
-sudo apt-get --assume-yes install python-software-properties
+# sudo apt-get --assume-yes install python-software-properties
+sudo apt-get --assume-yes install software-properties-common
 
 # trunk gstreamer - used for mkthumbs
 # sudo apt-add-repository --yes ppa:gstreamer-developers/ppa
@@ -33,7 +36,7 @@ sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugi
 # pocketsphinx-utils
 
 # for encoder node
-# python-psycopg2 inkscape ffmpeg2theora python-imaging python-virtualenv virtualenvwrapper
+sudo apt-get install python-psycopg2 inkscape ffmpeg2theora python-imaging python-virtualenv virtualenvwrapper
 
 # for web server 
 # python-psycopg2 python-imaging python-virtualenv virtualenvwrapper 

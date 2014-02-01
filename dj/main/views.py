@@ -323,6 +323,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
         episodes=Episode.objects.filter(id=episode_id)
     else:
         episodes=Episode.objects.filter(show=show, 
+                start__day=1,
                 location__active=True).order_by('location__id','start')
                 # location__name='Hays Cape'
                 # location__name='Barbie Tootle'
@@ -1048,8 +1049,6 @@ def mk_cuts(episode,
     start/end slop - minutes time added to the start/end of the schedule to accommodate talks not starting or ending on time. 
 
     """
-
-    print episode, short_clip_time, start_slop, end_slop
 
     # Get the overlaping dv,
     # plus some fuzz: start/end_slop
