@@ -655,7 +655,7 @@ class enc(process):
 
               if ext=='webm': 
                   # cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 acodec=libvorbis ab=128k ar=44100 vcodec=libvpx minrate=0 b=600k aspect=@4/3 maxrate=1800k g=120 qmax=42 qmin=10"% (mlt_pathname,out_pathname,)]
-                  cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 ab=128k minrate=10k b=600k maxrate=1800k g=120 qmax=42 qmin=10" % (mlt_pathname,out_pathname,)]
+                  cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 ab=128k minrate=10k maxrate=1800k g=120 qmax=42 qmin=10" % (mlt_pathname,out_pathname,)]
 
               if ext=='flv': 
                   cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
@@ -735,45 +735,11 @@ class enc(process):
 
               return ret
 
-
-        def one_format(ext, acodec=None, vcodec=None):
-            """
-            check the passed format against the list of formats to encode
-            if it is on the list, encode that format.
-            """
-            if self.options.verbose: 
-                print "checking %s in %s" % (ext,self.options.upload_formats)
-            if ext in self.options.upload_formats:
-                # ret = enc_one(ext, acodec, vcodec)
-                ret = enc_one(ext)
-            else:
-                # this is the case where we don't do this format, 
-                # so don't flag as error
-                ret = True
-
-            return ret
-
-
         ret = True
         for ext in self.options.upload_formats:
+            print "encoding to %s" % (ext,)
             ret = enc_one(ext) and ret
         return ret
-
-
-        """
-        ret = ret and one_format("ogv")
-        # ret = ret and one_format("ogg", "vorbis", "libtheora")
-        ret = ret and one_format("flv")
-        # ret = ret and one_format("flv", "libmp3lame", "flv")
-        ret = ret and one_format("mp4")
-        ret = ret and one_format("webm")
-        ret = ret and one_format("mp3")
-        ret = ret and one_format("flac")
-        ret = ret and one_format("m4v")
-        ret = ret and one_format("dv")
-
-        return ret
-        """
 
   def dv2theora(self,episode,dv_path_name,cls,rfs):
         """

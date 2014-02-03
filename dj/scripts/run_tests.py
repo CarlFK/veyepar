@@ -498,7 +498,7 @@ pix_fmt=yuv411p" % parms
      sizes = {
              'ogv':602392,
              'mp4':1636263,
-             'webm':-1,
+             'webm':311874,
              }
      ret = True
      for ext in self.upload_formats:
