@@ -687,7 +687,14 @@ class enc(process):
                   % parms 
 
                   cmd = cmd.split()
-                  cmds=[cmd]
+                  if True: # need to figure out how to switch between good and fast
+                    cmds=[ cmd+['pass=1'],
+                            cmd+['pass=2']]
+                    if True: # even faster!
+                        cmds[0].append('fastfirstpass=1')
+                  else: 
+                    cmds=[cmd]
+
                   # cmds.append( ["qt-faststart", tmp_pathname, out_pathname] )
                   if self.options.rm_temp:
                       cmds.append( ["rm", tmp_pathname] )
@@ -736,9 +743,16 @@ class enc(process):
               return ret
 
         ret = True
+        # create all the formats for uploading
         for ext in self.options.upload_formats:
             print "encoding to %s" % (ext,)
             ret = enc_one(ext) and ret
+
+        if self.options.enc_script:
+            cmd = [self.options.enc_script, 
+                    self.show_dir, episode.slug]
+            ret = ret and self.run_cmds(episode,[cmd])
+
         return ret
 
   def dv2theora(self,episode,dv_path_name,cls,rfs):
@@ -789,11 +803,6 @@ class enc(process):
 # do the final encoding:
 # using melt
         ret = self.enc_all(mlt, episode)
-
-        if self.options.enc_script:
-            cmd = [self.options.enc_script, 
-                    self.show_dir, episode.slug]
-            ret = ret and self.run_cmds(episode,[cmd])
 
         if self.options.load_temp and self.options.rm_temp:
             cmds=[]

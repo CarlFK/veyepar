@@ -35,7 +35,7 @@ def callme_maybe(f):
         return f
     else:
         def skip(*args,**kwargs):
-            print "skipping %s" % name
+            # print "skipping %s" % name
             return "skipped"
         return skip
 
@@ -527,7 +527,7 @@ def main():
     result={}
 
     t=Run_Tests() 
-    t.upload_formats=["webm", "mp4", ]
+    t.upload_formats=["mp4", ]
     t.title = "Let's make a Test"
 
     t.make_test_user()
