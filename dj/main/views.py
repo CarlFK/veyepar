@@ -323,7 +323,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
         episodes=Episode.objects.filter(id=episode_id)
     else:
         episodes=Episode.objects.filter(show=show, 
-                start__day=1,
+                start__day=2,
                 location__active=True).order_by('location__id','start')
                 # location__name='Hays Cape'
                 # location__name='Barbie Tootle'

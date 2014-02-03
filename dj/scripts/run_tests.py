@@ -15,6 +15,29 @@ import socket
 
 from main.models import Show # , Episode
 
+fnames=[]
+test_filename = 'tests.txt'
+if os.path.exists(test_filename):
+    call_list = open(test_filename).read().split('\n')
+else: 
+    call_list = []
+
+def callme_maybe(f):
+    name = f.__name__
+    # for when there is no list, create it.
+    if name not in fnames: fnames.append(name)
+
+    pprint.pprint(call_list)
+    # if the name is on the list, call it.
+    if name in call_list:
+        print "running %s..." % name
+        return f
+    else:
+        def skip(*args,**kwargs):
+            print "skipping %s" % name
+            return "skipped"
+        return skip
+
 class Run_Tests(object):
 
  def run_cmd(self, cmd, get_out=False):
@@ -42,6 +65,7 @@ class Run_Tests(object):
         return ret
 
 
+ @callme_maybe
  def make_test_user(self):
   from django.contrib.auth.models import User
   users=User.objects.all()
@@ -53,6 +77,7 @@ class Run_Tests(object):
     print user
   return
 
+ @callme_maybe
  def setup_test_data(self):
   # make sample data: location, client, show, episode
   from main.views import make_test_data, del_test_data
@@ -60,6 +85,7 @@ class Run_Tests(object):
   self.episode=make_test_data(self.title)
   return
 
+ # @callme_maybe
  def make_dirs(self):
   # create dirs for video files 
   import mkdirs
@@ -74,6 +100,7 @@ class Run_Tests(object):
           self.show_dir, 'tmp', "%s.sh" % (self.title) )
   return
 
+ @callme_maybe
  def make_source_dvs(self):
    """ 
  ` make a set of .dv files
@@ -143,6 +170,7 @@ pix_fmt=yuv411p" % parms
    return
  
 
+ @callme_maybe
  def make_source_footer(self):
    """ 
  ` make a footer.png 
@@ -195,6 +223,7 @@ pix_fmt=yuv411p" % parms
    # "00000001.png"
    return 
  
+ @callme_maybe
  def add_dv(self):
   # add the dv files to the db
   import adddv
@@ -208,6 +237,7 @@ pix_fmt=yuv411p" % parms
   return
 
 
+ @callme_maybe
  def make_thumbs(self):
   # make thumbnails and preview ogv
   import mkthumbs
@@ -220,7 +250,7 @@ pix_fmt=yuv411p" % parms
 
   return
 
-
+ @callme_maybe
  def make_cut_list(self):
   # make cut list
   # this should associate clips2,3,4 with the test episode
@@ -241,6 +271,7 @@ pix_fmt=yuv411p" % parms
   return
 
 
+ @callme_maybe
  def encode(self):
   # encode the test episode 
   # create a title, use clips 2,3,4 as source, maybe a credits trailer 
@@ -256,6 +287,7 @@ pix_fmt=yuv411p" % parms
   self.episode = p.episode
   return
 
+ @callme_maybe
  def ck_errors(self):
   # check for encoding errors
   # python ck_invalid.py -v --client test_client --show test_show --push
@@ -264,6 +296,7 @@ pix_fmt=yuv411p" % parms
   p.main()
   return
 
+ @callme_maybe
  def play_vid(self):
     # show the user what was made 
     # todo: (speed up, we don't have all day)
@@ -271,6 +304,7 @@ pix_fmt=yuv411p" % parms
     p=play_vids.play_vids()
     p.main()
 
+ @callme_maybe
  def post_blip(self):
   # post it to blip test account (password is in pw.py)
   """
@@ -291,6 +325,7 @@ pix_fmt=yuv411p" % parms
   # self.run_cmd(["firefox",p.last_url])
   return p.las
 
+ @callme_maybe
  def push(self):
   # rsync to data center box
   print "testing push.py..."
@@ -305,6 +340,7 @@ pix_fmt=yuv411p" % parms
   return ret
 
 
+ @callme_maybe
  def post_yt(self):
   # post it to youtube test account (password is in pw.py)
   """
@@ -328,6 +364,7 @@ pix_fmt=yuv411p" % parms
 
   return p.last_url
 
+ @callme_maybe
  def add_to_richard(self):
   # add the test to pyvideo.org:9000 test instance
   import add_to_richard
@@ -340,6 +377,7 @@ pix_fmt=yuv411p" % parms
   ret = p.pvo_url
   return ret
 
+ @callme_maybe
  def email_url(self):
   # add the test to pyvideo.org:9000 test instance
   import email_url
@@ -350,6 +388,7 @@ pix_fmt=yuv411p" % parms
   return ret
 
 
+ @callme_maybe
  def tweet(self):
   # tell the world (test account)
   import tweet
@@ -360,6 +399,7 @@ pix_fmt=yuv411p" % parms
   return tweet_url
 
 
+ @callme_maybe
  def csv(self):
   # make csv and other data files
   import mkcvs
@@ -369,6 +409,7 @@ pix_fmt=yuv411p" % parms
   return
 
 
+ @callme_maybe
  def ocr_test(self):
   # ocr an output file, check for ABCDEFG
   # someday this will wget the m4v from blip to see what they made
@@ -402,6 +443,7 @@ pix_fmt=yuv411p" % parms
   return result
 
 
+ @callme_maybe
  def sphinx_test(self):
   # sphinx transcribe an output file, check for GO FORWARD TEN METERS
   # someday this will wget the m4v from blip to see what they made
@@ -450,14 +492,16 @@ pix_fmt=yuv411p" % parms
 
           return result
   
+ @callme_maybe
  def size_test(self):
-     sizes = [
-             ('ogv',602392),
-             ('mp4',1636263),
-             ]
+     sizes = {
+             'ogv':602392,
+             'mp4':1636263,
+             'webm':-1,
+             }
      ret = True
-     for size in sizes:
-         ext,expected_size = size
+     for ext in self.upload_formats:
+         expected_size = sizes[ext]
          fullpathname = os.path.join( self.show_dir, ext,
                  "%s.%s" % (self.episode.slug, ext))
          st = os.stat(fullpathname)
@@ -479,40 +523,42 @@ pix_fmt=yuv411p" % parms
 
 
 def main():
-
     result={}
 
     t=Run_Tests() 
-    t.upload_formats=["webm"]
+    t.upload_formats=["webm", "mp4", ]
     t.title = "Let's make a Test"
 
-    # t.make_test_user()
-    # t.setup_test_data()
+    t.make_test_user()
+    t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    # t.make_source_dvs()
+    t.make_source_dvs()
     t.make_source_footer()
     t.add_dv()
     t.make_thumbs()
-    print "making cut list..."
     t.make_cut_list()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     t.encode()
     t.ck_errors()
-    # t.play_vid()
+    t.play_vid()
     result['push'] = t.push()
-    # result['url'] = t.post_yt()
-    # result['richard'] = t.add_to_richard()
-    # result['email'] = t.email_url()
-    # result['tweet'] = t.tweet()
-    # t.csv()
-    # result['video'] = t.ocr_test()
-    # result['audio'] = t.sphinx_test()
+    result['url'] = t.post_yt()
+    result['richard'] = t.add_to_richard()
+    result['email'] = t.email_url()
+    result['tweet'] = t.tweet()
+    t.csv()
+    result['video'] = t.ocr_test()
+    result['audio'] = t.sphinx_test()
     result['sizes'] = t.size_test()
 
     print 
     print 'test results', 
     pprint.pprint(result)
+
+    if not os.path.exists(test_filename):
+        print '\n'.join(fnames)
+        open(test_filename,'w').write('\n'.join(fnames))
 
 if __name__=='__main__':
     main()
