@@ -23,11 +23,12 @@ else:
     call_list = []
 
 def callme_maybe(f):
+    # if the function name is on the list, call it.
+    # good way to disable it in the file is to # it, then "foo" not in ["# foo"]
     name = f.__name__
     # for when there is no list, create it.
     if name not in fnames: fnames.append(name)
 
-    pprint.pprint(call_list)
     # if the name is on the list, call it.
     if name in call_list:
         print "running %s..." % name
@@ -509,8 +510,8 @@ pix_fmt=yuv411p" % parms
          delta = expected_size - actual_size
          # is it off by more than some %
          tolerance = 2
-         err = abs(delta * 100 ) / expected_size
-         if err > tolerance:
+         err = abs(delta * 100 / expected_size )
+         if err > tolerance or self.options.verbose:
              ret = False
              print ext
              print "expectected: %15d" % expected_size
