@@ -65,25 +65,19 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a>
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
 <a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a>
-{% if episode.host_url %}
-  <a href="{{episode.host_url}}">host</a>
-  {# <a href="http://blip.tv/file/{{episode.host_url}}?skin=rss">rss</a> #}
-  {#<a href={{episode.host_url}}>host</a> #}
-{% endif %}
-<a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release</a>
-{% if episode.public_url %}
-  <a href={{episode.public_url}}>public</a>
-{% endif %}
+{% if episode.host_url %} <a href="{{episode.host_url}}">host</a> {%endif%}
+<a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
+{%if episode.public_url%}<a href={{episode.public_url}}>public</a>{%endif%}
 <br/>
 <a href={% url episode_logs episode.id %}>logs</a><br/>
 
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br/>
 
-
-<video src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video>
+{# <video src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video> #}
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
+<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/webm/{{episode.slug}}.webm">mp4</a>
 
 <form action="" method="POST">{% csrf_token %}
 <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />

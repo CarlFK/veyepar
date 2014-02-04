@@ -9,7 +9,7 @@ cd melt
 wget -N https://raw.github.com/mltframework/mlt-scripts/master/build/build-melt.sh
 chmod +x build-melt.sh
 
-echo "FFMPEG_SUPPORT_FAAC=1" >> build-melt.conf
+# echo "FFMPEG_SUPPORT_FAAC=1" >> build-melt.conf
 ./build-melt.sh -c build-melt.conf
 
 cd ~/bin
