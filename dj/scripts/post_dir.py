@@ -1,0 +1,93 @@
+#!/usr/bin/python
+
+# posts to a local dir
+# for fosdem, 
+# (02:50:17 PM) h01ger: please use $room/$day/$talk
+# (02:51:41 PM) h01ger: i think "saturday" is beter
+
+import os
+import shutil
+import pprint
+
+from process import process
+
+from main.models import Show, Location, Episode, Raw_File, Cut_List
+
+class FileNotFound(Exception):
+    def __init__(self, value):
+        self.value=value
+    def __str__(self):
+        return repr(self.value)
+
+class post(process):
+
+    ready_state = 4
+
+    def get_files(self, ep):
+        # get a list of video files to upload
+        # blip and archive support multiple formats, youtube does not.
+        # youtube and such will only upload the first file.
+        files = []
+        for ext in self.options.upload_formats:
+            src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
+            if self.options.verbose: print src_pathname
+
+            if os.path.exists(src_pathname):
+                files.append({'ext':ext,'pathname':src_pathname})
+            else:
+                # crapy place to abort, but meh, works for now.
+                # maybe this is the place to use raise?
+                print "not found:", src_pathname
+
+                raise FileNotFound(src_pathname)
+
+        return files
+
+    def process_ep(self, ep):
+
+        if not ep.released: # and not self.options.release_all:
+            # --release will force the upload, overrides ep.released
+            if self.options.verbose: print "not released:", ep.released
+            return False
+
+        # collect data needed for uploading
+        files = self.get_files(ep)
+        if self.options.verbose: 
+            print "[files]:",
+            pprint.pprint(files)
+
+
+        for fn in files:
+            # construct a dest dir of the form year/room/day cuz
+            # (02:50:17 PM) h01ger: please use $room/$day/$talk
+            dest = os.path.join( 
+                ep.start.strftime("%Y"), 
+                ep.location.slug, 
+                ep.start.strftime("%A"),
+                )
+
+            # this is the dir the website will want
+            ep.public = os.path.join( dest, fn['pathname'] )
+
+            # add the local fs dir home:
+            dest = os.path.join( self.show_dir, "final", dest )
+
+            # make sure the dir exists
+            if self.options.verbose: print "dest", dest
+            if not os.path.exists(dest): os.makedirs(dest)
+
+            # copy the file
+            shutil.copy( fn['pathname'], dest )
+
+
+        ep.save()
+
+        return True
+
+    def add_more_options(self, parser):
+        parser.add_option('--release-all', action="store_true",
+            help="ignore the released setting.")
+
+if __name__ == '__main__':
+    p=post()
+    p.main()
