@@ -367,6 +367,7 @@ class enc(process):
 
         # write out the xml we have so far
         # then pass it to melt to calc total frames
+
         mlt_xml = xml.etree.ElementTree.tostring(tree[0])
         open(mlt_pathname,'w').write(mlt_xml)
         p = subprocess.Popen( ['melt', mlt_pathname, 
@@ -655,8 +656,17 @@ class enc(process):
                 self.show_dir, ext, "%s.%s"%(episode.slug,ext))
 
               if ext=='webm': 
-                  # cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 acodec=libvorbis ab=128k ar=44100 vcodec=libvpx minrate=0 b=600k aspect=@4/3 maxrate=1800k g=120 qmax=42 qmin=10"% (mlt_pathname,out_pathname,)]
-                  cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 ab=128k minrate=10k maxrate=1800k g=120 qmax=42 qmin=10" % (mlt_pathname,out_pathname,)]
+ 
+                  parms = {
+                    'dv_format': self.options.dv_format, 
+                    'mlt': mlt_pathname, 
+                    'out': out_pathname, 
+                    'threads': self.options.threads, 
+                    'test': '',
+			              }
+
+                 # cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 acodec=libvorbis ab=128k ar=44100 vcodec=libvpx minrate=0 b=600k aspect=@4/3 maxrate=1800k g=120 qmax=42 qmin=10"% (mlt_pathname,out_pathname,)]
+                  cmds=["melt %(mlt)s -profile %(dv_format)s -consumer avformat:%(out)s progress=1 ab=128k minrate=10k maxrate=1800k g=120 quality=good deadline=good" % parms]
 
               if ext=='flv': 
                   cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
