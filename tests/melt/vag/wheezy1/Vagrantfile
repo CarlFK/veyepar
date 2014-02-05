@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+$script = <<SCRIPT
+#!/bin/bash -ex
+
+# sudo apt-get --assume-yes install squid-deb-proxy-client
+# sudo apt-add-repository multiverse
+#
+# apt-get install deb-multimedia-keyring
+#
+
+sudo apt-get --assume-yes update
+sudo apt-get --assume-yes install software-properties-common python-software-properties
+sudo apt-add-repository "deb http://www.deb-multimedia.org wheezy main non-free"
+sudo apt-get --assume-yes update
+sudo apt-get --assume-yes --force-yes install deb-multimedia-keyring
+
+sudo apt-get --assume-yes --force-yes install libtag1-vanilla libtag1c2a
+sudo apt-get --assume-yes --force-yes install libfaac-dev
+
+sudo apt-get --assume-yes install libphonon-dev phonon-backend-gstreamer
+sudo apt-get --assume-yes --force-yes install git automake autoconf libtool intltool g++ yasm swig libmp3lame-dev libgavl-dev libsamplerate-dev libxml2-dev ladspa-sdk libjack-dev libsox-dev libsdl-dev libgtk2.0-dev liboil-dev libsoup2.4-dev libqt4-dev libexif-dev libtheora-dev libvdpau-dev libvorbis-dev python-dev kdelibs5-dev cmake libvpx-dev 
+
+cd 
+wget -N https://raw.github.com/mltframework/mlt-scripts/master/build/build-melt.sh
+chmod +x build-melt.sh
+
+echo "FFMPEG_SUPPORT_FAAC=1" >> build-melt.conf
+./build-melt.sh -c build-melt.conf
+
+cd melt/$(date +'%Y%m%d')
+wget https://github.com/CarlFK/dvsmon/raw/master/app_data/dv/test-1.dv
+./melt test-1.dv -consumer avformat:test-1.mp4 acodec=aac
+
+SCRIPT
+
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # config.vm.box = "saucy64"
+  # config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.box = "wheezy"
+  config.vm.box_url = "https://dl.dropboxusercontent.com/s/xymcvez85i29lym/vagrant-debian-wheezy64.box"
+
+  config.vm.provision "shell", inline: $script
+
+end
