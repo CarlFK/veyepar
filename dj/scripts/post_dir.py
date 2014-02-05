@@ -58,8 +58,7 @@ class post(process):
 
 
         for fn in files:
-            # construct a dest dir of the form year/room/day cuz
-            # (02:50:17 PM) h01ger: please use $room/$day/$talk
+            # construct a dest dir of the form year/room/Day 
             dest = os.path.join( 
                 ep.start.strftime("%Y"), 
                 ep.location.slug, 
@@ -67,7 +66,9 @@ class post(process):
                 )
 
             # this is the dir the website will want
-            ep.public = os.path.join( dest, fn['pathname'] )
+            # add the filename to be nice
+            ep.public_url = os.path.join( dest, "%s.%s"%(ep.slug,fn['ext']) )
+            if self.options.verbose: print "public", ep.public_url
 
             # add the local fs dir home:
             dest = os.path.join( self.show_dir, "final", dest )
