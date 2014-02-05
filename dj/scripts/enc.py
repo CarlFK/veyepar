@@ -173,7 +173,7 @@ class enc(process):
         }
     return texts
 
-  def mk_title_png(self, svg_name, png_name, episode):
+  def svg2png(self, svg_name, png_name, episode):
     """
     Make a title slide png file.
     melt uses librsvg which doesn't support flow, 
@@ -241,7 +241,8 @@ class enc(process):
         png_name = os.path.join(
                 self.show_dir, "titles", '%s.png'%episode.slug)
 
-        title_img=self.mk_title_png(cooked_svg_name, png_name, episode)
+        title_img=self.svg2png(cooked_svg_name, png_name, episode)
+        # title_img=self.mk_title_png(cooked_svg_name, png_name, episode)
 
         if title_img is None: 
             print "missing title png"
@@ -785,6 +786,11 @@ class enc(process):
                    if episode.show.client.credits \
                    else 'ndv1-black.png'
         credits_img = os.path.join(self.show_dir, "bling", credits_img)
+        if credits_img[-4:] == ".svg":
+            # convert to png because melt doesn't do svgs as well
+            png_name = credits_img[:-4]+".png"
+            credits_img=self.svg2png(credits_img,  png_name, episode )
+
 
 # get list of raw footage for this episode
         rfs = Raw_File.objects. \
