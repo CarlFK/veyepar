@@ -5,7 +5,7 @@
 $script = <<SCRIPT
 #!/bin/bash -ex
 
-sudo apt-get --assume-yes install squid-deb-proxy-client
+# sudo apt-get --assume-yes install squid-deb-proxy-client
 sudo apt-add-repository multiverse
 sudo apt-get --assume-yes update
 sudo apt-get --assume-yes install libphonon-dev phonon-backend-gstreamer
