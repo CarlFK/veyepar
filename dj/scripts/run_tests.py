@@ -527,7 +527,7 @@ def main():
     result={}
 
     t=Run_Tests() 
-    t.upload_formats=["mp4", ]
+    t.upload_formats=["mp4","webm" ]
     t.title = "Let's make a Test"
 
     t.make_test_user()
