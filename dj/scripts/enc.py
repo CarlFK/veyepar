@@ -666,7 +666,7 @@ class enc(process):
 			              }
 
                  # cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 acodec=libvorbis ab=128k ar=44100 vcodec=libvpx minrate=0 b=600k aspect=@4/3 maxrate=1800k g=120 qmax=42 qmin=10"% (mlt_pathname,out_pathname,)]
-                  cmds=["melt %(mlt)s -profile %(dv_format)s deinterlace=yadif -consumer avformat:%(out)s progress=1 threads=0 ab=128k maxrate=1800k g=120 quality=good deadline=good" % parms]
+                  cmds=["melt %(mlt)s -profile %(dv_format)s deinterlace=yadif -consumer avformat:%(out)s progress=1 threads=1 quality=good deadline=good" % parms]
 
               if ext=='flv': 
                   cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
