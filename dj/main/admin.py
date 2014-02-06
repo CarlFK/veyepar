@@ -82,7 +82,9 @@ class EpisodeAdmin(admin.ModelAdmin):
     search_fields = ['name']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True
-    actions = [ 'set_stopped', 'clear_locked', 're_slug', 'bump_state' ] \
+    actions = [ 
+            'set_stopped', 'clear_locked', 're_slug', 'bump_state',
+            'enc_state'] \
             + admin.ModelAdmin.actions
 
     def set_stopped(self, request, queryset):
@@ -150,6 +152,26 @@ class EpisodeAdmin(admin.ModelAdmin):
         }
         messages.success(request, msg)
     set_stopped.short_discription = "bump state"
+
+
+    def enc_state(self, request, queryset):
+        rows_updated = 0
+        for obj in queryset:
+            obj.state = 2
+            obj.save()
+            rows_updated +=1
+
+        msg = ungettext(
+            'set state in %(count)d %(name)s to 2-Encode.',
+            'set state in %(count)d %(name_plural)s to 2-Enocde.',
+            rows_updated
+        ) % {
+            'count': rows_updated,
+            'name': self.model._meta.verbose_name.title(),
+            'name_plural': self.model._meta.verbose_name_plural.title()
+        }
+        messages.success(request, msg)
+    set_stopped.short_discription = "set to encode"
 
 
     class Media:
