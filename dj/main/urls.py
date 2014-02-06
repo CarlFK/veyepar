@@ -73,6 +73,9 @@ urlpatterns += patterns(
 
     url(r'overlaping_episodes/(?P<show_id>\w+)/$', overlaping_episodes,
         name='overlaping_episodes'),
+    url(r'overlaping_files/(?P<show_id>\w+)/$', overlaping_files,
+        name='overlaping_files'),
+
     url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
         name='orphan_dv'),
     url(r'dv_set/(?P<location_slug>[\w+\-]+)/(?P<start_date>[\w+\-]+)/$', 

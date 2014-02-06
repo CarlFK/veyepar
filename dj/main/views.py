@@ -977,6 +977,36 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
                     },
                     context_instance=RequestContext(request) )
 
+def overlaping_files(request,show_id):
+
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+    raw_files=Raw_File.objects.raw('select distinct r1.* from main_raw_file r1, main_raw_file r2 where r1.id != r2.id and r1.start<r2.end and r1.end>r2.start and r1.location_id=r2.location_id and r1.show_id=%s and r2.show_id=%s order by r1.location_id, r1.start', [show.id,show.id])
+    rlist=[r.__dict__ for r in raw_files]
+    for r in rlist:
+        r['location']=Location.objects.get(id=r['location_id'])
+    start,end=24*60,0
+    for r in rlist:
+        r['start_min']=r['start'].hour*60+r['start'].minute
+        r['end_min']=r['end'].hour*60+r['end'].minute
+        if r['start_min'] < start: start = r['start_min']
+        if r['end_min'] > end: end = r['start_min']
+    width_min = end-start
+
+    width_px=300.0
+    x=width_min/width_px +1 ## float math so that x isn't an int
+    for r in rlist:
+        r['start_px']=int((r['start_min']-start)/x)
+        r['end_px']=int((r['end_min']-start)/x)
+        r['width_px']=(r['end_px']-r['start_px'])
+
+    return render_to_response('overlaping_raw_files.html',
+        {
+          'rfs':rlist,
+        },
+            context_instance=RequestContext(request) )
+
+
 def overlaping_episodes(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
