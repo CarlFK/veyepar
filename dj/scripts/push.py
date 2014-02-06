@@ -5,6 +5,8 @@
 
 import os, subprocess
 
+import fixunicode
+
 from process import process
 
 from main.models import Show, Location, Episode
