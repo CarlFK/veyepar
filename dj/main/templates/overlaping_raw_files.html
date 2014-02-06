@@ -7,6 +7,15 @@
 
 {% block content %}
     <table>
+        <tr>
+            <th>id</th>
+            <th></th>
+            <th></th>
+            <th>start-end</th>
+            <th>location</th>
+            <th>filename</th>
+            <th>filesize</th>
+        </tr>
         {% for rf in rfs %}
             <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
                 <td><a href="{% url admin:main_raw_file_change rf.id %}">{{rf.id}}</a><td>
@@ -15,7 +24,8 @@
 <div style="background: black;width:{{rf.width_px}}">.</div></td>
             <td>{{rf.start|date:"D b d H:i"}} - {{rf.end|date:"H:i"}}</td>
             <td>{{rf.location}}</td>
-            <td><a href="E/{{rf.id}}/">{{ rf.name }}</a></td>
+            <td><a href="E/{{rf.id}}/">{{ rf.filename }}</a></td>
+            <td>{{rf.filesize}}</td>
             </tr>
         {% endfor %}
     </table>
