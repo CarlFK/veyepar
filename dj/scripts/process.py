@@ -131,8 +131,10 @@ class process(object):
     log_in/out
     create logs, and lock.unlock the episode
     """
-    hostname=socket.gethostname()
-    what_where = "%s@%s" % (self.__class__.__name__, hostname)
+    where=socket.gethostname()
+    if os.environ.get('STY') is not None:
+        where += ":" + os.environ['STY']
+    what_where = "%s@%s" % (self.__class__.__name__, where)
     episode.locked = datetime.datetime.now()
     episode.locked_by = what_where
     # save the lock to disk
