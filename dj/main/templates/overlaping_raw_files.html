@@ -9,7 +9,7 @@
     <table>
         <tr>
             <th>id</th>
-            <th></th>
+            <th>trash</th>
             <th></th>
             <th>start-end</th>
             <th>location</th>
@@ -17,8 +17,11 @@
             <th>filesize</th>
         </tr>
         {% for rf in rfs %}
-            <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
-                <td><a href="{% url admin:main_raw_file_change rf.id %}">{{rf.id}}</a><td>
+        {# <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}> #}
+            <tr class=row{{rf.trash|yesno:"1,2"}}>
+                <td><a href="{% url admin:main_raw_file_change rf.id %}">{{rf.id}}</a></td>
+
+                <td>{{rf.trash|yesno:"*, "}}</td>
 
 <td style="padding-left: {{rf.start_px}}px;">
 <div style="background: black;width:{{rf.width_px}}">.</div></td>
