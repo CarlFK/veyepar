@@ -60,6 +60,8 @@ urlpatterns += patterns(
     url(r'enc_list/(?P<episode_id>\w+)/.*$', 
         enc_play_list, 
         name='enc_list'),
+    url(r'pub_play/$', public_play_list, name='public_play_list'),
+
     url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).json$', 
         eps_xfer,
         name='eps_xfer'),

@@ -402,6 +402,44 @@ def raw_play_list(request,episode_id):
 
     return response
 
+def public_play_list(request):
+    # experiment to construct a playlist that is based on query params
+    import pprint
+    
+    pprint.pprint(request.GET)
+    print "request.get...", request.GET['client'] 
+
+    episodes=Episode.objects.filter(show=show,)
+
+    response = HttpResponse(mimetype='audio/mpegurl')
+    # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
+    response['Content-Disposition'] = 'inline; filename=playlist.m3u'
+
+    writer = csv.writer(response)
+    # exts = [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
+    exts = [ 'mp4', ]
+    for ext in exts:
+        
+      foot_pathname = os.path.join(client.slug,show.slug, ext, '%s.%s' % (episode.slug, ext))
+      print os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)
+
+      if os.path.exists( 
+          os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)):
+        
+        if settings.MEDIA_URL.startswith('file:/'):
+            head=settings.MEDIA_URL
+        else:
+            # probably no local file access
+            # head='http://'+request.META['HTTP_HOST']+settings.MEDIA_URL
+            head=settings.MEDIA_URL
+            # so review the smaller iPhone file
+        item = '/'.join([head, foot_pathname ] )
+        writer.writerow([item])
+
+
+    return response
+
+
 def enc_play_list(request,episode_id):
     episode=get_object_or_404(Episode,id=episode_id)
     show =episode.show
@@ -981,7 +1019,15 @@ def overlaping_files(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    raw_files=Raw_File.objects.raw('select distinct r1.* from main_raw_file r1, main_raw_file r2 where r1.id != r2.id and r1.start<r2.end and r1.end>r2.start and r1.location_id=r2.location_id and r1.show_id=%s and r2.show_id=%s order by r1.location_id, r1.start, r1.filename, r1.filesize', [show.id,show.id])
+    raw_files=Raw_File.objects.raw(
+            '''select distinct r1.* from main_raw_file r1, main_raw_file r2 
+            where r1.id != r2.id 
+            and not r1.trash 
+            and r1.start<r2.end and r1.end>r2.start 
+            and r1.location_id=r2.location_id 
+            and r1.filesize=r2.filesize 
+            and r1.show_id=%s and r2.show_id=%s 
+            order by r1.location_id, r1.start, r1.filename, r1.filesize''', [show.id,show.id])
     rlist=[r.__dict__ for r in raw_files]
     for r in rlist:
         r['location']=Location.objects.get(id=r['location_id'])
@@ -992,7 +1038,12 @@ def overlaping_files(request,show_id):
         r['end_min']=r['end'].hour*60+r['end'].minute
         if r['start_min'] < start: start = r['start_min']
         if r['end_min'] > end: end = r['start_min']
-        r['trash'] = r['filename'].endswith('-1.dv')
+        if r['filename'][-5:] in ['-1.dv','-2.dv']:
+            r['trash'] = True
+            rf = Raw_File.objects.get(id=r['id'])
+            rf.trash = True
+            rf.save()
+
 
     width_min = end-start
 
@@ -1093,7 +1144,6 @@ def mk_cuts(episode,
     seq=0
     started=False ## magic to figure out when talk really started
     for dv in dvs:
-        print dv
         seq+=1
         if (seq>1 and dv.get_minutes() > short_clip_time) or \
               episode.start == dv.start: 
@@ -1107,8 +1157,12 @@ def mk_cuts(episode,
         if created:
             cl.sequence=seq
             # if the talk has started, 
+            # and there isn't something wrong with the raw
+            # (like it is a dupe, or lunch)
             # and the segment is in the time slot
-            cl.apply = started and (dv.start < episode.end)
+            cl.apply = started \
+                    and not dv.trash \
+                    and (dv.start < episode.end)
             cl.save()
 
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')

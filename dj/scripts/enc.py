@@ -808,8 +808,6 @@ class enc(process):
             exclude(trash=True).distinct()
 
 # make a .mlt file for this episode
-        print "title_img", title_img
-        # mlt = self.mkmlt_2(title_img,credits_img,episode,cls,rfs)
         mlt = self.mkmlt_1(title_img,credits_img,episode,cls,rfs)
         if not mlt:
             episode.state = 0

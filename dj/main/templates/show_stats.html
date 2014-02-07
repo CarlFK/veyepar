@@ -73,6 +73,11 @@
                  <span class="left">files: <a style="display: inline-block;" href="/main/dv_set/{{loc.loc.slug}}/{{item.date|date:"Y-m-d"}}/">{{item.files}}</a></span><span class="right">{{item.gig}} g</span><br/>
                    {% if item.alarm >= 0 %} <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance}} g</span> {% endif %}
                  {% endif %}
+                 
+                 <span class="left">
+                     <a href="/main/pub_play?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">pubs</a>
+                     </span><br/>
+
                {% endif %}
              </td>
           {% endfor %}
