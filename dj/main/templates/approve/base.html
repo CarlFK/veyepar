@@ -16,7 +16,8 @@
 <tr><td>state</td><td>{{episode.state}}</td></tr>
 <tr><td>url</td><td>
 {% if episode.public_url %}
-  <a href="{{episode.public_url}}">{{episode.public_url}}</a>
+  <a href="http://video.fosdem.org/{{episode.public_url}}">
+      http://video.fosdem.org/{{episode.public_url}}</a>
 {% else %}
     {% if episode.host_url %}
       <a href="{{episode.host_url}}">{{episode.host_url}}</a>
