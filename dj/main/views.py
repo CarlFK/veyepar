@@ -409,32 +409,41 @@ def public_play_list(request):
     pprint.pprint(request.GET)
     print "request.get...", request.GET['client'] 
 
-    episodes=Episode.objects.filter(show=show,)
+    # build up the filter:
+    episodes = Episode.objects
+
+    if "client" in request.GET:
+        episodes = episodes.filter(
+                show__client__slug=request.GET['client'] )
+
+    if "show" in request.GET:
+        episodes = episodes.filter( show__slug=request.GET['show'] )
+
+    if "loc" in request.GET:
+        episodes = episodes.filter( location__slug=request.GET['loc'] )
+
+
+    if "date" in request.GET:
+        episodes = episodes.filter( start__startswith=request.GET['date'] )
+
 
     response = HttpResponse(mimetype='audio/mpegurl')
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
     response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
     writer = csv.writer(response)
-    # exts = [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
-    exts = [ 'mp4', ]
+    exts = [ 'webm', ]
     for ext in exts:
         
-      foot_pathname = os.path.join(client.slug,show.slug, ext, '%s.%s' % (episode.slug, ext))
-      print os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)
+        for ep in episodes:
+            item = "/".join([
+                  "http://video.fosdem.org",
+                  ep.start.strftime("%Y"),
+                  ep.location.slug,
+                  ep.start.strftime("%A"),
+                  '%s.%s' % (ep.slug, ext) ])
 
-      if os.path.exists( 
-          os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)):
-        
-        if settings.MEDIA_URL.startswith('file:/'):
-            head=settings.MEDIA_URL
-        else:
-            # probably no local file access
-            # head='http://'+request.META['HTTP_HOST']+settings.MEDIA_URL
-            head=settings.MEDIA_URL
-            # so review the smaller iPhone file
-        item = '/'.join([head, foot_pathname ] )
-        writer.writerow([item])
+            writer.writerow([item])
 
 
     return response
