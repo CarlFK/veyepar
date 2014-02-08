@@ -1,0 +1,22 @@
+get schedule .json
+title screen template .svg
+
+book flights
+book rooms 
+
+client supplying:
+  camera/tripod
+  slave machines
+  file server 
+
+
+print:
+ recording sheets
+ vga_config.odt
+ signs.odt
+
+mixer box setup:
+  set time zone
+  push veyepar config 
+
+
