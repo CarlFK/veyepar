@@ -643,7 +643,6 @@ def show_stats(request, show_id, ):
     dates=[] 
 
     for rf in raw_files:
-        print rf.id
         dt = rf.start.date()
         if dt not in dates: dates.append(dt)
 

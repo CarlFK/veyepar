@@ -75,7 +75,7 @@
                  {% endif %}
                  
                  <span class="left">
-                     <a href={url public_play_list }?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">pubs</a>
+                     <a href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">pubs</a>
                      </span><br/>
 
                {% endif %}
