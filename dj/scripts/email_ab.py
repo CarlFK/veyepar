@@ -34,11 +34,6 @@ http://veyepar.nextdayvideo.com:8080/main/E/{{ep.id}}/
 
     def process_ep(self, ep):
 
-        # setup key so presenter can later approve 
-        if ep.edit_key is None or not ep.edit_key.strip():
-            ep.edit_key = str(random.randint(10000000,99999999))
-            ep.save()
-
         # if there is no email, use the client's.
         # like for lightning talks.
         emails = ep.emails or ep.show.client.contacts

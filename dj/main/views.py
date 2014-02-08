@@ -176,6 +176,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
             'host_url', 'public_url',
+            'edit_key',
         ]
     if request.user.is_authenticated():
         fields.append('emails')

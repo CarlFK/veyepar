@@ -216,7 +216,7 @@ class Episode(models.Model):
     edit_key = models.CharField(max_length=32,
             blank=True,
             null=True,
-            default='',
+            default = str(random.randint(10000000,99999999)),
         help_text="key to allow unauthenticated users to edit this item.")
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
