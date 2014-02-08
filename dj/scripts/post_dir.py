@@ -5,6 +5,10 @@
 # (02:50:17 PM) h01ger: please use $room/$day/$talk
 # (02:51:41 PM) h01ger: i think "saturday" is beter
 
+# Maybe this should be a config stored in the client?
+# It is the first time in 5 years it has come up, so 
+# for now, just hack this code.
+
 import os
 import shutil
 import pprint
@@ -45,8 +49,8 @@ class post(process):
 
     def process_ep(self, ep):
 
-        if not ep.released: # and not self.options.release_all:
-            # --release will force the upload, overrides ep.released
+        if not ep.released and not self.options.release_all:
+            # --release-all will force the upload, overrides ep.released
             if self.options.verbose: print "not released:", ep.released
             return False
 
@@ -67,7 +71,9 @@ class post(process):
 
             # this is the dir the website will want
             # add the filename to be nice
-            ep.public_url = os.path.join( dest, "%s.%s"%(ep.slug,fn['ext']) )
+            ep.public_url = "/".join([ 
+                    "http://video.fosdem.org",
+                    dest, "%s.%s"%(ep.slug,fn['ext'])])
             if self.options.verbose: print "public", ep.public_url
 
             # add the local fs dir home:
@@ -87,7 +93,7 @@ class post(process):
 
     def add_more_options(self, parser):
         parser.add_option('--release-all', action="store_true",
-            help="ignore the released setting.")
+            help="override the released setting.")
 
 if __name__ == '__main__':
     p=post()

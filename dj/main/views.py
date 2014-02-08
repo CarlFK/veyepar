@@ -404,11 +404,7 @@ def raw_play_list(request,episode_id):
 
 def public_play_list(request):
     # experiment to construct a playlist that is based on query params
-    import pprint
     
-    pprint.pprint(request.GET)
-    print "request.get...", request.GET['client'] 
-
     # build up the filter:
     episodes = Episode.objects
 
@@ -432,19 +428,8 @@ def public_play_list(request):
     response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
     writer = csv.writer(response)
-    exts = [ 'webm', ]
-    for ext in exts:
-        
-        for ep in episodes:
-            item = "/".join([
-                  "http://video.fosdem.org",
-                  ep.start.strftime("%Y"),
-                  ep.location.slug,
-                  ep.start.strftime("%A"),
-                  '%s.%s' % (ep.slug, ext) ])
-
-            writer.writerow([item])
-
+    for ep in episodes:
+        writer.writerow([ep.public_url])
 
     return response
 

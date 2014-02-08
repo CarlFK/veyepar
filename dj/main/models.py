@@ -233,7 +233,7 @@ class Episode(models.Model):
         help_text="filename.png" )
     host_url = models.CharField(max_length=235, null=True,blank=True,
         help_text = "URL of page video is hosted")
-    public_url = models.CharField(max_length=135, null=True,blank=True,
+    public_url = models.CharField(max_length=235, null=True,blank=True,
         help_text = "URL public should use (like pvo or some aggregator")
     archive_ogv_url = models.CharField(max_length=255, null=True,blank=True,
         help_text = "URL public should use (like pvo or some aggregator")
