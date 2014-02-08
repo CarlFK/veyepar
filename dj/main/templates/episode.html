@@ -176,6 +176,9 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
 <table border=1>
 <tbody>
+    <tr><td> 
+<a href="{% url admin:main_raw_file_changelist %}?location__id__exact={{episode.location.id}}&start__year={{episode.start|date:"Y"}}&start__month={{episode.start|date:"m"}}&start__day={{episode.start|date:"d"}}">raw files day</a>
+    </td></tr>
 {{ add_cutlist_to_ep }}
 </tbody>
 </table>
