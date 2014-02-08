@@ -1,0 +1,29 @@
+upstream veyepar {
+    server 127.0.0.1:8080;
+}
+
+server {
+    listen 80;
+
+    access_log {{ access_log }};
+    error_log  {{ error_log }};
+
+    location /nginx_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+    }
+
+    location /static/ {
+        alias {{ static_location }};
+    }
+    location /media/ {
+        alias  {{ media_location }};
+    }
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_pass http://veyepar;
+    }
+}

@@ -1,0 +1,5 @@
+files: 
+  - {{ logdir }}/*.log
+destination:
+  host: {{ papertrail_host }}
+  port: {{ papertrail_port }}

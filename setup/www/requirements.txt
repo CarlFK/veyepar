@@ -1,0 +1,4 @@
+# requirements for deployment only
+fabric
+git+git://github.com/ronnix/fabtools.git
+jinja2

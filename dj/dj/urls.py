@@ -11,15 +11,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import admin
 admin.autodiscover()
 
-import django_databrowse as databrowse
+#import django_databrowse as databrowse
 from main.models import *
 
+"""
 databrowse.site.register(Client)
 databrowse.site.register(Show)
 databrowse.site.register(Location)
 databrowse.site.register(Episode)
 databrowse.site.register(Raw_File)
 databrowse.site.register(Cut_List)
+"""
 
 
 urlpatterns = patterns('',
@@ -30,7 +32,7 @@ urlpatterns = patterns('',
     ('^$', RedirectView.as_view(url='/main/')),
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     (r'^admin/', include(admin.site.urls)),
-    (r'^databrowse/(.*)', login_required(databrowse.site.root) ),
+    #(r'^databrowse/(.*)', login_required(databrowse.site.root) ),
     (r'^main/', include('main.urls')),
     (r'^accounts/', include('accounts.urls')),
     (r'^my_admin/jsi18n', 'django.views.i18n.javascript_catalog'),
