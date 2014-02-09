@@ -890,17 +890,24 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     locations=show.locations.filter(active=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show).order_by('start')
 
-    kwargs = {'location': location_slug, 
-            'start__day':start_day, 'state':state}
+    # kwargs = {'location': location_slug, 
+    #        'start__day':start_day, 'state':state}
     # raise Exception(episodes.filter(**kwargs))
+
+    admin_params="show__id__exact=%s" % show.id
+
     if location_slug:
         # location here is for default location for new episodes
         location=get_object_or_404(Location,slug=location_slug)
         episodes=episodes.filter(show=show,location=location)
+        admin_params += "&location__id__exact=%s" % location.id
     if start_day:
         episodes = episodes.filter(start__day=start_day)
+        admin_params +="&start__day=%s" % start_day
+        # start__month=2&start__day=2&start__year=2014
     if state:
-      episodes = episodes.filter(state=state)
+        episodes = episodes.filter(state=state)
+        admin_params += "&state__exact=%s" % state
       #   if state=='0':
       #  episodes = episodes.filter(state__isnull=True)
 
@@ -968,6 +975,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
           'location_slug':location_slug,
           'episodes':episodes,
           'episode_form':form,
+          'admin_params':admin_params,
         },
         context_instance=RequestContext(request) )
 
@@ -1203,7 +1211,7 @@ def episode(request, episode_no):
     else:
         offset = None
 
-    # making stuff up as I go along, so this is not to well thought out
+    # start times of chapters (included cuts)
     start_chap = (0,"00:00") # frame, timestamp
     chaps,frame_total = [],0 
     for cut in cuts:

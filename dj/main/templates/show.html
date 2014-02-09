@@ -29,7 +29,7 @@
 >play_list <span style="color: #000; text-decoration: none;"
 >state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
 <tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>
-<tr><td><a href="{% url admin:main_episode_changelist %}?show__id__exact={{show.id}}">episodes admin</a></td></tr>
+<tr><td><a href="{% url admin:main_episode_changelist %}?{{admin_params}}">episodes admin</a></td></tr>
 <tr><td><a href="{% url admin:main_client_change client.id %}">client admin</a></td></tr>
 </table>
 <hr />

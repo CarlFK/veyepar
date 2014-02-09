@@ -122,7 +122,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
         <tr> <th></th> <th><a href="#{{cl.raw_file.id}}">Raw File</a></th> <th>Cut List</th> </tr>
 
       <tr><td></td>
-        <td>{#{ clrfform.trash.label_tag }}{{ clrfform.trash }#}</td>
+        <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
         <td>{{ clrfform.apply.label_tag }}{{ clrfform.apply }}
 </td>
       </tr>
