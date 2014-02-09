@@ -1022,23 +1022,29 @@ def overlaping_files(request,show_id):
             and r1.filesize=r2.filesize 
             and r1.show_id=%s and r2.show_id=%s 
             order by r1.location_id, r1.start, r1.filename, r1.filesize''', [show.id,show.id])
+
     rlist=[r.__dict__ for r in raw_files]
-    for r in rlist:
-        r['location']=Location.objects.get(id=r['location_id'])
 
     start,end=24*60,0
     for r in rlist:
+
+        r['location']=Location.objects.get(id=r['location_id'])
+        r['show']=Show.objects.get(id=r['show_id'])
+        r['client']=r['show'].client
+
+        r['locdate'] = "%s - %s " % (
+                r['location'],  r['start'].strftime("%Y%b%d") )
         r['start_min']=r['start'].hour*60+r['start'].minute
         r['end_min']=r['end'].hour*60+r['end'].minute
         if r['start_min'] < start: start = r['start_min']
         if r['end_min'] > end: end = r['start_min']
+        """
         if r['filename'][-5:] in ['-1.dv','-2.dv']:
             r['trash'] = True
             rf = Raw_File.objects.get(id=r['id'])
             rf.trash = True
             rf.save()
-
-
+        """
     width_min = end-start
 
     width_px=300.0

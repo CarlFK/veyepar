@@ -6,31 +6,57 @@
 {% endblock %}
 
 {% block content %}
+
+{% regroup rfs by locdate as rfs_by_loc %}
+
+<ul>
+{% for loc in rfs_by_loc %}
+<li> {{ loc.grouper }}
+
     <table>
+
         <tr>
+            <th>location</th>
             <th>id</th>
             <th>trash</th>
-            <th></th>
-            <th>start-end</th>
-            <th>location</th>
+            <th>date</th>
+            <th>start</th>
+            <th>end</th>
+            <th>duration</th>
             <th>filename</th>
             <th>filesize</th>
         </tr>
-        {% for rf in rfs %}
-        {# <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}> #}
-            <tr class=row{{rf.trash|yesno:"1,2"}}>
-                <td><a href="{% url admin:main_raw_file_change rf.id %}">{{rf.id}}</a></td>
 
-                <td>{{rf.trash|yesno:"*, "}}</td>
+        {% for rf in loc.list %}
+        <tr class=row{{rf.trash|yesno:"1,2"}}>
 
-<td style="padding-left: {{rf.start_px}}px;">
-<div style="background: black;width:{{rf.width_px}}">.</div></td>
-            <td>{{rf.start|date:"D b d H:i"}} - {{rf.end|date:"H:i"}}</td>
             <td>{{rf.location}}</td>
+            <td><a href="{% url admin:main_raw_file_change rf.id %}">{{rf.id}}</a></td>
+            <td>{{rf.trash|yesno:"*, "}}</td>
+            <td>{{rf.start|date:"D b d"}}</td>
+
+            <td>{{rf.start|date:"H:i"}}</td>
+            <td>{{rf.end|date:"H:i"}}</td>
+            <td>{{rf.duration}}</td>
+
             <td><a href="E/{{rf.id}}/">{{ rf.filename }}</a></td>
             <td>{{rf.filesize}}</td>
-            </tr>
+            <td>
+                <a href="{% url episode_list client_slug=rf.client.slug show_slug=rf.show.slug location_slug=rf.location.slug start_day=rf.start|date:"d" %}">{{rf.location.slug}} {{rf.start|date:"d"}}</a>
+                {% for cl in rf.cut_list_set.all %}
+                    {{cl.episode}}
+                    {{cl.episode.id}}
+                    {{cl.episode.state}}
+                {% endfor %}
+            </td>
+
+        </tr>
+
         {% endfor %}
+
     </table>
+
+{% endfor %}
+</ul>
 
 {% endblock %}
