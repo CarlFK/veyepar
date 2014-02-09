@@ -395,10 +395,15 @@ def raw_play_list(request,episode_id):
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
+    head=settings.MEDIA_URL
     for cut in cuts:
-	head=settings.MEDIA_URL
-	# head="/home/juser/Videos/veyepar"
-        pathname = os.path.join(head,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )
+
+        if "ext" in request.GET:
+            # this assumes the ext being removed is "dv" (2 chars)
+            pathname = os.path.join(head,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )[:-2]+request.GET['ext'] 
+        else:
+            pathname = os.path.join(head,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )
+
         writer.writerow([pathname])
 
     return response
@@ -406,6 +411,8 @@ def raw_play_list(request,episode_id):
 def public_play_list(request):
     # experiment to construct a playlist that is based on query params
     
+    pprint( request.GET )
+
     # build up the filter:
     episodes = Episode.objects
 
@@ -418,7 +425,6 @@ def public_play_list(request):
 
     if "loc" in request.GET:
         episodes = episodes.filter( location__slug=request.GET['loc'] )
-
 
     if "date" in request.GET:
         episodes = episodes.filter( start__startswith=request.GET['date'] )

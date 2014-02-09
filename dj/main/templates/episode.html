@@ -64,6 +64,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
 <a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a>
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
+<a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">raw-ogv-playlist</a>
 <a href="{% url enc_list episode.id %}{{episode.slug}}.m3u">encoded-files-playlist</a>
 {% if episode.host_url %} <a href="{{episode.host_url}}">host</a> {%endif%}
 <a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>

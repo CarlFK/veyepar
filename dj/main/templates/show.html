@@ -20,14 +20,19 @@
 <tr><td><a href="{{show.schedule_url}}">{{show.schedule_url}}</a></td></tr>
 <tr><td><a href="{% url show_stats show.id %}" title="{{show.name}}">show stats</a></td></tr>
 <tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
-<tr><td><a href=
+
+<tr><td>
 {%if location_slug %}
-  "{% url play_list show.id location_slug %}{{show.slug}}.m3u"
-{%else%}
-  "{% url play_list show.id %}{{show.slug}}.m3u"
+<a href="{% url play_list show.id location_slug %}{{show.slug}}.m3u">play_list - {{location_slug}}</a>
+            {%else%}
+<a href="{% url play_list show.id %}{{show.slug}}.m3u">play_list - all</a>
 {%endif%}
->play_list <span style="color: #000; text-decoration: none;"
->state 3 files - encoded, ready for final review before posting.</span></a></td></tr>
+</td></tr>
+
+<tr><td>
+        <a href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{location_slug}}">pubs</a>
+</td></tr>
+
 <tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>
 <tr><td><a href="{% url admin:main_episode_changelist %}?{{admin_params}}">episodes admin</a></td></tr>
 <tr><td><a href="{% url admin:main_client_change client.id %}">client admin</a></td></tr>
@@ -38,7 +43,7 @@
     <thead>
       <tr>
         <th>id</th>
-        <th>seq</th>
+        <th>audio</th>
         <th>loc name</th>
         <th>start</th><th>end</th>
         <th>duration</th>
@@ -53,7 +58,7 @@
     {% for episode in episodes %}
       <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
         <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
-        <td>{{episode.sequence}}</td>
+        <td>{{episode.channelcopy}}</td>
 
         <td><a href="
         {%if location_slug %}
