@@ -20,9 +20,9 @@ class ShowAdmin(admin.ModelAdmin):
 admin.site.register(Show, ShowAdmin)
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('id','sequence', 'active', 'name','slug')
+    list_display = ('id','sequence','active','name','slug','channelcopy')
     list_display_links = ('id',)
-    list_editable = ('sequence', 'active', 'name','slug')
+    list_editable = ('sequence', 'active', 'name','slug', 'channelcopy',)
     search_fields = ['name', ]
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
@@ -53,15 +53,17 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_display = ('id',
             'state',
             # 'sequence', 
-            'start', 
             'name', 
+            'start', 
             'duration', 
-            'emails',
+            # 'emails',
+            'channelcopy',
 )
     list_editable = ('state',
             # 'sequence', 
             'start', 
             'duration', 
+            'channelcopy',
             # 'emails',
             )
 
@@ -84,7 +86,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     save_on_top=True
     actions = [ 
             'set_stopped', 'clear_locked', 're_slug', 'bump_state',
-            'enc_state'] \
+            'encode_state'] \
             + admin.ModelAdmin.actions
 
     def set_stopped(self, request, queryset):
@@ -113,7 +115,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             'name_plural': self.model._meta.verbose_name_plural.title()
         }
         messages.success(request, msg)
-    set_stopped.short_discription = "Clear locked timestamp"
+    clear_locked.short_discription = "Clear locked timestamp"
 
     def re_slug(self, request, queryset):
         rows_updated = 0
@@ -132,7 +134,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             'name_plural': self.model._meta.verbose_name_plural.title()
         }
         messages.success(request, msg)
-    set_stopped.short_discription = "reset slug"
+    re_slug.short_discription = "reset slug"
 
     def bump_state(self, request, queryset):
         rows_updated = 0
@@ -151,10 +153,10 @@ class EpisodeAdmin(admin.ModelAdmin):
             'name_plural': self.model._meta.verbose_name_plural.title()
         }
         messages.success(request, msg)
-    set_stopped.short_discription = "bump state"
+    bump_state.short_discription = "bump state"
 
 
-    def enc_state(self, request, queryset):
+    def encode_state(self, request, queryset):
         rows_updated = 0
         for obj in queryset:
             obj.state = 2
@@ -171,7 +173,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             'name_plural': self.model._meta.verbose_name_plural.title()
         }
         messages.success(request, msg)
-    set_stopped.short_discription = "set to encode"
+    encode_state.short_discription = "set to encode"
 
 
     class Media:

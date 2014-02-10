@@ -233,16 +233,16 @@ class Episode(models.Model):
         help_text="filename.png" )
     host_url = models.CharField(max_length=235, null=True,blank=True,
         help_text = "URL of page video is hosted")
-    public_url = models.CharField(max_length=235, null=True,blank=True,
+    public_url = models.CharField(max_length=335, null=True,blank=True,
         help_text = "URL public should use (like pvo or some aggregator")
-    archive_ogv_url = models.CharField(max_length=255, null=True,blank=True,
-        help_text = "URL public should use (like pvo or some aggregator")
-    archive_url = models.CharField(max_length=255, null=True,blank=True,
+    archive_ogv_url = models.CharField(max_length=355, null=True,blank=True,
         help_text = "URL public can use to dl an ogv (like archive.org")
-    archive_mp4_url = models.CharField(max_length=255, null=True,blank=True,
+    archive_url = models.CharField(max_length=355, null=True,blank=True,
+        help_text = "not sure.. deprecated?")
+    archive_mp4_url = models.CharField(max_length=355, null=True,blank=True,
         help_text = "URL public can use to dl an mp4. (like archive.org")
-    rax_mp4_url = models.CharField(max_length=255, null=True,blank=True,
-        help_text = "URL public can use to stream an mp4. (like rackspace cdn")
+    rax_mp4_url = models.CharField(max_length=355, null=True,blank=True,
+        help_text = "URL public can use to get an mp4. (like rackspace cdn")
     twitter_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL of tweet to email presenters for retweeting")
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')

@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 
 # updb.sh - update db
 # pulls fairly recent data from production,
@@ -16,17 +16,18 @@ fi
 
 # If the current user doesn't have ssh key access, 
 # BatchMode will cause this to fail and continue to the wget
-ssh -o BatchMode=yes -p 222 veyepar@nextdayvideo.com /home/veyepar/veyepar/dj/dumpdata.sh
+# ssh -o BatchMode=yes -p 222 veyepar@nextdayvideo.com /home/veyepar/veyepar/dj/dumpdata.sh
 
 wget -N http://veyepar.nextdayvideo.com/site_media/static/veyepar/db/veyepar_main.json
+wget -N http://veyepar.nextdayvideo.com/site_media/static/veyepar/db/veyepar_auth.json
 
 touch veyepar.db 
 mv  veyepar.db  ~/temp
 
-./manage.py syncdb --noinput
-./manage.py loaddata veyepar_main.json 
-./manage.py loaddata veyepar_auth.json
+python ./manage.py syncdb --noinput
+python ./manage.py loaddata veyepar_main.json 
+python ./manage.py loaddata veyepar_auth.json
 
-echo ./manage.py changepassword
+# echo ./manage.py changepassword
 
 # ./runsrv.sh
