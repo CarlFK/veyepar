@@ -392,7 +392,7 @@ class add_eps(process.process):
                     if diff_fields:
                         print 'veyepar #id name: #%s %s' % (
                                 episode.id, episode.name)
-                        print "http://veyepar.nextdayvideo.com:8080/main/show_stats/81/E/%s/" % ( episode.id, )
+                        print "http://veyepar.nextdayvideo.com/main/show_stats/81/E/%s/" % ( episode.id, )
                         print episode.conf_url
                         if self.options.verbose: 
                             pprint.pprint( diff_fields )
