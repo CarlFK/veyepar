@@ -43,9 +43,9 @@ class Client(models.Model):
     # video encoding 
     title_svg = models.CharField(max_length=30, blank=True, null=True,
         help_text='template for event/title/authors')
-    preroll = models.CharField(max_length=135, blank=True, 
+    preroll = models.CharField(max_length=335, blank=True, 
         help_text="name of video to prepend (not implemented)")
-    postroll = models.CharField(max_length=135, blank=True,
+    postroll = models.CharField(max_length=335, blank=True,
         help_text="name of video to postpend (not implemented)")
     credits = models.CharField(max_length=30, blank=True, 
         help_text='template for ending credits')
@@ -208,7 +208,7 @@ class Episode(models.Model):
         help_text="has someone authorised pubication")
     conf_key = models.CharField(max_length=32, blank=True,
         help_text='primary key of event in conference system database.')
-    conf_url = models.CharField(max_length=135,blank=True,default='',
+    conf_url = models.CharField(max_length=335,blank=True,default='',
         help_text="event's details on conference site  (name,desc,time,author,files,etc)")
     authors = models.TextField(null=True,blank=True,)
     emails = models.TextField(null=True,blank=True, 
