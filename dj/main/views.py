@@ -1232,7 +1232,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
             chaps.append(('',''))
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
-    if request.method == 'POST' and \: 
+    if request.method == 'POST' and \
             (request.user.is_authenticated() or 
                     episode.edit_key == edit_key): 
         episode_form = Episode_Form_small(request.POST, instance=episode) 
