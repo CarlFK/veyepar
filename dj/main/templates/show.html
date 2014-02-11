@@ -76,7 +76,7 @@
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>
         <td>{{episode.released|yesno:"Y,N"}}</td>
-        <td>{{episode.image_file_set.count}}</td>
+        <td>{{episode.image_file_set.count|default:""}}</td>
         <td>
             {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
             {%if episode.public_url %}<a href="{{episode.public_url}}">R</a>{% endif %}
