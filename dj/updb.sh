@@ -18,8 +18,8 @@ fi
 # BatchMode will cause this to fail and continue to the wget
 # ssh -o BatchMode=yes -p 222 veyepar@nextdayvideo.com /home/veyepar/veyepar/dj/dumpdata.sh
 
-wget -N http://veyepar.nextdayvideo.com/site_media/static/veyepar/db/veyepar_main.json
-wget -N http://veyepar.nextdayvideo.com/site_media/static/veyepar/db/veyepar_auth.json
+# wget -N http://veyepar.nextdayvideo.com/site_media/static/veyepar/db/veyepar_main.json
+# wget -N http://veyepar.nextdayvideo.com/site_media/static/veyepar/db/veyepar_auth.json
 
 touch veyepar.db 
 mv  veyepar.db  ~/temp

@@ -338,6 +338,13 @@ class State(models.Model):
     def __unicode__(self):
         return self.slug
 
+class Image_File(models.Model):
+    show = models.ForeignKey(Show)
+    location = models.ForeignKey(Location, null=True)
+    episodes = models.ManyToManyField(Episode, blank=True)
+    filename = models.CharField(max_length=135, help_text="foo.png")
+    text = models.TextField(blank=True, help_text="OCRed text")
+
 class Log(models.Model):
     episode = models.ForeignKey(Episode)
     state = models.ForeignKey(State, null=True, blank=True)
