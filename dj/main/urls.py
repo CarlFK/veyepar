@@ -17,6 +17,7 @@ urlpatterns = patterns(
          episodes, name='episode_list'),
 
     url(r'approve/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', approve_episode, name='approve_episode'),
+    url(r'E/edit/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', episode, name='episode'),
 
     url(r'state/(?P<state>\w+)/$', episode_list, name='episode_list'),
     url(r'state/(?P<state>\w+)/(?P<script>\w+)/$', episodes_script, name='episodes_script'),
@@ -29,8 +30,8 @@ urlpatterns = patterns(
     url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
-    url(r'E/(?P<episode_no>\d+)/$', episode, name='episode'),
-    url(r'E/(?P<episode_no>\d+)/claim_lock/$', claim_episode_lock),
+    url(r'E/(?P<episode_id>\d+)/$', episode, name='episode'),
+    url(r'E/(?P<episode_id>\d+)/claim_lock/$', claim_episode_lock),
 )
 urlpatterns += patterns(
     '',

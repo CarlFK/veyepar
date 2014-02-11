@@ -176,10 +176,9 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
             'host_url', 'public_url',
-            'edit_key',
         ]
     if request.user.is_authenticated():
-        fields.append('emails')
+        fields.extend(['emails', 'edit_key',])
 
     response = HttpResponse(mimetype="application/json")
     serializers.serialize("json", eps, fields=fields,  stream=response)
@@ -1000,12 +999,14 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
                 # all systems go! Approve the video!
                 episode.state += 1;
                 episode.save()
-
                 template = 'approved'
 
             else:
-                # give the reviewer the Approve button
                 template = "approve"
+
+        elif episode.state == 1: # edit -  TODO use state.slug?
+                # give the reviewer the Approve button
+                template = "edit"
         else:
 
             # not in review 2 state
@@ -1184,10 +1185,9 @@ def mk_cuts(episode,
     return cuts
             
 
+def episode(request, episode_id, episode_slug=None, edit_key=None):
 
-def episode(request, episode_no):
-
-    episode=get_object_or_404(Episode,id=episode_no)
+    episode=get_object_or_404(Episode,id=episode_id)
     show=episode.show
     location=episode.location
     client=show.client
@@ -1232,7 +1232,9 @@ def episode(request, episode_no):
             chaps.append(('',''))
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
-    if request.user.is_authenticated() and request.method == 'POST': 
+    if request.method == 'POST' and \: 
+            (request.user.is_authenticated() or 
+                    episode.edit_key == edit_key): 
         episode_form = Episode_Form_small(request.POST, instance=episode) 
         clrfformset = clrfFormSet(request.POST) 
         add_cutlist_to_ep = Add_CutList_to_Ep(request.POST)
@@ -1363,10 +1365,10 @@ def episode_logs(request, episode_id):
         context_instance=RequestContext(request) )
 
 
-def claim_episode_lock(request, episode_no):
+def claim_episode_lock(request, episode_id):
     assert request.user.is_authenticated()
 
-    episode = get_object_or_404(Episode, id=episode_no)
+    episode = get_object_or_404(Episode, id=episode_id)
 
     episode.locked = datetime.now()
     episode.locked_by = request.user.username

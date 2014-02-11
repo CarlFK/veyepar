@@ -87,7 +87,8 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/webm/{{episode.slug}}.webm">webm</a>
 
 <form action="" method="POST">{% csrf_token %}
-<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
+    {# <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" /> #}
+<input type="submit" value="Save" />
 
 <table border=1>
 <tbody>
@@ -95,7 +96,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 </tbody>
 </table>
 
-<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
+<input type="submit" value="Save" />
 
 {{ clrfformset.management_form }}
 <table border=1>
@@ -129,7 +130,10 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
         <tr> <th></th> <th><a href="#{{cl.raw_file.id}}">Raw File</a></th> <th>Cut List</th> </tr>
 
       <tr><td></td>
+
+    {% if user.is_authenticated %}
         <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
+    {% endif %}
         <td>{{ clrfform.apply.label_tag }}{{ clrfform.apply }}
 </td>
       </tr>
@@ -190,7 +194,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 </tbody>
 </table>
 
-<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
+<input type="submit" value="Save">
 </form>
 
 {% for chap in chaps %}
