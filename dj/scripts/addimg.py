@@ -25,6 +25,9 @@ class add_dv(process):
             p = subprocess.Popen(ocr_cmd)
             x = p.wait()
             text = open('/tmp/text.txt').read().decode('UTF-8')
+            """
+            To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
+            """
             img.text = text
 
             # scan the eps and locs to see if we can find a link

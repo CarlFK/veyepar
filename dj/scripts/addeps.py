@@ -77,8 +77,6 @@ from django.template.defaultfilters import slugify
 
 import xml.etree.ElementTree
 
-import fixunicode
-
 try:
     import json
 except ImportError:
