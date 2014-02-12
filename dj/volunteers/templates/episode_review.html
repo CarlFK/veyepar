@@ -1,0 +1,187 @@
+{% extends "base.html"%}
+
+{% block head %}
+<title>veyepar: {{ episode.name }}</title>
+{% endblock %}
+
+{% block content %}
+<h1>{{ show.name }}</h1>
+
+<div id="episode-info">
+  <table>
+  <tbody>
+    <tr><th>Name</th><td><strong>{{ episode.name }}</strong></td></tr>
+    <tr><th>Presenter(s)</th><td>{{ episode.authors }}</td></tr>
+    <tr><th>Location</th><td>{% if user.is_staff %}<a href="{% url admin:main_location_change location.id%}">{% endif %}{{ episode.location }}{% if user.is_staff %}</a>{% endif %}</td></tr>
+    <tr><th>Time</th><td>{{ episode.start|date:"a, b d, Y" }} {{ episode.start|date:"H:i"}}-{% if not same_dates %}{{ episode.end|date:"a, b d, Y" }} {% endif %}{{ episode.end|date:"H:i" }}</td></tr>
+  </tbody>
+  </table>
+</div>
+
+{% if episode.state == 0 %}
+  <p>This episode has been marked "borked" and does not need further processing.</p>
+  <button onclick="">Unbork</button>
+{% else %}{% if episode.state == 1 %}
+<form action="." method="post">
+  {% csrf_token %}
+
+  <h2>Step 1</h2>
+  <p>Select which video files belong to this talk. Click the 'Advanced' button
+     if you need to fine-tune the video files and you know what you are doing.
+  <p>
+  <button onclick="">But I'm Missing Video Files</button>
+  <p>If you are unable to find any files that match this talk, or the files are
+     missing audio or otherwise unuseable, skip to Step 3 and choose "This
+     Episode is Borked".
+  </p>
+  <table>
+  <tbody>
+    {{ video_formset.as_table }}
+  </tbody>
+  </table>
+
+  <h2>Step 2</h2>
+  <p>Review the video files (you will need VLC or another media player installed)</p>
+  <table>
+  <tbody>
+    <tr>
+      <td><a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">Review Raw Playlist</a></td>
+      <td><a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">Review Raw OGV Playlist</a></td>
+    </tr>
+  </tbody>
+  </table>
+
+  <h2>Step 3</h2>
+  <p>Enter any comments you have and choose a resolution:</p>
+  <table>
+  <tbody>
+    <tr>
+        <td><a href=""><button>Save and Keep Editing</button></a></td>
+        <td><a href=""><button>Ready to Encode</button></a></td>
+        <td><a href=""><button>This Episode is Borked</button></a></td>
+  </tbody>
+  </table>
+
+<!--  <a href=""
+  <button onclick="">This
+
+
+
+<input type="submit" value="Save" />
+
+{{ clrfformset.management_form }}
+<table border=1>
+<tbody id="accordian">
+{% for cl,chap,clrfform in clrffs %}
+
+  <tr id="{{cl.raw_file.id}}">
+    <td>
+  {{clrfform.clid}}
+  <b>~/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}</b>
+  <table border=1>
+  <tbody>
+    <tr>
+    <td>
+    {{clrfform.clid}}
+      <table border=1>
+      <tbody>
+<tr><td> {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}</td></tr>
+<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a></td></tr>
+<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a></td></tr>
+<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></td></tr>
+<tr><td> <video src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
+    poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png"
+    ></video>
+    </td></tr>
+     </tbody>
+     </table>
+    <td>
+    <table border=1>
+    <tbody>
+        <tr> <th></th> <th><a href="#{{cl.raw_file.id}}">Raw File</a></th> <th>Cut List</th> </tr>
+
+      <tr><td></td>
+
+    {% if user.is_authenticated %}
+        <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
+    {% endif %}
+        <td>{{ clrfform.apply.label_tag }}{{ clrfform.apply }}
+</td>
+      </tr>
+
+      <tr> <td>Start</td><td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td> <td>{{ clrfform.start }}{{chap.0}}</td>
+      </tr>
+      <tr> <td>Duration:</td> <td>{{cl.raw_file.duration}}</td> </tr>
+      <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}{{chap.1}}</td> </tr>
+      <tr> <td>Comments:</td> <td>{#{clrfform.rf_comment}#}</td> <td>{{clrfform.cl_comment}}</td> </tr>
+      <tr> <td>
+         {{ clrfform.split.label_tag }}{{ clrfform.split }}
+</td>
+      <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">admin</a></td>
+      <td>
+<a href="{% url admin:main_cut_list_change cl.id%}">admin</a>
+<a href="{% url admin:main_cut_list_change cl.id%}delete/">delete</a>
+     </td>
+      </tr>
+
+    </tbody>
+    </table>
+    </td>
+
+  </tbody>
+  </table>
+  </tr>
+
+  {% if clrfform.errors %}
+  <tr> {% for field in clrfform %}
+          <td>{{field.name}}{{ field.errors }}</td>
+       {% endfor %} </tr>
+  {% endif %}
+
+  {% if cl.raw_file.ocrtext %}
+  <tr>
+  <td>
+  <table border=1>
+  <tbody>
+    <tr>
+    <td>{{cl.raw_file.ocrtext|linebreaks}}</td>
+    </tr>
+  </tbody>
+  </table>
+  </td>
+  </tr>
+  {% endif %}
+
+{% endfor %}
+</tbody>
+</table>
+
+
+<a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
+<a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">raw-ogv-playlist</a>
+
+<table border=1>
+<tbody>
+    <tr><td>
+<a href="{% url admin:main_raw_file_changelist %}?location__id__exact={{episode.location.id}}&start__year={{episode.start|date:"Y"}}&start__month={{episode.start|date:"m"}}&start__day={{episode.start|date:"d"}}">raw files day</a>
+    </td></tr>
+{{ add_cutlist_to_ep }}
+</tbody>
+</table>
+<table style="border:1px">
+  <tbody>
+    {{ comment_form.as_table }}
+  </tbody>
+  </table>
+<input type="submit" value="Save">-->
+</form>
+{% else %}
+  <p>This episode has alreaady been processed. Thank you for volunteering!</p>
+  {% if episode.state == 2 and not episode.locked %}
+    <button onclick="">Reopen</button>
+  {% endif %}
+{% endif %}
+{% endif %}
+{% endif %}
+
+{% endblock %}
