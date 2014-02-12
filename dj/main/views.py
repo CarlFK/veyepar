@@ -315,7 +315,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     """
     try:
         from dabo.dReportWriter import dReportWriter
-    except ImporError:
+    except ImportError:
         raise Http404("Dabo is not installed")
     
     show=get_object_or_404(Show,id=show_id)

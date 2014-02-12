@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if shows %}
+    <ul>
+      {% for volunteer_show in show %}
+      <li><a href="{% url volunteer_show_review volunteer_show.slug %}"</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>We aren't currently reviewing videos for any shows at the moment.
+       Thank you for volunteering, and we hope you'll be here for the next
+       converence.
+    </p>
+    {% endif %}
+{% endblock %}

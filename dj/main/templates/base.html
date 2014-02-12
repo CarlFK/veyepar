@@ -25,20 +25,23 @@
 
 {% if user.is_authenticated %}
   <p class="shortcuts">
-  <a href="/admin/">admin</a>
-  <a href="/databrowse/">databrowse</a>
-  <a href="/main/">main</a>
-  <a href="/main/clients/">Clients</a>
-  {% if request.META.HTTP_HOST == "localhost:8080" %}
-    <a href="http://veyepar.nextdayvideo.com{{request.path}}">prod</a>
-  {% else %}
-    <a href="http://localhost:8080{{request.path}}">dev</a>
-  {% endif %}
+    {% if user.is_staff %}
+      <a href="/admin/">admin</a>
+      <a href="/databrowse/">databrowse</a>
+      <a href="/main/">main</a>
+      <a href="/main/clients/">Clients</a>
+      {% if request.META.HTTP_HOST == "localhost:8080" %}
+        <a href="http://veyepar.nextdayvideo.com{{request.path}}">prod</a>
+      {% else %}
+        <a href="http://localhost:8080{{request.path}}">dev</a>
+      {% endif %}
+    {% endif %}
+  </p>
 {% endif %}
 
-</p>
 {% block content %}
 {% endblock %}
+
 <hr>
 <p> <a href="http://github.com/CarlFK/veyepar">Veyepar</a> Video Eyeball Processor and Review</p>
 </body>

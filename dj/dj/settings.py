@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'main',
     'accounts',
+    'volunteers',
     # "debug_toolbar",
     # 'django_databrowse',
 )

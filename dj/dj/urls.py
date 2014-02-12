@@ -36,7 +36,7 @@ urlpatterns = patterns('',
     (r'^main/', include('main.urls')),
     (r'^accounts/', include('accounts.urls')),
     (r'^my_admin/jsi18n', 'django.views.i18n.javascript_catalog'),
-
+    (r'^volunteers/', include('volunteers.urls')),
 )
 
 urlpatterns += staticfiles_urlpatterns()
