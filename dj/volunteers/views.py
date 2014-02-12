@@ -1,6 +1,7 @@
-from django.http import Http404
+from django.core import urlresolvers
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 
 from main.models import Episode
 
@@ -20,7 +21,15 @@ class ShowReview(TemplateView):
     template_name = "show_review.html"
     
 
-class EpisodeReview(TemplateView):
+class EditKeyMixin(object):
+    def _check_edit_key(self, episode):
+        edit_key = self.kwargs.get('edit_key')
+        if edit_key and not episode.edit_key == edit_key:
+            raise Http404
+        return edit_key
+
+
+class EpisodeReview(TemplateView, EditKeyMixin):
     """
     Simplified reviewing interface for volunteers
     """
@@ -29,22 +38,41 @@ class EpisodeReview(TemplateView):
     def get_context_data(self, **kwargs):
         episode = get_object_or_404(Episode, slug=kwargs.get('episode_slug'), 
                                     show__slug=kwargs.get('show_slug'))
-        edit_key = kwargs.get('edit_key')
-        if edit_key and not episode.edit_key == edit_key:
-            raise Http404
-        
-        # episode
-        # show
-        # same_dates (start and end time of episode)
+        edit_key = self._check_edit_key(episode)
+
         # comment_form
         # video_form
         return {"episode": episode,
                 "show": episode.show,
-                "same_dates": self._same_dates(episode.start, episode.end)}
+                "same_dates": self._same_dates(episode.start, episode.end),
+                "edit_key": edit_key}
     
     def post(self, request, *args, **kwargs):
         from django.http import HttpResponse
-        return HttpResponse("Posted")
+        return HttpResponse("Posted to Episode Review")
     
     def _same_dates(self, start, end):
         return not(start is None or end is None) and start.date() == end.date()
+
+
+class UnborkEpisode(View, EditKeyMixin):
+    def post(self, request, *args, **kwargs):
+        self.kwargs = kwargs
+        
+        episode = get_object_or_404(Episode, id=kwargs.get('episode_id'))
+        edit_key = self._check_edit_key(episode)
+        episode.state = 1
+        episode.save()
+        
+        if edit_key:
+            url = urlresolvers.reverse('guest_episode_review',
+                                       kwargs={'show_slug': episode.show.slug,
+                                               'episode_slug': episode.slug,
+                                               'edit_key': edit_key})
+        else:
+            url = urlresolvers.reverse('volunteer_episode_review',
+                                       kwargs={'show_slug': episode.show.slug,
+                                               'episode_slug': episode.slug})
+        
+        return HttpResponseRedirect(url)
+        

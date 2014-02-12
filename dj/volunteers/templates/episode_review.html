@@ -20,8 +20,10 @@
 
 <div id="episode-form" style="padding:20px 0">
 {% if episode.state == 0 %}
-  <p>This episode has been marked "borked" and does not need further processing.</p>
-  <form action="{% url unbork episode.id %}" method="post">
+  <p>This episode has been marked "borked" (i.e., it is messed up beyond
+     recovery) and does not need further processing.
+  </p>
+  <form action="{% if edit_key %}{% url guest_unbork episode.id edit_key %}{% else %}{% url volunteer_unbork episode.id %}{% endif %}" method="post">
       {% csrf_token %}
       <input type="submit" value="Unbork" />
   </form>
