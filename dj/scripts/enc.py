@@ -810,7 +810,9 @@ class enc(process):
 # make a .mlt file for this episode
         mlt = self.mkmlt_1(title_img,credits_img,episode,cls,rfs)
         if not mlt:
+
             episode.state = 0
+            episode.comment += "\nenc.py  mlt = self.mkmlt_1 failed.\n"
             episode.save()
             return False
 
@@ -830,7 +832,14 @@ class enc(process):
             self.run_cmds(episode,cmds)
 
     else:
-        print "No cutlist found."
+
+        err_msg = "No cutlist found."
+        episode.state = 0
+        episode.comment += "\nenc error: %s\n" % (err_msg,)
+        episode.save()
+
+        print err_msg
+        return False
 
     if self.options.test: ret = False
 
