@@ -13,14 +13,18 @@
     <tr><th>Name</th><td><strong>{{ episode.name }}</strong></td></tr>
     <tr><th>Presenter(s)</th><td>{{ episode.authors }}</td></tr>
     <tr><th>Location</th><td>{% if user.is_staff %}<a href="{% url admin:main_location_change location.id%}">{% endif %}{{ episode.location }}{% if user.is_staff %}</a>{% endif %}</td></tr>
-    <tr><th>Time</th><td>{{ episode.start|date:"a, b d, Y" }} {{ episode.start|date:"H:i"}}-{% if not same_dates %}{{ episode.end|date:"a, b d, Y" }} {% endif %}{{ episode.end|date:"H:i" }}</td></tr>
+    <tr><th>Time</th><td>{{ episode.start|date:"D, d M, Y" }} {{ episode.start|date:"H:i"}}-{% if not same_dates %}{{ episode.end|date:"D, d M, Y" }} {% endif %}{{ episode.end|date:"H:i" }}</td></tr>
   </tbody>
   </table>
 </div>
 
+<div id="episode-form" style="padding:20px 0">
 {% if episode.state == 0 %}
   <p>This episode has been marked "borked" and does not need further processing.</p>
-  <button onclick="">Unbork</button>
+  <form action="{% url unbork episode.id %}" method="post">
+      {% csrf_token %}
+      <input type="submit" value="Unbork" />
+  </form>
 {% else %}{% if episode.state == 1 %}
 <form action="." method="post">
   {% csrf_token %}
@@ -176,12 +180,11 @@
 <input type="submit" value="Save">-->
 </form>
 {% else %}
-  <p>This episode has alreaady been processed. Thank you for volunteering!</p>
+  <p>This episode has already been processed. Thank you for volunteering!</p>
   {% if episode.state == 2 and not episode.locked %}
     <button onclick="">Reopen</button>
   {% endif %}
 {% endif %}
 {% endif %}
-{% endif %}
-
+</div>
 {% endblock %}

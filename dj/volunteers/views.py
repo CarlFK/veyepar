@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
 from main.models import Episode
@@ -36,8 +37,14 @@ class EpisodeReview(TemplateView):
         # show
         # same_dates (start and end time of episode)
         # comment_form
-        return {}
+        # video_form
+        return {"episode": episode,
+                "show": episode.show,
+                "same_dates": self._same_dates(episode.start, episode.end)}
     
     def post(self, request, *args, **kwargs):
         from django.http import HttpResponse
         return HttpResponse("Posted")
+    
+    def _same_dates(self, start, end):
+        return not(start is None or end is None) and start.date() == end.date()
