@@ -15,7 +15,7 @@ from django.forms.formsets import formset_factory
 from django.db.models import Q
 from django.db.models import Max
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.mail import get_connection, EmailMessage
@@ -30,8 +30,6 @@ from copy import deepcopy
 from cStringIO import StringIO
 from pprint import pprint
 import operator
-
-from dabo.dReportWriter import dReportWriter
 
 from main.models import Client,Show,Location,Episode,Cut_List,Raw_File,State
 from main.models import STATES, ANN_STATES
@@ -315,7 +313,11 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     for all episodes in a show or just one episode
     layout defined by rfxml
     """
-
+    try:
+        from dabo.dReportWriter import dReportWriter
+    except ImporError:
+        raise Http404("Dabo is not installed")
+    
     show=get_object_or_404(Show,id=show_id)
     client = show.client
 
