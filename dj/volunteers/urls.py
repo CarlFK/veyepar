@@ -11,4 +11,6 @@ urlpatterns = patterns('',
     (r'^reopen/(?P<episode_id>\d+)/(?P<edit_key>\w+)/$', ReopenEpisode.as_view(), {}, 'guest_reopen'),
     (r'^(?P<show_slug>\w+)/(?P<episode_slug>\w+)/$', login_required(EpisodeReview.as_view()), {}, 'volunteer_episode_review'),
     (r'^(?P<show_slug>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', EpisodeReview.as_view(), {}, 'guest_episode_review'),
+    (r'^(?P<show_slug>\w+)/(?P<episode_slug>\w+)/$', login_required(EpisodeReview.as_view()), {'advanced': True}, 'volunteer_episode_review_advanced'),
+    (r'^(?P<show_slug>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', EpisodeReview.as_view(), {'advanced': True}, 'guest_episode_review_advanced'),
 )

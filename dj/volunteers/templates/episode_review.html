@@ -58,7 +58,13 @@
   </table>
 
   <h2><a name="step-3">Step 3</a></h2>
-  <p>Enter any comments you have and choose a resolution:</p>
+  <p>Enter any comments if you have them, and choose a resolution:</p>
+  <table>
+  <tbody>
+    {{ comment_form.as_table }}
+  </tbody>
+  </table>
+  <br />
   <table>
   <tbody>
     <tr>
@@ -68,12 +74,11 @@
   </tbody>
   </table>
 
-<!--  <a href=""
-  <button onclick="">This
+<!--
 
 
 
-<input type="submit" value="Save" />
+
 
 {{ clrfformset.management_form }}
 <table border=1>
@@ -182,11 +187,11 @@
 <input type="submit" value="Save">-->
 </form>
 {% else %}
-  <p>This episode has already been processed. Thank you for volunteering!</p>
+  <p>This episode has already been reviewed. Thank you for volunteering!</p>
   {% if episode.state == 2 and not episode.locked %}
     <form action="{% if edit_key %}{% url guest_reopen episode.id edit_key %}{% else %}{% url volunteer_reopen episode.id %}{% endif %}" method="post">
       {% csrf_token %}
-      <input type="submit" value="Reopen" />
+      <input type="submit" value="Edit" />
     </form>
   {% endif %}
 {% endif %}

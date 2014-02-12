@@ -3,7 +3,9 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, View
 
-from main.models import Episode
+from main.models import Episode, Cut_List
+from main.views import mk_cuts
+from volunteers.forms import EpisodeCommentForm
 
 
 class ShowsInProcessing(TemplateView):
@@ -50,13 +52,63 @@ class EpisodeReview(TemplateView, EditKeyMixin):
         episode = get_object_or_404(Episode, slug=kwargs.get('episode_slug'), 
                                     show__slug=kwargs.get('show_slug'))
         edit_key = self._check_edit_key(episode)
+    
+        cuts = Cut_List.objects.filter(episode=episode
+                              ).order_by('sequence','raw_file__start','start')
+        if not cuts:
+            cuts = mk_cuts(episode)
+
+        # insert 'advanced' into context
+        '''
+        
+
+    # If this episode doesn't have a cut list yet, try to create one.
+    if not cuts:
+        cuts = mk_cuts(episode)
+
+    if cuts:
+        offset =  abs( cuts[0].raw_file.start - episode.start )
+    else:
+        offset = None
+
+    # start times of chapters (included cuts)
+    start_chap = (0,"00:00") # frame, timestamp
+    chaps,frame_total = [],0 
+    for cut in cuts:
+        if cut.apply:
+            frame_total+=int(cut.duration())
+            end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
+              (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
+            chaps.append((start_chap,end_chap,cut))
+            # setup for next chapter
+            start_chap=end_chap
+        else:
+            chaps.append(('',''))
+
+    clrfFormSet = formset_factory(clrfForm, extra=0)
+    episode_form = Episode_Form_small(instance=episode) 
+        # init data with things in the queryset that need editing
+        # this part seems to work.
+        init = [{'clid':cut.id,
+                'trash':cut.raw_file.trash,
+                'sequence':cut.sequence,
+                'start':cut.start, 'end':cut.end,
+                'apply':cut.apply,
+                'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
+        } for cut in cuts]
+        clrfformset = clrfFormSet(initial=init)
+
+    # blank out previous valuse so we don't keep adding the same thing
+    add_cutlist_to_ep=Add_CutList_to_Ep(initial = {'sequence':1})
+        '''
 
         # comment_form
         # video_form
         return {"episode": episode,
                 "show": episode.show,
                 "same_dates": self._same_dates(episode.start, episode.end),
-                "edit_key": edit_key}
+                "edit_key": edit_key,
+                "comment_form": EpisodeCommentForm(instance=episode)}
     
     def post(self, request, *args, **kwargs):
         from django.http import HttpResponse
