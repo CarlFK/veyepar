@@ -23,7 +23,7 @@
   <p>This episode has been marked "borked" (i.e., it is messed up beyond
      recovery) and does not need further processing.
   </p>
-  <form action="{% if edit_key %}{% url guest_unbork episode.id edit_key %}{% else %}{% url volunteer_unbork episode.id %}{% endif %}" method="post">
+  <form action="{% if edit_key %}{% url guest_reopen episode.id edit_key %}{% else %}{% url volunteer_reopen episode.id %}{% endif %}" method="post">
       {% csrf_token %}
       <input type="submit" value="Unbork" />
   </form>
@@ -31,14 +31,14 @@
 <form action="." method="post">
   {% csrf_token %}
 
-  <h2>Step 1</h2>
+  <h2><a name="step-1">Step 1</a></h2>
   <p>Select which video files belong to this talk. Click the 'Advanced' button
      if you need to fine-tune the video files and you know what you are doing.
   <p>
-  <button onclick="">But I'm Missing Video Files</button>
-  <p>If you are unable to find any files that match this talk, or the files are
-     missing audio or otherwise unuseable, skip to Step 3 and choose "This
-     Episode is Borked".
+  <button onclick="">I Don't See the Right Video Files</button>
+  <p>If after clicking "I Don't See the Right Video Files" you are still unable
+     to find the files that match this talk, or the files are unuseable, skip
+     to <a href="#step-3">Step 3</a> and choose "This Episode is Borked".
   </p>
   <table>
   <tbody>
@@ -46,7 +46,7 @@
   </tbody>
   </table>
 
-  <h2>Step 2</h2>
+  <h2><a name="step-2">Step 2</a></h2>
   <p>Review the video files (you will need VLC or another media player installed)</p>
   <table>
   <tbody>
@@ -57,7 +57,7 @@
   </tbody>
   </table>
 
-  <h2>Step 3</h2>
+  <h2><a name="step-3">Step 3</a></h2>
   <p>Enter any comments you have and choose a resolution:</p>
   <table>
   <tbody>
@@ -184,7 +184,10 @@
 {% else %}
   <p>This episode has already been processed. Thank you for volunteering!</p>
   {% if episode.state == 2 and not episode.locked %}
-    <button onclick="">Reopen</button>
+    <form action="{% if edit_key %}{% url guest_reopen episode.id edit_key %}{% else %}{% url volunteer_reopen episode.id %}{% endif %}" method="post">
+      {% csrf_token %}
+      <input type="submit" value="Reopen" />
+    </form>
   {% endif %}
 {% endif %}
 {% endif %}

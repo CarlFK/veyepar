@@ -27,6 +27,17 @@ class EditKeyMixin(object):
         if edit_key and not episode.edit_key == edit_key:
             raise Http404
         return edit_key
+    
+    def _redirect_url(self, episode, edit_key):
+        if edit_key:
+            return urlresolvers.reverse('guest_episode_review',
+                                        kwargs={'show_slug': episode.show.slug,
+                                                'episode_slug': episode.slug,
+                                                'edit_key': edit_key})
+        else:
+            return urlresolvers.reverse('volunteer_episode_review',
+                                        kwargs={'show_slug': episode.show.slug,
+                                                'episode_slug': episode.slug})
 
 
 class EpisodeReview(TemplateView, EditKeyMixin):
@@ -55,7 +66,7 @@ class EpisodeReview(TemplateView, EditKeyMixin):
         return not(start is None or end is None) and start.date() == end.date()
 
 
-class UnborkEpisode(View, EditKeyMixin):
+class ReopenEpisode(View, EditKeyMixin):
     def post(self, request, *args, **kwargs):
         self.kwargs = kwargs
         
@@ -64,15 +75,5 @@ class UnborkEpisode(View, EditKeyMixin):
         episode.state = 1
         episode.save()
         
-        if edit_key:
-            url = urlresolvers.reverse('guest_episode_review',
-                                       kwargs={'show_slug': episode.show.slug,
-                                               'episode_slug': episode.slug,
-                                               'edit_key': edit_key})
-        else:
-            url = urlresolvers.reverse('volunteer_episode_review',
-                                       kwargs={'show_slug': episode.show.slug,
-                                               'episode_slug': episode.slug})
-        
-        return HttpResponseRedirect(url)
+        return HttpResponseRedirect(self._redirect_url(episode, edit_key))
         
