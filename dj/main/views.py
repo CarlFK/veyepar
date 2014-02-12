@@ -323,17 +323,16 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
         episodes=Episode.objects.filter(id=episode_id)
     else:
         episodes=Episode.objects.filter(show=show, 
-                start__day=2,
                 location__active=True).order_by('location__id','start')
+                # start__day=2,
                 # location__name='Hays Cape'
                 # location__name='Barbie Tootle'
                 # location__name='Cartoon 1'
                 # location__name='Cartoon 2'
                 # ).order_by('location','start')
 
-    print "#1", episodes
-    for ep in episodes:
-        print ep.location
+    if "day" in request.GET:
+        episodes = episodes.filter( start__day=request.GET['day'] )
 
     base  = os.path.dirname(__file__)
     rfxmlfile  = os.path.join(base,'templates', rfxml+".rfxml")
@@ -410,8 +409,6 @@ def raw_play_list(request,episode_id):
 def public_play_list(request):
     # experiment to construct a playlist that is based on query params
     
-    pprint( request.GET )
-
     # build up the filter:
     episodes = Episode.objects
 
