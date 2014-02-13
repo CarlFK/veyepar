@@ -390,10 +390,11 @@ def raw_play_list(request, episode_id):
     episode=get_object_or_404(Episode,id=episode_id)
     show=episode.show
     client=show.client
-    cuts = Cut_List.objects.filter(episode=episode)
+    
+    cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
     if request.GET.get('apply') == 'yes':
+        # if we only want the 'applied' files
         cuts = cuts.filter(apply=True)
-    cuts = cuts.order_by('raw_file__start')
 
     response = HttpResponse(mimetype='audio/mpegurl')
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
