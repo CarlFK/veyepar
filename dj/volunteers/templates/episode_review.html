@@ -59,7 +59,9 @@
   {% csrf_token %}
 
   <h2><a name="step-1">Step 1</a></h2>
-  <p>Select which video files belong to this talk.<p>
+  <p>Select which video files belong to this talk. You can use the Recording
+     Sheets above for reference.
+  <p>
   {% include "_video_formset.html" %}
 
   <button style="font-size:1.2em; margin:20px 0"><a href="{% if edit_key %}{% url guest_expand_cutlist episode.id 30 edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id 30 %}{% endif %}">I Don't See the Right Video Files</a></button>
