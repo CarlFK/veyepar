@@ -327,7 +327,15 @@ class Cut_List(models.Model):
         start = to_sec( self.start )
         end = to_sec( self.end, to_sec(self.raw_file.duration))
         dur = end-start
-        return dur 
+        return dur
+    def base_url(self):
+        """ Returns the url for the file, minus the MEDIA_URL and extension """
+        episode = self.episode
+        show = episode.show
+        client = show.client
+        return "%s/%s/dv/%s/%s" % (client.slug, show.slug, 
+                                    episode.location.slug, 
+                                    self.raw_file.basename())
 
 class State(models.Model):
     sequence = models.IntegerField(default=1)

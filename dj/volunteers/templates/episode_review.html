@@ -2,6 +2,9 @@
 
 {% block head %}
 <title>veyepar: {{ episode.name }}</title>
+<style>
+  td ul {list-style-type:none}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -40,14 +43,26 @@
      to find the files that match this talk, or the files are unuseable, skip
      to <a href="#step-3">Step 3</a> and choose "This Episode is Borked".
   </p>
-  <table>
-  <tbody>
-    {{ video_formset.as_table }}
-  </tbody>
-  </table>
+
+  {{ video_formset.management_form }}
+  {% for form in video_formset %}
+    <table style="margin:5px 0">
+    <tbody>
+      {% with form.instance as cutlist %}
+      <tr>
+          <td>{{ cutlist.base_url }}</td>
+          <td><video src ="{{ MEDIA_URL }}/{{ cutlist.base_url }}.ogv" controls width=200 poster="{{ MEDIA_URL }}/{{ cutlist.base_url }}.png"></video></td>
+          <td>{{ form.apply }}</td>
+      </tr>
+      {% endwith %}
+    </tbody>
+    </table>
+  {% endfor %}
 
   <h2><a name="step-2">Step 2</a></h2>
-  <p>Review the video files (you will need VLC or another media player installed)</p>
+  <p>Review the video files you have selected (you will need VLC or another
+     media player that can handle the m3u playlist)
+  </p>
   <table>
   <tbody>
     <tr>
@@ -88,7 +103,6 @@
   <tr id="{{cl.raw_file.id}}">
     <td>
   {{clrfform.clid}}
-  <b>~/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}</b>
   <table border=1>
   <tbody>
     <tr>
@@ -96,11 +110,8 @@
     {{clrfform.clid}}
       <table border=1>
       <tbody>
-<tr><td> {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}</td></tr>
-<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a></td></tr>
-<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a></td></tr>
-<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></td></tr>
-<tr><td> <video src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
+
+<tr><td><video src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
     poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png"
     ></video>
     </td></tr>

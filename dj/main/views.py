@@ -1181,9 +1181,7 @@ def mk_cuts(episode,
                     and (dv.start < episode.end)
             cl.save()
 
-    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
-
-    return cuts
+    return Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
             
 
 def episode(request, episode_id, episode_slug=None, edit_key=None):

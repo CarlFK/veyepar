@@ -1,11 +1,12 @@
 from django.core import urlresolvers
+from django.forms.models import modelformset_factory
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, View
 
 from main.models import Episode, Cut_List
 from main.views import mk_cuts
-from volunteers.forms import EpisodeCommentForm
+from volunteers.forms import EpisodeCommentForm, SimplifiedCutListForm
 
 
 class ShowsInProcessing(TemplateView):
@@ -57,6 +58,8 @@ class EpisodeReview(TemplateView, EditKeyMixin):
                               ).order_by('sequence','raw_file__start','start')
         if not cuts:
             cuts = mk_cuts(episode)
+            
+        
 
         # insert 'advanced' into context
         '''
@@ -102,13 +105,16 @@ class EpisodeReview(TemplateView, EditKeyMixin):
     add_cutlist_to_ep=Add_CutList_to_Ep(initial = {'sequence':1})
         '''
 
-        # comment_form
-        # video_form
+        CutListFormset = modelformset_factory(Cut_List, 
+                                              form=SimplifiedCutListForm,
+                                              extra=0)
+        
         return {"episode": episode,
                 "show": episode.show,
                 "same_dates": self._same_dates(episode.start, episode.end),
                 "edit_key": edit_key,
-                "comment_form": EpisodeCommentForm(instance=episode)}
+                "comment_form": EpisodeCommentForm(instance=episode),
+                "video_formset": CutListFormset(queryset=cuts)}
     
     def post(self, request, *args, **kwargs):
         from django.http import HttpResponse
