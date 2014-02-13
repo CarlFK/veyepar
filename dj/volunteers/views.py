@@ -63,7 +63,7 @@ class EpisodeReview(TemplateView, EditKeyMixin):
             comment_form.save()
             video_formset.save()
             return HttpResponseRedirect(self._redirect_url(episode, edit_key) +
-                                        "#step-3")
+                                        "#step-2")
         
         return self.render_to_response(self._context(episode, edit_key, 
                                                      comment_form, video_formset))

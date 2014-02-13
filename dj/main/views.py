@@ -386,12 +386,14 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     response.write(pdf)
     return response
 
-def raw_play_list(request,episode_id):
+def raw_play_list(request, episode_id):
     episode=get_object_or_404(Episode,id=episode_id)
     show=episode.show
     client=show.client
-    cuts = Cut_List.objects.filter(
-                episode=episode,apply=True).order_by('raw_file__start')
+    cuts = Cut_List.objects.filter(episode=episode)
+    if request.GET.get('apply') == 'yes':
+        cuts = cuts.filter(apply=True)
+    cuts = cuts.order_by('raw_file__start')
 
     response = HttpResponse(mimetype='audio/mpegurl')
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'

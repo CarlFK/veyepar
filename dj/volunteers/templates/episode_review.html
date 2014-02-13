@@ -43,30 +43,35 @@
   <button style="font-size:1.2em; margin:20px 0"><a href="{% if edit_key %}{% url guest_expand_cutlist episode.id 30 edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id 30 %}{% endif %}">I Don't See the Right Video Files</a></button>
   <p>If after clicking "I Don't See the Right Video Files" you are still unable
      to find the files that match this talk, or the files are unuseable, skip
-     to <a href="#step-4">Step 4</a> and choose "This Episode is Borked".
+     to <a href="#step-2">Step 2</a> and choose "This Episode is Borked".
   </p>
 
-  <h2><a name="step-2">Step 2</a></h2>
-  <p>Do an intermediate save if you changed which video files are being used, and
-     you want to review the video file playlist. If you don't want to review the
-     playlist, skip to <a href="#step-4">Step 4</a>.
-  </p>
-  <input type="submit" value="Save">
-
-  <h2><a name="step-3">Step 3</a></h2>
-  <p>Review the video files you have selected (you will need VLC or another
-     media player that can handle the m3u playlist)
+  <h2>Alternate Reviewing Method</h2>
+  <p>If your browser doesn't work with the embedded player, you can review the
+     files using VLC or another media player that can handle .ogv files and m3u
+     playlists.
   </p>
   <table>
   <tbody>
     <tr>
-      <td><a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">Review Raw Playlist</a></td>
-      <td><a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">Review Raw OGV Playlist</a></td>
+      <td><a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">Review all .ogv files on the page</a></td>
     </tr>
   </tbody>
   </table>
 
-  <h2><a name="step-4">Step 4</a></h2>
+  <h2>For Perfectionists</h2>
+  <p>If you want to review what you've selected, click 'Save', then the 'Review'
+     link (otherise skip to <a href="#step-2">Step 2</a>):</p>
+  <table>
+  <tbody>
+    <tr>
+      <td><input type="submit" value="Save" /></td>
+      <td><a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv&apply=yes">Review selected .ogv files</a></td>
+    </tr>
+  </tbody>
+  </table>
+  <br />
+  <h2><a name="step-2">Step 2</a></h2>
   <p>Enter any comments if you have them, and choose <strong>"Ready to Encode"</strong> if
      you have selected all the video files you need.<br />Choose "This Episode is
      Borked" if there are issues with the video files that can't be fixed and
