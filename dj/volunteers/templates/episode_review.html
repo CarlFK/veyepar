@@ -18,6 +18,28 @@
   </table>
 </div>
 
+{% with episode.image_file_set.all as sheets %}
+{% with show.client as client %}
+{% if sheets %}
+<div id="recording-sheets" style="margin:10px 0">
+    <table>
+    <tbody>
+        <tr><th colspan="{{ sheets.count }}">Recording Sheets</th></tr>
+        <tr>
+            {% for img in sheets %}
+            <td><a href="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
+                <img src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=90 >
+                </a>
+            </td>
+            {% endfor %}
+        </tr>
+    </tbody>
+    </table>
+</div>
+{% endif %}
+{% endwith %}
+{% endwith %}
+
 <div id="episode-form" style="padding:20px 0">
 {% if episode.state == 0 %}
   <p>This episode has been marked "borked" (i.e., it is messed up beyond
