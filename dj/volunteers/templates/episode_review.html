@@ -60,7 +60,12 @@
   <p>
   {% include "_video_formset.html" %}
 
-  <button style="font-size:1.2em; margin:20px 0"><a href="{% if edit_key %}{% url guest_expand_cutlist episode.id 30 edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id 30 %}{% endif %}">I Don't See the Right Video Files</a></button>
+  <table style="margin:20px 0">
+  <tbody>
+      <tr><td><a href="{% if edit_key %}{% url guest_expand_cutlist episode.id 30 edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id 30 %}{% endif %}" style="font-size:1.2em">I Don't See the Right Video Files</a></td></tr>
+  </tbody>
+  </table>
+
   <p>If after clicking "I Don't See the Right Video Files" you are still unable
      to find the files that match this talk, or the files are unuseable, skip
      to <a href="#step-2">Step 2</a> and choose "This Episode is Borked".
@@ -93,8 +98,13 @@
   </table>
   <br />
   <h2>Advanced</h2>
-  <p>(Make sure you really know what you are doing before pressing this button!)</p>
-  <button style="font-size:1.1em"><a href="{% url episode episode.id episode.slug episode.edit_key %}">I need to do something unusual. Give me the advanced interface</a></button>
+  <p>(Make sure you really know what you are doing before clicking this link!)</p>
+
+  <table style="margin:10px 0">
+  <tbody>
+      <tr><td><a href="{% url episode episode.id episode.slug episode.edit_key %}" style="font-size:1.1em">I need to do something unusual. Give me the advanced interface</a></td></tr>
+  </tbody>
+  </table>
 
 <br />
   <br />
