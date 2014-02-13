@@ -419,6 +419,9 @@ def public_play_list(request):
     # build up the filter:
     episodes = Episode.objects
 
+    if "id" in request.GET:
+        episodes = episodes.filter( id=request.GET['id'] )
+
     if "client" in request.GET:
         episodes = episodes.filter(
                 show__client__slug=request.GET['client'] )
@@ -455,7 +458,7 @@ def enc_play_list(request,episode_id):
 
     writer = csv.writer(response)
     # exts = [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
-    exts = [ 'mp4', ]
+    exts = [ 'webm', ]
     for ext in exts:
         
       foot_pathname = os.path.join(client.slug,show.slug, ext, '%s.%s' % (episode.slug, ext))
