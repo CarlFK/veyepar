@@ -39,13 +39,13 @@
   <h2><a name="step-1">Step 1</a></h2>
   <p>Select which video files belong to this talk.<p>
   {% include "_video_formset.html" %}
-  {% comment %}
+
   <button style="font-size:1.2em; margin:20px 0"><a href="{% if edit_key %}{% url guest_expand_cutlist episode.id 30 edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id 30 %}{% endif %}">I Don't See the Right Video Files</a></button>
   <p>If after clicking "I Don't See the Right Video Files" you are still unable
      to find the files that match this talk, or the files are unuseable, skip
      to <a href="#step-4">Step 4</a> and choose "This Episode is Borked".
   </p>
-  {% endcomment %}
+
   <h2><a name="step-2">Step 2</a></h2>
   <p>Do an intermediate save if you changed which video files are being used, and
      you want to review the video file playlist. If you don't want to review the

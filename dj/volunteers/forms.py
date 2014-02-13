@@ -9,7 +9,7 @@ class CutListExpansionForm(forms.ModelForm):
     A way for volunteers to find additional Raw_Files and create Cut_Lists
     from them
     """
-    apply = forms.ChoiceField(choices=((True, 'Use this video'), (False, 'Ignore')), 
+    apply = forms.ChoiceField(choices=((1, 'Use this video'), (0, 'Ignore')), 
                               widget=forms.RadioSelect())
     
     class Meta:
@@ -22,11 +22,27 @@ class CutListExpansionForm(forms.ModelForm):
         if instance:
             if not kwargs.get('initial'):
                 kwargs['initial'] = {}
-            kwargs['initial']['apply'] = False
+            kwargs['initial']['apply'] = Cut_List.objects.filter(episode=self.parent,
+                                                                 raw_file=instance,
+                                                                 apply=True
+                                                        ).count()
         return super(CutListExpansionForm, self).__init__(*args, **kwargs)
     
     def save(self, *args, **kwargs):
-        import pdb; pdb.set_trace()
+        # if apply is True, and a Cut_List does not exist, we want to create it;
+        # otherwise if Cut_List exists, we want to update its 'apply' value
+        apply = bool(int(self.cleaned_data.get('apply')))
+        try:
+            cl = Cut_List.objects.get(episode=self.parent,
+                                      raw_file=self.instance)
+            cl.apply = apply
+            cl.save()
+        except Cut_List.DoesNotExist:
+            if apply:
+                cl = Cut_List.objects.create(episode=self.parent,
+                                             raw_file=self.instance,
+                                             apply=True)
+        return cl if apply else None
         
 
 class CutListExpansionFormSet(BaseModelFormSet):
@@ -41,6 +57,14 @@ class CutListExpansionFormSet(BaseModelFormSet):
         self.forms = []
         for i in xrange(min(self.total_form_count(), self.absolute_max)):
             self.forms.append(self._construct_form(i, parent=self.parent))
+            
+    def save(self, *args, **kwargs):
+        cut_lists = []
+        for form in self.forms:
+            new_cl = form.save()
+            if new_cl:
+                cut_lists.append(new_cl)
+        return cut_lists
 
 
 class EpisodeResolutionForm(forms.ModelForm):

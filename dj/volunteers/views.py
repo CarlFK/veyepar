@@ -127,7 +127,6 @@ class ExpandCutList(FormView, EditKeyMixin):
     
     def form_valid(self, form):
         form.save()
-        import pdb; pdb.set_trace()
         return super(ExpandCutList, self).form_valid(form)
 
 
