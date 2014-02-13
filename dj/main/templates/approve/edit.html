@@ -7,30 +7,31 @@
 
 {% block point %}
 
-<p>This talk needs a human to do a little work, like 5-10 minutes. 
+<p>This talk needs a human to do a little work, likely under 5-10 minutes. 
 or 30 if you allow your pefection-izm to get the best of you.</p>
-<p>follow this link to do the work:
+<p>Follow this link to do the work:
+
+<a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">
+{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}</a>
+</p>
+<p>
+Ideally that page will let you do all you need and you don't have to read this next part.  
+</p>
+<hr>
+<p>
+It also contains a link the original interface that lets you do all sorts of things, like trim cruft from the start and end before the end.  That last part means 'cut the recording so the part that isn't the talk isn't included.'
+</p>
+<p>
+If a file contains cruft, like 5 minutes of people coming into the room and finding a seat, you should remove that.  Same with the end.  Introductions are nice, if they are nice.  The encoder doesn't care if you cut stuff off or not, but the people who view the video will.  Use your judgment. 
+</p>
+<p>
+You can trim from the start and end by entering the time in the Start and End boxes.  The time you enter is the time you see  on the player.  Hit Play, when you are at the point you want the talk to start, hit Pause. look at the time ont the player, enter that in the Start box.   Run the slider to the end and Play.  If you talk ends long before the end of the file, hit Pause at the end of your talk, enter the time you see on the player in the End box.
+</p>
+<p>
 <a href="{% url episode episode_id=episode.id episode_slug=episode.slug edit_key=episode.edit_key %}">
     {% url episode episode_id=episode.id episode_slug=episode.slug edit_key=episode.edit_key %}</a>
 </p>
-
 <p>
-Directions:</br>
-    Scroll down to the previews of the raw files that a db query has assigned to your talk.  Given that changes were made to the schedule and that not all talks start on time it may be incorrect.  Your job is to either confirm it is correct, make adjustments, or conclude that it needs more help that you can give it.
-</p>
-<p>
-Find the raw files that should be used as part of your talk.  [x]Apply the ones that sould be included, remove the [x] from ones that should not. Normally this will be the default.
-
-If a file contains cruft, like 5 minutes of people coming into the room and finding a seat, you should remove that.  Same with the end.  Introductions are nice, if they are nice. 
-
-You can trim from the start and end by entering the time in the Start and End boxes.  The time you enter is the time you see  on the player.  Hit Play, when you are at the point you want the talk to start, hit Pause. look at the time ont the player, enter that in the Start box.   Run the slider to the end and Play.  If you talk ends long before the end of the file, hit Pause at the end of your talk, enter the time you see on the player in the End box.
-</p>
-
-<p>
-SET THE STATE TO ENCODE, HIT SAVE.</b>
-There is a process polling the db, when it sees that, it will start encoding.  
-</p>
-
 <p>Ignore the login.  That is for video team members to do additional work.</p>
 
 <p>BTW, allowing the presenter to work on their talk is a new feature.
