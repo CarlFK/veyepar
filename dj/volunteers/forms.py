@@ -48,5 +48,13 @@ class SimplifiedCutListForm(forms.ModelForm):
                 kwargs['initial'] = {}
             kwargs['initial']['apply'] = instance.apply and not instance.raw_file.trash
         return super(SimplifiedCutListForm, self).__init__(*args, **kwargs)
+    
+    def save(self, *args, **kwargs):
+        obj = super(SimplifiedCutListForm, self).save(*args, **kwargs)
+        # raw files that are being included shouldn't be trashed
+        if obj.apply and obj.raw_file.trash:
+            obj.raw_file.trash = False
+            obj.raw_file.save()
+        return obj
 
     
