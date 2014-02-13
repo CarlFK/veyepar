@@ -1,12 +1,46 @@
 from django import forms
+from django.forms.models import BaseModelFormSet
 
-from main.models import Cut_List, Episode
+from main.models import Cut_List, Episode, Raw_File
 
 
-class CutListExpansionForm(forms.Form):
+class CutListExpansionForm(forms.ModelForm):
     """
+    A way for volunteers to find additional Raw_Files and create Cut_Lists
+    from them
     """
-    pass
+    apply = forms.ChoiceField(choices=((True, 'Use this video'), (False, 'Ignore')), 
+                              widget=forms.RadioSelect())
+    
+    class Meta:
+        model = Raw_File
+        fields = ['id', 'apply']
+        
+    def __init__(self, parent, *args, **kwargs):
+        self.parent = parent
+        instance = kwargs.get('instance')
+        if instance:
+            if not kwargs.get('initial'):
+                kwargs['initial'] = {}
+            kwargs['initial']['apply'] = False
+        return super(CutListExpansionForm, self).__init__(*args, **kwargs)
+    
+    def save(self, *args, **kwargs):
+        import pdb; pdb.set_trace()
+        
+
+class CutListExpansionFormSet(BaseModelFormSet):
+    form = CutListExpansionForm
+    
+    def __init__(self, parent, *args, **kwargs):
+        self.parent = parent
+        super(CutListExpansionFormSet, self).__init__(*args, **kwargs)
+    
+    def _construct_forms(self):
+        # overriding to pass parent obj to child form
+        self.forms = []
+        for i in xrange(min(self.total_form_count(), self.absolute_max)):
+            self.forms.append(self._construct_form(i, parent=self.parent))
 
 
 class EpisodeResolutionForm(forms.ModelForm):

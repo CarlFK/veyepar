@@ -1,0 +1,14 @@
+{{ video_formset.management_form }}
+{% for form in video_formset %}
+  <table style="margin:5px 0">
+  <tbody>
+  {% with form.instance as cutlist %}
+    {{ form.id }}
+    <tr>
+      <td><video src ="{{ MEDIA_URL }}/{{ cutlist.base_url }}.ogv" controls width=200 poster="{{ MEDIA_URL }}/{{ cutlist.base_url }}.png"></video></td>
+      <td>{{ form.apply }}</td>
+    </tr>
+  {% endwith %}
+  </tbody>
+  </table>
+{% endfor %}

@@ -1,12 +1,15 @@
+import datetime
+
 from django.core import urlresolvers
 from django.forms.models import modelformset_factory
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import FormView, TemplateView, View
 
-from main.models import Episode, Cut_List
+from main.models import Episode, Cut_List, Raw_File
 from main.views import mk_cuts
-from volunteers.forms import EpisodeResolutionForm, SimplifiedCutListForm
+from volunteers.forms import (CutListExpansionForm, CutListExpansionFormSet,
+                              EpisodeResolutionForm, SimplifiedCutListForm)
 
 
 class EditKeyMixin(object):
@@ -92,9 +95,41 @@ class ReopenEpisode(View, EditKeyMixin):
         return HttpResponseRedirect(self._redirect_url(episode, edit_key))
 
 
-class ExpandCutList(FormView):
-    pass
- 
+class ExpandCutList(FormView, EditKeyMixin):
+    template_name = "expand_cutlist.html"
+    
+    def get_context_data(self, **kwargs):
+        return {'video_formset': kwargs.get('form'),
+                'episode': self.episode,
+                'show': self.episode.show,
+                'slop': self.slop + 30,
+                'edit_key': self.edit_key}
+    
+    def get_form_kwargs(self):
+        self.episode = get_object_or_404(Episode, id=self.kwargs.get('episode_id'))
+        self.edit_key = self._check_edit_key(self.episode)
+        self.slop = int(self.kwargs.get('slop'))
+        
+        kwargs = super(ExpandCutList, self).get_form_kwargs()
+        kwargs.update({'parent': self.episode,
+                       'queryset': Raw_File.objects.filter(
+                          end__gte=self.episode.start - datetime.timedelta(minutes=self.slop),
+                          start__lte=self.episode.end + datetime.timedelta(minutes=self.slop),
+                          location=self.episode.location).order_by('start')})
+        return kwargs
+    
+    def get_form_class(self):
+        return modelformset_factory(Raw_File, form=CutListExpansionForm, 
+                                    formset=CutListExpansionFormSet, extra=0)
+    
+    def get_success_url(self):
+        return self._redirect_url(self.episode, self.edit_key)
+    
+    def form_valid(self, form):
+        form.save()
+        import pdb; pdb.set_trace()
+        return super(ExpandCutList, self).form_valid(form)
+
 
 class ShowsInProcessing(TemplateView):
     """

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <form action="." method="post">
+  {% csrf_token %}
+  {% include "_video_formset.html" %}
+  <table>
+  <tbody>
+    <tr>
+        <td><input type="submit" value="Done Adding Videos" /></form></td>
+        <td><form action="{% if edit_key %}{% url guest_expand_cutlist episode.id slop edit_key %}{% else %}{% url guest_expand_cutlist episode.id slop %}{% endif %}" method="get">
+              <input type="submit" value="More Videos" />
+            </form>
+        </td>
+        <td><form action="{% if edit_key %}{% url guest_episode_review show.slug episode.slug edit_key %}{% else %}{% url guest_episode_review show.slug episode.slug %}{% endif %}#step-2" method="get">
+              <input type="submit" value="Cancel" />
+            </form>
+        </td>
+    </tr>
+  </tbody>
+  </table>
+{% endblock %}

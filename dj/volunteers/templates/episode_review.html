@@ -38,22 +38,9 @@
 
   <h2><a name="step-1">Step 1</a></h2>
   <p>Select which video files belong to this talk.<p>
+  {% include "_video_formset.html" %}
 
-  {{ video_formset.management_form }}
-  {% for form in video_formset %}
-    <table style="margin:5px 0">
-    <tbody>
-      {% with form.instance as cutlist %}
-      {{ form.id }}
-      <tr>
-          <td><video src ="{{ MEDIA_URL }}/{{ cutlist.base_url }}.ogv" controls width=200 poster="{{ MEDIA_URL }}/{{ cutlist.base_url }}.png"></video></td>
-          <td>{{ form.apply }}</td>
-      </tr>
-      {% endwith %}
-    </tbody>
-    </table>
-  {% endfor %}
-  <button style="margin:30px 0 10px 0" onclick="">I Don't See the Right Video Files</button>
+  <button style="font-size:1.2em; margin:20px 0"><a href="{% if edit_key %}{% url guest_expand_cutlist episode.id 30 edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id 30 %}{% endif %}">I Don't See the Right Video Files</a></button>
   <p>If after clicking "I Don't See the Right Video Files" you are still unable
      to find the files that match this talk, or the files are unuseable, skip
      to <a href="#step-4">Step 4</a> and choose "This Episode is Borked".
