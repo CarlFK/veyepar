@@ -104,21 +104,38 @@ class EpisodeReview(TemplateView, EditKeyMixin):
     # blank out previous valuse so we don't keep adding the same thing
     add_cutlist_to_ep=Add_CutList_to_Ep(initial = {'sequence':1})
         '''
-
-        CutListFormset = modelformset_factory(Cut_List, 
-                                              form=SimplifiedCutListForm,
-                                              extra=0)
         
+        return self._context(episode, edit_key,
+                             EpisodeCommentForm(instance=episode),
+                             self._cutlist_formset()(queryset=cuts))
+    
+    def post(self, request, *args, **kwargs):
+        episode = get_object_or_404(Episode, slug=kwargs.get('episode_slug'), 
+                                    show__slug=kwargs.get('show_slug'))
+        edit_key = self._check_edit_key(episode)
+        
+        comment_form = EpisodeCommentForm(instance=episode, data=request.POST)
+        video_formset = self._cutlist_formset()(data=request.POST)
+        
+        if comment_form.is_valid() and video_formset.is_valid():
+            comment_form.save()
+            video_formset.save()
+            return HttpResponseRedirect(self._redirect_url(episode, edit_key) +
+                                        "#step-3")
+        
+        return self.render_to_response(self._context(episode, edit_key, 
+                                                     comment_form, video_formset))
+    
+    def _context(self, episode, edit_key, comment_form, video_formset):
         return {"episode": episode,
                 "show": episode.show,
                 "same_dates": self._same_dates(episode.start, episode.end),
                 "edit_key": edit_key,
-                "comment_form": EpisodeCommentForm(instance=episode),
-                "video_formset": CutListFormset(queryset=cuts)}
+                "comment_form": comment_form,
+                "video_formset": video_formset}
     
-    def post(self, request, *args, **kwargs):
-        from django.http import HttpResponse
-        return HttpResponse("Posted to Episode Review")
+    def _cutlist_formset(self):
+        return modelformset_factory(Cut_List, form=SimplifiedCutListForm, extra=0)
     
     def _same_dates(self, start, end):
         return not(start is None or end is None) and start.date() == end.date()

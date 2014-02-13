@@ -2,9 +2,6 @@
 
 {% block head %}
 <title>veyepar: {{ episode.name }}</title>
-<style>
-  td ul {list-style-type:none}
-</style>
 {% endblock %}
 
 {% block content %}
@@ -31,26 +28,24 @@
       <input type="submit" value="Unbork" />
   </form>
 {% else %}{% if episode.state == 1 %}
+<form action="{% url episode episode.id episode.slug episode.edit_key %}" method="get">
+      <input style="font-size:1.2em" type="submit" value="I need to do something unusual. Give me the advanced interface" />
+      <p>(Make sure you really know what you are doing before pressing this button!)</p>
+</form>
+<br />
 <form action="." method="post">
   {% csrf_token %}
 
   <h2><a name="step-1">Step 1</a></h2>
-  <p>Select which video files belong to this talk. Click the 'Advanced' button
-     if you need to fine-tune the video files and you know what you are doing.
-  <p>
-  <button onclick="">I Don't See the Right Video Files</button>
-  <p>If after clicking "I Don't See the Right Video Files" you are still unable
-     to find the files that match this talk, or the files are unuseable, skip
-     to <a href="#step-3">Step 3</a> and choose "This Episode is Borked".
-  </p>
+  <p>Select which video files belong to this talk.<p>
 
   {{ video_formset.management_form }}
   {% for form in video_formset %}
     <table style="margin:5px 0">
     <tbody>
       {% with form.instance as cutlist %}
+      {{ form.id }}
       <tr>
-          <td>{{ cutlist.base_url }}</td>
           <td><video src ="{{ MEDIA_URL }}/{{ cutlist.base_url }}.ogv" controls width=200 poster="{{ MEDIA_URL }}/{{ cutlist.base_url }}.png"></video></td>
           <td>{{ form.apply }}</td>
       </tr>
@@ -58,8 +53,20 @@
     </tbody>
     </table>
   {% endfor %}
+  <button style="margin:30px 0 10px 0" onclick="">I Don't See the Right Video Files</button>
+  <p>If after clicking "I Don't See the Right Video Files" you are still unable
+     to find the files that match this talk, or the files are unuseable, skip
+     to <a href="#step-4">Step 4</a> and choose "This Episode is Borked".
+  </p>
 
   <h2><a name="step-2">Step 2</a></h2>
+  <p>Do an intermediate save if you changed which video files are being used, and
+     you want to review the video file playlist. If you don't want to review the
+     playlist, skip to <a href="#step-4">Step 4</a>.
+  </p>
+  <input type="submit" value="Save">
+
+  <h2><a name="step-3">Step 3</a></h2>
   <p>Review the video files you have selected (you will need VLC or another
      media player that can handle the m3u playlist)
   </p>
@@ -72,7 +79,7 @@
   </tbody>
   </table>
 
-  <h2><a name="step-3">Step 3</a></h2>
+  <h2><a name="step-4">Step 4</a></h2>
   <p>Enter any comments if you have them, and choose a resolution:</p>
   <table>
   <tbody>

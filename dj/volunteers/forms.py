@@ -9,16 +9,17 @@ class EpisodeCommentForm(forms.ModelForm):
     """
     class Meta:
         model = Episode
-        fields = ['comment']
+        fields = ['id', 'comment']
+        exclude = ['show']
 
         
 class SimplifiedCutListForm(forms.ModelForm):
-    apply = forms.ChoiceField(choices=((True, 'Apply'), (False, 'Ignore')), 
+    apply = forms.ChoiceField(choices=((True, 'Use this video'), (False, 'Ignore')), 
                               widget=forms.RadioSelect())
     
     class Meta:
         model = Cut_List
-        fields = ['apply']
+        fields = ['id', 'apply']
     
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
