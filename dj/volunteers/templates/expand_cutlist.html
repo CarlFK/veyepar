@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <br />
+  <strong>Please choose 'Use this video' for any videos you would like to include.</strong><br />
+  <p>If you still don't see the videos you want, you can try 'More Videos' at
+     the bottom of the list to expand your search.
+  </p><br />
   <form action="." method="post" style="display:inline">
     {% csrf_token %}
     {% include "_video_formset.html" %}
