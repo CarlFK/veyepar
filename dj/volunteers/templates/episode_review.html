@@ -18,6 +18,28 @@
   </table>
 </div>
 
+{% with episode.image_file_set.all as sheets %}
+{% with show.client as client %}
+{% if sheets %}
+<div id="recording-sheets" style="margin:10px 0">
+    <table>
+    <tbody>
+        <tr><th colspan="{{ sheets.count }}">Click on thumnails to see recording sheets</th></tr>
+        <tr>
+            {% for img in sheets %}
+            <td><a href="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
+                <img src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=90 >
+                </a>
+            </td>
+            {% endfor %}
+        </tr>
+    </tbody>
+    </table>
+</div>
+{% endif %}
+{% endwith %}
+{% endwith %}
+
 <div id="episode-form" style="padding:20px 0">
 {% if episode.state == 0 %}
   <p>This episode has been marked "borked" (i.e., it is messed up beyond
@@ -28,16 +50,14 @@
       <input type="submit" value="Unbork" />
   </form>
 {% else %}{% if episode.state == 1 %}
-<form action="{% url episode episode.id episode.slug episode.edit_key %}" method="get">
-      <input style="font-size:1.2em" type="submit" value="I need to do something unusual. Give me the advanced interface" />
-      <p>(Make sure you really know what you are doing before pressing this button!)</p>
-</form>
-<br />
 <form action="." method="post">
   {% csrf_token %}
 
   <h2><a name="step-1">Step 1</a></h2>
-  <p>Select which video files belong to this talk.<p>
+  <p>Select which video files belong to this talk. You can use the recording
+     sheets above for reference. Click on the play button for each clip to
+     see the video.
+  <p>
   {% include "_video_formset.html" %}
 
   <button style="font-size:1.2em; margin:20px 0"><a href="{% if edit_key %}{% url guest_expand_cutlist episode.id 30 edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id 30 %}{% endif %}">I Don't See the Right Video Files</a></button>
@@ -60,8 +80,9 @@
   </table>
 
   <h2>For Perfectionists</h2>
-  <p>If you want to review what you've selected, click 'Save', then the 'Review'
-     link (otherise skip to <a href="#step-2">Step 2</a>):</p>
+  <p>If you want to review only the videos that you want to be encoded, click
+     'Save', then the 'Review' link (otherise skip to <a href="#step-2">Step 2</a>):
+  </p>
   <table>
   <tbody>
     <tr>
@@ -70,6 +91,12 @@
     </tr>
   </tbody>
   </table>
+  <br />
+  <h2>Advanced</h2>
+  <p>(Make sure you really know what you are doing before pressing this button!)</p>
+  <button style="font-size:1.1em"><a href="{% url episode episode.id episode.slug episode.edit_key %}">I need to do something unusual. Give me the advanced interface</a></button>
+
+<br />
   <br />
   <h2><a name="step-2">Step 2</a></h2>
   <p>Enter any comments if you have them, and choose <strong>"Ready to Encode"</strong> if
