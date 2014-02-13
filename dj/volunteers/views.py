@@ -43,7 +43,7 @@ class EpisodeReview(TemplateView, EditKeyMixin):
         edit_key = self._check_edit_key(episode)
     
         cuts = Cut_List.objects.filter(episode=episode
-                              ).order_by('sequence','raw_file__start','start')
+                              ).order_by('raw_file__start', 'sequence', 'start')
         if not cuts:
             cuts = mk_cuts(episode)
 
@@ -103,7 +103,8 @@ class ExpandCutList(FormView, EditKeyMixin):
                 'episode': self.episode,
                 'show': self.episode.show,
                 'slop': self.slop + 30,
-                'edit_key': self.edit_key}
+                'edit_key': self.edit_key,
+                'use_raw': True}
     
     def get_form_kwargs(self):
         self.episode = get_object_or_404(Episode, id=self.kwargs.get('episode_id'))
