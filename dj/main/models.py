@@ -141,6 +141,12 @@ class Raw_File(models.Model):
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
 
+    def base_url(self):
+        """ Returns the url for the file, minus the MEDIA_URL and extension """
+        return "%s/%s/dv/%s/%s" % (self.show.client.slug, self.show.slug, 
+                                    self.location.slug, 
+                                    self.basename())
+    
     def basename(self):
         # strip the extension
         # good for making foo.png from 1-2-3/foo.dv
@@ -330,12 +336,7 @@ class Cut_List(models.Model):
         return dur
     def base_url(self):
         """ Returns the url for the file, minus the MEDIA_URL and extension """
-        episode = self.episode
-        show = episode.show
-        client = show.client
-        return "%s/%s/dv/%s/%s" % (client.slug, show.slug, 
-                                    episode.location.slug, 
-                                    self.raw_file.basename())
+        return self.raw_file.base_url()
 
 class State(models.Model):
     sequence = models.IntegerField(default=1)

@@ -3,9 +3,16 @@ from django import forms
 from main.models import Cut_List, Episode
 
 
-class EpisodeCommentForm(forms.ModelForm):
+class CutListExpansionForm(forms.Form):
     """
-    A simplified form to handle Episode comments on the volunteer workflow page.
+    """
+    pass
+
+
+class EpisodeResolutionForm(forms.ModelForm):
+    """
+    A simplified form to handle Episode comments and state on the volunteer 
+    episode review page.
     """
     state = forms.ChoiceField(choices=((1, 'Save and Keep Editing'), 
                                        (2, 'Ready to Encode'),
@@ -19,7 +26,7 @@ class EpisodeCommentForm(forms.ModelForm):
         exclude = ['show']
         
     def __init__(self, *args, **kwargs):
-        super(EpisodeCommentForm, self).__init__(*args, **kwargs)
+        super(EpisodeResolutionForm, self).__init__(*args, **kwargs)
         self.fields['comment'].help_text = None
 
         
