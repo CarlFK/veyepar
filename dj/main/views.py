@@ -168,12 +168,14 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     eps = Episode.objects.filter(show=show)
 
     fields=['id',
+            'state',
             'location', 'sequence',
             'name', 'slug', 'authors', 'description',
             'start', 'duration', 
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
             'host_url', 'public_url',
+            'comment',
         ]
     if request.user.is_authenticated():
         fields.extend(['emails', 'edit_key',])
@@ -632,6 +634,42 @@ def locations(request):
         },
 	context_instance=RequestContext(request) )
  
+def show_anomalies(request, show_id, ):
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+
+    episodes=Episode.objects.filter(show=show,)
+    if "active" in request.GET:
+        episodes = episodes.filter(location__active=True)
+
+
+    max_title_len = max( len(ep.name) for ep in episodes )
+    max_authors_len = max( len(ep.authors) for ep in episodes if ep.authors is not None)
+
+    max_name_len = 0
+    max_authors_len = 0
+    for ep in episodes:
+        if len(ep.name) > max_name_len:
+            max_name_len = len(ep.name)
+            max_name_ep = ep
+        if ep.authors is not None and \
+                len(ep.authors) > max_authors_len:
+            max_authors_len = len(ep.authors)
+            max_authors_ep = ep
+
+    return render_to_response('show_anomalies.html',
+        {
+          'client':client,
+          'show':show,
+          'locations':locations,
+          'rows':rows,
+          'locked':lockeds,
+          'max_name_ep':max_name_ep,
+          'max_authors_ep':max_authors_ep,
+        },
+	context_instance=RequestContext(request) )
+
+
 def show_stats(request, show_id, ):
     """
     Show Status - varous summaries of rooms, days and the whole thing

@@ -42,8 +42,9 @@ class EpisodeReview(TemplateView, EditKeyMixin):
                                     show__slug=kwargs.get('show_slug'))
         edit_key = self._check_edit_key(episode)
     
-        cuts = Cut_List.objects.filter(episode=episode
-                              ).order_by('raw_file__start', 'sequence', 'start')
+        cuts = Cut_List.objects.filter(
+                episode=episode, raw_file__trash=False,
+                      ).order_by('raw_file__start', 'sequence', 'start')
         if not cuts:
             cuts = mk_cuts(episode)
 

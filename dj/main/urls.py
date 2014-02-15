@@ -38,9 +38,9 @@ urlpatterns += patterns(
     url(r'meeting_announcement/(?P<show_id>\w+)/$', 
         meet_ann, 
         name='meet_ann'),
-    url(r'show_stats/(?P<show_id>\w+)/$', 
-        show_stats, 
-        name='show_stats'),
+    url(r'show_stats/(?P<show_id>\w+)/$', show_stats, name='show_stats'),
+    url(r'show_anomalies/(?P<show_id>\w+)/$', 
+        show_anomalies, name='show_anomalies'),
 
     url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>\w+)_schedule.html$', 
         schedule, 

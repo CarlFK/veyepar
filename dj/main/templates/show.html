@@ -19,6 +19,7 @@
 <tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
 <tr><td><a href="{{show.schedule_url}}">{{show.schedule_url}}</a></td></tr>
 <tr><td><a href="{% url show_stats show.id %}" title="{{show.name}}">show stats</a></td></tr>
+<tr><td><a href="{% url show_anomalies show.id %}" title="{{show.name}}">show anomalies</a></td></tr>
 <tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
 
 <tr><td>
