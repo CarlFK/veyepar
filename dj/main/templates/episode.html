@@ -133,9 +133,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
       <tr><td></td>
 
-    {% if user.is_authenticated %}
         <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
-    {% endif %}
         <td>{{ clrfform.apply.label_tag }}{{ clrfform.apply }}
 </td>
       </tr>

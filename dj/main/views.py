@@ -1098,13 +1098,12 @@ def overlaping_files(request,show_id):
         r['end_min']=r['end'].hour*60+r['end'].minute
         if r['start_min'] < start: start = r['start_min']
         if r['end_min'] > end: end = r['start_min']
-        """
         if r['filename'][-5:] in ['-1.dv','-2.dv']:
             r['trash'] = True
             rf = Raw_File.objects.get(id=r['id'])
             rf.trash = True
-            rf.save()
-        """
+            # rf.save()
+
     width_min = end-start
 
     width_px=300.0
