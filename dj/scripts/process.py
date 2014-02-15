@@ -174,9 +174,24 @@ class process(object):
     return 
 
   def process_eps(self, episodes):
-    ret = None 
+
+
+
+    def foo(e):
+     s = os.environ.get('STY')
+     if s:
+       s = s.split('-')
+       if len(s)==3:
+         s = s[-1]
+         if s.isdigit():
+             return e.id % 11 == int(s)
+     return True
+
+    ret = None
     sleepytime=False
     for e in episodes:
+     if foo(e):
+
       # next line requires the db to make sure the lock field is fresh
       ep=Episode.objects.get(pk=e.id)
       if self.options.unlock: ep.locked=None

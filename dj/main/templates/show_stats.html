@@ -98,6 +98,7 @@
         <th>locked by</th>
         <th>stop</th>
         <th>episode.name</th>
+        <th>logs</th>
         <th></th>
       </tr>
     </thead>
@@ -110,13 +111,16 @@
         <td>{{episode.locked}} - {{episode.locked|timesince}}</td>
         <td>{{episode.locked_by}}</td>
         <td>{{episode.stop|yesno:"y,n,"}}</td>
-
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+        <td><a href={% url episode_logs episode.id %}>logs</a></td>
       </tr>
     {% endfor %}
   </table>
 
+  <hr>
   max name: #{{max_name_ep.id}} <a href="E/{{max_name_ep.id}}/">{{ max_name_ep.name }}</a><br/>
   max authors: # {{max_authors_ep.id}} <a href="E/{{max_authors_ep.id}}/">{{ max_authors_ep.authors }}</a>
+
+  <hr>
 
 {% endblock %}
