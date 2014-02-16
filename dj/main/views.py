@@ -13,7 +13,7 @@ from django.forms import ModelForm
 from django.forms.formsets import formset_factory
 
 from django.db.models import Q
-from django.db.models import Max
+from django.db.models import Count,Max
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core import serializers
@@ -642,7 +642,6 @@ def show_anomalies(request, show_id, ):
     if "active" in request.GET:
         episodes = episodes.filter(location__active=True)
 
-
     max_title_len = max( len(ep.name) for ep in episodes )
     max_authors_len = max( len(ep.authors) for ep in episodes if ep.authors is not None)
 
@@ -657,13 +656,16 @@ def show_anomalies(request, show_id, ):
             max_authors_len = len(ep.authors)
             max_authors_ep = ep
 
+            #   Literal.objects.values('name').annotate(count=Count('id')).order_by().filter(count__gt=1)
+    dupes = Episode.objects.values('name').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
+    dup_eps = Episode.objects.filter(name__in=[item['name'] for item in dupes], show=show)
+
     return render_to_response('show_anomalies.html',
         {
           'client':client,
           'show':show,
           'locations':locations,
-          'rows':rows,
-          'locked':lockeds,
+          'dup_eps':dup_eps,
           'max_name_ep':max_name_ep,
           'max_authors_ep':max_authors_ep,
         },
@@ -857,7 +859,6 @@ def show_stats(request, show_id, ):
           'show':show,
           'locations':locations,
           'show_stat':show_stat,
-          'locations':locations,
           'rows':rows,
           'states':states,
           'locked':lockeds,
