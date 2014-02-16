@@ -1,0 +1,64 @@
+{# show.html #}
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href="{% url client client.slug %}">{{ client.name }}</a>
+<a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a>
+</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>audio</th>
+        <th>loc name</th>
+        <th>start</th><th>end</th>
+        <th>duration</th>
+        <th>state</th>
+        <th>episode.name</th>
+        <th>episode.authors</th>
+        <th>rel</th>
+        <th>img</th>
+        <th>host<br>index</th>
+      </tr>
+    </thead>
+
+    {% for episode in dup_eps %}
+      <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+        <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>        <td>{{episode.channelcopy}}</td>
+
+        <td><a href="
+        {%if location_slug %}
+         {% url episode_list client.slug show.slug %}
+        {% else %}
+         {% url episode_list client_slug=client.slug show_slug=show.slug location_slug=episode.location.slug %}
+        {% endif %}
+         ">{{episode.location}}</a></td>
+
+ <td> <a href="/databrowse/main/episode/fields/start/{{episode.start|date:"Y-m-d H:i:s"}}"> {{episode.start|date:"D d H:i"}} </a> </td>
+ <td>{{episode.end|date:"H:i"}}</td>
+        <td>{{episode.duration}}</td>
+        <td>{{episode.state}}</td>
+        <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+        <td style="white-space:normal">{{episode.authors}}</td>
+        <td>{{episode.released|yesno:"Y,N"}}</td>
+        <td>{{episode.image_file_set.count|default:""}}</td>
+        <td>
+            {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
+            {%if episode.public_url %}<a href="{{episode.public_url}}">R</a>{% endif %}
+
+        </tr>
+{% endfor %}
+</table>
+
+  <hr>
+  <hr>
+
+  max name: #{{max_name_ep.id}} <a href="E/{{max_name_ep.id}}/">{{ max_name_ep.name }}</a><br/>
+  <hr>
+  max authors: # {{max_authors_ep.id}} <a href="E/{{max_authors_ep.id}}/">{{ max_authors_ep.authors }}</a>
+
+  <hr>
+
+{% endblock %}
