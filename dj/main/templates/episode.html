@@ -55,6 +55,7 @@
 
 </tbody>
 </table>
+<a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a><br/>
 {% if episode.conf_url %}
   <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
 {% endif %}

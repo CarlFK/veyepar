@@ -53,11 +53,12 @@
                  {% endif %}
 </td>
 
+{# the room day cells #}
           {% for item,loc in row %}
              <td style="background-color:#{{item.alarm_color}};">  
                {% if item.count %}
 
-                 <span class="left">{{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</span> <span class="right;"> {{item.hours}} h </span><br/>
+                 <span class="left">{{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</span> <span class="right"> {{item.hours}} h </span><br/>
                  <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
                  [
                  {% for s in item.states %} 
