@@ -274,7 +274,6 @@ class process(object):
 
 
   def one_show(self, show):
-
     """
  
     """
@@ -291,10 +290,6 @@ class process(object):
             'sequence','start',)
         if self.options.day:
             episodes=episodes.filter(start__day=self.options.day)
-        for day in [17,18,19,20,21]:
-            # self.process_eps(episodes.filter(start__day=day))
-            es=episodes.filter(start__day=day)
-            self.process_eps(es)
 
   def work(self):
         """
