@@ -97,14 +97,15 @@ class SimplifiedCutListForm(forms.ModelForm):
     
     class Meta:
         model = Cut_List
-        fields = ['id', 'apply']
+        fields = ['id', 'apply', 'start', 'end']
     
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
         if instance:
             if not kwargs.get('initial'):
                 kwargs['initial'] = {}
-            kwargs['initial']['apply'] = instance.apply and not instance.raw_file.trash
+            kwargs['initial']['apply'] = \
+                    instance.apply and not instance.raw_file.trash
         return super(SimplifiedCutListForm, self).__init__(*args, **kwargs)
     
     def save(self, *args, **kwargs):
