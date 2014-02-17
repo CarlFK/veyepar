@@ -7,9 +7,9 @@ Examples of problems:
 
 Some are subjective like "poor sound", some are obvious like the title is wrong, or the video is a black background with white text: "INVALID" 
 
-<http://thebe.nextdayvideo.com/main/C/lca/S/lca2011/E/111/> "INVALID" = encoder problem, like corrupted input, encoder process doesn't have read permissions to the input file, or in this case I havn't figured out what the problem is.
+"INVALID" = encoder problem, like corrupted input, encoder process doesn't have read permissions to the input file, or in this case I havn't figured out what the problem is.
 
-<http://thebe.nextdayvideo.com/main/C/lca/S/lca2011/E/155/>  Soft sound.  This one is tolerable, but worth looking into putting some effort into making it better.  It has to be pretty bad to be rejected, but it is good for me to be aware of problems like this so I can maybe prevent them in the future. 
+Soft sound.  This one is tolerable, but worth looking into putting some effort into making it better.  It has to be pretty bad to be rejected, but it is good for me to be aware of problems like this so I can maybe prevent them in the future. 
 
 Dead air: the talk hasn't started, it sucks to watch the video, you want to fast forward to wherever it should really start.   5 seconds or so is not worth messing with, 30 is.  If you want to figure out where it should start, look at the cut list: some times an extra cut gets left on, so it is a 10 second operation to uncheck the cut, change State from Review to Encode, hit save and wait for the encoder to crunch it.  In a few hours it will be back up for review, and probably just fine.  Don't bother looking for dead air in the middle, it isn't worth the trouble.  Dead air at the end is also anoying, but only 10% of the viewers get that far anyway, so much less of an issue.  Feel free to lave a note in the coment field.  
 

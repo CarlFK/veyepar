@@ -48,6 +48,12 @@ veyepar:
      needs default, currently hardcoded to "Education"
 
   upload to youtube
+     update to new api lib:
+https://code.google.com/p/gdata-python-client/w/list
+
+old: https://developers.google.com/gdata/
+"Warning: Most newer Google APIs are not Google Data APIs. The Google Data APIs documentation applies only to the older APIs that are listed in the Google Data APIs directory. For information about a specific new API, see that API's documentation. For information about authorizing requests with a newer API, see Google Accounts Authentication and Authorization."
+
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      delete old version when replaced by new encode.

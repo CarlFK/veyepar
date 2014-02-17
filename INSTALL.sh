@@ -63,7 +63,7 @@ git clone git://github.com/CarlFK/veyepar.git
 
 cd veyepar
 
-pip install -r requirements.txt
+pip install -r setup/requirements.txt
 # fix broken dabo installer
 # mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 # mv ~/.virtualenvs/veyepar/dabo/locale/ ~/.virtualenvs/veyepar/lib/python2.6/site-packages/dabo
@@ -99,7 +99,7 @@ cd ../..
 # this assumes FireFox has been run, 
 # which will create ~/.mozilla/firefox/profiles.ini
 if [[ -f  ~/.mozilla/firefox/profiles.ini ]]; then 
-    python set_ff_prefs.py
+    python setup/nodes/review/set_ff_prefs.py
 # adds these lines to FireFox config 
 # user_pref("capability.policy.policynames", "localfilelinks");
 # user_pref("capability.policy.localfilelinks.sites", "http://localhost:8080");
