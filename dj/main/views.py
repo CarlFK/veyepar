@@ -399,7 +399,8 @@ def raw_play_list(request, episode_id):
         cuts = cuts.filter(apply=True)
 
     response = HttpResponse(mimetype='audio/mpegurl')
-    response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
+    # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
+    response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
     writer = csv.writer(response)
     head=settings.MEDIA_URL
@@ -656,9 +657,19 @@ def show_anomalies(request, show_id, ):
             max_authors_len = len(ep.authors)
             max_authors_ep = ep
 
-            #   Literal.objects.values('name').annotate(count=Count('id')).order_by().filter(count__gt=1)
     dupes = Episode.objects.values('name').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
     dup_eps = Episode.objects.filter(name__in=[item['name'] for item in dupes], show=show)
+
+    episodes=Episode.objects.filter(show=show,state=5)
+    clean,dirty = 0,0
+    for ep in episodes:
+        found=False
+        cuts = Cut_List.objects.filter(episode=ep)
+        for cut in cuts:
+            found = found or cut.start or cut.end
+        if found: dirty += 1
+        else: clean += 1
+
 
     return render_to_response('show_anomalies.html',
         {
@@ -666,6 +677,7 @@ def show_anomalies(request, show_id, ):
           'show':show,
           'locations':locations,
           'dup_eps':dup_eps,
+          'clean':clean, 'dirty':dirty,
           'max_name_ep':max_name_ep,
           'max_authors_ep':max_authors_ep,
         },

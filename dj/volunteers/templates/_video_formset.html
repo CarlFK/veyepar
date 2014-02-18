@@ -10,15 +10,15 @@
          {% if use_raw %}
           {% with cutlist as video %}
             {{ video.start|date:"D, d M, Y" }}{% if not same_dates %}<br />-{{ video.end|date:"D, d M, Y" }}{% endif %}<br /><br />
-            <strong>Start:</strong> {{ video.start|date:"H:i"}}<br />
-            <strong>End:</strong> {{ video.end|date:"H:i" }}<br />
+            <strong>Start:</strong> {{ video.start|date:"H:i:s"}}<br />
+            <strong>End:</strong> {{ video.end|date:"H:i:s" }}<br />
             <strong>Duration:</strong> {{ video.duration }}
           {% endwith %}
          {% else %}
           {% with cutlist.raw_file as video %}
             {{ video.start|date:"D, d M, Y" }}{% if not same_dates %}<br />-{{ video.end|date:"D, d M, Y" }}{% endif %}<br /><br />
-            <strong>Start:</strong> {{ video.start|date:"H:i"}}<br />
-            <strong>End:</strong> {{ video.end|date:"H:i" }}<br />
+            <strong>Start:</strong> {{ video.start|date:"H:i:s"}}<br />
+            <strong>End:</strong> {{ video.end|date:"H:i:s" }}<br />
             <strong>Duration:</strong> {{ video.duration }}
           {% endwith %}
          {% endif %}

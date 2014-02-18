@@ -54,8 +54,11 @@
   {% csrf_token %}
 
   <h2><a name="step-1">Step 1</a></h2>
-  <p>Select which video files belong to this talk. You can use the recording
-     sheets above for reference. Click on the play button for each clip to
+  <p>Select which video files belong to this talk. 
+{% if sheets %}
+  You can use the recording sheets above for reference. 
+{% endif %}
+     Click on the play button for each clip to
      see the video.
   <p>
   {% include "_video_formset.html" %}
