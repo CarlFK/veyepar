@@ -53,7 +53,8 @@
         <th>episode.authors</th>
         <th>rel</th>
         <th>img</th>
-        <th>host<br>index</th>
+        <th>rf</th>
+        <th>host<br />index</th>
       </tr>
     </thead>
 
@@ -78,6 +79,7 @@
         <td style="white-space:normal">{{episode.authors}}</td>
         <td>{{episode.released|yesno:"Y,N"}}</td>
         <td>{{episode.image_file_set.count|default:""}}</td>
+        <td>{{episode.cut_list_set.count|default:""}}</td>
         <td>
             {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
             {%if episode.public_url %}<a href="{{episode.public_url}}">R</a>{% endif %}
