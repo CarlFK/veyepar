@@ -5,7 +5,7 @@ steps:
 1. start with a vanallia Ubuntu box.
 2. sudo apt-get install git-core
 3. git clone git://github.com/CarlFK/veyepar.git
-4. cd /veyepar/setup/pxe
+4. cd veyepar/setup/nodes/pxe
 5. sudo ./install.sh
 
 6. disconnect from primary lan
