@@ -80,7 +80,8 @@ urlpatterns += patterns(
     url(r'overlaping_files/(?P<show_id>\w+)/$', overlaping_files,
         name='overlaping_files'),
 
-    url(r'raw_file_audio/(?P<location_slug>[\w+\-]+)/(?P<start_date>[\w+\-]+)/$', raw_file_audio, name='raw_file_audio'),
+    # url(r'raw_file_audio/(?P<show_id>\w+)/(?P<location_slug>[\w+\-]+)/(?P<start_date>[\w+\-]+)/$', raw_file_audio, name='raw_file_audio'),
+    url(r'raw_file_audio/$', raw_file_audio, name='raw_file_audio'),
 
     url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
         name='orphan_dv'),

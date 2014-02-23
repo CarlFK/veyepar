@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.template import Context, loader
 
-from django.core.paginator import Paginator, InvalidPage
+from django.core.paginator import Paginator, InvalidPage, EmptyPage, PageNotAnInteger
 from django.conf import settings
 
 from django import forms
@@ -903,16 +903,29 @@ def dv_set(request, location_slug, start_date):
         context_instance=RequestContext(request) )
 
 
-def raw_file_audio(request, location_slug, start_date):
+def raw_file_audio(request):
     """
     visulation of audio for a room-day of talks
     template will group files one hour per row
     """
 
-    rfs=Raw_File.objects.filter(
-            location__slug=location_slug,
-            start__startswith=start_date).order_by('start')
+    # there better be a show_id
+    show = Show.objects.get(id=request.GET['show_id'])
+    locations=Location.objects.filter(show=show)
+
+    if "active" in request.GET:
+        locations=locations.filter(active=True)
+    if "location_slug" in request.GET:
+        locations=locations.filter(slug=request.GET['location_slug'])
+
+    rfs=Raw_File.objects.filter(show=show,
+            location__in=locations,
+            ).order_by('start')
+    if "start_date" in request.GET:
+        start_date=request.GET['start_date']
+        rfs=rfs.filter(start__startswith=start_date)
  
+    # pull out the hour so the template can group on it
     rf_audios=[]
     for rf in rfs:
         rf_audio={'rf':rf,
@@ -920,8 +933,43 @@ def raw_file_audio(request, location_slug, start_date):
                 }
         rf_audios.append(rf_audio)
 
+    # find the previous and next room-day
+    # for now assume there are locations
+    location = locations[0]
+
+    # get previous location
+    locations=Location.objects.filter( 
+            show=show,
+            id__lt=location.id,
+            sequence__lt=location.sequence,
+            ).order_by('-sequence',"-id")[:1]
+
+    if locations:
+        prev_location = locations[0]
+    else:
+        prev_location = None
+
+    # get next location
+    locations=Location.objects.filter( 
+            show=show,
+            id__gt=location.id,
+            sequence__gt=location.sequence,
+            ).order_by('sequence',"id")[:1]
+
+    if locations:
+        print locations
+        next_location = locations[0]
+    else:
+        next_location = None
+        
+
     return render_to_response('raw_file_audio.html',
         {
+            'show':show,
+            'start_date':start_date,
+          'prev_location':prev_location,
+          'location':location,
+          'next_location':next_location,
           'rf_audios':rf_audios,
         },
         context_instance=RequestContext(request) )

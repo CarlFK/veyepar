@@ -2,6 +2,21 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% if prev_location %}
+    <a href="?show_id={{show.id}}&location_slug={{prev_location.slug}}&start_date={{start_date}}">{{prev_location.slug}}</a>
+ {% else %}
+ (first)
+ {% endif %}
+{{location}}
+{% if next_location %}
+    <a href="?show_id={{show.id}}&location_slug={{next_location.slug}}&start_date={{start_date}}">{{next_location.slug}}</a>
+ {% else %}
+ (last)
+ {% endif %}
+
+ <hr/>
+
+
 {% regroup rf_audios by hour as rfas_by_hour %}
 {% for rfas in rfas_by_hour %}
   {{ rfas.grouper }}
