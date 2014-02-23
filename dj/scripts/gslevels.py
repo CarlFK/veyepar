@@ -4,118 +4,157 @@
 # report audio levels
 # to figure out what files are messed up
 
+# http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-level.html
+
 import optparse
 import numpy
+import os
 
-import pygtk
-pygtk.require ("2.0")
-import gobject
-gobject.threads_init()
-import pygst
-pygst.require ("0.10")
-import gst
-
-import gtk
+from gi.repository import GObject, Gst, Gtk
+from gi.repository import GLib
+# GObject.threads_init()
+Gst.init(None)
 
 
-class Main:
+class AudioPreviewer:
 
-    def __init__(self, file_name, start_sec, samples):
+    count = 0
+
+    def __init__(self, filename ):
         
-        self.min,self.max = None,None
-        self.totals = numpy.array([[0,0],[0,0],[0,0]])
-        self.count = 0
-        self.samples = samples
+        uri = "file://%s" % (filename,)
 
-        pipeline = gst.Pipeline("mypipeline")
-        self.pipeline=pipeline
+        self.pipeline = Gst.parse_launch("uridecodebin name=decode uri=" + uri + " ! audioconvert ! level name=wavelevel interval=100000000 post-messages=true ! fakesink qos=false name=faked")
+        # faked = self.pipeline.get_by_name("faked")
+        # faked.props.sync = True
 
-# source: file
-        filesrc = gst.element_factory_make("filesrc", "audio")
-        filesrc.set_property("location", file_name)
-        pipeline.add(filesrc)
+        # self.nSamples = self.bElement.get_parent().get_asset().get_duration() / 1000000000  ## 1,000,000,000 is 1 seconds
+        self._level = self.pipeline.get_by_name("wavelevel")
 
-# decoder
-        decode = gst.element_factory_make("decodebin", "decode")
-        decode.connect("new-decoded-pad", self.OnDynamicPad)
-        pipeline.add(decode)
-        filesrc.link(decode)
-
-# convert from this to that?!! (I need a better understanding of this element)
-        convert = gst.element_factory_make("audioconvert", "convert")
-        pipeline.add(convert)
-# store to attribute so OnDynamicPad() can get it
-        self.convert = convert
-
-# monitor audio levels
-        level = gst.element_factory_make("level", "level")
-        level.set_property("message", True)
-        pipeline.add(level)
-        convert.link(level)
-        
-# send it to alsa        
-        # alsa = gst.element_factory_make("alsasink", "alsa")
-        # pipeline.add(alsa)
-        # level.link(alsa)
-# faster to send to fakesink
-        sink = gst.element_factory_make("fakesink", "sink")
-        pipeline.add(sink)
-        level.link(sink)
-
-# keep refernce to pipleline so it doesn't get destroyed 
-        self.pipeline=pipeline
-
-        bus = pipeline.get_bus()
+        bus = self.pipeline.get_bus()
         bus.add_signal_watch()
-        bus.connect("message", self.on_message)
+        bus.connect("message", self._messageCb)
 
-        if start_sec:
-        # skip first bit (get into the 'normal sounding' part of the talk)
-            time_format = gst.Format(gst.FORMAT_TIME)
-            seek_ns = (start_sec * 1000000000)
-            pipeline.seek_simple(time_format, gst.SEEK_FLAG_FLUSH, seek_ns)
+        self.pipeline.set_state(Gst.State.PLAYING)
 
-        pipeline.set_state(gst.STATE_PLAYING)
 
-    def OnDynamicPad(self, dbin, pad, islast):
+        return
 
-        if pad.get_caps()[0].get_name().startswith('audio'):
-            pad.link(self.convert.get_pad("sink"))
+    def process(self, levs):
+        self.count += 1
+        print self.count, levs
+        return
 
-    def on_message(self, bus, message):
+
+    def _messageCb(self, bus, message):
         t = message.type
-        if t == gst.MESSAGE_ELEMENT \
-                and message.structure.get_name()=='level':
 
-            levs = [[int(i) for i in message.structure[type]]
-                for type in ("rms","peak","decay")]
-            # self.totals = [[self.totals[i][j]+int(levs[i][j]) for j in [0,1]] for i in [0,1,2] ]
-            self.totals += levs
-            self.count += 1
-            if self.count == self.samples:
-            	self.quit()
+        # slightly different than
+        # https://git.gnome.org/browse/pitivi/tree/pitivi/timeline/previewers.py#n867
+        # if message.src == self._level:
+        # >>> message.get_structure().get_name()=='level'
 
-        elif t == gst.MESSAGE_EOS:
+        if t == Gst.MessageType.ELEMENT \
+              and message.has_name("level"):
+
+            s = message.get_structure()
+
+            try:
+                levs = [[int(i) for i in s.get_value(type)]
+                    for type in ("rms","peak","decay")]
+                self.process(levs)
+
+            except ValueError as e:
+                print e
+
+
+        elif t == Gst.MessageType.EOS:
             self.quit()
 
     def quit(self):
-            self.pipeline.set_state(gst.STATE_NULL)
-            gtk.main_quit()
+            print "quiting..."
+            self.pipeline.set_state(Gst.State.NULL)
+            self.mainloop.quit()
 
-def cklev(file_name, start_sec=None, samples=None):
-    p=Main(file_name,start_sec, samples)
-    gtk.main()
-    return (p.totals/p.count).tolist()
 
-#         levs = gslevels.cklev(rawpathname, 5*60, 500)
+# pip install pypng numpy
+# https://github.com/drj11/pypng
+
+import png
+import numpy 
+from math import sin, pi, pow
+
+class Make_png(AudioPreviewer):
+
+    height = 50
+    grid = numpy.zeros((height*2,36000), dtype=numpy.uint8)
+    count = 0
+    def process(self, levs):
+        self.count += 1
+        # [[-48, -48], [-48, -48], [-43, -12]]
+        for i in [0]:
+            # color = 127*i
+            color = 255
+
+            # math.pow( 10, val/20)
+            # l =pow( 10, val/20 )
+            # l = max(levs[i][0], -self.height-1)
+            # r = max( levs[i][1], -self.height-1) + self.height
+            # x = self.count/110.0 * -600 # self.height
+            # print self.count, x
+            l = max( levs[i][0], -(self.height-1)) + self.height 
+            r = max( levs[i][1], -(self.height-1)) + self.height * 2
+            self.grid[l, self.count] = color
+            self.grid[r, self.count] = color
+
+            for y1 in range(l+1,self.height):
+                self.grid[y1,self.count] = 128
+            for y1 in range(r+1,self.height*2):
+                self.grid[y1, self.count] = 128
+
+
+def lvlpng(file_name):
+
+    p=Make_png(file_name)
+    p.mainloop = GLib.MainLoop()
+    p.mainloop.run()
+
+    print "p.count", p.count
+    print "len(p.grid[0])", len(p.grid[0])
+    
+    # np.resape( p.grid, (p.count,-1
+    # png.from_array(p.grid, 'L').save("test.png")
+    pngname = os.path.splitext(filename)[0]+"_audio.png"
+    png.from_array([row[:p.count] for row in p.grid], 'L').save(pngname)
+
+def cklevels(file_name):
+    p=AudioPreviewer(file_name)
+    p.mainloop = GLib.MainLoop()
+    p.mainloop.run()
+
+    return 
 
 def parse_args():
     parser = optparse.OptionParser()
+
+    parser.add_option('--start', type=int, default=0,
+            help="start time", )
+    parser.add_option('--count', type=int, default=None,
+            help="number of seconds", )
+
     options, args = parser.parse_args()
     return options,args
 
 if __name__=='__main__':
     options,args = parse_args()
-    file_names= args or ['foo.dv']
-    levs = cklev(file_names[0], 5*60, 500)
-    print levs
+    # filename = "/home/carl/src/veyepar/dj/scripts/foo.dv"
+    # filename = "/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4"
+    # filename = "/home/carl/temp/Manageable_Puppet_Infrastructure.webm"
+    # filename = "/home/carl/temp/15_57_39.ogv"
+
+    filename = args[0]
+    
+    # cklevels(uri)
+    lvlpng(filename)
+
+
