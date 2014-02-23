@@ -31,9 +31,9 @@
       <a href="/main/">main</a>
       <a href="/main/clients/">Clients</a>
       {% if request.META.HTTP_HOST == "localhost:8080" %}
-        <a href="http://veyepar.nextdayvideo.com{{request.path}}">prod</a>
+        <a href="http://veyepar.nextdayvideo.com{{request.get_full_path}}">prod</a>
       {% else %}
-        <a href="http://localhost:8080{{request.path}}">dev</a>
+        <a href="http://localhost:8080{{request.get_full_path}}">dev</a>
       {% endif %}
     {% endif %}
   </p>

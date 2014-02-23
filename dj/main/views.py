@@ -940,9 +940,8 @@ def raw_file_audio(request):
     # get previous location
     locations=Location.objects.filter( 
             show=show,
-            id__lt=location.id,
             sequence__lt=location.sequence,
-            ).order_by('-sequence',"-id")[:1]
+            ).order_by('-sequence',)[:1]
 
     if locations:
         prev_location = locations[0]
@@ -952,9 +951,8 @@ def raw_file_audio(request):
     # get next location
     locations=Location.objects.filter( 
             show=show,
-            id__gt=location.id,
             sequence__gt=location.sequence,
-            ).order_by('sequence',"id")[:1]
+            ).order_by('sequence',)[:1]
 
     if locations:
         print locations
