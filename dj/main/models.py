@@ -149,7 +149,7 @@ class Raw_File(models.Model):
     
     def basename(self):
         # strip the extension
-        # good for making foo.png from 1-2-3/foo.dv
+        # good for making 1-2-3/foo.png from 1-2-3/foo.dv
         return os.path.splitext(self.filename)[0]
 
     def get_minutes(self):

@@ -1,0 +1,52 @@
+{# raw_file.html #}
+{% extends "base.html" %}
+{% block content %}
+
+<table>
+
+<tr>
+    <td> <video src ="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv" 
+      controls poster = "{{MEDIA_URL}}/{{raw_file.base_url}}.png" 
+    ></video>
+</td>
+
+<td>
+<table>
+<tr><td> <a href="{% url admin:main_raw_file_change raw_file.id %}">{{raw_file.filename}}</a> </td></tr> 
+
+<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}_audio.png">
+{{raw_file.basename}}_audio.png</a></td></tr>
+
+<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv">
+            {{raw_file.basename}}.ogv</a></td></tr>
+
+     <tr> <td>Location:</td><td>{{raw_file.location}}</td> </tr>
+     <tr> <td>Start:</td><td>{{raw_file.start}}</td> </tr>
+      <tr> <td>Duration:</td> <td>{{raw_file.duration}}</td> </tr>
+      <tr> <td>End:</td><td> {{raw_file.end}}</td> </tr>
+      <tr> <td>Comments:</td> <td>{{raw_file.comment}}</td> </tr>
+
+</table>
+ </td>
+<td>
+<table>
+{% for ep in eps %}
+  <tr>
+      <td><a href="{% url admin:main_episode_change ep.id %}">
+              {{ep.id}}</a></td>
+     <td><a href="{% url episode ep.id %}">{{ep.name}}</a></td>
+  </tr>
+  <tr>
+     <td>{{ep.location}}</td>
+  </tr>
+  <tr>
+     <td>{{ep.start}}</td><td>{{ep.duration}}</td><td>{{ep.end}}</td>
+  </tr>
+{% endfor %}
+</table>
+</tr> 
+
+</table>
+<img height=100 src="{{MEDIA_URL}}/{{raw_file.base_url}}_audio.png"/>
+
+{% endblock %}

@@ -797,21 +797,13 @@ def show_stats(request, show_id, ):
      
             stat['talk_gig']=int(stat['minutes']*13/60)
             stat['gig']=stat['bytes']/(1024**3)
-            try:
-                stat['max_gig']=(stat['end']-stat['start']).seconds*13/3600
-            except TypeError:
-                stat['max_gig']=0
 
-            if stat['talk_gig'] < stat['gig'] < stat['max_gig']:
-                # amount recoreded between all talks and below cruft
-                stat['variance'] = 0
+            if stat['gig'] < stat['talk_gig']:
+                # amount recoreded less than expected
+                stat['variance'] = stat['gig'] - stat['talk_gig']	
             else:
-                if stat['gig'] < stat['talk_gig']:
-                    # amount recoreded less than expected
-                    stat['variance'] = stat['gig'] - stat['talk_gig']	
-                else:
-                    # amount recoreded over talks+cruft
-                    stat['variance'] = stat['talk_gig'] - stat['gig']	
+                # amount recoreded over talks+cruft
+                stat['variance'] = stat['talk_gig'] - stat['gig']	
 
             # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
             stat['alarm']= int( abs(stat['variance']) / (stat['minutes']/60.0*13 + 1) * 100 )
@@ -879,6 +871,17 @@ def show_stats(request, show_id, ):
         },
 	context_instance=RequestContext(request) )
 
+def raw_file(request, raw_file_id):
+
+    rf=Raw_File.objects.get(id=raw_file_id)
+    eps = scheduled_episodes(rf)
+
+    return render_to_response('raw_file.html',
+        {
+          'raw_file':rf,
+          'eps':eps,
+        },
+        context_instance=RequestContext(request) )
 
 def dv_set(request, location_slug, start_date):
     # Show files collected for a given location and date
@@ -896,6 +899,30 @@ def dv_set(request, location_slug, start_date):
     return render_to_response('orphan_dv.html',
         {
           'rfs':dvs,
+        },
+        context_instance=RequestContext(request) )
+
+
+def raw_file_audio(request, location_slug, start_date):
+    """
+    visulation of audio for a room-day of talks
+    template will group files one hour per row
+    """
+
+    rfs=Raw_File.objects.filter(
+            location__slug=location_slug,
+            start__startswith=start_date).order_by('start')
+ 
+    rf_audios=[]
+    for rf in rfs:
+        rf_audio={'rf':rf,
+                'hour':rf.start.hour,
+                }
+        rf_audios.append(rf_audio)
+
+    return render_to_response('raw_file_audio.html',
+        {
+          'rf_audios':rf_audios,
         },
         context_instance=RequestContext(request) )
 

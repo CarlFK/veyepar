@@ -1,0 +1,19 @@
+{# rf_audio.html #}
+{% extends "base.html" %}
+{% block content %}
+
+{% regroup rf_audios by hour as rfas_by_hour %}
+{% for rfas in rfas_by_hour %}
+  {{ rfas.grouper }}
+
+   {% for rfa in rfas.list %}
+
+   <a href="{% url raw_file rfa.rf.id %}">
+   <img src ="{{MEDIA_URL}}/{{rfa.rf.base_url}}_audio.png">
+   </a>
+
+  {% endfor %}
+  <br/>
+{% endfor %}
+
+{% endblock %}

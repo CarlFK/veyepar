@@ -15,6 +15,7 @@ urlpatterns = patterns(
     url(r'C/(?P<client_slug>\w+)/$', client, name='client'),
     url(r'^C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$',
          episodes, name='episode_list'),
+    url(r'raw_file/(?P<raw_file_id>\w+)/$', raw_file, name='raw_file'),
 
     url(r'approve/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', approve_episode, name='approve_episode'),
     url(r'E/edit/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', episode, name='episode'),
@@ -78,6 +79,8 @@ urlpatterns += patterns(
         name='overlaping_episodes'),
     url(r'overlaping_files/(?P<show_id>\w+)/$', overlaping_files,
         name='overlaping_files'),
+
+    url(r'raw_file_audio/(?P<location_slug>[\w+\-]+)/(?P<start_date>[\w+\-]+)/$', raw_file_audio, name='raw_file_audio'),
 
     url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
         name='orphan_dv'),
