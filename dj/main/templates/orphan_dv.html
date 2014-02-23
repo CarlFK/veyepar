@@ -13,7 +13,7 @@
 
 <td>
 <table>
-<tr><td> <a href="/admin/main/raw_file/{{raw_file.id}}/">{{raw_file.filename}} admin</a> </td></tr> 
+<tr><td> <a href="/admin/main/raw_file/{{raw_file.id}}/">{{raw_file.filename}}</a> </td></tr> 
 
 <tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png">{{raw_file.basename}}.png</a></td></tr>
 <tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv">{{raw_file.basename}}.ogv</a></td></tr>
@@ -42,8 +42,9 @@
 {% endfor %}
 </table>
 </tr> 
+
 </table>
- </td>
+<img height=100 src="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}_audio.png"> 
 
   {% endfor %}
 

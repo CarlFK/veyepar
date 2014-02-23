@@ -883,7 +883,7 @@ def show_stats(request, show_id, ):
 def dv_set(request, location_slug, start_date):
     # Show files collected for a given location and date
     # aka a set, corisponds to a set of recording sheets.
-    print location_slug, start_date
+
     rfs=Raw_File.objects.filter(
             location__slug=location_slug,
             start__startswith=start_date).order_by('start')
@@ -896,7 +896,7 @@ def dv_set(request, location_slug, start_date):
     return render_to_response('orphan_dv.html',
         {
           'rfs':dvs,
-	},
+        },
         context_instance=RequestContext(request) )
 
 
