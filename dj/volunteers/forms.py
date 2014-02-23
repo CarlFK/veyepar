@@ -92,7 +92,8 @@ class SimplifiedCutListForm(forms.ModelForm):
     """
     A really simplified form for volunteers to edit Cut_List instances
     """
-    apply = forms.ChoiceField(choices=((True, 'Use this video'), (False, 'Ignore')), 
+    apply = forms.ChoiceField(
+            choices=((True, 'Use this video'), (False, 'Ignore')), 
                               widget=forms.RadioSelect())
     
     class Meta:
@@ -106,6 +107,7 @@ class SimplifiedCutListForm(forms.ModelForm):
                 kwargs['initial'] = {}
             kwargs['initial']['apply'] = \
                     instance.apply and not instance.raw_file.trash
+
         return super(SimplifiedCutListForm, self).__init__(*args, **kwargs)
     
     def save(self, *args, **kwargs):

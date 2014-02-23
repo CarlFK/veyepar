@@ -101,11 +101,5 @@
     </div>
   {% endif %}
 
-  {% if user.is_staff %}
-      {% for ep in episodes %}
-      {{ep.authors}} http://veyepar.nextdayvideo.com/main/approve/{{ep.id}}/{{ep.slug}}/{{ep.edit_key}}/<br>
-      {% endfor %}
-  {% endif %}
-
 {% endblock %}
 
