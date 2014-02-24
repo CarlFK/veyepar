@@ -22,3 +22,6 @@ requests
 django-extensions
 
 pyrax
+pypng
+# numpy
+

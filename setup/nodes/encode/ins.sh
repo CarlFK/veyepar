@@ -1,7 +1,18 @@
 #!/bin/bash -ex
 # ins.sh - install encoder node
 
-sudo apt-get --assume-yes install imagemagick python-imaging python-reportlab python-pip inkscape ffmpeg2theora git-core vim screen tmux virtualenvwrapper python-psycopg2
+apt-get --assume-yes install software-properties-common
+
+# http://ppa.launchpad.net/gstreamer-developers/ppa/ubuntu
+
+sudo apt-get --assume-yes install \
+    virtualenvwrapper python-pip python-psycopg2 \
+    git-core vim screen tmux \
+    imagemagick python-imaging inkscape ffmpeg2theora \
+    python-gi python3-gi gstreamer1.0-tools gir1.2-gstreamer-1.0 \
+    gir1.2-gst-plugins-base-1.0 gstreamer1.0-plugins-good \
+    python-numpy
+
 
 # sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
 

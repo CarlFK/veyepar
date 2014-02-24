@@ -8,8 +8,8 @@
 sudo apt-get --assume-yes install python
 
 # install apt-add-repository:
-# sudo apt-get --assume-yes install python-software-properties
-sudo apt-get --assume-yes install software-properties-common
+sudo apt-get --assume-yes install python-software-properties
+# sudo apt-get --assume-yes install software-properties-common
 
 # trunk gstreamer - used for mkthumbs
 # sudo apt-add-repository --yes ppa:gstreamer-developers/ppa

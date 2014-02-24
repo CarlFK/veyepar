@@ -10,14 +10,13 @@ import optparse
 import numpy
 import os
 
-from gi.repository import GObject, Gst, Gtk
-from gi.repository import GLib
+from gi.repository import GObject, Gst, GLib
 Gst.init(None)
 
 class AudioPreviewer:
 
     count = 0
-    interval = 1.0
+    interval = 1.0  ## buffer size in seconds 
     verbose = False
     filename = None
 
@@ -25,7 +24,7 @@ class AudioPreviewer:
         
         uri = "file://%s" % (self.filename,)
 
-        self.pipeline = Gst.parse_launch( "uridecodebin name=decode ! audioconvert ! level name=wavelevel post-messages=true ! fakesink qos=false name=faked" )
+        self.pipeline = Gst.parse_launch( "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink name=faked" )
 
         decode = self.pipeline.get_by_name("decode")
         decode.set_property( 'uri', uri )
@@ -36,10 +35,6 @@ class AudioPreviewer:
         bus = self.pipeline.get_bus()
         bus.add_signal_watch()
         bus.connect("message", self._messageCb)
-
-        if self.verbose:
-            print "playing..."
-        self.pipeline.set_state(Gst.State.PLAYING)
 
         return
 
@@ -73,9 +68,18 @@ class AudioPreviewer:
         elif t == Gst.MessageType.EOS:
             self.quit()
 
+    def start(self):
+        if self.verbose:
+            print "playing..."
+        self.pipeline.set_state(Gst.State.PLAYING)
+        self.mainloop = GLib.MainLoop()
+        if options.verbose:
+            print "looping..."
+        self.mainloop.run()
+
     def quit(self):
-            self.pipeline.set_state(Gst.State.NULL)
-            self.mainloop.quit()
+        self.pipeline.set_state(Gst.State.NULL)
+        self.mainloop.quit()
 
 # something useful
 
@@ -120,7 +124,7 @@ class Make_png(AudioPreviewer):
                 self.grid[y,self.count] = 127
 
             l = int(max(levs['peak'][1],self.threashold) 
-                    * (self.height-1)/-self.threashold + 2 * self.height)
+                    * (self.height+1)/-self.threashold + 2 * self.height-2)
             self.grid[l,self.count] = 255
 
             self.grid[self.height,self.count] = 0
@@ -143,6 +147,11 @@ class Make_png(AudioPreviewer):
         self.count += 1
 
 def lvlpng(file_name, png_name=None):
+    """
+    given:
+      file_name - input path and filename
+      png_name - output path and filename (defaults to input+_audio.png)
+    """
 
     p=Make_png()
     p.interval = options.interval
@@ -151,11 +160,7 @@ def lvlpng(file_name, png_name=None):
     p.channels = options.channels
     p.filename = file_name
     p.setup()
-
-    p.mainloop = GLib.MainLoop()
-    if options.verbose:
-        print "looping..."
-    p.mainloop.run()
+    p.start()
 
     if png_name is None:
         png_name = os.path.splitext(filename)[0]+"_audio.png"
@@ -164,23 +169,35 @@ def lvlpng(file_name, png_name=None):
         print png_name
     png.from_array([row[:p.count] for row in p.grid], 'L').save(png_name)
 
-def many():
-    for dirpath, dirnames, filenames in os.walk(
-            options.indir, followlinks=True):
+def many(indir, outdir):
+    """
+    given:
+      options.indir - dir to recurse from looking for .dv files
+      options.outdir - dir to put results in (keeps the same tree found)
+    uses lvlpng() to create output files.
+    """
+
+    if outdir is None: outdir = indir
+
+    for dirpath, dirnames, filenames in os.walk( indir, followlinks=True):
         d=dirpath[len(options.indir)+1:]
         for f in filenames:
-            if f[-3:]=='.dv':
+            if os.path.splitext(f)[1]=='.dv':
                 rf_name = os.path.join(options.indir,d,f)
-                png_name = os.path.join(options.outdir,d,
+                png_name = os.path.join(outdir,d,
                         os.path.splitext(f)[0]+"_audio.png")
                 lvlpng( rf_name, png_name )
 
+
 def cklevels(file_name):
+    """
+    tests the gstreamer functionality:
+      report levels from an input file.
+    """
     p=AudioPreviewer()
     p.filename = filename
     p.mk_pipe()
-    p.mainloop = GLib.MainLoop()
-    p.mainloop.run()
+    p.start()
 
     return 
 
@@ -197,6 +214,8 @@ def parse_args():
             help="buffer size in seconds", )
     parser.add_option('-v','--verbose', action="store_true",
             help="verbose", )
+    parser.add_option('--test', action="store_true",
+            help="test the gstreamer bits", )
 
     parser.add_option('--height', type=int, default=50,
             help="height of image in pixels", )
@@ -213,18 +232,23 @@ if __name__=='__main__':
     options,args = parse_args()
 
     if options.indir:
-        many()
+        many(options.indir, options.outdir)
     else:
         if args:
-            filename = args[0]
+            filenames = args
         else:
-            # filename = "/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4"
-            # filename = "/home/carl/temp/Manageable_Puppet_Infrastructure.webm"
-            filename = "/home/carl/temp/15_57_39.ogv"
-            filename = "/home/carl/src/veyepar/tests/165275__blouhond__surround-test-1khz-tone.wav"
+            filenames =[
+   "/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4",
+   "/home/carl/temp/Manageable_Puppet_Infrastructure.webm",
+   "/home/carl/temp/15_57_39.ogv",
+   "/home/carl/src/veyepar/tests/165275__blouhond__surround-test-1khz-tone.wav",
+                       ]
 
-        # cklevels(filename)
-        lvlpng(filename)
+        for filename in filenames:
+            if options.test:
+                cklevels(filename)
+            else:
+                lvlpng(filename)
 
 
 
