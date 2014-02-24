@@ -1,4 +1,5 @@
 (04:39:14 PM) trouble: CarlFK: https://fosdem.org/~philip/frutiger_std_full_family.zip # note, licensed only for FOSDEM use
+wget --no-check-certificate https://fosdem.org/~philip/frutiger_std_full_family.zip 
 
 # write_the_docs_2013.svg
 wget http://fontfabric.com/downloadfont/hagin.zip

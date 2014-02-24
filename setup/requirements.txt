@@ -7,9 +7,6 @@ django-debug-toolbar
 git+https://github.com/bear/python-twitter.git
 feedparser
 
-# --extra-index-url=http://dist.pinaxproject.com/dev/
-# Pinax==0.9a2.dev6
-
 git+https://github.com/willkg/steve.git
 python-dateutil
 
@@ -18,7 +15,6 @@ python-dateutil
 
 progressbar
 boto
-# slumber
 
 requests
 
