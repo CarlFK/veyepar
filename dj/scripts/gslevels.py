@@ -37,6 +37,8 @@ class AudioPreviewer:
         bus.add_signal_watch()
         bus.connect("message", self._messageCb)
 
+        if self.verbose:
+            print "playing..."
         self.pipeline.set_state(Gst.State.PLAYING)
 
         return
@@ -140,21 +142,38 @@ class Make_png(AudioPreviewer):
 
         self.count += 1
 
-def lvlpng(file_name):
+def lvlpng(file_name, png_name=None):
 
     p=Make_png()
     p.interval = options.interval
     p.height = options.height
     p.verbose = options.verbose
     p.channels = options.channels
-    p.filename = filename
+    p.filename = file_name
     p.setup()
+
     p.mainloop = GLib.MainLoop()
+    if options.verbose:
+        print "looping..."
     p.mainloop.run()
 
-    pngname = os.path.splitext(filename)[0]+"_audio.png"
-    print pngname
-    png.from_array([row[:p.count] for row in p.grid], 'L').save(pngname)
+    if png_name is None:
+        png_name = os.path.splitext(filename)[0]+"_audio.png"
+
+    if options.verbose:
+        print png_name
+    png.from_array([row[:p.count] for row in p.grid], 'L').save(png_name)
+
+def many():
+    for dirpath, dirnames, filenames in os.walk(
+            options.indir, followlinks=True):
+        d=dirpath[len(options.indir)+1:]
+        for f in filenames:
+            if f[-3:]=='.dv':
+                rf_name = os.path.join(options.indir,d,f)
+                png_name = os.path.join(options.outdir,d,
+                        os.path.splitext(f)[0]+"_audio.png")
+                lvlpng( rf_name, png_name )
 
 def cklevels(file_name):
     p=AudioPreviewer()
@@ -176,12 +195,16 @@ def parse_args():
             help="number of channels to render", )
     parser.add_option('--interval', type=float, default=1,
             help="buffer size in seconds", )
-    parser.add_option('-v','--verbose', 
+    parser.add_option('-v','--verbose', action="store_true",
             help="verbose", )
 
     parser.add_option('--height', type=int, default=50,
             help="height of image in pixels", )
 
+    parser.add_option('--indir', 
+            help="input dir", )
+    parser.add_option('--outdir', 
+            help="output dir", )
 
     options, args = parser.parse_args()
     return options,args
@@ -189,15 +212,20 @@ def parse_args():
 if __name__=='__main__':
     options,args = parse_args()
 
-    if args:
-        filename = args[0]
+    if options.indir:
+        many()
     else:
-        # filename = "/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4"
-        # filename = "/home/carl/temp/Manageable_Puppet_Infrastructure.webm"
-        filename = "/home/carl/temp/15_57_39.ogv"
-        filename = "/home/carl/src/veyepar/tests/165275__blouhond__surround-test-1khz-tone.wav"
+        if args:
+            filename = args[0]
+        else:
+            # filename = "/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4"
+            # filename = "/home/carl/temp/Manageable_Puppet_Infrastructure.webm"
+            filename = "/home/carl/temp/15_57_39.ogv"
+            filename = "/home/carl/src/veyepar/tests/165275__blouhond__surround-test-1khz-tone.wav"
 
-    # cklevels(filename)
-    lvlpng(filename)
+        # cklevels(filename)
+        lvlpng(filename)
+
+
 
 
