@@ -74,11 +74,13 @@
                  <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
                  <span class="left">files: <a style="display: inline-block;" href="/main/dv_set/{{loc.loc.slug}}/{{item.date|date:"Y-m-d"}}/">{{item.files}}</a> {{item.alarm}}%</span>
-                 <span class="right">{{item.gig}} g</span><br/>
-                   <span class="right">{{item.variance}} g</span><br/>
+                 <span class="right">{{item.gig}} g</span><br>
 
-                   <a style="display: inline-block;" href="{% url raw_file_audio %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio</a>
-                     <a style="display: inline-block;" href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">vids</a>
+                 <span class="left">
+                   <a style="display: inline-block;" href="{% url raw_file_audio %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio-pics</a>
+                     <a style="display: inline-block;" href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encoded vids</a> 
+                 </span>
+                 <span class="right">{{item.variance}} g</span>
 
                {% endif %}
 
@@ -120,11 +122,5 @@
       </tr>
     {% endfor %}
   </table>
-
-  <hr>
-  max name: #{{max_name_ep.id}} <a href="E/{{max_name_ep.id}}/">{{ max_name_ep.name }}</a><br/>
-  max authors: # {{max_authors_ep.id}} <a href="E/{{max_authors_ep.id}}/">{{ max_authors_ep.authors }}</a>
-
-  <hr>
 
 {% endblock %}

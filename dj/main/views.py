@@ -843,20 +843,6 @@ def show_stats(request, show_id, ):
     states = zip( show_stat['states'], STATES)
     rows = zip(dates,rows)
 
-    max_title_len = max( len(ep.name) for ep in episodes )
-    max_authors_len = max( len(ep.authors) for ep in episodes if ep.authors is not None)
-
-    max_name_len = 0
-    max_authors_len = 0
-    for ep in episodes:
-        if len(ep.name) > max_name_len:
-            max_name_len = len(ep.name)
-            max_name_ep = ep
-        if ep.authors is not None and \
-                len(ep.authors) > max_authors_len:
-            max_authors_len = len(ep.authors)
-            max_authors_ep = ep
-
     return render_to_response('show_stats.html',
         {
           'client':client,
@@ -866,8 +852,6 @@ def show_stats(request, show_id, ):
           'rows':rows,
           'states':states,
           'locked':lockeds,
-          'max_name_ep':max_name_ep,
-          'max_authors_ep':max_authors_ep,
         },
 	context_instance=RequestContext(request) )
 
