@@ -160,6 +160,10 @@ class Raw_File(models.Model):
     def __unicode__(self):
         return self.filename
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('raw_file', [self.id,])
+
     class Meta:
         ordering = ["filename"]
 
