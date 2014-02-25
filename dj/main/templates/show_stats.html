@@ -11,11 +11,15 @@
 <a href="{% url client client.slug %}">{{ client.name }}</a>
 <a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a>
 </p>
-[
+
 {% for s in states %}
-<span class="{% if s.1.0 == 1 or s.1.0 == 3 %}human{% else %}process{% endif %}">{{s.1.1}}:<a href="{% url episode_list client_slug=client.slug show_slug=show.slug state=forloop.counter0 %}">{{s.0}}</a></span>
+<span class="{% if s.1.0 == 1 or s.1.0 == 3 %}human{% else %}process{% endif %}">
+    {% if s.0 %}
+    <a href="{% url episode_list client_slug=client.slug show_slug=show.slug state=forloop.counter0 %}">{{s.1.1}}:{{s.0}}</a>
+    {% else %}{{s.1.1}}:o{% endif %}
+</span>
 {% endfor %}
-]
+
     <table class="grid">
            <tr>
 <th> <span><b>TOTAL</b></span><br/>
@@ -59,10 +63,11 @@
              <td style="background-color:#{{item.alarm_color}};">  
                {% if item.count %}
 
-                 <span class="left">{{item.start|date:"H:i"}} - {{item.end|date:"H:i"}} </span>
-                 <span class="center"><a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a></span>
-                 <span class="right">{{item.hours}} h</span><br/>
-                 [
+                     <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
+
+                     {{item.start|date:"H:i"}} - {{item.end|date:"H:i"}} = 
+                     {{item.hours}} h
+                 <br/>
                  {% for s in item.states %} 
 
 <span class="{% if forloop.counter0 == 1 or forloop.counter0 == 3 %}human{% else %}process{% endif %}">
@@ -70,7 +75,7 @@
                    <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
                    {% else %}o{% endif %}</span>
                  {% endfor %}
-                 ]<br/>
+                 <br/>
 
                  <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
