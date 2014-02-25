@@ -24,7 +24,7 @@
    {% for rfa in rfas.list %}
 
    <a href="{% url raw_file rfa.rf.id %}">
-       #{ <img src ="{{MEDIA_URL}}/{{rfa.rf.base_url}}_audio.png"> #}
+       {# <img src ="{{MEDIA_URL}}/{{rfa.rf.base_url}}_audio.png"> #}
    <img src ="http://192.237.240.167/static/veyepar/{{rfa.rf.show.client.slug}}/{{rfa.rf.show.slug}}/audio_png/dv/{{rfa.rf.location.slug}}/{{rfa.rf.basename}}_audio.png">
    </a>
 
