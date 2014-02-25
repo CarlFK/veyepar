@@ -85,7 +85,7 @@
 
                  <span class="left">
                    <a style="display: inline-block;" href="{% url raw_file_audio %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio</a>
-                     <a style="display: inline-block;" href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encs</a> 
+                     <a style="display: inline-block;" href="{% url public_play_list %}playlist.m3u?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encs</a> 
                  </span>
 
                {% endif %}
