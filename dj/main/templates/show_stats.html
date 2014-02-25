@@ -59,15 +59,16 @@
              <td style="background-color:#{{item.alarm_color}};">  
                {% if item.count %}
 
-                 <span class="left">{{item.start|date:"H:i"}} - {{item.end|date:"H:i"}}</span> <span class="right"> {{item.hours}} h </span><br/>
-                 <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
+                 <span class="left">{{item.start|date:"H:i"}} - {{item.end|date:"H:i"}} </span>
+                 <span class="center"><a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a></span>
+                 <span class="right">{{item.hours}} h</span><br/>
                  [
                  {% for s in item.states %} 
 
 <span class="{% if forloop.counter0 == 1 or forloop.counter0 == 3 %}human{% else %}process{% endif %}">
                    {% if s %}
                    <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
-                   {% else %} 0 {% endif %} </span>
+                   {% else %}o{% endif %}</span>
                  {% endfor %}
                  ]<br/>
 
@@ -75,12 +76,12 @@
                  {% if item.files %}
                  <span class="left">files: <a style="display: inline-block;" href="/main/dv_set/{{loc.loc.slug}}/{{item.date|date:"Y-m-d"}}/">{{item.files}}</a> {{item.alarm}}%</span>
                  <span class="right">{{item.gig}} g</span><br>
+                 <span class="right">{{item.variance}} g</span>
 
                  <span class="left">
-                   <a style="display: inline-block;" href="{% url raw_file_audio %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio-pic</a>
-                     <a style="display: inline-block;" href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encoded</a> 
+                   <a style="display: inline-block;" href="{% url raw_file_audio %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio</a>
+                     <a style="display: inline-block;" href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encs</a> 
                  </span>
-                 <span class="right">{{item.variance}} g</span>
 
                {% endif %}
 

@@ -6,6 +6,7 @@
 .human {
     text-decoration: underline;
 }
+
 .process {
     text-decoration: none;
 }
@@ -19,7 +20,6 @@ table.grid {
 	background-color: white;
 }
 
-
 table.grid th {
 	border-width: 1px;
 	/* padding: 1px; */
@@ -28,6 +28,7 @@ table.grid th {
 	background-color: white;
 	/* -moz-border-radius: 0px 0px 0px 0px; */
 }
+
 table.grid td {
 	border-width: 1px;
 	/* padding: 1px; */
@@ -39,6 +40,8 @@ table.grid td {
 .left {
     float: left;
 }
+
 .right {
     float: right;
 }
+

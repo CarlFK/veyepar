@@ -798,12 +798,7 @@ def show_stats(request, show_id, ):
             stat['talk_gig']=int(stat['minutes']*13/60)
             stat['gig']=stat['bytes']/(1024**3)
 
-            if stat['gig'] < stat['talk_gig']:
-                # amount recoreded less than expected
-                stat['variance'] = stat['gig'] - stat['talk_gig']	
-            else:
-                # amount recoreded over talks+cruft
-                stat['variance'] = stat['talk_gig'] - stat['gig']	
+            stat['variance'] = stat['talk_gig'] - stat['gig']	
 
             # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
             stat['alarm']= int( abs(stat['variance']) / (stat['minutes']/60.0*13 + 1) * 100 )

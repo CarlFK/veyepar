@@ -181,6 +181,9 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
   </td>
   </tr>
   {% endif %}
+  <tr><td>
+  <img src ="http://192.237.240.167/static/veyepar/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
+  </td></tr>
 
 {% endfor %}
 </tbody>
