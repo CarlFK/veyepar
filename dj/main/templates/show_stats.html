@@ -77,8 +77,8 @@
                  <span class="right">{{item.gig}} g</span><br>
 
                  <span class="left">
-                   <a style="display: inline-block;" href="{% url raw_file_audio %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio-pics</a>
-                     <a style="display: inline-block;" href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encoded vids</a> 
+                   <a style="display: inline-block;" href="{% url raw_file_audio %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio-pic</a>
+                     <a style="display: inline-block;" href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encoded</a> 
                  </span>
                  <span class="right">{{item.variance}} g</span>
 
