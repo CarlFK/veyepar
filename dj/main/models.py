@@ -297,6 +297,16 @@ class Episode(models.Model):
         minutes = delta.days*60*24 + delta.seconds/60.0
         return minutes
 
+    def add_email(self, email):
+        emails = self.emails.split(',')
+        if email not in emails:
+            if self.emails:
+                emails.append(email)
+                self.emails = ','.join(emails)
+            else:
+                self.emails = email
+            self.save()
+
     class Meta:
         ordering = ["sequence"]
         # unique_together = [("show", "slug")]
