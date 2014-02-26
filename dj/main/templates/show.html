@@ -23,15 +23,11 @@
 <tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
 
 <tr><td>
-{%if location_slug %}
-<a href="{% url play_list show.id location_slug %}{{show.slug}}.m3u">play_list - {{location_slug}}</a>
-            {%else%}
-<a href="{% url play_list show.id %}{{show.slug}}.m3u">play_list - all</a>
-{%endif%}
+<a href="{% url  public_play_list %}?{{request.META.QUERY_STRING}}">play_list</a>
 </td></tr>
 
 <tr><td>
-        <a href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&loc={{location_slug}}">pubs</a>
+        <a href="{% url public_play_list %}?client={{client.slug}}&show={{show.slug}}&location={{location_slug}}">pubs</a>
 </td></tr>
 
 <tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>

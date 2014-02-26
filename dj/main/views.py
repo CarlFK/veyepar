@@ -432,8 +432,8 @@ def public_play_list(request):
     if "show" in request.GET:
         episodes = episodes.filter( show__slug=request.GET['show'] )
 
-    if "loc" in request.GET:
-        episodes = episodes.filter( location__slug=request.GET['loc'] )
+    if "location" in request.GET:
+        episodes = episodes.filter( location__slug=request.GET['location'] )
 
     if "date" in request.GET:
         episodes = episodes.filter( start__startswith=request.GET['date'] )
@@ -445,7 +445,8 @@ def public_play_list(request):
 
     writer = csv.writer(response)
     for ep in episodes:
-        writer.writerow([ep.public_url])
+        if ep.public_url:
+            writer.writerow([ep.public_url])
 
     return response
 
@@ -998,16 +999,16 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     # episode entry form
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
-    # location_slug = request.REQUEST.get('location')
-    # start_day = request.REQUEST.get('start_day')
+
+    location_slug = location_slug if location_slug \
+            else request.REQUEST.get('location')
+
+    start_date = request.REQUEST.get('date')
+
     # state = request.REQUEST.get('state')
-    # raise Exception((client_slug, show_slug, state, start_day, location_slug))
+
     locations=show.locations.filter(active=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show).order_by('start')
-
-    # kwargs = {'location': location_slug, 
-    #        'start__day':start_day, 'state':state}
-    # raise Exception(episodes.filter(**kwargs))
 
     admin_params="show__id__exact=%s" % show.id
 
@@ -1016,10 +1017,12 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         location=get_object_or_404(Location,slug=location_slug)
         episodes=episodes.filter(show=show,location=location)
         admin_params += "&location__id__exact=%s" % location.id
+    if start_date:
+        episodes = episodes.filter(start__startswith=start_date)
+        admin_params +="&start__date=%s" % start_date
     if start_day:
         episodes = episodes.filter(start__day=start_day)
         admin_params +="&start__day=%s" % start_day
-        # start__month=2&start__day=2&start__year=2014
     if state:
         episodes = episodes.filter(state=state)
         admin_params += "&state__exact=%s" % state
@@ -1091,6 +1094,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
           'episodes':episodes,
           'episode_form':form,
           'admin_params':admin_params,
+          'query_params':request.GET,
         },
         context_instance=RequestContext(request) )
 
