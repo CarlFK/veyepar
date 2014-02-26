@@ -186,7 +186,11 @@ def many(indir, outdir):
                 rf_name = os.path.join(options.indir,d,f)
                 png_name = os.path.join(outdir,d,
                         os.path.splitext(f)[0]+"_audio.png")
-                lvlpng( rf_name, png_name )
+                if options.verbose:
+                    print rf_name
+                    print png_name
+                if not os.path.exists(png_name):
+                    lvlpng( rf_name, png_name )
 
 
 def cklevels(file_name):

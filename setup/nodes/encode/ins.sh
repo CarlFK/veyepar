@@ -4,6 +4,7 @@
 apt-get --assume-yes install software-properties-common
 
 # http://ppa.launchpad.net/gstreamer-developers/ppa/ubuntu
+sudo apt-add-repository --yes ppa:gstreamer-developers/ppa
 
 sudo apt-get --assume-yes install \
     virtualenvwrapper python-pip python-psycopg2 \

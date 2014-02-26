@@ -26,8 +26,6 @@ def get_one(url, bytes):
     session = requests.session()
     headers = {"Range":"bytes=0-%s" % (bytes-1,)}
 
-    return
-
     response = session.get( url, headers=headers, stream=False)
     print "status:", response.status_code
 
