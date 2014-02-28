@@ -123,6 +123,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></td></tr>
 <tr><td> <video src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" controls width=200
     poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png"
+    preload="none"
     ></video>
     </td></tr>
      </tbody>
@@ -142,6 +143,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
       <tr> <td>Start</td><td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td> <td>{{ clrfform.start }}{{chap.0}}</td>
       </tr>
       <tr> <td>Duration:</td> <td>{{cl.raw_file.duration}}</td> </tr>
+      <tr> <td>get_minutes:</td> <td>{{cl.raw_file.get_minutes}}</td> </tr>
       <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}{{chap.1}}</td> </tr>
       <tr> <td>Comments:</td> <td>{#{clrfform.rf_comment}#}</td> <td>{{clrfform.cl_comment}}</td> </tr>
       <tr> <td>
@@ -183,6 +185,14 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
   {% endif %}
   <tr><td>
   <img src ="http://192.237.240.167/static/veyepar/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
+  </td></tr>
+  <tr><td>
+  <table>
+  <tr>
+          {% for m in cl.mins %} <td>{{m}} </td>{% endfor %}
+  </tr>
+  </table>
+  
   </td></tr>
 
 {% endfor %}
