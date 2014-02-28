@@ -8,7 +8,7 @@
 {% block content %}
 
 {% if episode.edit_key %}
-    <a href={% url approve_episode episode.id episode.slug episode.edit_key %}>approve</a><br/>
+    <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">approve</a><br/>
 {% endif %}
 
 --client <a href="{% url client client.slug %}">{{ client.slug }}</a>
@@ -73,9 +73,9 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
 {% if episode.host_url %} <a href="{{episode.host_url}}">host</a> {%endif%}
 <a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
-{%if episode.public_url%}<a href={{episode.public_url}}>public</a>{%endif%}
+{%if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
 <br/>
-<a href={% url episode_logs episode.id %}>logs</a><br/>
+<a href="{% url episode_logs episode.id %}">logs</a><br/>
 
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br/>
@@ -112,6 +112,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
     <td>
   {{clrfform.clid}}
   <b>~/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}</b>
+  <b>~/Videos/veyepar/{{cl.raw_file.base_url}}</b>
   <table border=1>
   <tbody>
     <tr>
