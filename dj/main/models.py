@@ -24,6 +24,12 @@ def fnify(text):
 
     return fn
 
+def time2s(time):
+    """ given 's.s' or 'h:m:s.s' returns s.s """
+    sec = reduce(lambda x, i: x*60 + i,  
+        map(float, time.split(':')))  
+    return sec 
+
 
 class Client(models.Model):
     sequence = models.IntegerField(default=1)
@@ -140,22 +146,33 @@ class Raw_File(models.Model):
     trash = models.BooleanField(help_text="This clip is trash")
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
-
-    def base_url(self):
-        """ Returns the url for the file, minus the MEDIA_URL and extension """
-        return "%s/%s/dv/%s/%s" % (self.show.client.slug, self.show.slug, 
-                                    self.location.slug, 
-                                    self.basename())
     
     def basename(self):
         # strip the extension
         # good for making 1-2-3/foo.png from 1-2-3/foo.dv
         return os.path.splitext(self.filename)[0]
 
-    def get_minutes(self):
+
+    def base_url(self):
+        """ Returns the url for the file, minus the MEDIA_URL and extension """
+        return "%s/%s/dv/%s/%s" % (self.show.client.slug, self.show.slug, 
+                                    self.location.slug, 
+                                    self.basename())
+
+
+    def get_start_seconds(self):
+        return time2s( self.start )
+
+    def get_end_seconds(self):
+        return time2s( self.end )
+
+    def get_seconds(self):
         delta = self.end - self.start
-        minutes = delta.days*60*24 + delta.seconds/60.0
-        return minutes
+        seconds = delta.days*24*60*60 + delta.seconds
+        return seconds 
+
+    def get_minutes(self):
+        return self.get_seconds()/60.0
 
     def __unicode__(self):
         return self.filename

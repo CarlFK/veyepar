@@ -3,6 +3,7 @@
 
 {% block head %}
 <title>veyepar: {{episode.name}}</title>
+ <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -95,7 +96,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
     {# <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" /> #}
 <input type="submit" value="Save" />
 
-<table border=1>
+<table border=1 >
 <tbody>
 {{ episode_form }}
 </tbody>
@@ -124,6 +125,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a></td></tr>
 <tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></td></tr>
 <tr><td> <video 
+    id="rawfile{{cl.id}}"
     width=200
     src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" 
     controls 
@@ -189,16 +191,44 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
   </tr>
   {% endif %}
   <tr><td>
-  <img alt="audio" src ="http://192.237.240.167/static/veyepar/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
+  <img 
+id="audio_image_{{cl.id}}" 
+alt="audio" 
+src ="http://192.237.240.167/static/veyepar/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png"
+   >
   </td></tr>
   <tr><td>
-  <table>
-  <tr>
-          {% for m in cl.mins %} <td>{{m}} </td>{% endfor %}
-  </tr>
-  </table>
-  
+  <span id="bar_{{cl.id}}">&nbsp;</span>
+  <span id="bar2_{{cl.id}}">&nbsp;</span>
   </td></tr>
+
+    <script>
+    var elementLeft = $('#audio_image_{{cl.id}}').offset().left;
+    var imageX = 0;
+    var vid = $( "#rawfile{{cl.id}}" )[0];
+    var startbox = $( "#id_{{clrfform.start.html_name}}" );
+    var startbox = $( "#id_form-0-start" );
+    var endbox = $( "#id_{{clrfform.end.html_name}}" );
+
+    $( "#audio_image_{{cl.id}}" ).mousemove(function( event ) {
+        imageX = (event.clientX - elementLeft);
+       });
+
+    $( "#audio_image_{{cl.id}}" ).click(function() {
+        // seems I can't change .currentTime if it is paused
+        // saving/restoring state is too much hassle.
+        vid.play();
+        vid.currentTime = imageX;
+        vid.pause();
+       });
+
+    startbox.dblclick(function() {
+        startbox[0].value = vid.currentTime; });
+
+    endbox.dblclick(function() {
+        endbox[0].value = vid.currentTime; });
+
+    </script>
 
 {% endfor %}
 </tbody>

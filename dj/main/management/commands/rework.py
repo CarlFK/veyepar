@@ -18,6 +18,12 @@ class Command(BaseCommand):
 
             print args
             eps = Episode.objects.filter(public_url=args[0])
+            if not eps:
+                slug = args[0].split('/')[-1][:-5]
+                print slug
+                eps = Episode.objects.filter(
+                        show__slug='fosdem_2014', slug = slug)
+
             for ep in eps:
                 print ep
                 print "current state:", ep.state

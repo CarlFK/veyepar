@@ -634,7 +634,7 @@ def locations(request):
           'locations':locations,
           'location_form':location_form,
         },
-	context_instance=RequestContext(request) )
+    context_instance=RequestContext(request) )
  
 def show_anomalies(request, show_id, ):
     show=get_object_or_404(Show,id=show_id)
@@ -682,7 +682,7 @@ def show_anomalies(request, show_id, ):
           'max_name_ep':max_name_ep,
           'max_authors_ep':max_authors_ep,
         },
-	context_instance=RequestContext(request) )
+    context_instance=RequestContext(request) )
 
 
 def show_stats(request, show_id, ):
@@ -799,7 +799,7 @@ def show_stats(request, show_id, ):
             stat['talk_gig']=int(stat['minutes']*13/60)
             stat['gig']=stat['bytes']/(1024**3)
 
-            stat['variance'] = stat['talk_gig'] - stat['gig']	
+            stat['variance'] = stat['talk_gig'] - stat['gig']   
 
             # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
             stat['alarm']= int( abs(stat['variance']) / (stat['minutes']/60.0*13 + 1) * 100 )
@@ -849,7 +849,7 @@ def show_stats(request, show_id, ):
           'states':states,
           'locked':lockeds,
         },
-	context_instance=RequestContext(request) )
+    context_instance=RequestContext(request) )
 
 def raw_file(request, raw_file_id):
 
@@ -966,9 +966,23 @@ def title_slides(request, show_id, ):
           },
         context_instance=RequestContext(request) )
 
-def episodes_script(request, state=None, script=None):
+def episodes_script(request, script=None):
 
-    episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
+    # state=request.GET['state']
+
+    kwargs = {
+            # "show__client__slug": request.GET['client'],
+            "show__slug": request.GET['show'],
+            "state": request.GET['state'],
+            # "": request.GET[''],
+            }
+
+    # print kwargs
+
+    episodes=Episode.objects.filter(**kwargs).order_by('start')
+
+    # episodes=Episode.objects.filter(show__slug="fosdem_2014", state='5').order_by('start')
+    print len(episodes)
 
     return render_to_response(
             'episodes_script.txt',
@@ -1247,7 +1261,7 @@ def orphan_dv(request,show_id):
     return render_to_response('orphan_dv.html',
         {
           'rfs':orphans,
-	},
+    },
         context_instance=RequestContext(request) )
 
 def mk_cuts(episode, 
@@ -1324,7 +1338,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         cuts = mk_cuts(episode)
 
     if cuts:
-        offset =  abs( cuts[0].raw_file.start - episode.start )
+        offset = abs( cuts[0].raw_file.start - episode.start )
     else:
         offset = None
 
@@ -1341,7 +1355,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
             start_chap=end_chap
         else:
             chaps.append(('',''))
-
+    
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.method == 'POST' and \
             (request.user.is_authenticated() or 
@@ -1387,7 +1401,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                 rfs = Raw_File.objects.filter(filename=rf_pathname)
                 for rf in rfs:
                     cl = Cut_List.objects.create(
-		           episode=episode,
+                        episode=episode,
                            raw_file=rf,
                            apply = True,
                            sequence = sequence, )
@@ -1463,8 +1477,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         'clrfformset':clrfformset,
         'add_cutlist_to_ep':add_cutlist_to_ep,
         },
-    	context_instance=RequestContext(request) )
-    	
+        context_instance=RequestContext(request) )
+        
 def episode_logs(request, episode_id):
     print episode_id
     episode = get_object_or_404(Episode, id=episode_id)
