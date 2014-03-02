@@ -202,32 +202,34 @@ src ="http://192.237.240.167/static/veyepar/{{cl.raw_file.show.client.slug}}/{{c
   <span id="bar2_{{cl.id}}">&nbsp;</span>
   </td></tr>
 
+  {% with forloop.counter0 as x %}
     <script>
-    var elementLeft = $('#audio_image_{{cl.id}}').offset().left;
-    var imageX = 0;
-    var vid = $( "#rawfile{{cl.id}}" );
-    var startbox = $( "#{{clrfform.start.auto_id}}" );
-    var endbox = $( "#{{clrfform.end.auto_id}}" );
+    var elementLeft{{x}} = $('#audio_image_{{cl.id}}').offset().left;
+    var imageX{{x}} = 0;
+    var vid{{x}} = $( "#rawfile{{cl.id}}" );
+    var startbox{{x}} = $( "#{{clrfform.start.auto_id}}" );
+    var endbox{{x}} = $( "#{{clrfform.end.auto_id}}" );
 
     $( "#audio_image_{{cl.id}}" ).mousemove(function( event ) {
-        imageX = (event.clientX - elementLeft);
+        imageX{{x}} = (event.clientX - elementLeft{{x}});
        });
 
     $( "#audio_image_{{cl.id}}" ).click(function() {
         // seems I can't change .currentTime if it is paused
         // saving/restoring state is too much hassle.
-        vid[0].play();
-        vid[0].currentTime = imageX;
-        vid[0].pause();
+        vid{{x}}[0].play();
+        vid{{x}}[0].currentTime = imageX{{x}};
+        vid{{x}}[0].pause();
        });
 
-    startbox.dblclick(function() {
-        startbox.val(vid.prop('currentTime')); });
+    startbox{{x}}.dblclick(function() {
+        startbox{{x}}.val(vid{{x}}.prop('currentTime')); });
 
-    endbox.dblclick(function() {
-        endbox.val(vid.prop('currentTime')); });
+    endbox{{x}}.dblclick(function() {
+        endbox{{x}}.val(vid{{x}}.prop('currentTime')); });
 
     </script>
+  {% endwith %}
 
 {% endfor %}
 </tbody>
