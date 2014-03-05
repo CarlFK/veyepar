@@ -24,6 +24,34 @@ class Command(BaseCommand):
                 eps = Episode.objects.filter(
                         show__slug='fosdem_2014', slug = slug)
 
+                if not eps:
+                    # http://video.fosdem.org/2014/K4401/Sunday/
+                    print "guessing this is a room day.."
+                    x = args[0].split('/')
+                    year = x[3]
+                    location_slug = x[4]
+                    day = {'Saturday':1,
+                            'Sunday':2 }[x[5]]
+                    print year, location_slug, day
+
+                    url = reverse( "episode_list", args= [
+                        'fosdem',
+                        'fosdem_2014',
+                        ])
+                    print url
+                    qps="?client=fosdem&show=fosdem_2014&location=%s&date=%s-02-0%s" %( location_slug, year, day )
+                    print qps
+                    url = "http://veyepar.nextdayvideo.com" + \
+                            url + qps
+                    print url
+                    subprocess.Popen(['firefox', url])
+                    url = "http://veyepar.nextdayvideo.com/main/dv_set/%s/%s-02-0%s/" % ( location_slug, year, day )
+                    print url
+                    subprocess.Popen(['firefox', url])
+
+                    return
+
+
             for ep in eps:
                 print ep
                 print "current state:", ep.state

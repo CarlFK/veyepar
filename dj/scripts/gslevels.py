@@ -103,12 +103,17 @@ class Make_png(AudioPreviewer):
 
     def process(self, levs):
 
+        # 0 out clips
+        for type in ("rms","peak","decay"):
+            levs[type] = [min(lev,0) for lev in levs[type]]
+
+        tick = 2 if self.count % 600 == 599 else 0
         if self.channels == 2:
             # left rms 
             # map 0 to -40 to 0 to height
             l = int(max(levs['rms'][0],self.threashold) 
                     * (self.height-1)/self.threashold)
-            for y in range(l,self.height):
+            for y in range(l,self.height-tick):
                 self.grid[y,self.count] = 127
 
             # left peak
@@ -120,7 +125,7 @@ class Make_png(AudioPreviewer):
             # map 0 to -70 to height to height * 2
             l = int(max(levs['rms'][1],self.threashold) 
                     * (self.height-1)/-self.threashold + 2 * self.height)
-            for y in range(self.height,l):
+            for y in range(self.height+tick,l):
                 self.grid[y,self.count] = 127
 
             l = int(max(levs['peak'][1],self.threashold) 
@@ -136,7 +141,7 @@ class Make_png(AudioPreviewer):
                 # map 0 to -40 to 0 to height
                 l = int(max(levs['rms'][channel],self.threashold) 
                         * (self.height-1)/self.threashold)
-                for y in range(l,self.height):
+                for y in range(l,self.height-tick):
                     self.grid[y+channel*self.height,self.count] = 127
 
                 # left peak
@@ -167,6 +172,7 @@ def lvlpng(file_name, png_name=None):
 
     if options.verbose:
         print png_name
+    print png_name
     png.from_array([row[:p.count] for row in p.grid], 'L').save(png_name)
 
 def many(indir, outdir):
