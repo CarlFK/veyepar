@@ -43,9 +43,14 @@ class SyncRax(process):
 
     def raw_files(self, show):
         for rf in Raw_File.objects.filter(show=show):
-            base = rf.basename() + "_audio.png"
+            base = os.path.join(rf.location.slug, rf.basename() + "_audio.png")
             src = os.path.join("audio_png", "dv", base)
             self.one_file(show,src)
+
+            base = os.path.join(rf.location.slug, rf.basename() + ".ogv")
+            src = os.path.join("dv", base)
+            self.one_file(show,src)
+              
 
     def episodes(self, show):
         for ep in Episode.objects.filter(show=show):
