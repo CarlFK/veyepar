@@ -63,36 +63,52 @@ class Uploader(object):
     def upload(self):
 
         cf = auth(self.user)
+
+        if self.debug_debug:
+            print "cf.get_all_containers", cf.get_all_containers()
         container = cf.get_container(self.bucket_id)
 
-        pf = ProgressFile(self.pathname, 'r')
-
+        # check if object already exists:
+        # if same name and same md5, don't bother re-uploading.
         try:
+            obj = container.get_object(self.key_id)
+            already_there = obj.etag == pyrax.utils.get_checksum(
+                    self.pathname,)
+            ret = True
+        except pyrax.exceptions.NoSuchObject as e:
+            already_there = False
 
-            # actually upload
-            obj = container.upload_file(pf, obj_name = self.key_id)
-            
+        if not already_there:
 
-            if self.debug_mode:
+            pf = ProgressFile(self.pathname, 'r')
+
+            try:
+
+                # actually upload
+                obj = container.upload_file(pf, obj_name = self.key_id)
+                
+
+                if self.debug_mode:
+                    import code
+                    code.interact(local=locals())
+                
+                ret = True
+
+            except Exception as e:
+
+                print e
+                # self.ret_text = "rax error: %s" % ( e.body )
+
                 import code
                 code.interact(local=locals())
-            
-            # urllib.quote  
-            # filenames may have chars that need to be quoted for a URL.
-            # cdn_streaming because.. video? (not sure really)
-            # self.new_url = container.cdn_streaming_uri +"/"+ urllib.quote(obj.name)
-            self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name)
-            ret = True
 
-        except Exception as e:
+                ret = False
 
-            print e
-            # self.ret_text = "rax error: %s" % ( e.body )
-
-            import code
-            code.interact(local=locals())
-
-            ret = False
+        # urllib.quote  
+        # filenames may have chars that need to be quoted for a URL.
+        # cdn_streaming because.. video? (not sure really)
+        # self.new_url = container.cdn_streaming_uri +"/"+ urllib.quote(obj.name)
+        self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name)
 
         return ret
 
