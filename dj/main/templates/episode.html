@@ -193,7 +193,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
   <img 
 id="audio_image_{{cl.id}}" 
 alt="audio" 
-src ="http://192.237.240.167/static/veyepar/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png"
+src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png"
    >
   </td></tr>
   <tr><td>

@@ -65,6 +65,12 @@ class AudioPreviewer:
             except ValueError as e:
                 print e
 
+        elif t == Gst.MessageType.ERROR:
+            gerror, dbg_msg = message.parse_error()
+            print "Error : ", gerror.message
+            print "Debug details : ", dbg_msg
+            self.quit()
+
         elif t == Gst.MessageType.EOS:
             self.quit()
 
@@ -173,7 +179,13 @@ def lvlpng(file_name, png_name=None):
     if options.verbose:
         print png_name
     print png_name
-    png.from_array([row[:p.count] for row in p.grid], 'L').save(png_name)
+
+    if p.count:
+        png.from_array(
+                [row[:p.count] for row in p.grid], 'L').save(png_name)
+    else
+        # no audio data, make a 1x1 png
+        png.from_array([0,0], 'L').save(png_name)
 
 def many(indir, outdir):
     """
