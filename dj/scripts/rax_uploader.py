@@ -4,6 +4,7 @@
 # caled from post_rak.py 
 # that is a lie.  it is currently called from post_yt.py.  
 
+import argparse
 
 import pyrax
 pyrax.set_setting("identity_type", "rackspace")
@@ -64,7 +65,7 @@ class Uploader(object):
 
         cf = auth(self.user)
 
-        if self.debug_debug:
+        if self.debug_mode:
             print "cf.get_all_containers", cf.get_all_containers()
         container = cf.get_container(self.bucket_id)
 
@@ -112,17 +113,41 @@ class Uploader(object):
 
         return ret
 
+def pars_args():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--pathname', default=
+  '/home/carl/Videos/veyepar/test_client/test_show/webm/Lets_make_a_Test.webm',
+            help='pathname of file to upload.')
+
+    parser.add_argument('--user', default="testact",
+            help="key to lookup credintials from pw.py")
+
+    parser.add_argument('--container', default="example",
+            help="container to upload to.")
+
+    parser.add_argument('--obj_name', default=
+            "/test_client/test_show/webm/Lets_make_a_Test.webm",
+            help="container to upload to.")
+
+    parser.add_argument('--debug', 
+            help="Drops to a >>> prompt after upload")
+
+    args = parser.parse_args()
+    return args
 
 if __name__ == '__main__':
+
+    args = pars_args()
 
     u = Uploader()
 
     # senseable values for testing.
-    u.user = 'testact'
-    u.bucket_id = 'testing' # define this on rackspace gui
-    u.key_id = "test/123_Lets_make_a_Test.mp4"
-    u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4'
-    u.debug_mode = False ## True drops to a >>> prompt after upload
+    u.pathname = args.pathname
+    u.user = args.user
+    u.bucket_id = args.container # define this on rackspace gui
+    u.key_id = args.obj_name
+    u.debug_mode = args.debug
 
     ret = u.upload()
 
