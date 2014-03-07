@@ -996,8 +996,11 @@ def episodes_script(request, script=None):
 
 def episode_list(request, state=None):
 
-    episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
     states = State.objects.all()
+
+    episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
+    if "show" in request.GET:
+        episodes = episodes.filter( show__slug=request.GET['show'] )
 
     return render_to_response('episode_list.html',
             { 'episodes':episodes,

@@ -34,7 +34,7 @@
             {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
             {%if episode.public_url %}<a href="{{episode.public_url}}">R</a>{% endif %}
         </td>
-        <td_audio>
+        <td>
           {%if episode.state %}<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"></a>{% endif %}
         </td>
 
