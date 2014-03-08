@@ -895,10 +895,11 @@ def raw_file_audio(request):
 
     if "active" in request.GET:
         locations=locations.filter(active=True)
-    if "location_slug" in request.GET:
-        locations=locations.filter(slug=request.GET['location_slug'])
+    if "location" in request.GET:
+        locations=locations.filter(slug=request.GET['location'])
 
     rfs=Raw_File.objects.filter(show=show,
+            trash=False,
             location__in=locations,
             ).order_by('start')
     if "start_date" in request.GET:
@@ -935,7 +936,6 @@ def raw_file_audio(request):
             ).order_by('sequence',)[:1]
 
     if locations:
-        print locations
         next_location = locations[0]
     else:
         next_location = None
