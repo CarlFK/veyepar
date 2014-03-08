@@ -18,16 +18,15 @@ class AudioPreviewer:
     count = 0
     interval = 1.0  ## buffer size in seconds 
     verbose = False
-    filename = None
+    uri = None
 
     def mk_pipe(self):
         
-        uri = "file://%s" % (self.filename,)
 
         self.pipeline = Gst.parse_launch( "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink name=faked" )
 
         decode = self.pipeline.get_by_name("decode")
-        decode.set_property( 'uri', uri )
+        decode.set_property( 'uri', self.uri )
 
         wavelevel = self.pipeline.get_by_name( 'wavelevel' )
         wavelevel.set_property( 'interval', int(self.interval * Gst.SECOND))
@@ -79,7 +78,7 @@ class AudioPreviewer:
             print "playing..."
         self.pipeline.set_state(Gst.State.PLAYING)
         self.mainloop = GLib.MainLoop()
-        if options.verbose:
+        if self.verbose:
             print "looping..."
         self.mainloop.run()
 
@@ -94,6 +93,7 @@ class AudioPreviewer:
 
 import png
 import numpy 
+import urlparse
 
 class Make_png(AudioPreviewer):
 
@@ -102,6 +102,7 @@ class Make_png(AudioPreviewer):
     threashold = -70
     channels = 2
     grid = None
+
 
     def setup(self):
         self.grid = numpy.zeros((self.height*self.channels,36000), dtype=numpy.uint8)
@@ -157,11 +158,21 @@ class Make_png(AudioPreviewer):
 
         self.count += 1
 
-def lvlpng(file_name, png_name=None):
+    def mk_png(self, png_name):
+        if self.count:
+            png.from_array(
+                    [row[:self.count] for row in self.grid], 'L').save(png_name)
+        else:
+            # no audio data, make a 1x1 png
+            png.from_array([0,0], 'L').save(png_name)
+
+
+def lvlpng(uri, png_name=None):
     """
     given:
-      file_name - input path and filename
-      png_name - output path and filename (defaults to input+_audio.png)
+      uri - input uri
+      png_name - output path and filename 
+       (defaults to input+_audio.png, munged if input is http)
     """
 
     p=Make_png()
@@ -169,23 +180,27 @@ def lvlpng(file_name, png_name=None):
     p.height = options.height
     p.verbose = options.verbose
     p.channels = options.channels
-    p.filename = file_name
+    p.uri = uri
     p.setup()
     p.start()
 
     if png_name is None:
-        png_name = os.path.splitext(filename)[0]+"_audio.png"
+        o = urlparse.urlparse(uri)
+        if o.scheme=="file":
+            pathname = o.path 
+            png_name = os.path.splitext(pathname)[0]+"_audio.png"
+        else:
+            # drops output in local dir
+            # use png_name parameter to make it go somewhere else
+            pathname = o.path.split('/')[-1]
+            png_name = os.path.splitext(pathname)[0]+"_audio.png"
 
     if options.verbose:
         print png_name
     print png_name
 
-    if p.count:
-        png.from_array(
-                [row[:p.count] for row in p.grid], 'L').save(png_name)
-    else
-        # no audio data, make a 1x1 png
-        png.from_array([0,0], 'L').save(png_name)
+    p.mk_png(png_name)
+
 
 def many(indir, outdir):
     """
@@ -211,13 +226,13 @@ def many(indir, outdir):
                     lvlpng( rf_name, png_name )
 
 
-def cklevels(file_name):
+def cklevels(uri):
     """
     tests the gstreamer functionality:
       report levels from an input file.
     """
     p=AudioPreviewer()
-    p.filename = filename
+    p.uri = uri
     p.mk_pipe()
     p.start()
 
@@ -257,18 +272,18 @@ if __name__=='__main__':
         many(options.indir, options.outdir)
     else:
         if args:
-            filenames = args
+            uris = args
         else:
-            filenames =[
+            uris = [ "file://%s" % (filename,) for filename in [
    "/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4",
    "/home/carl/temp/Manageable_Puppet_Infrastructure.webm",
    "/home/carl/temp/15_57_39.ogv",
    "/home/carl/src/veyepar/tests/165275__blouhond__surround-test-1khz-tone.wav",
-                       ]
+                       ]]
 
-        for filename in filenames:
+        for uri in uris:
             if options.test:
-                cklevels(filename)
+                cklevels(uri)
             else:
-                lvlpng(filename)
+                lvlpng(uri)
 

@@ -10,7 +10,7 @@ from process import process
 from main.models import Client, Show, Episode, Raw_File
 
 import rax_uploader
-
+import gslevels
 
 class SyncRax(process):
 
@@ -43,7 +43,8 @@ class SyncRax(process):
 
     def raw_files(self, show):
         for rf in Raw_File.objects.filter(show=show):
-            base = os.path.join(rf.location.slug, rf.basename() + "_audio.png")
+            base = os.path.join(
+                    rf.location.slug, rf.basename() + "_audio.png")
             src = os.path.join("audio_png", "dv", base)
             self.one_file(show,src)
 
@@ -52,11 +53,41 @@ class SyncRax(process):
             self.one_file(show,src)
               
 
-    def episodes(self, show):
-        for ep in Episode.objects.filter(show=show):
+    def sync_final(self,ep):
             base = ep.slug + ".webm"
             src = os.path.join("webm", base)
             self.one_file(show,src)
+
+    def sync_audio_png(self,ep):
+            base = ep.slug + "_audio.png"
+            src = os.path.join("webm", base)
+            self.one_file(show,src)
+
+    def mk_audio_png(self,ep):
+        """ whack to catch up 
+        if the ep doen't have a png on the local fs, 
+        make it from the public webm.
+        """
+        png_name = os.path.join(
+                    self.show_dir,"webm", ep.slug + "_audio.png")
+        if not os.path.exists(png_name):
+
+            p = gslevels.Make_png()
+            p.uri = ep.public_url
+            p.verbose = self.options.verbose
+            p.setup()
+            p.start()
+            p.mk_png(png_name)
+
+            self.sync_audio_png(ep)
+
+    def episodes(self, show):
+        for ep in Episode.objects.filter( show=show, state=5):
+            self.sync_final(ep)
+            self.mk_audio_png(ep)
+            self.sync_audio_png(ep)
+            return
+
 
     def one_show(self, show):
         self.set_dirs(show)
