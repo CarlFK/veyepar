@@ -9,7 +9,7 @@ import os
 from process import process
 from main.models import Show, Episode
 
-class push(process):
+class mk_audio_png(process):
 
     ready_state = 3
     ret = None
@@ -45,6 +45,6 @@ class push(process):
         return ret
 
 if __name__ == '__main__':
-    p=push()
+    p=mk_audio_png()
     p.main()
 
