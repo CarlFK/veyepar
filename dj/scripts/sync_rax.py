@@ -53,12 +53,12 @@ class SyncRax(process):
             self.one_file(show,src)
               
 
-    def sync_final(self,ep):
+    def sync_final(self,show,ep):
             base = ep.slug + ".webm"
             src = os.path.join("webm", base)
             self.one_file(show,src)
 
-    def sync_audio_png(self,ep):
+    def sync_audio_png(self,show,ep):
             base = ep.slug + "_audio.png"
             src = os.path.join("webm", base)
             self.one_file(show,src)
@@ -78,14 +78,18 @@ class SyncRax(process):
             p.setup()
             p.start()
             p.mk_png(png_name)
+            ret = True
+        else:
+            ret = False
 
-            self.sync_audio_png(ep)
+        return ret
+
 
     def episodes(self, show):
         for ep in Episode.objects.filter( show=show, state=5):
             self.sync_final(ep)
-            self.mk_audio_png(ep)
-            self.sync_audio_png(ep)
+            ret = self.mk_audio_png(show,ep)
+            self.sync_audio_png(show,ep)
             return
 
 

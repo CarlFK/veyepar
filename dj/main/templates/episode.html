@@ -62,11 +62,13 @@
 {% if episode.conf_url %}
   <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
 {% endif %}
+{% if episode.public_url %}
+<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"><br/>
+{% endif %}
 Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{% url admin:main_cut_list_changelist %}?episode__id__exact={{episode.id}}">cut list</a>
 <br>
 
-<a href="/databrowse/main/episode/objects/{{episode.id}}/">databrowse</a>
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
 <a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">raw-ogv-playlist</a>
 

@@ -110,7 +110,7 @@ class Make_png(AudioPreviewer):
 
     def process(self, levs):
 
-        # 0 out clips
+        # 0 out positive levels (above 0 is cliping, don't care how much)
         for type in ("rms","peak","decay"):
             levs[type] = [min(lev,0) for lev in levs[type]]
 
