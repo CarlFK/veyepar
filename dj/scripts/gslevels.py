@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# gslevel.py
+# gslevels.py
 # report audio levels
 # to figure out what files are messed up
 
@@ -25,6 +25,8 @@ class AudioPreviewer:
 
         self.pipeline = Gst.parse_launch( "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink name=faked" )
 
+        if self.uri.startswith('/'):
+            self.uri = "file://" + self.uri
         decode = self.pipeline.get_by_name("decode")
         decode.set_property( 'uri', self.uri )
 
@@ -164,7 +166,7 @@ class Make_png(AudioPreviewer):
                     [row[:self.count] for row in self.grid], 'L').save(png_name)
         else:
             # no audio data, make a 1x1 png
-            png.from_array([0,0], 'L').save(png_name)
+            png.from_array([(0,0)], 'L').save(png_name)
 
 
 def lvlpng(uri, png_name=None):

@@ -329,7 +329,6 @@ pix_fmt=yuv411p" % parms
  @callme_maybe
  def push(self):
   # rsync to data center box
-  print "testing push.py..."
   import push
   p=push.push()
   p.set_options(force=True, verbose=True, 
@@ -339,6 +338,18 @@ pix_fmt=yuv411p" % parms
   ret = p.ret
 
   return ret
+
+
+ @callme_maybe
+ def mk_audio_png(self):
+      import mk_audio_png
+      p.set_options(force=True, verbose=True, 
+          upload_formats=self.upload_formats,
+          )
+      p.main()
+      ret = p.ret
+
+      return ret
 
 
  @callme_maybe
@@ -544,6 +555,7 @@ def main():
     t.ck_errors()
     t.play_vid()
     result['push'] = t.push()
+    result['mk_audio_png'] = t.mk_audio_png()
     result['url'] = t.post_yt()
     result['richard'] = t.add_to_richard()
     result['email'] = t.email_url()
