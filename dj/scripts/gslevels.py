@@ -168,6 +168,8 @@ class Make_png(AudioPreviewer):
             # no audio data, make a 1x1 png
             png.from_array([(0,0)], 'L').save(png_name)
 
+        return True
+
 
 def lvlpng(uri, png_name=None):
     """
