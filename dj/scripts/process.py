@@ -308,6 +308,9 @@ class process(object):
             episodes = episodes.filter(location__slug=self.options.room)
         if self.args:
             episodes = episodes.filter(id__in=self.args)
+        if self.ready_state is not None \
+                and not self.options.force:
+            episodes = episodes.filter(state=self.ready_state)
 
         self.start=datetime.datetime.now()
         ret = self.process_eps(episodes)
