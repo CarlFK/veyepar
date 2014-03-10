@@ -1334,7 +1334,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     except Episode.DoesNotExist:
         next_episode = None
 
-    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start','start')
+    cuts = Cut_List.objects.filter(
+            episode=episode).order_by('sequence','raw_file__start','start')
 
     # If this episode doesn't have a cut list yet, try to create one.
     if not cuts:
@@ -1395,12 +1396,9 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                     cl.save(force_insert=True)
 
             rf_pathnames = add_cutlist_to_ep.cleaned_data['rf_pathname']
-            # print "#1", rf_pathnames
             if rf_pathnames:
               sequence = add_cutlist_to_ep.cleaned_data['sequence']
               for rf_pathname in rf_pathnames.split():
-                # rf_pathname = "pycon13-t4-%s.dv" % (rf_pathname,)
-                # print "#2", rf_pathname
                 rfs = Raw_File.objects.filter(filename=rf_pathname)
                 for rf in rfs:
                     cl = Cut_List.objects.create(
@@ -1410,7 +1408,6 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                            sequence = sequence, )
                     cl.save()
                     sequence +=1
-                    print rf, cl
 
 
             # if trash got touched, 
@@ -1453,8 +1450,19 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         } for cut in cuts]
         clrfformset = clrfFormSet(initial=init)
 
-    # blank out previous valuse so we don't keep adding the same thing
-    add_cutlist_to_ep=Add_CutList_to_Ep(initial = {'sequence':1})
+    # default to next Raw_File 
+    rf_pathname = ''
+    seq = 10 ## 10 gives it room for shuffling
+    if cuts:
+        ## use cut left over from somewhere above.  should work.
+        seq = cut.sequence + 10 
+        next_rf = cut.raw_file.next()
+        if next_rf is not None:
+            rf_filename = next_rf.filename
+
+    add_cutlist_to_ep=Add_CutList_to_Ep(
+            initial = {'sequence':seq,
+                    'rf_pathname':rf_filename, })
 
 # If all the dates are the same, don't bother displaying them
     if episode.start is None or episode.end is None:
@@ -1462,10 +1470,9 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     else:
       talkdate = episode.start.date()
       same_dates = talkdate==episode.end.date()
-      if same_dates:
-        for cut in cuts:
-            same_dates = same_dates and \
-               talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
+      for cut in cuts:
+        same_dates = same_dates and \
+            talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
 
     return render_to_response('episode.html',
         {'episode':episode,

@@ -147,6 +147,23 @@ class Raw_File(models.Model):
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
     
+    def next(self):
+        """
+        gets the next clip in the room.
+        """
+        rfs = Raw_File.objects.filter(location=self.location,
+                start__gt=self.start,
+                id__gt=self.id).order_by('start','id')
+        if rfs:
+            rf=rfs[0]
+        else:
+            rf=None
+
+        return rf
+
+
+
+
     def basename(self):
         # strip the extension
         # good for making 1-2-3/foo.png from 1-2-3/foo.dv
