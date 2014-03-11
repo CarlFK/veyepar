@@ -879,15 +879,16 @@ def rf_set(request, location_slug):
         start_date=request.GET['start_date']
         rfs=rfs.filter(start__startswith=start_date)
  
-    dvs=[]
+    rf_cls=[]
     for rf in rfs:
-        eps = scheduled_episodes(rf)
-        dvs.append([rf,eps])
+        # eps = scheduled_episodes(rf)
+        cls = rf.cut_list_set.all()
+        rf_cls.append([rf,cls])
     
     return render_to_response('raw_set.html',
         {
           'location':location,
-          'rfs':dvs,
+          'rf_cls':rf_cls,
         },
         context_instance=RequestContext(request) )
 

@@ -4,7 +4,7 @@
 
 location.channelcopy:{{location.channelcopy}}
 
-  {% for raw_file,eps in rfs %}
+  {% for raw_file,cls in rf_cls %}
 <table>
 
 <tr>
@@ -31,17 +31,24 @@ location.channelcopy:{{location.channelcopy}}
  </td>
 <td>
 <table>
-{% for ep in eps %}
+{% for cl in cls %}
+{% with cl.episode as ep %}
+
 {# <tr> <td> <a href="{% url admin:main_episode_change ep.id %}">{{ep.id}}</a> </td> </tr> #}
   <tr> <td>
       <a href="{% url episode ep.id %}">{{ep.name}}</a>
   </td> </tr>
   <tr> <td>
+          {{ep.authors}}
+  </td> </tr>
+  <tr> <td>
           Start:{{ep.start|date:"H:i"}} Durration:{{ep.duration}} End: {{ep.end|date:"H:i"}}
   </td> </tr>
   <tr> <td>
-      state:{{ep.state}}
+          state:{{ep.state}}  [{{cl.apply|yesno:"X, "}}] Apply
   </td> </tr>
+  {% endwith %}
+
 {% endfor %}
 </table>
 </tr> 
