@@ -22,13 +22,14 @@ class SyncRax(process):
         if it does, try to upload it to cdn
         (rax_uploader will skip if same file exists).
         """
+        print "checking:", src
+
         if dst is None: dst = src
 
         src = os.path.join(self.show_dir,src)
         dst = os.path.join("veyepar",show.client.slug,show.slug,dst)
 
         if os.path.exists(src):
-            print "uploading:", src
 
             u = rax_uploader.Uploader()
 

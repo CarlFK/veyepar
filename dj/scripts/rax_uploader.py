@@ -51,8 +51,8 @@ class Uploader(object):
     # input attributes:
     pathname = ''  # path to video file to upload
 
-    user = '' # key to lookup user/pw in rax{} typically stored in pw.py
-    bucket_id = "" # archive/s3 butcket, or container ID for rax
+    user = 'testact' # key to lookup user/pw in rax{} typically stored in pw.py
+    bucket_id = "example" # archive/s3 butcket, or container ID for rax
     key_id = "" # orbject name (the key in a key value store)
 
     debug_mode = False
