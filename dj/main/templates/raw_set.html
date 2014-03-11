@@ -1,0 +1,54 @@
+{# orphan_dv.html #}
+{% extends "base.html" %}
+{% block content %}
+
+location.channelcopy:{{location.channelcopy}}
+
+  {% for raw_file,eps in rfs %}
+<table>
+
+<tr>
+<td> <video src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv" controls width=200
+    poster ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png" 
+    preload="none"
+    ></video>
+</td>
+
+<td>
+<table>
+<tr><td> <a href="{% url admin:main_raw_file_change raw_file.id %}">{{raw_file.filename}}</a> </td></tr> 
+
+<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png">{{raw_file.basename}}.png</a></td></tr>
+<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv">{{raw_file.basename}}.ogv</a></td></tr>
+
+     <tr> <td>Location:</td><td>{{raw_file.location}}</td> </tr>
+     <tr> <td>Start:</td><td>{{raw_file.start}}</td> </tr>
+      <tr> <td>Duration:</td> <td>{{raw_file.duration}}</td> </tr>
+      <tr> <td>End:</td><td> {{raw_file.end}}</td> </tr>
+      <tr> <td>Comments:</td> <td>{{raw_file.comment}}</td> </tr>
+
+</table>
+ </td>
+<td>
+<table>
+{% for ep in eps %}
+{# <tr> <td> <a href="{% url admin:main_episode_change ep.id %}">{{ep.id}}</a> </td> </tr> #}
+  <tr> <td>
+      <a href="{% url episode ep.id %}">{{ep.name}}</a>
+  </td> </tr>
+  <tr> <td>
+          Start:{{ep.start|date:"H:i"}} Durration:{{ep.duration}} End: {{ep.end|date:"H:i"}}
+  </td> </tr>
+  <tr> <td>
+      state:{{ep.state}}
+  </td> </tr>
+{% endfor %}
+</table>
+</tr> 
+
+</table>
+<img src="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/audio_png/dv/{{raw_file.location.slug}}/{{raw_file.basename}}_audio.png"> 
+
+  {% endfor %}
+
+{% endblock %}

@@ -866,21 +866,27 @@ def raw_file(request, raw_file_id):
         },
         context_instance=RequestContext(request) )
 
-def dv_set(request, location_slug, start_date):
+def rf_set(request, location_slug):
     # Show files collected for a given location and date
     # aka a set, corisponds to a set of recording sheets.
 
-    rfs=Raw_File.objects.filter(
-            location__slug=location_slug,
-            start__startswith=start_date).order_by('start')
+    location = Location.objects.get(slug=location_slug)
+
+    rfs=Raw_File.objects.filter( 
+            location=location).order_by('start')
+ 
+    if "start_date" in request.GET:
+        start_date=request.GET['start_date']
+        rfs=rfs.filter(start__startswith=start_date)
  
     dvs=[]
     for rf in rfs:
         eps = scheduled_episodes(rf)
         dvs.append([rf,eps])
     
-    return render_to_response('orphan_dv.html',
+    return render_to_response('raw_set.html',
         {
+          'location':location,
           'rfs':dvs,
         },
         context_instance=RequestContext(request) )
