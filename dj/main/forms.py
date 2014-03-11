@@ -61,7 +61,7 @@ class clrfForm(forms.Form):
       widget=forms.Textarea(attrs={'rows':'2','cols':'20'}))
 
 class Add_CutList_to_Ep(forms.Form):
-    rf_pathname = forms.CharField(max_length=32,required=False,
+    rf_filename = forms.CharField(max_length=32,required=False,
       help_text = "root is .../show/dv/location/, example: 2013-03-13/13:13:30.dv" )
     sequence = forms.IntegerField(label="Sequence",required=False,
       widget=forms.TextInput(attrs={'size':'3','class':'suSpinButton'}))

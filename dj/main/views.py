@@ -1404,11 +1404,11 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                     cl.sequence+=1
                     cl.save(force_insert=True)
 
-            rf_pathnames = add_cutlist_to_ep.cleaned_data['rf_pathname']
-            if rf_pathnames:
+            rf_filenames = add_cutlist_to_ep.cleaned_data['rf_filename']
+            if rf_filenames:
               sequence = add_cutlist_to_ep.cleaned_data['sequence']
-              for rf_pathname in rf_pathnames.split():
-                rfs = Raw_File.objects.filter(filename=rf_pathname)
+              for rf_filename in rf_filenames.split():
+                rfs = Raw_File.objects.filter(filename=rf_filename)
                 for rf in rfs:
                     cl = Cut_List.objects.create(
                         episode=episode,
@@ -1460,7 +1460,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         clrfformset = clrfFormSet(initial=init)
 
     # default to next Raw_File 
-    rf_pathname = ''
+    rf_filename = ''
     seq = 10 ## 10 gives it room for shuffling
     if cuts:
         ## use cut left over from somewhere above.  should work.
@@ -1471,7 +1471,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
     add_cutlist_to_ep=Add_CutList_to_Ep(
             initial = {'sequence':seq,
-                    'rf_pathname':rf_filename, })
+                    'rf_filename':rf_filename, })
 
 # If all the dates are the same, don't bother displaying them
     if episode.start is None or episode.end is None:
