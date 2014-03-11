@@ -8,34 +8,26 @@
 {% block point %}
 
 <p>This talk needs a human to do a little work, likely under 5-10 minutes. 
-or 30 if you allow your pefection-izm to get the best of you.</p>
+or much more if you allow your pefection-izm to get the best of you.</p>
 <p>Follow this link to do the work:
 
 <a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">
 {% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}</a>
 </p>
+<p>Ignore the login.  That is for video team members to do additional work.</p>
 <p>
 Ideally that page will let you do all you need and you don't have to read this next part.  
 </p>
 <hr>
 <p>
-It also contains a link the original interface that lets you do all sorts of things, like trim cruft from the start and end before the end.  That last part means 'cut the recording so the part that isn't the talk isn't included.'
-</p>
-<p>
-If a file contains cruft, like 5 minutes of people coming into the room and finding a seat, you should remove that.  Same with the end.  Introductions are nice, if they are nice.  The encoder doesn't care if you cut stuff off or not, but the people who view the video will.  Use your judgment. 
-</p>
-<p>
-You can trim from the start and end by entering the time in the Start and End boxes.  The time you enter is the time you see  on the player.  Hit Play, when you are at the point you want the talk to start, hit Pause. look at the time ont the player, enter that in the Start box.   Run the slider to the end and Play.  If you talk ends long before the end of the file, hit Pause at the end of your talk, enter the time you see on the player in the End box.
-</p>
-<p>
+It also contains this link the original interface that lets you do all sorts of things, like use the alternate audio track:
 <a href="{% url episode episode_id=episode.id episode_slug=episode.slug edit_key=episode.edit_key %}">
     {% url episode episode_id=episode.id episode_slug=episode.slug edit_key=episode.edit_key %}</a>
 </p>
-<p>
-<p>Ignore the login.  That is for video team members to do additional work.</p>
 
 <p>BTW, allowing the presenter to work on their talk is a new feature.
-Use your good judgement and tell the list about problems, or open an issue at https://github.com/CarlFK/veyepar/issues
+Use your good judgement and tell the list about problems, or open an issue at 
+<a href="https://github.com/CarlFK/veyepar/issues"> https://github.com/CarlFK/veyepar/issues</a>
 </p>
 
 
