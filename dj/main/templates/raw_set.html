@@ -2,7 +2,8 @@
 {% extends "base.html" %}
 {% block content %}
 
-location.channelcopy:{{location.channelcopy}}
+location.channelcopy:{{location.channelcopy}}  
+trash:{{trash}}  
 
   {% for raw_file,cls in rf_cls %}
 <table>
@@ -16,16 +17,20 @@ location.channelcopy:{{location.channelcopy}}
 
 <td>
 <table>
-<tr><td> <a href="{% url admin:main_raw_file_change raw_file.id %}">{{raw_file.filename}}</a> </td></tr> 
+<tr>
+<td><a href="{% url admin:main_raw_file_change raw_file.id %}">{{raw_file.id}}</a></td>
+<td><a href="{{MEDIA_URL}}/{{raw_file.base_url}}.png">png</a></td>
+<td><a href="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv">ogv</a></td>
+</tr>
 
-<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png">{{raw_file.basename}}.png</a></td></tr>
-<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv">{{raw_file.basename}}.ogv</a></td></tr>
-
+     <tr> <td> [{{raw_file.trash|yesno:"X, "}}] Trash </td><td>
      <tr> <td>Location:</td><td>{{raw_file.location}}</td> </tr>
      <tr> <td>Start:</td><td>{{raw_file.start}}</td> </tr>
       <tr> <td>Duration:</td> <td>{{raw_file.duration}}</td> </tr>
       <tr> <td>End:</td><td> {{raw_file.end}}</td> </tr>
+      {% if raw_file.comment %}
       <tr> <td>Comments:</td> <td>{{raw_file.comment}}</td> </tr>
+      {% endif %}
 
 </table>
  </td>

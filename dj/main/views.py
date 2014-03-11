@@ -879,6 +879,10 @@ def rf_set(request, location_slug):
         start_date=request.GET['start_date']
         rfs=rfs.filter(start__startswith=start_date)
  
+    if "trash" in request.GET:
+        trash=request.GET['trash'].lower()=="y"
+        rfs=rfs.filter(trash=trash)
+ 
     rf_cls=[]
     for rf in rfs:
         # eps = scheduled_episodes(rf)
@@ -887,6 +891,7 @@ def rf_set(request, location_slug):
     
     return render_to_response('raw_set.html',
         {
+          'trash':trash,
           'location':location,
           'rf_cls':rf_cls,
         },
@@ -977,8 +982,6 @@ def title_slides(request, show_id, ):
         context_instance=RequestContext(request) )
 
 def episodes_script(request, script=None):
-
-    # state=request.GET['state']
 
     kwargs = {
             # "show__client__slug": request.GET['client'],
