@@ -62,7 +62,7 @@ episode:     XXXXXXXXX
     client.category_key='test' 
     client.youtube_id='test' 
     client.archive_id='test' 
-    client.tweet_id='veyepar_test' 
+    client.tweet_id='test' 
     client.tweet_prefix='test' 
     client.rax_id='testact' 
     client.bucket_id='example' 

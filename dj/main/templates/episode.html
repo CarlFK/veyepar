@@ -62,7 +62,7 @@
 {% if episode.conf_url %}
   <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
 {% endif %}
-{% if episode.public_url %}
+{% if episode.state >= 5 %}
 <img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"><br/>
 {% endif %}
 Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
