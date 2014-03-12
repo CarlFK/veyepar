@@ -879,6 +879,7 @@ def rf_set(request, location_slug):
         start_date=request.GET['start_date']
         rfs=rfs.filter(start__startswith=start_date)
  
+    trash = None
     if "trash" in request.GET:
         trash=request.GET['trash'].lower()=="y"
         rfs=rfs.filter(trash=trash)
