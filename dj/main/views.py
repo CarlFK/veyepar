@@ -1360,35 +1360,19 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     else:
         offset = None
 
-    # start times of chapters (included cuts)
-    start_chap = (0,"00:00") # frame, timestamp
-    chaps,frame_total = [],0 
-    for cut in cuts:
-        if cut.apply:
-            frame_total+=int(cut.duration())
-            end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
-              (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
-            chaps.append((start_chap,end_chap,cut))
-            # setup for next chapter
-            start_chap=end_chap
-        else:
-            chaps.append(('',''))
-    
+   
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.method == 'POST' and \
             (request.user.is_authenticated() or 
                     episode.edit_key == edit_key): 
+
         episode_form = Episode_Form_small(request.POST, instance=episode) 
         clrfformset = clrfFormSet(request.POST) 
         add_cutlist_to_ep = Add_CutList_to_Ep(request.POST)
+
         if episode_form.is_valid() \
               and clrfformset.is_valid() \
               and add_cutlist_to_ep.is_valid(): 
-            # if the state got bumpped, move to the next episode
-            if episode.state:
-                bump_ep = episode.state+1 == episode_form.cleaned_data['state']
-            else:
-                bump_ep = None
             episode_form.save()
             for form in clrfformset.forms:
                 cl=get_object_or_404(Cut_List,id=form.cleaned_data['clid'])
@@ -1401,18 +1385,19 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                 cl.start=form.cleaned_data['start']
                 cl.end=form.cleaned_data['end']
                 cl.apply=form.cleaned_data['apply']
-
                 cl.comment=form.cleaned_data['cl_comment']
                 cl.save()
+
                 if form.cleaned_data['split']:
+                    # copy the current cut list.
+                    # this gives 2 pointers to the same Raw File
                     cl.id=None
                     cl.sequence+=1
                     cl.save(force_insert=True)
 
-            rf_filenames = add_cutlist_to_ep.cleaned_data['rf_filename']
-            if rf_filenames:
-              sequence = add_cutlist_to_ep.cleaned_data['sequence']
-              for rf_filename in rf_filenames.split():
+            if add_cutlist_to_ep.cleaned_data['getit']:
+                rf_filename = add_cutlist_to_ep.cleaned_data['rf_filename']
+                sequence = add_cutlist_to_ep.cleaned_data['sequence']
                 rfs = Raw_File.objects.filter(filename=rf_filename)
                 for rf in rfs:
                     cl = Cut_List.objects.create(
@@ -1421,14 +1406,10 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                            apply = True,
                            sequence = sequence, )
                     cl.save()
-                    sequence +=1
+                    sequence +=10
 
 
-            # if trash got touched, 
-            # need to requery to get things in the right order.  I think.
-            if bump_ep:
-               episode = nextepisode
-               episode_form = Episode_Form_small(instance=episode) 
+            # get current data and load into forms
 
             cuts = Cut_List.objects.filter(
                 episode=episode).order_by(
@@ -1447,7 +1428,9 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
             # pass
             print "ep errors:", episode_form.errors
             print "clrf errors:", clrfformset.errors
-            print add_cutlist_to_ep.errors
+            print "add cut.. errors:", add_cutlist_to_ep.errors
+            for e in add_cutlist_to_ep.errors:
+                print e
     else:
         # hide emails if user is not logged n
         if not request.user.is_authenticated(): 
@@ -1464,6 +1447,20 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         } for cut in cuts]
         clrfformset = clrfFormSet(initial=init)
 
+    # start times of chapters (included cuts)
+    start_chap = (0,"00:00") # frame, timestamp
+    chaps,frame_total = [],0 
+    for cut in cuts:
+        if cut.apply:
+            frame_total+=int(cut.duration())
+            end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
+              (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
+            chaps.append((start_chap,end_chap,cut))
+            # setup for next chapter
+            start_chap=end_chap
+        else:
+            chaps.append(('',''))
+ 
     # default to next Raw_File 
     rf_filename = ''
     seq = 10 ## 10 gives it room for shuffling

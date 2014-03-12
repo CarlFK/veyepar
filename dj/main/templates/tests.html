@@ -10,7 +10,6 @@
 </form>
 
 <p>Current test data:</p>
-<h3>Clients:</h3>
 <ul>
 {% for client in clients %}
   <li><a href="{% url admin:main_client_change client.id%}">{{client.name}}</a> </li>
@@ -22,7 +21,7 @@
 
     <ul> 
     {% for episode in show.episode_set.all %}
-      <li><a href="{% url admin:main_episode_change episode.id%}">{{episode.name}}</a>
+      <li><a href="{% url episode episode.id%}">{{episode.name}}</a>
           - <a href="{% url admin:main_location_change episode.location.id%}">{{episode.location.name}}</a>
       <ul> 
       {% for cut_list in episode.cut_list_set.all %}

@@ -65,3 +65,6 @@ class Add_CutList_to_Ep(forms.Form):
       help_text = "root is .../show/dv/location/, example: 2013-03-13/13:13:30.dv" )
     sequence = forms.IntegerField(label="Sequence",required=False,
       widget=forms.TextInput(attrs={'size':'3','class':'suSpinButton'}))
+    getit = forms.BooleanField(label="get this", required=False,
+            help_text="check and save to add this")
+
