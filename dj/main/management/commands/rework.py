@@ -21,6 +21,13 @@ class Command(BaseCommand):
             eps = Episode.objects.filter(public_url=args[0])
 
             if not eps:
+                # look for just slug
+                slug = args[0]
+                print slug
+                eps = Episode.objects.filter(
+                        show__slug='fosdem_2014', slug = slug)
+
+            if not eps:
                 # look for slug
                 slug = args[0].split('/')[-1][:-5]
                 print slug
@@ -55,7 +62,7 @@ class Command(BaseCommand):
                         url + qps
                 print url
                 subprocess.Popen(['firefox', url])
-                url = "http://veyepar.nextdayvideo.com/main/rf_set/%s/%s-02-0%s/" % ( location_slug, year, day )
+                url = "http://veyepar.nextdayvideo.com/main/rf_set/%s/?start_date=%s-02-0%s" % ( location_slug, year, day )
                 print url
                 subprocess.Popen(['firefox', url])
 
@@ -65,12 +72,10 @@ class Command(BaseCommand):
             for ep in eps:
                 print ep
                 print "current state:", ep.state
-                if len(args)==1:
-                    url = "http://veyepar.nextdayvideo.com" + \
-                            ep.get_absolute_url()
-                    print url
-                    subprocess.Popen(['firefox', url])
-                else:
+                url = "http://veyepar.nextdayvideo.com" + \
+                        ep.get_absolute_url()
+                subprocess.Popen(['firefox', url])
+                if len(args)==2 and args[1]: # empty email doesn't count
                     edit_url = reverse( "approve_episode", args= [
                             ep.id, ep.slug, ep.edit_key ] )
                     print edit_url
