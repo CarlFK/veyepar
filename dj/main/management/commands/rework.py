@@ -16,6 +16,9 @@ class Command(BaseCommand):
 
         def handle(self, *args, **options):
             print args
+            
+            # ignore blank parameters
+            if not args[0]: return
 
             # look for final video url
             eps = Episode.objects.filter(public_url=args[0])
