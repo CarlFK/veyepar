@@ -212,7 +212,7 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
     var endbox{{x}} = $( "#{{clrfform.end.auto_id}}" );
 
     $( "#audio_image_{{cl.id}}" ).mousemove(function( event ) {
-        imageX{{x}} = (event.clientX - elementLeft{{x}});
+        imageX{{x}} = (event.pageX - elementLeft{{x}});
        });
 
     $( "#audio_image_{{cl.id}}" ).click(function() {
