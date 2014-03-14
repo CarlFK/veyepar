@@ -236,11 +236,12 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
        });
 
     $( "#audio_image_{{cl.id}}" ).click(function() {
-        // seems I can't change .currentTime if it is paused
+        // seems I can't change .currentTime befor something...
+        // as long as the user hits play once, all is well.
         // saving/restoring state is too much hassle.
-        vid{{x}}[0].play();
+        // vid{{x}}[0].play();
         vid{{x}}[0].currentTime = imageX{{x}};
-        vid{{x}}[0].pause();
+        // vid{{x}}[0].pause();
        });
 
     startbox{{x}}.dblclick(function() {

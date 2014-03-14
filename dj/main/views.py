@@ -1309,6 +1309,7 @@ def mk_cuts(episode,
             # never pre-select the first clip.  
             # unless it starts at the exact time 
             # handles start time entered after the fact.
+            # and if it is the only clip...
             started = True
         cl,created = Cut_List.objects.get_or_create(
             episode=episode,
