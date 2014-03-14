@@ -3,7 +3,12 @@
 
 {% block head %}
 <title>veyepar: {{episode.name}}</title>
- <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+ <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+
+ <script src="http://formstone.it/components/Zoomer/jquery.fs.zoomer.js"></script>
+ <link href="http://formstone.it/components/Zoomer/jquery.fs.zoomer.css" rel="stylesheet">
+
+
 {% endblock %}
 
 {% block content %}
@@ -83,11 +88,23 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br/>
 
+<div class="viewer" style="height: 200px; width: 800px;" >
+{% for img in episode.image_file_set.all %}
+    <img alt="recording sheet" src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
+{% endfor %}
+</div>
+
+ <script>
+$(".viewer").zoomer();
+ </script>
+
+{% comment %}
 {% for img in episode.image_file_set.all %}
 <a href="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
     <img alt="recording sheet" src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=90 >
 </a>
 {% endfor %}
+{% endcomment %}
 
 {# <video src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video> #}
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
