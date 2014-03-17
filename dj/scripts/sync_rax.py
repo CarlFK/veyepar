@@ -87,16 +87,19 @@ class SyncRax(process):
                 self.cdn_send(show,base)
 
             # check for audio image
-            base = os.path.join(
-                    "dv", rf.location.slug, rf.basename() + "_audio.png")
-            png = os.path.join("audio_png", base)
+            rf_base = os.path.join( "dv", 
+                rf.location.slug, rf.filename )
+
+            png_base = os.path.join( "audio_png", "dv", 
+                rf.location.slug, rf.basename() + "_audio.png")
+
             if not self.cdn_exists(show,png):
                 print rf.filesize
-                src = os.path.join(self.show_dir,base)
-                dst = os.path.join(self.show_dir,png)
+                src = os.path.join(self.show_dir,rf_base)
+                dst = os.path.join(self.show_dir,png_base)
                 ret = self.mk_audio_png(src,dst)
-                self.cdn_send(show,png)
-              
+                self.cdn_send(show,png_base)
+
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )
