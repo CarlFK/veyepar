@@ -23,7 +23,8 @@ trash:{{trash}}
 <td><a href="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv">ogv</a></td>
 </tr>
 
-     <tr> <td> [{{raw_file.trash|yesno:"X, "}}] Trash </td><td>
+     <tr> <td> [{{raw_file.trash|yesno:"X, "}}] Trash </td>
+         <td>{{raw_file.filename}}<td></tr>
      <tr> <td>Location:</td><td>{{raw_file.location}}</td> </tr>
      <tr> <td>Start:</td><td>{{raw_file.start}}</td> </tr>
       <tr> <td>Duration:</td> <td>{{raw_file.duration}}</td> </tr>
@@ -50,7 +51,7 @@ trash:{{trash}}
           Start:{{ep.start|date:"H:i"}} Durration:{{ep.duration}} End: {{ep.end|date:"H:i"}}
   </td> </tr>
   <tr> <td>
-          state:{{ep.state}}  [{{cl.apply|yesno:"X, "}}] Apply
+          state:{{ep.state}}  [{{cl.apply|yesno:"X, "}}] Apply {{cl.sequence}}
   </td> </tr>
   {% endwith %}
 
