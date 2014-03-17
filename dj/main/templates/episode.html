@@ -37,10 +37,13 @@
 <tbody>
 <tr><td>Name</td><td><b>{{episode.name}}</b></td></tr>
 <tr><td>Author(s)</td><td>{{episode.authors}} </td></tr>
-<tr><td>Location</td><td><a href="{% url admin:main_location_change location.id%}">{{episode.location}}</a></td>
+<tr><td>Location</td><td><a href="{% url admin:main_location_change location.id%}">{{episode.location}}</a></td><td>{{episode.location.channelcopy}}</td>
 </tr>
 <tr><td>Date</td><td><a href="{% url episode_list client_slug=client.slug show_slug=show.slug %}?client={{client.slug}}&amp;show={{show.slug}}&amp;location={{episode.location.slug}}&amp;date={{episode.start|date:"Y-m-d"}}">
-            {{episode.start|date:"b D d"}}</a></td></tr>
+            {{episode.start|date:"b D d"}}</a></td>
+    <td> <a href="{% url rf_set episode.location.slug %}?start_date={{episode.start|date:"Y-m-d"}}">Days Raw Files</a> </td>
+</tr>
+
 <tr><td>Start</td><td>{% if same_dates %}{{episode.start|date:"H:i"}}{% else %}{{episode.start}}{% endif %}</td>
 <td>First Raw Start</td><td>{% if same_dates %}{{clrffs.0.0.raw_file.start|date:"H:i"}}{% else %}{{clrffs.0.0.raw_file.start}}{% endif %}</td></tr>
 <tr>
