@@ -390,7 +390,7 @@ class add_eps(process.process):
                     if diff_fields:
                         print 'veyepar #id name: #%s %s' % (
                                 episode.id, episode.name)
-                        print "http://veyepar.nextdayvideo.com/main/show_stats/81/E/%s/" % ( episode.id, )
+                        print "http://veyepar.nextdayvideo.com/main/E/%s/" % ( episode.id, )
                         print episode.conf_url
                         if self.options.verbose: 
                             pprint.pprint( diff_fields )
@@ -1345,6 +1345,7 @@ class add_eps(process.process):
                     # >>> event.find('start').text
                     # '10:30'
                     # >>> [x.tag for x in event]
+                    """
                     tags = ['start', 'duration', 'room', 
                             'slug', 'title', 'subtitle', 
                             'track', 'type', 'language', 
@@ -1352,6 +1353,7 @@ class add_eps(process.process):
                             'persons', 'links']
                     for tag in tags:
                         print tag, row.find(tag).text
+                    """
 
                     event={}
                     # event['id'] = row[0]
