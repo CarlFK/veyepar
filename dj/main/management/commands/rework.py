@@ -6,6 +6,7 @@
 #  prints some text to send 
 
 import subprocess 
+import pprint
 
 from django.core.management.base import BaseCommand, CommandError
 from django.core.urlresolvers import reverse
@@ -19,6 +20,41 @@ class Command(BaseCommand):
             
             # ignore blank parameters
             if not args[0]: return
+
+            if args[0].startswith('@'):
+                urls = open(args[0][1:]).read().split('\n')
+                # remove blanks
+                urls = [u for u in urls if u]
+                pprint.pprint(urls)
+                eps = Episode.objects.filter(conf_url__in=urls)
+                print len(urls), eps.count()
+                for url in urls: 
+                    eps = Episode.objects.filter(conf_url=url)
+                    if eps: 
+                        ep = eps[0]
+                        url = "http://veyepar.nextdayvideo.com" + \
+                            ep.get_absolute_url()
+                        if ep.state:
+
+                            if len(args)==2 \
+                                    and args[1]: # empty email doesn't count
+                                email = args[1]
+                                ep.add_email(email)
+
+                            edit_url = "http://veyepar.nextdayvideo.com" + \
+                                reverse( "approve_episode", args= [
+                                    ep.id, ep.slug, ep.edit_key ] )
+                            print edit_url
+
+                        else:
+
+                            print ep.state, url
+                            print ep.comment
+
+                    else:
+                        print "not found:", url
+
+                return
 
             # look for final video url
             eps = Episode.objects.filter(public_url=args[0])
@@ -88,7 +124,6 @@ class Command(BaseCommand):
                         email = args[1]
                     else:
                         if email[-1].lower()=="wrote:":
-                            print "bang!"
                             email = email[:-2]
                         email = " ".join(args[1:])
                     ep.add_email(email)
