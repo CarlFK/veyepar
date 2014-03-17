@@ -16,4 +16,7 @@ BASE=http://archive.ubuntu.com/ubuntu/dists/oneiric-updates/main/installer-i386/
 
 cd ..
 
+# notes:
+#  http://cdimage.ubuntu.com/ubuntu-gnome/releases/14.04/beta-1/   
+#  http://cdimage.ubuntu.com/daily-live/current/
 
