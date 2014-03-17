@@ -332,7 +332,8 @@ class Episode(models.Model):
         return minutes
 
     def add_email(self, email):
-        emails = self.emails.split(',')
+        if self.emails is None: emails=[]
+        else: emails = self.emails.split(',')
         if email not in emails:
             if self.emails:
                 emails.append(email)
