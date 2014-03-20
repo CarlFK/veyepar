@@ -170,6 +170,9 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     show=get_object_or_404(Show,client=client,slug=show_slug)
     eps = Episode.objects.filter(show=show)
 
+    if "id" in request.GET:
+        eps = eps.filter( id=request.GET['id'] )
+
     fields=['id',
             'state',
             'location', 'sequence',
