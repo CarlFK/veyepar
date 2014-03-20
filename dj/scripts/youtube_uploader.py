@@ -4,8 +4,14 @@
 # caled from post_yt.py 
 # which someday will be jsut post.py with a yt parameter.
 
-# http://code.google.com/apis/youtube/1.0/developers_guide_python.html
+# https://developers.google.com/youtube/1.0/developers_guide_python#UploadingVideos
 # https://developers.google.com/youtube/2.0/reference
+# http://code.google.com/p/gdata-python-client/
+
+# $ curl --head http://code.google.com/apis/youtube/1.0/developers_guide_python.html
+# HTTP/1.1 301 Moved Permanently
+# Location: http://developers.google.com/youtube/1.0/developers_guide_python?csw=1
+
 
 # "In API response feeds, descriptions are truncated to 500 characters unless one of the following conditions is true:..."
 # https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_media:description
@@ -179,8 +185,8 @@ class Uploader(object):
                 description_type='plain',
                 # text=self.meta['description'][:500]),
                 text=self.meta['description']),
-            keywords=gdata.media.Keywords(
-                text=tags ),
+            # keywords=gdata.media.Keywords(
+            #     text=tags ),
             category=[gdata.media.Category(
                 # label=self.meta['category'],
                 # text=self.meta['category'],
@@ -225,8 +231,8 @@ class Uploader(object):
             video_entry.geo = self.geo()
 
         # add some more metadata -  more tags
-        tags = self.meta['tags']
-        tags = [tag for tag in tags if " " not in tag]
+        # tags = self.meta['tags']
+        # tags = [tag for tag in tags if " " not in tag]
         # https://developers.google.com/youtube/2.0/developers_guide_protocol#Assigning_Developer_Tags 
         # video_entry.AddDeveloperTags(tags)
 
@@ -288,35 +294,22 @@ def test_upload():
       'latlon': (37.0,-122.0),
     }
 
-    """
-      'title': u'Sketchnotes: Communicate Complex Ideas Quickly',
-      'tags': ['tag1', 'tag2'],
-    u.meta = {
-      'title': "Python @ Life",
-      'description': ("test " * 100) + "1", # 501 chars
-      'tags': [u'enthought', u'scipy_2012', u'Bioinformatics Mini-Symposia', u'DanielWilliams'],
-      'category': "Education",
-      'latlon': (37.0,-122.0)
-    }
-    """
-
     meta = {'category': 'Education',
- 'description': u'Jessica McKellar\nhttp://pyvideo.org/video/1850/a-hands-on-introduction-to-python-for-beginning-p\nhttps://us.pycon.org/2013/schedule/presentation/1/\nBeginning programmers: welcome to PyCon! Jumpstart your Python and programming careers with this 3-hour interactive tutorial. By the end, you\'ll have hands-on exposure to many core programming concepts, be able to write useful Python programs, and have a roadmap for continuing to learn and practice programming in Python. This class assumes no prior programming experience.\n<a href="http://pycon.org">PyCon</a> is the largest annual gathering for the community using and developing the open-source <a href="http://python.org">Python</a> programming language. It is produced and underwritten by the <a href="http://www.python.org/psf/">Python Software Foundation</a>, the 501(c)(3) nonprofit organization dedicated to advancing and promoting Python. Through PyCon, the PSF advances its mission of growing the international community of Python programmers.\r\n\r\n',
- 'hidden': None,
- 'tags': [u'psf',
-          u'pycon2013',
-          u'pythonpyconpycon2013',
-          u'tutorial',
-          u'JessicaMcKellar'],
- 'title': u'A hands-on introduction to Python for beginning programmers'}
-
-    # meta['description'] = meta['description'][:900]
-    meta['description'] = meta['description'].replace('<','')
+             'description': u'Jessica McKellar\nhttp://pyvideo.org/video/1850/a-hands-on-introduction-to-python-for-beginning-p\nhttps://us.pycon.org/2013/schedule/presentation/1/\nBeginning programmers: welcome to PyCon! Jumpstart your Python and programming careers with this 3-hour interactive tutorial. By the end, you\'ll have hands-on exposure to many core programming concepts, be able to write useful Python programs, and have a roadmap for continuing to learn and practice programming in Python. This class assumes no prior programming experience.\n<a href="http://pycon.org">PyCon</a> is the largest annual gathering for the community using and developing the open-source <a href="http://python.org">Python</a> programming language. It is produced and underwritten by the <a href="http://www.python.org/psf/">Python Software Foundation</a>, the 501(c)(3) nonprofit organization dedicated to advancing and promoting Python. Through PyCon, the PSF advances its mission of growing the international community of Python programmers.\r\n\r\n',
+              'hidden': None,
+               'tags': [u'psf',
+                         u'pycon2013',
+                                   u'pythonpyconpycon2013',
+                                             u'tutorial',
+                                                       u'JessicaMcKellar'],
+                'title': u'A hands-on introduction to Python for beginning programmers'}
+    
+    meta['description']=u'Jessica McKellar\nhttp://pyvideo.org/video/1850/a-hands-on-introduction-to-python-for-beginning-p\nhttps://us.pycon.org/2013/schedule/presentation/1/\nBeginning programmers: welcome to PyCon! Jumpstart your Python and programming careers with this 3-hour interactive tutorial. By the end, you\'ll have hands-on exposure to many core programming concepts, be able to write useful Python programs, and have a roadmap for continuing to learn and practice programming in Python. This class assumes no prior programming experience.\n<a href="http://pycon.org">PyCon</a> is'
+    # the largest annual gathering for the community using and developing the open-source <a href="http://python.org">Python</a> programming language. It is produced and underwritten by the <a href="http://www.python.org/psf/">Python Software Foundation</a>, the 501(c)(3) nonprofit organization dedicated to advancing and promoting Python. Through PyCon, the PSF advances its mission of growing the international community of Python programmers.\r\n\r\n',
 
     veyepar_dir = os.path.expanduser('~/Videos/veyepar')
     test_dir = os.path.join(veyepar_dir,"test_client/test_show/mp4")
     test_file = os.path.join(test_dir,"Lets_make_a_Test.mp4")
-    # test_file = os.path.join(test_dir,"Lets_make_a_Test.ogv")
 
     u = Uploader()
     u.files = [{'pathname':test_file, 'ext':'mp4'}]
@@ -325,7 +318,7 @@ def test_upload():
     u.private = False
     u.unlisted = True
 
-    u.debug_mode=True
+    u.debug_mode=False
 
     ret = u.upload()
 

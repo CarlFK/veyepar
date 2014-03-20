@@ -343,8 +343,10 @@ pix_fmt=yuv411p" % parms
  def mk_audio_png(self):
       import mk_audio_png
       p=mk_audio_png.mk_audio_png()
-      p.set_options(force=True, verbose=True, 
-          upload_formats=self.upload_formats,
+      p.set_options(
+              force=True, verbose=True, 
+              cloud_user='testact',
+              upload_formats=self.upload_formats,
           )
       p.main()
       ret = p.ret

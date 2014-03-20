@@ -39,7 +39,8 @@ class post(process):
         descriptions = [ep.authors,
                 ep.public_url, ep.conf_url,
                 ep.description,
-                show.description, client.description]
+                ]
+                # show.description, client.description]
 
         # remove blanks
         descriptions = [d for d in descriptions if d]
@@ -321,13 +322,13 @@ class post(process):
         if self.options.verbose: pprint.pprint(meta)
 
         # upload
-        if self.options.skip_yt: youtube_success = True
+        if not ep.show.client.youtube_id: youtube_success = True
         else: youtube_success = self.do_yt(ep,files,True,meta)
 
-        if self.options.skip_arc: archive_success = True
+        if not ep.show.client.archive_id: archive_success = True
         else: archive_success = self.do_arc(ep,files,meta)
 
-        if self.options.skip_rax: rax_success = True
+        if not ep.show.client.rax_id: rax_success = True
         else: rax_success = self.do_rax(ep,files,meta)
 
         # tring to fix the db timeout problem
@@ -344,12 +345,6 @@ class post(process):
                 and rax_success
 
     def add_more_options(self, parser):
-        parser.add_option('--skip-yt', action="store_true",
-            help="Don't try uploading to YouTube.")
-        parser.add_option('--skip-arc', action="store_true",
-            help="Don't try uploading to archive.org.")
-        parser.add_option('--skip-rax', action="store_true",
-            help="Don't try uploading to archive.org.")
 
         parser.add_option('--release-all', action="store_true",
             help="ignore the released setting.")

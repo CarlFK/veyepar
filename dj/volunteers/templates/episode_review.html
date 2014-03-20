@@ -20,7 +20,7 @@
 <div id="recording-sheets" style="margin:10px 0">
     <table>
     <tbody>
-        <tr><th colspan="{{ sheets.count }}">Click on thumnails to see recording sheets</th></tr>
+        <tr><th colspan="{{ sheets.count }}">Click on thumnail to see recording sheet</th></tr>
         <tr>
             {% for img in sheets %}
             <td><a href="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
@@ -33,8 +33,6 @@
     </table>
 </div>
 {% endif %}
-{% endwith %}
-{% endwith %}
 
 <div id="episode-form" style="padding:20px 0">
 {% if episode.state == 0 %}
@@ -49,21 +47,16 @@
 <form action="." method="post">
   {% csrf_token %}
 
-  <h2><a name="step-1">Step 1</a></h2>
   <p>Select which video files belong to this talk. 
 {% if sheets %}
-  You can use the recording sheets above for reference. 
-     </p>
+  The recording sheets above may have useful notes.
 {% endif %}
+  </p>
      <p>
-     Below are the raw files that were created durring the block of time and space scheduled for the talk.  
-     Click on the play button for each clip to see the video.
+     Below are the raw files that were created durring the block of time and space scheduled for the talk.  Pick out the ones that should be assembeled into the final video.
      <p>
      <p>
-     You may want to trim cruft, (unwanted content) like people filing into the room and getting ready.
-     </p>
-     <p>
-     If a file contains large amounts of cruft, you should remove it.  Introductions are nice, if they are nice.  If they include too much spam, or something you would not want, remove it.  The encoder doesn't care if you cut stuff off or not, but the people who view the video will.  Use your judgment.
+     You may want to trim cruft, (unwanted content) like people filing into the room and getting ready.  If a file contains large amounts of cruft, you should remove it.  Introductions are nice, if they are nice.  If they include something you would not want, remove it.  The encoder doesn't care if you cut stuff off or not, but the people who view the video will.  Use your judgment.
     </p>
      <p>
      You can trim from the start and end by entering the time in the Start and End boxes.  The time you enter is the time you see  on the player.  Hit Play, when you are at the point you want the talk to start, hit Pause. look at the time ont the player, enter that in the Start box, like 1:23.   Run the slider to the end and Play.  If you talk ends long before the end of the file, hit Pause at the end of the talk, enter the time you see on the player in the End box.  
@@ -82,31 +75,6 @@
      to <a href="#step-2">Step 2</a> and choose "This Episode is Borked".
   </p>
 
-  <h2>Alternate Reviewing Method</h2>
-  <p>If your browser doesn't work with the embedded player, you can review the
-     files using VLC or another media player that can handle .ogv files and m3u
-     playlists.
-  </p>
-  <table>
-  <tbody>
-    <tr>
-      <td><a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">Review all .ogv files on the page</a></td>
-    </tr>
-  </tbody>
-  </table>
-
-  <h2>For Perfectionists</h2>
-  <p>If you want to review only the videos that you want to be encoded, click
-     'Save', then the 'Review' link (otherise skip to <a href="#step-2">Step 2</a>):
-  </p>
-  <table>
-  <tbody>
-    <tr>
-      <td><input type="submit" value="Save" /></td>
-      <td><a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv&apply=yes">Review selected .ogv files</a></td>
-    </tr>
-  </tbody>
-  </table>
   <br />
   <h2>Advanced</h2>
   <p>(Make sure you really know what you are doing before clicking this link!)</p>
@@ -119,7 +87,6 @@
   <br />
   <hr />
   <br />
-  <h2><a name="step-2">Step 2</a></h2>
   <p>Enter any comments if you have them, and choose <strong>"Ready to Encode"</strong> if
      you have selected all the video files you need.<br />Choose "This Episode is
      Borked" if there are issues with the video files that can't be fixed and
@@ -144,4 +111,9 @@
 {% endif %}
 {% endif %}
 </div>
+
+{% endwith %}
+{% endwith %}
+
 {% endblock %}
+
