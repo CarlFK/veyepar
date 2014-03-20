@@ -21,7 +21,8 @@
 
 </head>
 <body>
-{% include "accounts/login_form.html" %}
+{% block login %} 
+{% include "accounts/login_form.html" %} 
 
 {% if user.is_authenticated %}
   <p class="shortcuts">
@@ -38,6 +39,8 @@
     {% endif %}
   </p>
 {% endif %}
+
+{% endblock %}
 
 {% block content %}
 {% endblock %}
