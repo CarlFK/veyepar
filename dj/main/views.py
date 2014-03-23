@@ -1039,12 +1039,13 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     start_date = request.REQUEST.get('date')
 
     cuts = request.REQUEST.get('cuts')
-    # episode.cut_list_set.count
+
+    order_by = request.REQUEST.get('order_by')
 
     # state = request.REQUEST.get('state')
 
     locations=show.locations.filter(active=True).order_by('sequence')
-    episodes=Episode.objects.filter(show=show).order_by('start')
+    episodes=Episode.objects.filter(show=show)
 
     admin_params="show__id__exact=%s" % show.id
 
@@ -1074,7 +1075,11 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             cutcut = int(cuts)
             episodes = episodes.annotate(
                     c=Count("cut_list")).filter(c__gte=cutcut)
-
+    if order_by:
+        if order_by == "location,start":
+            episodes = episodes.order_by('location__sequence','start')
+    else: 
+        episodes = episodes.order_by('start')
 
     if request.user.is_authenticated():
         if request.method == 'POST':
