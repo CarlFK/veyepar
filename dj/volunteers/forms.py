@@ -76,11 +76,11 @@ class EpisodeResolutionForm(forms.ModelForm):
                                        (2, 'Ready to Encode'),
                                        (0, 'This Episode is Borked')), 
                               widget=forms.RadioSelect(),
-                              label="Resolution")
+                              label="Action")
     
     class Meta:
         model = Episode
-        fields = ['id', 'comment', 'state']
+        fields = ['id', 'state', 'comment', ]
         exclude = ['show']
         
     def __init__(self, *args, **kwargs):
