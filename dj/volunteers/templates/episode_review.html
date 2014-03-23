@@ -47,23 +47,23 @@
 <form action="." method="post">
   {% csrf_token %}
 
-  <p>Select which video files belong to this talk. 
+  <p><strong>Select which video files belong to this talk.</strong>
 {% if sheets %}
   The recording sheets above may have useful notes.
 {% endif %}
   </p>
      <p>
      Below are the raw files that were created durring the block of time and space scheduled for the talk.  Pick out the ones that should be assembeled into the final video.
-     <p>
+     </p>
+ <p>
+  {% include "_video_formset.html" %}
      <p>
      You may want to trim cruft, (unwanted content) like people filing into the room and getting ready.  If a file contains large amounts of cruft, you should remove it.  Introductions are nice, if they are nice.  If they include something you would not want, remove it.  The encoder doesn't care if you cut stuff off or not, but the people who view the video will.  Use your judgment.
     </p>
      <p>
      You can trim from the start and end by entering the time in the Start and End boxes.  The time you enter is the time you see  on the player.  Hit Play, when you are at the point you want the talk to start, hit Pause. look at the time ont the player, enter that in the Start box, like 1:23.   Run the slider to the end and Play.  If you talk ends long before the end of the file, hit Pause at the end of the talk, enter the time you see on the player in the End box.  
      </p>
-  <p>
-  {% include "_video_formset.html" %}
-
+ 
   <table style="margin:20px 0">
   <tbody>
       <tr><td><a href="{% if edit_key %}{% url guest_expand_cutlist episode.id 30 edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id 30 %}{% endif %}" style="font-size:1.2em">I Don't See the Right Video Files</a></td></tr>
@@ -76,8 +76,7 @@
 
   <br />
   <h2>Advanced</h2>
-  <p>(Make sure you really know what you are doing before clicking this link!)</p>
-
+  <p>(Make sure you really know what you are doing before clicking this link!)</p> 
   <table style="margin:10px 0">
   <tbody>
       <tr><td><a href="{% url episode episode.id episode.slug episode.edit_key %}" style="font-size:1.1em">I need to do something unusual. Give me the advanced interface</a></td></tr>

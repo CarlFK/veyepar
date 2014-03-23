@@ -5,18 +5,7 @@
 
 <p>This talk needs a human to do a little work, likely under 5-10 minutes. 
 or much more if you allow your pefection-izm to get the best of you.</p>
-<p>Follow this link to do the work:
-
-<a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">
-{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}</a>
-</p>
-<p>
-Ideally that page will let you do all you need and you don't have to read this next part.  
-</p>
-<hr>
-<p>
-It also contains this link the original interface that lets you do all sorts of things, like use the alternate audio track.
-</p>
+<p><strong>Follow this link to do the work: <a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">{{episode.name}}</a></strong></p>
 
 <p>BTW, allowing the presenter to work on their talk is a new feature.
 Use your good judgement and tell the list about problems, or open an issue at 
