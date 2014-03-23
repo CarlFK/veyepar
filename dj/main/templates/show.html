@@ -33,9 +33,11 @@
 <tr><td><a href="{% url admin:main_show_change show.id %}">show admin</a></td></tr>
 <tr><td><a href="{% url admin:main_episode_changelist %}?{{admin_params}}">episodes admin</a></td></tr>
 <tr><td><a href="{% url admin:main_client_change client.id %}">client admin</a></td></tr>
+
+
 </table>
 <hr />
-
+Episode Count: {{episodes.count}}
   <table>
     <thead>
       <tr>

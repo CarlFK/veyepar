@@ -1070,7 +1070,11 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             # only show episodes with no raw files found
             episodes = episodes.filter(cut_list__isnull=True)
         else:
-            episodes = episodes.filter(cut_list__isnull=False)
+            # episodes = episodes.annotate( c=Count("cut_list")).filter(c__gt=0)
+            cutcut = int(cuts)
+            episodes = episodes.annotate(
+                    c=Count("cut_list")).filter(c__gte=cutcut)
+
 
     if request.user.is_authenticated():
         if request.method == 'POST':
