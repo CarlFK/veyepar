@@ -1029,8 +1029,7 @@ def episode_list(request, state=None):
 def episodes(request, client_slug=None, show_slug=None, location_slug=None,
               start_day=None, state=None):
 # def episodes(request, client_slug=None, show_slug=None):
-    # the selected client, show and episodes
-    # episode entry form
+
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
 
@@ -1038,6 +1037,9 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             else request.REQUEST.get('location')
 
     start_date = request.REQUEST.get('date')
+
+    no_cuts = request.REQUEST.get('no_cuts')
+    # episode.cut_list_set.count
 
     # state = request.REQUEST.get('state')
 
@@ -1062,6 +1064,10 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         admin_params += "&state__exact=%s" % state
       #   if state=='0':
       #  episodes = episodes.filter(state__isnull=True)
+
+    if no_cuts:
+        # only show episodes with no raw files found
+        episodes = episodes.filter(cut_list__isnull=True)
 
     if request.user.is_authenticated():
         if request.method == 'POST':
