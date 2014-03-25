@@ -13,9 +13,6 @@
 
 {% block content %}
 
-{% if episode.edit_key %}
-    <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">approve</a><br/>
-{% endif %}
 
 --client <a href="{% url client client.slug %}">{{ client.slug }}</a>
 --show <a href="{% url episode_list client.slug show.slug%}">{{ show.slug }}</a>
@@ -66,16 +63,23 @@
 
 </tbody>
 </table>
-<a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a><br/>
+
 {% if episode.conf_url %}
   <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
-{% endif %}
-{% if episode.state >= 5 %}
-<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"><br/>
 {% endif %}
 Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{% url admin:main_cut_list_changelist %}?episode__id__exact={{episode.id}}">cut list</a>
 <br>
+
+{% if episode.edit_key %}
+   <a href="{% url train episode.id episode.slug episode.edit_key %}">train</a>
+   <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">approve</a>
+{% endif %}
+<a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a><br/>
+
+{% if episode.state >= 5 %}
+<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"><br/>
+{% endif %}
 
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
 <a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">raw-ogv-playlist</a>

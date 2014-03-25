@@ -1151,6 +1151,15 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         context_instance=RequestContext(request) )
 
  
+def train(request,episode_id, episode_slug, edit_key):
+
+    episode=get_object_or_404( Episode, id=episode_id )
+
+    return render_to_response("approve/train.html",
+                    { 'episode':episode, },
+                    context_instance=RequestContext(request) )
+
+
 def approve_episode(request,episode_id, episode_slug, edit_key):
     """
     Allow someone to approve a video
