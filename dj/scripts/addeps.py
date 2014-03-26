@@ -2104,8 +2104,8 @@ class add_eps(process.process):
             else:
                 j = response.text
 
-                schedule = response.json
-                # schedule = response.json()
+                # schedule = response.json
+                schedule = response.json()
                 # if it is a python prety printed list:
                 # (pyohio 2012)
                 # schedule = eval(j)
@@ -2135,7 +2135,7 @@ class add_eps(process.process):
         if self.options.show =='write_the_docs_2013':
             return self.lanyrd(schedule,show)
 
-        if self.options.show =='pyohio2013':
+        if self.options.show in ['pyohio2013',"pycon_2014_warmup"]:
             return self.pyohio2013(schedule,show)
 
         if self.options.show =='pyconca2013':
