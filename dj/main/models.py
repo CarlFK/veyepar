@@ -356,7 +356,7 @@ class Cut_List(models.Model):
     episode = models.ForeignKey(Episode)
     sequence = models.IntegerField(default=1)
     start = models.CharField(max_length=11, blank=True, 
-        help_text='offset from start in HH:MM:SS.sw')
+        help_text='offset from start in HH:MM:SS.ss')
     end = models.CharField(max_length=11, blank=True,
         help_text='offset from start in HH:MM:SS.ss')
     apply = models.BooleanField(default=1)
