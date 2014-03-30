@@ -38,23 +38,18 @@ cd /etc/udev/rules.d
 wget http://$SHAZ/lc/fw-beep.rules
 cd
 
-
 ## disable screensaver, blank screen on idle, blank screen on lid close
-if false; then 
 mkdir -p /etc/dconf/profile
 cd /etc/dconf/profile
-echo user > user
-echo site >> user
+cat <<EOT >user
+user-db:user
+system-db:site
+EOT
 
 mkdir -p /etc/dconf/db/site.d/
-mkdir -p /etc/dconf/db/site.d/locks
 cd /etc/dconf/db/site.d/
-fi
 
-#gnome Juhaz: https://wiki.gnome.org/action/show/Projects/dconf/SystemAdministrators
-
-# cat <<EOT >local.dconf
-cat <<EOT >/etc/dconf/db/ibus.d/20-recording-mixer
+cat <<EOT >20-recording-mixer
 [org/gnome/desktop/screensaver]
 idle-activation-enabled=false
 lock-enabled=false
@@ -299,12 +294,11 @@ chown $NUSER:$NUSER $APP
 APP=inst_dvs.sh
 cat <<EOT >> $APP
 #!/bin/bash -x
-# sudo apt-get install python-wxversion
+sudo apt-get install python-wxgtk2.8
 git clone git://github.com/CarlFK/dvsmon.git
 sudo apt-add-repository --yes ppa:carlfk
 sudo apt-get --assume-yes update
 sudo apt-get --assume-yes install dvswitch dvsource dvsink
-sudo apt-get --assume-yes install kino
 EOT
 chmod 744 $APP
 chown $NUSER:$NUSER $APP
