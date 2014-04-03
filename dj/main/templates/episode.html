@@ -15,7 +15,7 @@
 
 
 --client <a href="{% url client client.slug %}">{{ client.slug }}</a>
---show <a href="{% url episode_list client.slug show.slug%}">{{ show.slug }}</a>
+--show <a href="{% url episode_list client.slug show.slug%}">{{ show.slug }}</a> {{episode.id}} --force
 <br/>
 
 {% if prev_episode %}
@@ -77,7 +77,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% endif %}
 <a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a><br/>
 
-{% if episode.state >= 5 %}
+{% if episode.public_url %}
 <img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"><br/>
 {% endif %}
 

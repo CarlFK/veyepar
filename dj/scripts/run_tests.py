@@ -275,12 +275,9 @@ pix_fmt=yuv411p" % parms
  def encode(self):
   # encode the test episode 
   # create a title, use clips 2,3,4 as source, maybe a credits trailer 
-  # python enc.py -v --client test_client --show test_show --force 
-  #  --upload-formats "flv ogv"
   import enc
   p=enc.enc()
-  
-  p.set_options(force=True, verbose=True, 
+  p.set_options(
     upload_formats=self.upload_formats, 
     rm_temp=False, debug_log=False)
   p.main()
@@ -307,15 +304,9 @@ pix_fmt=yuv411p" % parms
  @callme_maybe
  def post_blip(self):
   # post it to blip test account (password is in pw.py)
-  """
- python post.py -v --client test_client --show test_show \
- --blip-user veyepar_test
-# --force \
-# --hidden=1
-  """
   import post_blip as post
   p=post.post()
-  p.set_options(force=True, verbose=True, 
+  p.set_options(
       upload_formats=self.upload_formats,
       debug_log=True,
       )
@@ -330,7 +321,7 @@ pix_fmt=yuv411p" % parms
   # rsync to data center box
   import push
   p=push.push()
-  p.set_options(force=True, verbose=True, 
+  p.set_options(
       upload_formats=self.upload_formats,
       )
   p.main()
@@ -344,7 +335,6 @@ pix_fmt=yuv411p" % parms
       import mk_audio_png
       p=mk_audio_png.mk_audio_png()
       p.set_options(
-              force=True, verbose=True, 
               cloud_user='testact',
               upload_formats=self.upload_formats,
           )
@@ -357,15 +347,9 @@ pix_fmt=yuv411p" % parms
  @callme_maybe
  def post_yt(self):
   # post it to youtube test account (password is in pw.py)
-  """
- python post.py -v --client test_client --show test_show \
- --blip-user veyepar_test
-# --force \
-# --hidden=1
-  """
   import post_yt as post
   p=post.post()
-  p.set_options(force=True, verbose=True, 
+  p.set_options(
       upload_formats=self.upload_formats,
       debug_log=True,
       )
@@ -383,7 +367,7 @@ pix_fmt=yuv411p" % parms
   # add the test to pyvideo.org:9000 test instance
   import add_to_richard
   p=add_to_richard.add_to_richard()
-  p.set_options(force=True, verbose=True, 
+  p.set_options(
       upload_formats=self.upload_formats,
       )
   p.private=True
@@ -396,8 +380,6 @@ pix_fmt=yuv411p" % parms
   # add the test to pyvideo.org:9000 test instance
   import email_url
   p=email_url.email_url()
-  p.set_options(force=True, verbose=True, 
-      )
   ret = p.main()
   return ret
 
@@ -407,7 +389,6 @@ pix_fmt=yuv411p" % parms
   # tell the world (test account)
   import tweet
   p=tweet.tweet()
-  p.set_options(force=True, verbose=True, lag=0, )
   p.main()
   tweet_url = "http://twitter.com/#!/squid/status/%s" % (p.last_tweet["id"],)
   return tweet_url

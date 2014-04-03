@@ -139,8 +139,7 @@ service nginx start
 
 # nodes will have the same user as the server box
 sed -i "/@user@/s//$NUSER/g" \
-    $WEBROOT/d-i/oneiric/preseed_local.cfg \
-    $WEBROOT/lc/late.sh
+    $WEBROOT/d-i/oneiric/preseed_local.cfg
 
 # squid cache the install files
 # allow ppa's, repo keys
@@ -149,6 +148,7 @@ sed -i "/@user@/s//$NUSER/g" \
 
 if [[ "$(hostname)" =~ trist|pc8|chris|baz ]]; then
  # local cache used to speed up testing this script
+ # not needed for production
  cat <<EOT >> /etc/squid-deb-proxy/squid-deb-proxy.conf
 cache_peer g2a parent 8000 8002 
 never_direct allow all

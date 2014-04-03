@@ -19,8 +19,8 @@ class ass_dv(process.process):
     def process_ep(self, episode):
 
         # skip if there is already a cut list
-        if episode.cut_list_set.count():
-            return 
+        # if episode.cut_list_set.count():
+        #    return 
 
         self.cuts = mk_cuts(episode)
         print "self.cuts", self.cuts

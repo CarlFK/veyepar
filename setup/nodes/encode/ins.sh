@@ -28,8 +28,8 @@ workon veyepar
 git clone git://github.com/CarlFK/veyepar.git
 cd veyepar
 
-pip install -r setup/requirements.txt
+pip install -r setup/nodes/encode/requirements.txt
 
-touch dj/dj/local_settings.py
-touch dj/scripts/veyepar.cfg
+# touch dj/dj/local_settings.py
+# touch dj/scripts/veyepar.cfg
 
