@@ -2,7 +2,7 @@
 
 # posts to youtube
 
-import youtube_uploader
+import youtube_v3_uploader
 import archive_uploader
 import rax_uploader
 
@@ -116,17 +116,12 @@ class post(process):
         # meta['rating'] = self.options.rating
 
         # http://gdata.youtube.com/schemas/2007/categories.cat
-        meta['category'] = "Education"
+        meta['category'] = 22 # "Education"
 
         if ep.location.lat and ep.location.lon:
             meta['latlon'] = (ep.location.lat, ep.location.lon)
 
-        # private is implemnted different in youtube and blip.
-        # blip want's a number, yt wants Truthy
-        # yt has public, unlisted, private
-        # archive doesn't have any of this
-        # ACLs are fake. permissions are: World readable, Item uploader writable.
-        meta['hidden'] = ep.hidden 
+        meta['privacyStatus'] = 'unlisted'
 
         return meta
 
@@ -151,7 +146,7 @@ class post(process):
 
         youtube_success = False
 
-        uploader = youtube_uploader.Uploader()
+        uploader = youtube_v3_uploader.Uploader()
 
         uploader.user = ep.show.client.youtube_id
         uploader.files = files
@@ -159,7 +154,7 @@ class post(process):
         uploader.private = private
 
         # for replacing.
-        # (currently not implemented in youtube_uploader
+        # (currently not implemented in youtube_v3_uploader
         uploader.old_url = ep.host_url
 
         if self.options.test:

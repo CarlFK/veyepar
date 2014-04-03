@@ -172,6 +172,16 @@ def get_id_from_url(url):
 
 class Uploader():
 
+    # input attributes:
+    files = []
+    meta = {}
+    old_url = ''
+    debug=False
+
+    # return attributes:
+    ret_text = ''
+    new_url = ''
+
     def set_permission(self, video_url, privacyStatus='public'):
 
         video_id = get_id_from_url(video_url)
