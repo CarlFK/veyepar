@@ -193,6 +193,8 @@ class Uploader():
         youtube = get_authenticated_service({'noauth_local_webserver':True})
         update_video(youtube, args)
 
+        return True
+
     def upload(self):
 
         youtube = get_authenticated_service({'noauth_local_webserver':True})

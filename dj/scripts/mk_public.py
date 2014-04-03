@@ -12,12 +12,7 @@ from steve.restapi import API, get_content
 
 from add_to_richard import get_video_id
 
-import youtube_uploader
-
-import gdata.youtube
-from gdata.media import YOUTUBE_NAMESPACE
-from atom import ExtensionElement
-import atom
+import youtube_v3_uploader
 
 import pw
 
@@ -57,7 +52,7 @@ class mk_public(process):
 
     def up_youtube(self, ep):
 
-        uploader = youtube_uploader.Uploader()
+        uploader = youtube_v3_uploader.Uploader()
         uploader.user = ep.show.client.youtube_id
         return uploader.set_permission( ep.host_url )
 
@@ -68,11 +63,11 @@ class mk_public(process):
         ret = True  # if something breaks, this will be false
 
         # don't make public if there is no host_url (youtube)
-        if ep.public_url and ep.host_url:
+        if ep.public_url and ep.host_url and ep.show.client.richard_id:
             ret = ret and self.up_richard(ep)
             if self.options.verbose: print "Richard public."
 
-        if ep.host_url:
+        if ep.host_url and ep.show.client.youtube_id:
             ret = ret and self.up_youtube(ep)
             if self.options.verbose: print "Youtube public."
 
