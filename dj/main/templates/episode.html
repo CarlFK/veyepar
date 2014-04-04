@@ -71,11 +71,11 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{% url admin:main_cut_list_changelist %}?episode__id__exact={{episode.id}}">cut list</a>
 <br>
 
-{% if episode.edit_key %}
+{% if episode.edit_key and user.is_authenticated %}
    <a href="{% url train episode.id episode.slug episode.edit_key %}">train</a>
    <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">approve</a>
-{% endif %}
 <a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a><br/>
+{% endif %}
 
 {% if episode.public_url %}
 <img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"><br/>
@@ -102,8 +102,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/webm/{{episode.slug}}.webm">webm</a>
 
 <form method="POST">{% csrf_token %}
-    {# <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" /> #}
-<input type="submit" value="Save" />
+<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
 
 <table border=1 >
 <tbody>
