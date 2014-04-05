@@ -76,7 +76,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% endif %}
 
 {% if episode.public_url %}
-<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"><br/>
+<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio"><br/>
 {% endif %}
 
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
@@ -152,13 +152,13 @@ $(".viewer").zoomer();
       <table>
       <tr>
       <td>
-        {{ clrfform.sequence.label_tag }}: {{ clrfform.sequence }}</br>
+        {{ clrfform.sequence.label_tag }}: {{ clrfform.sequence }}<br/>
         <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">
-          {{ cl.raw_file.filename }}</a></br>
+          {{ cl.raw_file.filename }}</a><br/>
         <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
-          target=foo>{{ cl.raw_file.basename }}.ogv</a></br>
+          target=foo>{{ cl.raw_file.basename }}.ogv</a><br/>
         <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
-          {{cl.raw_file.basename}}.png</a></br>
+          {{cl.raw_file.basename}}.png</a><br/>
         <video
           id="rawfile{{ cl.id }}"
           src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
