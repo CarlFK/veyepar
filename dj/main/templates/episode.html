@@ -226,14 +226,9 @@ $(".viewer").zoomer();
   {% if cl.raw_file.ocrtext %}
   {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
-  <tr><td>
+
   <img id="audio_image_{{cl.id}}" alt="audio" 
 src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
-  </td></tr>
-  <tr><td>
-  <span id="bar_{{cl.id}}">&nbsp;</span>
-  <span id="bar2_{{cl.id}}">&nbsp;</span>
-  </td></tr>
 
   {% with forloop.counter0 as x %}
     <script>
