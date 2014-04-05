@@ -2,13 +2,11 @@
 {% extends "base.html" %}
 
 {% block head %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://formstone.it/components/Zoomer/jquery.fs.zoomer.js"></script>
+<link href="http://formstone.it/components/Zoomer/jquery.fs.zoomer.css" rel="stylesheet">
 <title>veyepar: {{episode.name}}</title>
- <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-
- <script src="http://formstone.it/components/Zoomer/jquery.fs.zoomer.js"></script>
- <link href="http://formstone.it/components/Zoomer/jquery.fs.zoomer.css" rel="stylesheet">
-
-
 {% endblock %}
 
 {% block content %}
@@ -134,96 +132,105 @@ $(".viewer").zoomer();
 
 
 {{ clrfformset.management_form }}
-<table border=1>
-<tbody id="accordian">
+
+
+<div class="panel-group" id="accordion">
+
 {% for cl,chap,clrfform in clrffs %}
 
-  <tr id="{{cl.raw_file.id}}"> 
-    <td>
-  {{clrfform.clid}}
-  <b>~/Videos/veyepar/{{cl.raw_file.base_url}}</b>
-  <table border=1>
-  <tbody>
-    <tr>
-    <td>
-      <table border=1>
-      <tbody>
-<tr><td> {{ clrfform.sequence.label_tag }}{{ clrfform.sequence }}</td></tr>
-<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">{{ cl.raw_file.filename }}</a></td></tr>
-<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=foo>{{ cl.raw_file.basename }}.ogv</a></td></tr>
-<tr><td> <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">{{cl.raw_file.basename}}.png</a></td></tr>
-<tr><td> <video 
-    id="rawfile{{cl.id}}"
-    width=200
-    src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" 
-    controls 
-    preload="none"
-    poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png"
-    ></video>
-    </td></tr>
-     </tbody>
-     </table>
-    <td>
-    <table border=1>
-    <tbody>
-        <tr> <th></th> <th><a href="#{{cl.raw_file.id}}">Raw File</a></th> <th>Cut List</th> </tr>
+<div class="panel">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{cl.raw_file.id}}">
+        ~/Videos/veyepar/{{cl.raw_file.base_url}} Duration: {{cl.raw_file.duration}}</a>
+    </h3>
+  </div> <!-- /panel-heading -->
 
-      <tr><td></td>
+  <div class="panel-collapse collapse" id="{{cl.raw_file.id}}">
+    <div class="panel-body">
+      {{clrfform.clid}}
 
-        <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
-        <td>{{ clrfform.apply.label_tag }}{{ clrfform.apply }}
-</td>
-      </tr>
-
-      <tr> <td>Start</td><td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td> <td>{{ clrfform.start }}{{chap.0}}</td>
-      </tr>
-      <tr> <td>Duration:</td> <td>{{cl.raw_file.duration}}</td> </tr>
-      <tr> <td>get_minutes:</td> <td>{{cl.raw_file.get_minutes}}</td> </tr>
-      <tr> <td>End</td><td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %} </td> <td>{{ clrfform.end }}{{chap.1}}</td> </tr>
-      <tr> <td>Comments:</td> <td>{#{clrfform.rf_comment}#}</td> <td>{{clrfform.cl_comment}}</td> </tr>
-      <tr> <td>
-         {{ clrfform.split.label_tag }}{{ clrfform.split }}
-</td>
-      <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">admin</a></td>
+      <table>
+      <tr>
       <td>
-<a href="{% url admin:main_cut_list_change cl.id%}">admin</a>
-<a href="{% url admin:main_cut_list_change cl.id%}delete/">delete</a>
-	 </td>
+        {{ clrfform.sequence.label_tag }}: {{ clrfform.sequence }}</br>
+        <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">
+          {{ cl.raw_file.filename }}</a></br>
+        <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
+          target=foo>{{ cl.raw_file.basename }}.ogv</a></br>
+        <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
+          {{cl.raw_file.basename}}.png</a></br>
+        <video
+          id="rawfile{{ cl.id }}"
+          src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
+          controls width=200
+          preload="none"
+          poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
+        </video>
+      </td>
+
+      <td>
+        <table>
+            <tr>
+                <td>&nbsp;</td>
+                <td><a href="#{{cl.raw_file.id}}">Raw File</a></td>
+                <td>Cut List</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
+                <td>{{ clrfform.apply.label_tag }}{{ clrfform.apply }}</td>
+            </tr>
+
+            <tr>
+                <td>Start</td>
+                <td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td>
+                <td>{{ clrfform.start }}{{chap.0}}</td>
+            </tr>
+
+            <tr>
+                <td>Duration</td>
+                <td>{{cl.raw_file.duration}}</td>
+                <td>&nbsp;</td>
+            </tr>
+
+            <tr>
+                <td>End</td>
+                <td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %}</td>
+                <td>{{ clrfform.end }}{{chap.1}}</td>
+            </tr>
+
+            <tr>
+                <td>Comments:</td>
+                <td>&nbsp;</td>
+                <td>{#{clrfform.rf_comment}#} {{clrfform.cl_comment}}</td>
+            </tr>
+
+            <tr>
+                <td>{{ clrfform.split.label_tag }}{{ clrfform.split }}</td>
+                <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">admin</a></td>
+                <td><a href="{% url admin:main_cut_list_change cl.id%}">admin</a>
+                    <a href="{% url admin:main_cut_list_change cl.id%}delete/">delete</a>
+                </td>
+            </tr>
+        </table>
+      </td>
       </tr>
-
-    </tbody>
-    </table>
-    </td>
-
-  </tbody>
-  </table>
-  </tr>
+      </table>
 
   {% if clrfform.errors %}
-  <tr> {% for field in clrfform %}
-          <td>{{field.name}}{{ field.errors }}</td>
-       {% endfor %} </tr>
+  {% for field in clrfform %}
+  {{field.name}}{{ field.errors }}
+  {% endfor %}
   {% endif %}
 
   {% if cl.raw_file.ocrtext %}
-  <tr>
-  <td>
-  <table border=1>
-  <tbody>
-    <tr>
-    <td>{{cl.raw_file.ocrtext|linebreaks}}</td>
-    </tr>
-  </tbody>
-  </table>
-  </td>
-  </tr>
+  {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
   <tr><td>
-  <img 
-id="audio_image_{{cl.id}}" 
-alt="audio" 
-src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png"
-   >
+  <img id="audio_image_{{cl.id}}" alt="audio" 
+src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
   </td></tr>
   <tr><td>
   <span id="bar_{{cl.id}}">&nbsp;</span>
@@ -260,9 +267,13 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
     </script>
   {% endwith %}
 
+
+    </div> <!-- /panel-body -->
+  </div> <!-- /panel-collapse -->
+</div> <!-- /panel -->
 {% endfor %}
-</tbody>
-</table>
+</div> <!-- panel-group -->
+
 
 <table border=1>
 <tbody>
