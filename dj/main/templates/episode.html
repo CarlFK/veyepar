@@ -133,10 +133,10 @@ $(".viewer").zoomer();
 
 {{ clrfformset.management_form }}
 
-<div class="panel-group" id="accordion">
 
 {% for cl,chap,clrfform in clrffs %}
 
+<div class="panel-group" id="accordion">
 <div class="panel">
   <div class="panel-heading"></div>
   <div class="panel-title"></div> 
@@ -264,8 +264,8 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
     </div> <!-- /panel-body -->
   </div> <!-- /panel-collapse -->
 </div> <!-- /panel -->
-{% endfor %}
 </div> <!-- panel-group -->
+{% endfor %}
 
 
 <table border=1>
