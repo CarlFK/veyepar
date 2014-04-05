@@ -32,6 +32,9 @@ $(document).ajaxSend(function(event, xhr, settings) {
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
 
+    var sm = safeMethod(settings.type);
+    var so = sameOrigin(settings.url);
+
     if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     }
@@ -59,11 +62,13 @@ function hide_show_login_out() {
 
 $(function(){
     
-    $('#login').submit(function(ev){
+    $('#login').submit(function(event){
+        // var csrftoken = $.cookie('csrftoken');
         $.ajax({
             url: "/accounts/login/",
             type: "POST",
             dataType: 'json',
+            // headers: { "X-CSRFToken": csrftoken },
             data: {
                 username: $('#id_username').val(),
                 password: $('#id_password').val()
@@ -77,7 +82,7 @@ $(function(){
                 hide_show_login_out();
             }
         })
-        ev.preventDefault();
+        event.preventDefault();
     })
 
     $('#logout').submit(function(ev){
@@ -89,7 +94,7 @@ $(function(){
                 hide_show_login_out();
             }
         })
-        ev.preventDefault();
+        ev.defaultPrevented();
     })
 
 

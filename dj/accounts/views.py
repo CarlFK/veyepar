@@ -47,8 +47,12 @@ def logax(request):
             ret = {'error_no':-1, 'error_text':'form error'}
     else:
         ret = {'error_no':-2, 'error_text':'not POST'}
+
+    print "#2", ret
+
     response = HttpResponse(simplejson.dumps(ret,indent=1))
     response['Content-Type'] = 'application/json'
+
     return response
 
 
