@@ -9,13 +9,15 @@ client supplying:
   slave machines
   file server 
 
+freenode:
+  warn about conference 
 
 print:
  recording sheets
  vga_config.odt
  signs.odt
 
-mixer box setup:
+video mixer setup:
   set time zone
   push veyepar config 
 

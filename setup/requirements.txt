@@ -7,7 +7,7 @@ django-debug-toolbar
 git+https://github.com/bear/python-twitter.git
 feedparser
 
-git+https://github.com/willkg/steve.git
+steve
 python-dateutil
 
 # hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
@@ -24,4 +24,8 @@ django-extensions
 pyrax
 pypng
 # numpy
+
+djangorestframework
+markdown
+django-filter
 

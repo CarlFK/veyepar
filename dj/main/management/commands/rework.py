@@ -59,6 +59,9 @@ class Command(BaseCommand):
             # look for final video url
             eps = Episode.objects.filter(public_url=args[0])
 
+            # if not eps:
+            #    eps = Episode.objects.filter(public_url=args[0])
+
             if not eps:
                 # look for just slug
                 slug = args[0]
