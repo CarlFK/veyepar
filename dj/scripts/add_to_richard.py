@@ -7,8 +7,11 @@ import pprint
 from urlparse import urlparse, parse_qs
 from process import process as Process
 
-from steve.richardapi import create_category_if_missing, create_video, update_video, MissingRequiredData
+from steve.richardapi import create_video, update_video, MissingRequiredData
+from steve.restapi import Http4xxException
+
 from steve.util import scrapevideo
+
 from steve.restapi import API, get_content
 
 import requests
@@ -46,18 +49,21 @@ class add_to_richard(Process):
         self.host = pw.richard[ep.show.client.richard_id]
 
         self.pyvideo_endpoint = \
-            'http://{hostname}/api/v1'.format(hostname=self.host['host'])
+            'http://{hostname}/api/v2'.format(hostname=self.host['host'])
         self.api = API(self.pyvideo_endpoint)
 
         if self.options.verbose: 
             print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'category_key': self.category_key}
 
+        
+        """
         # FIXME using chatty hack due to problems with category handling
         if not self.options.test:
             create_category_if_missing( self.pyvideo_endpoint, 
                     self.host['user'], self.host['api_key'], 
                     {'title': self.category_key,
                         'description':ep.show.description})
+        """
         
         video_data = self.create_pyvideo_episode_dict(ep, state=2)
         # perhaps we could just update the dict based on scraped_meta
@@ -96,37 +102,30 @@ class add_to_richard(Process):
                 import code
                 # code.interact(local=locals())
 
-        try:
 
-            if self.is_already_in_pyvideo(ep):
-                # vid_id = ep.public_url.split('/video/')[1].split('/')[0]
-                vid_id = get_video_id( ep.public_url)
-                if not self.options.test:
-                    print 'updating pyvideo', ep.public_url, vid_id
-                    ret = self.update_pyvideo(vid_id, video_data)
-                    # above ret= isn't working.  returns None I think?
-                    # lets hope there wasn't a problem and blaze ahead.
-                    ret = True
-                else: 
-                    print 'test mode, not updating pyvideo' 
-                    print ep.public_url, vid_id
-                    pprint.pprint(video_data)
+        if self.is_already_in_pyvideo(ep):
+            # vid_id = ep.public_url.split('/video/')[1].split('/')[0]
+            vid_id = get_video_id( ep.public_url)
+            if not self.options.test:
+                print 'updating pyvideo', ep.public_url, vid_id
+                ret = self.update_pyvideo(vid_id, video_data)
+                # above ret= isn't working.  returns None I think?
+                # lets hope there wasn't a problem and blaze ahead.
+                ret = True
+            else: 
+                print 'test mode, not updating pyvideo' 
+                print ep.public_url, vid_id
+                pprint.pprint(video_data)
 
-                    ret = False
-            else:
-                if not self.options.test:
-                    self.pvo_url = self.create_pyvideo(video_data)
-                    print 'new pyvideo url', self.pvo_url
-                    ep.public_url = self.pvo_url
-                    ret = self.pvo_url
-                else: 
-                    ret = False
-
-        except Exception as exc:
-            print "exc:", exc
-            import code
-            code.interact(local=locals())
-            raise exc
+                ret = False
+        else:
+            if not self.options.test:
+                self.pvo_url = self.create_pyvideo(video_data)
+                print 'new pyvideo url', self.pvo_url
+                ep.public_url = self.pvo_url
+                ret = self.pvo_url
+            else: 
+                ret = False
 
         ep.save()
 
@@ -142,14 +141,16 @@ class add_to_richard(Process):
         """
         try:
             # fetch current record
-            response = self.api.video(vid).get(username=self.host['user'], api_key=self.host['api_key'])
+            response = self.api.video(vid).get(api_key=self.host['api_key'])
             video_data = get_content(response)
             if self.options.verbose: pprint.pprint( video_data )
             # update dict with new information
             video_data.update(new_data)
             if self.options.verbose: pprint.pprint( video_data )
             # update in pyvideo
-            return update_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], vid, video_data)
+            return update_video(self.pyvideo_endpoint, 
+                   self.host['api_key'], vid, video_data)
+
         except MissingRequiredData as e:
             print '#2, Missing required fields', e.errors
             code.interact(local=locals())
@@ -163,12 +164,19 @@ class add_to_richard(Process):
 
         """
         try:
-            video_data['added'] = datetime.datetime.now().isoformat()
-            vid = create_video(self.pyvideo_endpoint, self.host['user'], self.host['api_key'], video_data)
-            return 'http://%s/video/%s/%s' % (self.host['host'], vid['id'],vid['slug'])
+            # video_data['added'] = datetime.datetime.now().isoformat()
+            vid = create_video(self.pyvideo_endpoint, 
+                    self.host['api_key'], video_data)
+            url = 'http://%s/video/%s/%s' % (
+                    self.host['host'], vid['id'],vid['slug'])
+            return url
+
         except MissingRequiredData as e:
-            print '#3, Missing required fields', e.errors
+            print '#3, Missing required fields', e
             raise e
+        except Http4xxException as exc:
+            print exc.response.status_code
+            print exc.response.content
 
     def create_pyvideo_episode_dict(self, ep, state=1):
         """ create dict for pyvideo based on Episode
@@ -198,7 +206,7 @@ class add_to_richard(Process):
             'copyright_text': ep.license,
             'tags': tags,
             'speakers': speakers,
-            'recorded': ep.start.isoformat(),
+            'recorded': ep.start.strftime("%Y-%m-%d"),
             # 'language': 'German',
             'language': 'English',
             'duration': int(ep.get_minutes()),

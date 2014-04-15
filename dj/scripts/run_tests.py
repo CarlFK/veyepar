@@ -271,7 +271,7 @@ pix_fmt=yuv411p" % parms
   return
 
 
- # @callme_maybe
+ @callme_maybe
  def encode(self):
   # encode the test episode 
   # create a title, use clips 2,3,4 as source, maybe a credits trailer 

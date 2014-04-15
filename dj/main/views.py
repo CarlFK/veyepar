@@ -74,8 +74,8 @@ episode:     XXXXXXXXX
     client.credits="00000001.png"
     client.save()
 
-    show,create = Show.objects.get_or_create(
-            name='test show',slug='test_show',client=client)
+    show,create = Show.objects.get_or_create( client=client,
+                    name='test show',slug='test_show',)
     if create:
         show.locations.add(loc)
 
