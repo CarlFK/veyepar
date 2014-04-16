@@ -1263,20 +1263,47 @@ def orphan_dv(request,show_id):
     dv files that are not associated with an episode.
     """
     
+    # http://localhost:8080/main/orphan_dv/173/?format=m3u&trash=y
+
+    format = request.GET.get('format')
+    trash = request.GET.get('trash')
+
     show=get_object_or_404(Show,id=show_id)
-    # rfs=Raw_File.objects.filter(location=location,show=show).order_by('start')
+    client = show.client
+
     rfs=Raw_File.objects.filter(show=show).order_by('start')
+    if trash is not None:
+        if trash.lower() == 'n':
+            rfs=rfs.filter(trash=False)
+        if trash.lower() == 'y':
+            rfs=rfs.filter(trash=True)
+
     orphans=[]
     for rf in rfs:
         if rf.cut_list_set.count()==0:
             eps = scheduled_episodes(rf)
             orphans.append([rf,eps])
     
-    return render_to_response('orphan_dv.html',
-        {
-          'rfs':orphans,
-    },
-        context_instance=RequestContext(request) )
+    if format is None:
+        return render_to_response('orphan_dv.html',
+            { 'rfs':orphans, },
+            context_instance=RequestContext(request) )
+    elif format == 'json':
+        pass
+    elif format == 'm3u':
+
+        response = HttpResponse(mimetype='audio/mpegurl')
+        response['Content-Disposition'] = 'inline; filename=playlist.m3u'
+        writer = csv.writer(response)
+        head="~/Videos/veyepar"
+        for orphan in orphans:
+            rf = orphan[0]
+            pathname = os.path.join(head,client.slug,show.slug, 'dv',
+                rf.location.slug, rf.filename )
+            writer.writerow([pathname])
+
+        return response
+
 
 def mk_cuts(episode, 
         short_clip_time = 0,
