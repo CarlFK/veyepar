@@ -14,7 +14,7 @@ from django.conf import settings
 class email_title(email_ab):
 
     ready_state = None
-    subject_template = "{{ep.show.name}}: Video metadata for your talk {{ep.name}}"
+    subject_template = "{{ep.show.name}}: Video metadata for your talk {{ep.name|safe}}"
 
     body_template = """
 Hi,

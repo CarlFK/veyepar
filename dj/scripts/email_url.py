@@ -9,7 +9,7 @@ class email_url(email_ab):
 
     ready_state = 7
 
-    subject_template = "{{ep.show.name}} Video up: {{ep.name}}" 
+    subject_template = "{{ep.show.name}} Video up: {{ep.name|safe}}" 
     body_template = """
     The video of your talk is posted:
     {{url}}
