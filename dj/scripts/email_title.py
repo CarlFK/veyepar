@@ -14,7 +14,7 @@ from django.conf import settings
 class email_title(email_ab):
 
     ready_state = None
-    subject_template = "{{ep.show.name}}: Video metadata for your talk {{ep.name|safe}}"
+    subject_template = "[{{ep.show.name}}] Video metadata for {{ep.name}}"
 
     body_template = """
 Hi,
@@ -32,7 +32,7 @@ Released: {{ep.released}}
 * "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.
 
 The video will be titled with the following image:
-http://veyepar.nextdayvideo.com/static/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
+{{MEDIA_URL}}{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 
 {% if ep.public_url%} And the main page for the video will be here:
   {{ep.public_url}} {% endif %}
