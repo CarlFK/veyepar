@@ -26,7 +26,7 @@
         <tr>
             {% for img in sheets %}
             <td><a href="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
-                <img src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=90 >
+                <img src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=90 alt="recording sheet" >
                 </a>
             </td>
             {% endfor %}
@@ -66,12 +66,11 @@ set the Action to "Encode" and hit "Submit" at the bottom of this page.
      <p>
      You can trim from the start and end by entering the time in the Start and End boxes.  The time you enter is the time you see  on the player.  Hit Play, when you are at the point you want the talk to start, hit Pause. look at the time ont the player, enter that in the Start box, like 1:23.   Run the slider to the end and Play.  If you talk ends long before the end of the file, hit Pause at the end of the talk, enter the time you see on the player in the End box.  
      </p>
- 
-  <br />
-  <br />
+  <br/>
+  <br/>
   <p><strong>Choose "Ready to Encode"</strong> when you are done. 
   (you have selected all the video files you need.)<br/>
-     Choose "This Episode is Borked" if there are issues with the video files that can't be fixed and this talk should not be published.</br>
+     Choose "This Episode is Borked" if there are issues with the video files that can't be fixed and this talk should not be published.<br/>
      Leave it as "Save and Keep Editing" if you have done all you can and need someone else to help.<br/>
      Use Comments to describe any problems, like "None of these clips show this talk." or "The audio is very low." 
   </p>
@@ -81,7 +80,7 @@ set the Action to "Encode" and hit "Submit" at the bottom of this page.
   </tbody>
   </table>
   <br />
-  <input type="submit" value="Submit" /></td>
+  <input type="submit" value="Submit" />
 </form>
 {% else %}
   <p>This episode has already been reviewed. Thank you for volunteering!</p>
