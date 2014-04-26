@@ -158,6 +158,64 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
     return response
 
+
+def eps_lanynard(request,client_slug=None,show_slug=None):
+    """
+    json feed to send to Lanyard, cuz wacky backward.
+    https://docs.google.com/document/d/1aT_mIJ7Q-eawamGs_9HrBZL_Lfa0dBohXhc1SpfYSj0/pub?embedded=true
+    """
+
+    client=get_object_or_404(Client,slug=client_slug)
+    show=get_object_or_404(Show,client=client,slug=show_slug)
+    eps = Episode.objects.filter(show=show)
+
+    #venue id - SEP
+    vid=request.GET.get('vid','')
+
+    field_map = (
+            ('conf_url','crowdsource_ref'),
+            ('name','title'),
+            ('description','abstract'),
+            # ('','start_time'),
+            # ('','end_time'),
+            # ('location','space_name'),
+            # ('','venue'),
+            # ('','speakers'),
+            )
+            
+
+    sessions = []
+    for ep in eps:
+        session = {}
+        for s,d in field_map:
+            session[d]=getattr(ep,s)
+        session['start_time'] = ep.start.strftime('%Y-%m-%d %H:%M:%S')
+        session['end_time'] = ep.end.strftime('%Y-%m-%d %H:%M:%S')
+        session['venue'] = vid
+        session['space_map'] = ep.location.name
+
+        speakers=[]
+        if ep.authors:
+            for i,name in enumerate(ep.authors.split(',')):
+                speaker={'crowdsource_ref': "{0}/speakers/{1}".format(
+                            session['crowdsource_ref'],i),
+                         'name':name,
+                         'role':'',
+                         }
+                speakers.append(speaker)
+        session['speakers']=speakers
+
+        sessions.append(session)
+        
+
+    response = HttpResponse(mimetype="application/json")
+    # serializers.serialize("json", sessions, stream=response)
+    #     >>> json.dump(['streaming API'], io)
+    import json
+    json.dump(sessions,response)
+
+    return response
+
 def main(request):
     return render_to_response('main.html',
         context_instance=RequestContext(request) )
