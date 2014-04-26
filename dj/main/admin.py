@@ -20,9 +20,9 @@ class ShowAdmin(admin.ModelAdmin):
 admin.site.register(Show, ShowAdmin)
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('id','sequence','active','name','slug','channelcopy')
+    list_display = ('id','sequence','active','name','slug',)
     list_display_links = ('id',)
-    list_editable = ('sequence', 'active', 'name','slug', 'channelcopy',)
+    list_editable = ('sequence', 'active', 'name','slug',)
     search_fields = ['name', ]
     admin_order_field = ('sequence', 'name',)
     prepopulated_fields = {"slug": ("name",)}
@@ -64,13 +64,12 @@ class EpisodeAdmin(admin.ModelAdmin):
             'start', 
             'duration', 
             # 'emails',
-            'channelcopy',
+            'location',
 )
     list_editable = ('state',
             # 'sequence', 
             'start', 
             'duration', 
-            'channelcopy',
             # 'emails',
             )
 

@@ -70,6 +70,8 @@ import datetime
 import csv
 import requests
 import HTMLParser
+import os
+
 from dateutil.parser import parse
 import pprint
 from django.utils.html import strip_tags
@@ -395,8 +397,14 @@ class add_eps(process.process):
                         if self.options.verbose: 
                             pprint.pprint( diff_fields )
                         for f,a1,a2 in diff_fields:
-                            print 'veyepar %s: %s' % (f,unicode(a1)[:60])
-                            print ' source %s: %s' % (f,unicode(a2)[:60])
+                            print 'veyepar %s: %s' % (f,a1[:60])
+                            print ' source %s: %s' % (f,a2[:60])
+                            for i,c in enumerate(a1):
+                                if a1[i] <> a2[i]:
+                                    print \
+          "diff found at pos {0}: {1} != {2}".format(
+                i,a1[i].__repr__(),a2[i].__repr__()) 
+                                    break
                         print
 
 
@@ -600,7 +608,8 @@ class add_eps(process.process):
           if room not in rooms: rooms.append(room)
       return rooms
 
-    def get_rooms(self, schedule, key='room'):
+    # def get_rooms(self, schedule, key='room'):
+    def get_rooms(self, schedule, key='location'):
       rooms=set()
       for row in schedule:
           if self.options.verbose: print row
@@ -1685,6 +1694,61 @@ class add_eps(process.process):
         return 
 
 
+    def wtd_na_2014(self, schedule, show):
+
+        # remove rows that have no crowdsource_ref, because spreadsheet
+        # schedule = [s for s in schedule if s['Time Start']]
+        schedule = [s for s in schedule if 
+                s['crowdsource_ref'] or s['released']]
+       
+        # convert all the values to unicode strings
+        schedule = [{k:d[k].decode('utf-8') for k in d} 
+                for d in schedule ] 
+        
+        field_maps = [
+            ('key','id'),
+            ('Room/Location','location'),
+            # ('','sequence'),
+            ('Session Title','name'),
+            ('','authors'),
+            ('Email','emails'),
+            ('Description (Optional)','description'),
+            ('Time Start','start'),
+            # ('Time End','end'),
+            ('Length','duration'),
+            ('released','released'),
+            ('','license'),
+            ('tags','tags'),
+            ('key','conf_key'),
+            ('crowdsource_ref','conf_url'),
+            # ('','host_url'),
+            # ('','public_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+
+        for event in events: 
+
+            if " - " in event['name']:
+                event['authors'], event['name'] = \
+                        event['name'].split(' - ')
+                event['authors'] = ', '.join(event['authors'].split(' & '))
+
+            event['start'] = datetime.datetime.strptime(
+                    "{0} {1}".format(event['raw']['Date'],event['start']),
+                    '%m/%d/%Y %H:%M')
+                    
+            event['duration'] = "00:{0}:00".format(event['duration'])
+            event['released'] = event['released'].lower() == 'y'
+
+        self.add_eps(events, show)
+
+        return 
+
+
     def lanyrd(self, schedule, show):
         # http://lanyrd.com 
         field_maps = [
@@ -2041,8 +2105,8 @@ class add_eps(process.process):
 
         if url.startswith('file'):
             f = open(url[7:])
-            j = f.read()
-            schedule = json.loads(j)
+            # j = f.read()
+            # schedule = json.loads(j)
         else:
 
             session = requests.session()
@@ -2088,30 +2152,32 @@ class add_eps(process.process):
 
             response = session.get(url, params=payload, )
 
-            # print "response:", response
-            # print "response.text:", response.text
 
-            if url[-4:]=='.csv':
-                schedule = list(csv.reader(f))
-                if 'desktopsummit.org' in url:
-                    return self.desktopsummit(schedule,show)
+        ext = os.path.splitext(url)[1]
+        if ext=='.csv':
+            # schedule = list(csv.reader(f))
+            schedule = list(csv.DictReader(f))
+            if 'desktopsummit.org' in url:
+                return self.desktopsummit(schedule,show)
 
-            elif url.endswith('xml'):
-                schedule=xml.etree.ElementTree.XML(
-                        response.content)
-                # return self.fosdem2014(schedule,show)
+        elif ext=='.xml':
+            schedule=xml.etree.ElementTree.XML(
+                    response.content)
+            # return self.fosdem2014(schedule,show)
 
-            else:
-                j = response.text
+        else:
+            # lets hope it is json, like everything should be.
+            # j = response.text
 
-                # schedule = response.json
-                schedule = response.json()
-                # if it is a python prety printed list:
-                # (pyohio 2012)
-                # schedule = eval(j)
+            # schedule = response.json
+            schedule = response.json()
+
+            # if it is a python prety printed list:
+            # (pyohio 2012)
+            # schedule = eval(j)
 
         # save for later
-        filename="schedule/%s_%s.json" % ( client.slug, show.slug )
+        # filename="schedule/%s_%s.json" % ( client.slug, show.slug )
         # file(filename,'w').write(j) 
         # j=file(filename).read()
 
@@ -2122,6 +2188,9 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.show =='wtd_na_2014':
+            return self.wtd_na_2014(schedule,show)
 
         if self.options.client =='fosdem':
             return self.fosdem2014(schedule,show)
