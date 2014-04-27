@@ -28,6 +28,8 @@
                 href="E/{{episode.id}}/">{{ episode.name }}</a>
               {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> {{ episode.duration }} #}
               {{episode.authors}}
+              {{ episode.duration }} 
+              {% if episode.emails %} [ ] {% endif %}
             {% endif %}
             </td>
           {% endfor %}

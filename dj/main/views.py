@@ -1001,7 +1001,8 @@ def title_slides(request, show_id, ):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
     episodes=Episode.objects.filter(show=show, 
-        location__active=True)
+        location__active=True).exclude(emails='')
+
     return render_to_response('title_slides.html',
             {
           'client':client,

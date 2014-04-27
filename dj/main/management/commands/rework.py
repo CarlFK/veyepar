@@ -15,17 +15,15 @@ from main.models import Episode
 
 class Command(BaseCommand):
 
-        def handle(self, *args, **options):
-            print args
-            
-            # ignore blank parameters
-            if not args[0]: return
+        def edit_url(self, ep, email=None):
+            edit_url = reverse( "approve_episode", args= [
+                    ep.id, ep.slug, ep.edit_key ] )
+            return edit_url
 
-            if args[0].startswith('@'):
-                urls = open(args[0][1:]).read().split('\n')
-                # remove blanks
-                urls = [u for u in urls if u]
-                pprint.pprint(urls)
+
+        def one_arg(self, arg, email=None):
+            
+            """
                 eps = Episode.objects.filter(conf_url__in=urls)
                 print len(urls), eps.count()
                 for url in urls: 
@@ -55,23 +53,26 @@ class Command(BaseCommand):
                         print "not found:", url
 
                 return
+            """
+
+            # veyepar URL
+            if url.startsiwth("http://veyepar.nextdayvideo.com"):
+
 
             # look for final video url
-            eps = Episode.objects.filter(public_url=args[0])
+            eps = Episode.objects.filter(public_url=arg)
 
             # if not eps:
             #    eps = Episode.objects.filter(public_url=args[0])
 
             if not eps:
                 # look for just slug
-                slug = args[0]
-                print slug
                 eps = Episode.objects.filter(
-                        show__slug='fosdem_2014', slug = slug)
+                        show__slug='fosdem_2014', slug = arg)
 
             if not eps:
                 # look for slug
-                slug = args[0].split('/')[-1][:-5]
+                slug = arg.split('/')[-1][:-5]
                 print slug
                 eps = Episode.objects.filter(
                         show__slug='fosdem_2014', slug = slug)
@@ -79,14 +80,14 @@ class Command(BaseCommand):
             if not eps:
                 # look for conf url
                 # https://fosdem.org/2014/schedule/event/libguestfs/
-                if args[0].startswith("https://fosdem.org/"):
+                if arg.startswith("https://fosdem.org/"):
                     eps = Episode.objects.filter(conf_url=args[0])
 
             if not eps:
                 # look for room day
                 # http://video.fosdem.org/2014/K4401/Sunday/
                 print "guessing this is a room day.."
-                x = args[0].split('/')
+                x = arg.split('/')
                 year = x[3]
                 location_slug = x[4]
                 day = {'Saturday':1,
@@ -140,4 +141,23 @@ Once that happens, the system will encode, upload and send an email to:
 Feel free to reply with questions, we are still working out this process.
 """ % (edit_url, args[1] )
 
+
+        def handle(self, *args, **options):
+            print args
+            
+            # ignore blank parameters
+            if not args[0]: return
+
+            if args[0].startswith('@'):
+                urls = open(args[0][1:]).read().split('\n')
+                # remove blanks
+                urls = [u for u in urls if u]
+                pprint.pprint(urls)
+                for url in urls:
+                    self.one_arg(url)
+            else:
+                self.one_arg(url)
+
+             
+                
 
