@@ -1,4 +1,10 @@
 #!/bin/bash -ex
+# wtd-na-2014
+wget -N http://conf.writethedocs.org/img/sponsors/twitter.png
+wget -N http://conf.writethedocs.org/img/sponsors/atlassian.png
+wget -N http://conf.writethedocs.org/img/sponsors/rethinkdb.png
+exit
+
 wget -N http://www.chicagoerlang.com/images/logo.png -O erlang_fact_light.png
 exit
 

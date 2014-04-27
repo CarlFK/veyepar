@@ -689,8 +689,8 @@ def show_anomalies(request, show_id, ):
             max_authors_len = len(ep.authors)
             max_authors_ep = ep
 
-    dupes = Episode.objects.values('name').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
-    dup_eps = Episode.objects.filter(name__in=[item['name'] for item in dupes], show=show)
+    dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
+    dup_eps = Episode.objects.filter(slug__in=[item['slug'] for item in dupes], show=show)
 
     episodes=Episode.objects.filter(show=show,state=5)
     clean,dirty = 0,0
