@@ -329,7 +329,7 @@ class Episode(models.Model):
     def get_minutes(self):
         delta = self.end - self.start
         minutes = delta.days*60*24 + delta.seconds/60.0
-        return minutes
+        return int(minutes)
 
     def add_email(self, email):
         if self.emails is None: emails=[]

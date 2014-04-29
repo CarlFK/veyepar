@@ -93,7 +93,6 @@ import pw
 
 import process
 
-
 from main.models import fnify, Client, Show, Location, Episode, Raw_File
 
 def goog(show,url):
@@ -378,7 +377,8 @@ class add_eps(process.process):
             else:
                 # this is the show diff part.
                 if episode is None: 
-                    print ":%(conf_key)s not in db, name:%(name)s" % row
+                    print u"{conf_key} not in db, name:{name}".format(
+                            **row)
                     print
 
                 else:
@@ -397,14 +397,15 @@ class add_eps(process.process):
                         if self.options.verbose: 
                             pprint.pprint( diff_fields )
                         for f,a1,a2 in diff_fields:
-                            print 'veyepar %s: %s' % (f,a1[:60])
-                            print ' source %s: %s' % (f,a2[:60])
-                            for i,c in enumerate(a1):
-                                if a1[i] <> a2[i]:
-                                    print \
-          "diff found at pos {0}: {1} != {2}".format(
-                i,a1[i].__repr__(),a2[i].__repr__()) 
-                                    break
+                            print 'veyepar {0}: {1}'.format(f,unicode(a1)[:60])
+                            print ' source {0}: {1}'.format(f,unicode(a2)[:60])
+                            if isinstance(a1,str):
+                                for i,c in enumerate(a1):
+                                    if a1[i] <> a2[i]:
+                                        print \
+              "diff found at pos {0}: {1} != {2}".format(
+                    i,a1[i].__repr__(),a2[i].__repr__()) 
+                                        break
                         print
 
 
@@ -2189,7 +2190,7 @@ class add_eps(process.process):
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
 
-        if self.options.show =='wtd_na_2014':
+        if self.options.show =='wtd_NA_2014':
             return self.wtd_na_2014(schedule,show)
 
         if self.options.client =='fosdem':

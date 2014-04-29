@@ -170,6 +170,7 @@ mkdir -p /var/lib/tftpboot/util
 cd /var/lib/tftpboot/util
 wget -N http://www.memtest.org/download/4.20/memtest86+-4.20.bin.gz
 gunzip --force memtest86+-4.20.bin.gz
+wget http://www.memtest.org/download/5.01/memtest86+-5.01.floppy.zip
 # clonezilla
 # 400mb iso.... come back if you raelly need it.
 # /var/lib/tftpboot/util/cz/getcz.sh

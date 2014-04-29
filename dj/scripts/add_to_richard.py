@@ -308,15 +308,24 @@ class add_to_richard(Process):
         return scraped_meta
 
     def is_already_in_pyvideo(self, ep):
+        if self.options.add_all: return False
         # its truthiness implies that the video already exists in pyvideo
         return ep.public_url
 
 
     def add_more_options(self, parser):
-        # oh wait.. I am not sure how to implement this...
+
         # parser.add_option('--all', action="store_true",
-        #    help="process all, regardless of state. (does not change state)")
-        pass
+        # oh wait.. I am not sure how to implement this...
+        #  help="process all, regardless of state. (does not change state)")
+
+        # reload wtd cuz we trashed 2013.. opps!
+        parser.add_option('--add-all', action="store_true",
+           help="assume it doesn't exist, overwrite previous richard url.")
+
+        # straigth to public
+        parser.add_option('--public', action="store_true",
+           help="set it public on upload.")
 
 
 if __name__ == '__main__':

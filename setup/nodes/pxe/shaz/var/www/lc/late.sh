@@ -295,10 +295,20 @@ APP=inst_dvs.sh
 cat <<EOT >> $APP
 #!/bin/bash -x
 sudo apt-get install python-wxgtk2.8
+
 git clone git://github.com/CarlFK/dvsmon.git
-sudo apt-add-repository --yes ppa:carlfk
+sudo apt-add-repository --enable-source --yes ppa:carlfk
 sudo apt-get --assume-yes update
 sudo apt-get --assume-yes install dvswitch dvsource dvsink
+exit
+sudo apt-get install libav-dbg libglib2.0-0-dbg libglibmm-2.4-dbg libgtk2.0-0-dbg
+sudo apt-get build-dep dvswitch
+apt-get source dvswitch
+cd dvswitch-0.9.2/
+export DEB_BUILD_OPTIONS=nostrip,noopt
+dpkg-buildpackage
+sudo dpkg -i ../dvswitch_0.9.2-1ubuntu2_amd64.deb
+
 EOT
 chmod 744 $APP
 chown $NUSER:$NUSER $APP

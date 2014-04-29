@@ -24,12 +24,11 @@
           {% for episode in t.1 %}
             <td style="white-space:normal;">
             {% if episode %}
-<a style="background-color:{{episode.released|yesno:"#70ff70,#ff0000,#cccccc"}};"
-                href="E/{{episode.id}}/">{{ episode.name }}</a>
+<a style="background-color:{{episode.released|yesno:"#70ff70,#ff0000,#cccccc"}};" href="E/{{episode.id}}/">[_] {{ episode.name }}</a>
               {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> {{ episode.duration }} #}
               {{episode.authors}}
               {{ episode.duration }} 
-              {% if episode.emails %} [ ] {% endif %}
+              {% if episode.emails %} [..] {% endif %}
             {% endif %}
             </td>
           {% endfor %}

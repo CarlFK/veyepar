@@ -28,11 +28,14 @@ class mk_public(process):
     def up_richard(self, ep):
 
         host = pw.richard[ep.show.client.richard_id]
-        endpoint = 'http://{hostname}/api/v1'.format(hostname=host['host'])
+        endpoint = 'http://{hostname}/api/v2'.format(
+                hostname=host['host'])
         api = API(endpoint)
 
         # vid = ep.public_url.split('/video/')[1].split('/')[0]
         vid = get_video_id(ep.public_url)
+        print ep.public_url
+        print vid
 
         response = api.video(vid).get(
                 username=host['user'], api_key=host['api_key'])
