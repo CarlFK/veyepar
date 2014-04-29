@@ -24,17 +24,16 @@ This is Veyepar, the automated video processing system.
 Please review the following meta data about your talk so that mistakes can be corrected now and not after the video has gone live.
 
 Released: {{ep.released}}
-{% if ep.released %} Permission has been given to record your talk and post it online.
- {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
+{% if ep.released %}Permission has been given to record your talk and post it online.
+{% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% else %} "None" means it may get recorded and processed, but it will not be made public.
 "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
 
 The video will be titled with the following image:
 {{MEDIA_URL}}{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 
-{% if ep.public_url%} And the main page for the video will be here:
+{% if ep.public_url%}The main page for the video will be here:
   {{ep.public_url}} {% endif %}
-
 {% if 0 %}
 Problems with the text will need to be fixed in the event database that drives: {{ep.conf_url}} {{ep.show.schedule_url}}
 
