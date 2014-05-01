@@ -42,11 +42,7 @@ cp -rv shaz/etc/dhcp* /etc/
 # needed for ddns
 # give dhcpd process access to this file
 # include "/etc/bind/rndc.key";
-# adduser dhcpd bind
-# yeah, well, it doesn't work so well right now:
-# https://bugs.launchpad.net/ubuntu/+source/isc-dhcp/+bug/341817
-# so for now, my fav workaround:
-adduser root bind
+adduser dhcpd bind
 
 # tell apparor to allow dhcpd process to read the dns keyfile
 cat <<EOT >>/etc/apparmor.d/local/usr.sbin.dhcpd
