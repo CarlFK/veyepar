@@ -692,7 +692,10 @@ def show_anomalies(request, show_id, ):
     dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
     dup_eps = Episode.objects.filter(slug__in=[item['slug'] for item in dupes], show=show)
 
-    episodes=Episode.objects.filter(show=show,state=5)
+    # if someone starts a video file when the talk starts, that is clean.
+    # if they miss the start by so much that some needs to be removed 
+    #   (thus start=2 min into the start of the file) that is dirty 
+    episodes=Episode.objects.filter(show=show,state__gt=1)
     clean,dirty = 0,0
     for ep in episodes:
         found=False

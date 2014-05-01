@@ -399,12 +399,13 @@ class add_eps(process.process):
                         for f,a1,a2 in diff_fields:
                             print 'veyepar {0}: {1}'.format(f,unicode(a1)[:60])
                             print ' source {0}: {1}'.format(f,unicode(a2)[:60])
-                            if isinstance(a1,str):
+                            if isinstance(a1,basestring):
                                 for i,c in enumerate(a1):
                                     if a1[i] <> a2[i]:
                                         print \
-              "diff found at pos {0}: {1} != {2}".format(
-                    i,a1[i].__repr__(),a2[i].__repr__()) 
+              "diff found at pos {0}:\n{1}\n{2}".format(
+                      i,a1[i:i+40].__repr__(),
+                        a2[i:i+40].__repr__()) 
                                         break
                         print
 

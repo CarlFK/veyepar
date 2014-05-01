@@ -3,10 +3,24 @@
 
 {% block content %}
 
+
 <a href="{% url client client.slug %}">{{ client.name }}</a>
 <a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a>
 </p>
 
+<table class="shortcuts">
+<tr><td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td></tr>
+<tr><td><a href="{% url overlaping_files show.id %}">overlaping_fles</a></td></tr>
+<tr><td><a href="{% url orphan_dv show.id %}">orphan_dv</a></td></tr>
+<tr><td><a href="{% url pdfs 'talk_signs' show.id %}{{show.slug}}_room_signs.pdf">room_signs.pdf</a></td></tr>
+<tr><td><a href="{{show.schedule_url}}">{{show.schedule_url}}</a></td></tr>
+<td><a href="{% url pdfs 'release_agreements' show.id %}{{show.slug}}_release.pdf">release.pdf</a></td>
+<tr><td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td></tr>
+<tr><td><a href="{% url meet_ann show.id %}">meeting announcement</a></td></tr>
+
+</table>
+
+<h1>Duplicate slugs</h1>
   <table>
     <thead>
       <tr>
@@ -51,16 +65,16 @@
         </tr>
 {% endfor %}
 </table>
-
-  <hr>
   <hr>
 
+<h1>Long strings</h1>
   max name: #{{max_name_ep.id}} <a href="E/{{max_name_ep.id}}/">{{ max_name_ep.name }}</a><br/>
   <hr>
   max authors: # {{max_authors_ep.id}} <a href="E/{{max_authors_ep.id}}/">{{ max_authors_ep.authors }}</a>
 
   <hr>
 
+  <h1>Accuracy</h1>cuts that were on the mark, or needed trimming.  </p>
   clean {{clean}}<br>
   dirty {{dirty}}<br>
 

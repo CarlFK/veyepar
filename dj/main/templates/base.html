@@ -26,19 +26,25 @@
 {% include "accounts/login_form.html" %} 
 
 {% if user.is_authenticated %}
-  <p class="shortcuts">
-    {% if user.is_staff %}
-      <a href="/admin/">admin</a>
-      <a href="/databrowse/">databrowse</a>
-      <a href="/main/">main</a>
-      <a href="/main/clients/">Clients</a>
+  {% if user.is_staff %}
+
+  <table class="shortcuts">
+    <tr>
+      <td> <a href="/admin/">admin</a> </td>
+      <td> <a href="/databrowse/">databrowse</a> </td>
+      <td> <a href="/main/">main</a> </td>
+      <td> <a href="/main/clients/">Clients</a> </td>
+      <td>
       {% if request.META.HTTP_HOST == "localhost:8080" %}
         <a href="http://veyepar.nextdayvideo.com{{request.get_full_path}}">prod</a>
       {% else %}
         <a href="http://localhost:8080{{request.get_full_path}}">dev</a>
       {% endif %}
+      </td>
+      <td>
     {% endif %}
-  </p>
+    </tr>
+  </table>
 {% endif %}
 
 {% endblock %}

@@ -36,9 +36,13 @@ a:hover {
     color: white;
 }
 
+.shortcuts td {
+    border-width: 1px;
+    border-style: solid;
+}
 .shortcuts a {
     padding: 4px;
-}
+  }
 
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }

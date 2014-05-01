@@ -1,0 +1,5 @@
+<td><a href="{% url show_stats show.id %}" title="{{show.name}} status grid">status grid</a></td>  
+<td><a href="{% url pdfs 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf">recording_sheets.pdf</a></td>
+<td><a href="{% url schedule show.id show.slug %}">schedule</a></td> 
+<td><a href="{% url pdfs 'title_slides' show.id %}">title slides</a></td>
+<td><a href="{% url show_anomalies show.id %}" title="{{show.name}}">anomalies</a></td>

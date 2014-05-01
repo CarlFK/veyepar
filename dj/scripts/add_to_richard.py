@@ -141,7 +141,8 @@ class add_to_richard(Process):
         """
         try:
             # fetch current record
-            response = self.api.video(vid).get(api_key=self.host['api_key'])
+            response = self.api.video(vid).get(
+                    auth_token=self.host['api_key'])
             video_data = get_content(response)
             if self.options.verbose: pprint.pprint( video_data )
             # update dict with new information
