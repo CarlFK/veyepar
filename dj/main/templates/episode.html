@@ -141,7 +141,7 @@ $(".viewer").zoomer();
   <div class="panel-heading"></div>
   <div class="panel-title"></div> 
   <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{cl.id}}"> {{cl.raw_file.filename}}</a>
-  {{cl.raw_file.start|date:"H:i:s"}}
+  {{cl.raw_file.start|date:"H:i:s"}} - {{cl.raw_file.end|date:"H:i:s"}}
   {{ clrfform.apply.label_tag }}{{ clrfform.apply }}
 
   <div class="panel-collapse collapse" id="{{cl.id}}">
@@ -267,6 +267,7 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
 </div> <!-- /panel -->
 </div> <!-- panel-group -->
 {% endfor %}
+
 
 
 <table border=1>
