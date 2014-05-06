@@ -227,6 +227,8 @@ class post(process):
                         ep.archive_mp4_url = uploader.new_url
                     elif f['ext'] == "ogv":
                         ep.archive_ogv_url = uploader.new_url
+                    elif f['ext'] == "webm": # omg super gross.
+                        ep.archive_ogv_url = uploader.new_url
 
                     # hook for tests so that it can be browsed
                     self.archive_url = uploader.new_url

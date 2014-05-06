@@ -11,8 +11,9 @@
 import  os
 import subprocess
 
-from process import process
+import rax_uploader
 
+from process import process
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
 class mkpreview(process):
@@ -54,7 +55,14 @@ class mkpreview(process):
                 p=subprocess.Popen(cmd).wait()
                 
         if self.options.rsync:
-            self.rsync(dv.location.slug, {'pathname':dst})
+            # self.rsync(dv.location.slug, {'pathname':dst})
+            # self.file2cdn(dv.show, "titles/%s.svg" % (episode.slug))
+
+            src = os.path.join(loc_dir,dv.basename()+'.ogv')
+            if self.options.test:
+                print "file2cdn src:", src
+            else:
+                self.file2cdn(dv.show, src )
 
         return
    

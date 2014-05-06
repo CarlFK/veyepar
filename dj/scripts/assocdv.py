@@ -22,7 +22,8 @@ class ass_dv(process.process):
         # if episode.cut_list_set.count():
         #    return 
 
-        self.cuts = mk_cuts(episode)
+        self.cuts = mk_cuts(episode, 
+                start_slop=5, end_slop=11)
         print "self.cuts", self.cuts
 
 if __name__=='__main__': 

@@ -29,3 +29,5 @@ djangorestframework
 markdown
 django-filter
 
+ElementTree
+gdata-python-client

@@ -38,14 +38,13 @@ class mk_public(process):
         print vid
 
         response = api.video(vid).get(
-                username=host['user'], api_key=host['api_key'])
+                username=host['user'], auth_token=host['api_key'])
 
         video_data = get_content(response)
         video_data['state'] = 1
 
         try: 
-            update_video(endpoint, host['user'], host['api_key'], 
-                    vid, video_data)
+            update_video(endpoint, host['api_key'], vid, video_data)
         except MissingRequiredData, e:
             # this shouldn't happen, prolly debugging something.
             import code

@@ -617,7 +617,7 @@
 			</String>
 			<String>
 				<expr>"Unscheduled talk"</expr>
-				<fontcolor>(.88, .88, .88)</fontcolor>
+				<fontcolor>(.80, .80, .80)</fontcolor>
 				<fontname>'Helvetica'</fontname>
 				<fontsize>40</fontsize>
 				<height>28</height>
@@ -649,8 +649,8 @@
 				<FontSize>13</FontSize>
 				<height>'18.0 pt'</height>
 				<width>'73.0 pt'</width>
-				<x>'234.5 pt'</x>
-				<y>'67.0 pt'</y>
+				<x>'144.5 pt'</x>
+				<y>'47.0 pt'</y>
 			</String>
 		</Objects>
 	</PageFooter>

@@ -11,11 +11,14 @@ import fixunicode
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dj.settings")
 sys.path.insert(0, '..' )
+
 from django.conf import settings
 
-import django
+# import django
 from main.models import Client, Show, Location, Episode, State, Log
 from main.models import fnify
+
+import rax_uploader
 
 def xfnify(text):
     """
@@ -113,6 +116,33 @@ class process(object):
       sh.close()
 
       return True
+
+  def file2cdn(self, show, src, dst=None):
+        """
+        src is relitive to the show dir.
+        src and dst get filled to full paths.
+        Check to see if src exists,
+        if it does, try to upload it to cdn
+        (rax_uploader will skip if same file exists).
+        """
+        print "checking:", src 
+
+        if dst is None: dst = src 
+
+        src = os.path.join(self.show_dir,src)
+        dst = os.path.join("veyepar",show.client.slug,show.slug,dst)
+
+        if os.path.exists(src):
+
+            u = rax_uploader.Uploader()
+
+            u.user = self.options.cloud_user
+            u.bucket_id = self.options.rax_bucket
+            u.pathname = src 
+            u.key_id = dst 
+
+            ret = u.upload()
+
 
   def set_dirs(self,show):
       client = show.client

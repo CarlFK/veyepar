@@ -72,7 +72,7 @@ import requests
 import HTMLParser
 import os
 
-from dateutil.parser import parse
+# from dateutil.parser import parse
 import pprint
 from django.utils.html import strip_tags
 from django.template.defaultfilters import slugify
@@ -393,14 +393,18 @@ class add_eps(process.process):
                         print 'veyepar #id name: #%s %s' % (
                                 episode.id, episode.name)
                         print "http://veyepar.nextdayvideo.com/main/E/%s/" % ( episode.id, )
-                        print episode.conf_url
+                        print episode.conf_key, episode.conf_url
                         if self.options.verbose: 
                             pprint.pprint( diff_fields )
                         for f,a1,a2 in diff_fields:
-                            print 'veyepar {0}: {1}'.format(f,unicode(a1)[:60])
-                            print ' source {0}: {1}'.format(f,unicode(a2)[:60])
-                            if isinstance(a1,basestring):
+                            if not isinstance(a1,basestring):
+                                print 'veyepar {0}: {1}'.format(f,a1)
+                                print ' source {0}: {1}'.format(f,a2)
+                            else:
+                                # print 'veyepar {0}: {1}'.format(f,a1[:60])
+                                # print ' source {0}: {1}'.format(f,a2[:60])
                                 for i,c in enumerate(a1):
+                                  if i<=len(a2):
                                     if a1[i] <> a2[i]:
                                         print \
               "diff found at pos {0}:\n{1}\n{2}".format(

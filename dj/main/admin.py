@@ -58,18 +58,22 @@ class EpisodeAdmin(admin.ModelAdmin):
     state_bumper.short_description = 'bump'
 
     list_display = ('id',
-            'state',
-            # 'sequence', 
+            # 'conf_key', 
+            # 'conf_url', 
+            # 'state',
             'name', 
             'start', 
-            'duration', 
+            # 'duration', 
             # 'emails',
-            'location',
+            # 'location',
 )
-    list_editable = ('state',
+    list_editable = (
+            #'state',
+            # 'conf_key', 
+            # 'conf_url', 
             # 'sequence', 
             'start', 
-            'duration', 
+            # 'duration', 
             # 'emails',
             )
 

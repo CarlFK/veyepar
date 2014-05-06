@@ -77,7 +77,8 @@ class Run_Tests(object):
     print user
   return
 
- @callme_maybe
+ # @callme_maybe
+ # always do this, cuz of self.episode=
  def setup_test_data(self):
   # make sample data: location, client, show, episode
   from main.views import make_test_data, del_test_data
@@ -521,7 +522,8 @@ def main():
     result={}
 
     t=Run_Tests() 
-    t.upload_formats=["webm", "mp4",]
+    # t.upload_formats=["webm", "mp4",]
+    t.upload_formats=["webm", ]
     t.title = "Let's make a Test"
 
     t.make_test_user()
