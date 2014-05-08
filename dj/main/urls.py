@@ -84,7 +84,10 @@ urlpatterns += patterns(
     url(r'rf_set/(?P<location_slug>[\w+\-]+)/$', 
         rf_set, name='rf_set'),
 
-    url(r'episode_logs/(?P<episode_id>\d+)/$', episode_logs, name='episode_logs'),
+    url(r'episode_logs/(?P<episode_id>\d+)/$', 
+        episode_logs, name='episode_logs'),
+    url(r'episode_chaps/(?P<episode_id>\d+)/$', 
+        episode_chaps, name='episode_chaps'),
 
     url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/(?P<episode_id>\w+)/.*$', 
         episode_pdfs, name='pdf'),
