@@ -1,0 +1,28 @@
+{# episode_logs.html #}
+{% extends "base.html" %}
+
+{% block head %}
+<title>veyepar: {{episode.name}} logs</title>
+{% endblock %}
+
+{% block content %}
+
+{{episode.name}}  <br/>
+
+{% for chap in chaps %}
+  {% if chap.0 %}
+    {{chap.0.1}},
+  {%endif%}
+{%endfor%}
+
+<hr>
+
+{% for chap in chaps %}
+  {% if chap.0 %}
+     ({{chap.0.1}})  {{chap.2.comment}}<br/>
+  {%endif%}
+{%endfor%}
+
+
+{% endblock %}
+

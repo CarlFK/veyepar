@@ -1366,6 +1366,33 @@ def orphan_dv(request,show_id):
 
         return response
 
+def episode_chaps(request, episode_id):
+
+    episode=get_object_or_404(Episode,id=episode_id)
+    cuts = Cut_List.objects.filter(
+            episode=episode).order_by('sequence','raw_file__start','start')
+
+    # start times of chapters (included cuts)
+    start_chap = (0,"00:00") # frame, timestamp
+    chaps,frame_total = [],0 
+    for cut in cuts:
+        if cut.apply:
+            frame_total+=int(cut.duration())
+            end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
+              (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
+            chaps.append((start_chap,end_chap,cut))
+            # setup for next chapter
+            start_chap=end_chap
+        else:
+            chaps.append(('',''))
+ 
+    return render_to_response('episode_chaps.html',
+        {'episode':episode,
+         'chaps':chaps,
+        },
+        context_instance=RequestContext(request) )
+
+
 
 def mk_cuts(episode, 
         short_clip_time = 0,

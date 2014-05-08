@@ -50,7 +50,7 @@
 <td>Last Raw End</td> {% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %} <td>{% if same_dates %} {{end|date:"H:i"}} {% else %} {{end}} {% endif %}</td> {% endwith %} {% endwith %}
 </tr>
 <tr>
-    <td>Segments</td> <td>
+    <td><a href="{% url episode_chaps episode.id %}">Chapters</a></td> <td>
         {% for chap in chaps %}
           {% if chap.0 %}
             {{chap.0.1}},
