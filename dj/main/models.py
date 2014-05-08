@@ -298,31 +298,6 @@ class Episode(models.Model):
     def get_absolute_url(self):
         return ('episode', [self.id])
 
-    """
-    # better version of django's get_next.. (this handles nuls).
-    def _get_next_or_previous_by_FIELD(self, field, is_next, **kwargs):
-        from django.utils.encoding import smart_str
-        from django.db.models.query import Q
-        op = is_next and 'gt' or 'lt'
-        order = not is_next and '-' or ''
-        # current_field_value = getattr(self, field.attname)
-        current_field_value = self.start
-        if current_field_value is None:
-            # q = Q(**{ "%s__isnull" % field.name: True, 'pk__%s' % op: self.pk})
-            q = Q(**{ "%s__isnull" % 'start': True, 'pk__%s' % op: self.pk})
-        else:
-            param = smart_str(current_field_value)
-            # q = Q(**{'%s__%s' % (field.name, op): param})
-            q = Q(**{'%s__%s' % ('start', op): param})
-            # q = q|Q(**{field.name: param, 'pk__%s' % op: self.pk})
-            q = q|Q(**{'start': param, 'pk__%s' % op: self.pk})
- 
-    def my_get_previous_by_start(self,**kwargs):
-        self._get_next_or_previous_by_FIELD('start', is_next=False, **kwargs)
-    def my_get_next_by_start(self,**kwargs):
-        self._get_next_or_previous_by_FIELD('start', is_next=True, **kwargs)
-    """
-
     def __unicode__(self):
         return self.name
 
