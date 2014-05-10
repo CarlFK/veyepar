@@ -58,7 +58,8 @@ class mkpreview(process):
             # self.rsync(dv.location.slug, {'pathname':dst})
             # self.file2cdn(dv.show, "titles/%s.svg" % (episode.slug))
 
-            src = os.path.join(loc_dir,dv.basename()+'.ogv')
+            src = os.path.join( 
+                    'dv',dv.location.slug, dv.basename()+'.ogv')
             if self.options.test:
                 print "file2cdn src:", src
             else:
@@ -67,10 +68,15 @@ class mkpreview(process):
         return
    
     def process_ep(self, ep):
-        dir=os.path.join(self.show_dir,'dv',ep.location.slug)
+
+        if not ep.released:
+            # don't bother if we don't need to process this
+            return 
+
+        loc_dir=os.path.join(self.show_dir,'dv',ep.location.slug)
         dvs = Raw_File.objects.filter(cut_list__episode=ep)
         for dv in dvs:
-            self.one_dv(dir,dv)
+            self.one_dv(loc_dir,dv)
         return True
 
     """
