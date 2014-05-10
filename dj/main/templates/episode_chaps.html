@@ -23,6 +23,24 @@
   {%endif%}
 {%endfor%}
 
+<hr>
+
+{% for chap in chaps %}
+  {% if chap.0 %}
+     ({{chap.0.1}})  {{chap.2.comment}}<br/>
+  {%endif%}
+{%endfor%}
+
+<hr>
+
+{% for chap in chaps %}
+  {% if chap.0 %}
+  {{chap.3}} ({{chap.0.1}})  {{chap.2.comment}}<br/>
+  {%endif%}
+{%endfor%}
+
+
+
 
 {% endblock %}
 

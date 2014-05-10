@@ -424,7 +424,8 @@ def raw_play_list(request, episode_id):
     show=episode.show
     client=show.client
     
-    cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
+    # cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
+    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence')
     if request.GET.get('apply') == 'yes':
         # if we only want the 'applied' files
         cuts = cuts.filter(apply=True)
@@ -1377,10 +1378,16 @@ def episode_chaps(request, episode_id):
     chaps,frame_total = [],0 
     for cut in cuts:
         if cut.apply:
-            frame_total+=int(cut.duration())
-            end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
-              (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
-            chaps.append((start_chap,end_chap,cut))
+            frame_total+=int(cut.duration()) # durration is in seconds :p
+            h,m,s = (frame_total//3600, 
+                    (frame_total%3600)//60, 
+                    frame_total%60) 
+            end_chap = (int(frame_total*29.27), "%s:%02i:%02i" % (h,m,s))
+
+            yt ="{yt}?t={h}h{m}m{s}s".format(
+                    yt=episode.host_url,h=h,m=m,s=s)
+
+            chaps.append((start_chap,end_chap,cut,yt))
             # setup for next chapter
             start_chap=end_chap
         else:
