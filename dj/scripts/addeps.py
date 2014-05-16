@@ -401,16 +401,26 @@ class add_eps(process.process):
                                 print 'veyepar {0}: {1}'.format(f,a1)
                                 print ' source {0}: {1}'.format(f,a2)
                             else:
-                                # print 'veyepar {0}: {1}'.format(f,a1[:60])
-                                # print ' source {0}: {1}'.format(f,a2[:60])
-                                for i,c in enumerate(a1):
-                                  if i<=len(a2):
-                                    if a1[i] <> a2[i]:
+                                print f
+                                if max(len(a1),len(a2)) < 160:
+                                  # print a1
+                                  # print a2
+                                  print 'veyepar {0}: {1}'.format(f,a1)
+                                  print ' source {0}: {1}'.format(f,a2)
+                                else:
+                                  # long string (prolly description)
+                                  for i,cs in enumerate(zip(a1,a2)):
+                                    if cs[0] <> cs[1]:
                                         print \
-              "diff found at pos {0}:\n{1}\n{2}".format(
-                      i,a1[i:i+40].__repr__(),
-                        a2[i:i+40].__repr__()) 
+                          "diff found at pos {0}:\n{1}\n{2}".format(
+                                  i,cs[0].__repr__(),
+                                    cs[1].__repr__()) 
+                                        print \
+            "diff found at pos {0}:\nveyepar: {1}\nsource:{2}".format(
+                                  i,a1[i:i+80].__repr__(),
+                                    a2[i:i+80].__repr__()) 
                                         break
+
                         print
 
 
@@ -1748,6 +1758,9 @@ class add_eps(process.process):
                     '%m/%d/%Y %H:%M')
                     
             event['duration'] = "00:{0}:00".format(event['duration'])
+
+            event['description'] = event['description'].replace('\n','\r\n')
+
             event['released'] = event['released'].lower() == 'y'
 
         self.add_eps(events, show)
