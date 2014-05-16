@@ -28,6 +28,7 @@ mdadm --create /dev/md0 --level=raid6 --bitmap=internal --raid-devices=8 --assum
 
 /etc/init.d/mdadm start
 /etc/init.d/udev start
+# above line may be erroring, which aborts the script? 
 
 mkfs.ext4 /dev/md0 
 e2label /dev/md0 space
