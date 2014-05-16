@@ -30,4 +30,4 @@ markdown
 django-filter
 
 ElementTree
-gdata-python-client
+# gdata-python-client
