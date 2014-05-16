@@ -1058,7 +1058,6 @@ def episode_list(request, state=None):
 
 def episodes(request, client_slug=None, show_slug=None, location_slug=None,
               start_day=None, state=None):
-# def episodes(request, client_slug=None, show_slug=None):
 
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
