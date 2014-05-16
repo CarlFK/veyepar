@@ -66,6 +66,7 @@ cd veyepar
 
 pip install -r setup/requirements.txt
 # fix broken dabo installer
+# maybe it works now?  http://trac.dabodev.com/changeset/5554
 # mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 # mv ~/.virtualenvs/veyepar/dabo/locale/ ~/.virtualenvs/veyepar/lib/python2.6/site-packages/dabo
 cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
