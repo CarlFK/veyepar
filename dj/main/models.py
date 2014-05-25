@@ -153,7 +153,8 @@ class Raw_File(models.Model):
         """
         rfs = Raw_File.objects.filter(location=self.location,
                 start__gt=self.start,
-                id__gt=self.id).order_by('start','id')
+                ).order_by('start','id')
+                # id__gt=self.id).order_by('start','id')
         if rfs:
             rf=rfs[0]
         else:

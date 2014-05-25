@@ -1018,9 +1018,9 @@ def title_slides(request, show_id, ):
 def episodes_script(request, script=None):
 
     kwargs = {
-            # "show__client__slug": request.GET['client'],
-            "show__slug": request.GET['show'],
-            "state": request.GET['state'],
+            "show__client__slug": request.GET['client'],
+            # "show__slug": request.GET['show'],
+            # "state": request.GET['state'],
             # "": request.GET[''],
             }
 

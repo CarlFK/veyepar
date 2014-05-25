@@ -48,18 +48,18 @@ class add_to_richard(Process):
 
         self.host = pw.richard[ep.show.client.richard_id]
 
-        self.pyvideo_endpoint = \
+        self.richard_endpoint = \
             'http://{hostname}/api/v2'.format(hostname=self.host['host'])
-        self.api = API(self.pyvideo_endpoint)
+        self.api = API(self.richard_endpoint)
 
         if self.options.verbose: 
-            print self.pyvideo_endpoint, self.host['user'], self.host['api_key'], {'category_key': self.category_key}
+            print self.richard_endpoint, self.host['user'], self.host['api_key'], {'category_key': self.category_key}
 
         
         """
         # FIXME using chatty hack due to problems with category handling
         if not self.options.test:
-            create_category_if_missing( self.pyvideo_endpoint, 
+            create_category_if_missing( self.richard_endpoint, 
                     self.host['user'], self.host['api_key'], 
                     {'title': self.category_key,
                         'description':ep.show.description})
@@ -149,7 +149,7 @@ class add_to_richard(Process):
             video_data.update(new_data)
             if self.options.verbose: pprint.pprint( video_data )
             # update in pyvideo
-            return update_video(self.pyvideo_endpoint, 
+            return update_video(self.richard_endpoint, 
                    self.host['api_key'], vid, video_data)
 
         except MissingRequiredData as e:
@@ -166,7 +166,7 @@ class add_to_richard(Process):
         """
         try:
             # video_data['added'] = datetime.datetime.now().isoformat()
-            vid = create_video(self.pyvideo_endpoint, 
+            vid = create_video(self.richard_endpoint, 
                     self.host['api_key'], video_data)
             url = 'http://%s/video/%s/%s' % (
                     self.host['host'], vid['id'],vid['slug'])

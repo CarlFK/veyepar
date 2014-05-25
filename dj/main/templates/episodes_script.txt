@@ -1,9 +1,8 @@
 {# episodes_script.txt #}
 
 {% for episode in episodes %}
-
-{# python {{script}}.py --client {{episode.show.client.slug}} --show {{episode.show.slug}} {{episode.id}} #}
-
- wget -c http://mirror.as35701.net/video.fosdem.org/2014/{{episode.location.slug}}/{{episode.start|date:"l"}}/{{episode.slug}}.webm -O {{episode.location.slug}}/{{episode.start|date:"l"}}/{{episode.slug}}.webm 
-
+python {{script}}.py --client {{episode.show.client.slug}} --show {{episode.show.slug}} {{episode.id}}
 {% endfor %}
+
+{#  wget -c http://mirror.as35701.net/video.fosdem.org/2014/{{episode.location.slug}}/{{episode.start|date:"l"}}/{{episode.slug}}.webm -O {{episode.location.slug}}/{{episode.start|date:"l"}}/{{episode.slug}}.webm #}
+
