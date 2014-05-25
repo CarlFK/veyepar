@@ -209,9 +209,6 @@ def eps_lanynard(request,client_slug=None,show_slug=None):
         
 
     response = HttpResponse(mimetype="application/json")
-    # serializers.serialize("json", sessions, stream=response)
-    #     >>> json.dump(['streaming API'], io)
-    import json
     json.dump(sessions,response)
 
     return response
@@ -991,8 +988,8 @@ def raw_file_audio(request):
 
     return render_to_response('raw_file_audio.html',
         {
-            'show':show,
-            'start_date':start_date,
+          'show':show,
+          'start_date':start_date,
           'prev_location':prev_location,
           'location':location,
           'next_location':next_location,
@@ -1031,7 +1028,7 @@ def episodes_script(request, script=None):
     # episodes=Episode.objects.filter(show__slug="fosdem_2014", state='5').order_by('start')
     print len(episodes)
 
-    return render_to_response(
+    response = render_to_response(
             'episodes_script.txt',
             { 'episodes':episodes,
                 'script':script,
@@ -1039,6 +1036,10 @@ def episodes_script(request, script=None):
             context_instance=RequestContext(request),
             mimetype="text/plain",
             )
+
+    response['Content-Disposition'] = 'filename={0}.sh'.format( script )
+
+    return response 
 
 
 def episode_list(request, state=None):
