@@ -34,7 +34,8 @@ Episode Count: {{episodes.count}}
         <th>rel</th>
         <th>img</th>
         <th>rf</th>
-        <th>host<br />index</th>
+        <th>host</th>
+        <th>index</th>
       </tr>
     </thead>
 
@@ -62,6 +63,7 @@ Episode Count: {{episodes.count}}
         <td>{{episode.cut_list_set.count|default:""}}</td>
         <td>
             {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
+        </td><td>
             {%if episode.public_url %}<a href="{{episode.public_url}}">R</a>{% endif %}
         </td>
       </tr>
