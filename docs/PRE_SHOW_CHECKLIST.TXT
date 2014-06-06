@@ -1,5 +1,6 @@
 get schedule .json
 title screen template .svg
+video sponsors 
 
 book flights
 book rooms 

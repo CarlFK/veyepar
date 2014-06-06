@@ -110,6 +110,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
 <input type="submit" value="Save" />
 
+<div id="sheets" />
 {% if episode.image_file_set.all %}
 <div class="viewer" style="height: 200px; width: 800px;" >
 {% for img in episode.image_file_set.all %}
