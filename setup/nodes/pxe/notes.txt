@@ -20,3 +20,7 @@ http://www.debian-administration.org/article/Configuring_Dynamic_DNS__DHCP_on_De
 
 command to try:
 sudo dpkg-reconfigure -plow squid-deb-proxy
+
+http://http.us.debian.org/debian/dists/wheezy/main/installer-amd64/current/images/netboot/debian-installer/amd64/
+ linux  
+ initrd.gz                                          

@@ -22,7 +22,7 @@
 <div id="recording-sheets" style="margin:10px 0">
     <table>
     <tbody>
-        <tr><th colspan="{{ sheets.count }}">Click on thumnail to see recording sheet</th></tr>
+        <tr><th colspan="{{ sheets.count }}">Click on thumbnail to see recording sheet</th></tr>
         <tr>
             {% for img in sheets %}
             <td><a href="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
@@ -56,7 +56,7 @@ set the Action to "Encode" and hit "Submit" at the bottom of this page.
 {% endif %}
  </p>
      <p>
-     Below are the raw files that were created durring the block of time and space scheduled for the talk.  Pick out the ones that should be assembeled into the final video.
+     Below are the raw files that were created during the block of time and space scheduled for the talk.  Pick out the ones that should be assembeled into the final video.
      </p>
  <p>
   {% include "_video_formset.html" %}
@@ -64,7 +64,7 @@ set the Action to "Encode" and hit "Submit" at the bottom of this page.
      You may want to trim cruft, (unwanted content) like people filing into the room and getting ready.  If a file contains large amounts of cruft, you should remove it.  Introductions are nice, if they are nice.  If they include something you would not want, remove it.  The encoder doesn't care if you cut stuff off or not, but the people who view the video will.  Use your judgment.
     </p>
      <p>
-     You can trim from the start and end by entering the time in the Start and End boxes.  The time you enter is the time you see  on the player.  Hit Play, when you are at the point you want the talk to start, hit Pause. look at the time ont the player, enter that in the Start box, like 1:23.   Run the slider to the end and Play.  If you talk ends long before the end of the file, hit Pause at the end of the talk, enter the time you see on the player in the End box.  
+     You can trim from the start and end by entering the time in the Start and End boxes.  The time you enter is the time you see  on the player.  Hit Play, when you are at the point you want the talk to start, hit Pause. look at the time on the player, enter that in the Start box, like 1:23.   Run the slider to the end and Play.  If you talk ends long before the end of the file, hit Pause at the end of the talk, enter the time you see on the player in the End box.  
      </p>
   <br/>
   <br/>

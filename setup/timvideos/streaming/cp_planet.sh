@@ -1,7 +1,8 @@
 #!/bin/bash -xe 
 
-target=juser@trist
-target=juser@pc8
+# target=juser@trist
+# target=juser@pc8
+target=juser@negk
 
 scp planet.xml default.xml $target:/tmp/
 ssh $target -t \

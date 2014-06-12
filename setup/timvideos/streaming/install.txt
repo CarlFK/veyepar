@@ -10,22 +10,31 @@ C. Encoder (EC2)
 2. config machines
 3. start processes
 
+===============
+1. install apps
+A: 
+apt-get install dvswitch dvsource....(see dvswitch docs)
+B and C: 
+git clone https://github.com/timvideos/streaming-system.git
+streaming-system/tools/setup/runall.sh
 
 ===============
-1. config machines 
+2. config machines 
 
-A - apt-get install dvswitch dvsource....(see dvswitch docs)
+A: see dvswitch docs
 
-B - 
+B: for collector machine 
 
-1a. for collector machine 
-
- sudo vim /usr/local/etc/flumotion/managers/default/planet.xml
+sudo cp \
+ streaming-system/tools/flumotion-config/pusher/collector.xml \
+ /usr/local/etc/flumotion/managers/default/planet.xml
+ 
+sudo vim /usr/local/etc/flumotion/managers/default/planet.xml
 
 flumotion-user/password  secure the encoder/collector - 
 use the htpasswd command to create flumotion-password-crypt from the flumotion-password 
 
-  sudo apt-get install apache2-utils
+sudo apt-get install apache2-utils
  
  $ htpasswd -nbd username password
 username:bxlJF9JC7Shec
@@ -33,12 +42,6 @@ username:bxlJF9JC7Shec
 %(flumotion-user)s:%(flumotion-password-crypt)s
 username:bxlJF9JC7Shec
  
-
-sudo cp \
- streaming-system/tools/flumotion-config/pusher/collector.xml \
- /usr/local/etc/flumotion/managers/default/planet.xml
- 
-
       <property name="uri">dvswitch://%(flumotion-mixer)s:2000</property>
       <property name="uri">dvswitch://ndv-mx04:2000</property>
  

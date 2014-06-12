@@ -19,6 +19,9 @@ use the htpasswd command to create flumotion-password-crypt from the flumotion-p
  
  $ htpasswd -nbd username password
 username:bxlJF9JC7Shec
+ $ htpasswd -nbd foo bar
+foo:L0tgXssMAfkrw
+
  
 %(flumotion-user)s:%(flumotion-password-crypt)s
 username:bxlJF9JC7Shec
