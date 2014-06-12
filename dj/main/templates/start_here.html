@@ -1,0 +1,16 @@
+{# approve/train.html #}
+{% extends "base.html" %}
+
+{% block login %}{% endblock %}
+
+{% block content %}
+
+<p>Hi!</p>
+<p>You have landed here because someone thinks you would like to help make videos of an event and gave you this url.
+</p>
+<p>
+Here is the next video that is waiting for someone to work on:
+
+<strong>click to the <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">Volunteer page</a>.</strong>
+</p>
+{% endblock %}

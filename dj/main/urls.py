@@ -10,6 +10,7 @@ from views import *
 urlpatterns = patterns(
     'main.views',
     url(r'^$', main, name='main'),
+    url(r'start/$', start_here, name='start_here'),
     url(r'clients/$', clients, name='clients'),
     url(r'locations/$', 'locations', name='locations'),
     url(r'C/(?P<client_slug>\w+)/$', client, name='client'),

@@ -127,6 +127,23 @@ def tests(request):
        locals(),
        context_instance=RequestContext(request) )
 
+def start_here(request):
+    """
+    landing page for someone who has never been here before 
+    and wants to help.
+    """
+
+    show=get_object_or_404(Show,client__slug='fosdem',slug='fosdem_2014')
+    episodes = Episode.objects.filter(show=show,
+            state=1)
+    episodes = episodes.annotate(
+                    c=Count("cut_list")).filter(c__gte=1)
+
+    return render_to_response('start_here.html',
+        {'show':show, 
+         'episode':episodes[0]},
+       context_instance=RequestContext(request) )
+
 def eps_xfer(request,client_slug=None,show_slug=None):
     """
     Returns all the episodes for a show as json.
