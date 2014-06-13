@@ -6,6 +6,10 @@ from main.models import Episode, Location
 from django.contrib.admin import widgets
 
 
+class Who(forms.Form):
+    locked_by = forms.CharField(max_length=32, required=True,
+            label="Please enter your name")
+
 class Episode_Form(forms.ModelForm):
     class Meta:
         model = Episode

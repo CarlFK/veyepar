@@ -9,8 +9,13 @@
 <p>You have landed here because someone thinks you would like to help make videos of an event and gave you this url.
 </p>
 <p>
-Here is the next video that is waiting for someone to work on:
+To keep track of who is working on what, and to maybe keep bots from mucking things up,<br>
 
-<strong>click to the <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">Volunteer page</a>.</strong>
+<form action="" method="POST">{% csrf_token %}{{who}} <input type="submit" value="Next" /></form> 
+will take you to the next video that is waiting for someone to work on: <strong>{{episode.name}}</strong>
+
+
+{# <strong>click to work on <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">{{episode.name}}</a>.</strong> #}
 </p>
 {% endblock %}
+

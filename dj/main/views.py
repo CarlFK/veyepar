@@ -33,7 +33,7 @@ import operator
 
 from main.models import Client,Show,Location,Episode,Cut_List,Raw_File,State
 from main.models import STATES, ANN_STATES
-from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep
+from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep, Who
 
 from accounts.forms import LoginForm
 
@@ -135,13 +135,29 @@ def start_here(request):
 
     show=get_object_or_404(Show,client__slug='fosdem',slug='fosdem_2014')
     episodes = Episode.objects.filter(show=show,
-            state=1)
+            state=1,
+            locked__isnull=True,
+            )
     episodes = episodes.annotate(
                     c=Count("cut_list")).filter(c__gte=1)
+    episode = episodes[0]
+
+    if request.method == 'POST':
+        who = Who(request.POST)
+        if who.is_valid(): 
+            episode.locked_by = who.cleaned_data['locked_by']
+            episode.locked = datetime.datetime.now()
+            episode.save()
+            return HttpResponseRedirect( 
+                    reverse(approve_episode,
+                     args=(episode.id, episode.slug, episode.edit_key,)))
+    else:
+        who = Who()
 
     return render_to_response('start_here.html',
         {'show':show, 
-         'episode':episodes[0]},
+         'episode':episode,
+         'who':who,},
        context_instance=RequestContext(request) )
 
 def eps_xfer(request,client_slug=None,show_slug=None):
