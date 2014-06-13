@@ -27,10 +27,10 @@
 <body>
 {% block login %} 
 {% include "accounts/login_form.html" %} 
+{% endblock %}
 
 {% if user.is_authenticated %}
   {% if user.is_staff %}
-
   <table class="shortcuts">
     <tr>
       <td> <a href="/admin/">admin</a> </td>
@@ -45,12 +45,10 @@
       {% endif %}
       </td>
       <td>
-    {% endif %}
     </tr>
   </table>
+  {% endif %}
 {% endif %}
-
-{% endblock %}
 
 {% block content %}
 {% endblock %}
