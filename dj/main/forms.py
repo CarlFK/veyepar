@@ -45,7 +45,6 @@ class Episode_Form_small(forms.ModelForm):
                   'normalise', 'channelcopy',
                   'thumbnail', 'description', 'comment')
 
-
 class clrfForm(forms.Form):
     clid = forms.IntegerField(widget=forms.HiddenInput())
     trash = forms.BooleanField(label="Trash",required=False)

@@ -20,6 +20,7 @@ urlpatterns = patterns(
 
     url(r'train/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', train, name='train'),
     url(r'approve/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', approve_episode, name='approve_episode'),
+
     url(r'E/edit/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', episode, name='episode'),
 
     url(r'state/(?P<state>\w+)/$', episode_list, name='episode_list'),
