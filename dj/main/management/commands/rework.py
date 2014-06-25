@@ -99,7 +99,7 @@ class Command(BaseCommand):
                     'fosdem_2014',
                     ])
                 print url
-                qps="?client=fosdem&show=fosdem_2014&location=%s&date=%s-02-0%s" %( location_slug, year, day )
+                qps="?client=fosdem&show=fosdem_2014&location_slug=%s&date=%s-02-0%s" %( location_slug, year, day )
                 print qps
                 url = "http://veyepar.nextdayvideo.com" + \
                         url + qps

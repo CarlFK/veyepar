@@ -709,6 +709,8 @@ def show_anomalies(request, show_id, ):
     max_title_len = max( len(ep.name) for ep in episodes )
     max_authors_len = max( len(ep.authors) for ep in episodes if ep.authors is not None)
 
+    max_name_ep = None
+    max_authors_ep = None
     max_name_len = 0
     max_authors_len = 0
     for ep in episodes:
@@ -1097,7 +1099,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     show=get_object_or_404(Show,client=client,slug=show_slug)
 
     location_slug = location_slug if location_slug \
-            else request.REQUEST.get('location')
+            else request.REQUEST.get('location_slug')
 
     start_date = request.REQUEST.get('date')
 
