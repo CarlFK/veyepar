@@ -17,6 +17,7 @@ from steve.restapi import API, get_content
 import requests
 
 from django.template.defaultfilters import linebreaks, urlize, force_escape
+from django.conf import settings
 
 from main.models import Show, Location, Episode
 
@@ -46,13 +47,15 @@ class add_to_richard(Process):
         self.category_key = ep.show.category_key \
                 or ep.show.client.category_key
 
-        self.host = pw.richard[ep.show.client.richard_id]
+        richard_id = self.options.richard_id or ep.show.client.richard_id
+        self.host = pw.richard[richard_id]
 
         self.richard_endpoint = \
             'http://{hostname}/api/v2'.format(hostname=self.host['host'])
         self.api = API(self.richard_endpoint)
 
         if self.options.verbose: 
+            print "Auth creds:"
             print self.richard_endpoint, self.host['user'], self.host['api_key'], {'category_key': self.category_key}
 
         
@@ -70,11 +73,14 @@ class add_to_richard(Process):
         # scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
         # video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
 
-        if ep.host_url is None:
-            pass
+        if self.options.title_thumb:
             # half baked idea:
             # use title slide as place holder image until video is produced.
-            #    video_data['thumbnail_url'] = "http://veyepar.nextdayvideo.com/static/%s/%s/titles/%s.png" % ( ep.show.client.slug, ep.show.slug, ep.slug )
+            video_data['thumbnail_url'] = "%s/%s/%s/titles/%s.png" % ( 
+                    settings.MEDIA_URL,
+                    ep.show.client.slug, ep.show.slug, ep.slug )
+        if ep.host_url is None:
+            pass
 
         elif "youtube" in ep.host_url or "youtu.be" in ep.host_url:  
             scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
@@ -93,7 +99,9 @@ class add_to_richard(Process):
             params = {'vimeo_id': ep.host_url.split('/')[-1]}
             video_data['embed'] ="""<object width="640" height="480"><param name="allowfullscreen" value="true"><param name="allowscriptaccess" value="always"><param name="movie" value="http://vimeo.com/moogaloop.swf?show_byline=1&amp;fullscreen=1&amp;clip_id=%(vimeo_id)s&amp;color=&amp;server=vimeo.com&amp;show_title=1&amp;show_portrait=0"><embed src="http://vimeo.com/moogaloop.swf?show_byline=1&amp;fullscreen=1&amp;clip_id=%(vimeo_id)s&amp;color=&amp;server=vimeo.com&amp;show_title=1&amp;show_portrait=0" allowscriptaccess="always" height="480" width="640" allowfullscreen="true" type="application/x-shockwave-flash"></embed></object>""" % params 
 
-        if self.options.verbose: pprint.pprint(video_data)
+        if self.options.verbose: 
+            print "video_data:"
+            pprint.pprint(video_data)
 
         if \
             not video_data['video_mp4_url'] \
@@ -104,7 +112,7 @@ class add_to_richard(Process):
 
 
         if self.is_already_in_pyvideo(ep):
-            # vid_id = ep.public_url.split('/video/')[1].split('/')[0]
+
             vid_id = get_video_id( ep.public_url)
             if not self.options.test:
                 print 'updating pyvideo', ep.public_url, vid_id
@@ -119,7 +127,11 @@ class add_to_richard(Process):
 
                 ret = False
         else:
+
             if not self.options.test:
+                if self.options.verbose: 
+                    print "Adding new..."
+
                 self.pvo_url = self.create_pyvideo(video_data)
                 print 'new pyvideo url', self.pvo_url
                 ep.public_url = self.pvo_url
@@ -304,14 +316,23 @@ class add_to_richard(Process):
 
             
         if self.options.verbose: 
+            print "scraped_meta"
             pprint.pprint( scraped_meta )
 
         return scraped_meta
 
     def is_already_in_pyvideo(self, ep):
-        if self.options.add_all: return False
-        # its truthiness implies that the video already exists in pyvideo
-        return ep.public_url
+
+        if self.options.add_all: 
+            ret = False
+        else:
+            # its truthiness implies that the video already exists in pyvideo
+            ret = ep.public_url
+
+        if self.options.verbose: 
+            print "is_already_in_pyvideo", ret
+
+        return ret
 
 
     def add_more_options(self, parser):
@@ -322,11 +343,19 @@ class add_to_richard(Process):
 
         # reload wtd cuz we trashed 2013.. opps!
         parser.add_option('--add-all', action="store_true",
-           help="assume it doesn't exist, overwrite previous richard url.")
+           help="Assume it doesn't exist, overwrite previous richard url.")
 
         # straigth to public
         parser.add_option('--public', action="store_true",
-           help="set it public on upload.")
+           help="Set it public on upload.")
+
+        # use title slide preview as thumb (for metadata preview)
+        parser.add_option('--title-thumb', action="store_true",
+           help="Use title slide preview url as thumb.")
+
+        # push to alterate richard (like to test crazy edit feature)
+        parser.add_option('--richard-id',
+           help="Override client.")
 
 
 if __name__ == '__main__':
