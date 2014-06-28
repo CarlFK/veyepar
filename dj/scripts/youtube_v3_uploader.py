@@ -2,6 +2,11 @@
 # youtube_v3_uploader.py
 # uploads to youtube using google's api v3
 
+# https://developers.google.com/youtube/v3/
+# https://developers.google.com/youtube/v3/code_samples/python
+# https://github.com/youtube/api-samples/tree/master/python
+
+
 import httplib
 import httplib2
 import os
@@ -20,6 +25,18 @@ from apiclient.http import MediaFileUpload
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run_flow
+
+try:
+    # read credentials from a file
+    from pw import yt 
+except ImportError:
+    # you can fill in your credentials here for dev
+    # but better to put in pw.py 
+    yt={
+            "test":{
+                'filename': "oauth.json",
+                }
+            }
 
 
 CLIENT_SECRETS_FILE = "client_secrets.json"
@@ -53,18 +70,22 @@ RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError, httplib.NotConnected,
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
-def get_authenticated_service(args):
+def get_authenticated_service(args, user_key):
 
-  flow = flow_from_clientsecrets( CLIENT_SECRETS_FILE, 
-          scope=YOUTUBE_READ_WRITE_SCOPE,)
+  auth = yt[user_key] ## from dict of credentials 
+  filename =auth['filename']
 
   # how and where tokens are stored
-  storage = Storage("oauth2.json")
+  storage = Storage(filename)
   # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html 
 
   credentials = storage.get()
 
   if credentials is None or credentials.invalid:
+
+      flow = flow_from_clientsecrets( CLIENT_SECRETS_FILE, 
+              scope=YOUTUBE_READ_WRITE_SCOPE,)
+
       # do the "allow access" step, save token.
       credentials = run_flow(flow, storage, args)
 
@@ -180,6 +201,7 @@ def get_id_from_url(url):
 class Uploader():
 
     # input attributes:
+    user = 'test'
     files = []
     meta = {}
     old_url = ''
@@ -197,14 +219,18 @@ class Uploader():
             'privacyStatus':privacyStatus,
             }
 
-        youtube = get_authenticated_service({'noauth_local_webserver':True})
+        youtube = get_authenticated_service(
+                {'noauth_local_webserver':True},
+                self.user)
         update_video(youtube, args)
 
         return True
 
     def upload(self):
 
-        youtube = get_authenticated_service({'noauth_local_webserver':True})
+        youtube = get_authenticated_service(
+                {'noauth_local_webserver':True},
+                self.user)
 
         pathname = self.files[0]['pathname']
         meta = self.meta
@@ -250,6 +276,7 @@ def test_upload():
     u.files = [{'pathname':test_file, 'ext':ext}]
     u.meta = meta
     # u.user = 'test'
+    u.user="ndv"
 
     u.debug=True
 

@@ -16,7 +16,7 @@ license - CC license
 description - used as the description of the video (paragraphs are fine)
 conf_key - PK in source database - unique, used to update this item 
 conf_url - URL of talk page
-tags - comma seperated list - serch terms, including sub topics briefly discussed in the talk.
+tags - comma separated list - serch terms, including sub topics briefly discussed in the talk.
 """
 
 """
