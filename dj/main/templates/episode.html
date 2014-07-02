@@ -52,7 +52,7 @@
     <td><a href="{% url episode_chaps episode.id %}">Chapters</a></td> <td>
         {% for chap in chaps %}
           {% if chap.0 %}
-            <a href="#{{chap.2.id}}">{{chap.0.1}}</a>,
+            <a href="#{{chap.2.id}}" style="display: inline-block;">{{chap.0.1}}</a>
           {%endif%}
         {%endfor%}
     </td>
