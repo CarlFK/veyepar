@@ -24,8 +24,8 @@ from main.models import Show, Location, Episode
 import pw
 
 def get_video_id(url):
-        vid_id = url.split('/video/')[1].split('/')[0]
-        return vid_id
+        v_id = url.split('/video/')[1].split('/')[0]
+        return v_id
 
 class add_to_richard(Process):
 
@@ -56,10 +56,13 @@ class add_to_richard(Process):
 
         if self.options.verbose: 
             print "Auth creds:"
-            print self.richard_endpoint, self.host['user'], self.host['api_key'], {'category_key': self.category_key}
+            print self.richard_endpoint, self.host['user'], \
+                    self.host['api_key'], \
+                    {'category_key': self.category_key}
 
         
         """
+        # FIX richard: need API for adding new categories.
         # FIXME using chatty hack due to problems with category handling
         if not self.options.test:
             create_category_if_missing( self.richard_endpoint, 
@@ -112,23 +115,15 @@ class add_to_richard(Process):
 
 
         if self.is_already_in_pyvideo(ep):
+            # get richard ID
+            v_id = get_video_id( ep.public_url)
+            ret = self.update_pyvideo( v_id, video_data )
 
-            vid_id = get_video_id( ep.public_url)
-            if not self.options.test:
-                print 'updating pyvideo', ep.public_url, vid_id
-                ret = self.update_pyvideo(vid_id, video_data)
-                # above ret= isn't working.  returns None I think?
-                # lets hope there wasn't a problem and blaze ahead.
-                ret = True
-            else: 
-                print 'test mode, not updating pyvideo' 
-                print ep.public_url, vid_id
-                pprint.pprint(video_data)
-
-                ret = False
         else:
 
-            if not self.options.test:
+            if self.options.test:
+                ret = False
+            else: 
                 if self.options.verbose: 
                     print "Adding new..."
 
@@ -136,14 +131,12 @@ class add_to_richard(Process):
                 print 'new pyvideo url', self.pvo_url
                 ep.public_url = self.pvo_url
                 ret = self.pvo_url
-            else: 
-                ret = False
 
         ep.save()
 
         return ret
 
-    def update_pyvideo(self, vid, new_data):
+    def update_pyvideo(self, v_id, new_data):
         """ updates a pyvideo record
         :arg vid: video id for pyvideo
         :arg new_data: dict of fields to update
@@ -151,23 +144,36 @@ class add_to_richard(Process):
         :returns: a dict from the updated video
 
         """
-        try:
-            # fetch current record
-            response = self.api.video(vid).get(
-                    auth_token=self.host['api_key'])
-            video_data = get_content(response)
+        # fetch current record
+        response = self.api.video(v_id).get(
+                auth_token=self.host['api_key'])
+        video_data = get_content(response)
+        if self.options.verbose: pprint.pprint( video_data )
+     
+        if self.options.test:
+            print 'test mode, not updating richard' 
+            print 'veyepar:', pprint.pprint(new_data)
+            print 'ricard:', pprint.pprint(video_data)
+            ret = False
+        else: 
+            print 'updating richard', v_id
             if self.options.verbose: pprint.pprint( video_data )
-            # update dict with new information
             video_data.update(new_data)
-            if self.options.verbose: pprint.pprint( video_data )
-            # update in pyvideo
-            return update_video(self.richard_endpoint, 
-                   self.host['api_key'], vid, video_data)
+            try:
+                # update richard with new information
+                ret = update_video(self.richard_endpoint, 
+                       self.host['api_key'], v_id, video_data)
+ 
+                # above ret= isn't working.  returns None I think?
+                # lets hope there wasn't a problem and blaze ahead.
+                ret = True
 
-        except MissingRequiredData as e:
-            print '#2, Missing required fields', e.errors
-            code.interact(local=locals())
-            raise e
+            except MissingRequiredData as e:
+                print '#2, Missing required fields', e.errors
+                code.interact(local=locals())
+                raise e
+
+        return ret
 
     def create_pyvideo(self, video_data):
         """ creates a pyvideo record
