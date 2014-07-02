@@ -1234,16 +1234,26 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
     """
     episode=get_object_or_404( Episode, id=episode_id )
     # funny=episode.slug <> episode_slug
+####
 
+    if request.method == 'POST':
+            episode.locked = datetime.datetime.now()
+
+
+####
     if episode.edit_key == edit_key:
         if episode.state == 8: # review_2 -  TODO use state.slug?
             if request.method == 'POST':
-                # all systems go! Approve the video!
-                episode.state += 1;
-                episode.save()
-                template = 'approved'
+                who = Who(request.POST)
+                if who.is_valid(): 
+                    episode.locked_by = who.cleaned_data['locked_by']
+                    # all systems go! Approve the video!
+                    episode.state += 1;
+                    episode.save()
+                    template = 'approved'
 
             else:
+                who = Who()
                 template = "approve"
 
         elif episode.state == 1: # edit -  TODO use state.slug?
@@ -1263,6 +1273,7 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
 
     return render_to_response("approve/%s.html"%template,
                     { 'episode':episode,
+                        'who':who,
                     },
                     context_instance=RequestContext(request) )
 

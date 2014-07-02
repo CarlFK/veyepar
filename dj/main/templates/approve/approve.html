@@ -5,9 +5,14 @@
 {% block point %}
 <form action="" method="POST">
     {% csrf_token %}
-    <p><b>To approve the release of this video to the public, click 
-    <input type="submit" value="Approve" />
-    now.</b></p>
+    <p><b>
+        To approve the release of this video to the public, 
+        {{who}}
+        (or inits, or something so I have a clue who did this) 
+        and click 
+        <input type="submit" value="Approve" />
+        now.
+    </b></p>
     {% if not user.is_authenticated %}
     <p>Warning: If you are seeing this, 
     you have the creditials to modify data, even though you are not logged in.</p>
