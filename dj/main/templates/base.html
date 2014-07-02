@@ -29,9 +29,11 @@
 {% include "accounts/login_form.html" %} 
 {% endblock %}
 
+<div>
 {% if user.is_authenticated %}
   {% if user.is_staff %}
   <table class="shortcuts">
+    <tbody>
     <tr>
       <td> <a href="/admin/">admin</a> </td>
       <td> <a href="/databrowse/">databrowse</a> </td>
@@ -45,9 +47,11 @@
       {% endif %}
       </td>
     </tr>
+    </tbody>
   </table>
   {% endif %}
 {% endif %}
+</div>
 
 {% block content %}
 {% endblock %}

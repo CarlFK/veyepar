@@ -52,7 +52,7 @@
     <td><a href="{% url episode_chaps episode.id %}">Chapters</a></td> <td>
         {% for chap in chaps %}
           {% if chap.0 %}
-            {{chap.0.1}},
+            <a href="#{{chap.2.id}}">{{chap.0.1}}</a>,
           {%endif%}
         {%endfor%}
     </td>
@@ -93,7 +93,6 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br/>
 
-{# <video src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv" controls width=200 ></video> #}
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/webm/{{episode.slug}}.webm">webm</a>
@@ -136,6 +135,7 @@ $(".viewer").zoomer();
 
 {% for cl,chap,clrfform in clrffs %}
 
+<div id=="{{cl.id}}">
 <div class="panel-group" id="accordion">
 <div class="panel">
   <div class="panel-heading"></div>
@@ -266,6 +266,7 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
 
 </div> <!-- /panel -->
 </div> <!-- panel-group -->
+</div> <!-- id={} -->
 {% endfor %}
 
 

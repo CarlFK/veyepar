@@ -12,22 +12,22 @@
 
 <div class=logged-out>
   Admin Login:
-<form id='login'>
+  <form id='login'>
   {% csrf_token %}
-    <div id='error_text'></div>
-    <div class=login_form>
-      <ul>
-        <li>
-          <label for="id_username">Username:</label>
-          <input name="username" id="id_username" type="text">
-        </li>
-        <li>
-          <label for="id_password">Password:</label>
-          <input name="password" id="id_password" type="password">
-        </li>
-        <li><input type="submit" value='Login'></li>
-      </ul>
-    </div>
-</form>
+  <div id='error_text'></div>
+  <div class=login_form>
+    <ul>
+      <li>
+        <label for="id_username">Username:</label>
+        <input name="username" id="id_username" type="text">
+      </li>
+      <li>
+        <label for="id_password">Password:</label>
+        <input name="password" id="id_password" type="password">
+      </li>
+      <li><input type="submit" value='Login'></li>
+    </ul>
+  </div>
+  </form>
 </div>
 
