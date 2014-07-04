@@ -1,4 +1,8 @@
 #!/bin/bash -ex
+
+wget http://www.open-bio.org/w/images/b/b0/Pear.png
+wget http://www.open-bio.org/w/images/logo/OBF_logo.png
+
 # wtd-na-2014
 wget -N http://conf.writethedocs.org/img/sponsors/twitter.png
 wget -N http://conf.writethedocs.org/img/sponsors/atlassian.png

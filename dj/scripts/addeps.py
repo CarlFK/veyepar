@@ -4,19 +4,19 @@
 
 """
 fields:
-name - title 
-room - room as described by the venue
-start - datetime in some parsable format 
-duration -- int minutes or "hh:mm:ss" 
-end - datetime in some parsable format 
+name - Talk title 
 authors - list of people's names.
 contact - list of email(s) of presenters.
-released - permission to release.
-license - CC license 
 description - used as the description of the video (paragraphs are fine)
+tags - comma separated list - serch terms, including sub topics briefly discussed in the talk.
+room - room as described by the venue
+start - datetime in some parsable format 
+duration - int minutes or "hh:mm:ss" 
+end - datetime in some parsable format 
+license - CC license 
+released - permission to release.
 conf_key - PK in source database - unique, used to update this item 
 conf_url - URL of talk page
-tags - comma separated list - serch terms, including sub topics briefly discussed in the talk.
 """
 
 """
@@ -62,6 +62,21 @@ but if that is how it is stored on the server, don't try to transform it.
 Again, keep the server side code simple.
 I can fix my consumer easier than I can get someone else's website updated.
 """
+
+def mk_fieldlist():
+    fields = []
+    for line in __doc__.split('\n'):
+        if '-' in line:
+            field,desc = line.split(' - ',1)
+            fields.append(field)
+
+    print """printf '{}\\n'|xclip -selection clipboard""".format('\\t'.join(fields))
+
+
+
+
+
+
 
 # FireFox plugin to view .json data:
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
