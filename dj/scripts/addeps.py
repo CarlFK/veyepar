@@ -1724,6 +1724,67 @@ class add_eps(process.process):
 
         return 
 
+    def bosc_2014(self, schedule, show):
+
+        # remove rows that have no crowdsource_ref, because spreadsheet
+        # schedule = [s for s in schedule if s['Time Start']]
+        schedule = [s for s in schedule 
+                if s['conf_key'] and s['start'] ]
+       
+        # convert all the values to unicode strings
+        schedule = [{k:d[k].decode('utf-8') for k in d} 
+                for d in schedule ] 
+        
+        field_maps = [
+            ('conf_key','id'),
+            ('conf_key','conf_key'),
+            ('room','location'),
+            # ('','sequence'),
+            ('name','name'),
+            ('authors','authors'),
+            ('contacts','emails'),
+            ('description','description'),
+            ('start','start'),
+            ('end','end'),
+            ('','duration'),
+            ('released','released'),
+            ('license','license'),
+            ('tags','tags'),
+            ('conf_url','conf_url'),
+            # ('','host_url'),
+            # ('','public_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+        rooms = self.get_rooms(events)
+        print rooms
+        self.add_rooms(rooms,show)
+
+
+        for event in events: 
+
+            event['start'] = datetime.datetime.strptime(
+                    "{0} {1}".format(event['raw']['date'],event['start']),
+                    '%m/%d/%Y %H:%M')
+                    
+            event['end'] = datetime.datetime.strptime(
+                    "{0} {1}".format(event['raw']['date'],event['end']),
+                    '%m/%d/%Y %H:%M')
+
+            delta = event['end'] - event['start']
+            minutes = delta.seconds/60 
+            event['duration'] = "00:{}:00".format(minutes) 
+
+
+            # event['duration'] = "00:{0}:00".format(event['duration'])
+
+            event['released'] = event['released'].lower() == 'y'
+
+        self.add_eps(events, show)
+
+        return 
+
+
 
     def wtd_na_2014(self, schedule, show):
 
@@ -2222,6 +2283,9 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.show =='bosc_2014':
+            return self.bosc_2014(schedule,show)
 
         if self.options.show =='wtd_NA_2014':
             return self.wtd_na_2014(schedule,show)
