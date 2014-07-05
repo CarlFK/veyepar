@@ -1756,10 +1756,6 @@ class add_eps(process.process):
             ]
 
         events = self.generic_events(schedule, field_maps)
-        rooms = self.get_rooms(events)
-        print rooms
-        self.add_rooms(rooms,show)
-
 
         for event in events: 
 
@@ -1775,10 +1771,16 @@ class add_eps(process.process):
             minutes = delta.seconds/60 
             event['duration'] = "00:{}:00".format(minutes) 
 
+            if event['raw']['Poster']:
+                event['location'] = 'P1'
 
             # event['duration'] = "00:{0}:00".format(event['duration'])
 
             event['released'] = event['released'].lower() == 'y'
+
+        rooms = self.get_rooms(events)
+        print rooms
+        self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
 

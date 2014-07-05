@@ -403,6 +403,9 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     if "state" in request.GET:
         episodes = episodes.filter( state=request.GET['state'] )
 
+    if "room" in request.GET:
+        episodes = episodes.filter( location__slug=request.GET['room'] )
+
     base  = os.path.dirname(__file__)
     rfxmlfile  = os.path.join(base,'templates', rfxml+".rfxml")
      
