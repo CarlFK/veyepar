@@ -76,7 +76,8 @@ class add_to_richard(Process):
         # scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
         # video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
 
-        if self.options.title_thumb:
+        # if self.options.title_thumb:
+        if 'thumbnail_url' not in video_data:
             # half baked idea:
             # use title slide as place holder image until video is produced.
             video_data['thumbnail_url'] = "%s/%s/%s/titles/%s.png" % ( 
