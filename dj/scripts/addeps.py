@@ -6,7 +6,7 @@
 fields:
 name - Talk title 
 authors - list of people's names.
-contact - list of email(s) of presenters.
+contacts - list of email(s) of presenters.
 description - used as the description of the video (paragraphs are fine)
 tags - comma separated list - serch terms, including sub topics briefly discussed in the talk.
 room - room as described by the venue
@@ -254,7 +254,7 @@ class add_eps(process.process):
       for room in rooms:
           if self.options.verbose: print room
           loc,created = Location.objects.get_or_create(
-                  name=room,)
+                  name__iexact=room,)
           seq+=1
           if created: 
               loc.sequence=seq
@@ -348,9 +348,10 @@ class add_eps(process.process):
 
             episodes = Episode.objects.filter(
                       show=show, 
-                      start__day = row['start'].day,
                       conf_key=row['conf_key'], 
                       )
+
+                     #  start__day = row['start'].day,
 
             if episodes:
                 if len(episodes)>1:
@@ -384,7 +385,8 @@ class add_eps(process.process):
                 else:
                     print "updating conf_key: %(conf_key)s, name:%(name)s" % row
 
-                episode.location=Location.objects.get(name=row['location'])
+                episode.location=Location.objects.get(
+                        name__iexact=row['location'])
                 for f in fields:
                     setattr( episode, f, row[f] )
 
@@ -1742,7 +1744,7 @@ class add_eps(process.process):
             # ('','sequence'),
             ('name','name'),
             ('authors','authors'),
-            ('contacts','emails'),
+            ('contact','emails'),
             ('description','description'),
             ('start','start'),
             ('end','end'),
@@ -1761,18 +1763,15 @@ class add_eps(process.process):
 
             event['start'] = datetime.datetime.strptime(
                     "{0} {1}".format(event['raw']['date'],event['start']),
-                    '%m/%d/%Y %H:%M')
+                    '%d/%m/%Y %H:%M')
                     
             event['end'] = datetime.datetime.strptime(
                     "{0} {1}".format(event['raw']['date'],event['end']),
-                    '%m/%d/%Y %H:%M')
+                    '%d/%m/%Y %H:%M')
 
             delta = event['end'] - event['start']
             minutes = delta.seconds/60 
             event['duration'] = "00:{}:00".format(minutes) 
-
-            if event['raw']['Poster']:
-                event['location'] = 'P1'
 
             # event['duration'] = "00:{0}:00".format(event['duration'])
 
@@ -1910,7 +1909,7 @@ class add_eps(process.process):
     def symposion2(self, schedule, show):
         # pycon.us 2013
 
-        rooms = self.get_rooms(schedule)
+        rooms = self.get_rooms(schedule, "room", )
         if self.options.verbose: print rooms
 
         self.add_rooms(rooms,show)
@@ -2222,11 +2221,12 @@ class add_eps(process.process):
                 # token = soup.find('input', 
                 #        dict(name='csrfmiddlewaretoken'))['value']
 
-                if self.options.verbose: print "csrftoken:", token
 
                 # setup the values needed to log in:
                 login_data = auth['login_data']
                 login_data['csrfmiddlewaretoken'] = token 
+
+                if self.options.verbose: print "login_data", login_data
 
                 ret = session.post(auth['login_page'], 
                         data=login_data, 
@@ -2304,7 +2304,7 @@ class add_eps(process.process):
         if self.options.show =='write_the_docs_2013':
             return self.lanyrd(schedule,show)
 
-        if self.options.show in ['pyohio2013',"pycon_2014_warmup"]:
+        if self.options.show in ['pyohio_2014',"pycon_2014_warmup"]:
             return self.pyohio2013(schedule,show)
 
         if self.options.show =='pyconca2013':
