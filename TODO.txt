@@ -18,17 +18,9 @@ Show twinpact feed on slave display.
 
 veyepar:
 
-  last active date - 
-    for shows - 
-      sort shows by date on the client page, 
-      link to stats.
-      
   move state data def from models.py to initial_data.json fixture.
 
   episode.html save.. UI to show user it got saved.
-
-  chrome doesn't play ogv maybe? figure out what file formats to use for thumbs.  maybe now it does.
-  how to keep it from being so agressive about buffering if Play isn't hit 
 
   store images of recording sheets
 
@@ -42,8 +34,6 @@ veyepar:
         inkscape svg/png fail
         input files missing
         encoder fail
-
-  webm parameters
 
   command line parameter to set cfg file.
     option to disable reading config (tests should not read config)
@@ -115,6 +105,7 @@ model:
   
   episode:
     languge (German...)
+    author Twitter handles
 
   child table of output files
     mp4, ogv, mp3, facc...
@@ -131,6 +122,7 @@ model:
 
   location:
     channel_copy - audio misconfiguration is often caused by venu issues
+    warning: it often gets fixed the 2nd day.
 
 walpaper 
   logos:
