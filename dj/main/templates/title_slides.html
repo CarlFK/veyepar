@@ -8,7 +8,8 @@
 {% block content %}
 
 {% for episode in episodes %}
-<a href="E/{{episode.id}}/"><img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"></a><br/>
+  <a href="E/{{episode.id}}/"><img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png" width="720"></a><br/>
+  <hr>
 
 {% endfor %}
 {% endblock %}
