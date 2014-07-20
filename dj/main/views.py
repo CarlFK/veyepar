@@ -756,6 +756,20 @@ def show_anomalies(request, show_id, ):
         },
     context_instance=RequestContext(request) )
 
+def show_pipeline(request, show_id ):
+
+    show=get_object_or_404(show,id=show_id)
+    client=show.client
+    episodes=episode.objects.filter(show=show,location__active=true)
+
+    return render_to_response('show_pipeline.html',
+        {
+          'client':client,
+          'show':show,
+          'eps':eps,
+        },
+    context_instance=RequestContext(request) )
+
 
 def show_stats(request, show_id, ):
     """
@@ -844,7 +858,7 @@ def show_stats(request, show_id, ):
         
         # update room-loc
         add_ep_to_stat(ep,stats[(dt,loc)])
-        
+
 
     def add_rf_to_stat(rf,stat):
         stat['files'] += 1
@@ -860,7 +874,6 @@ def show_stats(request, show_id, ):
             add_rf_to_stat(rf,dates[dt])
             add_rf_to_stat(rf,locations[loc])
             add_rf_to_stat(rf,stats[(dt, loc)])
-        
 
     # make lists out of the dics cuz I can't figur out how to get at the dict
  
@@ -1236,14 +1249,12 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
     Lets hope that the edit_key does not get abused.
     """
     episode=get_object_or_404( Episode, id=episode_id )
-    # funny=episode.slug <> episode_slug
-####
 
     if request.method == 'POST':
             episode.locked = datetime.datetime.now()
 
+    who=None ## for the cases that don't use the who form
 
-####
     if episode.edit_key == edit_key:
         if episode.state == 8: # review_2 -  TODO use state.slug?
             if request.method == 'POST':
