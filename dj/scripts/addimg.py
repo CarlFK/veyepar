@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 # Adds png files to the Image table
+# uses ocr to link them to an episode
+
+# convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
 
 import os
 import subprocess
@@ -9,52 +12,65 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Image_File
 
-class add_dv(process):
+class add_img(process):
+
+    def ocr_ass_one(self, img, src, locs, eps):
+
+        imgname = os.path.join( self.show_dir, src)
+        ocr_cmd = ['tesseract', imgname, '/tmp/text']
+        print ocr_cmd
+        print ' '.join(ocr_cmd)
+        p = subprocess.Popen(ocr_cmd)
+        x = p.wait()
+        text = open('/tmp/text.txt').read().decode('UTF-8')
+        """
+        To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
+        """
+        img.text = text
+
+        # scan the eps and locs to see if we can find a link
+        def is_in( img, ep, a, text ):
+            val = unicode(getattr(ep, a))
+            if val in ['','2014',]:
+                # blacklisted values
+                return
+            if val.lower() in text:
+                print "found", a, val
+                img.episodes.add(ep)
+                img.save()
+
+        for ep in eps:
+            is_in( img, ep, "id", text )
+            is_in( img, ep, "conf_key", text )
+            is_in( img, ep, "name", text )
+            is_in( img, ep, "authors", text )
+
+        for loc in locs:
+            if loc.name.lower() in text.lower():
+                print "found loc", loc
+                img.location = loc
+
+        img.save()
+
 
     def one_file(self,pathname,show, locs, eps):
         print pathname,
+
         img,created = Image_File.objects.get_or_create(
                 show=show, 
                 filename=pathname,)
-        if created: 
+
+        if created or self.options.force: 
             print "added to db"
-            imgname = os.path.join( self.show_dir, "img", pathname )
-            ocr_cmd = ['tesseract', imgname, '/tmp/text']
-            print ocr_cmd
-            print ' '.join(ocr_cmd)
-            p = subprocess.Popen(ocr_cmd)
-            x = p.wait()
-            text = open('/tmp/text.txt').read().decode('UTF-8')
-            """
-            To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
-            """
-            img.text = text
+            src = os.path.join( "img", pathname )
 
-            # scan the eps and locs to see if we can find a link
-            def is_in( img, ep, a, text ):
-                val = unicode(getattr(ep, a))
-                if val in ['','2014',]:
-                    # blacklisted values
-                    return
-                if val.lower() in text:
-                    print "found", a, val
-                    img.episodes.add(ep)
-                    img.save()
+            self.ocr_ass_one( img, src, locs, eps )
 
-            for ep in eps:
-                is_in( img, ep, "id", text )
-                is_in( img, ep, "conf_key", text )
-                is_in( img, ep, "name", text )
-                is_in( img, ep, "authors", text )
+            if self.options.rsync:
+                self.file2cdn(show, src)
 
-            for loc in locs:
-                if loc.name.lower() in text.lower():
-                    print "found loc", loc
-                    img.location = loc
-
-            img.save()
-
-        else: print "in db"
+        else: 
+            print "in db"
    
     def one_show(self, show):
       if self.options.verbose:  print "show:", show.slug
@@ -74,6 +90,10 @@ class add_dv(process):
           for f in filenames:
               self.one_file(os.path.join(d,f),show,locs,eps)
 
+              if self.options.test:
+                  print "Test mode, only doing one."
+                  return
+
     def work(self):
         """
         find and process show
@@ -85,7 +105,11 @@ class add_dv(process):
 
         return
 
+    def add_more_options(self, parser):
+        parser.add_option('--rsync', action="store_true",
+            help="upload to DS box.")
+
 if __name__=='__main__': 
-    p=add_dv()
+    p=add_img()
     p.main()
 
