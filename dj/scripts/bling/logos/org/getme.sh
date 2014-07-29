@@ -1,5 +1,10 @@
 #!/bin/bash -ex
-
+wget http://www.open-bio.org/w/images/thumb/5/5f/Eagle_logo_2013.jpg/120px-Eagle_logo_2013.jpg
+wget http://www.open-bio.org/w/images/thumb/b/bb/Gigascience-07.png/175px-Gigascience-07.png
+wget http://www.open-bio.org/w/images/e/e5/Curoverse.png
+wget http://www.open-bio.org/w/images/4/43/Arvados.png
+wget http://www.open-bio.org/w/images/thumb/8/80/Google-logo11w.png/205px-Google-logo11w.png
+exit
 wget http://www.open-bio.org/w/images/b/b0/Pear.png
 wget http://www.open-bio.org/w/images/logo/OBF_logo.png
 

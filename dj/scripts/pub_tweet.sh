@@ -2,7 +2,7 @@
 
 if grep ^DATABASES ../local_settings.py; then
 
-/home/carl/.virtualenvs/veyepar/bin/python mk_public.py $*
+/home/carl/.virtualenvs/veyepar/bin/python mk_public.py --unlock $*
 /home/carl/.virtualenvs/veyepar/bin/python tweet.py $*
 
 else

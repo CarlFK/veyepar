@@ -322,11 +322,11 @@ class post(process):
         if not ep.show.client.youtube_id: youtube_success = True
         else: youtube_success = self.do_yt(ep,files,True,meta)
 
-        if not ep.show.client.archive_id: archive_success = True
-        else: archive_success = self.do_arc(ep,files,meta)
+        # if not ep.show.client.archive_id: archive_success = True
+        # else: archive_success = self.do_arc(ep,files,meta)
 
-        if not ep.show.client.rax_id: rax_success = True
-        else: rax_success = self.do_rax(ep,files,meta)
+        # if not ep.show.client.rax_id: rax_success = True
+        # else: rax_success = self.do_rax(ep,files,meta)
 
         # tring to fix the db timeout problem
         try:
@@ -337,9 +337,9 @@ class post(process):
             connection.connection = None
             ep.save()
 
-        return youtube_success \
-                and archive_success \
-                and rax_success
+        return youtube_success 
+                # and archive_success \
+                # and rax_success
 
     def add_more_options(self, parser):
 

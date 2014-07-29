@@ -636,8 +636,8 @@
          id="flowPara3036" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot2576-7"
-       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       transform="matrix(1.5228736,0,0,1.8229844,46.033306,273.57248)"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:100%;writing-mode:lr-tb;text-anchor:end;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       transform="matrix(1.5228736,0,0,1.8229844,-353.96669,273.57248)"
        inkscape:label="#flowRoot2414"><flowRegion
          id="flowRegion2416-5"><rect
            id="rect2418-9"
@@ -645,7 +645,7 @@
            height="95.016434"
            x="68.642532"
            y="121.71946"
-           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:100%;writing-mode:lr-tb;text-anchor:end;fill:#ffffff;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
          id="date">September 99,9999</flowPara></flowRoot>    <g
        id="layer1-9"
        inkscape:label="Layer 1"
@@ -763,19 +763,19 @@
          id="flowPara2818-3">Sponsord by</flowPara></flowRoot>    <image
        sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/logos/wi-logo.png"
        xlink:href="logos/wi-logo.png"
-       y="419.71936"
-       x="537.56354"
-       id="image3166"
+       width="238.4902"
        height="61.171188"
-       width="238.4902" />
+       id="image3166"
+       x="537.56354"
+       y="419.71936" />
     <image
        sodipodi:absref="/home/carl/src/veyepar/dj/scripts/bling/logos/org/imagescape-web.gif"
        xlink:href="logos/org/imagescape-web.gif"
-       y="426.87106"
-       x="320"
-       id="image3315"
+       width="160"
        height="80"
-       width="160" />
+       id="image3315"
+       x="320"
+       y="426.87106" />
     <image
        y="0"
        x="101"

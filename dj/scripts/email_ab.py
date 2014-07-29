@@ -35,7 +35,10 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
 
         # if there is no email, use the client's.
         # like for lightning talks.
-        emails = ep.emails or ep.show.client.contacts
+        # emails = ep.emails or ep.show.client.contacts
+        emails = ep.emails 
+
+        if self.options.verbose: print emails
 
         if emails: 
             tos = [e.strip() for e in emails.split(',')]
@@ -80,6 +83,7 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
                 ret = True # need to figure out what .send_messages returns
 
         else:
+            print "no emails!"
             ret = False
 
         return ret

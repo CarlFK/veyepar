@@ -429,11 +429,11 @@ class add_eps(process.process):
                                   for i,cs in enumerate(zip(a1,a2)):
                                     if cs[0] <> cs[1]:
                                         print \
-                          "diff found at pos {0}:\n{1}\n{2}".format(
+                          "#1, diff found at pos {0}:\n{1}\n{2}".format(
                                   i,cs[0].__repr__(),
                                     cs[1].__repr__()) 
                                         print \
-            "diff found at pos {0}:\nveyepar: {1}\nsource:{2}".format(
+            "#2, diff found at pos {0}:\nveyepar: {1}\nsource:{2}".format(
                                   i,a1[i:i+80].__repr__(),
                                     a2[i:i+80].__repr__()) 
                                         break
@@ -2107,6 +2107,9 @@ class add_eps(process.process):
 
     def pyohio2013(self,schedule,show):
 
+        # remove events with no room (like Break)
+        schedule = [s for s in schedule if s['rooms'] ]
+
         for event in schedule:
 
             # move Pleanary events into the location where the equipment is
@@ -2116,8 +2119,8 @@ class add_eps(process.process):
             if event['conf_url'] is None:
                 event['conf_url'] = 'http://pyohio.org/schedule/'
 
-            if event['license'] == '':
-                event['license'] = 'CC BY-SA 2.5 CA'
+            # if event['license'] == '':
+            #    event['license'] = 'CC BY-SA 2.5 CA'
 
             if event['authors'] is None:
                 event['authors'] = []
@@ -2125,6 +2128,11 @@ class add_eps(process.process):
             if ('contact' not in event) or \
                     (event['contact'] is None):
                 event['contact'] = []
+
+            if event['name'].startswith('**Opening Remarks:**'):
+                event['name'] = "Panel Discussion: So You Wanna Run a Tech Conference."
+                event['authors'] = "Catherine Devlin, Eric Floehr, Brian Costlow, Raymond Chandler, Jason Green, Jason Myers".split(", ")
+
 
 
         return self.symposion2(schedule,show)

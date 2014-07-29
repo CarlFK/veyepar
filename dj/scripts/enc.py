@@ -142,10 +142,28 @@ class enc(process):
         if self.options.verbose: print "looking for:", key
         # tollerate template where tokens have been removed
         if tree[1].has_key(key):
-            if self.options.verbose: 
-                print "fond in svg:", tree[1][key].text
-                # print "new", texts[key].encode()
-            tree[1][key].text=texts[key]
+
+            if key == "license":
+                # CC license image
+                if self.options.verbose: 
+                    print "found in svg:", tree[1][key]
+                    print "replacing with:", texts[key]
+                    t=tree[1][key]
+                    # import code; code.interact(local=locals())
+                if texts[key] is None:
+                    # del(tree[1][key])
+                    # print tree[1].has_key(key)
+                    tree[1][key].clear()
+                else:
+                    t.set('{http://www.w3.org/1999/xlink}href',texts[key])
+            else:
+                if self.options.verbose: 
+                    print "found in svg:", tree[1][key].text
+                    print "replacing with:", texts[key] #.encode()
+                tree[1][key].text=texts[key]
+
+    # cooked_svg = xml.etree.ElementTree.tostring(tree[0])
+    # print "testing...", "license" in cooked_svg
 
     if tree[1].has_key('presenternames'):
         if texts['authors']:
@@ -157,20 +175,40 @@ class enc(process):
             tree[1]['presenternames'].text=""
 
     cooked_svg = xml.etree.ElementTree.tostring(tree[0])
+    print "testing...", "license" in cooked_svg
 
     return cooked_svg
 
   def get_title_text( self, episode ): 
+    # lets try putting (stuff) on a new line
+    title = episode.name
+    if " (" in title:
+        pos = title.index(" (")
+        title,title2 = title[:pos],title[pos+1:]  # +1 skip space in " ("
+    elif ":" in title:
+        pos = title.index(":")+1
+        title,title2 = title[:pos],title[pos:].strip()  
+    else:
+        title2 = ""
+
+    if episode.license:
+        license = "cc/{}.svg".format(episode.license.lower())
+    else:
+        license = None
+
     texts={
             'client': episode.show.client.name, 
             'show': episode.show.name, 
-            'title': episode.name, 
+            'title': title, 
+            'title2': title2, 
             'authors': episode.authors,
             'presentertitle': "",
             # 'date': episode.start.strftime("%B %d, %Y"),
             'date': episode.start.strftime("%-e %B %Y"),
             'time': episode.start.strftime("%H:%M"),
+            'license': license,
         }
+    
     return texts
 
   def svg2png(self, svg_name, png_name, episode):
