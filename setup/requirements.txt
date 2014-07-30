@@ -31,3 +31,8 @@ django-filter
 
 ElementTree
 # gdata-python-client
+
+apiclient
+
+urllib3
+google-api-python-client httplib2

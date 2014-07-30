@@ -112,9 +112,11 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% if episode.image_file_set.all %}
 <div class="viewer" style="height: 200px; width: 800px;" >
 {% for img in episode.image_file_set.all %}
-<img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
-{# next line weird host cuz quick for fosdem #}
+{% if episode.show.slug == "fosdem_2014" %}
     <img alt="recording sheet" src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
+  {% else %}
+    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
+{% endif %}
 {% endfor %}
 </div>
 

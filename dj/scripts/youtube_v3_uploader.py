@@ -6,6 +6,10 @@
 # https://developers.google.com/youtube/v3/code_samples/python
 # https://github.com/youtube/api-samples/tree/master/python
 
+# https://github.com/google/oauth2client
+
+# https://developers.google.com/api-client-library/python/guide/aaa_oauth
+
 
 import httplib
 import httplib2

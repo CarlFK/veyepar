@@ -5,8 +5,27 @@
 
 # convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
 
+"""
+
+wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.4ubuntu0_amd64.deb
+sudo gdebi python-tesseract_0.9-0.4ubuntu0_amd64.deb
+sudo apt-get install python-opencv
+
+# serious hack cuz this didn't work: 
+  TESSDATA_PREFIX=/usr/share/tesseract-ocr
+ln -s /usr/share/tesseract-ocr/tessdata/ 
+
+pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
+
+"""
+
 import os
 import subprocess
+
+import re
+
+import cv2.cv as cv
+import tesseract
 
 from process import process
 
@@ -14,15 +33,48 @@ from main.models import Client, Show, Location, Episode, Image_File
 
 class add_img(process):
 
+    def ocr_img(self, imgname):
+        image=cv.LoadImage(imgname, cv.CV_LOAD_IMAGE_GRAYSCALE)
+
+        api = tesseract.TessBaseAPI()
+        api.Init(".","eng",tesseract.OEM_DEFAULT)
+        #api.SetPageSegMode(tesseract.PSM_SINGLE_WORD)
+        api.SetPageSegMode(tesseract.PSM_AUTO)
+        tesseract.SetCvImage(image,api)
+        text=api.GetUTF8Text()
+        conf=api.MeanTextConf()
+
+        return text
+
+    def to_png(self, imgname):
+        src = imgname
+        dst = os.path.splitext(imgname)[0] + ".png"
+        convert_cmd = ['convert', src, dst]
+        self.run_cmd(convert_cmd)
+        return dst
+
     def ocr_ass_one(self, img, src, locs, eps):
 
         imgname = os.path.join( self.show_dir, src)
+
+        text = self.ocr_img(imgname)
+        # remove extra white space, leave a little
+        text = re.sub(r'\n[\n ]+', '\n', text)
+
+        # imgname = self.to_png(imgname)
+        self.to_png(imgname)
+
+        print text
+        print imgname
+
+        """
         ocr_cmd = ['tesseract', imgname, '/tmp/text']
         print ocr_cmd
         print ' '.join(ocr_cmd)
         p = subprocess.Popen(ocr_cmd)
         x = p.wait()
         text = open('/tmp/text.txt').read().decode('UTF-8')
+        """
         """
         To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
         """
@@ -34,7 +86,7 @@ class add_img(process):
             if val in ['','2014',]:
                 # blacklisted values
                 return
-            if val.lower() in text:
+            if val.lower().encode('utf-8','ignore') in text:
                 print "found", a, val
                 img.episodes.add(ep)
                 img.save()
@@ -46,11 +98,14 @@ class add_img(process):
             is_in( img, ep, "authors", text )
 
         for loc in locs:
-            if loc.name.lower() in text.lower():
+            # if loc.name.encode('utf-8','ignore').lower() in text.lower().encode('utf-8','ignore'):
+            if loc.name.encode('utf-8','ignore').lower() in text.lower():
                 print "found loc", loc
                 img.location = loc
 
         img.save()
+
+        return imgname
 
 
     def one_file(self,pathname,show, locs, eps):
@@ -64,7 +119,7 @@ class add_img(process):
             print "added to db"
             src = os.path.join( "img", pathname )
 
-            self.ocr_ass_one( img, src, locs, eps )
+            imgname = self.ocr_ass_one( img, src, locs, eps )
 
             if self.options.rsync:
                 self.file2cdn(show, src)
@@ -88,11 +143,12 @@ class add_img(process):
           if self.options.verbose: 
               print "checking...", dirpath, d, dirnames, filenames 
           for f in filenames:
-              self.one_file(os.path.join(d,f),show,locs,eps)
+              if os.path.splitext(f)[1] in [ ".ppm", ".pbm" ]:
+                  self.one_file(os.path.join(d,f),show,locs,eps)
 
-              if self.options.test:
-                  print "Test mode, only doing one."
-                  return
+                  if self.options.test:
+                      print "Test mode, only doing one."
+                      return
 
     def work(self):
         """
