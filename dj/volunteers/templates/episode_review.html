@@ -25,9 +25,16 @@
         <tr><th colspan="{{ sheets.count }}">Click on thumbnail to see recording sheet</th></tr>
         <tr>
             {% for img in sheets %}
-            <td><a href="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
+            <td>
+            {% if episode.show.slug == "fosdem_2014" %}
+                <a href="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
                 <img src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=90 alt="recording sheet" >
                 </a>
+            {% else %}
+                <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}">
+                    <img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=90 alt="recording sheet" >
+                </a>
+                {% endif %}
             </td>
             {% endfor %}
         </tr>
