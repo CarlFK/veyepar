@@ -34,6 +34,11 @@ from main.models import Client, Show, Location, Episode, Image_File
 class add_img(process):
 
     def ocr_img(self, imgname):
+
+        """
+        To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
+        """
+ 
         image=cv.LoadImage(imgname, cv.CV_LOAD_IMAGE_GRAYSCALE)
 
         api = tesseract.TessBaseAPI()
@@ -46,38 +51,16 @@ class add_img(process):
 
         return text
 
-    def to_png(self, imgname):
-        src = imgname
-        dst = os.path.splitext(imgname)[0] + ".png"
+    def to_png(self, src, dst):
         convert_cmd = ['convert', src, dst]
         self.run_cmd(convert_cmd)
         return dst
 
     def ocr_ass_one(self, img, src, locs, eps):
 
-        imgname = os.path.join( self.show_dir, src)
-
-        text = self.ocr_img(imgname)
+        text = self.ocr_img(src)
         # remove extra white space, leave a little
         text = re.sub(r'\n[\n ]+', '\n', text)
-
-        # imgname = self.to_png(imgname)
-        self.to_png(imgname)
-
-        print text
-        print imgname
-
-        """
-        ocr_cmd = ['tesseract', imgname, '/tmp/text']
-        print ocr_cmd
-        print ' '.join(ocr_cmd)
-        p = subprocess.Popen(ocr_cmd)
-        x = p.wait()
-        text = open('/tmp/text.txt').read().decode('UTF-8')
-        """
-        """
-        To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
-        """
         img.text = text
 
         # scan the eps and locs to see if we can find a link
@@ -105,27 +88,44 @@ class add_img(process):
 
         img.save()
 
-        return imgname
 
+    def one_file(self,src_base,show, locs, eps):
 
-    def one_file(self,pathname,show, locs, eps):
-        print pathname,
+        print src_base
+        # foo.ppm
 
+        # the scan that was extracted from the pdf
+        src_name = os.path.join( self.show_dir, "img", src_base )
+
+        # the base png name to use for the db and html
+        # foo.png
+        png_base = os.path.splitext(src_base)[0] + ".png"
+
+        # create the png (and add the full path to png_name
+        self.to_png(src_name,
+            os.path.join( self.show_dir, "img", png_base ))
+
+        # upload it
+        if self.options.rsync:
+            self.file2cdn(show, os.path.join( "img", png_base ))
+
+        # make sure the png name is in the db
         img,created = Image_File.objects.get_or_create(
                 show=show, 
-                filename=pathname,)
+                filename=png_base,)
 
+        # ocr and connect the img object to episodes
+        imgname = self.ocr_ass_one( img, src_name, locs, eps )
+
+        """
         if created or self.options.force: 
             print "added to db"
             src = os.path.join( "img", pathname )
 
-            imgname = self.ocr_ass_one( img, src, locs, eps )
-
-            if self.options.rsync:
-                self.file2cdn(show, src)
 
         else: 
             print "in db"
+        """
    
     def one_show(self, show):
       if self.options.verbose:  print "show:", show.slug
