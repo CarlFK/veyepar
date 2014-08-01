@@ -30,14 +30,15 @@ sudo apt-get --assume-yes install python-software-properties
 
 sudo apt-get --assume-yes update
 
-sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder ffmpeg python-virtualenv screen sox melt python-lxml
+sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-lxml
 # python-dev libxml2-dev libxslt-dev
 # sphinx2-bin 
 # libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 
 # pocketsphinx-utils
 
 # for encoder node
-sudo apt-get install python-psycopg2 inkscape ffmpeg2theora python-imaging python-virtualenv virtualenvwrapper
+sudo apt-get --assume-yes install python-psycopg2 inkscape ffmpeg2theora python-imaging python-virtualenv 
+# virtualenvwrapper 
 
 # for web server 
 # python-psycopg2 python-imaging python-virtualenv virtualenvwrapper 
@@ -46,21 +47,28 @@ sudo apt-get install python-psycopg2 inkscape ffmpeg2theora python-imaging pytho
 
 # curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv 
 
-sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
+# sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
 # sudo pip install hg+https://bitbucket.org/dhellmann/virtualenvwrapper
 
-printf "\nsource /usr/local/bin/virtualenvwrapper.sh\n" >> ~/.bashrc
-source /usr/local/bin/virtualenvwrapper.sh 
+# printf "\nsource /usr/local/bin/virtualenvwrapper.sh\n" >> ~/.bashrc
+# source /usr/local/bin/virtualenvwrapper.sh 
 # if [ ! -d ~/.virtualenvs ]; then
 #   mkdir ~/.virtualenvs
 #fi
 
 # depending on which version of ve wrapper, need both to make sure:
-mkvirtualenv veyepar
-mkvirtualenv --system-site-packages veyepar
-printf "workon veyepar\n" >> ~/.bashrc
+# mkvirtualenv veyepar
+# mkvirtualenv --system-site-packages veyepar
+# printf "workon veyepar\n" >> ~/.bashrc
 
-git clone git://github.com/CarlFK/veyepar.git
+mkdir -p ~/.virtualenvs/
+virtualenv --system-site-packages ~/.virtualenvs/veyepar
+printf "source  ~/.virtualenvs/veyepar/bin/activate\n" >> ~/.bashrc
+source  ~/.virtualenvs/veyepar/bin/activate
+
+if [ not -d veyepar ]; then
+  git clone git://github.com/CarlFK/veyepar.git
+fi
 
 cd veyepar
 
@@ -83,7 +91,9 @@ ln -s webster-dictionary.txt dictionary.txt
 
 wget https://www.dropbox.com/sh/02zhv4v7lrdzmmg/W3Jqcs25HK/Synthview%20-%20Novecentowide-Bold.otf
 wget https://www.dropbox.com/sh/02zhv4v7lrdzmmg/imS01PwStJ/Synthview%20-%20Novecentowide-Light.otf
+mkdir -p ~/.fonts/
 mv *.otf ~/.fonts/
+
 
 # removed because sphinx no longer installs - pulled from deb repos
 # sox -b 16 -r 16k -e signed -c 1 -t raw \
@@ -91,6 +101,7 @@ mv *.otf ~/.fonts/
 #    goforward.wav
 
 cd ..
+pwd
 cp sample_pw.py pw.py
 cp sample_veyepar.cfg veyepar.cfg
 cd ../..
