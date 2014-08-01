@@ -75,31 +75,36 @@ class SyncRax(process):
         return ret
 
 
+    def rf_ogv(self, show, rf):
+        # look for .ogv
+        base = os.path.join(
+                "dv", rf.location.slug, rf.basename() + ".ogv")
+        if not self.cdn_exists(show,base):
+            self.cdn_send(show,base)
 
+
+    def rf_audio_png(self, show, rf):
+        # check for audio image
+        rf_base = os.path.join( "dv", 
+            rf.location.slug, rf.filename )
+
+        png_base = os.path.join( "audio_png", "dv", 
+            rf.location.slug, rf.basename() + "_audio.png")
+
+        if not self.cdn_exists(show,png):
+            print rf.filesize
+            src = os.path.join(self.show_dir,rf_base)
+            dst = os.path.join(self.show_dir,png_base)
+            ret = self.mk_audio_png(src,dst)
+            self.cdn_send(show,png_base)
+
+   
     def raw_files(self, show):
         print "getting raw files..."
         for rf in Raw_File.objects.filter(show=show):
 
-            # look for .ogv
-            base = os.path.join(
-                    "dv", rf.location.slug, rf.basename() + ".ogv")
-            if not self.cdn_exists(show,base):
-                self.cdn_send(show,base)
-
-            # check for audio image
-            rf_base = os.path.join( "dv", 
-                rf.location.slug, rf.filename )
-
-            png_base = os.path.join( "audio_png", "dv", 
-                rf.location.slug, rf.basename() + "_audio.png")
-
-            if not self.cdn_exists(show,png):
-                print rf.filesize
-                src = os.path.join(self.show_dir,rf_base)
-                dst = os.path.join(self.show_dir,png_base)
-                ret = self.mk_audio_png(src,dst)
-                self.cdn_send(show,png_base)
-
+            self.rf_ogv(show, rf)
+            self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )
@@ -133,7 +138,7 @@ class SyncRax(process):
         self.set_dirs(show)
 
         self.raw_files(show)
-        self.episodes(show)
+        # self.episodes(show)
 
 
     def work(self):
