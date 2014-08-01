@@ -3,15 +3,11 @@ django==1.4.5
 vobject
 oauth2
 django-debug-toolbar
-# svn+http://svn.dabodev.com/dabo/trunk/#egg=dabo
 git+https://github.com/bear/python-twitter.git
 feedparser
 
 steve
 python-dateutil
-
-# hg+https://gdata-python-client.googlecode.com/hg/#egg=gdata-python-client
-# ElementTree
 
 progressbar
 boto
@@ -29,10 +25,10 @@ djangorestframework
 markdown
 django-filter
 
-ElementTree
-# gdata-python-client
+# ElementTree
 
-apiclient
-
+google-api-python-client 
+httplib2
+# apiclient
 urllib3
-google-api-python-client httplib2
+
