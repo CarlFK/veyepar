@@ -8,7 +8,7 @@ import subprocess
 
 def dv2ogv(dv,ogv):
     # cmd="ffmpeg2theora --videoquality 1 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --keyint 256 --channels 1".split()
-    cmd="ffmpeg2theora --videoquality 3 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --keyint 256 ".split()
+    cmd="ffmpeg2theora --videoquality 4 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --keyint 256 ".split()
     cmd+=[ '-o', ogv, dv  ]
     print ' '.join(cmd)
 

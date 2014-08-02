@@ -16,7 +16,7 @@ class mk_audio_png(process):
     ready_state = 3
     ret = None
 
-    def file2cdn(self, show, src, dst=None):
+    def old_file2cdn(self, show, src, dst=None):
         """
         src is relitive to the show dir.
         src and dst get filled to full paths.

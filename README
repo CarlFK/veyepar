@@ -63,11 +63,9 @@ schedule: crude grid of events in a room and time slot.
 review titles
 meeting announcement: meant for usergroup meetings, doesn't scale well to a large event.
 
-cloud_sync.sh - rsync titles to nextdayvideo.com
-
 add_to_richard.py = creates landing page for videos
 
-email_title.py - emails url of title and landing page to presenters for review.
+email_title.py - emails url of title image and landing page to presenters for review.
 
 recording sheets: pdf to be printed and put next to each recoreding station runing DVswitch.  
 
@@ -107,7 +105,9 @@ browse http://0.0.0.0:8080/main/E/1  (for a fresh system, else find your show)
 
 DV files that might belong to the talk are marked to be included.  un mark [x]Apply the ones that should not be included.
 
-If there are ones missing, .. get help.   Either use fixdv.py to fix batches, or use django's admin UI to add one by one.  
+If there are ones missing, .. get help. 
+use "add raw file" at bottom of page.
+or use fixdv.py to fix batches, or use django's admin UI to add one by one.  
 
 If a dv needs junk trimmed from the start or end, put the time offset in "Cut List - Start/End" 
 1 or 0:0:1 means trim 1 second from start.  1:2:3 means the clip ends 1 hour 2 min 3 seconds from the start of the file, so in this case 1h 2m 3 seconds would be used.
@@ -115,14 +115,15 @@ If a dv needs junk trimmed from the start or end, put the time offset in "Cut Li
 Set Episode.state to Encode (2)
 
 10. encode files to upload
-enc.py:# encodes to ogg, flv, m4v
+enc.py:# encodes to ogg, flv, m4v, webm, mpeg
 adds titles too.
 
 11. 
 upload 
-push.py - sends copy to private cloud stoage.
-post_yt.py - sends to youtube (and archive.. eww, terible hack.)
+push.py - sends copy to private cloud stoage.  (currently disabled)
+post_yt.py - sends to youtube (and archive and rax cuz eww, terible hack.)
 post_blip.py - posts to blip.tv, 
+post_vimeo.py - posts to vimeo (not used in years, suffers from bit rot)
 pw.py holds user/passwords, not checked in, make one from pw_samp.py
 
 add_to_richard.py - adds video url's to landing page

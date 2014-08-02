@@ -108,7 +108,7 @@ class add_to_richard(Process):
             pprint.pprint(video_data)
 
         if \
-            not video_data['video_mp4_url'] \
+            not video_data['video_webm_url'] \
             or not video_data['source_url'] \
             or not video_data['embed']:
                 import code
@@ -231,7 +231,8 @@ class add_to_richard(Process):
             'language': 'English',
             'duration': int(ep.get_minutes()*60),
             'video_ogv_url': ep.archive_ogv_url,
-            'video_mp4_url': ep.rax_mp4_url,
+            # 'video_mp4_url': ep.rax_mp4_url,
+            'video_webm_url': ep.rax_mp4_url, # shuch a hack.
             'video_mp4_download_only': False,
         }
         return video_data
