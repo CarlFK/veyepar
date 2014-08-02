@@ -319,8 +319,8 @@ class post(process):
         if self.options.verbose: pprint.pprint(meta)
 
         # upload
-        # if not ep.show.client.youtube_id: youtube_success = True
-        # else: youtube_success = self.do_yt(ep,files,True,meta)
+        if not ep.show.client.youtube_id: youtube_success = True
+        else: youtube_success = self.do_yt(ep,files,True,meta)
 
         # if not ep.show.client.archive_id: archive_success = True
         # else: archive_success = self.do_arc(ep,files,meta)
