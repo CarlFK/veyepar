@@ -66,7 +66,7 @@ virtualenv --system-site-packages ~/.virtualenvs/veyepar
 printf "source  ~/.virtualenvs/veyepar/bin/activate\n" >> ~/.bashrc
 source  ~/.virtualenvs/veyepar/bin/activate
 
-if [ not -d veyepar ]; then
+if [ ! -d veyepar ]; then
   git clone git://github.com/CarlFK/veyepar.git
 fi
 
