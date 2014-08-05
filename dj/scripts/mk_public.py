@@ -7,8 +7,12 @@
 # public = advertised, it is ready for the world to view.  
 #     It will be tweeted at @NextDayVideo
 
-from steve.richardapi import update_video, MissingRequiredData
-from steve.restapi import API, get_content
+from steve.richardapi import \
+        get_video, update_video, \
+        STATE_DRAFT, STATE_LIVE, \
+        MissingRequiredData
+
+from steve.restapi import Http4xxException
 
 from add_to_richard import get_video_id
 
@@ -30,22 +34,32 @@ class mk_public(process):
         host = pw.richard[ep.show.client.richard_id]
         endpoint = 'http://{hostname}/api/v2'.format(
                 hostname=host['host'])
-        api = API(endpoint)
 
-        # vid = ep.public_url.split('/video/')[1].split('/')[0]
-        vid = get_video_id(ep.public_url)
-        print ep.public_url
-        print vid
+        v_id = get_video_id(ep.public_url)
 
-        response = api.video(vid).get(
-                username=host['user'], auth_token=host['api_key'])
+        video_data = get_video(api_url=endpoint, 
+                auth_token=host['api_key'], 
+                video_id=v_id)
 
-        video_data = get_content(response)
-        video_data['state'] = 1
+        if video_data['state'] == STATE_LIVE:
+            print "Already STATE_LIVE, 403 coming."
+        else:
+            video_data['state'] = 1
+
+        print "endpoint", endpoint
+        print host
+        print "video_id", v_id
 
         try: 
-            update_video(endpoint, host['api_key'], vid, video_data)
-        except MissingRequiredData, e:
+            update_video(endpoint, 
+                    auth_token=host['api_key'], 
+                    video_id=v_id, 
+                    video_data=video_data)
+        except Http4xxException, exc:
+            print exc
+            print "told you this was coming."
+        except MissingRequiredData, exc:
+            print exc
             # this shouldn't happen, prolly debugging something.
             import code
             code.interact(local=locals())
@@ -62,7 +76,7 @@ class mk_public(process):
         # set youtube to public
         # set richard state to live
  
-        ret = True  # if something breaks, this will be false
+        ret = True  # if something breaks, this will turn false
 
         # don't make public if there is no host_url (youtube)
         if ep.public_url and ep.host_url and ep.show.client.richard_id:

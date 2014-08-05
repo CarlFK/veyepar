@@ -288,6 +288,8 @@ class post(process):
                     # store the url
                     if f['ext'] == "mp4":
                         ep.rax_mp4_url = uploader.new_url
+                    elif f['ext'] == "webm":
+                        ep.rax_mp4_url = uploader.new_url
                     elif f['ext'] == "ogv":
                         ep.rax_ogv_url = uploader.new_url
 
@@ -319,8 +321,13 @@ class post(process):
         if self.options.verbose: pprint.pprint(meta)
 
         # upload
-        if not ep.show.client.youtube_id: youtube_success = True
-        else: youtube_success = self.do_yt(ep,files,True,meta)
+        if not ep.show.client.youtube_id: 
+            youtube_success = True
+        elif ep.host_url: 
+            print "skipping youtube, already there."
+            youtube_success = True
+        else: 
+            youtube_success = self.do_yt(ep,files,True,meta)
 
         # if not ep.show.client.archive_id: archive_success = True
         # else: archive_success = self.do_arc(ep,files,meta)

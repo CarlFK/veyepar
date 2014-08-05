@@ -7,12 +7,14 @@ import pprint
 from urlparse import urlparse, parse_qs
 from process import process as Process
 
-from steve.richardapi import create_video, update_video, MissingRequiredData
+from steve.richardapi import \
+        create_video, get_video, update_video, \
+        MissingRequiredData
+
+from steve.richardapi import STATE_DRAFT, STATE_LIVE
 from steve.restapi import Http4xxException
 
 from steve.util import scrapevideo
-
-from steve.restapi import API, get_content
 
 import requests
 
@@ -42,7 +44,7 @@ class add_to_richard(Process):
 
         """
         # pyvideo categories are stored in Client and Show
-        # chipy is an example of something that uses Client,
+        # ChiPy is an example of something that uses Client,
         # pycon 2014 and 300SoC are in Show.
         self.category_key = ep.show.category_key \
                 or ep.show.client.category_key
@@ -146,9 +148,10 @@ class add_to_richard(Process):
 
         """
         # fetch current record
-        response = self.api.video(v_id).get(
-                auth_token=self.host['api_key'])
-        video_data = get_content(response)
+        video_data = get_video(api_url=endpoint, 
+            auth_token=host['api_key'], 
+            video_id=v_id)
+
         if self.options.verbose: pprint.pprint( video_data )
      
         if self.options.test:
