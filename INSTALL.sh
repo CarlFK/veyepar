@@ -62,7 +62,8 @@ sudo apt-get --assume-yes install python-psycopg2 inkscape ffmpeg2theora python-
 # printf "workon veyepar\n" >> ~/.bashrc
 
 mkdir -p ~/.virtualenvs/
-virtualenv --system-site-packages ~/.virtualenvs/veyepar
+# virtualenv --system-site-packages ~/.virtualenvs/veyepar
+virtualenv ~/.virtualenvs/veyepar
 printf "source  ~/.virtualenvs/veyepar/bin/activate\n" >> ~/.bashrc
 source  ~/.virtualenvs/veyepar/bin/activate
 

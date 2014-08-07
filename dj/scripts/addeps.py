@@ -253,12 +253,15 @@ class add_eps(process.process):
       seq=0
       for room in rooms:
           if self.options.verbose: print room
-          loc,created = Location.objects.get_or_create(
-                  name__iexact=room,)
           seq+=1
-          if created: 
-              loc.sequence=seq
+
+          # __iexact won't work with ger_or_add to don't try to use it
+          try:
+              loc = Location.objects.get(name__iexact=room)
+          except Location.DoesNotExist:
+              loc = Location(name=room, sequence=seq)
               loc.save()
+
           show.locations.add(loc)
           show.save()
           
@@ -415,15 +418,15 @@ class add_eps(process.process):
                             pprint.pprint( diff_fields )
                         for f,a1,a2 in diff_fields:
                             if not isinstance(a1,basestring):
-                                print 'veyepar {0}: {1}'.format(f,a1)
-                                print ' source {0}: {1}'.format(f,a2)
+                                print u'veyepar {0}: {1}'.format(f,a1)
+                                print u' source {0}: {1}'.format(f,a2)
                             else:
                                 print f
                                 if max(len(a1),len(a2)) < 160:
                                   # print a1
                                   # print a2
-                                  print 'veyepar {0}: {1}'.format(f,a1)
-                                  print ' source {0}: {1}'.format(f,a2)
+                                  print u'veyepar {0}: {1}'.format(f,a1)
+                                  print u' source {0}: {1}'.format(f,a2)
                                 else:
                                   # long string (prolly description)
                                   for i,cs in enumerate(zip(a1,a2)):
@@ -1370,8 +1373,8 @@ class add_eps(process.process):
         self.add_eps(events, show)
         return 
 
-
     def fos_events( self, schedule ):
+        # fosdem 14 penta 
  
         events = []
         id = 0
@@ -1417,16 +1420,23 @@ class add_eps(process.process):
 
                     event['emails'] = ''
                     event['released'] = True
-                    event['license'] = self.options.license
+                    event['license'] = "cc-by"
                     # event['description'] = row.find('description').text
-                    event['description'] = row.find('abstract').text
+                    # event['description'] = row.find('abstract').text
+                    event['description'] = row.find('description').text
                     if event['description'] is None:
                         event['description'] = ''
                     
                     event['conf_key'] = row.get('id')
 
+                    x = 'https://summit.debconf.org/debconf14/meeting/%(id)/%(slug)s/' 
+                    print x
+                    print x[:50]
+
                     event['conf_url'] = 'https://fosdem.org/2014/schedule/event/%s/' % row.find('slug').text
+
                     event['tags'] = ''
+
 
                     # save the original row so that we can sanity check end time.
                     event['raw'] = row
@@ -1481,6 +1491,103 @@ class add_eps(process.process):
         events = [ event for event in events if not (
             event['start'].date() != datetime.datetime(2014,2,1) and \
                     event['location'] == 'K4201') ] 
+
+        self.add_eps(events, show)
+        return 
+
+
+    def summit_penta_events( self, schedule ):
+        # dc14 summit penta based xml
+ 
+        events = []
+        id = 0
+
+        # schedule[0] is <conference></conference>
+        # for day in schedule[1:3]:
+        for day in schedule:
+            # >>> schedule[1].get('date')
+            # '2012-02-04'
+            start_date = day.get('date')
+            print start_date
+            for room in day:
+                for row in room:
+
+                    event={}
+                    event['name'] = row.find('title').text
+
+                    event['location'] = row.find('room').text
+
+                    dt_format='%Y-%m-%d %H:%M'
+                    event['start'] = datetime.datetime.strptime(
+                            "%s %s" % ( start_date,row.find('start').text),
+                            dt_format)
+
+                    event['duration'] = \
+                        "%s:00" % row.find('duration').text
+                    
+                    persons = [p.text for p in 
+                            row.find('persons').getchildren() ]
+
+                    # de dupe cuz my xml code duped
+                    peeps = set()
+                    for p in persons:
+                        peeps.add(p)
+
+                    event['authors'] = ', '.join(peeps)
+
+                    event['emails'] = ''
+                    event['released'] = row.find('released').text == "True"
+                    event['license'] = row.find('license').text
+                    # event['description'] = row.find('description').text
+                    event['description'] = row.find('abstract').text
+                    if event['description'] is None:
+                        event['description'] = ''
+                    
+                    event['conf_key'] = row.get('id')
+
+                    event['conf_url'] = 'https://summit.debconf.org/debconf14/meeting/%(id)s/%(slug)s/' % {'id':row.get('id'), 'slug':"x"}
+
+
+                    event['tags'] = row.find('track').text
+
+                    # save the original row so that we can sanity check end time.
+                    event['raw'] = row
+
+                    events.append(event)
+                    id += 1
+         
+        return events
+
+
+
+    def summit_penta(self, schedule, show):
+        # dc14 - summit with penta xml
+
+        # top of schedule is:
+        # <conference></conference>
+        # <day date="2012-02-04" index="1"></day>
+        # <day date="2012-02-05" index="2"></day>
+        # each day has a list of rooms
+
+        rooms = [ r.get('name') for r in schedule[1] ]
+
+        print "rooms", rooms
+        self.add_rooms(rooms,show)
+        
+        """
+        # sequance the rooms
+        # this will whack any manual edits
+        if self.options.update:
+            seq = 1
+            for room in rooms:
+                loc = Location.objects.get(name=room,)
+                loc.active=True
+                loc.sequence=seq
+                loc.save()
+                seq+=1
+        """
+
+        events = self.summit_penta_events(schedule)
 
         self.add_eps(events, show)
         return 
@@ -2255,7 +2362,7 @@ class add_eps(process.process):
             else:
                 payload = None
 
-            response = session.get(url, params=payload, )
+            response = session.get(url, params=payload, verify=False)
 
 
         ext = os.path.splitext(url)[1]
@@ -2268,7 +2375,6 @@ class add_eps(process.process):
         elif ext=='.xml':
             schedule=xml.etree.ElementTree.XML(
                     response.content)
-            # return self.fosdem2014(schedule,show)
 
         else:
             # lets hope it is json, like everything should be.
@@ -2293,6 +2399,9 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.show =='debconf14':
+            return self.summit_penta(schedule,show)
 
         if self.options.show =='bosc_2014':
             return self.bosc_2014(schedule,show)

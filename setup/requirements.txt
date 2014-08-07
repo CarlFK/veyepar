@@ -18,6 +18,12 @@ requests
 django-extensions
 
 pyrax
+pbr
+prettytable
+babel
+iso8601
+simplejson
+
 pypng
 # numpy
 
@@ -30,5 +36,5 @@ django-filter
 google-api-python-client 
 httplib2
 # apiclient
-urllib3
+# urllib3
 

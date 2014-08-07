@@ -81,29 +81,49 @@ class Uploader(object):
 
         if not already_there:
 
-            pf = ProgressFile(self.pathname, 'r')
+            done=False
+            while not done:
 
-            try:
+                pf = ProgressFile(self.pathname, 'r')
 
-                # actually upload
-                obj = container.upload_file(pf, obj_name = self.key_id)
-                
+                try:
 
-                if self.debug_mode:
+                    # actually upload
+                    obj = container.upload_file(pf, obj_name = self.key_id)
+                    print "no exception"
+                    
+
+                    if self.debug_mode:
+                        import code
+                        code.interact(local=locals())
+                    
+                    done = True
+                    ret = True
+
+                except pyrax.exceptions.ClientException as e:
+                    print e
+                    print e.code, e.details, e.message
+
+                    if e.code==408:
+                        print "looping..."
+                        continue
+
+                    print e
+                    # self.ret_text = "rax error: %s" % ( e.body )
+
                     import code
                     code.interact(local=locals())
-                
-                ret = True
 
-            except Exception as e:
 
-                print e
-                # self.ret_text = "rax error: %s" % ( e.body )
+                except Exception as e:
 
-                import code
-                code.interact(local=locals())
+                    print e
+                    # self.ret_text = "rax error: %s" % ( e.body )
 
-                ret = False
+                    import code
+                    code.interact(local=locals())
+
+                    ret = False
 
         # urllib.quote  
         # filenames may have chars that need to be quoted for a URL.

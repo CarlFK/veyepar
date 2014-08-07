@@ -196,11 +196,19 @@ class enc(process):
     else:
         license = None
 
+    if episode.tags:
+        tags = episode.tags.split(',')
+        tag1 = tags[0]
+    else:
+        tags=[]
+        tag1=''
+
     texts={
             'client': episode.show.client.name, 
             'show': episode.show.name, 
             'title': title, 
             'title2': title2, 
+            'tag1': tag1, 
             'authors': episode.authors,
             'presentertitle': "",
             # 'date': episode.start.strftime("%B %d, %Y"),

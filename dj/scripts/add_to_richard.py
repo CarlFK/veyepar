@@ -54,12 +54,12 @@ class add_to_richard(Process):
 
         self.richard_endpoint = \
             'http://{hostname}/api/v2'.format(hostname=self.host['host'])
-        self.api = API(self.richard_endpoint)
+        # self.api = API(self.richard_endpoint)
 
         if self.options.verbose: 
             print "Auth creds:"
-            print self.richard_endpoint, self.host['user'], \
-                    self.host['api_key'], \
+            print self.richard_endpoint, \
+                    self.host['user'], self.host['api_key'], \
                     {'category_key': self.category_key}
 
         
@@ -148,9 +148,10 @@ class add_to_richard(Process):
 
         """
         # fetch current record
-        video_data = get_video(api_url=endpoint, 
-            auth_token=host['api_key'], 
-            video_id=v_id)
+        video_data = get_video(
+                api_url=self.richard_endpoint, 
+                auth_token=self.host['api_key'], 
+                video_id=v_id)
 
         if self.options.verbose: pprint.pprint( video_data )
      

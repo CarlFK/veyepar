@@ -243,10 +243,13 @@ class post(process):
 
 
     def do_rax(self, ep, files, meta):
-        # upload to archive.org too.. yuck.
-        # this should be in post_arc.py, but
+        # upload to rackspace cdn too.. yuck.
+        # this should be in post_rax.py, but
         # but I don't want 2 processes uploading at the same time.
-        # bcause bandwidth?
+        # bcause bandwidth?  or something.  
+        # Not sure what the problem is really.
+
+        if self.options.verbose: print "do_rax..."
 
         success = False
 
