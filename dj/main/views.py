@@ -1052,10 +1052,26 @@ def raw_file_audio(request):
 
 
 def title_slides(request, show_id, ):
+
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show, 
-        location__active=True).exclude(emails='')
+
+    # episodes=Episode.objects.filter(show=show, 
+    #    location__active=True)
+    # .exclude(emails='')
+
+    kwargs = {
+            "show": show,
+            "location__active": True,
+            # "emails": request.GET['emails'],
+            # "show__client__slug": request.GET['client'],
+            # "show__slug": request.GET['show'],
+            # "state": request.GET['state'],
+            # "": request.GET[''],
+            }
+
+
+    episodes=Episode.objects.filter(**kwargs).order_by('start')
 
     return render_to_response('title_slides.html',
             {
