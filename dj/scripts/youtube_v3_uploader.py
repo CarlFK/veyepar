@@ -289,6 +289,7 @@ def test_upload():
     print ret
     print u.new_url
 
+    return
 
 def test_set_pub():
     video_url = "https://www.youtube.com/watch?v=MN1y5lvSHQ8"
@@ -297,6 +298,31 @@ def test_set_pub():
     # u.user="test"
     # u.debug=True
     u.set_permission(video_url)
+
+    return
+
+"""
+errors!
+A retriable HTTP error 500 occurred:
+{
+ "error": {
+  "errors": [
+   {
+    "domain": "global",
+    "reason": "backendError",
+    "message": "Backend Error"
+   }
+  ],
+  "code": 500,
+  "message": "Backend Error"
+ }
+}
+
+Sleeping 0.040870 seconds and then retrying...
+
+raise HttpError(resp, content, uri=self.uri)
+apiclient.errors.HttpError: <HttpError 410 when requesting https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&alt=json&part=snippet%2Cstatus returned "Backend Error">
+"""
 
 if __name__ == '__main__':
     # test_set_pub()

@@ -323,18 +323,15 @@ class post(process):
         meta = self.collect_metadata(ep)
         if self.options.verbose: pprint.pprint(meta)
 
-        # upload
-        if not ep.show.client.youtube_id: 
-            youtube_success = True
-        elif ep.host_url: 
-            print "skipping youtube, already there."
-            youtube_success = True
-        else: 
-            youtube_success = self.do_yt(ep,files,True,meta)
+        # upload youtube
+        if not ep.show.client.youtube_id: youtube_success = True
+        else: youtube_success = self.do_yt(ep,files,True,meta)
 
+        # upload arc
         # if not ep.show.client.archive_id: archive_success = True
         # else: archive_success = self.do_arc(ep,files,meta)
 
+        # upload rax
         if not ep.show.client.rax_id: rax_success = True
         else: rax_success = self.do_rax(ep,files,meta)
 

@@ -90,8 +90,6 @@ class Uploader(object):
 
                     # actually upload
                     obj = container.upload_file(pf, obj_name = self.key_id)
-                    print "no exception"
-                    
 
                     if self.debug_mode:
                         import code
