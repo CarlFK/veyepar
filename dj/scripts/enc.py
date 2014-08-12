@@ -835,7 +835,15 @@ class enc(process):
 
     if cls:
 
-        title_img = self.mk_title(episode)
+        # if we find titles/custom/(slug).svg, use that
+        # else make one from the tempalte
+        custom_png_name= os.path.join(
+                self.show_dir, "titles", "custom", episode.slug + ".png")
+        print "custom:", custom_png_name
+        if os.path.exists(custom_png_name):
+            title_img = custom_png_name
+        else: 
+            title_img = self.mk_title(episode)
 
 # define credits
         credits_img = episode.show.client.credits \
