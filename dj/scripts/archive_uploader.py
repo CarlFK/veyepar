@@ -1,23 +1,37 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # archive_uploader.py 
 # archive.org specific code
 
-# caled from post_arc.py 
-# that is a lie.  it is really called from post_yt.py.  
-
-
-import sys
-import pprint
+import argparse
 
 import boto
 import boto.s3.connection
 
-# The following 2 imports are wrapped in try/except so that 
-# this code will run without any additional files.
+"""
+Uploader for Internet Archive that uses boto and the s3 archive interface
+
+Boto Docs:
+  * http://docs.pythonboto.org/en/latest/s3_tut.html
+  * http://boto.readthedocs.org/en/latest/ref/file.html#boto.file.connection.FileConnection.get_bucket
+
+Archive s3 Docs:
+  * http://archive.org/help/abouts3.txt
+
+Test buckets that have been created for checking this script:
+  * https://archive.org/details/test_ndv_auth_keys (owned by ndv user)
+  * https://archive.org/details/test_ndv_archive_uploader (owned by test user)
+
+"""
+
+
 try:
     # ProgressFile is a subclass of the python open class
     # as data is read, it prints a visible progress bar 
     from progressfile import ProgressFile
 except ImportError:
+    # If ProgressFile is not available, default to open
     ProgressFile = open
 
 try:
@@ -33,14 +47,10 @@ except ImportError:
                 }   
             }   
 
-# following http://docs.pythonboto.org/en/latest/s3_tut.html
-# http://archive.org/catalog.php?history=1&identifier=nextdayvideo.test
-# http://archive.org/details/nextdayvideo.test/foobar 
-# http://boto.readthedocs.org/en/latest/ref/file.html#boto.file.connection.FileConnection.get_bucket
-# http://archive.org/~vmb/abouts3.html#testcollection
 
 def auth(upload_user):
-
+    """ get a service connection to archive.org
+    """
     auth = archive[upload_user] ## from dict of credentials 
     connection = boto.connect_s3( auth['access'], auth['secret'], 
             host='s3.us.archive.org', is_secure=False, 
@@ -49,17 +59,30 @@ def auth(upload_user):
     return connection
 
 
-def make_bucket(conn, bucket_id, meta):
+def make_bucket(conn, bucket_id, meta={}):
+    """ make a new bucket
+
+    conn: service connection to archive.org
+    bucket_id: bucket name
+    meta: dictionary of archive.org meta data
+
+    """
 
     headers = {
-            'x-archive-meta-mediatype':'movies',
-            'x-archive-meta-collection':'opensource_movies',
-            'x-archive-meta-year':meta['year'],
-            'x-archive-meta-subject':meta['subject'],
-            'x-archive-meta-licenseurl':meta['licenseurl'],
-            'x-archive-meta-description':meta['description'],
+        # mediatype and collection are values that are specific to archive.org
+        # do not change these unless you know what you are doing
+        'x-archive-meta-mediatype': meta.get('mediatype', 'movies'),
+        'x-archive-meta-collection': meta.get('collection', 'opensource_movies'),
+        # you can change these
+        # this is visible on the web page under 'Keywords: '
+        'x-archive-meta-subject': meta.get('subject', 'testing'),
+        # this is visible on the web page as the license
+        'x-archive-meta-licenseurl': meta.get('licenseurl', 'http://creativecommons.org/licenses/by/4.0/'),
+        # this is visible on the web page as the description
+        'x-archive-meta-description': meta.get('description', 'testing uploader script'),
+        # this is not visible, it's in the _meta.xml. maybe it should be date?
+        'x-archive-meta-year': meta.get('year', '2014'),
     }
-
     return conn.create_bucket(bucket_id, headers=headers)
 
 
@@ -123,18 +146,51 @@ class Uploader(object):
         return ret
 
 
-if __name__ == '__main__':
+### Testing stuff
 
+def make_parser():
+    parser = argparse.ArgumentParser(description="""
+    Generate temp file and upload to archive.org account
+    """)
+    parser.add_argument('--user', '-u', default='test',
+                        help='archive user. default: test')
+    parser.add_argument('--bucket', '-b', default='test_ndv_archive_uploader',
+                        help='bucket. default: test_ndv_archive_uploader'
+                        '    test_ndv_archive_uploader is owned by test account.'
+                        '    test_ndv_auth_keys is owned by ndv account')
+    parser.add_argument('--debug_mode', '-d', default=False, action='store_true',
+                        help='whether to drop to prompt after upload. default: False')
+    parser.add_argument('--test', '-t', default=True, action='store_true',
+                        help='whether to delete after 30 days. default: True')
+    return parser
+
+
+def test_upload_a_temp_file(args):
+    import os
+    from tempfile import NamedTemporaryFile
     u = Uploader()
 
-    u.user = 'test'
-    u.bucket_id = 'nextdayvideo.test'
-    u.key_id='test.mp4'
-    u.pathname = '/home/carl/Videos/veyepar/test_client/test_show/mp4/Lets_make_a_Test.mp4'
-    u.debug_mode = False ## True drops to a >>> prompt after upload
-    u.test = True ## will be deleted in 30 days
+    u.user = args.user
+    u.bucket_id = args.bucket
+    u.debug_mode = args.debug_mode
+    u.test = args.test
 
-    ret = u.upload()
+    with NamedTemporaryFile() as fh:
+        fh.write('testing archive_uploader')
 
-    print u.new_url
+        u.key_id = os.path.basename(fh.name)
+        u.pathname = fh.name
+        ret = u.upload()
+        if ret:
+            print u.new_url
+        else:
+            print u.ret_text
 
+
+if __name__ == '__main__':
+    ProgressFile = open
+
+    parser = make_parser()
+    args = parser.parse_args()
+
+    test_upload_a_temp_file(args)
