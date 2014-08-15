@@ -16,7 +16,7 @@ import boto.s3.connection
 try:
     # ProgressFile is a subclass of the python open class
     # as data is read, it prints a visible progress bar 
-    from youtube_uploader import ProgressFile
+    from progressfile import ProgressFile
 except ImportError:
     ProgressFile = open
 

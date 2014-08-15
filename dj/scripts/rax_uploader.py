@@ -17,7 +17,7 @@ import urllib
 try:
     # ProgressFile is a subclass of the python open class
     # as data is read, it prints a visible progress bar 
-    from youtube_uploader import ProgressFile
+    from progressfile import ProgressFile
 except ImportError:
     # or just use python's open for testing
     ProgressFile = open
