@@ -36,69 +36,9 @@ from atom import ExtensionElement
 
 from gdata.youtube.service import YouTubeError
 
-import progressbar
-
+from progressfile import ProgressFile
 import pw
 
-widgets = [
-        'Upload: ',
-        progressbar.Percentage(), ' ',
-        progressbar.Bar(marker=progressbar.RotatingMarker()), ' ', 
-        progressbar.ETA(), ' ',
-        progressbar.FileTransferSpeed(),
-        ]
-
-
-
-def progress(current, blocksize, total):
-    """
-    Displaies upload percent done, bytes sent, total bytes.
-    """
-    elapsed = datetime.datetime.now() - self.start_time 
-    remaining_bytes = total-current
-    if elapsed.seconds: 
-        bps = current/elapsed.seconds
-        remaining_seconds = remaining_bytes / bps 
-        eta = datetime.datetime.now() + datetime.timedelta(seconds=remaining_seconds)
-        sys.stdout.write('\r%3i%%  %s of %s MB, %s KB/s, elap/remain: %s/%s, eta: %s' 
-          % (100*current/total, current/(1024**2), total/(1024**2), bps/1024, stot(elapsed.seconds), stot(remaining_seconds), eta.strftime('%H:%M:%S')))
-    else:
-        sys.stdout.write('\r%3i%%  %s of %s bytes: remaining: %s'
-          % (100*current/total, current, total, remaining_bytes, ))
-
-
-class ProgressFile(file):
-    def __init__(self, *args, **kw):
-        file.__init__(self, *args, **kw)
-
-        self.seek(0, 2)
-        self.len = self.tell()
-        self.seek(0)
-
-        self.pbar = progressbar.ProgressBar(
-            widgets=widgets, maxval=self.len)
-        self.pbar.start()
-
-    @property
-    def name(self):
-        return super(ProgressFile, self).name.encode('ascii', 'replace')
-
-    def size(self):
-        return self.len
-
-    def __len__(self):
-        return self.size()
-
-    def read(self, size=-1):
-        if (size > 1e3):
-                size = int(1e3)
-        try:
-            self.pbar.update(self.tell())
-            return file.read(self, size)
-        finally:
-            self.pbar.update(self.tell())
-            if self.tell() >= self.len:
-                self.pbar.finish()
 
 class Uploader(object):
 
