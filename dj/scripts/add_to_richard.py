@@ -34,16 +34,16 @@ class add_to_richard(Process):
     ready_state = 5
 
     def process_ep(self, ep):
-        """ adds Episode to pyvideo
+        """ adds Episode to richard
 
-        :arg ep: Episode to add to pyvideo
+        :arg ep: Episode to add to richard
         :returns: different things based on what is happening
                   a video dictionary for updated videos
-                  a pyvideo url for newly added videos
+                  a richard url for newly added videos
                   False if there was an exception during processing
 
         """
-        # pyvideo categories are stored in Client and Show
+        # richard categories are stored in Client and Show
         # ChiPy is an example of something that uses Client,
         # pycon 2014 and 300SoC are in Show.
         self.category_key = ep.show.category_key \
@@ -56,11 +56,13 @@ class add_to_richard(Process):
             'http://{hostname}/api/v2'.format(hostname=self.host['host'])
         # self.api = API(self.richard_endpoint)
 
+        """
         if self.options.verbose: 
             print "Auth creds:"
             print self.richard_endpoint, \
                     self.host['user'], self.host['api_key'], \
                     {'category_key': self.category_key}
+        """
 
         
         """
@@ -73,7 +75,7 @@ class add_to_richard(Process):
                         'description':ep.show.description})
         """
         
-        video_data = self.create_pyvideo_episode_dict(ep, state=2)
+        video_data = self.create_richard_episode_dict(ep, state=2)
         # perhaps we could just update the dict based on scraped_meta
         # scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
         # video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
@@ -117,10 +119,10 @@ class add_to_richard(Process):
                 # code.interact(local=locals())
 
 
-        if self.is_already_in_pyvideo(ep):
+        if self.is_already_in_richard(ep):
             # get richard ID
             v_id = get_video_id( ep.public_url)
-            ret = self.update_pyvideo( v_id, video_data )
+            ret = self.update_richard( v_id, video_data )
 
         else:
 
@@ -130,8 +132,8 @@ class add_to_richard(Process):
                 if self.options.verbose: 
                     print "Adding new..."
 
-                self.pvo_url = self.create_pyvideo(video_data)
-                print 'new pyvideo url', self.pvo_url
+                self.pvo_url = self.create_richard(video_data)
+                print 'new richard url', self.pvo_url
                 ep.public_url = self.pvo_url
                 ret = self.pvo_url
 
@@ -139,9 +141,9 @@ class add_to_richard(Process):
 
         return ret
 
-    def update_pyvideo(self, v_id, new_data):
-        """ updates a pyvideo record
-        :arg vid: video id for pyvideo
+    def update_richard(self, v_id, new_data):
+        """ updates a richard record
+        :arg vid: video id for richard
         :arg new_data: dict of fields to update
 
         :returns: a dict from the updated video
@@ -180,11 +182,11 @@ class add_to_richard(Process):
 
         return ret
 
-    def create_pyvideo(self, video_data):
-        """ creates a pyvideo record
+    def create_richard(self, video_data):
+        """ creates a richard record
         :arg video_data: dict of video information to be added
 
-        :returns: a pyvideo url for the video
+        :returns: a richard url for the video
 
         """
         try:
@@ -202,23 +204,23 @@ class add_to_richard(Process):
             print exc.response.status_code
             print exc.response.content
 
-    def create_pyvideo_episode_dict(self, ep, state=1):
-        """ create dict for pyvideo based on Episode
+    def create_richard_episode_dict(self, ep, state=1):
+        """ create dict for richard based on Episode
 
         This creates a dict of based on information available in an Episode
         object. This does not populate information that has to be derived
         from scrapping.
 
-        :arg ep: Episode to convert in to a pyvideo dict
-        :arg state: pyvideo state. 1=live, 2=draft. defaults to 1
-        :returns: dict of Episode information for use by pyvideo
+        :arg ep: Episode to convert in to a richard dict
+        :arg state: richard state. 1=live, 2=draft. defaults to 1
+        :returns: dict of Episode information for use by richard
 
         """
 
         # clean up messy Episode data
-        speakers = self.clean_pyvideo_speakers(ep)
-        tags = self.clean_pyvideo_tags(ep)
-        summary = self.clean_pyvideo_summary(ep)
+        speakers = self.clean_richard_speakers(ep)
+        tags = self.clean_richard_tags(ep)
+        summary = self.clean_richard_summary(ep)
         # mp4url = self.clean_archive_mp4_url(ep)
         
         video_data = {
@@ -253,15 +255,15 @@ class add_to_richard(Process):
 
         return mp4url
 
-    def clean_pyvideo_summary(self, ep):
+    def clean_richard_summary(self, ep):
         # Richard wants markdown
         # so if ep data is in html or somthing, convert to markdown.
         # best to get event site to provide markdown.
         # desc = linebreaks(urlize(force_escape(ep.description)))
         return ep.description
 
-    def clean_pyvideo_speakers(self, ep):
-        """ sanitize veyepar authors to create pyvideo speakers
+    def clean_richard_speakers(self, ep):
+        """ sanitize veyepar authors to create richard speakers
 
         :arg ep: Episode with authors, comma sepperated 
         :returns: list of speakers
@@ -272,11 +274,11 @@ class add_to_richard(Process):
         speakers = [ s.strip() for s in speakers ]
         return speakers
 
-    def clean_pyvideo_tags(self, ep):
-        """ sanitize veyepar tags for use by pyvideo
+    def clean_richard_tags(self, ep):
+        """ sanitize veyepar tags for use by richard
 
         :arg ep: Episode with veyepar tags
-        :returns: list of pyvideo tags
+        :returns: list of richard tags
 
         """
 
@@ -333,16 +335,16 @@ class add_to_richard(Process):
 
         return scraped_meta
 
-    def is_already_in_pyvideo(self, ep):
+    def is_already_in_richard(self, ep):
 
         if self.options.add_all: 
             ret = False
         else:
-            # its truthiness implies that the video already exists in pyvideo
+            # its truthiness implies that the video already exists in richard
             ret = ep.public_url
 
         if self.options.verbose: 
-            print "is_already_in_pyvideo", ret
+            print "is_already_in_richard", ret
 
         return ret
 
