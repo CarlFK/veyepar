@@ -1,7 +1,6 @@
 # git+https://github.com/django/django.git#egg=django
 django==1.4.5
 vobject
-oauth2
 django-debug-toolbar
 git+https://github.com/bear/python-twitter.git
 feedparser
@@ -14,10 +13,11 @@ boto
 
 requests
 
-# django-databrowse
 django-extensions
 
-pyrax
+# pyrax
+# till my bug fix patch hits pypi
+git+https://github.com/rackspace/pyrax.git@working#egg=pyrax
 pbr
 prettytable
 babel
@@ -31,10 +31,7 @@ djangorestframework
 markdown
 django-filter
 
-# ElementTree
-
 google-api-python-client 
 httplib2
-# apiclient
-# urllib3
 
+# psycopg2
