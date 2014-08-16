@@ -96,6 +96,8 @@ encoding:
   credits - hold for a few seconds at end.
   channel_copy - document and verify current behaviour
   
+  auto-speed up your videos to 1.25x speed as an additional optional feature
+
 slugify talk titles- 
   trunkcate on word boundry when over X chars.
   de-unicode
