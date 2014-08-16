@@ -5,6 +5,7 @@
 # archive.org specific code
 
 import argparse
+import os
 
 import boto
 import boto.s3.connection
@@ -146,11 +147,11 @@ class Uploader(object):
         return ret
 
 
-### Testing stuff
+### Smoke test
 
 def make_parser():
     parser = argparse.ArgumentParser(description="""
-    Generate temp file and upload to archive.org account
+    Upload this file to archive.org
     """)
     parser.add_argument('--user', '-u', default='test',
                         help='archive user. default: test')
@@ -165,32 +166,25 @@ def make_parser():
     return parser
 
 
-def test_upload_a_temp_file(args):
-    import os
-    from tempfile import NamedTemporaryFile
+def test_upload(args):
     u = Uploader()
-
     u.user = args.user
     u.bucket_id = args.bucket
     u.debug_mode = args.debug_mode
     u.test = args.test
+    u.pathname = os.path.abspath(__file__)
+    u.key_id = os.path.basename(u.pathname)
 
-    with NamedTemporaryFile() as fh:
-        fh.write('testing archive_uploader')
-
-        u.key_id = os.path.basename(fh.name)
-        u.pathname = fh.name
-        ret = u.upload()
-        if ret:
-            print u.new_url
-        else:
-            print u.ret_text
+    ret = u.upload()
+    if ret:
+        print u.new_url
+    else:
+        print u.ret_text
 
 
 if __name__ == '__main__':
-    ProgressFile = open
 
     parser = make_parser()
     args = parser.parse_args()
 
-    test_upload_a_temp_file(args)
+    test_upload(args)
