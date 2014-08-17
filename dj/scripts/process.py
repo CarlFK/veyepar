@@ -205,8 +205,6 @@ class process(object):
 
   def process_eps(self, episodes):
 
-
-
     def foo(e):
      s = os.environ.get('STY')
      if s:

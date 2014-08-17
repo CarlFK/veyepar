@@ -84,7 +84,7 @@ class add_to_richard(Process):
         if 'thumbnail_url' not in video_data:
             # half baked idea:
             # use title slide as place holder image until video is produced.
-            video_data['thumbnail_url'] = "%s/%s/%s/titles/%s.png" % ( 
+            video_data['thumbnail_url'] = "%s%s/%s/titles/%s.png" % ( 
                     settings.MEDIA_URL,
                     ep.show.client.slug, ep.show.slug, ep.slug )
         if ep.host_url is None:
