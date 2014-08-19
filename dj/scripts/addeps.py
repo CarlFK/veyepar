@@ -391,6 +391,8 @@ class add_eps(process.process):
                 episode.location=Location.objects.get(
                         name__iexact=row['location'])
                 for f in fields:
+                    # special case for email: don't blank it out
+                    if f == "emails" and not row[f]: continue
                     setattr( episode, f, row[f] )
 
                 episode.save()
@@ -1524,17 +1526,16 @@ class add_eps(process.process):
                     persons = [p.text for p in 
                             row.find('persons').getchildren() ]
 
-                    """
-                    # de dupe cuz my xml code duped
-                    peeps = set()
-                    for p in persons:
-                        peeps.add(p)
-                    event['authors'] = ', '.join(peeps)
-                    """
-
                     event['authors'] = ', '.join(persons)
 
-                    event['emails'] = ''
+                    contacts = []
+                    for p in row.find('persons').getchildren():
+                        contact = p.get('contact')
+                        if contact != 'redacted':
+                            contacts.append(contact)
+
+                    event['emails'] = ','.join(contacts)
+
                     # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.  Is there a reason it 
                     # event['released'] = row.find('released').text == "True"
                     event['released'] = True
@@ -2375,6 +2376,10 @@ class add_eps(process.process):
                 return self.desktopsummit(schedule,show)
 
         elif ext=='.xml':
+
+          if url.startswith('file'):
+            schedule=xml.etree.ElementTree.XML(f.read())
+          else:
             schedule=xml.etree.ElementTree.XML(
                     response.content)
 
