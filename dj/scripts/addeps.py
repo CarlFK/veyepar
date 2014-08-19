@@ -1429,10 +1429,6 @@ class add_eps(process.process):
                     
                     event['conf_key'] = row.get('id')
 
-                    x = 'https://summit.debconf.org/debconf14/meeting/%(id)/%(slug)s/' 
-                    print x
-                    print x[:50]
-
                     event['conf_url'] = 'https://fosdem.org/2014/schedule/event/%s/' % row.find('slug').text
 
                     event['tags'] = ''
@@ -1528,24 +1524,30 @@ class add_eps(process.process):
                     persons = [p.text for p in 
                             row.find('persons').getchildren() ]
 
+                    """
                     # de dupe cuz my xml code duped
                     peeps = set()
                     for p in persons:
                         peeps.add(p)
-
                     event['authors'] = ', '.join(peeps)
+                    """
+
+                    event['authors'] = ', '.join(persons)
 
                     event['emails'] = ''
-                    event['released'] = row.find('released').text == "True"
+                    # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.  Is there a reason it 
+                    # event['released'] = row.find('released').text == "True"
+                    event['released'] = True
+
                     event['license'] = row.find('license').text
-                    # event['description'] = row.find('description').text
-                    event['description'] = row.find('abstract').text
+                    # event['description'] = row.find('abstract').text
+                    event['description'] = row.find('description').text
                     if event['description'] is None:
                         event['description'] = ''
                     
                     event['conf_key'] = row.get('id')
 
-                    event['conf_url'] = 'https://summit.debconf.org/debconf14/meeting/%(id)s/%(slug)s/' % {'id':row.get('id'), 'slug':"x"}
+                    event['conf_url'] = 'https://summit.debconf.org%(conf_url)s' % {'conf_url':row.find('conf_url').text}
 
 
                     event['tags'] = row.find('track').text

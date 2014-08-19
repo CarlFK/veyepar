@@ -296,6 +296,15 @@ class add_to_richard(Process):
                      and '/' not in t 
                      and t]
 
+            # *fix* long tags (prolly not really tags)
+            tags2 = []
+            for t in tags:
+                if len(t)>30:
+                    # grab the first word.
+                    t = t.split()[0]
+                tags2.append(t)
+            tags = tags2
+
         return tags
 
     def get_scrapevideo_metadata(self, host_url):
