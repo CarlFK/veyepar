@@ -11,18 +11,11 @@ sudo vi /etc/fstab
 ve:/video /video nfs noauto,rw,nfsvers=3 0 0
 
 
-volenteer requriemenst page on ndv
-stare at screen, don't leave room, don't use your phone, watch videos before
-overview of good video: 
- switch to slide, read, switch back to presenter
- use pnp when the fonts are big,
- or so to let the viewer know the slide hasn't changed
- it is easier for people to understand what a presenter is saying when they can see the body language.  especially for people who are not native.
-
 setup: postgresql install/config.  nfs install/config, nginx...
 
-install ssh keys when sshd is on default port
+to install ssh keys when sshd is not on default port
 ssh-copy-id "-p 222 veyepar@nextdayvideo.com"
+
 
  mkfs.ext4 -L disk25 -O sparse_super,extent,uninit_bg -E lazy_itable_init=1 -m 0 /dev/abc
 

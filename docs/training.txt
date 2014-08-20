@@ -70,6 +70,15 @@ VGA switch box: (small black box with red/green lights)
   Red-Red = pre-show system setup and debugging
   Red-Green = between talks, LCD for presenter setup, Spam for projector
 
-MC: 
+Tips:
+
+MC (starts and ends the talks): 
   don't clap when you are holding a mic (BANG BANG BANG!!!)
 
+Video producer (runs DVswitch)
+stare at screen, don't leave room, don't use your phone, watch videos before
+overview of good video:
+switch to slide, read, switch back to presenter
+use pnp when the fonts are big,
+or so to let the viewer know the slide hasn't changed
+it is easier for people to understand what a presenter is saying when they can see the body language. especially for people who are not native.

@@ -155,6 +155,11 @@ def make_parser():
     """)
     parser.add_argument('--user', '-u', default='test',
                         help='archive user. default: test')
+
+    parser.add_argument('--filename', '-f', 
+            default=os.path.abspath(__file__),
+                        help='archive user. default: this .py file')
+
     parser.add_argument('--bucket', '-b', default='test_ndv_archive_uploader',
                         help='bucket. default: test_ndv_archive_uploader'
                         '    test_ndv_archive_uploader is owned by test account.'
@@ -172,7 +177,8 @@ def test_upload(args):
     u.bucket_id = args.bucket
     u.debug_mode = args.debug_mode
     u.test = args.test
-    u.pathname = os.path.abspath(__file__)
+    # u.pathname = os.path.abspath(__file__)
+    u.pathname = args.filename
     u.key_id = os.path.basename(u.pathname)
 
     ret = u.upload()
