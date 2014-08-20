@@ -1,32 +1,74 @@
 audio:
-  Peaking 3/4 up the scale.  
-  Higher is OK, as long as it doesn't hit the top aka clipping.  
-  Clipping is REALLY BAD.  
-  Primry audio on Left channel
-  Fall back audio on Right channel (direct feed from camera mic)
+
+Good audio is more important than good video.  people will get more from a video if the audio is clear and the video is cruddy.   
+
+Mixer:
+  4 mics channels 1,2,3,4 setup in the order that they get used:
+    1. HAND - wireless hand held that the MC uses to announce the talk.
+    2. HEAD - headset the presenter talks into
+    3. STAND - wired mic on a stand that people use to ask questions.
+    4. ROOM - room mic (also on a stand) that picks up random things people shout out.
+
+  If someone needs laptop audio, hold the mic up to the laptop's speaker.  That works.  If they arrange for a DI box ahead of time, we will unplug the room mic and use that.  Make sure they do a sound check before the talk starts. if you do it on the fly, it is kinda rushed so there is a good chance you will blast everyone's ears out.  
+
+  2 outputs:
+    1. Left channel goes to the camera's Input 1 (switched to the Left channel)
+    2. Right channel goes to the PA system.
+
+  Main camera used for audio:
+    xlr from mixer into top xlr jack on camera labeled "Input 1"
+    input 1 switch on front of camera set to Line level
+    CH1 SELECT switch in the middle posision: 
+      INPUT1: Audio signals which are input to the INPUT 1 connector
+    CH2 SELECT switch in the top posision: 
+      INT (R): Audio signals of the right channel of the internal microphone
+   
+  trim on camera (29) AUDIO controls - 
+    arrows pointing up or a bit to the back, about 2 o'clock.
+    their should be a bit of red peeking on the camera's level meeters.
+
+  The default encoding parameters will drop the Right channel and use the Left.
+  Unless there are problems with the audio equipment, 
+  then the mic audio is a reliable fall back.
+
+Adjusting levels:
+   Peak level meter on DVswitch GUI should be just over 3/4 up the scale.  
+   As you go higher the camera's compressor starts to squash the signal which degrades quality.  
+
 
 Recording Sheets:
-  [x] pre day checks: batterys, laptops date/time, sound 
+  [x] pre day checks: batteries, laptops date/time, sound 
   
   for each talk:
-    [x] sound check 
-  Double check the Title and Presenters names, 
+    [x] Sound Check - Mic the presenter, ask him to say hi to the group. 
+          check off once DVswitch levels are good.
+
+   Double check the Title and Presenters names, 
      circle if there are issues, mark down correct info when time permits.
 
   In DVswitch, cut at anticipated start and end of talk.  
     If correct, mark down time on Sheet.  
     If not, cut again until you get it right.
-    If not happy with any cuts, back up to start time that contains start
+    If not happy with any cuts, write th start time that contains start
       write that on sheet with a ? 
+    It is easy to combine cuts later, so don't worry about a few extra cuts.
 
+    Include the introduction, it is a nice way for the video to start.
+    When people applause, wait for the applause to die down and hit Cut.
+    Hit cut when the talk is over before Questions and Answers.  If no one 
+    asks any questions, then that is the end. Otherwise cut again when Q&A 
+    is over.
+    
+    Do not bother writing down the time Q&A starts, it won't be used.
+    
 
-If presenter gives an email address, check it is the same as printed on Recording sheat.  If not, cut and maybe mark time of cut and email address.
+If presenter gives an email address, check it is the same as printed on Recording sheet.  If not, cut and maybe mark time of cut and email address.
 
-VGA switch box:
-  Buttons above lights cycle lights thourgh 3 states: Red, Green, Off.
-  Red-Red = pre-sow system setup and debugging
+VGA switch box: (small black box with red/green lights)
+  Buttons above lights cycle lights through 3 states: Red, Green, Off.
+  Green-Green = All systems GO!  Presenter's laptop to both LCD and projector.
+  Red-Red = pre-show system setup and debugging
   Red-Green = between talks, LCD for presenter setup, Spam for projector
-  Green-Gree = All systems GO!  Presenter's laptop to both LCD and proj.
 
 MC: 
   don't clap when you are holding a mic (BANG BANG BANG!!!)
