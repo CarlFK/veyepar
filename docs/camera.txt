@@ -1,5 +1,15 @@
-turn off auto focus
-turn off image stabalazation 
-    (works well if hand held, screws up smooth pans  when on a tripd)
-white balance
-enable mics 
+ftp://ftp.panasonic.com/pub/Panasonic/Drivers/PBTS/manuals/OM_AG-DVX100A.pdf
+
+GAIN switch - pg 11 button (17)
+  up for well lighted presenter, down if the lights are dimmed.
+
+White balance - pg 12 button (19)
+  point at white, hit button on front of camera below focus rings
+
+Turn off auto focus - pg 12 - (22) FOCUS switch, middle posision. 
+
+Turn off image stabalazation - pg 17
+  OIS This button is used to set camera shake compensation to ON or OFF. 
+  When the compensation is ON, (shaky hand icon) appears on the LCD monitor
+    (works well if hand held, screws up smooth pans when on a tripd)
+
