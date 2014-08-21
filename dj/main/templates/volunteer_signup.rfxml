@@ -35,7 +35,7 @@
 			<ReprintHeaderOnNewPage>False</ReprintHeaderOnNewPage>
 			<StartOnNewPage>True</StartOnNewPage>
 			<GroupHeader>
-				<Height>4.6</Height>
+				<Height>3.3</Height>
 				<Objects></Objects>
 			</GroupHeader>
 			<GroupFooter>
@@ -50,7 +50,7 @@
 	</PageBackground>
 
 	<PageHeader>
-		<Height>88.7</Height>
+		<Height>70.9</Height>
 		<Objects>
 			<String>
 				<align>'right'</align>
@@ -173,7 +173,7 @@
 	</PageHeader>
 
 	<Detail>
-		<Height>174.9</Height>
+		<Height>200.0</Height>
 		<Objects>
 			<String>
 				<expr>self.episode_id</expr>
@@ -191,7 +191,7 @@
 				<vAnchor>'bottom'</vAnchor>
 				<width>'345.0 pt'</width>
 				<x>'98.8 pt'</x>
-				<y>'135.7 pt'</y>
+				<y>'161.7 pt'</y>
 			</Memo>
 			<String>
 				<expr>self.episode_start.strftime("%H:%M")</expr>
@@ -200,7 +200,7 @@
 				<height>'14.0 pt'</height>
 				<width>'53.0 pt'</width>
 				<x>'33.0 pt'</x>
-				<y>'154.0 pt'</y>
+				<y>'180.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_end.strftime("%H:%M")</expr>
@@ -214,7 +214,7 @@
 			<Line>
 				<height>'6.0 pt'</height>
 				<width>'539.0 pt'</width>
-				<y>'166.0 pt'</y>
+				<y>'192.0 pt'</y>
 			</Line>
 			<String>
 				<expr>self.episode_duration</expr>
@@ -223,7 +223,7 @@
 				<height>'14.0 pt'</height>
 				<width>'48.0 pt'</width>
 				<x>'26.0 pt'</x>
-				<y>'123.0 pt'</y>
+				<y>'149.0 pt'</y>
 			</String>
 			<String>
 				<expr>"Length:"</expr>
@@ -232,7 +232,7 @@
 				<height>'11.0 pt'</height>
 				<width>'24.0 pt'</width>
 				<x>'0.8 pt'</x>
-				<y>'124.6 pt'</y>
+				<y>'150.6 pt'</y>
 			</String>
 			<String>
 				<expr>"id:"</expr>
@@ -251,7 +251,7 @@
 				<ScalePercent>(100.0, 150.0)</ScalePercent>
 				<width>'32.0 pt'</width>
 				<x>'1.0 pt'</x>
-				<y>'152.6 pt'</y>
+				<y>'178.6 pt'</y>
 			</String>
 			<String>
 				<expr>"End:"</expr>
@@ -275,7 +275,7 @@
 				<height>'8.0 pt'</height>
 				<width>'53.0 pt'</width>
 				<x>'3.0 pt'</x>
-				<y>'143.0 pt'</y>
+				<y>'169.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_end.strftime("%I:%M %p").strip('0').lower()</expr>
@@ -302,7 +302,7 @@
 				<height>'15.0 pt'</height>
 				<width>'371.0 pt'</width>
 				<x>'127.0 pt'</x>
-				<y>'99.0 pt'</y>
+				<y>'109.0 pt'</y>
 			</String>
 			<String>
 				<expr>"Main Camera:  ___________________________________________________"</expr>
@@ -311,7 +311,7 @@
 				<height>'20.0 pt'</height>
 				<width>'401.0 pt'</width>
 				<x>'96.0 pt'</x>
-				<y>'26.0 pt'</y>
+				<y>'28.0 pt'</y>
 			</String>
 			<String>
 				<expr>"2nd Camera:  ___________________________________________________"</expr>
@@ -329,7 +329,7 @@
 				<height>'20.0 pt'</height>
 				<width>'391.0 pt'</width>
 				<x>'105.0 pt'</x>
-				<y>'76.0 pt'</y>
+				<y>'82.0 pt'</y>
 			</String>
 			<String>
 				<expr>"DVswitch Video Mixer:  ___________________________________________________"</expr>
@@ -338,7 +338,7 @@
 				<height>'20.0 pt'</height>
 				<width>'441.0 pt'</width>
 				<x>'45.0 pt'</x>
-				<y>'52.0 pt'</y>
+				<y>'55.0 pt'</y>
 			</String>
 			<String>
 				<expr>"Talkmeister:  ___________________________________________________"</expr>
@@ -347,13 +347,13 @@
 				<height>'15.0 pt'</height>
 				<width>'371.0 pt'</width>
 				<x>'107.0 pt'</x>
-				<y>'119.0 pt'</y>
+				<y>'140.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
 
 	<PageFooter>
-		<Height>73.7</Height>
+		<Height>32.8</Height>
 		<Objects>
 			<Rectangle>
 				<FillColor>(0.902, 0.902, 0.980)</FillColor>
