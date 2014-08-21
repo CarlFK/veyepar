@@ -35,7 +35,7 @@
 			<ReprintHeaderOnNewPage>False</ReprintHeaderOnNewPage>
 			<StartOnNewPage>True</StartOnNewPage>
 			<GroupHeader>
-				<Height>20.4</Height>
+				<Height>4.6</Height>
 				<Objects></Objects>
 			</GroupHeader>
 			<GroupFooter>
@@ -50,7 +50,7 @@
 	</PageBackground>
 
 	<PageHeader>
-		<Height>73.5</Height>
+		<Height>88.7</Height>
 		<Objects>
 			<String>
 				<align>'right'</align>
@@ -114,7 +114,7 @@
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>10</FontSize>
 				<height>'11.0 pt'</height>
-				<ScalePercent>(100.0, 150.0)</ScalePercent>
+				<scalepercent>(100.0, 100.0)</scalepercent>
 				<width>'67.0 pt'</width>
 				<x>'1.0 pt'</x>
 				<y>'24.6 pt'</y>
@@ -124,7 +124,7 @@
 				<fontname>'Helvetica'</fontname>
 				<FontSize>10</FontSize>
 				<height>'12.0 pt'</height>
-				<ScalePercent>(100.0, 150.0)</ScalePercent>
+				<scalepercent>(100.0, 100.0)</scalepercent>
 				<width>'364.0 pt'</width>
 				<x>'71.0 pt'</x>
 				<y>'23.6 pt'</y>
@@ -134,7 +134,7 @@
 				<fontname>'Helvetica'</fontname>
 				<FontSize>10</FontSize>
 				<height>'12.0 pt'</height>
-				<ScalePercent>(100.0, 150.0)</ScalePercent>
+				<scalepercent>(100.0, 100.0)</scalepercent>
 				<width>'344.0 pt'</width>
 				<x>'51.0 pt'</x>
 				<y>'37.6 pt'</y>
@@ -144,7 +144,7 @@
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>10</FontSize>
 				<height>'11.0 pt'</height>
-				<ScalePercent>(100.0, 150.0)</ScalePercent>
+				<scalepercent>(100.0, 100.0)</scalepercent>
 				<width>'48.0 pt'</width>
 				<x>'4.0 pt'</x>
 				<y>'38.6 pt'</y>
@@ -154,7 +154,7 @@
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>10</FontSize>
 				<height>'11.0 pt'</height>
-				<ScalePercent>(100.0, 150.0)</ScalePercent>
+				<scalepercent>(100.0, 100.0)</scalepercent>
 				<width>'48.0 pt'</width>
 				<x>'4.0 pt'</x>
 				<y>'3.6 pt'</y>
@@ -164,7 +164,7 @@
 				<fontname>'Helvetica'</fontname>
 				<FontSize>10</FontSize>
 				<height>'12.0 pt'</height>
-				<ScalePercent>(100.0, 150.0)</ScalePercent>
+				<scalepercent>(100.0, 100.0)</scalepercent>
 				<width>'344.0 pt'</width>
 				<x>'54.0 pt'</x>
 				<y>'2.6 pt'</y>
