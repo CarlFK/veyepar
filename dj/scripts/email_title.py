@@ -28,10 +28,10 @@ Released: {{ep.released}}
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% else %} "None" means it may get recorded and processed, but it will not be made public.
 "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
-
+{% comment %}
 The video will be titled with the following image:
 {{MEDIA_URL}}{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
-
+{% endcomment %}
 {% if ep.public_url%}The main page for the video will be here:
   {{ep.public_url}} {% endif %}
 {% if 0 %}
@@ -40,9 +40,12 @@ Problems with the text will need to be fixed in the event database that drives: 
 Except for odd word wrap on the title image.  If it bothers you, let us know how you would like it and we will try to accommodate. 
 {% endif %}
 
-If everything looks good, you don't need to do anything. Good luck with your talk, expect another email when the video is posted.
+If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
 
 Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} and you have been alloted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.  
+
+Please bring what is needed to hook your laptop up to good old 15 pin VGA.  We may have an adaptor, but don't count on it, someone may have taken it.
+
 """
     py_name = "email_title.py"
          

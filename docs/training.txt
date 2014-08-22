@@ -36,6 +36,17 @@ Adjusting levels:
    As you go higher the camera's compressor starts to squash the signal which degrades quality.  
 
 
+DVswitch
+
+swite of compnets, there are dv sources and sinks.
+dvswitch is the main app, 
+  it listens on port 2000 for connections from the sources and sinks.
+
+dvs-mon (DVswitch Monitory) just runs shell commands.  it is nicer than opening a bunch of terminal windows.  It does have --keep-alive, but I have found that doesn't really help things;  If something dies, a person generally needs to figure out why, and having it respawn is distracting.
+
+
+
+
 Recording Sheets:
   [x] pre day checks: batteries, laptops date/time, sound 
   

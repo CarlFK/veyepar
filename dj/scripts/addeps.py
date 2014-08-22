@@ -370,6 +370,12 @@ class add_eps(process.process):
                 # have an existing episode, 
                 # either update it or diff it.
 
+                # special case for email: don't blank it out
+                # use what is in the db.
+                # up here and now below so the diff doesn't wazz
+                if episode.emails and not row['emails']:
+                    row['emails'] = episode.emails
+
             else:
                 episode = None
 
@@ -390,9 +396,9 @@ class add_eps(process.process):
 
                 episode.location=Location.objects.get(
                         name__iexact=row['location'])
+                # copy all the fields 
+                # from the source row to the episode object
                 for f in fields:
-                    # special case for email: don't blank it out
-                    if f == "emails" and not row[f]: continue
                     setattr( episode, f, row[f] )
 
                 episode.save()
@@ -1555,6 +1561,11 @@ class add_eps(process.process):
 
                     # save the original row so that we can sanity check end time.
                     event['raw'] = row
+
+                    if event['conf_key'] == "127":
+                        # skip this one
+                        # https://summit.debconf.org/debconf14/meeting/127/hacking-time/
+                        continue
 
                     events.append(event)
                     id += 1

@@ -15,11 +15,11 @@
 		<Objects></Objects>
 	</ReportEnd>
 
-	<Author>"Paul McNett &lt;root@paulmcnett.com&gt;"</Author>
+	<Author>"Carl Karsten"</Author>
 
-	<Title>"Recording Sheet"</Title>
+	<Title>"Volunteer Signup"</Title>
 
-	<Subject>"http://dabodev.com"</Subject>
+	<Subject>"http://debconf.org"</Subject>
 
 	<Keywords>("dabo", "report", "writer", "banded", "free")</Keywords>
 
