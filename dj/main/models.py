@@ -101,8 +101,13 @@ class Location(models.Model):
     description = models.TextField(blank=True)
     lon = models.FloatField(null=True, blank=True )
     lat = models.FloatField(null=True, blank=True )
+
+    def natural_key(self):
+        return self.name
+
     def __unicode__(self):
         return "%s" % ( self.name )
+
     class Meta:
         ordering = ["sequence"]
 

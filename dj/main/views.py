@@ -175,7 +175,9 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
     fields=['id',
             'state',
-            'location', 'sequence',
+            'location', 
+            'get_location_name', 
+            'sequence',
             'name', 'slug', 'authors', 'description',
             'start', 'duration', 
             'released', 'license', 'tags',
@@ -187,7 +189,9 @@ def eps_xfer(request,client_slug=None,show_slug=None):
         fields.extend(['emails', 'edit_key',])
 
     response = HttpResponse(mimetype="application/json")
-    serializers.serialize("json", eps, fields=fields,  stream=response)
+    serializers.serialize("json", eps, 
+            fields=fields, use_natural_keys=True,
+            stream=response)
 
     return response
 
