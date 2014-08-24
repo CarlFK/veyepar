@@ -133,13 +133,13 @@ def start_here(request):
     and wants to help.
     """
 
-    show=get_object_or_404(Show,client__slug='fosdem',slug='fosdem_2014')
+    show=get_object_or_404(Show,client__slug='debian',slug='debconf14')
     episodes = Episode.objects.filter(show=show,
             state=1,
             locked__isnull=True,
             )
-    episodes = episodes.annotate(
-                    c=Count("cut_list")).filter(c__gte=1)
+    # episodes = episodes.annotate(
+    #                c=Count("cut_list")).filter(c__gte=1)
     episode = episodes[0]
 
     if request.method == 'POST':
