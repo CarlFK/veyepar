@@ -18,26 +18,6 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
 class mkpreview(process):
 
-    def rsync(self, loc_slug, f):
-
-        host = self.options.cloud_host
-        user = self.options.cloud_user
-        dest_host = '%s@%s' % (user,host)
-        dest_show_path = "/home/%s/Videos/veyepar/%s/%s" % (
-                user, ep.show.client.slug, ep.show.slug, )
-        dest_path = "%s/dv/%s/%s" % ( 
-            dest_show_path,loc_slug,f['pathname'] )
-        dest = "%s:%s" %( dest_host, dest_path )
-
-        # dest = "veyepar@nextdayvideo.com:static/veyepar/pyconde/pyconde2013/dv/KOMED_Saal/2013-10-15"
-
-        cmd = ['rsync',  '-tvP', '-e', 'ssh -p 222',
-            f['pathname'], dest ]
-        print cmd
-        if not self.options.test:
-            self.run_cmd(cmd)
-
-
     def one_dv(self,loc_dir,dv):
         print dv.filename, 
         src = os.path.join(loc_dir,dv.filename)
