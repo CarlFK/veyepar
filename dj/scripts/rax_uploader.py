@@ -98,13 +98,8 @@ class Uploader(object):
                     done = True
                     ret = True
 
-                    """
-HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retries exceeded with url: /v1/MossoCloudFS_fd6d6695-7fe7-4f77-9b4a-da7696e71dc2/fosdem/veyepar/debian/debconf14/dv/plenary/2014-08-23/16_00_03.ogv (Caused by <class 'socket.error'>: [Errno 104] Connection reset by peer)
-
-HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retries exceeded with url: /v1/MossoCloudFS_fd6d6695-7fe7-4f77-9b4a-da7696e71dc2/fosdem/veyepar/debian/debconf14/dv/room338/2014-08-25/10_02_05.ogv (Caused by <class 'socket.error'>: [Errno 32] Broken pipe)
-"""
-
                 except pyrax.exceptions.ClientException as e:
+                    print "caught pyrax.exceptions.ClientException as e"
                     print e
                     print e.code, e.details, e.message
 
@@ -120,6 +115,13 @@ HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retrie
 
 
                 except Exception as e:
+                    print "caught Exception as e"
+
+                    """
+HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retries exceeded with url: /v1/MossoCloudFS_fd6d6695-7fe7-4f77-9b4a-da7696e71dc2/fosdem/veyepar/debian/debconf14/dv/plenary/2014-08-23/16_00_03.ogv (Caused by <class 'socket.error'>: [Errno 104] Connection reset by peer)
+
+HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retries exceeded with url: /v1/MossoCloudFS_fd6d6695-7fe7-4f77-9b4a-da7696e71dc2/fosdem/veyepar/debian/debconf14/dv/room338/2014-08-25/10_02_05.ogv (Caused by <class 'socket.error'>: [Errno 32] Broken pipe)
+"""
 
                     print e
                     # self.ret_text = "rax error: %s" % ( e.body )
@@ -169,7 +171,10 @@ if __name__ == '__main__':
     u.pathname = args.pathname
     u.user = args.user
     u.bucket_id = args.container # define this on rackspace gui
-    u.key_id = args.obj_name
+    if args.obj_name is None:
+        u.key_id = os.path.split(u.pathname)[1]
+    else:
+        u.key_id = args.obj_name
     u.debug_mode = args.debug
 
     ret = u.upload()
