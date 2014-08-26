@@ -98,6 +98,12 @@ class Uploader(object):
                     done = True
                     ret = True
 
+                    """
+HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retries exceeded with url: /v1/MossoCloudFS_fd6d6695-7fe7-4f77-9b4a-da7696e71dc2/fosdem/veyepar/debian/debconf14/dv/plenary/2014-08-23/16_00_03.ogv (Caused by <class 'socket.error'>: [Errno 104] Connection reset by peer)
+
+HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retries exceeded with url: /v1/MossoCloudFS_fd6d6695-7fe7-4f77-9b4a-da7696e71dc2/fosdem/veyepar/debian/debconf14/dv/room338/2014-08-25/10_02_05.ogv (Caused by <class 'socket.error'>: [Errno 32] Broken pipe)
+"""
+
                 except pyrax.exceptions.ClientException as e:
                     print e
                     print e.code, e.details, e.message
@@ -144,9 +150,8 @@ def pars_args():
     parser.add_argument('--container', default="example",
             help="container to upload to.")
 
-    parser.add_argument('--obj_name', default=
-            "/test_client/test_show/webm/Lets_make_a_Test.webm",
-            help="container to upload to.")
+    parser.add_argument('--obj_name', 
+            help="key in key:value")
 
     parser.add_argument('--debug', 
             help="Drops to a >>> prompt after upload")
