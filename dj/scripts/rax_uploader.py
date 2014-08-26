@@ -5,6 +5,7 @@
 # that is a lie.  it is currently called from post_yt.py.  
 
 import argparse
+import os
 
 import pyrax
 pyrax.set_setting("identity_type", "rackspace")
