@@ -10,6 +10,8 @@
 
 # https://developers.google.com/api-client-library/python/guide/aaa_oauth
 
+import argparse
+from collections import namedtuple
 
 import httplib
 import httplib2
@@ -74,7 +76,14 @@ RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError, httplib.NotConnected,
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
-def get_authenticated_service(args, user_key):
+def get_authenticated_service(user_key):
+
+  args = namedtuple('flags', [ 
+            'noauth_local_webserver',
+            'logging_level'
+            ] )
+  args.noauth_local_webserver = True
+  args.logging_level='ERROR'
 
   auth = yt[user_key] ## from dict of credentials 
   filename =auth['filename']
@@ -223,31 +232,21 @@ class Uploader():
             'privacyStatus':privacyStatus,
             }
 
-        youtube = get_authenticated_service(
-                {'noauth_local_webserver':True},
-                self.user)
+        youtube = get_authenticated_service(user_key=self.user)
         update_video(youtube, args)
 
         return True
 
     def upload(self):
 
-        youtube = get_authenticated_service(
-                {'noauth_local_webserver':True},
-                self.user)
-
-        pathname = self.files[0]['pathname']
-        meta = self.meta
+        youtube = get_authenticated_service(user_key=self.user)
 
         if self.debug:
-            print pathname
-            pprint.pprint(meta)
+            print self.pathname
+            pprint.pprint(self.meta)
 
-        if self.debug:
-            pass
-            # import pdb; pdb.set_trace()
-
-        status, response = initialize_upload(youtube, pathname, meta)
+        status, response = initialize_upload(
+                        youtube, self.pathname, self.meta)
 
         self.response = response
 
@@ -255,8 +254,57 @@ class Uploader():
 
         return True
 
+### Smoke test
 
-def test_upload():
+def make_parser():
+    parser = argparse.ArgumentParser(description="""
+    Upload this file to archive.org
+    """)
+    parser.add_argument('--user', '-u', default='test',
+                        help='archive user. default: test')
+    # find the test file
+    ext = "webm"
+    veyepar_dir = os.path.expanduser('~/Videos/veyepar')
+    test_dir = os.path.join(veyepar_dir,"test_client/test_show/",ext)
+    test_file = os.path.join(test_dir,"Lets_make_a_Test.%s" % (ext))
+    if not os.path.exists(test_file):
+        # if we can't find a video to upload, upload this .py file!
+        test_file = os.path.abspath(__file__),
+
+    parser.add_argument('--pathname', '-f', default=test_file,
+                        help='file to upload.')
+
+    parser.add_argument('--debug_mode', '-d', default=False, action='store_true',
+                        help='whether to drop to prompt after upload. default: False')
+
+    return parser
+
+
+def test_upload(args):
+
+    u = Uploader()
+
+    u.meta = {
+      'description': ("test " * 5) + "1", 
+      'title': "test title",
+      'category': 22, # 22 is maybe "Education",
+      'tags': [u'test', u'tests', ],
+      'privacyStatus':'private',
+      # 'latlon': (37.0,-122.0),
+    }
+
+    u.user = args.user
+    u.debug_mode = args.debug_mode
+    u.pathname = args.pathname
+
+    ret = u.upload()
+    if ret:
+        print u.new_url
+    else:
+        print u.ret_text
+
+
+def old_test_upload():
  
     meta = {
       'description': ("test " * 5) + "1", 
@@ -267,17 +315,11 @@ def test_upload():
       # 'latlon': (37.0,-122.0),
     }
 
-    # find the test file
-    ext = "webm"
-    veyepar_dir = os.path.expanduser('~/Videos/veyepar')
-    test_dir = os.path.join(veyepar_dir,"test_client/test_show/",ext)
-    test_file = os.path.join(test_dir,"Lets_make_a_Test.%s" % (ext))
-
     u = Uploader()
     # youtube only takes one file,
     # but the veyepar api takes a list
     # so make a list of one file.
-    u.files = [{'pathname':test_file, 'ext':ext}]
+    u.pathname = test_file
     u.meta = meta
     # u.user = 'test'
     u.user="ndv"
@@ -326,5 +368,9 @@ apiclient.errors.HttpError: <HttpError 410 when requesting https://www.googleapi
 
 if __name__ == '__main__':
     # test_set_pub()
-    test_upload()
+
+    parser = make_parser()
+    args = parser.parse_args()
+
+    test_upload(args)
 
