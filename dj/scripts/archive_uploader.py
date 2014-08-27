@@ -177,7 +177,6 @@ def test_upload(args):
     u.bucket_id = args.bucket
     u.debug_mode = args.debug_mode
     u.test = args.test
-    # u.pathname = os.path.abspath(__file__)
     u.pathname = args.filename
     u.key_id = os.path.basename(u.pathname)
 
