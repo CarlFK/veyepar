@@ -10,7 +10,7 @@ from process import process
 from main.models import Client, Show, Episode, Raw_File
 
 import rax_uploader
-import gslevels
+# import gslevels
 
 class SyncRax(process):
 
@@ -79,6 +79,7 @@ class SyncRax(process):
         # look for .ogv
         base = os.path.join(
                 "dv", rf.location.slug, rf.basename() + ".ogv")
+        if self.options.verbose: print base
         if not self.cdn_exists(show,base):
             self.cdn_send(show,base)
 
@@ -102,9 +103,10 @@ class SyncRax(process):
     def raw_files(self, show):
         print "getting raw files..."
         for rf in Raw_File.objects.filter(show=show):
+            if self.options.verbose: print rf
 
             self.rf_ogv(show, rf)
-            self.rf_audio_png(show, rf)
+            # self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )
@@ -124,9 +126,15 @@ class SyncRax(process):
             self.sync_final_audio_png(show,ep)
 
     def init_rax(self):
+         # user = self.show.client.rax_id
+         # bucket_id = self.show.client.bucket_id
+
          user = self.options.cloud_user
          cf = rax_uploader.auth(user)
          bucket_id = self.options.rax_bucket
+
+         print "cf.get_all_containers", cf.get_all_containers()
+         
          container = cf.get_container(bucket_id)
          objects = container.get_objects()
          print "loading names..."
@@ -134,8 +142,8 @@ class SyncRax(process):
          print "loaded."
 
     def one_show(self, show):
-        self.init_rax()
         self.set_dirs(show)
+        self.init_rax()
 
         self.raw_files(show)
         # self.episodes(show)
