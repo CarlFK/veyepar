@@ -27,3 +27,13 @@ bios:
   pxe enabled on nic
   HD first boot device
 
+tmux new -s d2o6
+
+ssh -v root@www.timvideos.us -R 0.0.0.0:2222:127.0.0.1:22
+while true; do ssh -v root@www.timvideos.us -R 0.0.0.0:2222:127.0.0.1:22 "while true; do date; sleep 5; done"; sleep 30; done
+
+cd streaming-system/tools/watchdog
+while true; do sudo python watchdog_wrapper.py -m $USER:$PASSWORD@localhost; sleep 30; done
+
+tmux new -s enc2
+tmux at -t enc2
