@@ -1562,7 +1562,8 @@ class add_eps(process.process):
                     # save the original row so that we can sanity check end time.
                     event['raw'] = row
 
-                    if event['conf_key'] == "127":
+                    # if event['conf_key'] in [ "127", "40"]:
+                    if row.find('slug').text in [ "hacking-time", ]:
                         # skip this one
                         # https://summit.debconf.org/debconf14/meeting/127/hacking-time/
                         continue
