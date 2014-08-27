@@ -53,6 +53,8 @@ class Uploader(object):
     pathname = ''  # path to video file to upload
 
     user = 'testact' # key to lookup user/pw in rax{} typically stored in pw.py
+    region = "DFW"
+
     bucket_id = "example" # archive/s3 butcket, or container ID for rax
     key_id = "" # orbject name (the key in a key value store)
 
@@ -63,6 +65,8 @@ class Uploader(object):
     new_url = ''
 
     def upload(self):
+
+        pyrax.set_setting("region", self.region)
 
         cf = auth(self.user)
 
@@ -143,8 +147,8 @@ HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retrie
 def pars_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--pathname', default=
-  '/home/carl/Videos/veyepar/test_client/test_show/webm/Lets_make_a_Test.webm',
+    parser.add_argument('--pathname', 
+            default=os.path.abspath(__file__),
             help='pathname of file to upload.')
 
     parser.add_argument('--user', default="testact",
@@ -155,6 +159,9 @@ def pars_args():
 
     parser.add_argument('--obj_name', 
             help="key in key:value")
+
+    parser.add_argument('--region', default="ORD",
+            help="http://www.rackspace.com/about/datacenters/")
 
     parser.add_argument('--debug', 
             help="Drops to a >>> prompt after upload")
@@ -171,6 +178,7 @@ if __name__ == '__main__':
     # senseable values for testing.
     u.pathname = args.pathname
     u.user = args.user
+    u.region = args.region
     u.bucket_id = args.container # define this on rackspace gui
     if args.obj_name is None:
         u.key_id = os.path.split(u.pathname)[1]
