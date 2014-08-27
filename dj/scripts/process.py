@@ -309,7 +309,7 @@ class process(object):
 
     locs = Location.objects.filter(show=show)
     if self.options.room:
-        loc=Location.objects.get(name=self.options.room)
+        loc=Location.objects.get(slug=self.options.room)
         locs=locs.filter(location=loc)
 
     for loc in locs:
