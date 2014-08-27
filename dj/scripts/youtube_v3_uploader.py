@@ -12,7 +12,20 @@
 
 import argparse
 from collections import namedtuple
+import progressfile
 
+
+"""
+to use progressfile you need to patch 
+@ 418  ~/.virtualenvs/veyepar/local/lib/python2.7/site-packages/apiclient/http.py
+
+    if isinstance(filename,file):
+        fd = filename
+        filename = fd.name
+    else:
+        fd = open(self._filename, 'rb')
+
+"""
 import httplib
 import httplib2
 import os
@@ -245,8 +258,9 @@ class Uploader():
             print self.pathname
             pprint.pprint(self.meta)
 
-        status, response = initialize_upload(
-                        youtube, self.pathname, self.meta)
+        pf = progressfile.ProgressFile(args.pathname)
+
+        status, response = initialize_upload(youtube, pf, self.meta)
 
         self.response = response
 
