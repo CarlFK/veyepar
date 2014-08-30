@@ -30,7 +30,8 @@ sudo apt-get --assume-yes install python-software-properties
 
 sudo apt-get --assume-yes update
 
-sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-lxml python-dev 
+sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-dev 
+# python-lxml 
 # python-dev libxml2-dev libxslt-dev
 # sphinx2-bin 
 # libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 
@@ -39,6 +40,9 @@ sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugi
 # for encoder node
 sudo apt-get --assume-yes install python-psycopg2 inkscape ffmpeg2theora python-imaging python-virtualenv 
 # virtualenvwrapper 
+
+sudo apt-get --assume-yes build-dep python-lxml python-psycopg2
+# sudo apt-get build-dep python-opencv
 
 # for web server 
 # python-psycopg2 python-imaging python-virtualenv virtualenvwrapper 
@@ -62,7 +66,6 @@ sudo apt-get --assume-yes install python-psycopg2 inkscape ffmpeg2theora python-
 # printf "workon veyepar\n" >> ~/.bashrc
 
 mkdir -p ~/.virtualenvs/
-# virtualenv --system-site-packages ~/.virtualenvs/veyepar
 virtualenv ~/.virtualenvs/veyepar
 printf "source  ~/.virtualenvs/veyepar/bin/activate\n" >> ~/.bashrc
 source  ~/.virtualenvs/veyepar/bin/activate
@@ -79,8 +82,24 @@ pip install -r setup/requirements.txt
 # mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 # mv ~/.virtualenvs/veyepar/dabo/locale/ ~/.virtualenvs/veyepar/lib/python2.6/site-packages/dabo
 cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
+
 git clone https://github.com/dabodev/dabo.git dabo-master
 ln -s dabo-master/dabo 
+
+# to hookinto local open-cv
+# python -c "import cv2;print cv2.__file__" 
+# /usr/lib/python2.7/dist-packages/cv2.so
+ln -s /usr/lib/python2.7/dist-packages/cv2.so
+
+# python -c "import tesseract; print tesseract.__file__"
+# /usr/lib/python2.7/dist-packages/tesseract.pyc
+ln -s /usr/lib/python2.7/dist-packages/tesseract.pyc
+
+# python -c "import _tesseract;print _tesseract.__file__"
+# /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
+ln -s /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
+
+
 cd -
 
 # grab some text files I don't want to check into the repo
