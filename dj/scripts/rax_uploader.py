@@ -53,7 +53,7 @@ class Uploader(object):
     pathname = ''  # path to video file to upload
 
     user = 'testact' # key to lookup user/pw in rax{} typically stored in pw.py
-    region = "DFW"
+    region = "ORD"
 
     bucket_id = "example" # archive/s3 butcket, or container ID for rax
     key_id = "" # orbject name (the key in a key value store)

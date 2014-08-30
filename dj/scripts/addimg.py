@@ -3,7 +3,6 @@
 # Adds png files to the Image table
 # uses ocr to link them to an episode
 
-# convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
 
 """
 
@@ -16,6 +15,9 @@ sudo apt-get install python-opencv
 ln -s /usr/share/tesseract-ocr/tessdata/ 
 
 pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
+
+# if pdfimages doesn't work out, use convert
+# convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
 
 """
 
@@ -76,7 +78,7 @@ class add_img(process):
 
         for ep in eps:
             is_in( img, ep, "id", text )
-            is_in( img, ep, "conf_key", text )
+            # is_in( img, ep, "conf_key", text )
             is_in( img, ep, "name", text )
             is_in( img, ep, "authors", text )
 

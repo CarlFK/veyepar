@@ -17,6 +17,7 @@ license - CC license
 released - permission to release.
 conf_key - PK in source database - unique, used to update this item 
 conf_url - URL of talk page
+language - Spoken language of the talk.
 """
 
 """
