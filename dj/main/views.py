@@ -1250,6 +1250,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
           'episode_form':form,
           'admin_params':admin_params,
           'query_params':request.GET,
+          'now':datetime.datetime.now(),
         },
         context_instance=RequestContext(request) )
 
