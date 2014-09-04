@@ -91,7 +91,6 @@ import os
 # from dateutil.parser import parse
 import pprint
 from django.utils.html import strip_tags
-from django.template.defaultfilters import slugify
 
 import xml.etree.ElementTree
 
@@ -2419,6 +2418,9 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.show =='pytexas2014':
+            return self.pytexas(schedule,show)
 
         if self.options.show =='debconf14':
             return self.summit_penta(schedule,show)
