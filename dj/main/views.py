@@ -1155,8 +1155,11 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     if location_slug:
         # location here is for default location for new episodes
         location=get_object_or_404(Location,slug=location_slug)
-        episodes=episodes.filter(show=show,location=location)
+        episodes=episodes.filter(location=location)
         admin_params += "&location__id__exact=%s" % location.id
+    else:
+        episodes=episodes.filter(location__active=True)
+
     if start_date:
         episodes = episodes.filter(start__startswith=start_date)
         admin_params +="&start__date=%s" % start_date
