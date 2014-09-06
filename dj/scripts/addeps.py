@@ -7,8 +7,8 @@ fields:
 name - Talk title 
 authors - list of people's names.
 contacts - list of email(s) of presenters.
-description - used as the description of the video (paragraphs are fine)
-tags - comma separated list - serch terms, including sub topics briefly discussed in the talk.
+description - description of the talk (paragraphs are fine, markdown great)
+tags - list of serch terms, including sub topics briefly discussed in the talk.
 room - room as described by the venue
 start - datetime in some parsable format 
 duration - int minutes or "hh:mm:ss" 
@@ -286,8 +286,9 @@ class add_eps(process.process):
             if self.options.verbose: print row
             event={}
 
-            for jk,vk in field_maps:
+            for jk,vk in field_maps:  # json key, veyepar key
                 if jk: 
+                    # if self.options.verbose: print jk, row[jk]
                     try:
                         event[vk] = row[jk]
                     except: 
@@ -2260,6 +2261,55 @@ class add_eps(process.process):
         return self.symposion2(schedule,show)
 
 
+    def pytexas2014(self, schedule, show):
+
+        # remove events with no room (like Break)
+        schedule = [s for s in schedule if s['rooms'] ]
+
+        field_maps = [
+            ('id', 'conf_key'),
+            ('name', 'name'),
+            ('description', 'description'),
+            ('duration', 'duration'),
+            ('start', 'start'),
+            ('room', 'location'),
+            ('url', 'conf_url'),
+            ('speaker', 'authors'),
+            ('speaker', 'emails'),
+            ('released', 'released'),
+            ('license', 'license'),
+            ('language', 'language'),
+           ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        # rooms = set(row['location'] for row in events)
+        # self.add_rooms(rooms,show)
+
+        for event in events: 
+
+            event['conf_key'] = str(event['conf_key'])
+            event['start'] = datetime.datetime.strptime( 
+                   event['start'], '%Y-%m-%dT%H:%M:%S' )
+            event['duration'] = "00:%s:00" % ( event['duration'], )
+
+            if event['authors']['name'] is None:
+                event['authors'] = ''
+            else:
+                event['authors'] =  event['authors']['name']
+
+            if event['emails']['email'] == 'redacted':
+                event['emails'] = ''
+            else:
+                event['emails'] =  event['emails']['email']
+
+            pprint.pprint(event)
+
+        self.add_eps(events, show)
+
+        return 
+
+
 
 #################################################3
 # main entry point 
@@ -2420,7 +2470,7 @@ class add_eps(process.process):
         #   call appropiate parser
 
         if self.options.show =='pytexas2014':
-            return self.pytexas(schedule,show)
+            return self.pytexas2014(schedule,show)
 
         if self.options.show =='debconf14':
             return self.summit_penta(schedule,show)
