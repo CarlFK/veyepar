@@ -142,6 +142,7 @@ class process(object):
             u.key_id = dst 
 
             ret = u.upload()
+            print u.new_url 
 
 
   def set_dirs(self,show):
