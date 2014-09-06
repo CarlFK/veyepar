@@ -25,13 +25,13 @@ Episode Count: {{episodes.count}}
     <thead>
       <tr>
         <th>id</th>
-        <th>audio</th>
         <th>loc name</th>
         <th>start</th><th>end</th>
         <th>duration</th>
         <th>state</th>
         <th>episode.name</th>
         <th>episode.authors</th>
+        <th>cmt</th>
         <th>rel</th>
         <th>img</th>
         <th>rf</th>
@@ -43,7 +43,6 @@ Episode Count: {{episodes.count}}
     {% for episode in episodes %}
       <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
         <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
-        <td>{{episode.channelcopy}}</td>
 
         <td><a href="
         {%if location_slug %}
@@ -59,6 +58,7 @@ Episode Count: {{episodes.count}}
         <td>{{episode.state}}</td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>
+        <td style="white-space:normal"><a href="E/{{episode.id}}/#id_comment" title="{{episode.comment}}">{{episode.comment|length|default:""}}</a></td>
         <td>{{episode.released|yesno:"Y,N"}}</td>
         <td>{{episode.image_file_set.count|default:""}}</td>
         <td>{{episode.cut_list_set.count|default:""}}</td>
