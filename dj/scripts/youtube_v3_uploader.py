@@ -14,7 +14,6 @@ import argparse
 from collections import namedtuple
 import progressfile
 
-
 """
 to use progressfile you need to patch 
 @ 418  ~/.virtualenvs/veyepar/local/lib/python2.7/site-packages/apiclient/http.py
@@ -52,9 +51,7 @@ except ImportError:
     # you can fill in your credentials here for dev
     # but better to put in pw.py 
     yt={
-            "test":{
-                'filename': "oauth.json",
-                }
+            "test":{ 'filename': "oauth.json" }
             }
 
 
@@ -79,10 +76,11 @@ httplib2.RETRIES = 1
 MAX_RETRIES = 10
 
 # Always retry when these exceptions are raised.
-RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError, httplib.NotConnected,
-  httplib.IncompleteRead, httplib.ImproperConnectionState,
-  httplib.CannotSendRequest, httplib.CannotSendHeader,
-  httplib.ResponseNotReady, httplib.BadStatusLine)
+RETRIABLE_EXCEPTIONS = (
+        httplib2.HttpLib2Error, IOError, httplib.NotConnected,
+        httplib.IncompleteRead, httplib.ImproperConnectionState,
+        httplib.CannotSendRequest, httplib.CannotSendHeader,
+        httplib.ResponseNotReady, httplib.BadStatusLine)
 
 # Always retry when an apiclient.errors.HttpError with one of these status
 # codes is raised.
@@ -95,6 +93,7 @@ def get_authenticated_service(user_key):
             'noauth_local_webserver',
             'logging_level'
             ] )
+
   args.noauth_local_webserver = True
   args.logging_level='ERROR'
 
@@ -103,6 +102,7 @@ def get_authenticated_service(user_key):
 
   # how and where tokens are stored
   storage = Storage(filename)
+
   # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html 
 
   credentials = storage.get()
@@ -268,14 +268,12 @@ class Uploader():
 
         return True
 
-### Smoke test
-
 def make_parser():
     parser = argparse.ArgumentParser(description="""
-    Upload this file to archive.org
+    Find a video file and upload it to youtube.
     """)
     parser.add_argument('--user', '-u', default='test',
-                        help='archive user. default: test')
+            help="key into pw['yt'][key]: secrets. default: test")
     # find the test file
     ext = "webm"
     veyepar_dir = os.path.expanduser('~/Videos/veyepar')
@@ -288,8 +286,9 @@ def make_parser():
     parser.add_argument('--pathname', '-f', default=test_file,
                         help='file to upload.')
 
-    parser.add_argument('--debug_mode', '-d', default=False, action='store_true',
-                        help='whether to drop to prompt after upload. default: False')
+    parser.add_argument('--debug_mode', '-d', default=False, 
+            action='store_true', 
+            help='whether to drop to prompt after upload. default: False')
 
     return parser
 
@@ -349,10 +348,7 @@ def old_test_upload():
 
 def test_set_pub():
     video_url = "https://www.youtube.com/watch?v=MN1y5lvSHQ8"
-
     u = Uploader()
-    # u.user="test"
-    # u.debug=True
     u.set_permission(video_url)
 
     return
