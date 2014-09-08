@@ -1,0 +1,16 @@
+{# imgs.html #}
+{% extends "base.html" %}
+
+{% block head %}
+  <title>veyepar - Sheets for Show: {{client.name}} {{show.name}} </title>
+{% endblock %}
+
+{% block content %}
+
+{% for img in imgs %}
+    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=400 ></br>
+    {{img.text}}
+  <hr>
+{% endfor %}
+
+{% endblock %}
