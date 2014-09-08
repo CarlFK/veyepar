@@ -75,10 +75,6 @@ def mk_fieldlist():
 
 
 
-
-
-
-
 # FireFox plugin to view .json data:
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
 
@@ -108,7 +104,7 @@ import pw
 
 import process
 
-from main.models import fnify, Client, Show, Location, Episode, Raw_File
+from main.models import Client, Show, Location, Episode, Raw_File
 
 def goog(show,url):
     # read from goog spreadsheet api
@@ -2264,7 +2260,7 @@ class add_eps(process.process):
     def pytexas2014(self, schedule, show):
 
         # remove events with no room (like Break)
-        schedule = [s for s in schedule if s['rooms'] ]
+        # schedule = [s for s in schedule if s['room'] ]
 
         field_maps = [
             ('id', 'conf_key'),
@@ -2279,6 +2275,7 @@ class add_eps(process.process):
             ('released', 'released'),
             ('license', 'license'),
             ('language', 'language'),
+            ('', 'tags'),
            ]
 
         events = self.generic_events(schedule, field_maps)
@@ -2291,6 +2288,7 @@ class add_eps(process.process):
             event['conf_key'] = str(event['conf_key'])
             event['start'] = datetime.datetime.strptime( 
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
+
             event['duration'] = "00:%s:00" % ( event['duration'], )
 
             if event['authors']['name'] is None:
@@ -2304,6 +2302,9 @@ class add_eps(process.process):
                 event['emails'] =  event['emails']['email']
 
             pprint.pprint(event)
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
 

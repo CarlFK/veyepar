@@ -8,21 +8,7 @@ import socket
 import datetime
 import random
 
-def fnify(text):
-    """
-    file_name_ify - make a file name out of text, like a talk title.
-    convert spaces to _, remove junk like # and quotes.
-    like slugify, but more file name friendly.
-    """
-    # remove anything that isn't alpha, num or space,  _ or dash.
-    fn = ''.join([c for c in text if c.isalpha() or c.isdigit() or (c in ' _') ])
-    fn = fn.replace(' ','_')
-
-    # single _ between words.
-    # removes multiple and leading spaces or underscores
-    fn = '_'.join([w for w in fn.split('_') if w])
-
-    return fn
+from unique_slugify import unique_slugify
 
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
@@ -401,8 +387,9 @@ class Log(models.Model):
             return None
 
 def set_slug(sender, instance, **kwargs):
-    if not instance.slug:
-        instance.slug = fnify(instance.name)
+    # if not instance.slug:
+    #    instance.slug = fnify(instance.name)
+    return unique_slugify(instance, instance.name)
 
 def set_end(sender, instance, **kwargs):
     if instance.start and instance.duration:

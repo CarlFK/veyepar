@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.utils.translation import ungettext
 
-from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_List, State, Log, fnify, Image_File
+from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_List, State, Log, Image_File
 
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('sequence', 'name', 'bucket_id',)
@@ -130,7 +130,8 @@ class EpisodeAdmin(admin.ModelAdmin):
     def re_slug(self, request, queryset):
         rows_updated = 0
         for obj in queryset:
-            obj.slug = fnify(obj.name)
+            # obj.slug = fnify(obj.name)
+            obj.slug = "" ## blank slug, .save will gen a slug.
             obj.save()
             rows_updated +=1
 

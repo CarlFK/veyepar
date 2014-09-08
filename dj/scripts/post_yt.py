@@ -19,6 +19,16 @@ from add_to_richard import get_video_id
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
+def save_me(ep):
+    # tring to fix the db timeout problem
+    try:
+        ep.save()
+    except DatabaseError, e:
+        from django.db import connection
+        connection.connection.close()
+        connection.connection = None
+        ep.save()
+
 class FileNotFound(Exception):
     def __init__(self, value):
         self.value=value
@@ -188,6 +198,8 @@ class post(process):
                 print "youtube error! zomg"
                 ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
+            save_me(ep)
+
         return youtube_success
 
     def do_arc(self, ep, files, meta):
@@ -238,6 +250,8 @@ class post(process):
 
                 else:
                     print "internet archive error!"
+
+                save_me(ep)
 
             return archive_success
 
@@ -305,6 +319,8 @@ class post(process):
                 else:
                     print "rax error!"
 
+                save_me(ep)
+
             return success
 
     def process_ep(self, ep):
@@ -334,15 +350,6 @@ class post(process):
         # upload rax
         if not ep.show.client.rax_id: rax_success = True
         else: rax_success = self.do_rax(ep,files,meta)
-
-        # tring to fix the db timeout problem
-        try:
-            ep.save()
-        except DatabaseError, e:
-            from django.db import connection
-            connection.connection.close()
-            connection.connection = None
-            ep.save()
 
         return True
                 # youtube_success 

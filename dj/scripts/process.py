@@ -16,7 +16,6 @@ from django.conf import settings
 
 # import django
 from main.models import Client, Show, Location, Episode, State, Log
-from main.models import fnify
 
 import rax_uploader
 
