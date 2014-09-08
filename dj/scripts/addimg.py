@@ -5,6 +5,16 @@
 
 
 """
+scan paper to pdf:  
+  snap scan on mac, Automatic resolution, Auto color detection
+
+drop pdf in ~/Videos/veyepar/client/show/img/
+extract images:
+pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
+
+# if pdfimages doesn't work out, use convert
+# convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
+
 
 wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.4ubuntu0_amd64.deb
 sudo gdebi python-tesseract_0.9-0.4ubuntu0_amd64.deb
@@ -13,11 +23,6 @@ sudo apt-get install python-opencv
 # serious hack cuz this didn't work: 
   TESSDATA_PREFIX=/usr/share/tesseract-ocr
 ln -s /usr/share/tesseract-ocr/tessdata/ 
-
-pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
-
-# if pdfimages doesn't work out, use convert
-# convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
 
 """
 
@@ -119,16 +124,6 @@ class add_img(process):
         # ocr and connect the img object to episodes
         imgname = self.ocr_ass_one( img, src_name, locs, eps )
 
-        """
-        if created or self.options.force: 
-            print "added to db"
-            src = os.path.join( "img", pathname )
-
-
-        else: 
-            print "in db"
-        """
-   
     def one_show(self, show):
       if self.options.verbose:  print "show:", show.slug
       if self.options.whack:
