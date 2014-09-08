@@ -31,7 +31,9 @@ from cStringIO import StringIO
 from pprint import pprint
 import operator
 
-from main.models import Client,Show,Location,Episode,Cut_List,Raw_File,State
+from main.models import \
+        Client,Show,Location,Episode,Cut_List,Raw_File,State,Image_File
+
 from main.models import STATES, ANN_STATES
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep, Who
 
@@ -1052,6 +1054,25 @@ def raw_file_audio(request):
           'next_location':next_location,
           'rf_audios':rf_audios,
         },
+        context_instance=RequestContext(request) )
+
+
+def orphan_img(request, show_id, ):
+
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+
+    # dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
+
+    orphan_images = Image_File.objects.annotate(
+            Count("episodes")).filter(show=show,episodes__count=0)
+
+    return render_to_response('imgs.html',
+            {
+          'client':client,
+          'show':show,
+          'imgs':orphan_images,
+          },
         context_instance=RequestContext(request) )
 
 
