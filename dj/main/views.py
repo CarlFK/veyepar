@@ -476,6 +476,9 @@ def raw_play_list(request, episode_id):
     response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
     writer = csv.writer(response)
+    # if request.GET.get('META.HTTP_HOST') == "localhost:8080":
+    #    head="file://~Videos/xxx"
+    # else:
     head=settings.MEDIA_URL
     for cut in cuts:
 
