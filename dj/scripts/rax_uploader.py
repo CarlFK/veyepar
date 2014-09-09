@@ -141,6 +141,7 @@ HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retrie
         # cdn_streaming because.. video? (not sure really)
         # self.new_url = container.cdn_streaming_uri +"/"+ urllib.quote(obj.name)
         self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name)
+        print "Rackspace: ", self.new_url
 
         return ret
 

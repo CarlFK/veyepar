@@ -127,6 +127,7 @@ class Uploader(object):
                 code.interact(local=locals())
 
             self.new_url = key.generate_url(0)
+            print "archive.org:", self.new_url
             ret = True
 
         except Exception as e:
