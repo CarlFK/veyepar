@@ -228,7 +228,7 @@ class Uploader():
 
     # input attributes:
     user = 'test'
-    files = []
+    pathname = ''
     meta = {}
     old_url = ''
     debug=False
@@ -258,7 +258,7 @@ class Uploader():
             print self.pathname
             pprint.pprint(self.meta)
 
-        pf = progressfile.ProgressFile(args.pathname)
+        pf = progressfile.ProgressFile(self.pathname)
 
         status, response = initialize_upload(youtube, pf, self.meta)
 

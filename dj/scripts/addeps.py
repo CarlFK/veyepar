@@ -410,6 +410,7 @@ class add_eps(process.process):
                     # check for diffs
                     diff_fields=[]
                     for f in fields:
+                        # veyepar, remote
                         a1,a2 = getattr(episode,f), row[f]
                         if (a1 or a2) and (a1 != a2): 
                             diff_fields.append((f,a1,a2))

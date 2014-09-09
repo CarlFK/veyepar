@@ -159,7 +159,7 @@ class post(process):
         uploader = youtube_v3_uploader.Uploader()
 
         uploader.user = ep.show.client.youtube_id
-        uploader.files = files
+        uploader.pathname = files[0]['pathname']
         uploader.meta = meta
         uploader.private = private
 
@@ -175,9 +175,9 @@ class post(process):
             print 'skipping youtube_upoad.py uploader.upload()'
             print len(meta['description'])
 
-        # elif ep.host_url:
-        #    print "skipping youtube, already there."
-        #    youtube_success = True
+        elif ep.host_url:
+            print "skipping youtube, already there."
+            youtube_success = True
 
         else:
 
@@ -222,9 +222,10 @@ class post(process):
                 print 'test mode...'
                 print 'skipping archive_uploader .upload()'
 
-            # elif ep.archive_mp4_url:
-            #    print "skipping archive, already there."
-            #    archive_success = True
+            elif ep.archive_ogv_url:
+                # archive_mp4_url assumes that is what gets filled in 
+                print "skipping archive, already there."
+                archive_success = True
 
             else:
 
@@ -282,9 +283,11 @@ class post(process):
                 print 'skipping rax_uploader .upload()'
                 print 'key_id:', uploader.key_id
 
-            # elif ep.rax_mp4_url:
-            #    print "skipping archive, already there."
-            #    rax_success = True
+            elif ep.rax_mp4_url:
+                # above assumes rax_mp4_url is what gets filled in below
+                # this is so gross.
+                print "skipping archive, already there."
+                rax_success = True
 
                 success = True
 
@@ -344,8 +347,8 @@ class post(process):
         else: youtube_success = self.do_yt(ep,files,True,meta)
 
         # upload arc
-        # if not ep.show.client.archive_id: archive_success = True
-        # else: archive_success = self.do_arc(ep,files,meta)
+        if not ep.show.client.archive_id: archive_success = True
+        else: archive_success = self.do_arc(ep,files,meta)
 
         # upload rax
         if not ep.show.client.rax_id: rax_success = True

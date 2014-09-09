@@ -221,7 +221,6 @@ class add_to_richard(Process):
         speakers = self.clean_richard_speakers(ep)
         tags = self.clean_richard_tags(ep)
         summary = self.clean_richard_summary(ep)
-        # mp4url = self.clean_archive_mp4_url(ep)
         
         video_data = {
             'state': state,
@@ -233,12 +232,12 @@ class add_to_richard(Process):
             'tags': tags,
             'speakers': speakers,
             'recorded': ep.start.strftime("%Y-%m-%d"),
-            # 'language': 'German',
             'language': 'English',
             'duration': int(ep.get_minutes()*60),
-            'video_ogv_url': ep.archive_ogv_url,
+            # 'video_ogv_url': ep.archive_ogv_url,
             # 'video_mp4_url': ep.rax_mp4_url,
-            'video_webm_url': ep.rax_mp4_url, # shuch a hack.
+            # 'video_webm_url': ep.rax_mp4_url, # shuch a hack.
+            'video_webm_url': ep.archive_ogv_url,
             'video_mp4_download_only': False,
         }
         return video_data
