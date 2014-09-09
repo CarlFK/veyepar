@@ -28,11 +28,11 @@ Test buckets that have been created for checking this script:
 
 
 try:
-    # ProgressFile is a subclass of the python open class
+    # ProgressFile is a subclass of the Python open class
     # as data is read, it prints a visible progress bar 
     from progressfile import ProgressFile
 except ImportError:
-    # If ProgressFile is not available, default to open
+    # If ProgressFile is not available, default to Python's open
     ProgressFile = open
 
 try:

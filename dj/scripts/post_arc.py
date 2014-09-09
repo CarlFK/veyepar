@@ -12,26 +12,6 @@ from process import process
 
 from main.models import Client
 
-def make_bucket(client_slug):
-
-    client = Client.objects.get(slug=client_slug)
-
-    bucket_id = client.bucket_id
-    meta = { 
-            'year':str(datetime.datetime.now().year),
-            'subject':";".join(client.tags.split()),
-            'description':client.description,
-            'licenseurl':'http://creativecommons.org/licenses/by/3.0/us/',
-    }   
-
-    conn =  archive_uploader.auth(client.archive_id)
-
-    print (conn, bucket_id, meta)
-    print archive_uploader.make_bucket(conn, bucket_id, meta)
-
-    return 
-
-
 class post(process):
 
   ready_state = 4
@@ -199,12 +179,45 @@ class post(process):
 
         return ret
 
+  def make_bucket(self, client_slug):
+
+    client = Client.objects.get(slug=client_slug)
+
+    bucket_id = client.bucket_id
+    meta = { 
+            'year':str(datetime.datetime.now().year),
+            'subject':";".join(client.tags.split()),
+            'description':client.description,
+            'licenseurl':'http://creativecommons.org/licenses/by/3.0/us/',
+    }   
+
+    conn =  archive_uploader.auth(client.archive_id)
+
+    print (conn, bucket_id, meta)
+    if self.options.test:
+        print "test mode, not creating bucket."
+    else:
+        print archive_uploader.make_bucket(conn, bucket_id, meta)
+
+    return 
+
+
+  def work(self):
+      if self.options.make_bucket:
+          return self.make_bucket(self.options.client)
+      else:
+          return super(post, self).work()
+
   def add_more_options(self, parser):
         parser.add_option('--release-all', action="store_true",
             help="ignore the released setting.")
 
   def add_more_option_defaults(self, parser):
       parser.set_defaults(category="Education")
+
+  def add_more_options(self, parser):
+        parser.add_option('--make-bucket', action="store_true",
+            help="Make a bucket for the current client.")
 
 if __name__ == '__main__':
     p=post()
