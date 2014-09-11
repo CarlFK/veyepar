@@ -136,9 +136,21 @@ class Uploader(object):
               $ curl s3.us.archive.org -v -H x-archive-simulate-error:SlowDown
               To see a list of errors s3 can simulate, you can do:
               $ curl s3.us.archive.org -v -H x-archive-simulate-error:help
+
+
+  File "post_yt.py", line 234, in do_arc
+    archive_success = uploader.upload()
+  File "/home/juser/veyepar/dj/scripts/archive_uploader.py", line 141, in upload
+    self.ret_text = "internet archive error: %s" % ( e.body )
+AttributeError: 'timeout' object has no attribute 'body'
+
+>>> e.__class__
+<class 'socket.timeout'>
+
             """
             print e
-            self.ret_text = "internet archive error: %s" % ( e.body )
+
+            # self.ret_text = "internet archive error: %s" % ( e.body )
 
             import code
             code.interact(local=locals())
