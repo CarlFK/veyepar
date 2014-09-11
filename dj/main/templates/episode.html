@@ -169,10 +169,11 @@ $(".viewer").zoomer();
         <video
           id="rawfile{{ cl.id }}"
           src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
-          controls width=200
+          controls 
           preload="none"
-          poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
-        </video>
+          {# width=200 #}
+          {# poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" #}
+          />
       </td>
 
       <td>

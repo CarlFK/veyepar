@@ -26,11 +26,6 @@ class mk_title(enc):
             self.file2cdn(episode.show, "titles/%s.png" % (episode.slug))
             return 
 
-            svg = title_img[:-3] + "svg"
-            files = [{'src_pathname':title_img,'dest_tail':'titles'}, 
-                     {'src_pathname':svg,      'dest_tail':'titles'}] 
-            self.rsync(episode, files)
-
         return False # not sure what this means.. we don't bump state
 
     def add_more_options(self, parser):

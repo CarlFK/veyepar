@@ -1,8 +1,15 @@
+show_checker.py
+  check for show settings that need to be setup:
+    schedule feed
+    upload ids for youtube, archive, rackspace
+    api key for richard
+    title slide name/exists?
+    
+
 bring:
   clamps
   bungie cords
   
-
 client checklist:
   release on talk submission
   data driven schedule, api (json)
@@ -13,9 +20,6 @@ client checklist:
   internet access
   hotel close to venue
 
-Show twinpact feed on slave display.
-  note: slave display is also used to play a sponsor slide roll between talks.
-
 veyepar:
 
   move state data def from models.py to initial_data.json fixture.
@@ -23,6 +27,8 @@ veyepar:
   episode.html save.. UI to show user it got saved.
 
   store images of recording sheets
+     crop to just the talk section
+     ocr just the id:1234
 
   next/prev (match recording sheet: same room/day)
 
@@ -58,6 +64,7 @@ old: https://developers.google.com/gdata/
      
   don't email presenter until youtube is done processing.
     review_1.py is a good place to do this.
+    wait 20 min?
   
   state - need something to handle Canceled talks, breaks, etc.  
     disposition?  
@@ -76,11 +83,11 @@ old: https://developers.google.com/gdata/
         reference back to veyepar page (hidden to public)
         reference to conference site page (for slides)
       
-      save raw json per episode 
+      save raw json per episode  - nah, not use.
       
    move show.schedule_url to client.
     
-   implement South data migration foo
+   implement South data migration foo - port to django 1.7
 
    Stop - make it work again - 
      I think it is a buffering problem - 
@@ -97,11 +104,11 @@ encoding:
   channel_copy - document and verify current behaviour
   
   auto-speed up your videos to 1.25x speed as an additional optional feature
+  no.
 
 slugify talk titles- 
   trunkcate on word boundry when over X chars.
   de-unicode
-  add -NNN to deal with colisions, like "keynote-1"
 
 model:
   

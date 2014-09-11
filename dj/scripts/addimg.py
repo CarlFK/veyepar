@@ -38,6 +38,52 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Image_File
 
+from PIL import Image
+
+
+"""
+page: 2544x3296
+start 880
+end: 1421
+
+these were some dimenions I played around with
+box1 = (
+    0, 1066, 
+    3386, 2000
+)
+box2 = (
+    0, 1500,
+    3386, 2500
+)
+box3 = (
+    0, 2500,
+    3386, 3500
+)
+"""
+
+def savesections(imagefile):
+    """
+    page: 2544x3296
+    start 880
+    end: 1421
+    """
+    head = 880.0/3296.0
+    band = (1420.0-880.0)/3296.0 
+     
+    im = Image.open(imagefile)
+    # print('complete image: {}'.format(im.size))
+    w, h = im.size
+    for i in range(3):
+        box = im.crop(
+            (0, h * (head + band * i),
+             w, h * (head + band * (i+1)))
+        )
+        print('size of cropped image: {}'.format(box.size))
+        png_base = os.path.splitext(imagefile)[0]
+        box.save('{}{}.png'.format(i))
+
+
+
 class add_img(process):
 
     def ocr_img(self, imgname):
@@ -63,9 +109,8 @@ class add_img(process):
         self.run_cmd(convert_cmd)
         return dst
 
-    def ocr_ass_one(self, img, src, locs, eps):
+    def ass_one(self, img, text, locs, eps):
 
-        text = self.ocr_img(src)
         # remove extra white space, leave a little
         text = re.sub(r'\n[\n ]+', '\n', text)
         img.text = text
@@ -96,7 +141,7 @@ class add_img(process):
         img.save()
 
 
-    def one_file(self,src_base,show, locs, eps):
+    def one_page(self, src_base, show, locs, eps):
 
         print src_base
         # foo.ppm
@@ -109,6 +154,7 @@ class add_img(process):
         png_base = os.path.splitext(src_base)[0] + ".png"
 
         # create the png (and add the full path to png_name
+        # (png because browsers don't suppport ppm)
         self.to_png(src_name,
             os.path.join( self.show_dir, "img", png_base ))
 
@@ -122,9 +168,56 @@ class add_img(process):
                 filename=png_base,)
 
         # ocr and connect the img object to episodes
-        imgname = self.ocr_ass_one( img, src_name, locs, eps )
+        # text = self.ocr_img(src_name)
+        # imgname = self.ass_one( img, text, locs, eps )
+       
+ 
+        """
+        sample page:
+        height (max y): 3296
+        start of first band (size of header) 875
+        end of first band: 1430
+        height of band: 1430-875 = 555
+        """
+        # proportion of page 
+        head = 875.0/3296.0
+        band = 555.0/3296.0 
+        fudge = 0.01 
+       
+        im = Image.open(src_name)
+        # print('complete image: {}'.format(im.size))
+        w, h = im.size
+        for i in range(3):
+
+            box = im.crop(
+                (0, int(h * (head + band * i - fudge)),
+                 w, int(h * (head + band * (i+1) + fudge) ))
+                        )
+
+            png_name = '{}-{}.png'.format(os.path.splitext(src_base)[0], i )
+            print png_name
+            box.save( os.path.join( self.show_dir, "img", png_name ))
+
+            # upload it
+            if self.options.rsync:
+                self.file2cdn(show, os.path.join( "img", png_name ))
+
+            # make sure the png name is in the db
+            img,created = Image_File.objects.get_or_create(
+                    show=show, 
+                    filename=png_name,)
+
+            # ocr and connect the img object to episodes
+            text = self.ocr_img( os.path.join( self.show_dir, "img", png_name ))
+
+            self.ass_one( img, text, locs, eps )
+       
 
     def one_show(self, show):
+
+      self.show = show
+      self.client = show.client
+
       if self.options.verbose:  print "show:", show.slug
       if self.options.whack:
           Image_File.objects.filter(show=show).delete()
@@ -134,6 +227,8 @@ class add_img(process):
 
       self.set_dirs(show)
       ep_dir=os.path.join(self.show_dir,'img')
+      if self.options.verbose: 
+          print "ep_dir:", ep_dir
 
       for dirpath, dirnames, filenames in os.walk(ep_dir,followlinks=True):
           d=dirpath[len(ep_dir)+1:]
@@ -141,7 +236,7 @@ class add_img(process):
               print "checking...", dirpath, d, dirnames, filenames 
           for f in filenames:
               if os.path.splitext(f)[1] in [ ".ppm", ".pbm" ]:
-                  self.one_file(os.path.join(d,f),show,locs,eps)
+                  self.one_page(os.path.join(d,f),show,locs,eps)
 
                   if self.options.test:
                       print "Test mode, only doing one."
