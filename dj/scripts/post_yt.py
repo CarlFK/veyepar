@@ -286,7 +286,7 @@ class post(process):
             elif ep.rax_mp4_url:
                 # above assumes rax_mp4_url is what gets filled in below
                 # this is so gross.
-                print "skipping archive, already there."
+                print "skipping rax, already there."
                 rax_success = True
 
                 success = True
