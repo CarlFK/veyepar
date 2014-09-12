@@ -38,7 +38,7 @@ from urlparse import urlparse
 from urlparse import parse_qs
 
 from apiclient.discovery import build
-from apiclient.errors import HttpError
+from apiclient.errors import HttpError, ResumableUploadError
 from apiclient.http import MediaFileUpload
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
@@ -166,24 +166,34 @@ def resumable_upload(insert_request):
   print "Uploading file..."
   while response is None:
     try:
+
       status, response = insert_request.next_chunk()
       if response is None:
           print status.progress()
-      # import code; code.interact(local=locals())
 
       if 'id' in response:
          print "Video id '%s' was successfully uploaded." % response['id']
       else:
         exit("The upload failed with an unexpected response: %s" % response)
 
+    except ResumableUploadError, e:
+      print e.content
+      import code; code.interact(local=locals())
+      raise e
+
     except HttpError, e:
       if e.resp.status in RETRIABLE_STATUS_CODES:
-        error = "A retriable HTTP error %d occurred:\n%s" % (e.resp.status,
-                                                             e.content)
+        error = "A retriable HTTP error %d occurred:\n%s" % (
+                e.resp.status, e.content )
       else:
         raise
+
     except RETRIABLE_EXCEPTIONS, e:
       error = "A retriable error occurred: %s" % e
+
+    except Exception, e:
+      import code; code.interact(local=locals())
+
 
     if error is not None:
       print error
@@ -298,7 +308,7 @@ def test_upload(args):
     u = Uploader()
 
     u.meta = {
-      'description': ("test " * 5) + "1", 
+      'description': ("test " * (2000/5)) + "1", 
       'title': "test title",
       'category': 22, # 22 is maybe "Education",
       'tags': [u'test', u'tests', ],
