@@ -177,6 +177,14 @@ class add_to_richard(Process):
 
             except MissingRequiredData as e:
                 print '#2, Missing required fields', e.errors
+                import code
+                code.interact(local=locals())
+                raise e
+
+            except Http4xxException as e:
+                print e.response.status_code
+                print e.response.content
+                import code
                 code.interact(local=locals())
                 raise e
 
