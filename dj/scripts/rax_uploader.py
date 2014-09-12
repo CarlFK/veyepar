@@ -108,7 +108,9 @@ class Uploader(object):
                     print e
                     print e.code, e.details, e.message
 
-                    if e.code==408:
+                    if e.code in [408,503]:
+                        # 408 Request timeout
+                        # 503 Service Unavailable - The server is currently unavailable. Please try again at a later time. 
                         print "looping..."
                         continue
 
