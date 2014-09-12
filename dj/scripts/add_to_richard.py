@@ -9,9 +9,9 @@ from process import process as Process
 
 from steve.richardapi import \
         create_video, get_video, update_video, \
+        STATE_DRAFT, STATE_LIVE, \
         MissingRequiredData
 
-from steve.richardapi import STATE_DRAFT, STATE_LIVE
 from steve.restapi import Http4xxException
 
 from steve.util import scrapevideo
@@ -157,6 +157,9 @@ class add_to_richard(Process):
 
         if self.options.verbose: pprint.pprint( video_data )
      
+        if video_data['state'] == STATE_LIVE:
+            print "Currently STATE_LIVE, 403 coming."
+
         if self.options.test:
             print 'test mode, not updating richard' 
             print 'veyepar:', pprint.pprint(new_data)
@@ -182,6 +185,10 @@ class add_to_richard(Process):
                 raise e
 
             except Http4xxException as e:
+                if e.response.status_code == 403:
+                    print "told you 403 was coming."
+                else:
+                    print "expected 403 due to STATE_LIVE, but now..."
                 print e.response.status_code
                 print e.response.content
                 import code
