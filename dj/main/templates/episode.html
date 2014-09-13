@@ -139,7 +139,7 @@ $(".viewer").zoomer();
 
 {% for cl,chap,clrfform in clrffs %}
 
-<div id=="{{cl.id}}">
+<div id="x{{cl.id}}">
 <div class="panel-group" id="accordion">
 <div class="panel">
   <div class="panel-heading"></div>
@@ -168,11 +168,11 @@ $(".viewer").zoomer();
           {{cl.raw_file.basename}}.png</a><br/>
         <video
           id="rawfile{{ cl.id }}"
-          src ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
-          controls 
+          src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
+          controls="please"
           preload="none"
           {# width=200 #}
-          {# poster ="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" #}
+          {# poster="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" #}
           />
       </td>
 
@@ -235,9 +235,6 @@ $(".viewer").zoomer();
   {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
 
-    </div> <!-- /panel-body -->
-  </div> <!-- /panel-collapse -->
-
  {# % if episode.show.slug == "fosdem_2014" % #}
  {% if episode.id == 8612 %}
   <img id="audio_image_{{cl.id}}" alt="audio viz" 
@@ -271,9 +268,12 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
         endbox{{x}}.val(vid{{x}}.prop('currentTime')); });
 
     </script>
+
   {% endwith %}
  {% endif %}
 
+    </div> <!-- /panel-body -->
+  </div> <!-- /panel-collapse -->
 
 </div> <!-- /panel -->
 </div> <!-- panel-group -->
