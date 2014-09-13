@@ -137,6 +137,7 @@ def start_here(request):
 
     show=get_object_or_404(Show,client__slug='debian',slug='debconf14')
     episodes = Episode.objects.filter(show=show,
+            location__active=True,
             state=1,
             locked__isnull=True,
             )

@@ -10,42 +10,13 @@ from process import process
 from main.models import Client, Show, Episode, Raw_File
 
 import rax_uploader
-# import gslevels
+import gslevels
 
 class SyncRax(process):
 
     def cdn_exists(self, show, dst):
         dst = os.path.join("veyepar",show.client.slug,show.slug,dst)
         return dst in self.names
-
-
-    def cdn_send(self, show, src, dst=None):
-        """
-        src is relitive to the show dir.
-        src and dst get filled to full paths.
-        Check to see if src exists,
-        if it does, try to upload it to cdn
-        (rax_uploader will skip if same file exists).
-        """
-        if dst is None: dst = src
-        src = os.path.join(self.show_dir,src)
-        dst = os.path.join("veyepar",show.client.slug,show.slug,dst)
-
-        print "checking:", src
-        if os.path.exists(src):
-
-            print "off to rax_uploader.Uploader()..."
-
-            u = rax_uploader.Uploader()
-
-            u.user = self.options.cloud_user
-            u.bucket_id = self.options.rax_bucket
-            u.pathname = src
-            u.key_id = dst
-
-            ret = u.upload()
-
-        return
 
     def mk_audio_png(self,src,png_name):
         """ 
@@ -81,7 +52,7 @@ class SyncRax(process):
                 "dv", rf.location.slug, rf.basename() + ".ogv")
         if self.options.verbose: print base
         if not self.cdn_exists(show,base):
-            self.cdn_send(show,base)
+            self.file2cdn(show,base)
 
 
     def rf_audio_png(self, show, rf):
@@ -92,46 +63,54 @@ class SyncRax(process):
         png_base = os.path.join( "audio_png", "dv", 
             rf.location.slug, rf.basename() + "_audio.png")
 
-        if not self.cdn_exists(show,png):
+        if not self.cdn_exists(show,png_base):
             print rf.filesize
             src = os.path.join(self.show_dir,rf_base)
             dst = os.path.join(self.show_dir,png_base)
             ret = self.mk_audio_png(src,dst)
-            self.cdn_send(show,png_base)
+            self.file2cdn(show,png_base)
 
    
     def raw_files(self, show):
         print "getting raw files..."
-        for rf in Raw_File.objects.filter(show=show):
+        for rf in Raw_File.objects.filter(show=show,):
+          if rf.filename in [
+                '2014-08-28/15_57_22.dv',
+                # '2014-08-28/16_49_58.dv',
+                # '2014-08-28/16_53_04.dv',
+                ]:
             if self.options.verbose: print rf
 
             self.rf_ogv(show, rf)
-            # self.rf_audio_png(show, rf)
+            self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )
             if not self.cdn_exists(show,base):
-                self.cdn_send(show,base)
+                 self.file2cdn(show,base)
 
     def sync_final_audio_png(self,show,ep):
             base = os.path.join("webm", ep.slug + "_audio.png" )
             if not self.cdn_exists(show,base):
                  png_name = os.path.join( self.show_dir, base )
                  ret = self.mk_audio_png(ep.public_url,png_name) 
-                 self.cdn_send(show,base)
+                 self.file2cdn(show,base)
 
     def episodes(self, show):
         for ep in Episode.objects.filter(show=show, state=5):
             self.sync_final(show,ep)
             self.sync_final_audio_png(show,ep)
 
-    def init_rax(self):
+    def init_rax(self, show):
          # user = self.show.client.rax_id
          # bucket_id = self.show.client.bucket_id
 
-         user = self.options.cloud_user
+         # user = self.options.cloud_user
+         # bucket_id = self.options.rax_bucket
+         user = show.client.rax_id
+         bucket_id = show.client.bucket_id
+
          cf = rax_uploader.auth(user)
-         bucket_id = self.options.rax_bucket
 
          print "cf.get_all_containers", cf.get_all_containers()
          
@@ -143,7 +122,7 @@ class SyncRax(process):
 
     def one_show(self, show):
         self.set_dirs(show)
-        self.init_rax()
+        self.init_rax(show)
 
         self.raw_files(show)
         # self.episodes(show)

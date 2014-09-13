@@ -139,8 +139,8 @@ class process(object):
             # u.user = self.options.cloud_user
             # u.bucket_id = self.options.rax_bucket
 
-            u.user = self.client.rax_id
-            u.bucket_id = self.client.bucket_id
+            u.user = show.client.rax_id
+            u.bucket_id = show.client.bucket_id
 
             u.pathname = src 
             u.key_id = dst 
