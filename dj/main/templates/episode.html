@@ -235,8 +235,6 @@ $(".viewer").zoomer();
   {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
 
- {# % if episode.show.slug == "fosdem_2014" % #}
- {% if episode.id == 8612 %}
   <img id="audio_image_{{cl.id}}" alt="audio viz" 
 src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
 
@@ -270,7 +268,6 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
     </script>
 
   {% endwith %}
- {% endif %}
 
     </div> <!-- /panel-body -->
   </div> <!-- /panel-collapse -->
