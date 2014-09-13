@@ -62,7 +62,8 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'conf_url', 
             # 'state',
             'name', 
-            'start', 
+            'locked_by', 
+            # 'start', 
             # 'duration', 
             # 'emails',
             # 'location',
@@ -72,7 +73,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'conf_key', 
             # 'conf_url', 
             # 'sequence', 
-            'start', 
+            # 'start', 
             # 'duration', 
             # 'emails',
             )
