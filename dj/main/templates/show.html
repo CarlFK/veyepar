@@ -31,6 +31,7 @@ Episode Count: {{episodes.count}}
         <th title="1:Edit">state</th>
         <th>episode.name</th>
         <th>episode.authors</th>
+        <th title="email">e</th>
         <th title="comment size">cmt</th>
         <th title="Released">rel</th>
         <th title="Image Count (recording sheets)">img</th>
@@ -58,6 +59,7 @@ Episode Count: {{episodes.count}}
         <td>{{episode.state}}</td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>
+        <td>{{episode.emails|yesno:"y,"}}</td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/#id_comment" title="{{episode.comment}}">{{episode.comment|length|default:""}}</a></td>
         <td>{{episode.released|yesno:"Y,N"}}</td>
         <td>{{episode.image_file_set.count|default:""}}</td>

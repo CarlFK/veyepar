@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # youtube_v3_uploader.py
 # uploads to youtube using google's api v3
 
@@ -9,6 +11,11 @@
 # https://github.com/google/oauth2client
 
 # https://developers.google.com/api-client-library/python/guide/aaa_oauth
+
+"""
+"The property value has a maximum length of 5000 bytes and may contain all valid UTF-8 characters except < and >."
+https://developers.google.com/youtube/v3/docs/videos#properties  
+"""
 
 import argparse
 from collections import namedtuple
@@ -208,17 +215,6 @@ def resumable_upload(insert_request):
 
   return status, response
 
-def update_video(youtube, options):
-
-  videos_update_response = youtube.videos().update(
-    part='status',
-    body={
-        'id':options['video_id'],
-        'status':options['privacyStatus'],
-        }
-    ).execute()
-
-
 def get_id_from_url(url):
     print url
     o = urlparse(url)
@@ -233,6 +229,14 @@ def get_id_from_url(url):
         id = o.path[1:]
 
     return id
+
+def clean_description(description):
+    # replace <- and -> with arrows, < > with pointy things.
+    description = description.replace("<-",u"←")
+    description = description.replace("->",u"→")
+    description = description.replace("<",u"‹")
+    description = description.replace(">",u"›")
+    return description
 
 class Uploader():
 
@@ -249,14 +253,17 @@ class Uploader():
 
     def set_permission(self, video_url, privacyStatus='public'):
 
+        youtube = get_authenticated_service(user_key=self.user)
         video_id = get_id_from_url(video_url)
 
-        args = {'video_id':video_id,
-            'privacyStatus':privacyStatus,
-            }
+        videos_update_response = youtube.videos().update(
+            part='status',
+            body={
+                'id':video_id,
+                'status':privacyStatus,
+                }
+            ).execute()
 
-        youtube = get_authenticated_service(user_key=self.user)
-        update_video(youtube, args)
 
         return True
 
@@ -269,6 +276,9 @@ class Uploader():
             pprint.pprint(self.meta)
 
         pf = progressfile.ProgressFile(self.pathname)
+
+        self.meta['description'] = clean_description(
+                self.meta['description'])
 
         status, response = initialize_upload(youtube, pf, self.meta)
 
@@ -306,9 +316,11 @@ def make_parser():
 def test_upload(args):
 
     u = Uploader()
+   
+    description = ("test " * (5/5)) + "Look as this -> >1< <- I rule."
 
     u.meta = {
-      'description': ("test " * (2000/5)) + "1", 
+      'description': description,
       'title': "test title",
       'category': 22, # 22 is maybe "Education",
       'tags': [u'test', u'tests', ],
@@ -323,41 +335,12 @@ def test_upload(args):
     ret = u.upload()
     if ret:
         print u.new_url
+        return u.new_url
     else:
         print u.ret_text
 
-
-def old_test_upload():
- 
-    meta = {
-      'description': ("test " * 5) + "1", 
-      'title': "test title",
-      'category': 22, # 22 is maybe "Education",
-      'tags': [u'test', u'tests', ],
-      'privacyStatus':'private',
-      # 'latlon': (37.0,-122.0),
-    }
-
-    u = Uploader()
-    # youtube only takes one file,
-    # but the veyepar api takes a list
-    # so make a list of one file.
-    u.pathname = test_file
-    u.meta = meta
-    # u.user = 'test'
-    u.user="ndv"
-
-    u.debug=True
-
-    ret = u.upload()
-
-    print ret
-    print u.new_url
-
-    return
-
-def test_set_pub():
-    video_url = "https://www.youtube.com/watch?v=MN1y5lvSHQ8"
+def test_set_pub(video_url):
+    
     u = Uploader()
     u.set_permission(video_url)
 
@@ -387,10 +370,11 @@ apiclient.errors.HttpError: <HttpError 410 when requesting https://www.googleapi
 """
 
 if __name__ == '__main__':
-    # test_set_pub()
 
     parser = make_parser()
     args = parser.parse_args()
 
-    test_upload(args)
+    url = test_upload(args)
+
+    test_set_pub(url)
 

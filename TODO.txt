@@ -23,11 +23,15 @@ client checklist:
 veyepar:
 
   move state data def from models.py to initial_data.json fixture.
+     use state table, not a constant 
 
-  episode.html save.. UI to show user it got saved.
+  episode.html save.. 
+     UI to show user it got saved.
+        "saved" page, 1 sec redirect back to episode?
+        js to say "saved" that goes away in 5 seconds?
+        js to say "saved/dirty" if there are outstanding edits?
 
   store images of recording sheets
-     crop to just the talk section
      ocr just the id:1234
 
   next/prev (match recording sheet: same room/day)
@@ -119,6 +123,17 @@ model:
   child table of output files
     mp4, ogv, mp3, facc...
     text: irc logs, transcript, tweets
+    md5sum of file, and or that other thing that rackspace cdn uses
+    datetime encoded
+    
+    grandchild of uploaded to urls?
+    datetime uploaded
+    track when deleted?  
+
+process to check if a file is avalible for public viewing:
+  youtube - "still processing, check again later."
+  rsync or such, conjob or human processes that veyepar does't know about
+    
 
   change duration from "hh:mm:ss" to float(sec)
   add a real duration of how long the encoded video is
@@ -141,6 +156,7 @@ walpaper
 
 recording sheets:
   hostname:____
+  add date/time to "Replace batteries" 
 
 live cd: mainly for slave
   user in video group
@@ -162,6 +178,7 @@ for unit tests:
 Transcriptions
     Need a place to host transcriptions
     mix transcriptions with video for sub titling 
+    aurora .. um..  that's all I got.
 
 OCR - http://software-carpentry.org
 
@@ -169,4 +186,5 @@ encoding
     flag for odd audio (like missing or very low)
     DD - "There is a new audiolevel filter. See output of melt -query filter=audiolevel"
 
+ponder and debate cred management.
 

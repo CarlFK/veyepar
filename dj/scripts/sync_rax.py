@@ -53,6 +53,8 @@ class SyncRax(process):
         if self.options.verbose: print base
         if not self.cdn_exists(show,base):
             self.file2cdn(show,base)
+        if rf.filename == "2014-08-24/19_00_26-1.dv":
+            self.file2cdn(show,base)
 
 
     def rf_audio_png(self, show, rf):
@@ -74,15 +76,10 @@ class SyncRax(process):
     def raw_files(self, show):
         print "getting raw files..."
         for rf in Raw_File.objects.filter(show=show,):
-          if rf.filename in [
-                '2014-08-28/15_57_22.dv',
-                # '2014-08-28/16_49_58.dv',
-                # '2014-08-28/16_53_04.dv',
-                ]:
             if self.options.verbose: print rf
 
             self.rf_ogv(show, rf)
-            self.rf_audio_png(show, rf)
+            # self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )

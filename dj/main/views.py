@@ -1167,6 +1167,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     start_date = request.REQUEST.get('date')
 
     cuts = request.REQUEST.get('cuts')
+    emails = request.REQUEST.get('emails')
 
     order_by = request.REQUEST.get('order_by')
 
@@ -1206,6 +1207,10 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             cutcut = int(cuts)
             episodes = episodes.annotate(
                     c=Count("cut_list")).filter(c__gte=cutcut)
+            
+    if emails:
+        episodes = episodes.filter(emails__isnull=False)
+
     if order_by:
         if order_by == "location,start":
             episodes = episodes.order_by('location__sequence','start')
