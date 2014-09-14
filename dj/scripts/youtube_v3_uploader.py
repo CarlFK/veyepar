@@ -12,11 +12,6 @@
 
 # https://developers.google.com/api-client-library/python/guide/aaa_oauth
 
-"""
-"The property value has a maximum length of 5000 bytes and may contain all valid UTF-8 characters except < and >."
-https://developers.google.com/youtube/v3/docs/videos#properties  
-"""
-
 import argparse
 from collections import namedtuple
 import progressfile
@@ -231,7 +226,14 @@ def get_id_from_url(url):
     return id
 
 def clean_description(description):
+
+    """
+"The property value has a maximum length of 5000 bytes and may contain all valid UTF-8 characters except < and >."
+https://developers.google.com/youtube/v3/docs/videos#properties  
+    """
+
     # replace <- and -> with arrows, < > with pointy things.
+    # another way of coding the arrows: u"\N{LEFTWARDS ARROW}"
     description = description.replace("<-",u"←")
     description = description.replace("->",u"→")
     description = description.replace("<",u"‹")
