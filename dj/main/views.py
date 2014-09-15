@@ -1168,6 +1168,10 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
 
     cuts = request.REQUEST.get('cuts')
     emails = request.REQUEST.get('emails')
+    comment = request.REQUEST.get('comment')
+    released = request.REQUEST.get('released')
+    images = request.REQUEST.get('images')
+    # raw_files = request.REQUEST.get('raw_files')
 
     order_by = request.REQUEST.get('order_by')
 
@@ -1203,13 +1207,31 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             # only show episodes with no raw files found
             episodes = episodes.filter(cut_list__isnull=True)
         else:
-            # episodes = episodes.annotate( c=Count("cut_list")).filter(c__gt=0)
-            cutcut = int(cuts)
+            # that have cuts cuts or more cuts
             episodes = episodes.annotate(
-                    c=Count("cut_list")).filter(c__gte=cutcut)
+                    c=Count("cut_list")).filter(c__gte=cuts)
             
     if emails:
-        episodes = episodes.filter(emails__isnull=False)
+        episodes = episodes.exclude(emails="")
+
+    if comment:
+        episodes = episodes.exclude(comment="")
+
+    if released:
+        episodes = episodes.filter(released=True)
+
+
+    if images:
+        if images=="0":
+            # only show episodes with no raw files found
+            episodes = episodes.filter(image_file__isnull=True)
+        else:
+            episodes = episodes.filter(image_file__isnull=False)
+            """
+            episodes = episodes.annotate(
+                    c=Count("image_file")).filter(c__gte=images)
+            """
+
 
     if order_by:
         if order_by == "location,start":

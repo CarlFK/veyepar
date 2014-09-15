@@ -38,7 +38,8 @@ veyepar:
 
   split long talk (tutorials) into parts.
 
-  error handeling:
+  error handling:
+      encode and uploads neat attention
       log error, continue with next episode. 
       encode errors:   
         inkscape svg/png fail
@@ -55,6 +56,7 @@ veyepar:
   upload to youtube
      update to new api lib:
 https://code.google.com/p/gdata-python-client/w/list
+https://developers.google.com/youtube/v3/docs/videos/delete
 
 old: https://developers.google.com/gdata/
 "Warning: Most newer Google APIs are not Google Data APIs. The Google Data APIs documentation applies only to the older APIs that are listed in the Google Data APIs directory. For information about a specific new API, see that API's documentation. For information about authorizing requests with a newer API, see Google Accounts Authentication and Authorization."
@@ -102,7 +104,7 @@ old: https://developers.google.com/gdata/
 
 encoding:
   soften jump cuts
-  create list of cut times relitive to start of final video
+  create list of cut times relative to start of final video
      - mainly used for Lighting talks to index each talk
   credits - hold for a few seconds at end.
   channel_copy - document and verify current behaviour
@@ -111,7 +113,7 @@ encoding:
   no.
 
 slugify talk titles- 
-  trunkcate on word boundry when over X chars.
+  truncate on word boundary when over X chars.
   de-unicode
 
 model:
@@ -132,7 +134,7 @@ model:
 
 process to check if a file is avalible for public viewing:
   youtube - "still processing, check again later."
-  rsync or such, conjob or human processes that veyepar does't know about
+  rsync or such, conjob or human processes that veyepar doesn't know about
     
 
   change duration from "hh:mm:ss" to float(sec)
@@ -145,10 +147,10 @@ process to check if a file is avalible for public viewing:
     thought: one field in each, if Show blank, look to client.
 
   location:
-    channel_copy - audio misconfiguration is often caused by venu issues
+    channel_copy - audio misconfiguration is often caused by venue issues
     warning: it often gets fixed the 2nd day.
 
-walpaper 
+wallpaper 
   logos:
     NextDayVideo, 
     Linux, DVswitch, Python, Django, MLT
@@ -170,7 +172,7 @@ for unit tests:
     sphinx2-bin fell out of the ubuntu repos due to not being maintained.
     state of the art is not a requirement
     it just needs to recognize a simple phrase, like
-       "go forward 10 meeters"   
+       "go forward 10 meters"   
     which gets encoded and demuxed back out 
     to make sure the encoder didn't muck it up.
     
