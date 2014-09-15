@@ -1171,7 +1171,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     comment = request.REQUEST.get('comment')
     released = request.REQUEST.get('released')
     images = request.REQUEST.get('images')
-    # raw_files = request.REQUEST.get('raw_files')
+    log_has = request.REQUEST.get('log_has')
 
     order_by = request.REQUEST.get('order_by')
 
@@ -1232,6 +1232,9 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                     c=Count("image_file")).filter(c__gte=images)
             """
 
+    if log_has:
+        # track down eisode's that were encoded on box X
+        episodes = episodes.filter(log__result=log_has).distinct()
 
     if order_by:
         if order_by == "location,start":
