@@ -7,7 +7,9 @@ from process import process
 from main.models import Show, Location, Client
 
 import pw
+
 import rax_uploader
+import steve.richardapi
 
 import os
 import xml.etree.ElementTree
@@ -17,31 +19,43 @@ class ck_setup(process):
     client=None
     show=None
 
-    def ck_pw(self,service,id_field):
-
-        key = getattr(self.client, id_field)
-
-        print 'checking client and pw.py - key:"{}" in:"{}"'.format(
-                key,service)
+    def ck_pw(self,service,id_field,cred_keys=[]):
 
         try: 
             creds = getattr(pw, service)
         except AttributeError as e:
             # 'module' object has no attribute 'foo'
             print "pw.py does not have:", service
-            raise e
+            return False
 
         keys = creds.keys()
         print "keys for service {}: {}".format( service, keys )
 
-        if not id:
-            print '{} is blank'.format(id_field)
-            raise AttributeError
+        key = getattr(self.client, id_field)
+
+        print 'checking client.{} & pw.py for "{}" in: "{}={{..."'.format(
+                id_field,key,service)
+
+        if not key:
+            print 'client.{} is blank'.format(id_field)
+            return False
         elif key in keys:
             print 'key "{}" found in keys.'.format(key)
         else:
             print 'key "{}" NOT found in keys.'.format(key)
             raise AttributeError
+
+        secrets = creds[key]
+        # try not to display secret values
+        print('names of secrets in pw.py {}:{}'.format( 
+            key, secrets.keys() ))
+        print('checking for existance of {}'.format(cred_keys))
+        for cred_key in cred_keys:
+            if cred_key not in secrets:
+                print('"{}" NOT found.'.format(cred_key))
+
+
+        return secrets
 
     
     def ck_client(self):
@@ -142,6 +156,40 @@ class ck_setup(process):
         container = cf.get_container(bucket_id)
 
 
+    def ck_richard(self, secrets):
+
+        category_key = self.client.category_key
+        if category_key:
+            print "client.category_key", category_key
+        else: 
+            print "client.category_key not set." 
+            return False
+
+        print("checking for category...")
+        endpoint = "http://{}/api/v2/".format( secrets['host'] )
+        categories = steve.richardapi.get_all_categories(endpoint)
+        cat_titles = [cat['title'] for cat in categories]
+        print("found {} categories. first 5: {}".format(
+            len(categories), cat_titles[:5] ))
+        if category_key in cat_titles:
+            print('client.category_key:"{}" found.'.format(category_key))
+        else:
+            print('client.category_key:"{}" NOT found.'.format(category_key))
+
+        return 
+
+    def ck_youtube(self, secrets):
+        ret = True
+        if not os.path.exists('client_secrets.json'):
+            print("client_secrets.json NOT found.")
+            ret = False
+        if not os.path.exists(secrets['filename']):
+            print("{} NOT found.".format(secrets['filename']))
+            ret = False
+
+        return ret
+
+
     def work(self):
         """
         what has happened so far:
@@ -156,8 +204,16 @@ class ck_setup(process):
 
             self.ck_dir()
             self.ck_title()
-            self.ck_pw("rax","rax_id")
+            self.ck_pw("rax","rax_id",['api_key', 'user'])
             self.ck_cdn()
+
+            secrets = self.ck_pw(
+                    "richard","richard_id",['host', 'api_key', ])
+            self.ck_richard(secrets)
+
+            secrets = self.ck_pw(
+                    "yt","youtube_id",['filename', ])
+            self.ck_youtube(secrets)
 
         except Exception as e:
             print "tests stopped at"
