@@ -5,10 +5,12 @@
 # stormer: this is all legacy in snowmix
 
 
-sudo apt-get install vim less tmux
-sudo apt-get install gstreamer1.0-plugins-ugly  # errored.
-sudo aptitude -t wheezy-backports install gstreamer1.0-plugins-ugly
-sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-bad
+# sudo apt-get install vim less tmux
+# sudo apt-get install gstreamer1.0-plugins-ugly  # errored.
+# sudo aptitude -t wheezy-backports install gstreamer1.0-plugins-ugly
+# sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-bad
+
+source auth.sh
 
 gst-launch-1.0 \
         videotestsrc pattern=18 is-live=true \
