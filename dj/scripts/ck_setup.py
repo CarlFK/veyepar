@@ -6,6 +6,8 @@ from process import process
 
 from main.models import Show, Location, Client
 
+from django.conf import settings
+
 import pw
 
 import rax_uploader
@@ -13,13 +15,18 @@ import steve.richardapi
 
 import os
 import xml.etree.ElementTree
+import requests
+
 
 class ck_setup(process):
 
     client=None
     show=None
 
-    def ck_pw(self,service,id_field,cred_keys=[]):
+    def ck_pw(self,
+            service,
+            client_id_field=None,
+            cred_keys=[]):
 
         try: 
             creds = getattr(pw, service)
@@ -31,13 +38,15 @@ class ck_setup(process):
         keys = creds.keys()
         print "keys for service {}: {}".format( service, keys )
 
-        key = getattr(self.client, id_field)
+        key = getattr(self.client, client_id_field, None)
+
+        # import code; code.interact(local=locals())
 
         print 'checking client.{} & pw.py for "{}" in: "{}={{..."'.format(
-                id_field,key,service)
+                client_id_field,key,service)
 
         if not key:
-            print 'client.{} is blank'.format(id_field)
+            print 'client.{} is blank'.format(client_id_field)
             return False
         elif key in keys:
             print 'key "{}" found in keys.'.format(key)
@@ -53,7 +62,6 @@ class ck_setup(process):
         for cred_key in cred_keys:
             if cred_key not in secrets:
                 print('"{}" NOT found.'.format(cred_key))
-
 
         return secrets
 
@@ -128,6 +136,9 @@ class ck_setup(process):
                 print(key,tree[1][key].text)
 
 
+    def ck_email(self):
+        pass
+
     def ck_cdn(self):
         if self.client.rax_id:
             rax_id = self.client.rax_id
@@ -189,6 +200,29 @@ class ck_setup(process):
 
         return ret
 
+    def ck_schedule_api(self):
+        schedule_url = self.show.schedule_url
+        if schedule_url:
+            print("show.schedule_url: {}".format(schedule_url))
+        else:
+            print("show.schedule_url: {}".format(schedule_url))
+            return 
+
+        if schedule_url.startswith('file'):
+            url = schedule_url[7:]
+            if not os.path.exists(url):
+                print("{} NOT found.".format(url))
+        else:
+            print("getting...")
+            session = requests.session()
+            response = session.get(schedule_url, verify=False)
+            text = response.text
+            print text[:75]
+
+        auth = pw.addeps.get(self.show.slug, None)
+        if auth is not None:
+            print("found in pw.addeps:{}".format(auth.keys()))
+
 
     def work(self):
         """
@@ -204,6 +238,11 @@ class ck_setup(process):
 
             self.ck_dir()
             self.ck_title()
+
+            # email uses local_settings.py
+            # self.ck_pw("smtp","email_id")
+            self.ck_email()
+
             self.ck_pw("rax","rax_id",['api_key', 'user'])
             self.ck_cdn()
 
@@ -214,6 +253,8 @@ class ck_setup(process):
             secrets = self.ck_pw(
                     "yt","youtube_id",['filename', ])
             self.ck_youtube(secrets)
+
+            self.ck_schedule_api()
 
         except Exception as e:
             print "tests stopped at"

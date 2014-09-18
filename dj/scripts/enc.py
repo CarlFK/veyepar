@@ -269,7 +269,7 @@ class enc(process):
             # happy_filename = ''.join([c for c in happy_filename if c.isalpha()])
             title_base = os.path.join(self.show_dir, "titles", happy_filename)
             raw_svg=open(template).read()
-            tree=xml.etree.ElementTree.XMLID(raw_svg)
+            # tree=xml.etree.ElementTree.XMLID(raw_svg)
             texts = self.get_title_text( episode )
             cooked_svg = self.mk_title_svg(raw_svg, texts)
 
