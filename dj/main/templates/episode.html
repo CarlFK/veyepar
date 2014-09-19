@@ -168,8 +168,12 @@ $(".viewer").zoomer();
           {{cl.raw_file.basename}}.png</a><br/>
         <video
           id="rawfile{{ cl.id }}"
-          src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
-          controls="please"
+          {% if episode.show.slug == "fosdem_2014" %}
+              src="http://veyepar.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
+          {% else %}
+              src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
+          {% endif %}
+          controls="always"
           preload="none"
           {# width=200 #}
           {# poster="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" #}

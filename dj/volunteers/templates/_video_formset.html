@@ -5,7 +5,13 @@
   {% with form.instance as cutlist %}
     {{ form.id }}
     <tr>
-      <td><video src ="{{ MEDIA_URL }}/{{ cutlist.base_url }}.ogv" controls width=230 poster="{{ MEDIA_URL }}/{{ cutlist.base_url }}.png"></video></td>
+      
+      {% if episode.show.slug == "fosdem_2014" %}
+        <td><video src ="http://veyepar.cdn.nextdayvideo.com/veyepar/{{ cutlist.base_url }}.ogv" controls width=230 poster="{{ MEDIA_URL }}/{{ cutlist.base_url }}.png"></video></td>
+         {% else %}
+        <td><video src ="{{ MEDIA_URL }}/{{ cutlist.base_url }}.ogv" controls width=230 poster="{{ MEDIA_URL }}/{{ cutlist.base_url }}.png"></video></td>
+         {% endif %}
+
       <td>
          {% if use_raw %}
           {% with cutlist as video %}
