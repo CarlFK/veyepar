@@ -144,6 +144,13 @@ class ck_setup(process):
 
         try:
             print("sender: {}".format(settings.EMAIL_SENDER))
+            """
+            EMAIL_USE_TLS 
+            EMAIL_HOST
+            EMAIL_PORT
+            EMAIL_HOST_USER
+            EMAIL_HOST_PASSWORD
+            """
         except AttributeError as e:
             print("settings.EMAIL_SENDER not set.")
 

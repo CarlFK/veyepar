@@ -112,8 +112,8 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% if episode.image_file_set.all %}
 <div class="viewer" style="height: 200px; width: 800px;" >
 {% for img in episode.image_file_set.all %}
-{% if episode.show.slug == "fosdem_2014" %}
-    <img alt="recording sheet" src="http://192.237.240.167/static/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
+{% if episode.show.slug == "debconf14" %}
+    <img alt="recording sheet" src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
   {% else %}
     <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
 {% endif %}
@@ -170,6 +170,8 @@ $(".viewer").zoomer();
           id="rawfile{{ cl.id }}"
           {% if episode.show.slug == "fosdem_2014" %}
               src="http://veyepar.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
+          {% elif episode.show.slug == "debconf14" %}
+              src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
           {% else %}
               src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
           {% endif %}
