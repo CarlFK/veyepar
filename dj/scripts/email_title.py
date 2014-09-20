@@ -33,9 +33,15 @@ The video will be titled with the following image:
 {{MEDIA_URL}}{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 {% endif %}
 {% if ep.public_url%}The main page for the video will be here:
-  {{ep.public_url}} {% endif %}
-{% if 0 %}
-Problems with the text will need to be fixed in the event database that drives: {{ep.conf_url}} {{ep.show.schedule_url}}
+  {{ep.public_url}} 
+{% else %}and the Description:
+  === begin ===
+  {{ep.description}} 
+  === end description ===
+{% endif %}
+{% if ep.show.schedule_url %}
+Problems with the text will need to be fixed in the event database that drives: {{ep.conf_url}} 
+{{ep.show.schedule_url}}
 
 Except for odd word wrap on the title image.  If it bothers you, let us know how you would like it and we will try to accommodate. 
 {% endif %}
@@ -53,7 +59,7 @@ Please bring what is needed to hook your laptop up to good old 15 pin VGA.  We m
 
         # If there is a Richard (pyvideo) url, use that;
         #  else use the youtube url.
-        pyvideo = "pyvideo" in ep.public_url 
+        pyvideo = ep.public_url is not None and "pyvideo" in ep.public_url 
         return {'pyvideo':pyvideo}
 
         
