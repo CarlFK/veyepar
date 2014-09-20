@@ -28,7 +28,7 @@ Released: {{ep.released}}
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% else %} "None" means it may get recorded and processed, but it will not be made public.
 "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
-{% if pyvideo %}
+{% if image_url %}
 The video will be titled with the following image:
 {{MEDIA_URL}}{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 {% endif %}
@@ -58,9 +58,15 @@ Please bring what is needed to hook your laptop up to good old 15 pin VGA.  We m
     def more_context(self, ep):
 
         # If there is a Richard (pyvideo) url, use that;
-        #  else use the youtube url.
-        pyvideo = ep.public_url is not None and "pyvideo" in ep.public_url 
-        return {'pyvideo':pyvideo}
+        if ep.public_url is None:
+            image_url = True
+        elif "pyvideo" in ep.public_url:
+            # deal with pyvideo not showing title slide
+            image_url = True
+        else:
+            image_url = False
+
+        return {'image_url':image_url}
 
         
 if __name__ == '__main__':
