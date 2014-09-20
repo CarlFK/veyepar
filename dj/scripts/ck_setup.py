@@ -137,7 +137,16 @@ class ck_setup(process):
 
 
     def ck_email(self):
-        pass
+        if self.client.contacts:
+            print("client.contacts: {}".format(self.client.contacts))
+        else:
+            print("client.contacts: blank")
+
+        try:
+            print("sender: {}".format(settings.EMAIL_SENDER))
+        except AttributeError as e:
+            print("settings.EMAIL_SENDER not set.")
+
 
     def ck_cdn(self):
         if self.client.rax_id:
