@@ -2317,7 +2317,6 @@ class add_eps(process.process):
     def erlang_chi_2014(self,schedule,show):
 
         field_maps = [
-            # ('id','id'),
             ('room','location'),
             ('','sequence'),
             ('name','name'),
@@ -2332,7 +2331,7 @@ class add_eps(process.process):
             ('license','license'),
             ('','tags'),
             ('id','conf_key'),
-            ('','conf_url'),
+            ('conf_url','conf_url'),
             ('','host_url'),
             ('','public_url'),
             ]
@@ -2353,7 +2352,7 @@ class add_eps(process.process):
             minutes = delta.seconds/60 
             event['duration'] = "00:%s:00" % ( minutes) 
 
-            event['conf_url'] = "http://www.chicagoerlang.com/{}.html".format(event['conf_key'])
+            # event['conf_url'] = "http://www.chicagoerlang.com/{}.html".format(event['conf_key'])
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
