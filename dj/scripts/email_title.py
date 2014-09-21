@@ -41,7 +41,6 @@ The video will be titled with the following image:
 {% endif %}
 {% if ep.show.schedule_url %}
 Problems with the text will need to be fixed in the event database that drives: {{ep.conf_url}} 
-{{ep.show.schedule_url}}
 
 Except for odd word wrap on the title image.  If it bothers you, let us know how you would like it and we will try to accommodate. 
 {% endif %}

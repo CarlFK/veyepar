@@ -412,6 +412,8 @@ class add_eps(process.process):
                     for f in fields:
                         # veyepar, remote
                         a1,a2 = getattr(episode,f), row[f]
+                        if f=="description":
+                            a1 = a1.replace('\r','')
                         if (a1 or a2) and (a1 != a2): 
                             diff_fields.append((f,a1,a2))
                     # report if different
@@ -1545,10 +1547,11 @@ class add_eps(process.process):
                     event['released'] = True
 
                     event['license'] = row.find('license').text
-                    # event['description'] = row.find('abstract').text
-                    event['description'] = row.find('description').text
-                    if event['description'] is None:
-                        event['description'] = ''
+
+                    description = row.find('description').text
+                    if description is None: description = ''
+                    description = description.replace('\r','')
+                    event['description'] = description 
                     
                     event['conf_key'] = row.get('id')
 
@@ -2311,6 +2314,53 @@ class add_eps(process.process):
 
         return 
 
+    def erlang_chi_2014(self,schedule,show):
+
+        field_maps = [
+            # ('id','id'),
+            ('room','location'),
+            ('','sequence'),
+            ('name','name'),
+            ('','slug'),
+            ('speaker','authors'),
+            ('speaker','emails'),
+            ('description','description'),
+            ('start','start'),
+            ('end','end'),
+            ('','duration'),
+            ('released','released'),
+            ('license','license'),
+            ('','tags'),
+            ('id','conf_key'),
+            ('','conf_url'),
+            ('','host_url'),
+            ('','public_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events: 
+
+            event['authors'] = event['authors']['name']
+            event['emails'] = event['emails']['email']
+
+            event['start'] = datetime.datetime.strptime( 
+                   event['start'], '%Y-%m-%dT%H:%M:%S' )
+            event['end'] = datetime.datetime.strptime( 
+                   event['end'], '%Y-%m-%dT%H:%M:%S' )
+
+            delta = event['end'] - event['start']
+            minutes = delta.seconds/60 
+            event['duration'] = "00:%s:00" % ( minutes) 
+
+            event['conf_url'] = "http://www.chicagoerlang.com/{}.html".format(event['conf_key'])
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+        return 
 
 
 #################################################3
@@ -2470,6 +2520,9 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.show =='chicago_erlang_factory_lite_2014':
+            return self.erlang_chi_2014(schedule,show)
 
         if self.options.show =='pytexas2014':
             return self.pytexas2014(schedule,show)

@@ -135,7 +135,7 @@ def start_here(request):
     and wants to help.
     """
 
-    show=get_object_or_404(Show,client__slug='debian',slug='debconf14')
+    show=get_object_or_404(Show,client__slug='debian',slug='fosdem_2014')
     episodes = Episode.objects.filter(show=show,
             location__active=True,
             state=1,

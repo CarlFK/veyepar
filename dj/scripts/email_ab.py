@@ -35,8 +35,7 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
 
         # if there is no email, use the client's.
         # like for lightning talks.
-        # emails = ep.emails or ep.show.client.contacts
-        emails = ep.emails 
+        emails = ep.emails or ep.show.client.contacts
 
         if self.options.verbose: print emails
 
