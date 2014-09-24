@@ -211,9 +211,7 @@ def resumable_upload(insert_request):
   return status, response
 
 def get_id_from_url(url):
-    print url
     o = urlparse(url)
-    print o
     if o.query:
         # http://www.youtube.com/watch?v=akAtm7SnzWg
         q = parse_qs(o.query)
