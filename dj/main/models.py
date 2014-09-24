@@ -256,15 +256,17 @@ class Episode(models.Model):
         help_text="key to allow unauthenticated users to edit this item.")
     description = models.TextField(blank=True, help_text="(synced from primary source)")
     tags = models.CharField(max_length=135,null=True,blank=True,)
-    normalise = models.CharField(max_length=5,null=True,blank=True, )
 
+    normalise = models.CharField(max_length=5,null=True,blank=True, )
     channelcopy = models.CharField(max_length=2,null=True,blank=True,
           help_text='m=mono, 01=copy left to right, 10=right to left.' )
+
     license = models.CharField(max_length=20, null=True,blank=True,
             default='CC BY-SA',
             help_text='see http://creativecommons.org/licenses/')
     hidden = models.NullBooleanField(null=True,blank=True,
         help_text='hidden (does not show up on public episode list')
+
     thumbnail = models.CharField(max_length=135,blank=True, 
         help_text="filename.png" )
     host_url = models.CharField(max_length=235, null=True,blank=True,
@@ -281,9 +283,12 @@ class Episode(models.Model):
         help_text = "URL public can use to get an mp4. (like rackspace cdn")
     twitter_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL of tweet to email presenters for retweeting")
+
     video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
     audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
+
     comment = models.TextField(blank=True, help_text="production notes")
+
     stop = models.NullBooleanField(
              help_text="Stop process.py from processing anymore")
     @models.permalink

@@ -10,7 +10,7 @@ import twitter
 
 import urllib2
 import urllib
-import time
+import pprint
 
 import pw  # see pw_samp.py for sample.
 
@@ -64,8 +64,9 @@ class tweet(process):
             status = api.PostUpdate(tweet)
             d=status.AsDict()
             self.last_tweet = d
-            self.last_tweet_url = "http://twitter.com/#!/squid/status/%s" % (d["id"], )
+            self.last_tweet_url = "http://twitter.com/#!/NextDayVideo/status/{}".format(d["id"], )
             print self.last_tweet_url
+            pprint.pprint(d)
 
             ret=True
 

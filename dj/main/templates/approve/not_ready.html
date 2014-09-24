@@ -3,7 +3,13 @@
 
 {% block point %}
 
-<p>This video is not waiting to be approved.</p>
-<p>It is currently in state: {{episode.state}}</p>
+{% if episode.twitter_url %}
+    <p>This video has already been approved.</p>
+    <p>Its been tweeted: <a href="{{ episode.twitter_url }}">{{ episode.twitter_url }}</a></p>
+{%else%}
+    <p>This video is not waiting to be approved.</p>
+    <p>Either it has been approved, or it is being reprocessed.</p>
+    <p>It is currently in state: {{episode.state}}</p>
+{% endif %}
 
 {% endblock %}

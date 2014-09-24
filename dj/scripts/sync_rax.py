@@ -76,10 +76,12 @@ class SyncRax(process):
     def raw_files(self, show):
         print "getting raw files..."
         for rf in Raw_File.objects.filter(show=show,):
-            if self.options.verbose: print rf
+            if rf.cut_list_set.filter(episode__id=8824):
 
-            self.rf_ogv(show, rf)
-            # self.rf_audio_png(show, rf)
+                if self.options.verbose: print rf
+
+                self.rf_ogv(show, rf)
+                self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )
