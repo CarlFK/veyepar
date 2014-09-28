@@ -161,13 +161,13 @@ class ck_setup(process):
             print "client.rax_id:", rax_id
         else:
             print "client.rax_id not set."
+            return 
 
         if self.client.bucket_id:
             bucket_id = self.client.bucket_id
             print "client.bucket_id:", bucket_id
         else:
-            print "client.bucket_id not set."
-            return
+            print "client.bucket_id not set. (problem!)"
 
         print "checking for valid bucket..."
         cf = rax_uploader.auth(rax_id)
@@ -177,10 +177,10 @@ class ck_setup(process):
         if bucket_id in container_names:
             print('"{}" found.'.format(bucket_id))
         else:
-            print('"{}" not found.'.format(bucket_id))
+            print('"{}" not found. (problem!)'.format(bucket_id))
             raise
 
-        container = cf.get_container(bucket_id)
+        # container = cf.get_container(bucket_id)
 
 
     def ck_richard(self, secrets):
@@ -207,9 +207,11 @@ class ck_setup(process):
 
     def ck_youtube(self, secrets):
         ret = True
+        print("looking for client_secrets.json...")
         if not os.path.exists('client_secrets.json'):
             print("client_secrets.json NOT found.")
             ret = False
+        print("looking for {}".format(secrets['filename']))
         if not os.path.exists(secrets['filename']):
             print("{} NOT found.".format(secrets['filename']))
             ret = False
@@ -268,7 +270,8 @@ class ck_setup(process):
 
             secrets = self.ck_pw(
                     "yt","youtube_id",['filename', ])
-            self.ck_youtube(secrets)
+            if secrets:
+                self.ck_youtube(secrets)
 
             self.ck_schedule_api()
 

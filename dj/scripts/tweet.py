@@ -66,7 +66,7 @@ class tweet(process):
             self.last_tweet = d
             self.last_tweet_url = "http://twitter.com/#!/NextDayVideo/status/{}".format(d["id"], )
             print self.last_tweet_url
-            pprint.pprint(d)
+            # pprint.pprint(d)
 
             ret=True
 

@@ -235,13 +235,14 @@ class add_to_richard(Process):
         # clean up messy Episode data
         speakers = self.clean_richard_speakers(ep)
         tags = self.clean_richard_tags(ep)
-        summary = self.clean_richard_summary(ep)
+        description = self.clean_richard_description(ep)
         
         video_data = {
             'state': state,
             'title': ep.name,
             'category': self.category_key,
-            'summary': summary,
+            'description': description,
+            'summary': "",
             'source_url': ep.host_url,
             'copyright_text': ep.license,
             'tags': tags,
@@ -255,6 +256,9 @@ class add_to_richard(Process):
             'video_webm_url': ep.archive_ogv_url,
             'video_mp4_download_only': False,
         }
+        if ep.show.slug=="debconf14":
+            video_data['video_webm_url'] = "http://meetings-archive.debian.net/pub/debian-meetings/2014/debconf14/webm/{}.webm".format(ep.slug)
+
         return video_data
 
     def clean_archive_mp4_url(self, ep):
@@ -269,7 +273,7 @@ class add_to_richard(Process):
 
         return mp4url
 
-    def clean_richard_summary(self, ep):
+    def clean_richard_description(self, ep):
         # Richard wants markdown
         # so if ep data is in html or somthing, convert to markdown.
         # best to get event site to provide markdown.

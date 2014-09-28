@@ -33,7 +33,7 @@ The video will be titled with the following image:
 {{MEDIA_URL}}{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 {% endif %}
 {% if ep.public_url%}The main page for the video will be here:
-  {{ep.public_url}} 
+{{ep.public_url}} 
 {% else %}and the Description:
   === begin ===
   {{ep.description}} 
@@ -47,7 +47,7 @@ Except for odd word wrap on the title image.  If it bothers you, let us know how
 
 If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
 
-Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} and you have been alloted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.  
+Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.  
 
 Please bring what is needed to hook your laptop up to good old 15 pin VGA.  We may have an adaptor, but don't count on it, someone may have taken it.
 

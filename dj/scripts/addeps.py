@@ -414,6 +414,7 @@ class add_eps(process.process):
                         a1,a2 = getattr(episode,f), row[f]
                         if f=="description":
                             a1 = a1.replace('\r','')
+                            a2 = a2.replace('\r','')
                         if (a1 or a2) and (a1 != a2): 
                             diff_fields.append((f,a1,a2))
                     # report if different

@@ -20,7 +20,7 @@ class email_url(email_ab):
     To approve it click the Approve button at
     http://veyepar.nextdayvideo.com/main/approve/{{ep.id}}/{{ep.slug}}/{{ep.edit_key}}/  
 
-    As soon as you or someone approves your video, it will be tweeted on @NextDayVideo which is what the attendees were told to follow.  It will also be sent to the event organizers in hopes that they add it to the event website.  
+    As soon as you or someone approves your video, it will be tweeted on @NextDayVideo{% if ep.show.client.tweet_prefix %} tagged {{ep.show.client.tweet_prefix}}{% endif %}.  It will also be sent to the event organizers in hopes that they add it to the event website.  
     """ 
     py_name = "email_url.py"
 

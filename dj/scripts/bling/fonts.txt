@@ -1,3 +1,6 @@
+wget -N http://www.1001freefonts.com/d/5940/nova_square.zip
+exit
+
 (04:39:14 PM) trouble: CarlFK: https://fosdem.org/~philip/frutiger_std_full_family.zip # note, licensed only for FOSDEM use
 wget --no-check-certificate https://fosdem.org/~philip/frutiger_std_full_family.zip 
 

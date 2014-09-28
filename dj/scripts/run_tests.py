@@ -523,8 +523,7 @@ def main():
 
     t=Run_Tests() 
     # t.upload_formats=["webm", "mp4",]
-    t.upload_formats=["mp4",]
-    # t.upload_formats=["webm", ]
+    t.upload_formats=["flac",]
     t.title = "Let's make a Test"
 
     t.make_test_user()

@@ -46,10 +46,6 @@ class mk_public(process):
         else:
             video_data['state'] = 1
 
-        print "endpoint", endpoint
-        print host
-        print "video_id", v_id
-
         try: 
             update_video(endpoint, 
                     auth_token=host['api_key'], 
