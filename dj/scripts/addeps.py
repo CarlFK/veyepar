@@ -2285,9 +2285,6 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
 
-        # rooms = set(row['location'] for row in events)
-        # self.add_rooms(rooms,show)
-
         for event in events: 
 
             event['conf_key'] = str(event['conf_key'])
@@ -2306,7 +2303,9 @@ class add_eps(process.process):
             else:
                 event['emails'] =  event['emails']['email']
 
-            pprint.pprint(event)
+            if event['location'] == 'all-rooms':
+                event['location'] = 'MSC 2300 A'
+
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)

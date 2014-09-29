@@ -14,6 +14,7 @@ from email_ab import email_ab
 class email_title(email_ab):
 
     ready_state = None
+
     subject_template = '[{{ep.show.name}}] Video metadata for "{{ep.name}}"'
 
     body_template = """

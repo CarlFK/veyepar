@@ -215,7 +215,6 @@ def get_id_from_url(url):
     if o.query:
         # http://www.youtube.com/watch?v=akAtm7SnzWg
         q = parse_qs(o.query)
-        print q
         id = q['v'][0]
     else:
         # http://youtu.be/akAtm7SnzWg
