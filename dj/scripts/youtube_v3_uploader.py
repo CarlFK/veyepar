@@ -165,7 +165,7 @@ def resumable_upload(insert_request):
   response = None
   error = None
   retry = 0
-  print "Uploading file..."
+  print "Uploading file to YouTube..."
   while response is None:
     try:
 

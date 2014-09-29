@@ -66,6 +66,8 @@ class Uploader(object):
 
     def upload(self):
 
+        print "Uploading file to RackSpace CDN..."
+
         pyrax.set_setting("region", self.region)
 
         cf = auth(self.user)

@@ -105,6 +105,8 @@ class Uploader(object):
 
     def upload(self):
 
+        print "Uploading file to Archive.org..."
+
         service = auth(self.user)
 
         headers={}

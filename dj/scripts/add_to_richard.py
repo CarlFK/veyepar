@@ -187,6 +187,9 @@ class add_to_richard(Process):
             except Http4xxException as e:
                 if e.response.status_code == 403:
                     print "told you 403 was coming."
+                    print "maybe you can fix it with this:"
+                    print "http://{host}/admin/videos/video/{id}/".format(host=self.host['host'],id=v_id) 
+                    print "don't forget to unlock veyepar too."
                 else:
                     print "expected 403 due to STATE_LIVE, but now..."
                 print e.response.status_code
