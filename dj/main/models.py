@@ -392,9 +392,9 @@ class Log(models.Model):
             return None
 
 def set_slug(sender, instance, **kwargs):
-    # if not instance.slug:
+    if not instance.slug:
     #    instance.slug = fnify(instance.name)
-    return unique_slugify(instance, instance.name)
+        return unique_slugify(instance, instance.name)
 
 def set_end(sender, instance, **kwargs):
     if instance.start and instance.duration:

@@ -24,7 +24,9 @@ gst-launch-1.0 \
         ! "audio/x-raw, format=(string)S16LE, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)44100, channels=(int)2" \
         ! voaacenc bitrate=128000 \
         ! flvmux streamable=true name=mux \
-        ! rtmpsink location="rtmp://a.rtmp.youtube.com/live2/x/$AUTH app=live2"
+        ! rtmpsink location="$PSERV/x/$AUTH app=live2"
+
+
 
 exit
 
