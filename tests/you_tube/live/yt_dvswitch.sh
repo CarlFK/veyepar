@@ -1,6 +1,11 @@
 #!/bin/bash -ex
 # Read from DVswitch, encode to a 2mbs stream and send to youtube-live.
 
+"""
+1500 Kbps 720p is too high.
+500 (480p) is good
+"""
+
 source ~/.dvswitchrc
 source auth.sh
 

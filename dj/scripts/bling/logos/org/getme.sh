@@ -1,4 +1,7 @@
 #!/bin/bash -ex
+wget http://devopsdays.org/events/2014-chicago/logo.png -O devopsdayschi14png
+wget https://developer.venmo.com/static/imgs/venmo_logo_blue.png
+
 wget http://www.open-bio.org/w/images/thumb/5/5f/Eagle_logo_2013.jpg/120px-Eagle_logo_2013.jpg
 wget http://www.open-bio.org/w/images/thumb/b/bb/Gigascience-07.png/175px-Gigascience-07.png
 wget http://www.open-bio.org/w/images/e/e5/Curoverse.png

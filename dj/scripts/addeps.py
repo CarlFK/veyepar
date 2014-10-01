@@ -2288,6 +2288,10 @@ class add_eps(process.process):
         for event in events: 
 
             event['conf_key'] = str(event['conf_key'])
+
+            if event['location'] == 'all-rooms':
+                event['location'] = 'MSC 2300 A'
+
             event['start'] = datetime.datetime.strptime( 
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
 
@@ -2303,9 +2307,8 @@ class add_eps(process.process):
             else:
                 event['emails'] =  event['emails']['email']
 
-            if event['location'] == 'all-rooms':
-                event['location'] = 'MSC 2300 A'
-
+            event['released'] = \
+                    event['released'] and event['raw']['make_recording']
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
