@@ -21,7 +21,8 @@ class Client(models.Model):
     sequence = models.IntegerField(default=1)
     active = models.BooleanField(help_text="Turn off to hide from UI.")
     name = models.CharField(max_length=135)
-    slug = models.CharField(max_length=135,help_text="dir name to store input files")
+    slug = models.CharField(max_length=135, blank=True, null=False,
+            help_text="dir name to store input files", )
     contacts = models.CharField(max_length=300, blank=True, 
         help_text='emails of people putting on the event.')
 
@@ -105,7 +106,7 @@ class Show(models.Model):
     active = models.BooleanField( default=True,
             help_text="Turn off to hide from UI.")
     name = models.CharField(max_length=135)
-    slug = models.CharField(max_length=135,
+    slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="dir name to store input files")
     category_key = models.CharField(max_length=30, blank=True, null=True,
             help_text = "Category for Richard")
@@ -238,7 +239,7 @@ class Episode(models.Model):
         help_text="(calculated if start and duration are set.)")
     name = models.CharField(max_length=170, 
         help_text="Talk title (synced from primary source)")
-    slug = models.CharField(max_length=135, blank=True,
+    slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="file name friendly version of name")
     released = models.NullBooleanField(null=True,blank=True,
         help_text="has someone authorised pubication")
@@ -392,7 +393,7 @@ class Log(models.Model):
             return None
 
 def set_slug(sender, instance, **kwargs):
-    if not instance.slug:
+    if not instance.slug or instance.slug is None:
     #    instance.slug = fnify(instance.name)
         return unique_slugify(instance, instance.name)
 

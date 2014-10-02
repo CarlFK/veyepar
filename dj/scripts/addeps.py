@@ -379,11 +379,15 @@ class add_eps(process.process):
             if self.options.update:
                 if episode is None:
                     print "adding conf_key: %(conf_key)s, name:%(name)s" % row
+                    # I am not sure why some fields are here in .create
+                    # and the rest are in setattr( episode, f, row[f] )
+                    # name is here so .save() will create a slug
 
                     episode = Episode.objects.create(
                           show=show, conf_key=row['conf_key'], 
                           start=row['start'],
                           duration=row['duration'],
+                          name=row['name'],
                           )
                     episode.sequence=seq
                     episode.state=1
@@ -399,6 +403,7 @@ class add_eps(process.process):
                     setattr( episode, f, row[f] )
 
                 episode.save()
+
             else:
                 # this is the show diff part.
                 if episode is None: 
@@ -1971,9 +1976,10 @@ class add_eps(process.process):
 
     def lanyrd(self, schedule, show):
         # http://lanyrd.com 
+
         field_maps = [
             ('id','id'),
-            #('','location'),
+            ('space','location'),
             # ('','sequence'),
             ('title','name'),
             ('speakers','authors'),
@@ -1999,9 +2005,6 @@ class add_eps(process.process):
             # for session in day['sessions']:
                 #[u'speakers', u'title', u'event_id', u'start_time', u'space', u'topics', u'times', u'abstract', u'web_url', u'end_time', u'id', u'day']
 
-        rooms = ['room_1']
-        self.add_rooms(rooms,show)
-
         # pprint.pprint(events[-2])
         for event in events: 
 
@@ -2018,13 +2021,19 @@ class add_eps(process.process):
 
             event['description'] = strip_tags(event['description'])
 
+            if event['location'] is None:
+                event['location'] = 'room 1'
+
+            event['tags'] = ", ".join( event['tags'])
+
             # Bogus, but needed to pass
-            event['location'] = 'room_1'
-            event['emails'] = 'not set'
+            event['emails'] = ''
             event['released'] = True
             event['license'] =  ''
 
-            event['tags'] = ", ".join( event['tags'])
+
+        rooms = ['room 1']
+        self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
 
@@ -2547,7 +2556,8 @@ class add_eps(process.process):
         if self.options.show =='nodepdx2013':
             return self.nodepdx(schedule,show)
 
-        if self.options.show =='write_the_docs_2013':
+        if url.startswith("http://lanyrd.com"):
+        # if self.options.show =='write_the_docs_2013':
             return self.lanyrd(schedule,show)
 
         if self.options.show in ['pyohio_2014',"pycon_2014_warmup"]:
