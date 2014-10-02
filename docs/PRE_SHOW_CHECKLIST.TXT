@@ -1,6 +1,13 @@
-get schedule .json
-title screen template .svg
-video sponsors 
+client checklist:
+  release on talk submission
+  data driven schedule, api (json)
+  AV - audio
+  video sponsors 
+  slide show for between talks
+  title slide for videos
+  room access times
+  internet access
+  hotel close to venue
 
 book flights
 book rooms 
@@ -22,4 +29,13 @@ video mixer setup:
   set time zone
   push veyepar config 
 
+slave setup:
+  ~/.dvswitchrc
+    mixer host
+    youtube-live auth
+    sponsor spam slide loop
 
+bring:
+  clamps
+  bungie cords
+  

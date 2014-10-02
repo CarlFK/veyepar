@@ -167,27 +167,58 @@ class add_img(process):
                 show=show, 
                 filename=png_base,)
 
-        # ocr and connect the img object to episodes
-        # text = self.ocr_img(src_name)
+        # ocr 
+        text = self.ocr_img(src_name)
+        # and connect the img object to episodes
         # imgname = self.ass_one( img, text, locs, eps )
-       
+
+        # words to look for in set header:
+        words = ["Kit Number",  "Cam Op", "Audio op",  
+        "Pre Day check",
+        "Replace Batteries in mics",
+        "Post production", "Scanned",
+        "System date and time"] 
+        hit_count=0
+        for word in words:
+            if word.lower() in text.lower(): 
+                hit_count +=1
+                # print word, hit_count
  
-        """
-        sample page:
-        height (max y): 3296
-        start of first band (size of header) 875
-        end of first band: 1430
-        height of band: 1430-875 = 555
-        """
-        # proportion of page 
-        head = 875.0/3296.0
-        band = 555.0/3296.0 
+        if hit_count >= 3:
+            # start of set
+            """
+            sample page with set header:
+            height (max y): 3296
+            start of first band (size of header) 875
+            end of first band: 1430
+            height of band: 1430-875 = 555
+            """
+            # proportion of page 1
+            head = 875.0/3296.0
+            band = 555.0/3296.0 
+            bands= 3
+            suffix='a'
+            
+        else:
+
+            """
+            sample of page 2+
+            height 4392
+            start of first band (size of header) 625
+            end of first band: 1350
+            height of band: 1350 - 625 = 725
+            """
+            head = 625.0/4392.0
+            band = 725.0/4392.0
+            bands= 4
+            suffix='b'
+
         fudge = 0.01 
        
         im = Image.open(src_name)
         # print('complete image: {}'.format(im.size))
         w, h = im.size
-        for i in range(3):
+        for i in range(bands-1):
 
             box = im.crop(
                 (0, int(h * (head + band * i - fudge)),

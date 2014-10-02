@@ -1,18 +1,4 @@
 
-bring:
-  clamps
-  bungie cords
-  
-client checklist:
-  release on talk submission
-  data driven schedule, api (json)
-  AV - audio
-  slide show for between talks
-  title slide for videos
-  room access times
-  internet access
-  hotel close to venue
-
 veyepar:
 
   move state data def from models.py to initial_data.json fixture.
