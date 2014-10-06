@@ -109,37 +109,30 @@ class add_img(process):
         self.run_cmd(convert_cmd)
         return dst
 
-    def ass_one(self, img, text, locs, eps):
-
-        # remove extra white space, leave a little
+    def find_eps(self, text, eps):
+        # return a list of eps that likely belong to text
         text = re.sub(r'\n[\n ]+', '\n', text)
-        img.text = text
 
-        # scan the eps and locs to see if we can find a link
-        def is_in( img, ep, a, text ):
-            val = unicode(getattr(ep, a))
+        def is_in( obj, attrib, text ):
+            # check if obj.attrib is in text
+            val = unicode(getattr(obj, attrib))
             if val in ['','2014',]:
                 # blacklisted values
                 return
             if val.lower().encode('utf-8','ignore') in text:
-                print "found", a, val
-                img.episodes.add(ep)
-                img.save()
+                print "found", attrib, val
+                ret=True
+            else:
+                ret=False
+            return ret
 
+        founds=set()
         for ep in eps:
-            is_in( img, ep, "id", text )
-            # is_in( img, ep, "conf_key", text )
-            is_in( img, ep, "name", text )
-            is_in( img, ep, "authors", text )
+            for attr in ["id", "name", "authors"]:
+                if is_in( ep, attr, text ): 
+                    founds.add(ep)
 
-        for loc in locs:
-            # if loc.name.encode('utf-8','ignore').lower() in text.lower().encode('utf-8','ignore'):
-            if loc.name.encode('utf-8','ignore').lower() in text.lower():
-                print "found loc", loc
-                img.location = loc
-
-        img.save()
-
+        return founds
 
     def one_page(self, src_base, show, locs, eps):
 
@@ -163,7 +156,7 @@ class add_img(process):
             self.file2cdn(show, os.path.join( "img", png_base ))
 
         # make sure the png name is in the db
-        img,created = Image_File.objects.get_or_create(
+        img_page,created = Image_File.objects.get_or_create(
                 show=show, 
                 filename=png_base,)
 
@@ -225,7 +218,8 @@ class add_img(process):
                  w, int(h * (head + band * (i+1) + fudge) ))
                         )
 
-            png_name = '{}-{}.png'.format(os.path.splitext(src_base)[0], i )
+            png_name = '{}-{}{}.png'.format(
+                    os.path.splitext(src_base)[0], i, suffix)
             print png_name
             box.save( os.path.join( self.show_dir, "img", png_name ))
 
@@ -234,15 +228,18 @@ class add_img(process):
                 self.file2cdn(show, os.path.join( "img", png_name ))
 
             # make sure the png name is in the db
-            img,created = Image_File.objects.get_or_create(
+            img_band,created = Image_File.objects.get_or_create(
                     show=show, 
                     filename=png_name,)
 
             # ocr and connect the img object to episodes
             text = self.ocr_img( os.path.join( self.show_dir, "img", png_name ))
 
-            self.ass_one( img, text, locs, eps )
-       
+            # self.ass_one( img_band, text, locs, eps )
+            founds = self.find_eps(text, eps )
+            for found in founds:
+                img_band.episodes.add(found)
+                img_page.episodes.add(found)
 
     def one_show(self, show):
 

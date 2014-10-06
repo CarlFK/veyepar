@@ -255,8 +255,8 @@ class add_to_richard(Process):
             'duration': int(ep.get_minutes()*60),
             # 'video_ogv_url': ep.archive_ogv_url,
             # 'video_mp4_url': ep.rax_mp4_url,
-            # 'video_webm_url': ep.rax_mp4_url, # shuch a hack.
-            'video_webm_url': ep.archive_ogv_url,
+            'video_webm_url': ep.rax_mp4_url, # shuch a hack.
+            # 'video_webm_url': ep.archive_ogv_url,
             'video_mp4_download_only': False,
         }
         if ep.show.slug=="debconf14":

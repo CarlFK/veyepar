@@ -2299,7 +2299,7 @@ class add_eps(process.process):
             event['conf_key'] = str(event['conf_key'])
 
             if event['location'] == 'all-rooms':
-                event['location'] = 'MSC 2300 A'
+                event['location'] = 'MSC 2300 B'
 
             event['start'] = datetime.datetime.strptime( 
                    event['start'], '%Y-%m-%dT%H:%M:%S' )

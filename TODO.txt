@@ -138,6 +138,9 @@ wallpaper
 recording sheets:
   hostname:____
   add date/time to "Replace batteries" 
+  add start-end time to header 
+    (to help know how long the day is, 
+      and help keep track of what the last sheet is.)
 
 live cd: mainly for slave
   user in video group
