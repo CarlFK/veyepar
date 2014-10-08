@@ -345,6 +345,9 @@ class process(object):
                 and not self.options.force:
             episodes = episodes.filter(state=self.ready_state)
 
+        # episodes = Episode.objects.order_by( 'sequence','start',)
+
+
         self.start=datetime.datetime.now()
         ret = self.process_eps(episodes)
         self.end=datetime.datetime.now()

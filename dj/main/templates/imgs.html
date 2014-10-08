@@ -8,8 +8,12 @@
 {% block content %}
 
 {% for img in imgs %}
-    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=400 ></br>
+
+  <a href="{% url admin:main_image_file_change img.id%}">
+    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=400 >
+  </a>
     {{img.text}}
+  </br>
   <hr>
 {% endfor %}
 

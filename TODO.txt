@@ -82,6 +82,7 @@ old: https://developers.google.com/gdata/
       http://bazaar.launchpad.net/~inkscape.dev/inkscape/trunk/view/head:/share/extensions/svg_and_media_zip_output.py#L208
 
 encoding:
+  encode shorter talks first so they can get started uploading sooner.
   soften jump cuts
   create list of cut times relative to start of final video
      - mainly used for Lighting talks to index each talk
@@ -93,7 +94,6 @@ encoding:
 
 slugify talk titles- 
   truncate on word boundary when over X chars.
-  de-unicode
 
 model:
   

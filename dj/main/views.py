@@ -185,7 +185,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'start', 'duration', 
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
-            'host_url', 'public_url',
+            'host_url', 'public_url', 'twitter_url',
             'comment',
         ]
     if request.user.is_authenticated():

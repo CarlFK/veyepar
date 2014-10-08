@@ -740,11 +740,12 @@ class enc(process):
                   "-consumer avformat:%(out)s "\
                   "threads=%(threads)s "\
                   "progressive=1 "\
-                  "properties=x264-medium"\
+                  "properties=x264-high"\
                   % parms 
 
                   cmd = cmd.split()
-                  if True: # need to figure out how to switch between good and fast
+                  # 2 pass causes no video track, so dumping this.
+                  if False: # need to figure out how to switch between good and fast
                     cmds=[ cmd+['pass=1'],
                             cmd+['pass=2']]
                     if True: # even faster!

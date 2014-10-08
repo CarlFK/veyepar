@@ -206,15 +206,15 @@ class add_img(process):
             bands= 4
             suffix='b'
 
-        fudge = 0.01 
+        fudge = 0.02 
        
         im = Image.open(src_name)
         # print('complete image: {}'.format(im.size))
         w, h = im.size
-        for i in range(bands-1):
+        for i in range(bands):
 
             box = im.crop(
-                (0, int(h * (head + band * i - fudge)),
+                (0, int(h * (head + band * i )),
                  w, int(h * (head + band * (i+1) + fudge) ))
                         )
 
@@ -233,7 +233,10 @@ class add_img(process):
                     filename=png_name,)
 
             # ocr and connect the img object to episodes
-            text = self.ocr_img( os.path.join( self.show_dir, "img", png_name ))
+            text = self.ocr_img( 
+                    os.path.join( self.show_dir, "img", png_name ))
+            img_band.text = text
+            img_band.save()
 
             # self.ass_one( img_band, text, locs, eps )
             founds = self.find_eps(text, eps )
