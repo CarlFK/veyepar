@@ -14,7 +14,7 @@ source auth.sh
 
 gst-launch-1.0 \
         videotestsrc pattern=18 is-live=1 \
-        ! video/x-raw, framerate=30/1, width=426, height=240 \
+        ! video/x-raw, framerate=30/1, width=854, height=480 \
         ! timeoverlay \
         ! x264enc bitrate=2000 key-int-max=60 bframes=0 byte-stream=false aud=true tune=zerolatency \
         ! h264parse \

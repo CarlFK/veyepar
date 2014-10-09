@@ -47,7 +47,8 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
 
             context = { 'ep':ep, 
                     'py_name':self.py_name, 
-                    'MEDIA_URL':settings.MEDIA_URL}
+                    # 'MEDIA_URL':settings.MEDIA_URL,
+                    }
             more_context = self.more_context(ep)
             for k in more_context:
                 context[k] = more_context[k]

@@ -31,7 +31,7 @@ Released: {{ep.released}}
 "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
 {% if image_url %}
 The video will be titled with the following image:
-{{MEDIA_URL}}{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
+http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 {% endif %}
 {% if ep.public_url%}The main page for the video will be here:
 {{ep.public_url}} 

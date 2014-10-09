@@ -84,9 +84,10 @@ class add_to_richard(Process):
         if 'thumbnail_url' not in video_data:
             # half baked idea:
             # use title slide as place holder image until video is produced.
-            video_data['thumbnail_url'] = "%s%s/%s/titles/%s.png" % ( 
-                    settings.MEDIA_URL,
-                    ep.show.client.slug, ep.show.slug, ep.slug )
+            cdn = "http://veyepar.{}.cdn.nextdayvideo.com/veyepar".format(
+                    ep.show.client.bucket_id)
+            video_data['thumbnail_url'] = "%s/%s/%s/titles/%s.png" % ( 
+                    cdn, ep.show.client.slug, ep.show.slug, ep.slug )
         if ep.host_url is None:
             pass
 
@@ -108,7 +109,7 @@ class add_to_richard(Process):
             video_data['embed'] ="""<object width="640" height="480"><param name="allowfullscreen" value="true"><param name="allowscriptaccess" value="always"><param name="movie" value="http://vimeo.com/moogaloop.swf?show_byline=1&amp;fullscreen=1&amp;clip_id=%(vimeo_id)s&amp;color=&amp;server=vimeo.com&amp;show_title=1&amp;show_portrait=0"><embed src="http://vimeo.com/moogaloop.swf?show_byline=1&amp;fullscreen=1&amp;clip_id=%(vimeo_id)s&amp;color=&amp;server=vimeo.com&amp;show_title=1&amp;show_portrait=0" allowscriptaccess="always" height="480" width="640" allowfullscreen="true" type="application/x-shockwave-flash"></embed></object>""" % params 
 
         if self.options.verbose: 
-            print "video_data:"
+            print "1. video_data:"
             pprint.pprint(video_data)
 
         if \
@@ -155,7 +156,7 @@ class add_to_richard(Process):
                 auth_token=self.host['api_key'], 
                 video_id=v_id)
 
-        if self.options.verbose: pprint.pprint( video_data )
+        # if self.options.verbose: pprint.pprint( video_data )
      
         if video_data['state'] == STATE_LIVE:
             print "Currently STATE_LIVE, 403 coming."
@@ -166,7 +167,7 @@ class add_to_richard(Process):
             print 'ricard:', pprint.pprint(video_data)
             ret = False
         else: 
-            print 'updating richard', v_id
+            print '2. updating richard', v_id
             if self.options.verbose: pprint.pprint( video_data )
             video_data.update(new_data)
             try:
@@ -185,13 +186,15 @@ class add_to_richard(Process):
                 raise e
 
             except Http4xxException as e:
-                if e.response.status_code == 403:
-                    print "told you 403 was coming."
-                    print "maybe you can fix it with this:"
-                    print "http://{host}/admin/videos/video/{id}/".format(host=self.host['host'],id=v_id) 
-                    print "don't forget to unlock veyepar too."
-                else:
-                    print "expected 403 due to STATE_LIVE, but now..."
+                if video_data['state'] == STATE_LIVE:
+                    if e.response.status_code == 403:
+                        print "told you 403 was coming."
+                        print "maybe you can fix it with this:"
+                        print "http://{host}/admin/videos/video/{id}/".format(host=self.host['host'],id=v_id) 
+                        print "don't forget to unlock veyepar too."
+                    else:
+                        print "expected 403 due to STATE_LIVE, but now..."
+
                 print e.response.status_code
                 print e.response.content
                 import code
@@ -253,10 +256,8 @@ class add_to_richard(Process):
             'recorded': ep.start.strftime("%Y-%m-%d"),
             'language': 'English',
             'duration': int(ep.get_minutes()*60),
-            # 'video_ogv_url': ep.archive_ogv_url,
-            # 'video_mp4_url': ep.rax_mp4_url,
-            'video_webm_url': ep.rax_mp4_url, # shuch a hack.
-            # 'video_webm_url': ep.archive_ogv_url,
+            'video_webm_url': ep.archive_ogv_url,
+            'video_mp4_url': ep.rax_mp4_url,
             'video_mp4_download_only': False,
         }
         if ep.show.slug=="debconf14":

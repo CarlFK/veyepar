@@ -17,6 +17,16 @@ import os
 import xml.etree.ElementTree
 import requests
 
+# from the blender build scripts
+# https://svn.blender.org/svnroot/bf-blender/trunk/blender/build_files/scons/tools/bcolors.py
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
 
 class ck_setup(process):
 
@@ -102,7 +112,7 @@ class ck_setup(process):
         if os.path.exists(self.show_dir):
             print("~/Videos/showdir exits: {}".format(self.show_dir))
         else:
-            print("~/Videos/showdir not created yet.  run mk_dirs.py")
+            print(bcolors.FAIL + "~/Videos/showdir not created yet.  run mk_dirs.py"+bcolors.ENDC)
 
 
     def ck_title(self):
