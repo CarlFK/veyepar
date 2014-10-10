@@ -185,7 +185,8 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'start', 'duration', 
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
-            'host_url', 'public_url', 'twitter_url',
+            'host_url', 'public_url', 'rax_mp4_url',
+            'twitter_url', 
             'comment',
         ]
     if request.user.is_authenticated():
@@ -462,7 +463,7 @@ def raw_play_list(request, episode_id):
     client=show.client
     
     # cuts = Cut_List.objects.filter(episode=episode).order_by('raw_file__start')
-    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence')
+    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence', 'raw_file__start')
     if request.GET.get('apply') == 'yes':
         # if we only want the 'applied' files
         cuts = cuts.filter(apply=True)

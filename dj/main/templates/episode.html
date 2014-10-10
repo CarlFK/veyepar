@@ -64,14 +64,13 @@
 {% if episode.conf_url %}
   <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
 {% endif %}
-Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
-<a href="{% url admin:main_cut_list_changelist %}?episode__id__exact={{episode.id}}">cut list</a>
 <br>
 
 {% if episode.edit_key and user.is_authenticated %}
+   <a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a>
    <a href="{% url train episode.id episode.slug episode.edit_key %}">train</a>
    <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">approve</a>
-<a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a><br/>
+   <br/>
 {% endif %}
 
 {% if episode.public_url %}
@@ -83,12 +82,9 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
 <a href="{% url public_play_list %}{{episode.slug}}.m3u?id={{episode.id}}">encoded-files-playlist</a> 
 
-{% if episode.host_url %} <a href="{{episode.host_url}}">host</a> {%endif%}
-<a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
-{%if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
-<br/>
-<a href="{% url episode_logs episode.id %}">logs</a><br/>
-<a href="{% url eps_xfer episode.show.client.slug episode.show.slug %}?id={{episode.id}}">{{episode.slug}}.json</a>
+{% if episode.host_url %} <a href="{{episode.host_url}}">host</a>{%endif%}
+{% if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
+{% if episode.twitter_url%}<a href="{{episode.twitter_url}}">tweet</a>{%endif%}
 
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br/>
@@ -96,6 +92,15 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/webm/{{episode.slug}}.webm">webm</a>
+
+<a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
+
+<a href="{% url eps_xfer episode.show.client.slug episode.show.slug %}?id={{episode.id}}">{{episode.slug}}.json</a>
+<br/>
+<a href="{% url episode_logs episode.id %}">logs</a><br/>
+
+Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
+<a href="{% url admin:main_cut_list_changelist %}?episode__id__exact={{episode.id}}">cut list</a>
 
 <form method="POST">{% csrf_token %}
 <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />

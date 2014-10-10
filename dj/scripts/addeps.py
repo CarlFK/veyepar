@@ -4,20 +4,27 @@
 
 """
 fields:
-name - Talk title 
-authors - list of people's names.
-contacts - list of email(s) of presenters.
+title - Talk title 
+speakers - list of:
+  name - person's name.
+  email - email address (hide behind auth)
+  twitter_id - twitter @username
+  bio - infor about the person
+  picture_url - head shot
+summary - short description of talk, 1 or 2 lines.
 description - description of the talk (paragraphs are fine, markdown great)
 tags - list of serch terms, including sub topics briefly discussed in the talk.
-room - room as described by the venue
+room - room as described/labled by the venue
+room_alias - room as described/labled on conference site
 start - datetime in some parsable format 
-duration - int minutes or "hh:mm:ss" 
+duration - int minutes 
 end - datetime in some parsable format 
+priority - 0=no video, 5 = maybe video, 9=make sure this gets videod.
+released - speakers have given permission to record and distribute.
 license - CC license 
-released - permission to release.
 conf_key - PK in source database - unique, used to update this item 
 conf_url - URL of talk page
-language - Spoken language of the talk.
+language - Spoken language of the talk ("English")
 """
 
 """
