@@ -28,6 +28,14 @@ class bcolors:
     FAIL = '\033[91m'
     ENDC = '\033[0m'
 
+def p_warn(text):
+    print(bcolors.WARNING + text +bcolors.ENDC)
+    return 
+
+def p_fail(text):
+    print(bcolors.FAIL + text +bcolors.ENDC)
+    return 
+
 class ck_setup(process):
 
     client=None
@@ -80,14 +88,14 @@ class ck_setup(process):
         try:
             client_slug = self.options.client
         except AttributeError as e:
-            print "No client set in config file or command line."
+            p_fail("No client set in config file or command line.")
             raise e
         print "client_slug:", client_slug
 
         try:
             self.client = Client.objects.get(slug=client_slug)
         except Client.DoesNotExist as e:
-            print "client slug not found in db."
+            p_fail("client slug not found in db.")
             raise e
 
         return 
@@ -96,14 +104,14 @@ class ck_setup(process):
         try:
             show_slug = self.options.show
         except AttributeError as e:
-            print "No show set in config file or command line."
+            p_fail("No show set in config file or command line.")
             raise e
         print "show_slug:", show_slug
 
         try:
             self.show = Show.objects.get(slug=show_slug)
         except Show.DoesNotExist as e:
-            print "show slug not found in db."
+            p_fail( "show slug not found in db." )
             raise e
 
         return 
@@ -112,7 +120,8 @@ class ck_setup(process):
         if os.path.exists(self.show_dir):
             print("~/Videos/showdir exits: {}".format(self.show_dir))
         else:
-            print(bcolors.FAIL + "~/Videos/showdir not created yet.  run mk_dirs.py"+bcolors.ENDC)
+            # print(bcolors.FAIL + "~/Videos/showdir not created yet.  run mk_dirs.py"+bcolors.ENDC)
+            p_fail("~/Videos/showdir not created yet.  run mk_dirs.py")
 
 
     def ck_title(self):
@@ -126,7 +135,7 @@ class ck_setup(process):
         title_svg = os.path.join(self.show_dir, "bling", title_svg)
         print title_svg
         if not os.path.exists(title_svg):
-            print("title_svg not found.")
+            p_fail("title_svg not found.")
 
         raw_svg=open(title_svg).read()
         tree=xml.etree.ElementTree.XMLID(raw_svg)
@@ -141,9 +150,13 @@ class ck_setup(process):
             'time',
             'license', ]
         print("checking title_svg for object IDs, found:")
+        found=[]
         for key in keys:
             if tree[1].has_key(key):
+                found.append(key)
                 print(key,tree[1][key].text)
+        if not found:
+            p_warn("no keys found in {}".format(title_svg))
 
 
     def ck_email(self):
