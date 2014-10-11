@@ -28,6 +28,10 @@ class bcolors:
     FAIL = '\033[91m'
     ENDC = '\033[0m'
 
+def p_okg(text):
+    print(bcolors.OKGREEN + text +bcolors.ENDC)
+    return 
+
 def p_warn(text):
     print(bcolors.WARNING + text +bcolors.ENDC)
     return 
@@ -90,7 +94,7 @@ class ck_setup(process):
         except AttributeError as e:
             p_fail("No client set in config file or command line.")
             raise e
-        print "client_slug:", client_slug
+        p_okg("client_slug: {}".format(client_slug))
 
         try:
             self.client = Client.objects.get(slug=client_slug)
@@ -106,7 +110,7 @@ class ck_setup(process):
         except AttributeError as e:
             p_fail("No show set in config file or command line.")
             raise e
-        print "show_slug:", show_slug
+        p_okg("show_slug: {}".format(show_slug))
 
         try:
             self.show = Show.objects.get(slug=show_slug)
@@ -133,7 +137,7 @@ class ck_setup(process):
             print('show.title_svg is blank. using <show.slug>_title.svg')
             title_svg = "%s_title.svg" % (self.show.slug,)
         title_svg = os.path.join(self.show_dir, "bling", title_svg)
-        print title_svg
+        p_okg(title_svg)
         if not os.path.exists(title_svg):
             p_fail("title_svg not found.")
 
@@ -161,12 +165,13 @@ class ck_setup(process):
 
     def ck_email(self):
         if self.client.contacts:
-            print("client.contacts: {}".format(self.client.contacts))
+            p_okg("client.contacts: {}".format(self.client.contacts))
         else:
-            print("client.contacts: blank")
+            p_warn("client.contacts: blank")
 
         try:
-            print("sender: {}".format(settings.EMAIL_SENDER))
+            p_okg("sender: {}".format(settings.EMAIL_SENDER))
+            # some of these are needed:
             """
             EMAIL_USE_TLS 
             EMAIL_HOST
@@ -175,22 +180,22 @@ class ck_setup(process):
             EMAIL_HOST_PASSWORD
             """
         except AttributeError as e:
-            print("settings.EMAIL_SENDER not set.")
+            p_warn("settings.EMAIL_SENDER not set.")
 
 
     def ck_cdn(self):
         if self.client.rax_id:
             rax_id = self.client.rax_id
-            print "client.rax_id:", rax_id
+            p_okg("client.rax_id: {}".format(rax_id))
         else:
-            print "client.rax_id not set."
+            p_warn("client.rax_id not set.")
             return 
 
         if self.client.bucket_id:
             bucket_id = self.client.bucket_id
-            print "client.bucket_id:", bucket_id
+            p_okg("client.bucket_id: {}".format(bucket_id))
         else:
-            print "client.bucket_id not set. (problem!)"
+            p_error("client.bucket_id not set.")
 
         print "checking for valid bucket..."
         cf = rax_uploader.auth(rax_id)
@@ -198,11 +203,11 @@ class ck_setup(process):
         container_names = [container.name for container in containers]
         print "container_names", container_names
         if bucket_id in container_names:
-            print('"{}" found.'.format(bucket_id))
+            p_okg('"{}" found.'.format(bucket_id))
         else:
-            print('"{}" not found. (problem!)'.format(bucket_id))
-            raise
+            p_error('"{}" not found.'.format(bucket_id))
 
+        # not sure what to do with this...
         # container = cf.get_container(bucket_id)
 
 
@@ -210,9 +215,9 @@ class ck_setup(process):
 
         category_key = self.client.category_key
         if category_key:
-            print "client.category_key", category_key
+            p_okg("client.category_key: {}".format(category_key))
         else: 
-            print "client.category_key not set." 
+            p_warn("client.category_key not set.")
             return False
 
         print("checking for category...")
@@ -222,9 +227,9 @@ class ck_setup(process):
         print("found {} categories. first 5: {}".format(
             len(categories), cat_titles[:5] ))
         if category_key in cat_titles:
-            print('client.category_key:"{}" found.'.format(category_key))
+            p_okg('client.category_key:"{}" found.'.format(category_key))
         else:
-            print('client.category_key:"{}" NOT found.'.format(category_key))
+            p_error('client.category_key:"{}" NOT found.'.format(category_key))
 
         return 
 
@@ -232,11 +237,11 @@ class ck_setup(process):
         ret = True
         print("looking for client_secrets.json...")
         if not os.path.exists('client_secrets.json'):
-            print("client_secrets.json NOT found.")
+            p_error("client_secrets.json NOT found.")
             ret = False
         print("looking for {}".format(secrets['filename']))
         if not os.path.exists(secrets['filename']):
-            print("{} NOT found.".format(secrets['filename']))
+            p_error("{} NOT found.".format(secrets['filename']))
             ret = False
 
         return ret
@@ -244,9 +249,9 @@ class ck_setup(process):
     def ck_schedule_api(self):
         schedule_url = self.show.schedule_url
         if schedule_url:
-            print("show.schedule_url: {}".format(schedule_url))
+            p_okg("show.schedule_url: {}".format(schedule_url))
         else:
-            print("show.schedule_url: {}".format(schedule_url))
+            p_warn("no show.schedule_url")
             return 
 
         if schedule_url.startswith('file'):
