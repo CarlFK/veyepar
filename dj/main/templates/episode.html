@@ -150,8 +150,8 @@ $(".viewer").zoomer();
   <div class="panel-heading"></div>
   <div class="panel-title"></div> 
   <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{cl.id}}"> {{cl.raw_file.filename}}</a>
-  {{cl.raw_file.start|date:"H:i:s"}} - {{cl.raw_file.end|date:"H:i:s"}}
-
+  S: {{cl.raw_file.start|date:"H:i:s"}} - E: {{cl.raw_file.end|date:"H:i:s"}}
+  D: {{cl.raw_file.duration}}
   {% if clrfform.start.value %} (Start: {{ clrfform.start.value }}){% endif %} 
   {% if clrfform.end.value %} (End: {{ clrfform.end.value }}){% endif %} 
   {{ clrfform.apply.label_tag }}{{ clrfform.apply }}
@@ -160,7 +160,7 @@ $(".viewer").zoomer();
     <div class="panel-body">
       {{clrfform.clid}}
 
-~/Videos/veyepar/{{cl.raw_file.base_url}} 
+~/Videos/veyepar/{{cl.raw_file.base_url}}.dv 
       <table>
       <tr>
       <td>

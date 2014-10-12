@@ -7,11 +7,16 @@
 
 {% block content %}
 
-{% for img in imgs %}
+<form method="POST">{% csrf_token %}{{ iefs.management_form }}
+
+{% for img,form in imgsfs %}
 
   <a href="{% url admin:main_image_file_change img.id%}">
-    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=400 >
-  </a>
+    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=800 >
+</a>
+  </br>
+{{form}} <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
+  </br>
     {{img.text}}
   </br>
   <hr>

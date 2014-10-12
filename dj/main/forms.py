@@ -71,3 +71,7 @@ class Add_CutList_to_Ep(forms.Form):
     getit = forms.BooleanField(label="get this", required=False,
             help_text="check and save to add this")
 
+class AddImageToEp(forms.Form):
+    image_id = forms.IntegerField(widget=forms.HiddenInput())
+    episode_id  = forms.IntegerField(required=False,)
+ 

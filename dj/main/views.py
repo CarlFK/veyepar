@@ -35,7 +35,7 @@ from main.models import \
         Client,Show,Location,Episode,Cut_List,Raw_File,State,Image_File
 
 from main.models import STATES, ANN_STATES
-from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep, Who
+from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep, Who, AddImageToEp
 
 from accounts.forms import LoginForm
 
@@ -1064,14 +1064,33 @@ def orphan_img(request, show_id, ):
 
     # dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
 
+    if request.user.is_authenticated():
+        AddImageToEpFormSet = formset_factory(AddImageToEp, extra=0)
+        if request.method == 'POST':
+            formset = AddImageToEpFormSet(request.POST)
+            for form in formset:
+                if form.is_valid():
+                    episode_id = form.cleaned_data['episode_id']
+                    if episode_id is not None:
+                        img = get_object_or_404(Image_File, id=img_id)
+                            id=form.cleaned_data['image_id'])
+                        episode = get_object_or_404(Episode,id=episode_id)
+                        img.episodes.add(episode)
+                    # I wonder how this should get handled
+                    # form.errors
+
     orphan_images = Image_File.objects.annotate(
             Count("episodes")).filter(show=show,episodes__count=0)
+
+    init = [{'image_id':img.id,} for img in orphan_images]
+    formset = AddImageToEpFormSet(initial=init)
 
     return render_to_response('imgs.html',
             {
           'client':client,
           'show':show,
-          'imgs':orphan_images,
+          'imgsfs':zip(orphan_images,formset.forms),
+          'iefs':formset,
           },
         context_instance=RequestContext(request) )
 
@@ -1222,11 +1241,9 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             # only show episodes with no raw files found
             episodes = episodes.filter(image_file__isnull=True)
         else:
-            episodes = episodes.filter(image_file__isnull=False)
-            """
+            # episodes = episodes.filter(image_file__isnull=False)
             episodes = episodes.annotate(
                     c=Count("image_file")).filter(c__gte=images)
-            """
 
     if log_has:
         # track down eisode's that were encoded on box X

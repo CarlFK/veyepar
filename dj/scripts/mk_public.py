@@ -51,10 +51,10 @@ class mk_public(process):
                     auth_token=host['api_key'], 
                     video_id=v_id, 
                     video_data=video_data)
-        except Http4xxException, exc:
+        except Http4xxException as exc:
             print exc
             print "told you this was coming."
-        except MissingRequiredData, exc:
+        except MissingRequiredData as exc:
             print exc
             # this shouldn't happen, prolly debugging something.
             import code
@@ -66,7 +66,17 @@ class mk_public(process):
 
         uploader = youtube_v3_uploader.Uploader()
         uploader.user = ep.show.client.youtube_id
-        return uploader.set_permission( ep.host_url )
+        if self.options.verbose: print "Setting Youtube to public..."
+        try:
+            ret = uploader.set_permission( ep.host_url )
+        # except apiclient.errors.HttpError as e:
+        except youtube_v3_uploader.HttpError as e:
+            print e
+            # this shouldn't happen, prolly debugging something.
+            import code
+            code.interact(local=locals())
+
+        return ret
 
     def process_ep(self, ep):
         # set youtube to public
