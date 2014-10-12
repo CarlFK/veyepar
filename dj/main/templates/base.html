@@ -36,9 +36,10 @@
     <tbody>
     <tr>
       <td> <a href="/admin/">admin</a> </td>
-      <td> <a href="/databrowse/">databrowse</a> </td>
       <td> <a href="/main/">main</a> </td>
       <td> <a href="/main/clients/">Clients</a> </td>
+      <td> <a href="http://validator.w3.org/check?uri={{request.META.HTTP_HOST}}{{request.get_full_path}}">val</a></td>
+      <td> <a href="http://validator.w3.org/check?uri=http://veyepar.nextdayvideo.com{{request.get_full_path}}">val</a></td>
       <td>
       {% if request.META.HTTP_HOST == "localhost:8080" %}
         <a href="http://veyepar.nextdayvideo.com{{request.get_full_path}}">prod</a>
