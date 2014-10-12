@@ -64,7 +64,6 @@
 {% if episode.conf_url %}
   <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
 {% endif %}
-<br>
 
 {% if episode.edit_key and user.is_authenticated %}
    <a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a>
@@ -101,6 +100,8 @@
 
 Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 <a href="{% url admin:main_cut_list_changelist %}?episode__id__exact={{episode.id}}">cut list</a>
+<a href="{% url admin:main_raw_file_changelist %}?location__id__exact={{episode.location.id}}&amp;start__year={{episode.start|date:"Y"}}&amp;start__month={{episode.start|date:"m"}}&amp;start__day={{episode.start|date:"d"}}">raw files day</a>
+
 
 <form method="POST">{% csrf_token %}
 <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
@@ -120,9 +121,10 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% if episode.show.slug == "debconf14" %}
     <img alt="recording sheet" src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
   {% else %}
-    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
+    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=300 height=400 >
 {% endif %}
 {% endfor %}
+</div>
 </div>
 
  <script>
@@ -290,11 +292,7 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
 
 <table border=1>
 <tbody>
-    <tr><td> 
-<a href="{% url admin:main_raw_file_changelist %}?location__id__exact={{episode.location.id}}&amp;start__year={{episode.start|date:"Y"}}&amp;start__month={{episode.start|date:"m"}}&amp;start__day={{episode.start|date:"d"}}">raw files day (admin)</a>
-    </td></tr>
-
-{{ add_cutlist_to_ep }}
+ {{ add_cutlist_to_ep }}
 </tbody>
 </table>
 
