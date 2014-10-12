@@ -195,7 +195,7 @@ class ck_setup(process):
             bucket_id = self.client.bucket_id
             p_okg("client.bucket_id: {}".format(bucket_id))
         else:
-            p_error("client.bucket_id not set.")
+            p_fail("client.bucket_id not set.")
 
         print "checking for valid bucket..."
         cf = rax_uploader.auth(rax_id)
@@ -205,7 +205,7 @@ class ck_setup(process):
         if bucket_id in container_names:
             p_okg('"{}" found.'.format(bucket_id))
         else:
-            p_error('"{}" not found.'.format(bucket_id))
+            p_fail('"{}" not found.'.format(bucket_id))
 
         # not sure what to do with this...
         # container = cf.get_container(bucket_id)
@@ -229,7 +229,7 @@ class ck_setup(process):
         if category_key in cat_titles:
             p_okg('client.category_key:"{}" found.'.format(category_key))
         else:
-            p_error('client.category_key:"{}" NOT found.'.format(category_key))
+            p_fail('client.category_key:"{}" NOT found.'.format(category_key))
 
         return 
 
@@ -237,11 +237,11 @@ class ck_setup(process):
         ret = True
         print("looking for client_secrets.json...")
         if not os.path.exists('client_secrets.json'):
-            p_error("client_secrets.json NOT found.")
+            p_fail("client_secrets.json NOT found.")
             ret = False
         print("looking for {}".format(secrets['filename']))
         if not os.path.exists(secrets['filename']):
-            p_error("{} NOT found.".format(secrets['filename']))
+            p_fail("{} NOT found.".format(secrets['filename']))
             ret = False
 
         return ret
