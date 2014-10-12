@@ -457,6 +457,14 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     response.write(pdf)
     return response
 
+def mk_play_list(request):
+    url = request.GET['url']
+    response = HttpResponse(mimetype='audio/mpegurl')
+    response['Content-Disposition'] = 'inline; filename=playlist.m3u'
+    writer = csv.writer(response)
+    writer.writerow([url])
+    return response
+
 def raw_play_list(request, episode_id):
     episode=get_object_or_404(Episode,id=episode_id)
     show=episode.show
@@ -1072,8 +1080,8 @@ def orphan_img(request, show_id, ):
                 if form.is_valid():
                     episode_id = form.cleaned_data['episode_id']
                     if episode_id is not None:
-                        img = get_object_or_404(Image_File, id=img_id)
-                            id=form.cleaned_data['image_id'])
+                        img = get_object_or_404(Image_File, 
+                                id=form.cleaned_data['image_id'])
                         episode = get_object_or_404(Episode,id=episode_id)
                         img.episodes.add(episode)
                     # I wonder how this should get handled

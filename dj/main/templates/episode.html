@@ -144,12 +144,12 @@ $(".viewer").zoomer();
 
 {% for cl,chap,clrfform in clrffs %}
 
-<div id="x{{cl.id}}">
 <div class="panel-group" id="accordion">
 <div class="panel">
   <div class="panel-heading"></div>
   <div class="panel-title"></div> 
-  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{cl.id}}"> {{cl.raw_file.filename}}</a>
+  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{cl.id}}">+ more...</a>
+  <b>{{cl.raw_file.filename}}</b>
   S: {{cl.raw_file.start|date:"H:i:s"}} - E: {{cl.raw_file.end|date:"H:i:s"}}
   D: {{cl.raw_file.duration}}
   {% if clrfform.start.value %} (Start: {{ clrfform.start.value }}){% endif %} 
@@ -164,14 +164,7 @@ $(".viewer").zoomer();
       <table>
       <tr>
       <td>
-        {{ clrfform.sequence.label_tag }}: {{ clrfform.sequence }}<br/>
-        <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">
-          {{ cl.raw_file.filename }}</a><br/>
-        <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
-          target=foo>{{ cl.raw_file.basename }}.ogv</a><br/>
-        <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">
-          {{cl.raw_file.basename}}.png</a><br/>
-        <video
+       <video
           id="rawfile{{ cl.id }}"
           {% if episode.show.slug == "fosdem_2014" %}
               src="http://veyepar.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
@@ -190,15 +183,12 @@ $(".viewer").zoomer();
       <td>
         <table>
             <tr>
-                <td>&nbsp;</td>
-                <td><a href="#{{cl.raw_file.id}}">Raw File</a></td>
-                <td>Cut List</td>
+                <td></td>
+                <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">Raw File</a></td>
+                <td><a href="{% url admin:main_cut_list_change cl.id%}">Cut List</a></td>
             </tr>
 
-            <tr>
-                <td>&nbsp;</td>
-                <td>{{ clrfform.trash.label_tag }}{{ clrfform.trash }}</td>
-            </tr>
+            {# {{ clrfform.trash.label_tag }}{{ clrfform.trash }} #}
 
             <tr>
                 <td>Start</td>
@@ -220,14 +210,23 @@ $(".viewer").zoomer();
 
             <tr>
                 <td>Comments:</td>
-                <td>&nbsp;</td>
-                <td>{#{clrfform.rf_comment}#} {{clrfform.cl_comment}}</td>
+                <td>{# {{clrfform.rf_comment}} #}</td>
+                <td>{{clrfform.cl_comment}}</td>
             </tr>
 
             <tr>
-                <td>{{ clrfform.split.label_tag }}{{ clrfform.split }}</td>
-                <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">admin</a></td>
-                <td><a href="{% url admin:main_cut_list_change cl.id%}">admin</a>
+                <td>
+                    {# <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">dv</a><br/> #}
+                <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=ogv>ogv</a><br/>
+                <a href="{% url mk_play_list %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv">ogv.m3u</a>
+  </td>
+  <td>
+                <a href="{% url mk_play_list %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.dv">dv.m3u</a>
+                {#<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">png</a> #}
+      
+                <td>
+                    {{ clrfform.split.label_tag }}{{ clrfform.split }}
+                    {{ clrfform.sequence.label_tag }}: {{ clrfform.sequence }}
                     <a href="{% url admin:main_cut_list_change cl.id%}delete/">delete</a>
                 </td>
             </tr>
@@ -285,7 +284,6 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
 
 </div> <!-- /panel -->
 </div> <!-- panel-group -->
-</div> <!-- id={} -->
 {% endfor %}
 
 
