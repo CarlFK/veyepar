@@ -31,8 +31,9 @@ djangorestframework
 markdown
 django-filter
 
-google-api-python-client 
+git+https://github.com/CarlFK/google-api-python-client.git#egg=googleapiclient
+# google-api-python-client 
 # oauth2client
-httplib2
+# httplib2
 
 # psycopg2

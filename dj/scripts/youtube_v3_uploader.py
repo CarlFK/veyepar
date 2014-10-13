@@ -14,19 +14,7 @@
 
 import argparse
 from collections import namedtuple
-import progressfile
 
-"""
-to use progressfile you need to patch 
-@ 418  ~/.virtualenvs/veyepar/local/lib/python2.7/site-packages/apiclient/http.py
-
-    if isinstance(filename,file):
-        fd = filename
-        filename = fd.name
-    else:
-        fd = open(self._filename, 'rb')
-
-"""
 import httplib
 import httplib2
 import os
@@ -39,12 +27,41 @@ import pprint
 from urlparse import urlparse
 from urlparse import parse_qs
 
+"""
 from apiclient.discovery import build
 from apiclient.errors import HttpError, ResumableUploadError
 from apiclient.http import MediaFileUpload
+"""
+
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError, ResumableUploadError
+from googleapiclient.http import MediaFileUpload
+
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run_flow
+
+# The following 2 imports are wrapped in try/except so that 
+# this code will run without any additional files.
+try:
+    # ProgressFile is a subclass of the python open class
+    # as data is read, it prints a visible progress bar 
+    from progressfile import ProgressFile
+except ImportError:
+    # or just use python's open for testing
+    ProgressFile = open
+
+"""
+to use progressfile you need to patch 
+@ 418  ~/.virtualenvs/veyepar/local/lib/python2.7/site-packages/apiclient/http.py
+
+    if isinstance(filename,file):
+        fd = filename
+        filename = fd.name
+    else:
+        fd = open(self._filename, 'rb')
+
+"""
 
 try:
     # read credentials from a file
@@ -274,7 +291,7 @@ class Uploader():
             print self.pathname
             pprint.pprint(self.meta)
 
-        pf = progressfile.ProgressFile(self.pathname)
+        pf = ProgressFile(self.pathname)
 
         self.meta['description'] = clean_description(
                 self.meta['description'])
@@ -300,7 +317,7 @@ def make_parser():
     test_file = os.path.join(test_dir,"Lets_make_a_Test.%s" % (ext))
     if not os.path.exists(test_file):
         # if we can't find a video to upload, upload this .py file!
-        test_file = os.path.abspath(__file__),
+        test_file = os.path.abspath(__file__)
 
     parser.add_argument('--pathname', '-f', default=test_file,
                         help='file to upload.')
@@ -330,6 +347,13 @@ def test_upload(args):
     u.user = args.user
     u.debug_mode = args.debug_mode
     u.pathname = args.pathname
+
+    """
+    import requests
+    url = "http://5cda49ca88af98bf1f1e-b4c3b47b38bb1b572e0805ecabeeb59c.r76.cf2.rackcdn.com/10_05_52.ogv" 
+    r=requests.get(url,stream=True)
+    u.pathname = r.raw
+    """
 
     ret = u.upload()
     if ret:
