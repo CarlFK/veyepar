@@ -204,9 +204,11 @@ class add_eps(process.process):
         for s in schedule:
             s_keys.update(s.keys())
 
-        print s_keys
+        print("keys found in input:")
+        print(s_keys)
         for k in s_keys:
-            print "('%s','')," % k
+            print("('{}',''),".format(k))
+        print("\n")
 
         v_keys=('id',
             'location','sequence',
@@ -220,12 +222,12 @@ class add_eps(process.process):
         # for f,g in field_maps:
         #    print "('%s','%s')," % (g,f)
 
-        print "keys match 1:1"
+        print "keys match 1:1 with veyepar names:"
         print [k for k in v_keys if k in s_keys]
 
         for k in [k for k in v_keys if k not in s_keys]:
-            print "('%s','')," % k
-        print
+            print("('{}',''),".format(k))
+        print("\n")
 
         for k in v_keys:
             k2 = k if k in s_keys else ''
@@ -332,6 +334,7 @@ class add_eps(process.process):
  
         # only these fields in the dict are used, the rest are ignored.
         fields=(
+                # 'state', 
                 'name', 'authors', 
                 'emails', 
                 'description',
@@ -551,31 +554,17 @@ class add_eps(process.process):
         return {'true':True, 
                 "false":False}[tf]
 
-    def snake_holes(self, schedule):
-        # importing from veyepar 
-        # this is dumb.  
-        # currently there is no support for multi rooms.
-      rooms=[]
-      for row in schedule:
-          row = row['fields']
-          # row=row['node']
-          if self.options.verbose: print row
-          room = row['location']
-          if room not in rooms: rooms.append(room)
-      return rooms
-
-    def snake_bites(self, schedule, location):
+    def snake_bites(self, schedule,):
         print "Snake Bites"
 
-        # warning: location is the 2nd half of a hack:
-        # veyepar json export only gives room key, not name
-        # so convert the int to a string and call it the name.
-        # lame.
-
-        events=[]
-
-        fields=('location','sequence','conf_key','host_url',
-            'name','slug', 'authors',
+        fields=(
+                'location',
+                'sequence',
+                'conf_key','host_url',
+            'state',
+            'authors',
+            'name','slug', 
+            'authors',
             'emails', 
             'description',
             'released', 'license',
@@ -585,9 +574,10 @@ class add_eps(process.process):
             # 'public_url'
             )
 
-
+        events=[]
         for row in schedule:
             pk = row['pk']
+
             row = row['fields']
             if self.options.verbose: print row
             event={}
@@ -595,8 +585,7 @@ class add_eps(process.process):
                 event[f] = row[f]
             
             # fields that don't flow thought json that nice.
-            if not event['conf_key']: event['conf_key'] = pk
-            # event['location'] = location
+            if not event['conf_key']: event['conf_key'] = "pk{}".format(pk)
             event['start'] = datetime.datetime.strptime(
                     row['start'], '%Y-%m-%dT%H:%M:%S' )
 
@@ -665,7 +654,6 @@ class add_eps(process.process):
           if room not in rooms: rooms.append(room)
       return rooms
 
-    # def get_rooms(self, schedule, key='room'):
     def get_rooms(self, schedule, key='location'):
       rooms=set()
       for row in schedule:
@@ -979,7 +967,6 @@ class add_eps(process.process):
 
 
     def pyconde2011(self, schedule, show):
-        # importing from some other instance
         rooms = self.get_rooms(schedule,'room')
         rooms = [r for r in rooms if r != 'Plenary' ]
         self.add_rooms(rooms,show)
@@ -1111,24 +1098,16 @@ class add_eps(process.process):
         rooms.sort()
         self.add_rooms(rooms,show)
 
-
         events = self.scipy_events(schedule)
         self.add_eps(events, show)
         return 
 
-
-
     def veyepar(self, schedule, show):
-        print "veyepar"
-        # importing from some other instance
-        rooms = self.snake_holes(schedule)
-        # hack because the veyepar export doesn't give room name
-        # will fix when I need to.
-        # rooms = ['CrowdSPRING']
-        rooms = [ str(r) for r in rooms ]
+        events = self.snake_bites(schedule)
+
+        rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
 
-        events = self.snake_bites(schedule,rooms[0])
         self.add_eps(events, show)
         return 
 
@@ -2380,6 +2359,56 @@ class add_eps(process.process):
 
         return 
 
+    def prodconf14(self,schedule,show):
+
+      field_maps = [
+        ('room','location'),
+        ('title','name'),
+        ('speaker','authors'),
+        ('description','description'),
+        ('start','start'),
+        ('end','end'), 
+       ]
+
+      events = self.generic_events(schedule, field_maps)
+
+      pk = 1
+      for event in events: 
+        if self.options.verbose: 
+            print("event:")
+            pprint.pprint(event)
+
+        event['conf_key'] = "pk{}".format(pk)
+        pk += 1
+
+        if event['authors'] is None:
+            event['authors'] = ', '.join(
+                    [a['name'] for a in event['raw']['speakers']])
+        else:
+            event['authors'] = event['authors']['name']
+
+        event['emails'] = ''
+        event['released'] = False 
+        event['license'] = False 
+        event['conf_url'] = '' 
+        event['tags'] = '' 
+
+        event['start'] = datetime.datetime.strptime( 
+               event['start'], '%Y-%m-%dT%H:%M:%S' )
+        event['end'] = datetime.datetime.strptime( 
+               event['end'], '%Y-%m-%dT%H:%M:%S' )
+        delta = event['end'] - event['start']
+        minutes = delta.seconds/60 
+        event['duration'] = "00:%s:00" % ( minutes) 
+
+
+      rooms = self.get_rooms(events)
+      self.add_rooms(rooms,show)
+
+      self.add_eps(events, show)
+
+      return 
+
 
 #################################################3
 # main entry point 
@@ -2452,7 +2481,6 @@ class add_eps(process.process):
         if url.startswith('file'):
             f = open(url[7:])
             # j = f.read()
-            # schedule = json.loads(j)
         else:
 
             session = requests.session()
@@ -2519,8 +2547,10 @@ class add_eps(process.process):
             # lets hope it is json, like everything should be.
             # j = response.text
 
-            # schedule = response.json
-            schedule = response.json()
+            if url.startswith('file'):
+                schedule = json.loads(f.read())
+            else:
+                schedule = response.json()
 
             # if it is a python prety printed list:
             # (pyohio 2012)
@@ -2538,6 +2568,13 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if self.options.show =='prodconf14':
+            print("what?")
+            return self.prodconf14(schedule,show)
+
+        if self.options.show =='kiwipycon2014':
+            return self.veyepar(schedule,show)
 
         if self.options.show =='chicago_erlang_factory_lite_2014':
             return self.erlang_chi_2014(schedule,show)
@@ -2683,7 +2720,7 @@ class add_eps(process.process):
                 'released', 'license', 'tags',
                 'conf_key', 'conf_url',
                 'host_url', 'public_url',
-        )    
+                )    
             print [k for k in v_keys if k in s_keys]
             print [k for k in v_keys if k not in s_keys]
 
@@ -2698,6 +2735,7 @@ class add_eps(process.process):
           help='dump keys of input stream' )
 
     def work(self):
+      print("working")
       if self.options.client and self.options.show:
 
         client,created = Client.objects.get_or_create(slug=self.options.client)
@@ -2727,6 +2765,7 @@ class add_eps(process.process):
             Episode.objects.filter(show=show).delete()
 
         self.show = show
+        print("to the show!")
         self.one_show(show)
 
 if __name__ == '__main__':

@@ -233,8 +233,9 @@ class process(object):
           print '#%s: "%s" locked on %s by %s' % (ep.id, ep.name, ep.locked, ep.locked_by)
           ret = None
       else:
+        # ready_state:
         # None means "don't care", 
-        # ready means ready, 
+        # ready == X means ready to do X, 
         # force is dangerous and will likely mess tings up.
         if self.ready_state is None \
            or ep.state==self.ready_state \

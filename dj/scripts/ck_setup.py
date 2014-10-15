@@ -68,12 +68,12 @@ class ck_setup(process):
                 client_id_field,key,service)
 
         if not key:
-            print 'client.{} is blank'.format(client_id_field)
+            p_warn('client.{} is blank'.format(client_id_field))
             return False
         elif key in keys:
             print 'key "{}" found in keys.'.format(key)
         else:
-            print 'key "{}" NOT found in keys.'.format(key)
+            p_warn('key "{}" NOT found in keys.'.format(key))
             raise AttributeError
 
         secrets = creds[key]
@@ -83,7 +83,7 @@ class ck_setup(process):
         print('checking for existance of {}'.format(cred_keys))
         for cred_key in cred_keys:
             if cred_key not in secrets:
-                print('"{}" NOT found.'.format(cred_key))
+                p_warn('"{}" NOT found.'.format(cred_key))
 
         return secrets
 

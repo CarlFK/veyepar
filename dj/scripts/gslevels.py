@@ -10,7 +10,8 @@ import optparse
 import numpy
 import os
 
-from gi.repository import GObject, Gst, GLib
+from gi.repository import Gst, GLib
+# from gi.repository import GObject, Gst, GLib
 Gst.init(None)
 
 class AudioPreviewer:
@@ -47,6 +48,13 @@ class AudioPreviewer:
 
 
     def _messageCb(self, bus, message):
+
+        if message is None:
+            print("_messageCb called with bus:{} message:{}".format(
+                bus, message))
+            
+            import code; code.interact(local=locals())
+
         t = message.type
 
         if t == Gst.MessageType.ELEMENT \

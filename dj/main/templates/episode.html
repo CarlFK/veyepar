@@ -73,7 +73,7 @@
 {% endif %}
 
 {% if episode.public_url %}
-<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio"><br/>
+<img src ="http://veyepar.{{episode.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/mp4/{{episode.slug}}_audio.png" alt="final audio"><br/>
 {% endif %}
 
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
