@@ -28,6 +28,10 @@ class bcolors:
     FAIL = '\033[91m'
     ENDC = '\033[0m'
 
+def p_print(text):
+    print(text)
+    return 
+
 def p_okg(text):
     print(bcolors.OKGREEN + text +bcolors.ENDC)
     return 
@@ -54,7 +58,7 @@ class ck_setup(process):
             creds = getattr(pw, service)
         except AttributeError as e:
             # 'module' object has no attribute 'foo'
-            print "pw.py does not have:", service
+            p_fail('pw.py does not have: "{}"'.format(service))
             return False
 
         keys = creds.keys()
@@ -71,7 +75,7 @@ class ck_setup(process):
             p_warn('client.{} is blank'.format(client_id_field))
             return False
         elif key in keys:
-            print 'key "{}" found in keys.'.format(key)
+            p_okg('key "{}" found in keys.'.format(key))
         else:
             p_warn('key "{}" NOT found in keys.'.format(key))
             raise AttributeError
@@ -215,7 +219,7 @@ class ck_setup(process):
 
         category_key = self.client.category_key
         if category_key:
-            p_okg("client.category_key: {}".format(category_key))
+            p_print("client.category_key: {}".format(category_key))
         else: 
             p_warn("client.category_key not set.")
             return False

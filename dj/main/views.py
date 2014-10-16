@@ -659,7 +659,8 @@ def clients(request):
         form=None
 
     clients=Client.objects.annotate( 
-            max_date=Max('show__episode__start'))\
+            max_date=Max('show__episode__start')) \
+            .filter(active=True) \
             .order_by('-max_date')
 
     return render_to_response('clients.html',

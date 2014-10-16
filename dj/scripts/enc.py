@@ -169,7 +169,7 @@ class enc(process):
         if texts['authors']:
             # prefix = "Featuring" if "," in texts['authors'] else "By"
             # tree[1]['presenternames'].text="%s %s" % (prefix,texts['authors'])
-            tree[1]['presenternames'].text=texts['authors']
+            tree[1]['presenternames'].text="By_{}".format(texts['authors'])
         else:
             # remove the text (there is a placholder to make editing sane)
             tree[1]['presenternames'].text=""
@@ -231,7 +231,11 @@ class enc(process):
     # so clean up previous run and 
     # check for the existance of a new png
     if os.path.exists(png_name):  os.remove(png_name)
-    cmd=["inkscape", svg_name, "--export-png", png_name]
+    # cmd=["inkscape", svg_name, "--export-png", png_name]
+    cmd=["inkscape", svg_name, 
+            "--export-png", png_name,
+            # "--export-width", "740",]
+            ]
     ret = self.run_cmds(episode,[cmd])
     ret = os.path.exists(png_name)
 
