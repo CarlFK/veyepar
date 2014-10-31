@@ -9,6 +9,6 @@
 }
 
 .cl-showmore:checked ~ .cl-summary ~ .cl-detail {
-    max-height: 80px;
+    max-height: 400px;
 }
 
