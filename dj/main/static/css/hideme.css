@@ -1,10 +1,14 @@
+/* hideme.css
+ show/hide the cutlist detail that is normally not needed.
+*/
 
-.cl-table {
+.cl-detail {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease;
 }
-input[type=checkbox]:checked ~ .q ~ .cl-table {
+
+.cl-showmore:checked ~ .cl-summary ~ .cl-detail {
     max-height: 80px;
 }
 

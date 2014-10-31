@@ -117,7 +117,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
 <div id="sheets">
 {% if episode.image_file_set.all %}
-<div class="viewer" style="height: 200px; width: 800px;" >
+ <div class="viewer" style="height: 200px; width: 800px;" >
 {% for img in episode.image_file_set.all %}
 {% if episode.show.slug == "debconf14" %}
     <img alt="recording sheet" src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
@@ -125,8 +125,8 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
     <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=300 height=400 >
 {% endif %}
 {% endfor %}
-</div>
-</div>
+ </div> <!-- class="viewer" -->
+</div> <! -- id="sheets" --> 
 
  <script>
 $(".viewer").zoomer();
@@ -147,18 +147,19 @@ $(".viewer").zoomer();
 
 {% for cl,chap,clrfform in clrffs %}
 
-<div id="{{cl.id}}">
-  <input type="checkbox" id="cl-{{forloop.counter0}}">
-  <label class="q" for="cl-{{forloop.counter0}}">show more...</label>
+<div id="cl{{cl.id}}">
+
+  {{ clrfform.apply }}{{ clrfform.apply.label_tag }}
   {{cl.raw_file.filename}}
+
   <b>S:</b> {{cl.raw_file.start|date:"H:i:s"}} - <b>E:</b> {{cl.raw_file.end|date:"H:i:s"}}
           <b>D:</b> {{cl.raw_file.duration}}
           {% if clrfform.start.value %} (<b>Start:</b> {{ clrfform.start.value }}){% endif %} 
   {% if clrfform.end.value %} (<b>End:</b> {{ clrfform.end.value }}){% endif %} 
-  {{ clrfform.apply }}
-  {{ clrfform.apply.label_tag }}
 
-  <div class="cl-table">
+  <input type="checkbox" id="cl-{{forloop.counter0}}" class="cl-showmore"> <label class="cl-summary" for="cl-{{forloop.counter0}}">show more...</label>
+
+  <div class="cl-detail">
       {{clrfform.clid}}
 
 ~/Videos/veyepar/{{cl.raw_file.base_url}}.dv 
@@ -280,8 +281,8 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
 
   {% endwith %}
 
-  </div> <!-- show/hide -->
-  </div> <!-- show/hide -->
+  </div> <!-- class="cl-detail" -->
+</div> <!-- id="{{cl.id}}" -->
 {% endfor %}
 
 
