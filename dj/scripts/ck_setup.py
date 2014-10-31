@@ -293,12 +293,13 @@ class ck_setup(process):
             # self.ck_pw("smtp","email_id")
             self.ck_email()
 
-            self.ck_pw("rax","rax_id",['api_key', 'user'])
-            self.ck_cdn()
+            if self.ck_pw("rax","rax_id",['api_key', 'user']):
+                self.ck_cdn()
 
             secrets = self.ck_pw(
                     "richard","richard_id",['host', 'api_key', ])
-            self.ck_richard(secrets)
+            if secrets:
+                self.ck_richard(secrets)
 
             secrets = self.ck_pw(
                     "yt","youtube_id",['filename', ])

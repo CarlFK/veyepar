@@ -56,7 +56,8 @@ class Command(BaseCommand):
             """
 
             # veyepar URL
-            if url.startsiwth("http://veyepar.nextdayvideo.com"):
+            if arg.startswith("http://veyepar.nextdayvideo.com"):
+                print("not implemented yet.")
 
 
             # look for final video url
@@ -156,7 +157,8 @@ Feel free to reply with questions, we are still working out this process.
                 for url in urls:
                     self.one_arg(url)
             else:
-                self.one_arg(url)
+                for url in args:
+                    self.one_arg(url)
 
              
                 

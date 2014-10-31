@@ -1066,6 +1066,27 @@ def raw_file_audio(request):
         context_instance=RequestContext(request) )
 
 
+def final_file_audio(request):
+
+    show = Show.objects.get(id=request.GET['show_id'])
+    client=show.client
+    episodes=Episode.objects.filter(show=show,).order_by('start')
+
+    state = request.GET['state']
+    if state is not None:
+        episodes=episodes.filter(state=state)
+
+
+
+    return render_to_response('final_file_audio.html',
+        {
+          'client':client,
+          'show':show,
+          'episodes':episodes,
+        },
+        context_instance=RequestContext(request) )
+
+
 def orphan_img(request, show_id, ):
 
     show=get_object_or_404(Show,id=show_id)

@@ -169,7 +169,7 @@ class enc(process):
         if texts['authors']:
             # prefix = "Featuring" if "," in texts['authors'] else "By"
             # tree[1]['presenternames'].text="%s %s" % (prefix,texts['authors'])
-            tree[1]['presenternames'].text="By_{}".format(texts['authors'])
+            tree[1]['presenternames'].text="{}".format(texts['authors'])
         else:
             # remove the text (there is a placholder to make editing sane)
             tree[1]['presenternames'].text=""

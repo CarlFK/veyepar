@@ -81,6 +81,7 @@ urlpatterns += patterns(
         name='overlaping_files'),
 
     url(r'raw_file_audio/$', raw_file_audio, name='raw_file_audio'),
+    url(r'final_file_audio/$', final_file_audio, name='final_file_audio'),
 
     url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
         name='orphan_dv'),

@@ -126,7 +126,7 @@ class csv(process):
 
     # write out episode data
     for ep in episodes:
-        if not ep.archive_mp4_url: 
+        if not ep.rax_mp4_url: 
             # skip episodes that have not been uploaded yet.
             continue
 
@@ -169,10 +169,10 @@ class csv(process):
         # txt.write("%s %s\n" % (row['blip'],row['name']))
         # html.write('<a href="%(blip)s">%(name)s</a>\n%(blip)s\n'%row)
         # wget.writelines(["%s\n" % c['url'] for c in blip_meta['contents']])
-        wget.writelines( ep.archive_mp4_url + "\n" )
+        wget.writelines( ep.rax_mp4_url + "\n" )
 
         sh.writelines("wget -N '%s' -O %s.mp4\n" % (
-            ep.archive_mp4_url, ep.slug) )
+            ep.rax_mp4_url, ep.slug) )
 
         curl.writelines("echo Checking %s ...\n" % (
             ep.slug) )

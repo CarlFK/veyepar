@@ -326,6 +326,51 @@ class post(process):
 
             return success
 
+    def do_vimeo(self,ep,files,private,meta):
+
+        vimeo_success = False
+
+        uploader = vimeo_uploader.Uploader()
+
+        uploader.user = ep.show.client.vimeo_id
+        uploader.pathname = files[0]['pathname']
+        uploader.meta = meta
+
+        if self.options.test:
+            print 'test mode:'
+            print "user key:", uploader.user
+            print 'files = %s' % files
+            print 'meta = %s' % pprint.pformat(meta)
+            print 'skipping vimeo_upoad.py uploader.upload()'
+            print len(meta['description'])
+
+        elif ep.host_url:
+            print "skipping vimeo, already there."
+            youtube_success = True
+
+        else:
+
+            # down to next layer of code that will do the uploading
+            # uploader.debug_mode=True
+            youtube_success = uploader.upload()
+
+
+            if youtube_success:
+                if self.options.verbose: print uploader.new_url
+
+                # save new youtube url
+                ep.host_url = uploader.new_url
+                # for test framework
+                self.last_url = uploader.new_url
+
+            else:
+                print "youtube error! zomg"
+                ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
+
+            save_me(ep)
+
+        return youtube_success
+
     def process_ep(self, ep):
 
         if not ep.released: # and not self.options.release_all:
@@ -346,13 +391,17 @@ class post(process):
         if not ep.show.client.youtube_id: youtube_success = True
         else: youtube_success = self.do_yt(ep,files,True,meta)
 
-        # upload arc
+        # upload archive.org
         if not ep.show.client.archive_id: archive_success = True
         else: archive_success = self.do_arc(ep,files,meta)
 
-        # upload rax
+        # upload rackspace cdn
         if not ep.show.client.rax_id: rax_success = True
         else: rax_success = self.do_rax(ep,files,meta)
+
+        # upload vimeo (needs upgrading to new api)
+        # if not ep.show.client.vimeo_id: vimeo_success = True
+        # else: vimeo_success = self.do_vimeo(ep,files,meta)
 
         return True
                 # youtube_success 

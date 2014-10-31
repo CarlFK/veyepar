@@ -12,13 +12,19 @@ veyepar:
 
   store images of recording sheets
      ocr just the id:1234
+     man tesseract
+              -psm N
+               4 = Assume a single column of text of variable sizes.
+               tesseract.PSM_SINGLE_COLUMN = 4
+               8 = Treat the image as a single word.
+               tesseract.PSM_SINGLE_WORD = 8
 
   next/prev (match recording sheet: same room/day)
 
   split long talk (tutorials) into parts.
 
   error handling:
-      encode and uploads neat attention
+      encode and uploads nead attention
       log error, continue with next episode. 
       encode errors:   
         inkscape svg/png fail
@@ -68,7 +74,7 @@ old: https://developers.google.com/gdata/
         reference back to veyepar page (hidden to public)
         reference to conference site page (for slides)
       
-      save raw json per episode  - nah, not use.
+      save raw json per episode  - nah, no use.
       
    move show.schedule_url to client.
     
@@ -98,8 +104,6 @@ slugify talk titles-
 model:
   
   episode:
-    languge (German...)
-    author Twitter handles
 
   child table of output files
     mp4, ogv, mp3, facc...
@@ -124,10 +128,6 @@ process to check if a file is avalible for public viewing:
   BucketID / Richard Category
     Sometimes this is per client, sometimes per show.
     thought: one field in each, if Show blank, look to client.
-
-  location:
-    channel_copy - audio misconfiguration is often caused by venue issues
-    warning: it often gets fixed the 2nd day.
 
 wallpaper 
   logos:

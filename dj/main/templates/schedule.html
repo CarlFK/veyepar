@@ -8,15 +8,17 @@
 {% block content %}
 
   <table width=100%>
-    <thead> <tr>   
-    <td></td>
-    {% for location in locations %}
-      <td>{{ location.name }}</td>
-    {% endfor %}
-    </tr></thead> 
-    
+
     {% for day in days %}
-      <tr class=row1><td> {{day.0|date:"D d"}} </td></tr>
+
+        <thead> <tr>   
+        <td></td>
+        {% for location in locations %}
+          <td>{{ location.name }}</td>
+        {% endfor %}
+        </tr></thead> 
+    
+        <tr class=row1><td><b>{{day.0|date:"D d"}}</b></td></tr>
       <tr><td><hr></td></tr>
        {% for t in day.1 %}
          <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
@@ -27,7 +29,8 @@
 <a style="background-color:{{episode.released|yesno:"#70ff70,#ff0000,#cccccc"}};" href="E/{{episode.id}}/">[_] {{ episode.name }}</a>
               {# <a href="{{episode.description}}/">{{ episode.conf_url }}</a> {{ episode.duration }} #}
               {{episode.authors}}
-              {{ episode.duration }} 
+              D: {{ episode.duration }} 
+              E: {{ episode.end|date:"H:i" }} 
               {% if episode.emails %} [..] {% endif %}
             {% endif %}
             </td>

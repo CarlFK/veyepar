@@ -28,7 +28,8 @@ class mk_audio_png(process):
             png_filename = os.path.join(ext,"%s_audio.png"%(ep.slug,))
             ret = p.mk_png( os.path.join(self.show_dir, png_filename ))
 
-            self.file2cdn(ep.show, png_filename)
+            if self.options.rsync:
+                self.file2cdn(ep.show, png_filename)
        
         # tring to fix the db timeout problem
         # this is bad - it steps on the current values im memory:
@@ -43,6 +44,11 @@ class mk_audio_png(process):
             ep.save()
 
         return ret
+
+    def add_more_options(self, parser):
+        parser.add_option('--rsync', action="store_true",
+            help="upload to DS box.")
+
 
 if __name__ == '__main__':
     p=mk_audio_png()

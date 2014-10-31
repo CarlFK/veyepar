@@ -9,16 +9,16 @@ speakers - list of:
   name - person's name.
   email - email address (hide behind auth)
   twitter_id - twitter @username
-  bio - infor about the person
+  bio - info about the person
   picture_url - head shot
 summary - short description of talk, 1 or 2 lines.
 description - description of the talk (paragraphs are fine, markdown great)
 tags - list of serch terms, including sub topics briefly discussed in the talk.
 room - room as described/labled by the venue
 room_alias - room as described/labled on conference site
-start - datetime in some parsable format 
-duration - int minutes 
-end - datetime in some parsable format 
+start - '%Y-%m-%dT%H:%M:%S' "2014-11-15T16:35:00",
+end - (provide end or duration) 
+duration - int minutes (preferred)
 priority - 0=no video, 5 = maybe video, 9=make sure this gets videod.
 released - speakers have given permission to record and distribute.
 license - CC license 
@@ -411,6 +411,9 @@ class add_eps(process.process):
                 # from the source row to the episode object
                 for f in fields:
                     setattr( episode, f, row[f] )
+
+                # save whatever data was passed
+                episode['conf_meta']=json.dumps(row)
 
                 episode.save()
 
@@ -2409,6 +2412,58 @@ class add_eps(process.process):
 
       return 
 
+    def nodevember14(self,schedule,show):
+
+      # remove rows where id='empty' 
+      schedule = [s for s in schedule if s['id'] != 'empty']
+
+      field_maps = [
+              ('room','location'),
+              ('name','name'),
+              ('speaker','authors'),
+              # ('','emails'),
+              ('description','description'),
+              ('start','start'),
+              ('end','end'),
+              # ('','duration'),
+              ('released','released'),
+              ('license','license'),
+              # ('','tags'),
+              ('id','conf_key'),
+              ('conf_url','conf_url'),
+       ]
+
+      events = self.generic_events(schedule, field_maps)
+
+      for event in events: 
+        if self.options.verbose: 
+            print("event:")
+            pprint.pprint(event)
+
+        speakers = [event['authors']]
+        event['authors'] = ', '.join(
+                [a['name'] for a in speakers])
+        event['emails'] =  ', '.join(
+                [a['name'] for a in speakers])
+        event['tags'] = '' 
+
+        event['start'] = datetime.datetime.strptime( 
+               event['start'], '%Y-%m-%dT%H:%M:%S' )
+        event['end'] = datetime.datetime.strptime( 
+               event['end'], '%Y-%m-%dT%H:%M:%S' )
+        delta = event['end'] - event['start']
+        minutes = delta.seconds/60 
+        event['duration'] = "00:%s:00" % ( minutes) 
+
+
+      rooms = self.get_rooms(events)
+      self.add_rooms(rooms,show)
+
+      self.add_eps(events, show)
+
+      return 
+
+
 
 #################################################3
 # main entry point 
@@ -2569,8 +2624,10 @@ class add_eps(process.process):
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
 
+        if self.options.show =='nodevember14':
+            return self.nodevember14(schedule,show)
+
         if self.options.show =='prodconf14':
-            print("what?")
             return self.prodconf14(schedule,show)
 
         if self.options.show =='kiwipycon2014':
@@ -2765,7 +2822,6 @@ class add_eps(process.process):
             Episode.objects.filter(show=show).delete()
 
         self.show = show
-        print("to the show!")
         self.one_show(show)
 
 if __name__ == '__main__':

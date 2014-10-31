@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (C) 2009 Marc Poulhiès
 #
-# Python module for Vimeo
 #
 # This is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +17,10 @@
 
 
 """
-This is an upload script for Vimeo using its v2 API
-"""
+Simple upload for Vimeo using its v2 API
+User/Password are stored in pw.py
 
+"""
 
 import vimeo
 import vimeo.config
@@ -39,6 +38,8 @@ class Uploader(object):
     user=''
 
     debug_mode=False
+
+    new_url=None
 
     def auth(self, creds):
 
@@ -58,6 +59,7 @@ class Uploader(object):
         t = client.vimeo_videos_upload_getTicket()
         vup = vimeo.convenience.VimeoUploader(client, t, quota=quota)
         
+        print("Uploading to Vimeo...")
         vup.upload(self.files[0]['pathname'])
 
         vc = vup.complete()
@@ -71,15 +73,15 @@ class Uploader(object):
             import code
             code.interact(local=locals())
 
-
-    ## use a sleep to wait a few secs for vimeo servers to be synced.
-    ## sometimes, going too fast
+        ## use a sleep to wait a few secs for vimeo servers to be synced.
+        ## sometimes, going too fast
         time.sleep(5)
 
-        # client.vimeo_videos_setTitle(self.meta['title'], vid)
-        # client.vimeo_videos_setDescription(self.meta['description'], vid)
+        client.vimeo_videos_setTitle(self.meta['title'], vid)
+        client.vimeo_videos_setDescription(self.meta['description'], vid)
 
         """
+        # left over from reference code
         if options.privacy :
             pusers = []
             ppwd = None
@@ -100,7 +102,7 @@ class Uploader(object):
 if __name__ == '__main__':
 
     u = Uploader()
-    u.user='continuum'
+    u.user='test'
     u.files = ['test.mp4']
     u.meta = {
       'title': "test title",
@@ -110,6 +112,6 @@ if __name__ == '__main__':
 
     u.upload()
 
-    print u.url
+    print u.new_url
 
 

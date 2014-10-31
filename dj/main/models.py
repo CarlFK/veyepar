@@ -19,7 +19,8 @@ def time2s(time):
 
 class Client(models.Model):
     sequence = models.IntegerField(default=1)
-    active = models.BooleanField(help_text="Turn off to hide from UI.")
+    active = models.BooleanField(default=True,
+            help_text="Turn off to hide from UI.")
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135, blank=True, null=False,
             help_text="dir name to store input files", )
@@ -112,6 +113,7 @@ class Show(models.Model):
             help_text = "Category for Richard")
     tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
+    conf_url = models.CharField(max_length=200, null=True, blank=True)
     schedule_url = models.CharField(max_length=235, null=True, blank=True)
     announcement_state = models.IntegerField(null=True, blank=True,
         choices=ANN_STATES, default=ANN_STATES[1][0], )
@@ -241,21 +243,32 @@ class Episode(models.Model):
         help_text="Talk title (synced from primary source)")
     slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="file name friendly version of name")
+    priority = models.IntegerField(null=True,blank=True,
+        help_text="lower may not get recorded")
     released = models.NullBooleanField(null=True,blank=True,
         help_text="has someone authorised pubication")
     conf_key = models.CharField(max_length=32, blank=True,
         help_text='primary key of event in conference system database.')
     conf_url = models.CharField(max_length=335,blank=True,default='',
-        help_text="event's details on conference site  (name,desc,time,author,files,etc)")
+        help_text="Event's details on conference site  (name,desc,time,author,files,etc)")
+    conf_meta = models.TextField(blank=True,default='',
+        help_text="Data provided by API")
     authors = models.TextField(null=True,blank=True,)
     emails = models.TextField(null=True,blank=True, 
         help_text="email(s) of the presenter(s)")
+    twitter_id = models.CharField(max_length=135, blank=True, null=False,
+        help_text="Data provided by API")
+    language = models.CharField(max_length=20, blank=True, null=False,
+        help_text="Spoken languge (German, English...)")
+
     edit_key = models.CharField(max_length=32,
             blank=True,
             null=True,
             default = str(random.randint(10000000,99999999)),
         help_text="key to allow unauthenticated users to edit this item.")
-    description = models.TextField(blank=True, help_text="(synced from primary source)")
+
+    summary = models.TextField(blank=True, help_text="short")
+    description = models.TextField(blank=True, help_text="markdown")
     tags = models.CharField(max_length=135,null=True,blank=True,)
 
     normalise = models.CharField(max_length=5,null=True,blank=True, )
@@ -292,6 +305,7 @@ class Episode(models.Model):
 
     stop = models.NullBooleanField(
              help_text="Stop process.py from processing anymore")
+
     @models.permalink
     def get_absolute_url(self):
         return ('episode', [self.id])
