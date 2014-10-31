@@ -1,0 +1,14 @@
+{# rf_audio.html #}
+{% extends "base.html" %}
+{% block content %}
+
+{% for episode in episodes %}
+
+<a href="{% url episode episode.id %}">
+    {{episode.name}}<br/>
+    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio"><br/>
+  <img src ="http://veyepar.{{episode.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/mp4/{{episode.slug}}_audio.png" alt="final audio"><br/>
+   </a>
+{% endfor %}
+
+{% endblock %}
