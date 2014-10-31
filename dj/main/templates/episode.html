@@ -6,6 +6,7 @@
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script src="http://formstone.it/components/Zoomer/jquery.fs.zoomer.js"></script>
 <link href="http://formstone.it/components/Zoomer/jquery.fs.zoomer.css" rel="stylesheet">
+<link href="{{STATIC_URL}}css/hideme.css" rel="stylesheet">
 <title>veyepar: {{episode.name}}</title>
 {% endblock %}
 
@@ -146,20 +147,18 @@ $(".viewer").zoomer();
 
 {% for cl,chap,clrfform in clrffs %}
 
-<div class="panel-group" id="accordion">
-<div class="panel">
-  <div class="panel-heading"></div>
-  <div class="panel-title"></div> 
-  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{cl.id}}">+ more...</a>
-  <b>{{cl.raw_file.filename}}</b>
-  S: {{cl.raw_file.start|date:"H:i:s"}} - E: {{cl.raw_file.end|date:"H:i:s"}}
-  D: {{cl.raw_file.duration}}
-  {% if clrfform.start.value %} (Start: {{ clrfform.start.value }}){% endif %} 
-  {% if clrfform.end.value %} (End: {{ clrfform.end.value }}){% endif %} 
-  {{ clrfform.apply.label_tag }}{{ clrfform.apply }}
+<div id="{{cl.id}}">
+  <input type="checkbox" id="cl-{{forloop.counter0}}">
+  <label class="q" for="cl-{{forloop.counter0}}">show more...</label>
+  {{cl.raw_file.filename}}
+  <b>S:</b> {{cl.raw_file.start|date:"H:i:s"}} - <b>E:</b> {{cl.raw_file.end|date:"H:i:s"}}
+          <b>D:</b> {{cl.raw_file.duration}}
+          {% if clrfform.start.value %} (<b>Start:</b> {{ clrfform.start.value }}){% endif %} 
+  {% if clrfform.end.value %} (<b>End:</b> {{ clrfform.end.value }}){% endif %} 
+  {{ clrfform.apply }}
+  {{ clrfform.apply.label_tag }}
 
-  <div class="panel-collapse collapse" id="{{cl.id}}">
-    <div class="panel-body">
+  <div class="cl-table">
       {{clrfform.clid}}
 
 ~/Videos/veyepar/{{cl.raw_file.base_url}}.dv 
@@ -281,13 +280,9 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
 
   {% endwith %}
 
-    </div> <!-- /panel-body -->
-  </div> <!-- /panel-collapse -->
-
-</div> <!-- /panel -->
-</div> <!-- panel-group -->
+  </div> <!-- show/hide -->
+  </div> <!-- show/hide -->
 {% endfor %}
-
 
 
 <table border=1>

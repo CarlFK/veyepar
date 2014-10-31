@@ -1,0 +1,10 @@
+
+.cl-table {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+input[type=checkbox]:checked ~ .q ~ .cl-table {
+    max-height: 80px;
+}
+
