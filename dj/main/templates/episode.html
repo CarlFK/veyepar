@@ -74,7 +74,8 @@
 {% endif %}
 
 {% if episode.public_url %}
-<img src ="http://veyepar.{{episode.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/mp4/{{episode.slug}}_audio.png" alt="final audio"><br/>
+<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
+<img src ="http://veyepar.{{episode.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio"><br/>
 {% endif %}
 
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
@@ -193,19 +194,19 @@ $(".viewer").zoomer();
             {# {{ clrfform.trash.label_tag }}{{ clrfform.trash }} #}
 
             <tr>
-                <td>Start</td>
+                <td id="start{{cl.id}}">Start</td>
                 <td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td>
                 <td>{{ clrfform.start }}{{chap.0}}</td>
             </tr>
 
             <tr>
-                <td>Duration</td>
-                <td>{{cl.raw_file.duration}}</td>
+                <td id="dur{{cl.id}}a">Duration</td>
+                <td id="dur{{cl.id}}b">{{cl.raw_file.duration}}</td>
                 <td>&nbsp;</td>
             </tr>
 
             <tr>
-                <td>End</td>
+                <td id="end{{cl.id}}">End</td>
                 <td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %}</td>
                 <td>{{ clrfform.end }}{{chap.1}}</td>
             </tr>
@@ -251,7 +252,9 @@ $(".viewer").zoomer();
 src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
 
   {% with forloop.counter0 as x %}
+
     <script>
+
     var elementLeft{{x}} = $('#audio_image_{{cl.id}}').offset().left;
     var imageX{{x}} = 0;
     var vid{{x}} = $( "#rawfile{{cl.id}}" );
@@ -263,12 +266,33 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
        });
 
     $( "#audio_image_{{cl.id}}" ).click(function() {
-        // seems I can't change .currentTime befor something...
+        // seems I can't change .currentTime before something...
         // as long as the user hits play once, all is well.
         // saving/restoring state is too much hassle.
         // vid{{x}}[0].play();
         vid{{x}}[0].currentTime = imageX{{x}};
         // vid{{x}}[0].pause();
+       });
+
+    // move to designated start
+    $( "#start{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = startbox{{x}}.val();
+       });
+
+    // move to 5 sec before the end
+    // (for "oh, it started!")
+    $( "#dur{{cl.id}}a" ).click(function() {
+        vid{{x}}[0].currentTime = {{cl.raw_file.get_seconds}}-5;
+       });
+
+    // back 5 seconds 
+    $( "#dur{{cl.id}}b" ).click(function() {
+            vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-5;
+       });
+
+    // move to designated end
+    $( "#end{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = endbox{{x}}.val();
        });
 
     startbox{{x}}.dblclick(function() {

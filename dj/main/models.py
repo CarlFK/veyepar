@@ -156,21 +156,16 @@ class Raw_File(models.Model):
 
         return rf
 
-
-
-
     def basename(self):
         # strip the extension
         # good for making 1-2-3/foo.png from 1-2-3/foo.dv
         return os.path.splitext(self.filename)[0]
-
 
     def base_url(self):
         """ Returns the url for the file, minus the MEDIA_URL and extension """
         return "%s/%s/dv/%s/%s" % (self.show.client.slug, self.show.slug, 
                                     self.location.slug, 
                                     self.basename())
-
 
     def get_start_seconds(self):
         return time2s( self.start )
@@ -179,11 +174,13 @@ class Raw_File(models.Model):
         return time2s( self.end )
 
     def get_seconds(self):
+        # return durration in seconds (float)
         delta = self.end - self.start
         seconds = delta.days*24*60*60 + delta.seconds
         return seconds 
 
     def get_minutes(self):
+        # return durration in minutes (float)
         return self.get_seconds()/60.0
 
     def __unicode__(self):
