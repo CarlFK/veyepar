@@ -768,6 +768,7 @@ def show_anomalies(request, show_id, ):
           'clean':clean, 'dirty':dirty,
           'max_name_ep':max_name_ep,
           'max_authors_ep':max_authors_ep,
+          'now':datetime.datetime.now(),
         },
     context_instance=RequestContext(request) )
 

@@ -7,11 +7,11 @@ client checklist:
     - room access times for setup, warmup, packup.
     - small room for storage of extra gear and shipping box
     - security for equipment left in rooms overnight 
-    - 2 tables, 2 chairs, room layout diagrams 
+    - Podium, 2 tables, 2 chairs, room layout diagrams 
     - power and 6 outlet power strip at each table.
-    - venue AV contact to arrange audio 
+    - AV contact to arrange audio 
     - internet access (to upload overnight durring show)
-    - venue shipping to receive 800 lb box of gear
+    - shipping deparment to receive 800 lb box of gear
   youtube account (will use NextDayVideo if none specified)
   twitter hashtag for event
   volunteers
