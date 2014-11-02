@@ -106,15 +106,18 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 
 
 <form method="POST">{% csrf_token %}
-<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
 
+<input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show more...</label>
+
+<div class="ep-detail">
 <table border=1 >
 <tbody>
 {{ episode_form }}
 </tbody>
 </table>
+</div>
 
-<input type="submit" value="Save" />
+<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
 
 <div id="sheets">
 {% if episode.image_file_set.all %}

@@ -2,6 +2,16 @@
  show/hide the cutlist detail that is normally not needed.
 */
 
+.ep-detail {
+  max-height: 30px;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.ep-showmore:checked ~ .ep-summary ~ .ep-detail {
+    max-height: 1200px;
+}
+
 .cl-detail {
   max-height: 0;
   overflow: hidden;

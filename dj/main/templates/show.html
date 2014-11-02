@@ -57,7 +57,7 @@ Episode Count: {{episodes.count}}
  <td>{{episode.end|date:"H:i"}}</td>
         <td>{{episode.duration}}</td>
         <td>{{episode.state}}</td>
-        <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+        <td style="white-space:normal"><a href="E/{{episode.id}}/#ep-sm">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>
         <td>{{episode.emails|yesno:"y,"}}</td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/#id_comment" title="{{episode.comment}}">{{episode.comment|length|default:""}}</a></td>
