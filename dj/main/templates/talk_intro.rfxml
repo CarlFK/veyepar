@@ -214,7 +214,7 @@
 				<height>'14 pt'</height>
 				<width>'470.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'149.2 pt'</y>
+				<y>'177.2 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -234,7 +234,7 @@
 				<height>'14 pt'</height>
 				<width>'210.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'177.2 pt'</y>
+				<y>'149.2 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -333,13 +333,23 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"Point at Video Director, when they point back begin the introduction. (Video starts here.)"</expr>
+				<expr>"Introduce the presenter(s) and the talk"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
 				<y>'47.0 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
+				<expr>"Point at the Video Director, when they point back begin the introduction. (Video starts now.)"</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>12</FontSize>
+				<height>'14 pt'</height>
+				<Width>'520.0 pt'</Width>
+				<x>'10.7 pt'</x>
+				<y>'61.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
