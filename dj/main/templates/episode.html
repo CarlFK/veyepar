@@ -197,21 +197,35 @@ $(".viewer").zoomer();
             {# {{ clrfform.trash.label_tag }}{{ clrfform.trash }} #}
 
             <tr>
-                <td id="start{{cl.id}}">Start</td>
+                <td><input type="button" id="go-start-{{cl.id}}" value="Start"> </td>
                 <td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td>
-                <td>{{ clrfform.start }}{{chap.0}}</td>
+                <td>
+                    <input type="button" value="&gt;" id="start{{cl.id}}">
+                    {{ clrfform.start }}
+                    <input type="button" id="grab-start-{{cl.id}}" value="grab">
+                    {{chap.0}}
+                </td>
             </tr>
 
             <tr>
-                <td id="dur{{cl.id}}a">Duration</td>
-                <td id="dur{{cl.id}}b">{{cl.raw_file.duration}}</td>
-                <td>&nbsp;</td>
+                <td>Duration</td>
+                <td>{{cl.raw_file.duration}}</td>
+                <td>
+                    <input type="button" value="-5s" id="back5-{{cl.id}}"> 
+                    <input type="button" value="+5s" id="fwd5-{{cl.id}}"> 
+                    <input type="button" value="end-5s" id="end5-{{cl.id}}"> 
+                </td>
             </tr>
 
             <tr>
-                <td id="end{{cl.id}}">End</td>
+                <td><input type="button" id="go-end-{{cl.id}}" value="End"> </td>
                 <td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %}</td>
-                <td>{{ clrfform.end }}{{chap.1}}</td>
+                <td>
+                    <input type="button" value="&gt;" id="end{{cl.id}}">
+                    {{ clrfform.end }}
+                    <input type="button" id="grab-end-{{cl.id}}" value="grab">
+                    {{chap.1}}
+                </td>
             </tr>
 
             <tr>
@@ -277,20 +291,30 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
         // vid{{x}}[0].pause();
        });
 
-    // move to designated start
+    // move to start
+    $( "#go-start-{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = 0;
+       });
+
+   // move to designated start
     $( "#start{{cl.id}}" ).click(function() {
             vid{{x}}[0].currentTime = startbox{{x}}.val();
        });
 
-    // move to 5 sec before the end
-    // (for "oh, it started!")
-    $( "#dur{{cl.id}}a" ).click(function() {
-        vid{{x}}[0].currentTime = {{cl.raw_file.get_seconds}}-5;
+    // back 5 seconds 
+    $( "#back5-{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-5;
        });
 
-    // back 5 seconds 
-    $( "#dur{{cl.id}}b" ).click(function() {
-            vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-5;
+    // fwd 5 seconds 
+    $( "#fwd5-{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')+5;
+       });
+
+    // move to 5 sec before the end
+    // (for "oh, it started!")
+    $( "#end5-{{cl.id}}" ).click(function() {
+        vid{{x}}[0].currentTime = {{cl.raw_file.get_seconds}}-5;
        });
 
     // move to designated end
@@ -298,11 +322,18 @@ src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/a
             vid{{x}}[0].currentTime = endbox{{x}}.val();
        });
 
-    startbox{{x}}.dblclick(function() {
+    // startbox{{x}}.dblclick(function() {
+    $( "#grab-start-{{cl.id}}" ).click(function() {
         startbox{{x}}.val(vid{{x}}.prop('currentTime')); });
 
-    endbox{{x}}.dblclick(function() {
+    // endbox{{x}}.dblclick(function() {
+    $( "#grab-end-{{cl.id}}" ).click(function() {
         endbox{{x}}.val(vid{{x}}.prop('currentTime')); });
+
+    // move to end (why?  so no one askes why not.)
+    $( "#go-end-{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = {{cl.raw_file.get_seconds}};
+       });
 
     </script>
 
