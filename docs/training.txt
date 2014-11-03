@@ -59,9 +59,10 @@ Recording Sheets:
 
   In DVswitch, cut at anticipated start and end of talk.  
     If correct, mark down time on Sheet.  
-    If not, cut again until you get it right.
-    If not happy with any cuts, write th start time that contains start
-      write that on sheet with a ? 
+    If not, cut again until you feel good about it.
+    If not happy with any cuts, 
+      write the start time that is back far enough and add a ? 
+      hopefully someone will fix it up later.
     It is easy to combine cuts later, so don't worry about a few extra cuts.
 
     Include the introduction, it is a nice way for the video to start.
@@ -73,7 +74,8 @@ Recording Sheets:
     Do not bother writing down the time Q&A starts, it won't be used.
     
 
-If presenter gives an email address, check it is the same as printed on Recording sheet.  If not, cut and maybe mark time of cut and email address.
+If presenter gives an email address, check it is the same as printed on Recording sheet.  If not, cut and maybe mark time of cut and email address.  If you can write it down, grand.
+
 
 VGA switch box: (small black box with red/green lights)
   Buttons above lights cycle lights through 3 states: Red, Green, Off.
