@@ -17,7 +17,7 @@ SHAZ=$url
 PROFDIR=/etc/profile.d
 if [ -d $PROFDIR ]; then
   echo grep -E \"\(name\|MHz\)\" /proc/cpuinfo > $PROFDIR/showcpu.sh 
-  echo lsb_release -d -c > $PROFDIR/showrelease.sh 
+  echo lsb_release --short --description --codename > $PROFDIR/showrelease.sh 
   echo uname -a > $PROFDIR/showkernel.sh 
   # echo cat /sys/bus/firewire/devices/fw?/guid > $PROFDIR/show_fwguid.sh 
 
@@ -332,6 +332,10 @@ wget -N https://raw.github.com/hyades/gst-switch/master/scripts/install.sh
 chmod u+x install.sh 
 sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise universe"
 sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise multiverse"
+sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu $SUITE universe"
+sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu $SUITE multiverse"
+sudo apt-add-repository universe
+sudo apt-add-repository multiverse
 ./install.sh 
 EOT
 chmod 744 $APP 
@@ -339,11 +343,11 @@ chown $NUSER:$NUSER $APP
 
 
 # build melt and all deps
-APP=mkmlt.sh
-wget http://$SHAZ/lc/$APP
-wget -N http://github.com/CarlFK/veyepar/raw/master/setup/nodes/encode/$APP 
-chmod 744 $APP 
-chown $NUSER:$NUSER $APP 
+# APP=mkmlt.sh
+# wget http://$SHAZ/lc/$APP
+# wget -N http://github.com/CarlFK/veyepar/raw/master/setup/nodes/encode/$APP 
+# chmod 744 $APP 
+# chown $NUSER:$NUSER $APP 
 
 ## get mplayer default config 
 APP=.mplayer/config
