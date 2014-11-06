@@ -13,7 +13,8 @@ Title   Lightning Talks
 #
 # 
 # Start time, but no date.  
-# Even if the show is only one day, the date needs to be set somewhere, and my system is not the place.
+# Even if the show is only one day, the date needs to be stated somewhere
 #
-# html tags in the text.  Markdown in the description is OK.
+# html tags in the text is a hassle.  
+# PyVideo (or some instance or Richard) likes Markdown in the description.
 #

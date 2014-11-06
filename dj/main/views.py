@@ -1344,6 +1344,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         # there are other ways of doing this, they suck too.
         form = None
 
+    
     return render_to_response('show.html',
         {'client':client,'show':show,
           'locations':locations,

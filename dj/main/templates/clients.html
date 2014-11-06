@@ -5,7 +5,11 @@
     <h2>Clients</h2>
     <table class=tpick>
         {% for client in clients %}
-            <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}" > <td> {{client.sequence}} </td><td><a href="{% url client client.slug %}">{{ client.name }}</a></td></tr>
+            <tr class="row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}"> 
+                <td>{{client.max_date|date:"Y-M-d"}}</td>   
+                <td><a href="{% url admin:main_client_change client.id%}">{{client.id}}</a> </td>   
+                <td><a href="{% url client client.slug %}">{{ client.name }}</a></td>
+            </tr>
         {% endfor %}
     </table>
 
