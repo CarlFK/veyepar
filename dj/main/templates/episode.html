@@ -74,8 +74,12 @@
 {% endif %}
 
 {% if episode.public_url %}
-<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
-<img src ="http://veyepar.{{episode.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio"><br/>
+  {% if episode.show.slug == "fosdem_2014" %}
+    <img src ="http://964bdd2f965bbc4ca8f5-3ebaa0e988d98119a4fead51a26da83a.r42.cf2.rackcdn.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
+  {% else %}
+    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
+  {% endif %}
+   <br/>
 {% endif %}
 
 <a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
@@ -126,7 +130,7 @@ Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
 {% if episode.show.slug == "debconf14" %}
     <img alt="recording sheet" src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
   {% else %}
-    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=300 height=400 >
+    <img alt="recording sheet" src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=300 height=400 >
 {% endif %}
 {% endfor %}
  </div> <!-- class="viewer" -->
@@ -177,12 +181,12 @@ $(".viewer").zoomer();
           {% elif episode.show.slug == "debconf14" %}
               src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
           {% else %}
-              src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
+              src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
           {% endif %}
           controls
           preload="metadata"
           {# width=200 #}
-          {# poster="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" #}
+          {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" #}
           ></video>
       </td>
 
@@ -270,7 +274,7 @@ $(".viewer").zoomer();
     src ="http://964bdd2f965bbc4ca8f5-3ebaa0e988d98119a4fead51a26da83a.r42.cf2.rackcdn.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png">
 {% else %}
   <img id="audio_image_{{cl.id}}" alt="audio viz" 
-    src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
+    src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
   {% endif %}
 
   {% with forloop.counter0 as x %}
