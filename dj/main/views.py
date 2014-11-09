@@ -1077,6 +1077,10 @@ def final_file_audio(request):
     if state is not None:
         episodes=episodes.filter(state=state)
 
+    epid = request.GET.get('epid')
+    if epid is not None:
+        episodes=episodes.filter(id=epid)
+
     return render_to_response('final_file_audio.html',
         {
           'client':client,
