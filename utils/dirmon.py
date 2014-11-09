@@ -1,10 +1,34 @@
 import errno
 import sys
 import time
+import os
+import subprocess
 
 import _inotify
 
 wds = {}
+
+def enc(dv):
+
+    cmd="ffmpeg2theora --videoquality 4 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --keyint 256 ".split()
+    cmd.append( dv )
+    print ' '.join(cmd)
+
+    p=subprocess.Popen(cmd).wait()
+    return 
+
+
+def process(dirname,filename):
+    
+    base,ext = os.path.splitext(filename)
+    print(base,ext)
+    if ext == ".dv":
+        dvname = os.path.join(dirname,filename)
+        print("encoding ffmpeg2theora {}".format(dvname))
+        enc(dvname)
+    else:
+        print("skipping {}".format(filename))
+
 
 def receive_event(event):
     mask = event["mask"]
@@ -12,9 +36,15 @@ def receive_event(event):
     if mask != _inotify.CLOSE_WRITE:
         print "weird mask", event
         return
+
+    dirname = wds[wd]
+    filename = event['name'].strip(chr(0))
+
     print "closed directory %s file %s" % (
-        wds[wd],
-        event['name'].strip(chr(0)))
+        dirname,
+        filename)
+    
+    process(dirname,filename)
                                            
 if __name__ == '__main__':
     inotify_fd = _inotify.create()
