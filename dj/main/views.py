@@ -190,7 +190,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'comment',
         ]
     if request.user.is_authenticated():
-        fields.extend(['emails', 'edit_key',])
+        fields.extend(['emails', 'edit_key','conf_meta'])
 
     response = HttpResponse(mimetype="application/json")
     serializers.serialize("json", eps, 

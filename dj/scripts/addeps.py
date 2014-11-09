@@ -413,7 +413,7 @@ class add_eps(process.process):
                     setattr( episode, f, row[f] )
 
                 # save whatever data was passed
-                episode['conf_meta']=json.dumps(row)
+                episode.conf_meta=json.dumps(row['raw'])
 
                 episode.save()
 
@@ -2442,9 +2442,10 @@ class add_eps(process.process):
 
         speakers = [event['authors']]
         event['authors'] = ', '.join(
-                [a['name'] for a in speakers])
+                [s['name'] for s in speakers])
         event['emails'] =  ', '.join(
-                [a['name'] for a in speakers])
+                [s['email'] for s in speakers])
+
         event['tags'] = '' 
 
         event['start'] = datetime.datetime.strptime( 
