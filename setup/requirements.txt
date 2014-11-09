@@ -37,3 +37,7 @@ git+https://github.com/CarlFK/google-api-python-client.git#egg=googleapiclient
 # httplib2
 
 # psycopg2
+
+# for util/dirmon.py
+git+https://github.com/maliubiao/python_inotify.git 
+
