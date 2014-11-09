@@ -1073,11 +1073,9 @@ def final_file_audio(request):
     client=show.client
     episodes=Episode.objects.filter(show=show,).order_by('start')
 
-    state = request.GET['state']
+    state = request.GET.get('state')
     if state is not None:
         episodes=episodes.filter(state=state)
-
-
 
     return render_to_response('final_file_audio.html',
         {
