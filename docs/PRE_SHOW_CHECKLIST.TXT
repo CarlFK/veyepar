@@ -4,14 +4,16 @@ client checklist:
   sponsor logo slide show loop to display between talks
   title slide template for videos
   venue contact (typically meeting planner)
+    - shipping department to receive 800 lb box of gear  (it has wheels)
     - room access times for setup, warmup, packup.
-    - small room for storage of extra gear and shipping box
-    - security for equipment left in rooms overnight 
-    - Podium, 2 tables, 2 chairs, room layout diagrams 
-    - power and 6 outlet power strip at each table.
-    - AV contact to arrange audio 
-    - internet access (to upload overnight durring show)
-    - shipping deparment to receive 800 lb box of gear
+    - small room for storage of extra gear and shipping box (optional)
+    - security for equipment left in rooms overnight
+    - Podium, 2 tables, 2 chairs, room layout diagrams
+       (attached image is from another venue)
+    - power and 6 outlet power strip at each of the 2 tables.
+    - AV contact to arrange audio (xlr from PA to camera)
+    - internet access (to process and upload videos overnight and during show)
+
   youtube account (will use NextDayVideo if none specified)
   twitter hashtag for event
   volunteers
