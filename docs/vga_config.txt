@@ -10,18 +10,19 @@ Start with red-green.  slide show projected, monitor shows presenter's laptop.  
 When talk is about to start: press button 1 twice. lights are now green-green.  Presenter gives talk.
 When talk is over, press button 1 once.  This puts back to red-geen.
 
-Key:
-Button 1 (right): projector  
-Button 2 (left): lcd monitor 
+Buttons:
+1 (right): projector  
+2 (left): lcd monitor
+
+Lights:
 Green(A): presenter's laptop
 Red(B): slide show 
 Off: no output
 
 
 Cable Connections:
-B (top) - from slide show vga card
-A (bottom left) - from presenter's laptop
-2 (middle) - to lcd monitor
-1 (right) - to twinpact in, twinpact out to projector
-
-
+B (top) - from slide show vga card (SLAVE)
+A (bottom left) - from presenter's laptop (PRES)
+2 (middle) - to lcd monitor (LCD)
+1 (right) - to twinpact in (Twinpact IN)
+--twinpact out to projector (venue cable)
