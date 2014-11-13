@@ -29,10 +29,10 @@ def process(dv_dir):
         d=dirpath[len(dv_dir)+1:]
         d=dirpath
         # print "checking...", dirpath, d, dirnames, filenames 
-        for f in filenames:
+        filenames.sort()
+        for f in filenames[:-1]: ## skip the last one cuz it might be open
             if f[-3:]=='.dv':
                 one_file(os.path.join(d,f))
-
 
 def parse_args():
     parser = optparse.OptionParser()

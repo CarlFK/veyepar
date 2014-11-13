@@ -1,7 +1,6 @@
 # dirmon.py - monitors a dir for new .dv files.
 import argparse
 import errno
-import sys
 import time
 import os
 import subprocess
@@ -17,7 +16,7 @@ wds = {}
 def enc(dv):
 
     cmd="ffmpeg2theora --videoquality 4 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --keyint 256 ".split()
-    cmd.append( dv )
+    cmd.append(dv)
     print ' '.join(cmd)
 
     p=subprocess.Popen(cmd).wait()
@@ -31,7 +30,7 @@ def process(dirname,filename):
     if ext == ".dv":
         dvname = os.path.join(dirname,filename)
         print("encoding ffmpeg2theora {}".format(dvname))
-        enc(dvname)
+        # enc(dvname)
     else:
         print("skipping {}".format(filename))
 
@@ -98,7 +97,16 @@ def main():
 
     # we only want events where a file opened for write was
     # closed.
-    wd = _inotify.add(inotify_fd, watch_directory, _inotify.CLOSE_WRITE)
+    # wd = _inotify.add(inotify_fd, watch_directory, _inotify.CLOSE_WRITE)
+
+    # plan b: watch for open, look for files that need to be encoded
+    # like the on that was just closed.
+    # wd = _inotify.add(inotify_fd, watch_directory, _inotify.OPEN)
+
+    # didn't work.  what happens with CLOSE
+    # wd = _inotify.add(inotify_fd, watch_directory, _inotify.CLOSE)
+    # no good either.  boo.
+   
     wds[wd] = watch_directory
     while True:
         time.sleep(1) # 1 second

@@ -2440,6 +2440,10 @@ class add_eps(process.process):
             print("event:")
             pprint.pprint(event)
 
+        if event['location'] in ["Room 1","Room 2","Room 3","Room 4"]:
+            # room 1 is really room 100, 2 200...
+            event['location'] = event['location'] + "00" 
+
         speakers = [event['authors']]
         event['authors'] = ', '.join(
                 [s['name'] for s in speakers])

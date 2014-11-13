@@ -332,10 +332,6 @@ wget -N https://raw.github.com/hyades/gst-switch/master/scripts/install.sh
 chmod u+x install.sh 
 sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise universe"
 sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise multiverse"
-sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu $SUITE universe"
-sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu $SUITE multiverse"
-sudo apt-add-repository universe
-sudo apt-add-repository multiverse
 ./install.sh 
 EOT
 chmod 744 $APP 
@@ -343,11 +339,11 @@ chown $NUSER:$NUSER $APP
 
 
 # build melt and all deps
-# APP=mkmlt.sh
-# wget http://$SHAZ/lc/$APP
-# wget -N http://github.com/CarlFK/veyepar/raw/master/setup/nodes/encode/$APP 
-# chmod 744 $APP 
-# chown $NUSER:$NUSER $APP 
+APP=mkmlt.sh
+wget http://$SHAZ/lc/$APP
+wget -N http://github.com/CarlFK/veyepar/raw/master/setup/nodes/encode/$APP 
+chmod 744 $APP 
+chown $NUSER:$NUSER $APP 
 
 ## get mplayer default config 
 APP=.mplayer/config
