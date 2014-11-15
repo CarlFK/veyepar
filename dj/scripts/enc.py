@@ -188,6 +188,9 @@ class enc(process):
     elif ":" in title:
         pos = title.index(":")+1
         title,title2 = title[:pos],title[pos:].strip()  
+    elif "?" in title:
+        pos = title.index("?")+1
+        title,title2 = title[:pos],title[pos:].strip()  
     else:
         title2 = ""
 
