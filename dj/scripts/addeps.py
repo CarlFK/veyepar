@@ -446,14 +446,14 @@ class add_eps(process.process):
                         for f,a1,a2 in diff_fields:
                             if not isinstance(a1,basestring):
                                 print u'veyepar {0}: {1}'.format(f,a1)
-                                print u' source {0}: {1}'.format(f,a2)
+                                print u'   conf {0}: {1}'.format(f,a2)
                             else:
                                 print f
                                 if max(len(a1),len(a2)) < 160:
                                   # print a1
                                   # print a2
                                   print u'veyepar {0}: {1}'.format(f,a1)
-                                  print u' source {0}: {1}'.format(f,a2)
+                                  print u'   conf {0}: {1}'.format(f,a2)
                                 else:
                                   # long string (prolly description)
                                   for i,cs in enumerate(zip(a1,a2)):
@@ -463,7 +463,7 @@ class add_eps(process.process):
                                   i,cs[0].__repr__(),
                                     cs[1].__repr__()) 
                                         print \
-            "#2, diff found at pos {0}:\nveyepar: {1}\nsource:{2}".format(
+            "#2, diff found at pos {0}:\nveyepar: {1}\n   conf: {2}".format(
                                   i,a1[i:i+80].__repr__(),
                                     a2[i:i+80].__repr__()) 
                                         break
@@ -2459,6 +2459,8 @@ class add_eps(process.process):
         delta = event['end'] - event['start']
         minutes = delta.seconds/60 
         event['duration'] = "00:%s:00" % ( minutes) 
+
+        event['conf_url'] = event['conf_url'].replace(".org.com", ".org")
 
 
       rooms = self.get_rooms(events)

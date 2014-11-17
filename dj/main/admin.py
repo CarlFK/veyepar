@@ -60,7 +60,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_display = ('id',
             # 'conf_key', 
             # 'conf_url', 
-            # 'state',
+            'state',
             'name', 
             # 'locked_by', 
             'start', 
@@ -69,7 +69,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'location',
 )
     list_editable = (
-            #'state',
+            'state',
             # 'conf_key', 
             # 'conf_url', 
             # 'sequence', 

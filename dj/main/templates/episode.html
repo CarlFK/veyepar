@@ -157,11 +157,10 @@ $(".viewer").zoomer();
 
 <div id="cl{{cl.id}}">
 
-  {{ clrfform.apply }}{{ clrfform.apply.label_tag }}
   {{cl.raw_file.filename}}
+  {{ clrfform.apply }}{{ clrfform.apply.label_tag }}
 
-  <b>S:</b> {{cl.raw_file.start|date:"H:i:s"}} - <b>E:</b> {{cl.raw_file.end|date:"H:i:s"}}
-          <b>D:</b> {{cl.raw_file.duration}}
+  <u><b>S:</b> {{cl.raw_file.start|date:"H:i:s"}} - <b>E:</b> {{cl.raw_file.end|date:"H:i:s"}} <b>D:</b> {{cl.raw_file.duration}} </u>
           {% if clrfform.start.value %} (<b>Start:</b> {{ clrfform.start.value }}){% endif %} 
   {% if clrfform.end.value %} (<b>End:</b> {{ clrfform.end.value }}){% endif %} 
 
