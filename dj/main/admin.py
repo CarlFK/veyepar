@@ -61,6 +61,8 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'conf_key', 
             # 'conf_url', 
             'state',
+            'host_url',
+            'rax_mp4_url',
             'name', 
             # 'locked_by', 
             'start', 
@@ -70,6 +72,8 @@ class EpisodeAdmin(admin.ModelAdmin):
 )
     list_editable = (
             'state',
+            'host_url',
+            'rax_mp4_url',
             # 'conf_key', 
             # 'conf_url', 
             # 'sequence', 

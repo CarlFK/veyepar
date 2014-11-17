@@ -139,11 +139,16 @@ class post(process):
         # make a key for rackspace cdn object key value store 
         #  <category-slug>/<video-id>_<title-of-video>.mp4
         # if we have that data handy.
+        # otherwise client/show/slug
         key = ''
+
         if ep.show.client.category_key:
             # warning: this does not take into account pvo collisions
             # https://github.com/willkg/richard/blob/master/richard/videos/utils.py#L20  def generate_unique_slug(obj, slug_from, slug_field='slug'):
             key += slugify( ep.show.client.category_key ) + '/'
+        else:
+            key += ep.show.client.slug + '/'+ ep.show.client.slug + '/'
+
 
         if ep.public_url:
             key += get_video_id( ep.public_url) + "_"

@@ -89,6 +89,7 @@ episode:     XXXXXXXXX
     ep = Episode.objects.create(
         show=show,
         location=loc,
+        name=title,
         state=1,
         released=True,
         start = t,
@@ -97,7 +98,6 @@ episode:     XXXXXXXXX
 
     # ep.name = "Test Episode" 
     # ep.name = u'TECHNICI\xc3\x84NS \xc3\x96F CH\xc4\xa8P\xc3\x9d THIS IS Y\xc3\x96\xc3\x9cR C\xc3\x84PT\xc3\x85IN SPE\xc3\x84KING Y\xc3\x96\xc3\x9cR \xc3\x98\xc3\x85PT\xc3\x85IN IS DEA\xcc\x8bD'
-    ep.name = title
 
     ep.sequence = 1
     ep.description = desc
