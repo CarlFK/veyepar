@@ -56,13 +56,9 @@ class add_dv(process):
                   self.one_file(os.path.join(d,f),show,location,seq)
 
     def one_show(self, show):
-      if self.options.verbose:  print "show:", show.slug
       if self.options.whack:
           Raw_File.objects.filter(show=show).delete()
-      self.set_dirs(show)
-      for loc in Location.objects.filter(show=show, active=True):
-        print loc
-        self.one_loc(show,loc)
+      return super(add_dv, self).one_show()
 
     def work(self):
         """

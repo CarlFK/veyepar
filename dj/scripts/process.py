@@ -211,6 +211,7 @@ class process(object):
   def process_eps(self, episodes):
 
     def foo(e):
+     # shard over ...umm.. a bunch of tmux sessions I think.
      s = os.environ.get('STY')
      if s:
        s = s.split('-')
@@ -315,15 +316,15 @@ class process(object):
 
     locs = Location.objects.filter(show=show)
     if self.options.room:
-        loc=Location.objects.get(slug=self.options.room)
-        locs=locs.filter(location=loc)
+        locs = locs.filter(slug=self.options.room)
 
     for loc in locs:
         if self.options.verbose: print loc.name
-        episodes = Episode.objects.filter( location=loc).order_by(
-            'sequence','start',)
-        if self.options.day:
-            episodes=episodes.filter(start__day=self.options.day)
+        # episodes = Episode.objects.filter( location=loc).order_by(
+        #    'sequence','start',)
+        # if self.options.day:
+        #    episodes=episodes.filter(start__day=self.options.day)
+        self.one_loc(show,loc)
 
   def work(self):
         """
@@ -347,7 +348,6 @@ class process(object):
             episodes = episodes.filter(state=self.ready_state)
 
         # episodes = Episode.objects.order_by( 'sequence','start',)
-
 
         self.start=datetime.datetime.now()
         ret = self.process_eps(episodes)

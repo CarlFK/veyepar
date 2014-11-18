@@ -22,9 +22,9 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
-class ts_dv(process):
+class ts_rf(process):
 
-    def one_dv(self, dir, dv, offset_hours ):
+    def one_rf(self, dir, dv, offset_hours ):
 
         """
         get the start of this clip
@@ -105,21 +105,13 @@ class ts_dv(process):
             dv.save()
 
 
-    def one_loc(self,show, location,dir):
-      for dv in Raw_File.objects.filter(show=show, location=location):
-        print dv
-        if not dv.start or self.options.force:
-          self.one_dv(dir,dv, location.hours_offset)
-
-    def one_show(self, show):
-      self.set_dirs(show)
-      locs = Location.objects.filter(show=show)
-      if self.options.room:
-          locs = locs.filter(slug=self.options.room)
-      for loc in locs:
-        dir=os.path.join(self.show_dir,'dv',loc.slug)
-        print show,loc,dir
-        self.one_loc(show, loc, dir)
+    def one_loc(self, show, location):
+        dir=os.path.join(self.show_dir,'dv',location.slug)
+        print show,location,dir
+        for rf in Raw_File.objects.filter(show=show, location=location):
+            print rf
+            if not rf.start or self.options.force:
+                self.one_rf(dir, rf, location.hours_offset)
 
     def work(self):
         """
@@ -144,6 +136,6 @@ class ts_dv(process):
 
 
 if __name__=='__main__': 
-    p=ts_dv()
+    p=ts_rf()
     p.main()
 
