@@ -7,10 +7,10 @@
 import os
 
 from process import process
-from main.models import Client, Show, Episode, Raw_File
+from main.models import Client, Show, Location, Episode, Raw_File
 
 import rax_uploader
-import gslevels
+# import gslevels
 
 class SyncRax(process):
 
@@ -53,8 +53,6 @@ class SyncRax(process):
         if self.options.verbose: print base
         if not self.cdn_exists(show,base):
             self.file2cdn(show,base)
-        if rf.filename == "2014-08-24/19_00_26-1.dv":
-            self.file2cdn(show,base)
 
 
     def rf_audio_png(self, show, rf):
@@ -75,13 +73,16 @@ class SyncRax(process):
    
     def raw_files(self, show):
         print "getting raw files..."
-        for rf in Raw_File.objects.filter(show=show,):
-            if rf.cut_list_set.filter(episode__id=8748):
+        rfs = Raw_File.objects.filter(show=show,)
+	if self.options.room:
+            loc = Location.objects.get(slug=self.options.room)
+            rfs = rfs.filter(location = loc)
+        # if rf.cut_list_set.filter(episode__id=8748)
 
-                if self.options.verbose: print rf
-
-                # self.rf_ogv(show, rf)
-                self.rf_audio_png(show, rf)
+        for rf in rfs:
+            if self.options.verbose: print rf
+            self.rf_ogv(show, rf)
+            # self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )

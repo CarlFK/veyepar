@@ -147,6 +147,14 @@ class process(object):
 
             ret = u.upload()
             print u.new_url 
+            ret = u.new_url
+
+        else:
+            print("file2cdn can't find {}".format(src))
+            ret = False
+
+        return ret
+
 
 
   def set_dirs(self,show):
