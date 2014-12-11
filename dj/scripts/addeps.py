@@ -2549,7 +2549,7 @@ class add_eps(process.process):
             session = requests.session()
 
             # auth stuff goes here, kinda.
-            auth = pw.addeps.get(self.options.show, None)
+            auth = pw.addeps.get(self.options.client, None)
             if auth is not None:
 
                 # get the csrf token out of login page
