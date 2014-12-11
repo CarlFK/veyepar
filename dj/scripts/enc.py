@@ -270,7 +270,12 @@ class enc(process):
 
             print svg_name
 
-            template = os.path.join(self.show_dir, "bling", svg_name)
+            # template = os.path.join(self.show_dir, "bling", svg_name)
+            # os.path.join(self.show_dir, "bling", svg_name)
+            template = os.path.join(
+                    os.path.split(os.path.abspath(__file__))[0],
+                    "bling",
+                    svg_name)
             # happy_filename = episode.slug.encode('utf-8')
             happy_filename = episode.slug
             # happy_filename = ''.join([c for c in happy_filename if c.isalpha()])
@@ -319,7 +324,11 @@ class enc(process):
         mlt_pathname = os.path.join(self.work_dir,"%s.mlt"%episode.slug)
 
 # parse the xml into a tree of nodes
-        mlt_template_name = os.path.join(self.show_dir,"bling/chiweb/chiweb.mlt")
+        # mlt_template_name = os.path.join(self.show_dir,"bling/chiweb/chiweb.mlt")
+        mlt_template_name = os.path.join(self.show_dir,
+            os.path.split(os.path.abspath(__file__))[0],
+            "bling",
+            "chiweb/chiweb.mlt")
         # print mlt_template_name
         # mlt = open(mlt_template_name).read()
         # print mlt
@@ -567,7 +576,11 @@ class enc(process):
         mlt_pathname = os.path.join(self.work_dir,"%s.mlt"%episode.slug)
 
 # parse the xml into a tree of nodes
-        mlt_template_name = os.path.join(self.show_dir,"bling/enc.mlt")
+        # mlt_template_name = os.path.join(self.show_dir,"bling/enc.mlt")
+        mlt_template_name = os.path.join(
+                os.path.split(os.path.abspath(__file__))[0],
+                "bling",
+                "enc.mlt")
         print mlt_template_name
         mlt = open(mlt_template_name).read()
         # print mlt
@@ -857,7 +870,11 @@ class enc(process):
         credits_img = episode.show.client.credits \
                    if episode.show.client.credits \
                    else 'ndv1-black.png'
-        credits_img = os.path.join(self.show_dir, "bling", credits_img)
+        # credits_img = os.path.join(self.show_dir, "bling", credits_img)
+        credits_img = os.path.join(
+                os.path.split(os.path.abspath(__file__))[0],
+                "bling",
+                credits_img)
         if credits_img[-4:] == ".svg":
             # convert to png because melt doesn't do svgs as well
             png_name = credits_img[:-4]+".png"

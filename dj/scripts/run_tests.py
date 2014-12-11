@@ -104,8 +104,9 @@ class Run_Tests(object):
  @callme_maybe
  def make_source_dvs(self):
    """ 
- ` make a set of .dv files
-   similar to what dvswitch creates (dir/filename date/time.dv)
+ ` Make a set of .dv files.
+   Similar to what dvswitch creates (dir/filename date/time.dv)
+   This takes the place of using dvswitch to record an event.
    """
    # get melt version to stick into video
    melt_outs = self.run_cmd(['melt', '--version'], True )
@@ -122,7 +123,6 @@ class Run_Tests(object):
        # each file is 3 seconds long
 
        # encode the text file into .dv
-       # this takes the place of using dvswitch to record an event.
 
        out_file="00_00_%02i.dv" % (i*3)
        frames = 90
@@ -163,10 +163,6 @@ meta.attr.titles.markup=#timecode# \
 -consumer avformat:%(output_file)s \
 pix_fmt=yuv411p" % parms
        self.run_cmd(cmd.split())
-
-   # self.run_cmd(['rm',text_file])
-   cmd = ['cp', '-a', 'bling', self.show_dir ]
-   self.run_cmd(cmd)
 
    return
  

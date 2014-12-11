@@ -180,9 +180,9 @@ class post(process):
             print 'skipping youtube_upoad.py uploader.upload()'
             print len(meta['description'])
 
-        elif ep.host_url:
-            print "skipping youtube, already there."
-            youtube_success = True
+        # elif ep.host_url:
+        #     print "skipping youtube, already there."
+        #    youtube_success = True
 
         else:
 
@@ -190,9 +190,9 @@ class post(process):
             # uploader.debug_mode=True
             youtube_success = uploader.upload()
 
-
             if youtube_success:
-                if self.options.verbose: print uploader.new_url
+                # if self.options.verbose: print uploader.new_url
+                print(uploader.new_url)
 
                 # save new youtube url
                 ep.host_url = uploader.new_url
@@ -227,10 +227,10 @@ class post(process):
                 print 'test mode...'
                 print 'skipping archive_uploader .upload()'
 
-            elif ep.archive_ogv_url:
+            # elif ep.archive_ogv_url:
                 # archive_mp4_url assumes that is what gets filled in 
-                print "skipping archive, already there."
-                archive_success = True
+            #    print "skipping archive, already there."
+            #    archive_success = True
 
             else:
 
@@ -288,13 +288,11 @@ class post(process):
                 print 'skipping rax_uploader .upload()'
                 print 'key_id:', uploader.key_id
 
-            elif ep.rax_mp4_url:
+            # elif ep.rax_mp4_url:
                 # above assumes rax_mp4_url is what gets filled in below
                 # this is so gross.
-                print "skipping rax, already there."
-                rax_success = True
-
-                success = True
+            #    print "skipping rax, already there."
+            #    success = True
 
             else:
 

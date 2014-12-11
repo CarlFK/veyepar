@@ -38,14 +38,7 @@ veyepar:
   upload category - 
      needs default, currently hardcoded to "Education"
 
-  upload to youtube
-     update to new api lib:
-https://code.google.com/p/gdata-python-client/w/list
-https://developers.google.com/youtube/v3/docs/videos/delete
-
-old: https://developers.google.com/gdata/
-"Warning: Most newer Google APIs are not Google Data APIs. The Google Data APIs documentation applies only to the older APIs that are listed in the Google Data APIs directory. For information about a specific new API, see that API's documentation. For information about authorizing requests with a newer API, see Google Accounts Authentication and Authorization."
-
+  youtube:
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      delete old version when replaced by new encode.
@@ -53,10 +46,6 @@ old: https://developers.google.com/gdata/
      # invalid tags cause fail and loop forever - fix this. 
          (fixed by not setting tags)
      
-  don't email presenter until youtube is done processing.
-    review_1.py is a good place to do this.
-    wait 20 min?
-  
   state - need something to handle Canceled talks, breaks, etc.  
     disposition?  
   state - mk_titles, email_titles ?
@@ -88,6 +77,9 @@ old: https://developers.google.com/gdata/
       http://bazaar.launchpad.net/~inkscape.dev/inkscape/trunk/view/head:/share/extensions/svg_and_media_zip_output.py#L208
 
 encoding:
+  remove global -dv-format setting 
+  add support for multiple input formats.  
+    (see: durration and end time formula)
   encode shorter talks first so they can get started uploading sooner.
   soften jump cuts
   create list of cut times relative to start of final video
