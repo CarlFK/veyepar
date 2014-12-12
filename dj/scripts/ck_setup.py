@@ -11,6 +11,7 @@ from django.conf import settings
 import pw
 
 import rax_uploader
+import archive_uploader
 import steve.richardapi
 
 import os
@@ -190,8 +191,28 @@ class ck_setup(process):
         except AttributeError as e:
             p_warn("settings.EMAIL_SENDER not set.")
 
+    def ck_richard(self, secrets):
 
-    def ck_cdn(self):
+        category_key = self.client.category_key
+        if category_key:
+            p_print("client.category_key: {}".format(category_key))
+        else: 
+            p_warn("client.category_key not set.")
+            return False
+
+        print("checking for category...")
+        endpoint = "http://{}/api/v2/".format( secrets['host'] )
+        categories = steve.richardapi.get_all_categories(endpoint)
+        cat_titles = [cat['title'] for cat in categories]
+        print("found {} categories. first 5: {}".format(
+            len(categories), cat_titles[:5] ))
+        if category_key in cat_titles:
+            p_okg('client.category_key:"{}" found.'.format(category_key))
+        else:
+            p_fail('client.category_key:"{}" NOT found.'.format(category_key))
+        return 
+
+    def ck_cdn(self, secrets):
         if self.client.rax_id:
             rax_id = self.client.rax_id
             p_okg("client.rax_id: {}".format(rax_id))
@@ -217,29 +238,40 @@ class ck_setup(process):
 
         # not sure what to do with this...
         # container = cf.get_container(bucket_id)
+        return
 
-
-    def ck_richard(self, secrets):
-
-        category_key = self.client.category_key
-        if category_key:
-            p_print("client.category_key: {}".format(category_key))
-        else: 
-            p_warn("client.category_key not set.")
-            return False
-
-        print("checking for category...")
-        endpoint = "http://{}/api/v2/".format( secrets['host'] )
-        categories = steve.richardapi.get_all_categories(endpoint)
-        cat_titles = [cat['title'] for cat in categories]
-        print("found {} categories. first 5: {}".format(
-            len(categories), cat_titles[:5] ))
-        if category_key in cat_titles:
-            p_okg('client.category_key:"{}" found.'.format(category_key))
+    def ck_archive(self, secrets):
+        if self.client.archive_id:
+            archive_id = self.client.archive_id
+            p_okg("client.archive_id: {}".format(archive_id))
         else:
-            p_fail('client.category_key:"{}" NOT found.'.format(category_key))
+            p_warn("client.archive_id not set.")
+            return 
 
-        return 
+        if self.client.bucket_id:
+            bucket_id = self.client.bucket_id
+            p_okg("client.bucket_id: {}".format(bucket_id))
+        else:
+            p_fail("client.bucket_id not set.")
+
+        print "auth..."
+        service = archive_uploader.auth(archive_id)
+
+        print "checking for valid bucket..."
+        buckets = service.get_all_buckets()
+        bucket_names = [bucket.name for bucket in buckets]
+        print "bucket_names", bucket_names
+        if bucket_id in bucket_names:
+            p_okg('"{}" found.'.format(bucket_id))
+        else:
+            p_fail('"{}" not found.'.format(bucket_id))
+            p_fail('Either create it or set client.bucket_id to one of the above.')
+
+        bucket = service.get_bucket(bucket_id,headers={})
+        # not sure what to do with this...
+        # container = cf.get_container(bucket_id)
+        return
+
 
     def ck_youtube(self, secrets):
         ret = True
@@ -293,30 +325,36 @@ class ck_setup(process):
             self.ck_dir()
             self.ck_title()
 
+            self.ck_schedule_api()
+
             # email uses local_settings.py
             # self.ck_pw("smtp","email_id")
             self.ck_email()
 
-            if self.ck_pw("rax","rax_id",['api_key', 'user']):
-                self.ck_cdn()
-
-            secrets = self.ck_pw(
-                    "richard","richard_id",['host', 'api_key', ])
+            secrets = self.ck_pw( "richard","richard_id",
+                    ['host', 'api_key', ])
             if secrets:
                 self.ck_richard(secrets)
 
-            secrets = self.ck_pw(
-                    "yt","youtube_id",['filename', ])
+            secrets = self.ck_pw("rax","rax_id",['api_key', 'user'])
+            if secrets:
+                self.ck_cdn(secrets)
+
+            secrets = self.ck_pw( "yt","youtube_id",['filename', ])
             if secrets:
                 self.ck_youtube(secrets)
 
-            self.ck_schedule_api()
+            secrets = self.ck_pw( "archive","archive_id",['access','secret'])
+            if secrets:
+                self.ck_archive(secrets)
+
 
         except Exception as e:
             print "tests stopped at"
             print e.message 
-            raise e
-            #  import code; code.interact(local=locals())
+            print e.__class__, e
+            # import code; code.interact(local=locals())
+            # raise e
 
         return 
 
