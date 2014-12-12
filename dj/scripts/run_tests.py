@@ -228,7 +228,7 @@ pix_fmt=yuv411p" % parms
   p.main()
 
   import tsdv
-  p=tsdv.ts_dv()
+  p=tsdv.ts_rf()
   p.main()
 
   return

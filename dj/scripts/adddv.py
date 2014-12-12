@@ -58,7 +58,7 @@ class add_dv(process):
     def one_show(self, show):
       if self.options.whack:
           Raw_File.objects.filter(show=show).delete()
-      return super(add_dv, self).one_show()
+      return super(add_dv, self).one_show(show)
 
     def work(self):
         """
