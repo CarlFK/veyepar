@@ -76,9 +76,9 @@ class ck_setup(process):
             p_warn('client.{} is blank'.format(client_id_field))
             return False
         elif key in keys:
-            p_okg('key "{}" found in keys.'.format(key))
+            p_okg('key "{}" found in "{}" keys.'.format(key,service))
         else:
-            p_warn('key "{}" NOT found in keys.'.format(key))
+            p_warn('key "{}" not found in "{}" keys.'.format(key,service))
             raise AttributeError
 
         secrets = creds[key]
