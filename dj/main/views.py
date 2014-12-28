@@ -691,7 +691,11 @@ def client(request,client_slug=None):
                 pass
                 # print form.errors
         else:
-            locations=Location.objects.filter(active=True).order_by('sequence')
+
+            # locations=Location.objects.filter(active=True).order_by('sequence')
+            # I am not sure what a good default is for locations.
+            locations=[]
+
             form=Show_Form(
                 initial={'client':client.id, 'sequence':1,
                          'locations': [o.pk for o in locations] })

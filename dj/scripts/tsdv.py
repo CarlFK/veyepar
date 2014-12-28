@@ -18,6 +18,9 @@ import  os
 import datetime
 # from dateutil.parser import parse
 
+from gi.repository import Gst, GstPbutils
+Gst.init(None)
+
 from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
@@ -87,7 +90,15 @@ class ts_rf(process):
 
         # calc duration from size
         frames = dv.filesize/self.bpf
-        seconds = frames/self.fps 
+        dv_seconds = frames/self.fps 
+
+        # use gstreamer to find get_duration
+        discoverer = GstPbutils.Discoverer()
+        d = discoverer.discover_uri('file://{}'.format(pathname))
+        seconds = d.get_duration() / float(Gst.SECOND)
+
+        print(dv_seconds,seconds)
+        assert(abs(dv_seconds-seconds)<.0001)
 
         # store duration in fancy human readable format (bad idea) 
         hms = seconds//3600, (seconds%3600)//60, seconds%60

@@ -627,7 +627,10 @@ class add_eps(process.process):
             event['emails'] = row.get('Presenter_emails','')
 
             # https://github.com/zookeepr/zookeepr/issues/93
-            event['released'] = True
+            # new code.. seems I either get True or no attribute.
+            event['released'] = {
+                    'True':True, 'False':False, None:None}[
+                            row.get('video_release',None)]
 
             event['license'] = "CC-BY-SA"
 
@@ -643,6 +646,7 @@ class add_eps(process.process):
             event['conf_url'] = row.get('URL','')
 
             event['tags'] = ''
+            event['raw'] = row
 
             events.append(event)
 
@@ -655,6 +659,9 @@ class add_eps(process.process):
           if self.options.verbose: print row
           room = row['Room Name']
           if room not in rooms: rooms.append(room)
+
+      if self.options.verbose: pprint.pprint(rooms)
+
       return rooms
 
     def get_rooms(self, schedule, key='location'):
@@ -1357,7 +1364,6 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
         return 
-
 
 
     def zoo(self, schedule, show):
@@ -2632,6 +2638,10 @@ class add_eps(process.process):
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
 
+        if url.endswith('programme/schedule/json'):
+            # Zookeepr
+            return self.zoo(schedule,show)
+
         if self.options.show =='nodevember14':
             return self.nodevember14(schedule,show)
 
@@ -2746,10 +2756,6 @@ class add_eps(process.process):
         if j.startswith('[{"') and schedule[0].has_key('talk_day_time'):
             # pyGotham
             return self.pygotham(schedule,show)
-
-        if url.endswith('programme/schedule/json'):
-            # Zookeepr
-            return self.zoo(schedule,show)
 
         if url.endswith('/program/2012/json'):
             # some drupal thing
