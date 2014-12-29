@@ -299,8 +299,8 @@ class enc(process):
         png_name = os.path.join(
                 self.show_dir, "titles", '%s.png'%episode.slug)
 
-        title_img=self.svg2png(cooked_svg_name, png_name, episode)
-        # title_img=self.mk_title_png(cooked_svg_name, png_name, episode)
+        # title_img=self.svg2png(cooked_svg_name, png_name, episode)
+        title_img=png_name
 
         if title_img is None: 
             print "missing title png"

@@ -1152,7 +1152,10 @@ def title_slides(request, show_id, ):
             }
 
 
-    episodes=Episode.objects.filter(**kwargs).order_by('start')
+    episodes=Episode.objects.filter(**kwargs).order_by(
+            'location',
+            'start', 
+            )
 
     return render_to_response('title_slides.html',
             {

@@ -22,7 +22,7 @@ class mk_title(enc):
         title_img=self.mk_title(episode)
 
         if self.options.rsync:
-            self.file2cdn(episode.show, "titles/%s.svg" % (episode.slug))
+            # self.file2cdn(episode.show, "titles/%s.svg" % (episode.slug))
             self.file2cdn(episode.show, "titles/%s.png" % (episode.slug))
             return 
 

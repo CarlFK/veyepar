@@ -135,10 +135,6 @@ class process(object):
 
             u = rax_uploader.Uploader()
 
-            # move rack cdn pointers from .cfg to client
-            # u.user = self.options.cloud_user
-            # u.bucket_id = self.options.rax_bucket
-
             u.user = show.client.rax_id
             u.bucket_id = show.client.bucket_id
 

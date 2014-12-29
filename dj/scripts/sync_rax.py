@@ -90,16 +90,26 @@ class SyncRax(process):
                  self.file2cdn(show,base)
 
     def sync_final_audio_png(self,show,ep):
-            base = os.path.join("webm", ep.slug + "_audio.png" )
-            if not self.cdn_exists(show,base):
-                 png_name = os.path.join( self.show_dir, base )
-                 ret = self.mk_audio_png(ep.public_url,png_name) 
-                 self.file2cdn(show,base)
+        base = os.path.join("webm", ep.slug + "_audio.png" )
+        if not self.cdn_exists(show,base):
+             png_name = os.path.join( self.show_dir, base )
+             ret = self.mk_audio_png(ep.public_url,png_name) 
+             self.file2cdn(show,base)
+
+
+    def sync_title_png(self,show,ep):
+        base = os.path.join("titles", ep.slug + ".png" )
+        print("base:{}".format(base))
+        if not self.cdn_exists(show,base):
+             png_name = os.path.join( self.show_dir, base )
+             self.file2cdn(show,base)
 
     def episodes(self, show):
-        for ep in Episode.objects.filter(show=show, state=5):
-            self.sync_final(show,ep)
-            self.sync_final_audio_png(show,ep)
+        # for ep in Episode.objects.filter(show=show, state=5):
+            # self.sync_final(show,ep)
+            # self.sync_final_audio_png(show,ep)
+        for ep in Episode.objects.filter(show=show):
+            self.sync_title_png(show,ep)
 
     def init_rax(self, show):
          # user = self.show.client.rax_id
@@ -124,8 +134,8 @@ class SyncRax(process):
         self.set_dirs(show)
         self.init_rax(show)
 
-        self.raw_files(show)
-        # self.episodes(show)
+        # self.raw_files(show)
+        self.episodes(show)
 
 
     def work(self):
