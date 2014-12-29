@@ -59,6 +59,7 @@ class Uploader(object):
     key_id = "" # orbject name (the key in a key value store)
 
     debug_mode = False
+    verbose = True
 
     # return attributes:
     ret_text = ''  # TODO: return error text
@@ -72,14 +73,17 @@ class Uploader(object):
 
         cf = auth(self.user)
 
+        if self.verbose: print("getting container...")
         if self.debug_mode:
-            print "cf.get_all_containers", cf.get_all_containers()
+            print("cf.get_all_containers", cf.get_all_containers())
         container = cf.get_container(self.bucket_id)
 
         # check if object already exists:
         # if same name and same md5, don't bother re-uploading.
         try:
+            if self.verbose: print("trying to get existing object...")
             obj = container.get_object(self.key_id)
+            if self.verbose: print("checking for already_there...")
             already_there = obj.etag == pyrax.utils.get_checksum(
                     self.pathname,)
             ret = True
@@ -96,6 +100,7 @@ class Uploader(object):
                 try:
 
                     # actually upload
+                    if self.verbose: print("container.upload_file...")
                     obj = container.upload_file(pf, obj_name = self.key_id)
 
                     if self.debug_mode:
