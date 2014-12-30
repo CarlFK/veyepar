@@ -623,6 +623,11 @@ class add_eps(process.process):
             event['duration'] = row['Duration']
             event['authors'] = row.get('Presenters','')
 
+            if not event['authors'] and " : " in row['Title']:
+                event['name'],event['authors'] = row['Title'].split(" : ")
+
+            event['authors'] = row.get('Presenters','')
+
             # https://github.com/zookeepr/zookeepr/issues/92
             event['emails'] = row.get('Presenter_emails','')
 
