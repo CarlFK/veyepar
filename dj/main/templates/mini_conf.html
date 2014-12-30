@@ -1,0 +1,54 @@
+{# show.html #}
+{% extends "base.html" %}
+
+{% block head %}
+  <title>veyepar - Show: {{client.name}} {{show.name}} </title>
+{% endblock %}
+
+{% block content %}
+
+  {% regroup episodes by location as mini_confs %}
+
+  {% for mini_conf in mini_confs %}
+    Loc:{{ mini_conf.grouper }}<br>
+
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>seq</th>
+        <th>start</th><th>end</th>
+        <th>duration</th>
+        <th>state</th>
+        <th>episode.name</th>
+        <th>episode.authors</th>
+        <th>released</th>
+      </tr>
+    </thead>
+
+    {% for episode in mini_conf.list %}
+
+      <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+        <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
+        <td>{{episode.sequence}}</td>
+
+        <td><a href="{% url episode_list episode.show.client.slug episode.show.slug%}">{{ episode.show.slug }}</a></td>
+
+ <td> <a href="/databrowse/main/episode/fields/start/{{episode.start|date:"Y-m-d H:i:s"}}"> {{episode.start|date:"D d H:i"}} </a> </td>
+ <td>{{episode.end|date:"H:i"}}</td>
+        <td>{{episode.duration}}</td>
+        <td>{{episode.state}}</td>
+        <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+        <td style="white-space:normal">{{episode.authors}}</td>
+        <td>{{episode.released}}</td>
+        <td>
+            {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
+            {%if episode.public_url %}<a href="{{episode.public_url}}">R</a>{% endif %}
+        </td>
+
+      </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+
+{% endblock %}
