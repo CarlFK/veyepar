@@ -75,10 +75,13 @@ urlpatterns += patterns(
         eps_lanynard,
         name='eps_lanynard'),
 
-    url(r'overlaping_episodes/(?P<show_id>\w+)/$', overlaping_episodes,
-        name='overlaping_episodes'),
-    url(r'overlaping_files/(?P<show_id>\w+)/$', overlaping_files,
-        name='overlaping_files'),
+    url(r'overlapping_episodes/(?P<show_id>\w+)/$', overlapping_episodes,
+        name='overlapping_episodes'),
+    url(r'overlapping_files/(?P<show_id>\w+)/$', overlapping_files,
+        name='overlapping_files'),
+
+    url(r'mini_conf/$', mini_conf,
+        name='mini_conf'),
 
     url(r'raw_file_audio/$', raw_file_audio, name='raw_file_audio'),
     url(r'final_file_audio/$', final_file_audio, name='final_file_audio'),

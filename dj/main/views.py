@@ -1424,7 +1424,7 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
                     },
                     context_instance=RequestContext(request) )
 
-def overlaping_files(request,show_id):
+def overlapping_files(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
@@ -1468,14 +1468,14 @@ def overlaping_files(request,show_id):
         r['end_px']=int((r['end_min']-start)/x)
         r['width_px']=(r['end_px']-r['start_px'])
 
-    return render_to_response('overlaping_raw_files.html',
+    return render_to_response('overlapping_raw_files.html',
         {
           'rfs':rlist,
         },
             context_instance=RequestContext(request) )
 
 
-def overlaping_episodes(request,show_id):
+def overlapping_episodes(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
@@ -1499,11 +1499,43 @@ def overlaping_episodes(request,show_id):
         e['end_px']=int((e['end_min']-start)/x)
         e['width_px']=(e['end_px']-e['start_px'])
 
-    return render_to_response('overlaping_episodes.html',
+    return render_to_response('overlapping_episodes.html',
         {
           'episodes':elist,
         },
             context_instance=RequestContext(request) )
+
+def mini_conf(request):
+
+    show_id = request.GET.get('show_id')
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+
+    kwargs = {
+            "show": show,
+            "location__active": True,
+            # "emails": request.GET['emails'],
+            # "show__client__slug": request.GET['client'],
+            # "show__slug": request.GET['show'],
+            # "state": request.GET['state'],
+            # "": request.GET[''],
+            }
+
+    day = request.GET.get('day')
+    if day is not None:
+        kwargs['start__day']=day
+
+    episodes=Episode.objects.filter(**kwargs).order_by(
+            'location',
+            'start', 
+            )
+
+    return render_to_response('mini_conf.html',
+        {
+          'episodes':episodes,
+        },
+            context_instance=RequestContext(request) )
+
 
 def scheduled_episodes(rf):
     # find episodes that overlap the file
@@ -1608,7 +1640,7 @@ def mk_cuts(episode,
 
     """
 
-    # Get the overlaping dv,
+    # Get the overlapping dv,
     # plus some fuzz: start/end_slop
     dvs = Raw_File.objects.filter(
             end__gte=episode.start - datetime.timedelta(minutes=start_slop),

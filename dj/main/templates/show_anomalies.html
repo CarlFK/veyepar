@@ -10,8 +10,8 @@
 
 <table class="shortcuts">
 <tr>
-    <td><a href="{% url overlaping_episodes show.id %}">overlaping_episodes</a></td>
-<td><a href="{% url overlaping_files show.id %}">overlaping_fles</a></td>
+    <td><a href="{% url overlapping_episodes show.id %}">overlapping_episodes</a></td>
+<td><a href="{% url overlapping_files show.id %}">overlapping_fles</a></td>
 <td><a href="{% url orphan_dv show.id %}">orphan_dv</a></td>
 <td><a href="{% url orphan_img show.id %}">orphan_img</a></td>
 </tr>
@@ -20,6 +20,7 @@
 <td><a href="{{show.schedule_url}}">{{show.schedule_url}}</a></td>
 <td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td>
 <td><a href="{% url final_file_audio %}?show_id={{show.id}}">final_file_audio</a></td>
+<td><a href="{% url mini_conf %}?show_id={{show.id}}">mini_conf</a></td>
 </tr>
 
 <tr>
