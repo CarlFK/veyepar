@@ -185,6 +185,8 @@ class enc(process):
     if " (" in title:
         pos = title.index(" (")
         title,title2 = title[:pos],title[pos+1:]  # +1 skip space in " ("
+    elif " - " in title:
+        title,title2 = title.split(' - ') # error if there is more than 1.
     elif ":" in title:
         pos = title.index(":")+1
         title,title2 = title[:pos],title[pos:].strip()  
