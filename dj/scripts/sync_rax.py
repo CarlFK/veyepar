@@ -99,7 +99,8 @@ class SyncRax(process):
 
     def sync_title_png(self,show,ep):
         base = os.path.join("titles", ep.slug + ".png" )
-        print("base:{}".format(base))
+        p = u"base:{}".format(base)
+        print(p)
         if not self.cdn_exists(show,base):
              png_name = os.path.join( self.show_dir, base )
              self.file2cdn(show,base)

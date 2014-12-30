@@ -149,7 +149,8 @@ HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retrie
         # filenames may have chars that need to be quoted for a URL.
         # cdn_streaming because.. video? (not sure really)
         # self.new_url = container.cdn_streaming_uri +"/"+ urllib.quote(obj.name)
-        self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name)
+        self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name.encode('utf-8'))
+        # self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name)
         print "Rackspace: ", self.new_url
 
         return ret
