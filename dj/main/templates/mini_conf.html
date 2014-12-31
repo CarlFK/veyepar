@@ -32,8 +32,6 @@
         <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
         <td>{{episode.sequence}}</td>
 
-        <td><a href="{% url episode_list episode.show.client.slug episode.show.slug%}">{{ episode.show.slug }}</a></td>
-
  <td> <a href="/databrowse/main/episode/fields/start/{{episode.start|date:"Y-m-d H:i:s"}}"> {{episode.start|date:"D d H:i"}} </a> </td>
  <td>{{episode.end|date:"H:i"}}</td>
         <td>{{episode.duration}}</td>

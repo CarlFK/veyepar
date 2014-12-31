@@ -1530,6 +1530,12 @@ def mini_conf(request):
             'start', 
             )
 
+    if request.GET.get('magic'):
+        episodes = episodes.exclude(
+                start__day=12,location=379 ) # "Case Room 3"
+        episodes = episodes.exclude(
+                start__day=13,location__in=[376,378])
+
     return render_to_response('mini_conf.html',
         {
           'episodes':episodes,
