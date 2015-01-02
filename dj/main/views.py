@@ -1530,11 +1530,21 @@ def mini_conf(request):
             'start', 
             )
 
-    if request.GET.get('magic'):
+    magic = request.GET.get('magic')
+    print(day,magic)
+    good12 = [379,380] # Case 2 & 3
+    good13 = [376,378]
+    if magic == '1':
         episodes = episodes.exclude(
-                start__day=12,location=379 ) # "Case Room 3"
+                start__day=12,location__in=good12) 
         episodes = episodes.exclude(
-                start__day=13,location__in=[376,378])
+                start__day=13,location__in=good13)
+    elif magic == '2':
+        if day == "12":
+            print("here 2,12 ")
+            episodes = episodes.filter(location__in=good12) 
+        else:
+            episodes = episodes.filter(location__in=good13) 
 
     return render_to_response('mini_conf.html',
         {
