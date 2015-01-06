@@ -70,6 +70,35 @@ class ts_rf(process):
             # get timestamp from first frame
             pass
 
+        def gst_discover(pathname):
+            # get start time using gstreamer to read the media file header
+            discoverer = GstPbutils.Discoverer()
+            d = discoverer.discover_uri('file://{}'.format(pathname))
+            # seconds = d.get_duration() / float(Gst.SECOND)
+            tags= d.get_tags()
+            dt=tags.get_date_time("datetime")[1]
+
+            print(dt.to_iso8601_string())
+            start = datetime.datetime(
+                    year=dt.get_year(),
+                    month=dt.get_month(),
+                    day=dt.get_day(),
+                    hour=dt.get_hour(),
+                    minute=dt.get_minute(),
+                    second=dt.get_second(),
+                    )
+
+            return start
+
+        def auto(pathname):
+            # try to figure out what to use
+            ext = os.path.splitext(pathname)[1]
+            if ext == ".dv":
+                start = parse_name(pathname)
+            else:
+                start = gst_discover(pathname)
+
+            return start
 
         pathname = os.path.join(dir,dv.filename)
         print pathname
@@ -80,6 +109,8 @@ class ts_rf(process):
         start = {'fn':parse_name,
                  'fs':fs_time,
                  'frame':frame_time,
+                 'gst':gst_discover,
+                 'auto':auto,
                  }[self.options.time_source](pathname)
 
         # adjust for clock in wrong timezone
@@ -139,11 +170,12 @@ class ts_rf(process):
         parser.add_option('--offset_hours', type="int",
            help="adjust time to deal with clock in wrong time zone.")
         parser.add_option('--time_source', 
-           help="one of fn, fs, frame (file name, file system, dv frame)")
+           help="one of fn, fs, frame, gst\n" \
+             "(file name, file system, dv frame, gst lib, auto)")
 
     def add_more_option_defaults(self, parser):
         parser.set_defaults(offset_hours=0)
-        parser.set_defaults(time_source="fn")
+        parser.set_defaults(time_source="auto")
 
 
 if __name__=='__main__': 
