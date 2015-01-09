@@ -1533,7 +1533,7 @@ def mini_conf(request):
     magic = request.GET.get('magic')
     print(day,magic)
     good12 = [379,380] # Case 2 & 3
-    good13 = [376,378]
+    good13 = [376,378,379,380]
     if magic == '1':
         episodes = episodes.exclude(
                 start__day=12,location__in=good12) 

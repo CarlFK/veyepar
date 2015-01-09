@@ -10,7 +10,7 @@
   {% regroup episodes by location as mini_confs %}
 
   {% for mini_conf in mini_confs %}
-    Loc:{{ mini_conf.grouper }}<br>
+  Loc: #{{mini_conf.grouper.id}} {{ mini_conf.grouper }}<br>
 
   <table>
     <thead>
