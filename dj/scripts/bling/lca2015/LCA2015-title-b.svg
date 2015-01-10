@@ -14,7 +14,7 @@
    height="1080"
    id="svg7306"
    version="1.1"
-   inkscape:version="0.91+devel r"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="LCA2015-title-b.svg"
    inkscape:export-filename="/Users/idan/Dropbox/proj/djangocon.us 2011/art assets/titlecard.png"
    inkscape:export-xdpi="70.309998"
@@ -36,9 +36,9 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1124"
-     inkscape:window-x="0"
+     inkscape:window-width="1301"
+     inkscape:window-height="744"
+     inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <defs
@@ -552,7 +552,7 @@
     <flowRoot
        xml:space="preserve"
        id="titlebox"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:66.49736023px;line-height:125%;font-family:ChunkFive;-inkscape-font-specification:ChunkFive;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:66.49736023px;line-height:125%;font-family:ChunkFive;-inkscape-font-specification:ChunkFive;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;writing-mode:lr"
        transform="translate(-2.3801484e-4)"><flowRegion
          id="flowRegion15470"
          style="fill:#000000"><rect
@@ -561,16 +561,16 @@
            height="342.96988"
            x="302.21039"
            y="6.8311672"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:66.49736023px;font-family:ChunkFive;-inkscape-font-specification:ChunkFive;text-align:center;text-anchor:middle;fill:#000000" /></flowRegion><flowPara
-         id="title"
-         style="font-size:72.03881073px;line-height:125.99999905%;fill:#000000">Talk Title Lorem Ipsum Dolor Sit Amet, Adipsicing Elit Ut Minim, Vera Se asd asd asd asd ads</flowPara></flowRoot>    <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:63.58488083px;line-height:125%;font-family:'News Cycle';-inkscape-font-specification:'News Cycle Medium';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:66.49736023px;font-family:ChunkFive;-inkscape-font-specification:ChunkFive;text-align:center;text-anchor:middle;fill:#000000;writing-mode:lr;line-height:125%" /></flowRegion><flowPara
+         id="title">Why you should consider using btrfs,</flowPara><flowPara
+         id="title2">real COW snapshots and file level incremental server OS upgrades like Google does.</flowPara></flowRoot>    <flowRoot
+       style="font-size:63.58488083px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:News Cycle;-inkscape-font-specification:News Cycle Medium"
        id="presenterbox"
        xml:space="preserve"
-       transform="matrix(1.1569972,0,0,1.1569972,-245.2284,-50.101185)"><flowRegion
+       transform="matrix(1.1569972,0,0,1.1569972,-245.2284,-8.101185)"><flowRegion
          id="flowRegion15503"
          style="fill:#000000"><rect
-           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:63.58488083px;font-family:'News Cycle';-inkscape-font-specification:'News Cycle Medium';text-align:center;text-anchor:middle;fill:#000000"
+           style="font-size:63.58488083px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;text-align:center;text-anchor:middle;fill:#000000;font-family:News Cycle;-inkscape-font-specification:News Cycle Medium"
            y="298.99878"
            x="281.84671"
            height="178.03766"
@@ -639,7 +639,8 @@
                  cx="80.748848"
                  cy="306.00778"
                  rx="12.903931"
-                 ry="12.128755" />
+                 ry="12.128755"
+                 d="m 93.652779,306.00778 c 0,6.69853 -5.777287,12.12876 -12.903931,12.12876 -7.126644,0 -12.903931,-5.43023 -12.903931,-12.12876 0,-6.69852 5.777287,-12.12875 12.903931,-12.12875 7.126644,0 12.903931,5.43023 12.903931,12.12875 z" />
               <path
                  style="opacity:1;fill:#c90000;fill-opacity:1;stroke:#c90000;stroke-width:0.9850781;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                  d="m 82.504889,335.14938 c -6.12263,-0.70351 -11.36956,-2.19307 -15.16945,-4.30645 -1.06715,-0.59352 -3.173,-2.30154 -4.67966,-3.7956 -4.38128,-4.34464 -6.40029,-9.42627 -6.36516,-16.02045 0.0348,-6.53049 1.89772,-11.13485 6.28232,-15.52723 4.17548,-4.18288 8.41027,-6.14969 14.76158,-6.85588 3.78012,-0.4203 9.44047,0.0418 12.64665,1.03246 4.37205,1.35088 8.81132,4.72902 10.647221,8.10218 1.80375,3.31408 2.44804,7.98857 1.60519,11.64605 -0.44959,1.95095 -1.7805,4.63813 -3.159561,6.37934 -1.52161,1.92119 -5.43252,4.45458 -8.45574,5.47741 -5.54538,1.87613 -13.43312,1.92579 -18.79844,0.11835 -2.05818,-0.69335 -2.18114,-0.69819 -2.61648,-0.10283 -2.40187,3.28474 5.77129,10.31953 15.33,13.1948 1.4067,0.42314 2.55764,0.83326 2.55764,0.91137 0,0.19023 -1.39561,0.11308 -4.58611,-0.25352 z m -3.290217,-40.28543 -6.51875,0 c 0.0403,6.32038 -0.009,14.58173 0.0442,20.90204 l 6.47455,0 z m 8.941104,20.90204 -0.009,-20.85051 -6.398397,0 0,20.85051 6.407757,0 z"
@@ -657,7 +658,8 @@
                  cy="303.83374"
                  cx="199.59163"
                  id="path4262"
-                 style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.9850781;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+                 style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.9850781;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+                 d="m 211.96284,303.83374 c 0,6.01238 -5.53878,10.88638 -12.37121,10.88638 -6.83243,0 -12.37121,-4.874 -12.37121,-10.88638 0,-6.01238 5.53878,-10.88638 12.37121,-10.88638 6.83243,0 12.37121,4.874 12.37121,10.88638 z" />
               <path
                  style="opacity:1;fill:#004b7d;fill-opacity:1;stroke:#004b7d;stroke-width:0.9850781;stroke-opacity:1"
                  d="m 193.42201,332.56125 c 5.48539,-1.77126 10.73581,-4.76822 13.38103,-7.63794 1.5896,-1.72451 2.14119,-2.85161 2.14119,-4.37524 0,-1.59172 -0.66689,-1.86507 -2.68208,-1.09936 -4.10479,1.5597 -12.38271,1.82915 -17.24987,0.56148 -3.45466,-0.89978 -7.07007,-2.86841 -9.30841,-5.06856 -6.15843,-6.05333 -6.07222,-16.41343 0.18743,-22.5248 3.79201,-3.70219 9.8151,-5.75566 16.8821,-5.75566 8.34507,0 14.55084,2.49237 19.31555,7.75755 3.69342,4.08137 5.35406,8.75375 5.33003,14.99662 -0.0261,6.77491 -1.8997,11.46219 -6.36773,15.93022 -4.24959,4.24958 -10.77254,6.90955 -19.26672,7.85671 -5.24668,0.58504 -5.7427,0.45046 -2.36252,-0.64102 z m 18.36319,-27.73202 -21.31902,-9.87376 0,19.45164 z"

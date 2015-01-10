@@ -239,7 +239,7 @@ class enc(process):
     # cmd=["inkscape", svg_name, "--export-png", png_name]
     cmd=["inkscape", svg_name, 
             "--export-png", png_name,
-            # "--export-width", "740",]
+            "--export-width", "720",
             ]
     ret = self.run_cmds(episode,[cmd])
     ret = os.path.exists(png_name)
@@ -737,7 +737,7 @@ class enc(process):
                   cmds=["melt %(mlt)s -profile %(dv_format)s -consumer avformat:%(out)s progress=1 threads=0 vb=1000k quality=good deadline=good deinterlace=1 deinterlace_method=yadif" % parms]
 
               if ext=='flv': 
-                  cmds=["melt -progress -profile square_%s %s -consumer avformat:%s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % ( self.options.dv_format, mlt_pathname, out_pathname,)]
+                  cmds=["melt %(mlt)s -progress -profile %(dv_format)s -consumer avformat:%(out)s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % parms ]
 
               if ext=='flac': 
                   # 16kHz/mono 
@@ -758,7 +758,7 @@ class enc(process):
 			              }
 
                   cmd="melt -verbose -progress "\
-                  "-profile dv_%(dv_format)s %(mlt)s "\
+                  "-profile %(dv_format)s %(mlt)s "\
                   "-consumer avformat:%(out)s "\
                   "threads=%(threads)s "\
                   "progressive=1 "\
@@ -787,7 +787,7 @@ class enc(process):
                   ffpreset=open('/usr/share/ffmpeg/libx264-default.ffpreset').read().split('\n')
                   ffpreset.extend(open('/usr/share/ffmpeg/libx264-ipod640.ffpreset').read().split('\n'))
                   ffpreset = [i for i in ffpreset if i]
-                  cmd="melt -progress -profile square_%s %s -consumer avformat:%s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=70k" % ( self.options.dv_format, mlt_pathname, tmp_pathname, )
+                  cmd="melt %(mlt)s -progress -profile %(dv_format)s -consumer avformat:%(tmp)s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=70k" % parms
                   cmd = cmd.split()
                   cmd.extend(ffpreset)
                   cmds=[cmd]

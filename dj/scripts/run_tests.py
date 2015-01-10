@@ -128,7 +128,7 @@ class Run_Tests(object):
        frames = 90
        parms={'input_file':text_file, 
            'output_file':os.path.join(dv_dir,out_file),
-           'format':"dv_%s" % (self.options.dv_format),
+           'format':self.options.dv_format,
            'video_frames':frames,
            'audio_frames':frames}
        if i%2:
@@ -187,7 +187,7 @@ pix_fmt=yuv411p" % parms
            'dv_file':dv_file,
            'text_file':text_file,
            'bling_dir':bling_dir,
-           'format':"dv_%s" % (self.options.dv_format),
+           'format':self.options.dv_format,
            'video_frames':1,
            'audio_frames':1 }
    print parms

@@ -30,7 +30,8 @@ def process(dv_dir):
         d=dirpath
         # print "checking...", dirpath, d, dirnames, filenames 
         filenames.sort()
-        for f in filenames[:-1]: ## skip the last one cuz it might be open
+        # for f in filenames[:-1]: ## skip the last one cuz it might be open
+        for f in filenames: ## skip the last one cuz it might be open
             if f[-3:]=='.dv':
                 one_file(os.path.join(d,f))
 
