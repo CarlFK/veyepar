@@ -20,7 +20,6 @@ mlt="""
 
   <producer id="title" resource="title.png" in="0" out="149" />
   <producer id="producer0" resource="/home/juser/vid/t2.dv" />
-  <producer id="footer" resource="footer.png" in="0" out="0" /> 
 
   <playlist id="playlist0">
     <entry producer="title"/>
@@ -51,25 +50,19 @@ mlt="""
     <property name="end">0</property>
    </filter>
 
-    <entry id="foot0" producer="footer"/>
-  </playlist>
-
-  <playlist id="playlist2">
-    <entry id="foot1" producer="footer"/>
   </playlist>
 
   <tractor id="tractor0">
     <multitrack>
-      <track id="track2" producer="playlist2"/>
       <track id="track1" producer="playlist1"/>
       <track id="track0" producer="playlist0"/>
     </multitrack>
     <transition id="transition0"
       mlt_service="luma" in="100" out="149" a_track="2" b_track="1"/>
     <transition id="transition1"
-      mlt_service="luma" in="0" out="0" a_track="1" b_track="0"/>
+      mlt_service="luma" in="-90" out="-60" a_track="1" b_track="0"/>
 
-  <transition in="0" out="0" id="transition0">
+  <transition in="0" out="30" id="transition0">
    <property name="a_track">1</property>
    <property name="b_track">2</property>
    <property name="mlt_type">transition</property>
@@ -189,6 +182,9 @@ class enc(process):
         title,title2 = title.split(' - ') # error if there is more than 1.
     elif ":" in title:
         pos = title.index(":")+1
+        title,title2 = title[:pos],title[pos:].strip()  
+    elif ";" in title:
+        pos = title.index(";")+1
         title,title2 = title[:pos],title[pos:].strip()  
     elif "?" in title:
         pos = title.index("?")+1
@@ -379,11 +375,6 @@ class enc(process):
             tree[0].insert(pos,new)
             pos+=1
 
-# set credits file
-        footer=tree[1]['footer']
-        footer.attrib['resource']=credits_img
-
-
 # get the dv clip placeholder, remove it from the playlist
         clip=tree[1]['clip']
         playlist=tree[1]['playlist1']
@@ -434,9 +425,9 @@ class enc(process):
 
         mlt_xml = xml.etree.ElementTree.tostring(tree[0])
         open(mlt_pathname,'w').write(mlt_xml)
-        p = subprocess.Popen( ['melt', mlt_pathname, 
-           '-consumer', 'xml'], 
-                              stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+        p = subprocess.Popen( 
+                ['melt', mlt_pathname, '-consumer', 'xml'], 
+                  stdout=subprocess.PIPE, stderr=subprocess.PIPE )
         out,err = p.communicate()
 
         # hack to remove "Plugin 1046 exists in both ...."
@@ -454,43 +445,10 @@ class enc(process):
         # in is already set: 0-30 frames.
         # out needs to be set to last 30 frames
         fadeout = tree[1]['fadeout']
-        fadeout.set("in",str(frames-30))
-        fadeout.set("out",str(frames))
-
-        # set 2 parts of the footer:
-        # 1. 3 seconds of fade from video to footer
-        # 2. append 3 seconds of footer
-
-        x1,end,x3=str(frames-90),str(frames),str(frames+90)
-
-        # 1.
-        transition = tree[1]['transition1']
-        transition.set('in',x1)
-        transition.set('out',end)
-
-        track = tree[1]['track2']
-        track.set('in',x1)
-        track.set('out',end)
-
-        pf = tree[1]['foot1']
-        pf.set('in',x1)
-        pf.set('out',end)
-
-        # add a tone to the end for testing audio encoder
-        # pf = tree[1]['endtone1']
-        # pf.set('in',x1)
-        # pf.set('out',end)
-        # 0 and 1 didn't like being in the static area, so they live here.
-        # pf.set('0',"250")
-        # pf.set('1',"0.5")
-
-        # 2. 
-        pf = tree[1]['footer']
-        pf.set('out',"90")
-
-        pf = tree[1]['foot0']
-        pf.set('in',str(end))
-        pf.set('out',str(x3))
+        # fadeout.set("in",str(frames-30))
+        # fadeout.set("out",str(frames))
+        fadeout.set("in","-120")
+        fadeout.set("out","-90")
 
 # add volume tweeks
         """
