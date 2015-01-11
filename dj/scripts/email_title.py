@@ -36,9 +36,13 @@ http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.sh
 {% if ep.public_url%}The main page for the video will be here:
 {{ep.public_url}} 
 {% else %}and the Description:
-  === begin ===
-  {{ep.description}} 
-  === end description ===
+  {% if ep.description%}
+    === begin ===
+    {{ep.description}} 
+    === end description ===
+  {% else %}
+    (is blank.)
+  {% endif %}
 {% endif %}
 {% if ep.show.schedule_url %}
 Problems with the text should be fixed in the event database that drives: {{ep.conf_url}} 
@@ -46,8 +50,6 @@ Problems with the text should be fixed in the event database that drives: {{ep.c
 If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
 
 Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.  
-
-Please bring what is needed to hook your laptop up to good old 15 pin VGA.  We may have an adaptor, but don't count on it, someone may have taken it.
 
 """
     py_name = "email_title.py"

@@ -218,7 +218,8 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"[  ] Projector switched to Presenter's laptop (Green Green on switchbox)"</expr>
+				<comment>'(Green Green on switchbox)'</comment>
+				<expr>"[  ] Both Projectors and confidence monitor switched to Presenter's laptop"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>

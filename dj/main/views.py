@@ -338,6 +338,12 @@ def emailer(show_id, ):
 
 
 def schedule(request, show_id, show_slug, template_name):
+
+    if "blank" in request.GET:
+        blank_me = True
+    else:
+        blank_me = False
+
     show=get_object_or_404(Show,id=show_id)
     locations=show.locations.filter(active=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show)
@@ -375,6 +381,7 @@ def schedule(request, show_id, show_slug, template_name):
     return render_to_response(template_name,
         {'show':show, 
         'locations':locations,
+        'blank_me':True,
         'days':days},
         context_instance=RequestContext(request) )
        

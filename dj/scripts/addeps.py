@@ -616,6 +616,13 @@ class add_eps(process.process):
             #    continue
 
             event={}
+
+            # from /zookeepr/controllers/schedule.py
+            # row['Id'] = schedule.id
+            # row['Event'] = schedule.event_id
+            # I think Id is what is useful
+            event['conf_key'] = row['Id']
+
             event['name'] = row['Title']
             event['location'] = row['Room Name']
             event['start'] = datetime.datetime.strptime(
@@ -624,9 +631,8 @@ class add_eps(process.process):
             event['authors'] = row.get('Presenters','')
 
             if not event['authors'] and " : " in row['Title']:
-                event['name'],event['authors'] = row['Title'].split(" : ")
-
-            event['authors'] = row.get('Presenters','')
+                if event['conf_key'] not in [207,364,]:
+                    event['name'],event['authors'] = row['Title'].split(" : ")
 
             # https://github.com/zookeepr/zookeepr/issues/92
             event['emails'] = row.get('Presenter_emails','')
@@ -636,15 +642,13 @@ class add_eps(process.process):
             event['released'] = {
                     'True':True, 'False':False, None:None}[
                             row.get('video_release',None)]
+            # easy way:
+            # make True the default
+            event['released'] = row.get('video_release',"True") == "True"
 
             event['license'] = "CC-BY-SA"
 
             event['description'] = row['Description']
-            # from /zookeepr/controllers/schedule.py
-            # row['Id'] = schedule.id
-            # row['Event'] = schedule.event_id
-            # I think Id is what is useful
-            event['conf_key'] = row['Id']
 
             # there may not be a URL, like for Lunch and Keynote.
             # https://github.com/zookeepr/zookeepr/issues/91
