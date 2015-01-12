@@ -159,10 +159,11 @@ class enc(process):
     # print "testing...", "license" in cooked_svg
 
     if tree[1].has_key('presenternames'):
+        # some people like to add spiffy text near the presenter name(s)
         if texts['authors']:
-            # prefix = "Featuring" if "," in texts['authors'] else "By"
-            # tree[1]['presenternames'].text="%s %s" % (prefix,texts['authors'])
-            tree[1]['presenternames'].text="{}".format(texts['authors'])
+            # prefix = u"Featuring" if "," in texts['authors'] else "By"
+            # tree[1]['presenternames'].text=u"%s %s" % (prefix,texts['authors'])
+            tree[1]['presenternames'].text=texts['authors']
         else:
             # remove the text (there is a placholder to make editing sane)
             tree[1]['presenternames'].text=""

@@ -59,6 +59,7 @@ box3 = (
     0, 2500,
     3386, 3500
 )
+
 """
 
 def savesections(imagefile):
@@ -68,8 +69,8 @@ def savesections(imagefile):
     end: 1421
     """
     head = 880.0/3296.0
-    band = (1420.0-880.0)/3296.0 
-     
+    band = (1420.0-880.0)/3296.0
+
     im = Image.open(imagefile)
     # print('complete image: {}'.format(im.size))
     w, h = im.size
@@ -189,9 +190,20 @@ class add_img(process):
             # proportion of page 1
             head = 875.0/3296.0
             band = 555.0/3296.0 
+
+            # A4 
+            """
+            A4 page:
+            page: 3288 x 4666
+            box1 start,end rows: 1160, 1900
+            """
+
+            head = 1160.0/4666.0
+            band = (1900.0-1160.0)/4666.0
+
             bands= 3
             suffix='a'
-            
+
         else:
 
             """
