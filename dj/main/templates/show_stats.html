@@ -22,7 +22,8 @@
 
     <table class="grid">
            <tr>
-<th> <span><b>TOTAL</b></span><br/>
+<th>
+    <span><b>TOTAL</b></span><br/>
 <span> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug %}"> {{show_stat.count}} </a> </span>
 <span class="left">expected:</span><span class="right">{{show_stat.talk_gig}} g</span><br/>
                  {% if show_stat.files %}
@@ -31,7 +32,9 @@
 </th>
 
             {% for item in locations %}
-            <td> <span><b>
+            <td>
+{# Room header cells #}
+                <span><b>
                         <a href="{% url admin:main_location_change item.loc.id%}">{{ item.loc.slug }}</a>
                 </b></span><br/>
 
@@ -47,8 +50,18 @@
          </tr>
 
         {% for item,row  in rows  %}
+        {# Day headers (first cell on left, summary of row #}
           <tr><td><b>{{item.date|date:"D d"}}</b><br/>
 <a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" %}"> {{item.count}} </a>
+
+ {% for s in item.states %} 
+<span class="{% if forloop.counter0 == 1 or forloop.counter0 == 3 %}human{% else %}process{% endif %}">
+                   {% if s %}
+                   <a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
+                   {% else %}.{% endif %}</span>
+                 {% endfor %}
+                 <br/>
+
 
 <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
@@ -57,7 +70,7 @@
                  {% endif %}
 </td>
 
-{# the room day cells #}
+{# the room day cells - detail #}
           {% for item,loc in row %}
 
              <td style="background-color:#{{item.alarm_color}};">  
@@ -73,7 +86,7 @@
 <span class="{% if forloop.counter0 == 1 or forloop.counter0 == 3 %}human{% else %}process{% endif %}">
                    {% if s %}
                    <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
-                   {% else %}o{% endif %}</span>
+                   {% else %}.{% endif %}</span>
                  {% endfor %}
                  <br/>
 
