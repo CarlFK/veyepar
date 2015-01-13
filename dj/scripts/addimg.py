@@ -215,6 +215,17 @@ class add_img(process):
             """
             head = 625.0/4392.0
             band = 725.0/4392.0
+
+            """
+            A4
+            3296 x 4666
+            start of first band (size of header) 615
+            end: 1350
+            """
+
+            head = 615.0/4666.0
+            band = (1350.0-615.0)/4666.0
+
             bands= 4
             suffix='b'
 
