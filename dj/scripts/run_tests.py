@@ -128,7 +128,8 @@ class Run_Tests(object):
        frames = 90
        parms={'input_file':text_file, 
            'output_file':os.path.join(dv_dir,out_file),
-           'format':self.options.dv_format,
+           # 'format':self.options.dv_format,
+           'format':"dv_ntsc_wide",
            'video_frames':frames,
            'audio_frames':frames}
        if i%2:
@@ -518,7 +519,7 @@ def main():
     result={}
 
     t=Run_Tests() 
-    t.upload_formats=["mp4",]
+    t.upload_formats=["webm",]
     # t.upload_formats=["webm", "mp4",]
     # t.upload_formats=["flac",]
     t.title = "Let's make a Test"
