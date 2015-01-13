@@ -129,7 +129,8 @@ class ts_rf(process):
         seconds = d.get_duration() / float(Gst.SECOND)
 
         print(dv_seconds,seconds)
-        assert(abs(dv_seconds-seconds)<max(dv_seconds/100.0,.1))
+        # assert(abs(dv_seconds-seconds)<max(dv_seconds/100.0,.1))
+        seconds=dv_seconds
 
         # store duration in fancy human readable format (bad idea) 
         hms = seconds//3600, (seconds%3600)//60, seconds%60
