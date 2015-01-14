@@ -69,6 +69,9 @@ urlpatterns += patterns(
     url(r'pub_play/.*', public_play_list, name='public_play_list'),
     url(r'playlist.m3u$', mk_play_list, name='mk_play_list'),
 
+    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).csv$', 
+        eps_csv,
+        name='eps_csv'),
     url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).json$', 
         eps_xfer,
         name='eps_xfer'),

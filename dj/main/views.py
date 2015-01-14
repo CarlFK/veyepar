@@ -163,6 +163,36 @@ def start_here(request):
          'who':who,},
        context_instance=RequestContext(request) )
 
+def eps_csv(request,client_slug=None,show_slug=None):
+    client=get_object_or_404(Client,slug=client_slug)
+    show=get_object_or_404(Show,client=client,slug=show_slug)
+    eps = Episode.objects.filter(show=show)
+
+    rows = [(ep.id,
+            ep.state,
+            ep.name,
+            ep.conf_key,
+            ep.conf_url,
+            ep.host_url) for ep in eps]
+
+    # url = request.GET['url']
+    response = HttpResponse(mimetype="application/csv")
+    response['Content-Disposition'] = \
+            'inline; filename={}.csv'.format(show.slug)
+    writer = csv.writer(response)
+    for ep in eps:
+        row = [ep.id,
+            ep.state,
+            ep.slug.encode('utf-8'),
+            # ep.name,
+            ep.conf_key,
+            ep.conf_url,
+            ep.host_url,
+            ]
+        writer.writerow(row)
+
+    return response
+
 def eps_xfer(request,client_slug=None,show_slug=None):
     """
     Returns all the episodes for a show as json.

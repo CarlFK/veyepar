@@ -18,7 +18,10 @@
 
 <tr>
 <td><a href="{{show.schedule_url}}">{{show.schedule_url}}</a></td>
-<td><a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a></td>
+<td>
+    <a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a> </br>
+    <a href="{% url eps_csv client.slug show.slug %}">{{show.slug}}.csv</a>
+</td>
 <td><a href="{% url final_file_audio %}?show_id={{show.id}}">final_file_audio</a></td>
 <td><a href="{% url mini_conf %}?show_id={{show.id}}">mini_conf</a></td>
 </tr>

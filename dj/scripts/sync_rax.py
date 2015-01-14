@@ -48,8 +48,9 @@ class SyncRax(process):
 
     def rf_ogv(self, show, rf):
         # look for .ogv
+        # no wait, look for .webm
         base = os.path.join(
-                "dv", rf.location.slug, rf.basename() + ".ogv")
+                "dv", rf.location.slug, rf.basename() + ".webm")
         if self.options.verbose: print base
         if not self.cdn_exists(show,base):
             self.file2cdn(show,base)
@@ -74,10 +75,15 @@ class SyncRax(process):
     def raw_files(self, show):
         print "getting raw files..."
         rfs = Raw_File.objects.filter(show=show,)
+
+	if self.options.day:
+            rfs = rfs.filter(start__day=self.options.day)
+
 	if self.options.room:
             loc = Location.objects.get(slug=self.options.room)
             rfs = rfs.filter(location = loc)
-        # if rf.cut_list_set.filter(episode__id=8748)
+
+        # rfs = rfs.cut_list_set.filter(episode__id=8748)
 
         for rf in rfs:
             if self.options.verbose: print rf
@@ -135,8 +141,8 @@ class SyncRax(process):
         self.set_dirs(show)
         self.init_rax(show)
 
-        # self.raw_files(show)
-        self.episodes(show)
+        self.raw_files(show)
+        # self.episodes(show)
 
 
     def work(self):
