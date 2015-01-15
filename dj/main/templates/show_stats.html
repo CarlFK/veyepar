@@ -110,36 +110,4 @@
         {% endfor %}
 
     </table>
-
-    <a href="{% url admin:main_episode_changelist %}?show__id__exact={{show.id}}&locked__isnull=False">locked episodes admin</a>
-
-  <table>
-    <thead>
-      <tr>
-        <th>id</th>
-        <th>state</th>
-        <th>duration</th>
-        <th>locked</th>
-        <th>locked by</th>
-        <th>stop</th>
-        <th>episode.name</th>
-        <th>logs</th>
-        <th></th>
-      </tr>
-    </thead>
-
-    {% for episode in locked %}
-      <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
-        <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
-        <td>{{episode.state}}</td>
-        <td>{{episode.duration}}</td>
-        <td>{{episode.locked}} - {{episode.locked|timesince}}</td>
-        <td>{{episode.locked_by}}</td>
-        <td>{{episode.stop|yesno:"y,n,"}}</td>
-        <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
-        <td><a href={% url episode_logs episode.id %}>logs</a></td>
-      </tr>
-    {% endfor %}
-  </table>
-
 {% endblock %}

@@ -44,6 +44,7 @@ urlpatterns += patterns(
         meet_ann, 
         name='meet_ann'),
     url(r'show_stats/(?P<show_id>\w+)/$', show_stats, name='show_stats'),
+    url(r'processes/(?P<show_id>\w+)/$', processes, name='processes'),
     url(r'show_anomalies/(?P<show_id>\w+)/$', 
         show_anomalies, name='show_anomalies'),
 

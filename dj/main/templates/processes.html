@@ -1,0 +1,48 @@
+{# show_stats.html #}
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/show_stats.css">
+<title>veyepar - Show: {{client.name}} {{show.name}} </title>
+{% endblock %}
+
+{% block content %}
+
+<a href="{% url client client.slug %}">{{ client.name }}</a>
+<a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a>
+</p>
+
+    <a href="{% url admin:main_episode_changelist %}?show__id__exact={{show.id}}&locked__isnull=False">locked episodes admin</a>
+
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>state</th>
+        <th>locked</th>
+        <th>time</th>
+        <th>talk duration</th>
+        <th>locked by</th>
+        <th>stop</th>
+        <th>episode.name</th>
+        <th>logs</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    {% for episode in locked %}
+      <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+        <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
+        <td>{{episode.state}}</td>
+        <td>{{episode.locked}}</td>
+        <td>{{episode.locked|timesince}}</td>
+        <td>{{episode.duration}}</td>
+        <td>{{episode.locked_by}}</td>
+        <td>{{episode.stop|yesno:"y,n,"}}</td>
+        <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}</a></td>
+        <td><a href={% url episode_logs episode.id %}>logs</a></td>
+      </tr>
+    {% endfor %}
+  </table>
+
+{% endblock %}

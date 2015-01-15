@@ -993,6 +993,24 @@ def show_stats(request, show_id, ):
         },
     context_instance=RequestContext(request) )
 
+
+def processes(request, show_id, ):
+    """
+    What is locked, so should be being worked on.
+    """
+
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+    lockeds=Episode.objects.filter(show=show, locked__isnull=False).order_by('locked')
+
+    return render_to_response('processes.html',
+        {
+          'client':client,
+          'show':show,
+          'locked':lockeds,
+        },
+    context_instance=RequestContext(request) )
+
 def raw_file(request, raw_file_id):
 
     rf=Raw_File.objects.get(id=raw_file_id)
