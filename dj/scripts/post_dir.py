@@ -25,7 +25,7 @@ class FileNotFound(Exception):
 
 class post(process):
 
-    ready_state = 4
+    ready_state = 11
 
     def get_files(self, ep):
         # get a list of video files to upload
@@ -48,6 +48,10 @@ class post(process):
         return files
 
     def process_ep(self, ep):
+
+        # host_url = "http://video.fosdem.org"
+        host_url = "http://mirror.linux.org.au/linux.conf.au"
+        local_dir = "to-mirror"
 
         if not ep.released and not self.options.release_all:
             # --release-all will force the upload, overrides ep.released
@@ -72,12 +76,12 @@ class post(process):
             # this is the dir the website will want
             # add the filename to be nice
             ep.public_url = "/".join([ 
-                    "http://video.fosdem.org",
+                    host_url,
                     dest, "%s.%s"%(ep.slug,fn['ext'])])
             if self.options.verbose: print "public", ep.public_url
 
             # add the local fs dir home:
-            dest = os.path.join( self.show_dir, "final", dest )
+            dest = os.path.join( self.show_dir, local_dir, dest )
 
             # make sure the dir exists
             if self.options.verbose: print "dest", dest
