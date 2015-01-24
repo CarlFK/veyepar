@@ -30,6 +30,24 @@ cd veyepar
 
 pip install -r setup/nodes/encode/requirements.txt
 
+
 # touch dj/dj/local_settings.py
 # touch dj/scripts/veyepar.cfg
+# 130.216.0.130:/mnt/barge      /home/av/Videos/veyepar    nfs     intr,soft,rsize=8192,wsize=8192,noauto,user 0       0
 
+
+tmux new -s enc1
+
+sudo vim /etc/resolv.conf
+nameserver 8.8.8.8
+
+wget --no-check-certificate -N http://github.com/CarlFK/veyepar/raw/master/INSTALL.sh ; chmod u+x INSTALL.sh ; ./INSTALL.sh 
+
+pip install psycopg2
+sudo apt-get install sshfs
+mkdir /home/av/Videos/veyepar/lca
+sshfs av@130.216.0.130:/mnt/barge/lca/ /home/av/Videos/veyepar/lca
+cp Videos/veyepar/lca/veyepar.cfg veyepar/dj/scripts/
+cp Videos/veyepar/lca/local_settings.py veyepar/dj/dj
+cd veyepar/dj/scripts/
+python enc.py --poll 30

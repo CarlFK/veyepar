@@ -236,7 +236,7 @@ class enc(process):
     # cmd=["inkscape", svg_name, "--export-png", png_name]
     cmd=["inkscape", svg_name, 
             "--export-png", png_name,
-            "--export-width", "720",
+            # "--export-width", "720",
             ]
     ret = self.run_cmds(episode,[cmd])
     ret = os.path.exists(png_name)

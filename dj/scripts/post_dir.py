@@ -87,8 +87,23 @@ class post(process):
             if self.options.verbose: print "dest", dest
             if not os.path.exists(dest): os.makedirs(dest)
 
-            # copy the file
-            shutil.copy( fn['pathname'], dest )
+            if self.options.test:
+                # check for existance of source and dest
+                print("src: {} {}".format(
+                    fn['pathname']),
+                    "found." if os.path.exists(fn['pathname']) else "not found."
+                )
+                filename = os.path.split(fn['pathname'])[1]
+                dest = os.path.join(dest,filename)
+                
+                print("dst: {} {}".format(
+                    dest),
+                    "found." if os.path.exists(fn['pathname']) else "not found."
+                )
+            else:
+
+                # copy the file
+                shutil.copy( fn['pathname'], dest )
 
 
         ep.save()

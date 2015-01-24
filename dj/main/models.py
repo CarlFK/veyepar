@@ -213,8 +213,8 @@ STATES=[
  (8, 'review 2'), # wait for presenter to say good, or timeout
  (9, 'make public'), # flip private to public
  (10, 'tweet'), # tell world
- (12, 'to-miror'),
- (11, 'done')
+ (11, 'to-miror'),
+ (12, 'done')
  ]
 
 
