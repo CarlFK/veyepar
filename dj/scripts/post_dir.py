@@ -90,16 +90,16 @@ class post(process):
             if self.options.test:
                 # check for existance of source and dest
                 print("src: {} {}".format(
-                    fn['pathname']),
+                    fn['pathname'],
                     "found." if os.path.exists(fn['pathname']) else "not found."
-                )
+                ))
                 filename = os.path.split(fn['pathname'])[1]
                 dest = os.path.join(dest,filename)
                 
                 print("dst: {} {}".format(
-                    dest),
+                    dest,
                     "found." if os.path.exists(fn['pathname']) else "not found."
-                )
+                ))
             else:
 
                 # copy the file
