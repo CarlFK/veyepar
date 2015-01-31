@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name[en_US]=conky
+Comment[en_US]=a pretty zero-effort way to get deets
+Exec=/usr/bin/conky --pause=5 --config=/home/juser/.config/conky/conkyrc
+Terminal=false
+Type=Application
+Categories=Utility;Application;
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true

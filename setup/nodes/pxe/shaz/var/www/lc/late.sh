@@ -5,8 +5,8 @@
 
 set -x
 
-SUITE=$1 # saucy, trusty
-NUSER=$2
+suite=$1 # oneiric, saucy, trusty, utopic, vivid
+nuser=$2 # juser
 
 # url=(hostname) of pxe server
 # passed from append= in /var/lib/tftpboot/pxelinux.cfg/default 
@@ -17,19 +17,24 @@ SHAZ=$url
 PROFDIR=/etc/profile.d
 if [ -d $PROFDIR ]; then
   echo grep -E \"\(name\|MHz\)\" /proc/cpuinfo > $PROFDIR/showcpu.sh 
-  echo lsb_release --short --description --codename > $PROFDIR/showrelease.sh 
+  echo lsb_release -d -c > $PROFDIR/showrelease.sh 
   echo uname -a > $PROFDIR/showkernel.sh 
-  # echo cat /sys/bus/firewire/devices/fw?/guid > $PROFDIR/show_fwguid.sh 
 
-cat <<EOT >$PROFDIR/show_fwguid.sh
+  # echo "cd /sys/devices/virtual/dmi/id" > $PROFDIR/showproduct_name.sh 
+  # echo "echo \$(cat sys_vendor) \$(cat product_version) \$(cat product_name)" >> $PROFDIR/showproduct_name.sh 
+  # echo cd >> $PROFDIR/showproduct_name.sh 
+
+  cat <<EOT > $PROFDIR/showproduct_name.sh 
+cd /sys/devices/virtual/dmi/id
+echo \$(cat sys_vendor) \$(cat product_version) \$(cat product_name)
+cd
+EOT
+
+  cat <<EOT > $PROFDIR/show_fwguid.sh
 echo
 find /sys/bus/firewire/devices/ -name "fw?" -exec printf "{} " \; -exec cat {}/guid \;
 echo
 EOT
-
-  echo "cd /sys/devices/virtual/dmi/id" > $PROFDIR/showproduct_name.sh 
-  echo "echo \$(cat sys_vendor) \$(cat product_version) \$(cat product_name)" >> $PROFDIR/showproduct_name.sh 
-  echo cd >> $PROFDIR/showproduct_name.sh 
 
 fi
 
@@ -39,6 +44,10 @@ wget http://$SHAZ/lc/fw-beep.rules
 cd
 
 ## disable screensaver, blank screen on idle, blank screen on lid close
+# https://wiki.gnome.org/action/show/Projects/dconf/SystemAdministrators
+# gconftool-2 --direct --config-source=xml:readwrite:/etc/gconf/gconf.xml.defaults --type bool --set /apps/gnome-screensaver/idle_activation_enabled false
+
+mkdir -p /etc/dconf/db/site.d/locks
 mkdir -p /etc/dconf/profile
 cd /etc/dconf/profile
 cat <<EOT >user
@@ -92,7 +101,12 @@ if [ -f $CONF ]; then
 fi
 
 # disable "incomplete language support" dialog
-# rm -f /var/lib/update-notifier/user.d/incomplete*
+case $suite in
+  percise)
+  rm -f /var/lib/update-notifier/user.d/incomplete*
+  ;;
+esac
+
 
 CONF=/usr/share/gnome/autostart/libcanberra-login-sound.desktop 
 if [ -f $CONF ]; then
@@ -112,11 +126,16 @@ fi
 # something to do with needing pxe.  I bed I need to use gdebi?
 # dpkg -i grub-ipxe_1.0.0+git-4.d6b0b76-0ubuntu2_all.deb
 
+# update ipxe (fixes bug with hp laptops) (maybe)
+cd /boot
+rm ipxe.efi
+wget -N http://boot.ipxe.org/ipxe.lkrn
 
-## enable autologin of $NUSER
+## enable autologin of $nuser
 # sed docs http://www.opengroup.org/onlinepubs/009695399/utilities/sed.html
 
-if [ "$SUITE" = "trusty" ]; then
+case $suite in
+  trusty|utopic|vivid)
   CONF=/etc/lightdm
   if [ -d $CONF ]; then
     cd $CONF
@@ -124,38 +143,36 @@ if [ "$SUITE" = "trusty" ]; then
     cd lightdm.conf.d
     cat <<EOT > 12-autologin.conf
 [SeatDefaults]
-autologin-user=$NUSER
+autologin-user=$nuser
 EOT
-  fi
-
-elif [ "$SUITE" = "oneiric" ]; then
+  fi ;;
+  oneiric | precise)
   CONF=/etc/lightdm/lightdm.conf
   if [ -f $CONF ]; then
-    printf "autologin-user=%s\n" $NUSER >> $CONF
-  fi 
-
-elif [ "$SUITE" = "natty" ]; then
+    printf "autologin-user=%s\n" $nuser >> $CONF
+  fi ;;
+  natty)
   sed -i \
 	 -e '/^\[daemon\]$/aAutomaticLoginEnable=true' \
-         -e "/^\[daemon\]$/aAutomaticLogin=$NUSER" \
+         -e "/^\[daemon\]$/aAutomaticLogin=$nuser" \
        /etc/gdm/gdm.conf-custom
-
-elif [ "$SUITE" = "maveric" ]; then
+  ;; 
+  maveric)
   cat <<EOT >/etc/gdm/custom.conf
 [daemon]
 AutomaticLoginEnable=true
-AutomaticLogin=$NUSER
+AutomaticLogin=$nuser
 EOT
-
-fi
+;;
+esac
 
 # install here and not 
 # d-i pkgsel/include string squid-deb-proxy-client
 # https://launchpad.net/bugs/889656
 # debian-installer "installer stops using proxy"
 
-apt-get install --force-yes --assume-yes \
-	squid-deb-proxy-client
+# apt-get install --force-yes --assume-yes \
+# 	squid-deb-proxy-client
 
 ## remove apt proxy used for install 
 # squid-deb-proxy-client has been installed for production 
@@ -166,7 +183,7 @@ if [ -f $CONF ]; then
 fi
 
 ## turn off tracker indexing (slows down the box)
-CONF=/home/$NUSER/.config/tracker/tracker.cfg
+CONF=/home/$nuser/.config/tracker/tracker.cfg
 if [ -f $CONF ]; then
   sed -i "/^EnableIndexing=true/s/^.*$/EnableIndexing=false/" $CONF
 fi
@@ -194,6 +211,12 @@ if [ -d $CONF ]; then
 
 fi
 
+cat <<EOT >> /etc/exports
+# /home/$nuser/Videos  192.168.1.0/16(rw,async,no_subtree_check)
+# /home/$nuser/Videos  10.0.0.1/32(rw,async,no_subtree_check)
+/home/$nuser/Videos  room100.local(rw,async,no_subtree_check)
+EOT
+
 ## add modules that needs to be added:
 cat <<EOT >> /etc/modules
 ## snd-hda-intel sound for HP laptops Intel 82801I (ICH9 Family) HD Audio
@@ -209,10 +232,10 @@ EOT
 # APP=async-test
 # wget http://$SHAZ/lc/$APP
 # chmod 777 $APP 
-# chown $NUSER:$NUSER $APP 
+# chown $nuser:$nuser $APP 
 
 # rest of script does things in defaunt users home dir (~)
-cd /home/$NUSER
+cd /home/$nuser
 
 # create ~/.ssh, gen private key
 # ssh-keygen -f ~/.ssh/id_rsa -N ""
@@ -228,7 +251,7 @@ chmod 600 config authorized_keys id_rsa
 chmod 644 id_rsa.pub 
 cd ..
 chmod 700 .ssh
-chown -R $NUSER:$NUSER .ssh
+chown -R $nuser:$nuser .ssh
 
 # add 'private' keys - inscure, they are publicly avalibe on this box.
 # wget --overwrite http://$SHAZ/lc/sshkeys.tar
@@ -243,75 +266,94 @@ chown -R $NUSER:$NUSER .ssh
 ## add public keys of people who can log in as $USER
 # mkdir .ssh
 # chmod -R 700 .ssh
-# chown $NUSER:$NUSER .ssh
+# chown $nuser:$nuser .ssh
 # cd .ssh
 # wget http://$SHAZ/lc/authorized_keys
 # chmod -R 600 authorized_keys
-# chown $NUSER:$NUSER authorized_keys
+# chown $nuser:$nuser authorized_keys
 # cd ..
 
 
 # make time command report just total seconds.
 printf "\nTIMEFORMAT=%%E\n" >> .bashrc
+printf "\nexport DISPLAY=:0.0\n" >> .bashrc
+
 
 ## create ~/bin
 # ~/bin gets added to PATH if it exists when the shell is started.
 # so make it now so that it is in PATH when it is needed later. 
-mkdir -p bin temp .mplayer
-chown -R $NUSER:$NUSER bin temp .mplayer
-   
+mkdir -p bin temp .mplayer .config/autostart .config/conky
+chown -R $nuser:$nuser bin temp .mplayer .config 
+
+cd .config/autostart
+wget http://$SHAZ/lc/conky/conky.desktop
+chown $nuser:$nuser conky.desktop
+cd ../conky
+wget http://$SHAZ/lc/conky/conkyrc
+chown $nuser:$nuser conkyrc
+
+cd /home/$nuser
+
 ## generic .dvswitchrc, good for testing and production master, slave needs to be tweaked.
 
 cat <<EOT > .dvswitchrc
-MIXER_HOST=0.0.0.0
-# MIXER_HOST=10.0.0.1
+MIXER_HOST=10.0.0.1
+# MIXER_HOST=room_100.local
+# MIXER_HOST=mixer.local
 # MIXER_HOST=192.168.0.1
+# MIXER_HOST=0.0.0.0
 MIXER_PORT=2000
 EOT
-chown -R $NUSER:$NUSER .dvswitchrc
+chown -R $nuser:$nuser .dvswitchrc
+
+cat <<EOT > veyepar.cfg
+[global]
+client=nodevember 
+show=nodevember14 
+
+# room=auditorium
+# room=room_100
+# room=room_200
+# room=room_300
+# room=room_400
+
+upload_formats=mp4 
+EOT
+chown -R $nuser:$nuser veyepar.cfg
+
 
 # APP=x.sh
 # echo svn co svn://svn/vga2usb >$APP
 # chmod 777 $APP 
-# chown $NUSER:$NUSER $APP 
+# chown $nuser:$nuser $APP 
 
 APP=x.sh
 cat <<EOT > $APP
 #!/bin/bash -x
 wget -N http://$SHAZ/lc/hook.sh
 chmod u+x hook.sh
-./hook.sh \$1
+./hook.sh \$*
 EOT
 chmod 744 $APP
-chown $NUSER:$NUSER $APP
+chown $nuser:$nuser $APP
 
 APP=pxe.py
 wget http://$SHAZ/$APP
 chmod 744 $APP 
-chown $NUSER:$NUSER $APP 
+chown $nuser:$nuser $APP 
 
 ## script to install carl's custom dvswitch suite
 APP=inst_dvs.sh
 cat <<EOT >> $APP
 #!/bin/bash -x
 sudo apt-get install python-wxgtk2.8
-
 git clone git://github.com/CarlFK/dvsmon.git
-sudo apt-add-repository --enable-source --yes ppa:carlfk
-sudo apt-get --assume-yes update
-sudo apt-get --assume-yes install dvswitch dvsource dvsink
-exit
-sudo apt-get install libav-dbg libglib2.0-0-dbg libglibmm-2.4-dbg libgtk2.0-0-dbg
-sudo apt-get build-dep dvswitch
-apt-get source dvswitch
-cd dvswitch-0.9.2/
-export DEB_BUILD_OPTIONS=nostrip,noopt
-dpkg-buildpackage
-sudo dpkg -i ../dvswitch_0.9.2-1ubuntu2_amd64.deb
-
+# sudo apt-add-repository --yes ppa:carlfk
+# sudo apt-get --assume-yes update
+# sudo apt-get --assume-yes install dvswitch dvsource dvsink
 EOT
 chmod 744 $APP
-chown $NUSER:$NUSER $APP
+chown $nuser:$nuser $APP
 
 ## Veyepar install script
 APP=inst_veyepar.sh
@@ -321,35 +363,39 @@ chmod u+x INSTALL.sh
 ./INSTALL.sh 
 EOT
 chmod 744 $APP 
-chown $NUSER:$NUSER $APP 
+chown $nuser:$nuser $APP 
+# su $nuser git clone git://github.com/CarlFK/veyepar.git
 
-## grab gst-switch  install-test script
-# chain this script to wget install.sh so that we get the latest version 
-APP=inst_gst-switch-test.sh
+## gst-switch  
+APP=inst_gsts.sh
 cat <<EOT >> $APP
 #!/bin/bash -ex
-wget -N https://raw.github.com/hyades/gst-switch/master/scripts/install.sh 
-chmod u+x install.sh 
-sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise universe"
-sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise multiverse"
-./install.sh 
+git clone https://github.com/timvideos/gst-switch.git
+cd gst-switch
+./build-min-trusty.sh
+
+# wget -N https://raw.github.com/hyades/gst-switch/master/scripts/install.sh 
+# chmod u+x install.sh 
+# sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise universe"
+# sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise multiverse"
+# ./install.sh 
 EOT
 chmod 744 $APP 
-chown $NUSER:$NUSER $APP 
+chown $nuser:$nuser $APP 
 
 
 # build melt and all deps
 APP=mkmlt.sh
 wget http://$SHAZ/lc/$APP
-wget -N http://github.com/CarlFK/veyepar/raw/master/setup/nodes/encode/$APP 
+# wget -N http://github.com/CarlFK/veyepar/raw/master/setup/nodes/encode/$APP 
 chmod 744 $APP 
-chown $NUSER:$NUSER $APP 
+chown $nuser:$nuser $APP 
 
 ## get mplayer default config 
 APP=.mplayer/config
 wget http://$SHAZ/lc/mplayer.conf -O $APP  
 chmod 744 $APP 
-chown $NUSER:$NUSER $APP 
+chown $nuser:$nuser $APP 
 
 cd bin
 
@@ -357,17 +403,24 @@ cd bin
 APP=netcons.sh
 wget http://$SHAZ/lc/$APP
 chmod 744 $APP 
-chown $NUSER:$NUSER $APP 
+chown $nuser:$nuser $APP 
+
+cd ..
+
+cd Desktop
+# APP=pyohio_2014_logos.odp
+# wget http://$SHAZ/lc/$APP
+# chown $nuser:$nuser $APP 
 
 cd ..
 
 # APP=slcomp.py
 # wget http://$SHAZ/$APP
 # chmod 744 $APP 
-# chown $NUSER:$NUSER $APP 
+# chown $nuser:$nuser $APP 
 
 # wget http://$SHAZ/dvs.tar
 # tar xf dvs.tar
 # chmod -R 744 dvswitch
-# chown -R $NUSER:$NUSER dvswitch
+# chown -R $nuser:$nuser dvswitch
 

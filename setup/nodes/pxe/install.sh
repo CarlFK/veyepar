@@ -88,9 +88,12 @@ fi
 # shaz/root/bin/getu.sh natty amd64
 # shaz/root/bin/getu.sh oneiric amd64
 # shaz/root/bin/getu.sh oneiric i386
-shaz/root/bin/getu.sh precise amd64
-shaz/root/bin/getu.sh precise i386
+# shaz/root/bin/getu.sh precise amd64
+# shaz/root/bin/getu.sh precise i386
 shaz/root/bin/getu.sh trusty amd64
+shaz/root/bin/getu.sh trusty i386
+shaz/root/bin/getu.sh utopic amd64
+shaz/root/bin/getu.sh vivid amd64
 
 # setup d-i preseed files and scripts
 # docs I like
