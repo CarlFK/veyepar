@@ -35,6 +35,7 @@ apt-get --force-yes --assume-yes install  \
  nfs-kernel-server \
  installation-guide-i386 \
  squid-deb-proxy \
+ pxelinux
 
 # dhcp server:
 cp -rv shaz/etc/dhcp* /etc/
@@ -43,6 +44,9 @@ cp -rv shaz/etc/dhcp* /etc/
 # give dhcpd process access to this file
 # include "/etc/bind/rndc.key";
 adduser dhcpd bind
+
+# might need this stuff?
+chmod g+w /etc/bind/rndc.key
 
 # tell apparor to allow dhcpd process to read the dns keyfile
 cat <<EOT >>/etc/apparmor.d/local/usr.sbin.dhcpd
@@ -75,7 +79,8 @@ cp -rv shaz/var/lib/tftpboot/* /var/lib/tftpboot/
 cp -r /usr/lib/syslinux/ /var/lib/tftpboot/
 # pxelinux.cfg/default is relitive to where it finds pxelinux.0
 # (i guess)
-ln -sf syslinux/pxelinux.0  /var/lib/tftpboot/
+# ln -sf syslinux/pxelinux.0  /var/lib/tftpboot/
+cp /usr/lib/PXELINUX/pxelinux.0 /var/lib/tftpboot/
 
 # swap shaz for whatever this box's name is.
 sed -i "/shaz/s//$SHAZ/g" /var/lib/tftpboot/pxelinux.cfg/default

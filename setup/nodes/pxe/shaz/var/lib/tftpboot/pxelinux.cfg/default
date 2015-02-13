@@ -7,13 +7,18 @@
 UI menu
 
 # how long in 1/10 seccond to wait for the user
-timeout 150
+timeout 50
 
 # what to load if the user doesn't press anything
 ontimeout boothd
-# ontimeout clonezilla
+# ontimeout ubuntu-trusty-amd64-handsoff
+# ontimeout clonezilla-exper
 
-default ubuntu-oneiric-amd64-handsoff
+# default ubuntu-utopic-amd64-handsoff
+default ubuntu-utopic-amd64-handsoff
+# default ubuntu-oneiric-amd64-handsoff-dvswitch 
+# default ubuntu-precise-amd64-handsoff
+# default wheezy-x64-fosdem
 
 # file to dump to the client's screen if the user hits F1
 # (this file, which is way too large and will scrool off the screen, 
@@ -46,91 +51,180 @@ label bootnext
 	# The alternative is to use 
 	localboot 0
 
+label ubuntu-vivid-amd64-handsoff
+	linux ubuntu/vivid/amd64/linux
+	append initrd=ubuntu/vivid/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= netcfg/dhcpv6_timeout=5 DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-utopic-amd64-handsoff
+	linux ubuntu/utopic/amd64/linux
+	append initrd=ubuntu/utopic/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= netcfg/dhcpv6_timeout=5 DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-trusty-amd64-handsoff
+	linux ubuntu/trusty/amd64/linux
+	append initrd=ubuntu/trusty/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= netcfg/dhcpv6_timeout=5 DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-trusty-amd64-manual
+	linux ubuntu/trusty/amd64/linux
+	append initrd=ubuntu/trusty/amd64/initrd.gz root=/dev/rd/0 rw 
+
+label ubuntu-trusty-i386-handsoff
+	linux ubuntu/trusty/i386/linux
+	append initrd=ubuntu/trusty/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-saucy-amd64-handsoff
+	linux ubuntu/saucy/amd64/linux
+	append initrd=ubuntu/saucy/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-saucy-i386-handsoff
+	linux ubuntu/saucy/i386/linux
+	append initrd=ubuntu/saucy/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label wheezy-x64-fosdem
+	kernel debian/wheezy/amd64/linux
+	append vga=normal initrd=debian/wheezy/amd64/initrd.gz -- quiet url=g2a debian-installer/locale=en_US keyboard-configuration/xkb-keymap=us hw-detect/load_firmware=false hostname= netcfg/get_domain=
+
+label ubuntu-raring-amd64-handsoff
+	linux ubuntu/raring/amd64/linux
+	append initrd=ubuntu/raring/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+label ubuntu-raring-i386-handsoff
+	linux ubuntu/raring/i386/linux
+	append initrd=ubuntu/raring/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+
+label ubuntu-quantal-amd64-handsoff
+	linux ubuntu/quantal/amd64/linux
+	append initrd=ubuntu/quantal/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
+	ipappend 2
+
+
 label ubuntu-precise-amd64-handsoff
 	linux ubuntu/precise/amd64/linux
-	append initrd=ubuntu/precise/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz -- 
+	append initrd=ubuntu/precise/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- fb=false vga=normal
 	ipappend 2
 
 label ubuntu-precise-i386-handsoff
 	linux ubuntu/precise/i386/linux
-	append initrd=ubuntu/precise/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz -- 
+	append initrd=ubuntu/precise/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
 	ipappend 2
 
-label ubuntu-oneiric-amd64-handsoff
+label ubuntu-oneiric-amd64-handsoff-dvswitch
 	linux ubuntu/oneiric/amd64/linux
-	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz -- 
+	append initrd=ubuntu/oneiric/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=developer url=g2a tasks="ubuntu-desktop" -- vga=6
 	ipappend 2
 
 label ubuntu-oneiric-i386-handsoff
 	linux ubuntu/oneiric/i386/linux
-	append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=shaz -- 
+	append initrd=ubuntu/oneiric/i386/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6
 	ipappend 2
 
-label memtest86+-4.20.bin
-        linux util/memtest86+-4.20.bin
+label memtest86+
+        linux util/memtestp.bin
+        # linux util/memtest86+-4.20.bin
 
 label ubuntu-natty-amd64-handsoff
 	linux ubuntu/natty/amd64/linux
-	append initrd=ubuntu/natty/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/natty/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/natty/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us DEBCONF_DEBUG=5 hostname= url=g2a tasks="ubuntu-desktop" -- 
+
+label old.ubuntu-natty-amd64-handsoff
+	linux ubuntu/natty/amd64/linux
+	append initrd=ubuntu/natty/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= apt-setup/proposed=true DEBCONF_DEBUG=5 SHAZ=g2a tasks="ubuntu-desktop" -- vga=6
 
 label ubuntu-natty-i386-handsoff
 	linux ubuntu/natty/i386/linux
-	append initrd=ubuntu/natty/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/natty/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/natty/i386/initrd.gz root=/dev/rd/0 rw locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=us console-setup/ask_detect=false netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=g2a url=http://g2a/ubuntu/natty/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 
 label ubuntu-maverick-amd64-handsoff
 	linux ubuntu/maverick/amd64/linux
-	append initrd=ubuntu/maverick/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/maverick/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us DEBCONF_DEBUG=5 hostname= url=g2a tasks="ubuntu-desktop" -- 
+
+
+label old-ubuntu-maverick-amd64-handsoff
+	linux ubuntu/maverick/amd64/linux
+	append initrd=ubuntu/maverick/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://g2a/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 
 label ubuntu-maverick-i386-handsoff-server
 	linux ubuntu/maverick/i386/linux
-	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="" -- vga=2
+	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://g2a/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="" -- vga=2
         # vga=2 or  791 792 794 795.
 
 
 
 label ubuntu-maverick-i386-handsoff
 	linux ubuntu/maverick/i386/linux
-	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=g2a url=http://g2a/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 
 label mav-srv
 	linux ubuntu/maverick/i386/linux
-	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu" -- vga=6
+	append initrd=ubuntu/maverick/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=g2a url=http://g2a/ubuntu/maverick/preseed.cfg tasksel:tasksel/first="ubuntu" -- vga=6
 
 label sbm-floppy
 # smart boot manager - menu of all bootable devices on the local box
 	kernel syslinux/memdisk 
-	append initrd=util/sbm.img
+	append initrd=util/sbm/sbm.img
 
 label memtest86
 	kernel memtest/memtest
 
 label dvswitch
 	linux ubuntu/jaunty/dvswitch/iso/casper/vmlinuz
-	append initrd=ubuntu/jaunty/dvswitch/iso/casper/initrd.gz boot=casper netboot=nfs nfsroot=shaz:/var/lib/tftpboot/ubuntu/jaunty/dvswitch/iso/ vga=6 log_host=cw1b 
+	append initrd=ubuntu/jaunty/dvswitch/iso/casper/initrd.gz boot=casper netboot=nfs nfsroot=g2a:/var/lib/tftpboot/ubuntu/jaunty/dvswitch/iso/ vga=6 log_host=cw1b 
 
 label clonezilla-exper
 	linux util/cz/exper/live/vmlinuz 
-	append initrd=util/cz/exper/live/initrd.img boot=live union=aufs ocs_live_run="ocs-live-general" ocs_live_extra_param=""  ocs_lang="" ocs_live_keymap="NONE" ip=dhcp nolocales netboot=nfs nfsroot=shaz:/var/lib/tftpboot/util/cz/exper/ ocs_daemonon="ssh" usercrypted=yfjxD88LCd8AY console=ttyS0,9600n8 
+	append initrd=util/cz/exper/live/initrd.img boot=live config noswap nolocales edd=on nomodeset ocs_live_run="ocs-live-general" ocs_live_extra_param="" keyboard-layouts="" ocs_live_batch="no" locales="" vga=788 nosplash noprompt fetch=tftp://g2a/util/cz/exper/live/filesystem.squashfs
+
+label clonezilla-exper-old
+	linux util/cz/exper/live/vmlinuz 
+	append initrd=util/cz/exper/live/initrd.img boot=live union=aufs ocs_live_run="ocs-live-general" ocs_live_extra_param=""  ocs_lang="" ocs_live_keymap="NONE" nolocales netboot=nfs nfsroot=g2a:/var/lib/tftpboot/util/cz/exper/  debug netconsole=@192.156.1.5/eth0,@192.168.1.3/00:08:02:a0:ab:cf 
+
+# e1000e="ip=192.168.1.5"
+
+ # linux netconsole=4444@10.0.0.1/eth1,9353@10.0.0.2/12:34:56:78:9a:bc
+	# append initrd=util/cz/exper/live/initrd.img boot=live union=aufs ocs_live_run="ocs-live-general" ocs_live_extra_param=""  ocs_lang="" ocs_live_keymap="NONE" ip=dhcp nolocales netboot=nfs nfsroot=g2a:/var/lib/tftpboot/util/cz/exper/ ocs_daemonon="ssh" usercrypted=yfjxD88LCd8AY console=ttyS0,9600n8 debug netconsole=@192.156.1.5/eth0,@192.168.1.3/00:08:02:a0:ab:cf 
+	# append initrd=util/cz/exper/live/initrd.img boot=live hostname=cz config noswap edd=on nomodeset noprompt ocs_live_run="ocs-live-general" cs_live_extra_param="" ocs_live_keymap="" ocs_live_batch="no" ocs_lang="" acpi=off irqpoll noapic noapm nodma nomce nolapic nosmp ip=dhcp nolocales netboot=nfs nfsroot=g2a:/var/lib/tftpboot/util/cz/exper debug netconsole=@192.156.1.5/eth0,@192.168.1.3/00:08:02:a0:ab:cf 
+	# append initrd=util/cz/exper/live/initrd.img boot=live hostname=oneiric config noswap edd=on nomodeset noprompt ocs_live_run="ocs-live-general" cs_live_extra_param="" ocs_live_keymap="" ocs_live_batch="no" ocs_lang="" acpi=off irqpoll noapic noapm nodma nomce nolapic nosmp ip=dhcp nolocales netboot=nfs nfsroot=g2a:/var/lib/tftpboot/util/cz/exper debug netconsole=@192.156.1.5/eth0,@192.168.1.3/00:08:02:a0:ab:cf 
+	append initrd=util/cz/exper/live/initrd.img boot=live hostname=oneiric config noswap nolocales edd=on nomodeset noprompt ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_keymap="" ocs_live_batch="no" ocs_lang="" acpi=off irqpoll noapic noapm nodma nomce nolapic nosmp ip=frommedia nomodeset vga=normal nosplash netboot=nfs nfsroot=g2a:/var/lib/tftpboot/util/cz/exper debug netconsole=@192.156.1.5/eth0,@192.168.1.3/00:08:02:a0:ab:cf 
+
+
+# from syslinux/syslinux.cfg
+# falsafe mode
+# append initrd=/live/initrd.img boot=live hostname=oneiric config quiet noswap nolocales edd=on nomodeset noprompt ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_keymap="" ocs_live_batch="no" ocs_lang="" acpi=off irqpoll noapic noapm nodma nomce nolapic nosmp ip=frommedia nomodeset vga=normal nosplash
+
+# append initrd=/live/initrd.img boot=live hostname=oneiric config quiet noswap nolocales edd=on nomodeset noprompt ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_keymap="" ocs_live_batch="no" ocs_lang="" video=uvesafb:mode_option=800x600-16 ip=frommedia  nosplash
 
 label clonezilla-testing
 	linux util/cz/testing/live/vmlinuz1
-	append initrd=util/cz/testing/live/initrd1.img boot=live union=aufs  hostname=intrepid  ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch="no" ocs_lang="" ocs_live_keymap="NONE" ip=dhcp nolocales netboot=nfs nfsroot=shaz:/var/lib/tftpboot/util/cz/testing/ vga=6 ocs_daemonon="ssh" usercrypted=yfjxD88LCd8AY console=ttyS0,9600n8 edd=off
+	append initrd=util/cz/testing/live/initrd1.img boot=live union=aufs  hostname=intrepid  ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch="no" ocs_lang="" ocs_live_keymap="NONE" ip=dhcp nolocales netboot=nfs nfsroot=g2a:/var/lib/tftpboot/util/cz/testing/ vga=6 ocs_daemonon="ssh" usercrypted=yfjxD88LCd8AY console=ttyS0,9600n8 edd=off
 
 label ubuntu-lucid-amd64-handsoff
 	linux ubuntu/lucid/amd64/linux
-	append initrd=ubuntu/lucid/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/lucid/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/lucid/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://g2a/d-i/lucid/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+
+
+label ubuntu-lucid-amd64-handsoff-org
+	linux ubuntu/lucid/amd64/linux
+	append initrd=ubuntu/lucid/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://g2a/ubuntu/lucid/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 
 label ubuntu-lucid-i386-handsoff
 	linux ubuntu/lucid/i386/linux
-	append initrd=ubuntu/lucid/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/lucid/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/lucid/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://g2a/ubuntu/lucid/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 
 label ubuntu-karmic-amd64-handsoff
 	linux ubuntu/karmic/amd64/linux
-	append initrd=ubuntu/karmic/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/karmic/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/karmic/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://g2a/ubuntu/karmic/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 
 label ubuntu-karmic-i386-handsoff
 	linux ubuntu/karmic/i386/linux
-	append initrd=ubuntu/karmic/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/karmic/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/karmic/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://g2a/ubuntu/karmic/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 
 
 label ubuntu-karmic-livecd
@@ -143,7 +237,7 @@ label ubuntu-jaunty-amd64-livecd
 
 label ubuntu-jaunty-i386-handsoff
 	linux ubuntu/jaunty/i386/linux
-	append initrd=ubuntu/jaunty/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://shaz/ubuntu/jaunty/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
+	append initrd=ubuntu/jaunty/i386/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/get_hostname= DEBCONF_DEBUG=5 url=http://g2a/ubuntu/jaunty/preseed.cfg tasksel:tasksel/first="ubuntu-desktop" -- vga=6
 
 label ubuntu-karmic-amd64-livecd
 	linux ubuntu/karmic/amd64/iso/casper/vmlinuz
@@ -160,7 +254,7 @@ label ubuntu-jaunty-i386-livecd
 
 label ubuntu-jaunty-amd64-handsoff
 	linux ubuntu/jaunty/amd64/linux
-	append initrd=ubuntu/jaunty/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5  tasksel:tasksel/first="ubuntu-desktop" url=http://shaz/ubuntu/jaunty/preseed.cfg --
+	append initrd=ubuntu/jaunty/amd64/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5  tasksel:tasksel/first="ubuntu-desktop" url=http://g2a/ubuntu/jaunty/preseed.cfg --
 
 label ubuntu-intrepid-livecd
 	linux ubuntu/intrepid/desktop/casper/vmlinuz
@@ -168,15 +262,15 @@ label ubuntu-intrepid-livecd
 
 label ubuntu-hardy-alternate-handsoff
 	linux ubuntu/hardy/alt/linux
-	append initrd=ubuntu/hardy/alt/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5  url=http://shaz/ubuntu/hardy/preseed-hardy-alt.cfg apt-setup/proposed=true tasksel:tasksel/first=""  --
+	append initrd=ubuntu/hardy/alt/initrd.gz root=/dev/rd/0 rw locale=en_US console-setup/layoutcode=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5  url=http://g2a/ubuntu/hardy/preseed-hardy-alt.cfg apt-setup/proposed=true tasksel:tasksel/first=""  --
 
 label lenny-i386-handsoff
 	linux debian/lenny/i386/linux
-	append initrd=debian/lenny/i386/initrd.gz ramdisk_size=15360 root=/dev/rd/0 devfs=mount,dall rw DEBCONF_PRIORITY=high d-i locale=en_US countrychooser/shortlist=EN console-keymaps-at/keymap=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=shaz url=http://shaz/debian/lenny/preseed.cfg tasksel:tasksel/first="" -- vga=6
+	append initrd=debian/lenny/i386/initrd.gz ramdisk_size=15360 root=/dev/rd/0 devfs=mount,dall rw DEBCONF_PRIORITY=high d-i locale=en_US countrychooser/shortlist=EN console-keymaps-at/keymap=us netcfg/wireless_wep= netcfg/get_hostname= DEBCONF_DEBUG=5 SHAZ=g2a url=http://g2a/debian/lenny/preseed.cfg tasksel:tasksel/first="" -- vga=6
 
 label lenny-x64-handsoff
 	linux debian/lenny/i386/linux
-	append initrd=debian/lenny/i386/initrd.gz ramdisk_size=15360 root=/dev/rd/0 devfs=mount,dall rw DEBCONF_PRIORITY=high d-i locale=en_US countrychooser/shortlist=EN console-keymaps-at/keymap=us netcfg/wireless_wep= DEBCONF_DEBUG=5 SHAZ-shaz url=http://shaz/debian/lenny/preseed.cfg tasksel:tasksel/first="" -- vga=6
+	append initrd=debian/lenny/i386/initrd.gz ramdisk_size=15360 root=/dev/rd/0 devfs=mount,dall rw DEBCONF_PRIORITY=high d-i locale=en_US countrychooser/shortlist=EN console-keymaps-at/keymap=us netcfg/wireless_wep= DEBCONF_DEBUG=5 SHAZ-g2a url=http://g2a/debian/lenny/preseed.cfg tasksel:tasksel/first="" -- vga=6
 
 label avlinux
 	linux avlinux/vmlinuz
@@ -278,15 +372,15 @@ label w98ebd
 
 label knoppix402
 	linux knoppix/k402/vmlinuz
-	APPEND nfsdir=shaz:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=791 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=knoppix noacpi
+	APPEND nfsdir=g2a:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=791 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=knoppix noacpi
 
 label knoppix402-expert
 	linux knoppix/k402/vmlinuz
-	APPEND nfsdir=shaz:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=791 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=expert noacpi 
+	APPEND nfsdir=g2a:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=791 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=expert noacpi 
 
 label knoppix402-text
 	linux knoppix/k402/vmlinuz
-	APPEND nfsdir=shaz:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=0f01 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=knoppix noacpi 1
+	APPEND nfsdir=g2a:/mnt/knoppix402 lang=us ramdisk_size=100000 init=/etc/init apm=power-off nomce vga=0f01 initrd=knoppix/k402/miniroot.gz BOOT_IMAGE=knoppix noacpi 1
 
 label menu
 	kernel syslinux/menu.c32
