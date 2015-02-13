@@ -262,15 +262,7 @@ class enc(process):
         if os.path.exists(custom_svg_name):
             cooked_svg_name = custom_svg_name
         else:
-
-            svg_name = episode.show.client.title_svg \
-                    if episode.show.client.title_svg \
-                    else "%s_title.svg" % (episode.show.slug,)
-
-            print svg_name
-
-            # template = os.path.join(self.show_dir, "bling", svg_name)
-            # os.path.join(self.show_dir, "bling", svg_name)
+            svg_name = episode.show.client.title_svg
             template = os.path.join(
                     os.path.split(os.path.abspath(__file__))[0],
                     "bling",
