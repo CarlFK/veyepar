@@ -243,6 +243,13 @@ class add_to_richard(Process):
         tags = self.clean_richard_tags(ep)
         description = self.clean_richard_description(ep)
         
+        duration = ep.cuts_time()
+        # If there are no cuts defined yet 
+        # (like before the event)
+        #   use the sheduled time.
+        if duration is None:
+            duration = int(ep.get_minutes()*60)
+        
         video_data = {
             'state': state,
             'title': ep.name,

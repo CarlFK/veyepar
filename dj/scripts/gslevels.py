@@ -11,7 +11,6 @@ import numpy
 import os
 
 from gi.repository import Gst, GLib
-# from gi.repository import GObject, Gst, GLib
 Gst.init(None)
 
 class AudioPreviewer:

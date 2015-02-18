@@ -180,9 +180,9 @@ class post(process):
             print 'skipping youtube_upoad.py uploader.upload()'
             print len(meta['description'])
 
-        # elif ep.host_url:
-        #     print "skipping youtube, already there."
-        #    youtube_success = True
+        elif ep.host_url:
+            print "skipping youtube, already there."
+            youtube_success = True
 
         else:
 

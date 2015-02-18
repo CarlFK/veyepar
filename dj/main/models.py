@@ -140,7 +140,7 @@ class Raw_File(models.Model):
     trash = models.BooleanField(help_text="This clip is trash")
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
-    
+
     def next(self):
         """
         gets the next clip in the room.
@@ -310,6 +310,21 @@ class Episode(models.Model):
 
     def __unicode__(self):
         return self.name
+ 
+    def cuts_time(self):
+        # get total time of video based on selected cuts.
+        # or None if there are no clips.
+        cuts = Cut_List.objects.filter(episode=self, apply=True)
+        if not cuts:
+            ret = None
+        else:
+            s=0
+            for cut in cuts:
+                s+=int(cut.duration()) # durration is in seconds :p
+            ret = s
+
+        return ret
+
 
     def get_minutes(self):
         delta = self.end - self.start

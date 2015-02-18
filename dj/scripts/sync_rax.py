@@ -10,7 +10,7 @@ from process import process
 from main.models import Client, Show, Location, Episode, Raw_File
 
 import rax_uploader
-# import gslevels
+import gslevels
 
 class SyncRax(process):
 
@@ -87,8 +87,8 @@ class SyncRax(process):
 
         for rf in rfs:
             if self.options.verbose: print rf
-            self.rf_ogv(show, rf)
-            # self.rf_audio_png(show, rf)
+            # self.rf_ogv(show, rf)
+            self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )

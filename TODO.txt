@@ -97,6 +97,8 @@ model:
   
   episode:
 
+  child table of destination hosts (youtube, archive.org, mirror...)
+
   child table of output files
     mp4, ogv, mp3, facc...
     text: irc logs, transcript, tweets
@@ -107,7 +109,12 @@ model:
     datetime uploaded
     track when deleted?  
 
+  Once uploaded to a file sharing host,  (archive, rax, mirror...)
+    use data center process to read from it and write to youtube so
+    that the video file only goes across local connection once.
+
 process to check if a file is avalible for public viewing:
+  (neither of these is a real problem, so low priority)
   youtube - "still processing, check again later."
   rsync or such, conjob or human processes that veyepar doesn't know about
     
