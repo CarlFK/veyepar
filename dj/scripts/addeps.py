@@ -1357,7 +1357,8 @@ class add_eps(process.process):
             event['authors'] =  ', '.join( 
                     [ a['name'] for a in  event['authors'] ])
             event['emails'] =  ', '.join( 
-                    [ a['email'] for a in  event['emails'] ])
+                    [ a['email'] for a in  event['emails'] 
+                        if a['email'] ])
 
             # if not event['emails']: # no email found
             #    event['emails'] = "ChiPy <chicago@python.org>"

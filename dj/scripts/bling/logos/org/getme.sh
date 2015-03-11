@@ -1,3 +1,5 @@
+wget http://www.narrativescience.com//resources/assets/images/logo.png -O narrativescience.png
+
 wget https://media.licdn.com/media/p/2/000/1be/17e/3633534.png -O matrix.png
 wget "http://itstaffing.matrixresources.com/sites/itstaffing.matrixresources.com/themes/itstaffing/images/transparentGif.gif" -O matrix.gif
 wget "http://www.google.com/a/cpanel/chicagoacm.org/images/logo.gif?service=google_default" -O chicagoacm.gif
