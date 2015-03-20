@@ -227,10 +227,13 @@ class post(process):
                 print 'test mode...'
                 print 'skipping archive_uploader .upload()'
 
-            # elif ep.archive_ogv_url:
-                # archive_mp4_url assumes that is what gets filled in 
-            #    print "skipping archive, already there."
-            #    archive_success = True
+            elif ep.archive_ogv_url:
+                # um.. what about other formats?  
+                # kinda buggy here.
+                # but only relevant when things are messed up
+                # and looking for problemss.
+                print "skipping archive, ogv already there."
+                archive_success = True
 
             else:
 
@@ -288,11 +291,11 @@ class post(process):
                 print 'skipping rax_uploader .upload()'
                 print 'key_id:', uploader.key_id
 
-            # elif ep.rax_mp4_url:
+            elif ep.rax_mp4_url:
                 # above assumes rax_mp4_url is what gets filled in below
                 # this is so gross.
-            #    print "skipping rax, already there."
-            #    success = True
+                print "skipping rax, already there."
+                success = True
 
             else:
 

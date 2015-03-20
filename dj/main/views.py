@@ -20,7 +20,7 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.mail import get_connection, EmailMessage
 
-from django.utils import simplejson
+# from django.utils import simplejson
 
 import datetime
 import os

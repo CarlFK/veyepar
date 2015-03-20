@@ -11,6 +11,9 @@ sys.path.insert(0, '..' )
 
 from django.conf import settings
 
+import django
+django.setup() 
+
 import socket
 
 from main.models import Show # , Episode
