@@ -11,10 +11,10 @@
     {% include "_video_formset.html" %}
     <input type="submit" value="Done Adding Videos" />
   </form>
-  <form action="{% if edit_key %}{% url guest_expand_cutlist episode.id slop edit_key %}{% else %}{% url volunteer_expand_cutlist episode.id slop %}{% endif %}" method="get" style="display:inline">
+  <form action="{% if edit_key %}{% url "guest_expand_cutlist" episode.id slop edit_key %}{% else %}{% url "volunteer_expand_cutlist" episode.id slop %}{% endif %}" method="get" style="display:inline">
     <input type="submit" value="More Videos" />
   </form>
-  <form action="{% if edit_key %}{% url guest_episode_review show.slug episode.slug edit_key %}{% else %}{% url volunteer_episode_review show.slug episode.slug %}{% endif %}#step-2" method="get" style="display:inline">
+  <form action="{% if edit_key %}{% url "guest_episode_review" show.slug episode.slug edit_key %}{% else %}{% url "volunteer_episode_review" show.slug episode.slug %}{% endif %}#step-2" method="get" style="display:inline">
     <input type="submit" value="Cancel" />
   </form>
 {% endblock %}

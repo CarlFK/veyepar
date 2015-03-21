@@ -15,7 +15,7 @@ To keep track of who is working on what, and to maybe keep bots from mucking thi
 will take you to the next video that is waiting for someone to work on: <strong>{{episode.name}}</strong>
 
 
-{# <strong>click to work on <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">{{episode.name}}</a>.</strong> #}
+{# <strong>click to work on <a href="{% url "approve_episode" episode.id episode.slug episode.edit_key %}">{{episode.name}}</a>.</strong> #}
 </p>
 {% endblock %}
 

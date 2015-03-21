@@ -1,8 +1,8 @@
 # accounts/views.py
 
 from django.contrib.auth import authenticate,login
-from django.utils import simplejson 
 from django.http import HttpResponse,Http404
+import json
 
 from accounts import forms
 
@@ -50,7 +50,7 @@ def logax(request):
 
     print "#2", ret
 
-    response = HttpResponse(simplejson.dumps(ret,indent=1))
+    response = HttpResponse(json.dumps(ret,indent=1))
     response['Content-Type'] = 'application/json'
 
     return response

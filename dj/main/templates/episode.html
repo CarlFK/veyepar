@@ -12,8 +12,8 @@
 
 {% block content %}
 
---client <a href="{% url client client.slug %}">{{ client.slug }}</a>
---show <a href="{% url episode_list client.slug show.slug%}">{{ show.slug }}</a> {{episode.id}} --force
+--client <a href="{% url "client" client.slug %}">{{ client.slug }}</a>
+--show <a href="{% url "episode_list" client.slug show.slug%}">{{ show.slug }}</a> {{episode.id}} --force
 <br/>
 
 {% if prev_episode %}
@@ -32,11 +32,11 @@
 <tbody>
 <tr><td>Name</td><td><b>{{episode.name}}</b></td></tr>
 <tr><td>Author(s)</td><td>{{episode.authors}} </td></tr>
-<tr><td>Location</td><td><a href="{% url admin:main_location_change location.id%}">{{episode.location}}</a></td><td>{{episode.location.channelcopy}}</td>
+<tr><td>Location</td><td><a href="{% url "admin:main_location_change" location.id%}">{{episode.location}}</a></td><td>{{episode.location.channelcopy}}</td>
 </tr>
-<tr><td>Date</td><td><a href="{% url episode_list client_slug=client.slug show_slug=show.slug %}?client={{client.slug}}&amp;show={{show.slug}}&amp;location_slug={{episode.location.slug}}&amp;date={{episode.start|date:"Y-m-d"}}">
+<tr><td>Date</td><td><a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug %}?client={{client.slug}}&amp;show={{show.slug}}&amp;location_slug={{episode.location.slug}}&amp;date={{episode.start|date:"Y-m-d"}}">
             {{episode.start|date:"b D d"}}</a></td>
-    <td> <a href="{% url rf_set episode.location.slug %}?start_date={{episode.start|date:"Y-m-d"}}">Days Raw Files</a> </td>
+    <td> <a href="{% url "rf_set" episode.location.slug %}?start_date={{episode.start|date:"Y-m-d"}}">Days Raw Files</a> </td>
 </tr>
 
 <tr><td>Start</td><td>{% if same_dates %}{{episode.start|date:"H:i"}}{% else %}{{episode.start}}{% endif %}</td>
@@ -50,7 +50,7 @@
 <td>Last Raw End</td> {% with clrffs|last as last_clrffs %}{% with last_clrffs.0.raw_file.end as end %} <td>{% if same_dates %} {{end|date:"H:i"}} {% else %} {{end}} {% endif %}</td> {% endwith %} {% endwith %}
 </tr>
 <tr>
-    <td><a href="{% url episode_chaps episode.id %}">Chapters</a></td> <td>
+    <td><a href="{% url "episode_chaps" episode.id %}">Chapters</a></td> <td>
         {% for chap in chaps %}
           {% if chap.0 %}
             <a href="#{{chap.2.id}}" style="display: inline-block;">{{chap.0.1}}</a>
@@ -70,9 +70,9 @@
 {% endif %}
 
 {% if episode.edit_key and user.is_authenticated %}
-   <a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a>
-   <a href="{% url train episode.id episode.slug episode.edit_key %}">train</a>
-   <a href="{% url approve_episode episode.id episode.slug episode.edit_key %}">approve</a>
+   <a href="{% url "guest_episode_review" show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a>
+   <a href="{% url "train" episode.id episode.slug episode.edit_key %}">train</a>
+   <a href="{% url "approve_episode" episode.id episode.slug episode.edit_key %}">approve</a>
    <br/>
 {% endif %}
 
@@ -85,10 +85,10 @@
    <br/>
 {% endif %}
 
-<a href="{% url raw_list episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
-<a href="{% url raw_list episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">raw-ogv-playlist</a>
+<a href="{% url "raw_list" episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
+<a href="{% url "raw_list" episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">raw-ogv-playlist</a>
 
-<a href="{% url public_play_list %}{{episode.slug}}.m3u?id={{episode.id}}">encoded-files-playlist</a> 
+<a href="{% url "public_play_list" %}{{episode.slug}}.m3u?id={{episode.id}}">encoded-files-playlist</a> 
 
 {% if episode.host_url %} <a href="{{episode.host_url}}">host</a>{%endif%}
 {% if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
@@ -101,15 +101,15 @@
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/webm/{{episode.slug}}.webm">webm</a>
 
-<a href="{% url pdf 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
+<a href="{% url "pdf" 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
 
-<a href="{% url eps_xfer episode.show.client.slug episode.show.slug %}?id={{episode.id}}">{{episode.slug}}.json</a>
+<a href="{% url "eps_xfer" episode.show.client.slug episode.show.slug %}?id={{episode.id}}">{{episode.slug}}.json</a>
 <br/>
-<a href="{% url episode_logs episode.id %}">logs</a><br/>
+<a href="{% url "episode_logs" episode.id %}">logs</a><br/>
 
-Admin: <a href="{% url admin:main_episode_change episode.id%}">episode</a>
-<a href="{% url admin:main_cut_list_changelist %}?episode__id__exact={{episode.id}}">cut list</a>
-<a href="{% url admin:main_raw_file_changelist %}?location__id__exact={{episode.location.id}}&amp;start__year={{episode.start|date:"Y"}}&amp;start__month={{episode.start|date:"m"}}&amp;start__day={{episode.start|date:"d"}}">raw files day</a>
+Admin: <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
+<a href="{% url "admin:main_cut_list_changelist" %}?episode__id__exact={{episode.id}}">cut list</a>
+<a href="{% url "admin:main_raw_file_changelist" %}?location__id__exact={{episode.location.id}}&amp;start__year={{episode.start|date:"Y"}}&amp;start__month={{episode.start|date:"m"}}&amp;start__day={{episode.start|date:"d"}}">raw files day</a>
 
 
 <form method="POST">{% csrf_token %}
@@ -196,8 +196,8 @@ $(".viewer").zoomer();
         <table>
             <tr>
                 <td></td>
-                <td><a href="{% url admin:main_raw_file_change cl.raw_file.id%}">Raw File</a></td>
-                <td><a href="{% url admin:main_cut_list_change cl.id%}">Cut List</a></td>
+                <td><a href="{% url "admin:main_raw_file_change" cl.raw_file.id%}">Raw File</a></td>
+                <td><a href="{% url "admin:main_cut_list_change" cl.id%}">Cut List</a></td>
             </tr>
 
             {# {{ clrfform.trash.label_tag }}{{ clrfform.trash }} #}
@@ -244,16 +244,16 @@ $(".viewer").zoomer();
                 <td>
                     {# <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">dv</a><br/> #}
                 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=ogv>ogv</a><br/>
-                <a href="{% url mk_play_list %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv">ogv.m3u</a>
+                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv">ogv.m3u</a>
   </td>
   <td>
-                <a href="{% url mk_play_list %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.dv">dv.m3u</a>
+                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.dv">dv.m3u</a>
                 {#<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">png</a> #}
       
                 <td>
                     {{ clrfform.split.label_tag }}{{ clrfform.split }}
                     {{ clrfform.sequence.label_tag }}: {{ clrfform.sequence }}
-                    <a href="{% url admin:main_cut_list_change cl.id%}delete/">delete</a>
+                    <a href="{% url "admin:main_cut_list_change" cl.id%}delete/">delete</a>
                 </td>
             </tr>
         </table>

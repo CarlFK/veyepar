@@ -40,7 +40,7 @@ Details
 recording release: {{episode.released|yesno:"yeah,no,maybe" }} 
 {# license: {{episode.released|yesno:[episode.lisense,""] }} #}
 {% if episode.released %}license: {{episode.license}} {%endif%}
-EDIT: http://nextdayvideo.com{% url admin:main_episode_change episode.id%}
+EDIT: http://nextdayvideo.com{% url "admin:main_episode_change" episode.id%}
 {% endif %}
 {% if episode.public_url %} Video: {{episode.public_url}} {% endif %}
 {% endfor %}

@@ -6,7 +6,7 @@
 <p>Hi!</p>
 <p>You have landed here because someone thinks you would like to help out a little.  Working with videos is often daunting, but this is different.</p>
 
-<p><strong>Follow this link to do the remaining work: <a href="{% url guest_episode_review show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">{{episode.name}}</a></strong></p>
+<p><strong>Follow this link to do the remaining work: <a href="{% url "guest_episode_review" show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">{{episode.name}}</a></strong></p>
 
 <p>
 The time consuming part has been done during the event, now someone needs to decide when the talk really started because it is never exactly the scheduled start time.   This should make sense when you preview the raw recordings. 

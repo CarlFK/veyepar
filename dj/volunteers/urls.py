@@ -1,4 +1,6 @@
-from django.conf.urls.defaults import *
+# volunteers/urls.py
+
+from django.conf.urls import *
 from django.contrib.auth.decorators import login_required
 
 from volunteers.views import *

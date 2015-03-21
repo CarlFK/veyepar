@@ -8,14 +8,14 @@
 
 {% block content %}
 
-<a href="{% url client client.slug %}">{{ client.name }}</a>
-<a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a>
+<a href="{% url "client" client.slug %}">{{ client.name }}</a>
+<a href="{% url "episode_list" client.slug show.slug%}">{{ show.name }}</a>
 </p>
 
 {% for s in states %}
 <span class="{% if s.1.0 == 1 or s.1.0 == 3 %}human{% else %}process{% endif %}">
     {% if s.0 %}
-    <a href="{% url episode_list client_slug=client.slug show_slug=show.slug state=forloop.counter0 %}">{{s.1.1}}:{{s.0}}</a>
+    <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug state=forloop.counter0 %}">{{s.1.1}}:{{s.0}}</a>
     {% else %}{{s.1.1}}:o{% endif %}
 </span>
 {% endfor %}
@@ -24,7 +24,7 @@
            <tr>
 <th>
     <span><b>TOTAL</b></span><br/>
-<span> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug %}"> {{show_stat.count}} </a> </span>
+<span> <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug %}"> {{show_stat.count}} </a> </span>
 <span class="left">expected:</span><span class="right">{{show_stat.talk_gig}} g</span><br/>
                  {% if show_stat.files %}
                    <span class="left">files:{{show_stat.files}}</span><span class="right">{{show_stat.gig}} g</span><br/>
@@ -35,10 +35,10 @@
             <td>
 {# Room header cells #}
                 <span><b>
-                        <a href="{% url admin:main_location_change item.loc.id%}">{{ item.loc.slug }}</a>
+                        <a href="{% url "admin:main_location_change" item.loc.id%}">{{ item.loc.slug }}</a>
                 </b></span><br/>
 
-<span> <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}"> {{item.count}} </a> </span>
+<span> <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}"> {{item.count}} </a> </span>
 <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
                    <span class="left">files:{{item.files}}</span><span class="right">{{item.gig}} g</span><br/>
@@ -52,12 +52,12 @@
         {% for item,row  in rows  %}
         {# Day headers (first cell on left, summary of row #}
           <tr><td><b>{{item.date|date:"D d"}}</b><br/>
-<a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" %}"> {{item.count}} </a>
+<a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" %}"> {{item.count}} </a>
 
  {% for s in item.states %} 
 <span class="{% if forloop.counter0 == 1 or forloop.counter0 == 3 %}human{% else %}process{% endif %}">
                    {% if s %}
-                   <a href="{% url episode_list client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
+                   <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
                    {% else %}.{% endif %}</span>
                  {% endfor %}
                  <br/>
@@ -76,7 +76,7 @@
              <td style="background-color:#{{item.alarm_color}};">  
                {% if item.count %}
 
-                     <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
+                     <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
 
                      {{item.start|date:"H:i"}} - {{item.end|date:"H:i"}} = 
                      {{item.hours}} h
@@ -85,20 +85,20 @@
 
 <span class="{% if forloop.counter0 == 1 or forloop.counter0 == 3 %}human{% else %}process{% endif %}">
                    {% if s %}
-                   <a href="{% url episode_list client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
+                   <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
                    {% else %}.{% endif %}</span>
                  {% endfor %}
                  <br/>
 
                  <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                 <span class="left">files: <a style="display: inline-block;" href="{% url rf_set loc.loc.slug %}?start_date={{item.date|date:"Y-m-d"}}">{{item.files}}</a> {{item.alarm}}%</span>
+                 <span class="left">files: <a style="display: inline-block;" href="{% url "rf_set" loc.loc.slug %}?start_date={{item.date|date:"Y-m-d"}}">{{item.files}}</a> {{item.alarm}}%</span>
                  <span class="right">{{item.gig}} g</span><br>
                  <span class="right">{{item.variance}} g</span>
 
                  <span class="left">
-                   <a style="display: inline-block;" href="{% url raw_file_audio %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio</a>
-                     <a style="display: inline-block;" href="{% url public_play_list %}playlist.m3u?client={{client.slug}}&show={{show.slug}}&location_slug_slug={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encs</a> 
+                   <a style="display: inline-block;" href="{% url "raw_file_audio" %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio</a>
+                     <a style="display: inline-block;" href="{% url "public_play_list" %}playlist.m3u?client={{client.slug}}&show={{show.slug}}&location_slug_slug={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encs</a> 
                  </span>
 
                {% endif %}

@@ -9,11 +9,11 @@
 <table class="shortcuts">
  <tr>{% include "show_shortcuts.html" %}</tr>
  <tr>
-<td> <a href="{% url admin:main_client_change client.id %}">client admin</a> </td>
-<td> <a href="{% url admin:main_show_change show.id %}">show admin</a> </td>
-<td> <a href="{% url admin:main_episode_changelist %}?{{admin_params}}">episodes admin</a> </td>
-<td> <a href="{% url admin:main_image_file_changelist %}?{{admin_params}}">image_file admin</a> </td>
-<td> <a href="{% url  public_play_list %}?{{request.META.QUERY_STRING}}">play_list</a> </td>
+<td> <a href="{% url "admin:main_client_change" client.id %}">client admin</a> </td>
+<td> <a href="{% url "admin:main_show_change" show.id %}">show admin</a> </td>
+<td> <a href="{% url "admin:main_episode_changelist" %}?{{admin_params}}">episodes admin</a> </td>
+<td> <a href="{% url "admin:main_image_file_changelist" %}?{{admin_params}}">image_file admin</a> </td>
+<td> <a href="{% url "public_play_list" %}?{{request.META.QUERY_STRING}}">play_list</a> </td>
 <td>  </td>
 
 </tr>
@@ -47,9 +47,9 @@ Episode Count: {{episodes.count}}
 
         <td><a href="
         {%if location_slug %}
-         {% url episode_list client.slug show.slug %}
+         {% url "episode_list" client.slug show.slug %}
         {% else %}
-         {% url episode_list client_slug=client.slug show_slug=show.slug location_slug=episode.location.slug %}
+         {% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=episode.location.slug %}
         {% endif %}
          ">{{episode.location}}</a></td>
 

@@ -41,7 +41,16 @@ from accounts.forms import LoginForm
 
 
 
-def make_test_data(title="Test Episode"):
+def make_test_data(
+        title="Test Episode", 
+        start_time=datetime.datetime(2010,5,21,0,0,4)):
+
+    # start_time
+    # datetime matches what run_tests.sh uses to create files.
+    # the scheduled start time is at 4 seconds
+    # in the middle of the 2nd clip
+    # t=datetime.datetime(2010,5,21,0,0,4)
+
     desc = """
 Sample files and episode:  
 file 0 and 4 are outside the range
@@ -81,18 +90,14 @@ episode:     XXXXXXXXX
     if create:
         show.locations.add(loc)
 
-    # datetime matches what run_tests.sh uses to create files.
-    # the scheduled start time is at 4 seconds
-    # in the middle of the 2nd clip
-    t=datetime.datetime(2010,5,21,0,0,4)
-
     ep = Episode.objects.create(
         show=show,
         location=loc,
         name=title,
         state=1,
+        active = True,
         released=True,
-        start = t,
+        start = start_time,
         duration = "00:00:06",
         )
 

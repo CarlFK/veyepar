@@ -1,4 +1,6 @@
-from django.conf.urls.defaults import url, patterns
+# dj/main/urls.py
+
+from django.conf.urls import patterns, url
 
 # from django.views.generic import list_detail
 

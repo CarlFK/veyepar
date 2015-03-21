@@ -137,7 +137,8 @@ class Raw_File(models.Model):
         help_text='when recorded (should agree with file name and timestamp)')
     duration = models.CharField(max_length=11, blank=True, )
     end = models.DateTimeField(null=True, blank=True)
-    trash = models.BooleanField(help_text="This clip is trash")
+    trash = models.BooleanField(default=False,
+            help_text="This clip is trash")
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
 
@@ -221,7 +222,8 @@ STATES=[
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
-    active = models.BooleanField(help_text="Turn off to hide from UI.")
+    active = models.BooleanField(default=True,
+            help_text="Turn off to hide from UI.")
     state = models.IntegerField(null=True, blank=True,
         choices=STATES, default=STATES[1][0],
         help_text="" )

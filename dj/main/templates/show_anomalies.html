@@ -4,34 +4,34 @@
 {% block content %}
 
 
-<a href="{% url client client.slug %}">{{ client.name }}</a>
-<a href="{% url episode_list client.slug show.slug%}">{{ show.name }}</a>
+<a href="{% url "client" client.slug %}">{{ client.name }}</a>
+<a href="{% url "episode_list" client.slug show.slug%}">{{ show.name }}</a>
 </p>
 
 <table class="shortcuts">
 <tr>
-    <td><a href="{% url overlapping_episodes show.id %}">overlapping_episodes</a></td>
-<td><a href="{% url overlapping_files show.id %}">overlapping_fles</a></td>
-<td><a href="{% url orphan_dv show.id %}">orphan_dv</a></td>
-<td><a href="{% url orphan_img show.id %}">orphan_img</a></td>
+    <td><a href="{% url "overlapping_episodes" show.id %}">overlapping_episodes</a></td>
+<td><a href="{% url "overlapping_files" show.id %}">overlapping_fles</a></td>
+<td><a href="{% url "orphan_dv" show.id %}">orphan_dv</a></td>
+<td><a href="{% url "orphan_img" show.id %}">orphan_img</a></td>
 </tr>
 
 <tr>
 <td><a href="{{show.schedule_url}}">{{show.schedule_url}}</a></td>
 <td>
-    <a href="{% url eps_xfer client.slug show.slug %}">{{show.slug}}.json</a> </br>
-    <a href="{% url eps_csv client.slug show.slug %}">{{show.slug}}.csv</a>
+    <a href="{% url "eps_xfer" client.slug show.slug %}">{{show.slug}}.json</a> </br>
+    <a href="{% url "eps_csv" client.slug show.slug %}">{{show.slug}}.csv</a>
 </td>
-<td><a href="{% url final_file_audio %}?show_id={{show.id}}">final_file_audio</a></td>
-<td><a href="{% url mini_conf %}?show_id={{show.id}}">mini_conf</a></td>
+<td><a href="{% url "final_file_audio" %}?show_id={{show.id}}">final_file_audio</a></td>
+<td><a href="{% url "mini_conf" %}?show_id={{show.id}}">mini_conf</a></td>
 </tr>
 
 <tr>
-<td><a href="{% url pdfs 'talk_intro' show.id %}{{show.slug}}_talk_intro.pdf">talk_intro.pdf</a></td>
-<td><a href="{% url pdfs 'talk_signs' show.id %}{{show.slug}}_room_signs.pdf">room_signs.pdf</a></td>
-<td><a href="{% url pdfs 'release_agreements' show.id %}{{show.slug}}_release.pdf">release.pdf</a></td>
+<td><a href="{% url "pdfs" 'talk_intro' show.id %}{{show.slug}}_talk_intro.pdf">talk_intro.pdf</a></td>
+<td><a href="{% url "pdfs" 'talk_signs' show.id %}{{show.slug}}_room_signs.pdf">room_signs.pdf</a></td>
+<td><a href="{% url "pdfs" 'release_agreements' show.id %}{{show.slug}}_release.pdf">release.pdf</a></td>
 
-<td><a href="{% url meet_ann show.id %}">meeting announcement</a></td>
+<td><a href="{% url "meet_ann" show.id %}">meeting announcement</a></td>
 </tr>
 <tr>{% include "show_shortcuts.html" %}</tr>
 
@@ -61,9 +61,9 @@
 
         <td><a href="
         {%if location_slug %}
-         {% url episode_list client.slug show.slug %}
+         {% url "episode_list" client.slug show.slug %}
         {% else %}
-         {% url episode_list client_slug=client.slug show_slug=show.slug location_slug=episode.location.slug %}
+         {% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=episode.location.slug %}
         {% endif %}
          ">{{episode.location}}</a></td>
 

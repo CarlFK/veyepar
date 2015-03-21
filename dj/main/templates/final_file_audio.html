@@ -4,7 +4,7 @@
 
 {% for episode in episodes %}
 
-<a href="{% url episode episode.id %}">
+<a href="{% url "episode" episode.id %}">
     <h3>{{episode.name}}</h3>
     {# hack to use fosdem files: #}
   {% if episode.show.slug == "fosdem_2014" %}

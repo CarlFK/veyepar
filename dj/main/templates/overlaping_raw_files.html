@@ -31,7 +31,7 @@
         <tr class=row{{rf.trash|yesno:"1,2"}}>
 
             <td>{{rf.location}}</td>
-            <td><a href="{% url admin:main_raw_file_change rf.id %}">{{rf.id}}</a></td>
+            <td><a href="{% url "admin:main_raw_file_change" rf.id %}">{{rf.id}}</a></td>
             <td>{{rf.trash|yesno:"*, "}}</td>
             <td>{{rf.start|date:"D b d"}}</td>
 
@@ -42,7 +42,7 @@
             <td><a href="E/{{rf.id}}/">{{ rf.filename }}</a></td>
             <td>{{rf.filesize}}</td>
             <td>
-                <a href="{% url episode_list client_slug=rf.client.slug show_slug=rf.show.slug location_slug=rf.location.slug start_day=rf.start|date:"d" %}">{{rf.location.slug}} {{rf.start|date:"d"}}</a>
+                <a href="{% url "episode_list" client_slug=rf.client.slug show_slug=rf.show.slug location_slug=rf.location.slug start_day=rf.start|date:"d" %}">{{rf.location.slug}} {{rf.start|date:"d"}}</a>
                 {% for cl in rf.cut_list_set.all %}
                     {{cl.episode}}
                     {{cl.episode.id}}

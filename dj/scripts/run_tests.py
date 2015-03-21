@@ -86,7 +86,10 @@ class Run_Tests(object):
   # make sample data: location, client, show, episode
   from main.views import make_test_data, del_test_data
   del_test_data()
-  self.episode=make_test_data(self.title)
+
+  t=datetime(2010,5,21,0,0,4)
+  self.episode=make_test_data(self.title, start_time = t)
+
   return
 
  # @callme_maybe
@@ -104,12 +107,16 @@ class Run_Tests(object):
           self.show_dir, 'tmp', "%s.sh" % (self.title) )
   return
 
+
  @callme_maybe
  def make_source_dvs(self):
    """ 
  ` Make a set of .dv files.
    Similar to what dvswitch creates (dir/filename date/time.dv)
    This takes the place of using dvswitch to record an event.
+
+   be sure the 2010-05-21 date 
+   matches start_date in make_sample_data above.
    """
    # get melt version to stick into video
    melt_outs = self.run_cmd(['melt', '--version'], True )

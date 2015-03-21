@@ -18,7 +18,7 @@ trash:{{trash}}
 <td>
 <table>
 <tr>
-<td><a href="{% url admin:main_raw_file_change raw_file.id %}">{{raw_file.id}}</a></td>
+<td><a href="{% url "admin:main_raw_file_change" raw_file.id %}">{{raw_file.id}}</a></td>
 <td><a href="{{MEDIA_URL}}/{{raw_file.base_url}}.png">png</a></td>
 <td><a href="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv">ogv</a></td>
 </tr>
@@ -40,9 +40,9 @@ trash:{{trash}}
 {% for cl in cls %}
 {% with cl.episode as ep %}
 
-{# <tr> <td> <a href="{% url admin:main_episode_change ep.id %}">{{ep.id}}</a> </td> </tr> #}
+{# <tr> <td> <a href="{% url "admin:main_episode_change" ep.id %}">{{ep.id}}</a> </td> </tr> #}
   <tr> <td>
-      <a href="{% url episode ep.id %}">{{ep.name}}</a>
+      <a href="{% url "episode" ep.id %}">{{ep.name}}</a>
   </td> </tr>
   <tr> <td>
           {{ep.authors}}

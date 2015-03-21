@@ -13,7 +13,7 @@
 
 <td>
 <table>
-<tr><td> <a href="{% url admin:main_raw_file_change raw_file.id %}">{{raw_file.filename}}</a> </td></tr> 
+<tr><td> <a href="{% url "admin:main_raw_file_change" raw_file.id %}">{{raw_file.filename}}</a> </td></tr> 
 
 <tr><td> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}_audio.png">
 {{raw_file.basename}}_audio.png</a></td></tr>
@@ -33,9 +33,9 @@
 <table>
 {% for ep in eps %}
   <tr>
-      <td><a href="{% url admin:main_episode_change ep.id %}">
+      <td><a href="{% url "admin:main_episode_change" ep.id %}">
               {{ep.id}}</a></td>
-     <td><a href="{% url episode ep.id %}">{{ep.name}}</a></td>
+     <td><a href="{% url "episode" ep.id %}">{{ep.name}}</a></td>
   </tr>
   <tr>
      <td>{{ep.location}}</td>

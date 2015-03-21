@@ -4,7 +4,7 @@
     {% if shows %}
     <ul>
       {% for volunteer_show in show %}
-      <li><a href="{% url volunteer_show_review volunteer_show.slug %}"</li>
+      <li><a href="{% url "volunteer_show_review" volunteer_show.slug %}"</li>
       {% endfor %}
     </ul>
     {% else %}

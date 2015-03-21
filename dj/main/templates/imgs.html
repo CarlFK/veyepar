@@ -11,7 +11,7 @@
 
 {% for img,form in imgsfs %}
 
-  <a href="{% url admin:main_image_file_change img.id%}">
+  <a href="{% url "admin:main_image_file_change" img.id%}">
     <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=800 >
 </a>
   </br>
