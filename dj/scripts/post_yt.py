@@ -317,6 +317,7 @@ class post(process):
                     elif f['ext'] == "webm":
                         ep.rax_mp4_url = uploader.new_url
                     elif f['ext'] == "ogv":
+                        # there is no ep.rax_ogv_url
                         ep.rax_ogv_url = uploader.new_url
 
                     # hook for tests so that it can be browsed

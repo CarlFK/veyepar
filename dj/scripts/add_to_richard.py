@@ -262,9 +262,9 @@ class add_to_richard(Process):
             'speakers': speakers,
             'recorded': ep.start.strftime("%Y-%m-%d"),
             'language': 'English',
-            'duration': int(ep.get_minutes()*60),
-            'video_webm_url': ep.archive_ogv_url,
-            'video_mp4_url': ep.rax_mp4_url,
+            'duration': duration,
+            'video_webm_url': ep.archive_rax_url,
+            # 'video_mp4_url': ep.rax_mp4_url,
             'video_mp4_download_only': False,
         }
         if ep.show.slug=="debconf14":
