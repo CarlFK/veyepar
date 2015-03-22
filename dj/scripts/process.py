@@ -13,6 +13,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dj.settings")
 sys.path.insert(0, '..' )
 
 from django.conf import settings
+import django
+
+django.setup()
 
 # import django
 from main.models import Client, Show, Location, Episode, State, Log

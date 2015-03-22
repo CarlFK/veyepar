@@ -1,3 +1,5 @@
+wget http://upload.wikimedia.org/wikipedia/en/6/6c/RedHat.svg 
+
 wget http://www.narrativescience.com//resources/assets/images/logo.png -O narrativescience.png
 
 wget https://media.licdn.com/media/p/2/000/1be/17e/3633534.png -O matrix.png
