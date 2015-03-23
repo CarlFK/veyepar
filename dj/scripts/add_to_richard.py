@@ -263,7 +263,7 @@ class add_to_richard(Process):
             'recorded': ep.start.strftime("%Y-%m-%d"),
             'language': 'English',
             'duration': duration,
-            'video_webm_url': ep.archive_rax_url,
+            'video_webm_url': ep.rax_mp4_url, # only rax_xxx_url
             # 'video_mp4_url': ep.rax_mp4_url,
             'video_mp4_download_only': False,
         }

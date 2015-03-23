@@ -13,6 +13,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dj.settings")
 sys.path.insert(0, '..' )
 
 from django.conf import settings
+from django.db.models import Count,Max
+
 import django
 
 django.setup()
@@ -381,9 +383,18 @@ class process(object):
     """
     list clients and shows.
     """
-    for client in Client.objects.all():
+    clients=Client.objects.annotate( 
+            max_date=Max('show__episode__start')) \
+            .filter(active=True) \
+            .order_by('max_date')
+
+    for client in clients:
         print "\nName: %s  Slug: %s" %( client.name, client.slug )
-        for show in Show.objects.filter(client=client):
+        shows=Show.objects.filter(client=client)\
+                .annotate( max_date=Max('episode__start'))\
+                .order_by('max_date')
+
+        for show in shows:
             print "\tName: %s  Slug: %s" %( show.name, show.slug )
             print "\t--client %s --show %s" %( client.slug, show.slug )
             print "client=%s\nshow=%s" %( client.slug, show.slug )
