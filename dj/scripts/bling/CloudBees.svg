@@ -14,9 +14,9 @@
    height="600"
    id="titlepage"
    sodipodi:version="0.32"
-   inkscape:version="0.48.2 r9819"
+   inkscape:version="0.48.4 r9939"
    version="1.0"
-   sodipodi:docname="title.svg"
+   sodipodi:docname="CloudBees.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="/home/carl/a/title2.png"
    inkscape:export-xdpi="90"
@@ -531,8 +531,8 @@
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1267"
-     inkscape:window-height="721"
-     inkscape:window-x="1"
+     inkscape:window-height="716"
+     inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="0" />
   <metadata
@@ -543,7 +543,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -775,7 +775,7 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot2802-1"
-       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110%;writing-mode:lr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
        transform="matrix(1.7433323,0,0,1.2699132,-553.10463,20.09035)"><flowRegion
          id="flowRegion2804-2"><rect
            id="rect2806-9"
@@ -783,8 +783,8 @@
            height="45.203621"
            x="88.733032"
            y="292.48868"
-           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
-         id="flowPara2818-3">Sponsord by</flowPara></flowRoot>    <image
+           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:110%;writing-mode:lr;text-anchor:middle;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara3104">Sponsored by</flowPara></flowRoot>    <image
        y="395.8121"
        x="268.88846"
        id="image3168"
