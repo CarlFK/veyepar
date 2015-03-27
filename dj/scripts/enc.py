@@ -213,6 +213,7 @@ class enc(process):
             'tag1': tag1, 
             'authors': episode.authors,
             'presentertitle': "",
+            'twitter_id': episode.twitter_id,
             'date': episode.start.strftime("%B %-d, %Y"),
             # 'date': episode.start.strftime("%-e %B %Y"),
             'time': episode.start.strftime("%H:%M"),

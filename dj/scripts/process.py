@@ -398,6 +398,11 @@ class process(object):
             print "\tName: %s  Slug: %s" %( show.name, show.slug )
             print "\t--client %s --show %s" %( client.slug, show.slug )
             print "client=%s\nshow=%s" %( client.slug, show.slug )
+            locations=show.locations.filter(
+                    active=True).order_by('sequence')
+            for loc in locations:
+                print("room={}".format(loc.slug))
+
             if self.options.verbose:
                 for ep in Episode.objects.filter(show=show):
                     print "\t\t id: %s state: %s %s" % ( 
