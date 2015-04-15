@@ -337,6 +337,7 @@ class add_eps(process.process):
                 # 'state', 
                 'name', 'authors', 
                 'emails', 
+                'twitter_id', 
                 'description',
                 'start','duration', 
                 'released', 
@@ -1989,6 +1990,7 @@ class add_eps(process.process):
             # ('','sequence'),
             ('title','name'),
             ('speakers','authors'),
+            ('twitter','twitter_id'),
             # ('','emails'),
             ('abstract','description'),
             ('start_time','start'),
@@ -2012,10 +2014,31 @@ class add_eps(process.process):
                 #[u'speakers', u'title', u'event_id', u'start_time', u'space', u'topics', u'times', u'abstract', u'web_url', u'end_time', u'id', u'day']
 
         # pprint.pprint(events[-2])
+
+ 
+        events = [e for e in events 
+                if e['location'] is not None]
+        events = [e for e in events 
+                if e['start'] is not None]
+        # events = [e for e in events 
+        #        if e['location'] not in ['Hackers Lounge',] ]
+        # events = [e for e in events 
+        #         if e['conf_key'] not in ['sdktrw','sdktrx'] ]
+
+
         for event in events: 
 
+            event['twitter_id'] = " ".join( 
+                    a['twitter'] for a in event['authors']
+                    if a['twitter'] is not None)
+
+            # clobber author object with names.
             event['authors'] = ", ".join( 
                     a['name'] for a in event['authors'])
+
+            if event['name'] == "Panel: State of OSS .NET": 
+                event['twitter_id'] = "@richcampbell @carlfranklin" 
+                event['authors'] = "Richard Campbell and Carl Franklin"
 
             event['start'] = datetime.datetime.strptime(
                     event['start'],'%Y-%m-%d %H:%M:%S')
@@ -2027,8 +2050,9 @@ class add_eps(process.process):
 
             event['description'] = strip_tags(event['description'])
 
-            if event['location'] is None:
-                event['location'] = 'room 1'
+
+            # if event['location'] is None:
+            #    event['location'] = 'room 1'
 
             event['tags'] = ", ".join( event['tags'])
 
@@ -2038,8 +2062,8 @@ class add_eps(process.process):
             event['license'] =  ''
 
 
-        rooms = ['room 1']
-        self.add_rooms(rooms,show)
+        # rooms = ['room 1']
+        # self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
 
