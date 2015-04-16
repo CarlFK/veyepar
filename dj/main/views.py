@@ -1207,10 +1207,11 @@ def title_slides(request, show_id, ):
             # "emails": request.GET['emails'],
             # "show__client__slug": request.GET['client'],
             # "show__slug": request.GET['show'],
-            # "state": request.GET['state'],
             # "": request.GET[''],
             }
 
+    if "state" in request.GET:
+        kwargs["state"] = request.GET['state']
 
     episodes=Episode.objects.filter(**kwargs).order_by(
             'location',
