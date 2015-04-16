@@ -26,11 +26,18 @@ class mk_title(enc):
             self.file2cdn(episode.show, "titles/%s.svg" % (episode.slug))
             return 
 
+        if self.options.display:
+            png_name = "{}/titles/{}.png".format(
+                    self.show_dir, episode.slug)
+            self.run_cmd(['display', png_name])
+
         return False # not sure what this means.. we don't bump state
 
     def add_more_options(self, parser):
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
+        parser.add_option('--display', action="store_true",
+            help="display the png.")
 
 if __name__ == '__main__':
     p=mk_title()
