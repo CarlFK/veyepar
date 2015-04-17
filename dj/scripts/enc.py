@@ -560,6 +560,7 @@ class enc(process):
                   "-consumer avformat:%(out)s "\
                   "threads=%(threads)s "\
                   "progressive=1 "\
+                  "strict=-2 "\
                   "properties=x264-high"\
                   % parms 
 

@@ -182,8 +182,9 @@ def resumable_upload(insert_request):
   response = None
   error = None
   retry = 0
-  print "Uploading file to YouTube..."
   while response is None:
+
+    print "Uploading file to YouTube..."
     try:
 
       status, response = insert_request.next_chunk()
@@ -196,16 +197,17 @@ def resumable_upload(insert_request):
         exit("The upload failed with an unexpected response: %s" % response)
 
     except ResumableUploadError, e:
-      print e.content
+      print("ResumableUploadError", e.content)
       import code; code.interact(local=locals())
-      raise e
+      # raise e
 
     except HttpError, e:
       if e.resp.status in RETRIABLE_STATUS_CODES:
         error = "A retriable HTTP error %d occurred:\n%s" % (
                 e.resp.status, e.content )
       else:
-        raise
+        import code; code.interact(local=locals())
+        # raise e
 
     except RETRIABLE_EXCEPTIONS, e:
       error = "A retriable error occurred: %s" % e
