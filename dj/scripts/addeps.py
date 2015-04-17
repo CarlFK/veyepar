@@ -2006,6 +2006,7 @@ class add_eps(process.process):
             ]
 
 
+        rooms = set()
         events =[]
         # flatten out nested json (I think..)
         for day in schedule['sessions']:
@@ -2027,6 +2028,8 @@ class add_eps(process.process):
 
 
         for event in events: 
+
+            rooms.add(event['location'])
 
             event['twitter_id'] = " ".join( 
                     a['twitter'] for a in event['authors']
@@ -2063,7 +2066,7 @@ class add_eps(process.process):
 
 
         # rooms = ['room 1']
-        # self.add_rooms(rooms,show)
+        self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
 

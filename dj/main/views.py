@@ -70,6 +70,7 @@ episode:     XXXXXXXXX
     client,create = Client.objects.get_or_create(
             name='test client',slug='test_client', 
             )
+    client.title_svg='test_show_title.svg' 
     client.category_key='test' 
     client.youtube_id='test' 
     client.archive_id='' 

@@ -264,6 +264,7 @@ class enc(process):
             cooked_svg_name = custom_svg_name
         else:
             svg_name = episode.show.client.title_svg
+            print svg_name
             template = os.path.join(
                     os.path.split(os.path.abspath(__file__))[0],
                     "bling",
