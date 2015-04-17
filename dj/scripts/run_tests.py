@@ -104,7 +104,7 @@ class Run_Tests(object):
   self.show=Show.objects.get(slug=p.options.show)
   self.options = p.options
   self.sh_pathname = os.path.join( 
-          self.show_dir, 'tmp', "%s.sh" % (self.title) )
+          self.show_dir, 'tmp', "%s.sh" % (self.slug) )
   return
 
 
@@ -533,6 +533,7 @@ def main():
     # t.upload_formats=["webm", "mp4",]
     # t.upload_formats=["flac",]
     t.title = "Let's make a Test"
+    t.slug = "Lets_make_a_Test"
 
     t.make_test_user()
     t.setup_test_data()
