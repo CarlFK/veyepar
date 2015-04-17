@@ -11,6 +11,7 @@ class Who(forms.Form):
             label="Please enter your name")
 
 class Episode_Form(forms.ModelForm):
+    exclude=[]
     class Meta:
         model = Episode
 

@@ -182,7 +182,7 @@ def eps_csv(request,client_slug=None,show_slug=None):
             ep.host_url) for ep in eps]
 
     # url = request.GET['url']
-    response = HttpResponse(mimetype="application/csv")
+    response = HttpResponse(content_type="application/csv")
     response['Content-Disposition'] = \
             'inline; filename={}.csv'.format(show.slug)
     writer = csv.writer(response)
@@ -228,7 +228,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     if request.user.is_authenticated():
         fields.extend(['emails', 'edit_key','conf_meta'])
 
-    response = HttpResponse(mimetype="application/json")
+    response = HttpResponse(content_type="application/json")
     serializers.serialize("json", eps, 
             fields=fields, use_natural_keys=True,
             stream=response)
@@ -285,7 +285,7 @@ def eps_lanynard(request,client_slug=None,show_slug=None):
         sessions.append(session)
         
 
-    response = HttpResponse(mimetype="application/json")
+    response = HttpResponse(content_type="application/json")
     json.dump(sessions,response)
 
     return response
@@ -492,7 +492,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     pdf = buffer.getvalue()
     buffer.close()
 
-    response = HttpResponse(mimetype='application/pdf')
+    response = HttpResponse(content_type='application/pdf')
     e_id = episode_id if episode_id else 'all'
     filename = '_'.join( [client.slug, show.slug, e_id, rfxml] )
     response['Content-Disposition'] = \
@@ -502,7 +502,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
 
 def mk_play_list(request):
     url = request.GET['url']
-    response = HttpResponse(mimetype='audio/mpegurl')
+    response = HttpResponse(content_type='audio/mpegurl')
     response['Content-Disposition'] = 'inline; filename=playlist.m3u'
     writer = csv.writer(response)
     writer.writerow([url])
@@ -519,7 +519,7 @@ def raw_play_list(request, episode_id):
         # if we only want the 'applied' files
         cuts = cuts.filter(apply=True)
 
-    response = HttpResponse(mimetype='audio/mpegurl')
+    response = HttpResponse(content_type='audio/mpegurl')
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
     response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
@@ -563,7 +563,7 @@ def public_play_list(request):
         episodes = episodes.filter( start__startswith=request.GET['date'] )
 
 
-    response = HttpResponse(mimetype='audio/mpegurl')
+    response = HttpResponse(content_type='audio/mpegurl')
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
     response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
@@ -580,7 +580,7 @@ def enc_play_list(request,episode_id):
     show =episode.show
     client=show.client
 
-    response = HttpResponse(mimetype='audio/mpegurl')
+    response = HttpResponse(content_type='audio/mpegurl')
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
     response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
@@ -616,7 +616,7 @@ def play_list(request,show_id,location_slug=None):
     if location_slug:
         episodes = episodes.filter(location__slug=location_slug)
 
-    response = HttpResponse(mimetype='audio/mpegurl')
+    response = HttpResponse(content_type='audio/mpegurl')
     response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
 
     writer = csv.writer(response)
@@ -1249,7 +1249,7 @@ def episodes_script(request, script=None):
                 'script':script,
             },
             context_instance=RequestContext(request),
-            mimetype="text/plain",
+            content_type="text/plain",
             )
 
     response['Content-Disposition'] = 'filename={0}.sh'.format( script )
@@ -1660,7 +1660,7 @@ def orphan_dv(request,show_id):
         pass
     elif format == 'm3u':
 
-        response = HttpResponse(mimetype='audio/mpegurl')
+        response = HttpResponse(content_type='audio/mpegurl')
         response['Content-Disposition'] = 'inline; filename=playlist.m3u'
         writer = csv.writer(response)
         head="~/Videos/veyepar"
