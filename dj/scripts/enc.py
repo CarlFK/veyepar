@@ -5,7 +5,7 @@ assembles raw cuts into final, titles, tweaks audio, encodes to format for uploa
 """
 import os, sys, subprocess
 import xml.etree.ElementTree
-import xml.etree.ElementTree as ET
+# import xml.etree.ElementTree as ET
 
 
 import pprint
