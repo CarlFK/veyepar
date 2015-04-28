@@ -314,7 +314,7 @@ class Episode(models.Model):
         return self.name
  
     def cuts_time(self):
-        # get total time of video based on selected cuts.
+        # get total time in seoonds of video based on selected cuts.
         # or None if there are no clips.
         cuts = Cut_List.objects.filter(episode=self, apply=True)
         if not cuts:
