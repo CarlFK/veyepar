@@ -102,11 +102,11 @@
   </producer>
   <playlist id="main bin" title="Anonymous Submission">
     <property name="xml_retain">1</property>
-    <entry id = "pll_vid0" producer="pl_vid0" in="00:00:00.000" out="00:00:03.003"/>
-    <entry producer="pl_vid1" in="00:00:00.000" out="00:00:03.003"/>
-    <entry producer="pl_vid2" in="00:00:00.000" out="00:00:03.003"/>
-    <entry producer="pl_vid3" in="00:00:00.000" out="00:00:03.003"/>
-    <entry producer="pl_vid4" in="00:00:00.000" out="00:00:03.003"/>
+    <entry producer="pl_vid0" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pl_vid1" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pl_vid2" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pl_vid3" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pl_vid4" in="00:00:00.000" out="00:00:03.003" sample="1" />
     <entry producer="pl_title_img" in="00:00:00.000" out="00:00:03.937"/>
     <entry producer="pl_foot_img" in="00:00:00.000" out="00:00:03.937"/>
   </playlist>

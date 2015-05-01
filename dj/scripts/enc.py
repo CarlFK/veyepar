@@ -330,7 +330,7 @@ class enc(process):
                 'pl_vid0', 'tl_vid0'
                 'audio_fade_in', 'audio_fade_out',
                 'title_fade','foot_fade',
-                ]
+                ]:
 
             nodes['id'] = tree[1][id]
 
