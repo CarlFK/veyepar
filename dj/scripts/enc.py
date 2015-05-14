@@ -176,6 +176,12 @@ class enc(process):
   def get_title_text( self, episode ): 
     # lets try putting (stuff) on a new line
     title = episode.name
+    authors = episode.authors
+
+    if episode.show.slug=='wtd_na_2015':
+        title = title.upper()
+        authors = authors.upper()
+
     if " (" in title:
         pos = title.index(" (")
         title,title2 = title[:pos],title[pos+1:]  # +1 skip space in " ("
@@ -205,13 +211,23 @@ class enc(process):
         tags=[]
         tag1=''
 
+
+    if ',' in authors:
+        authors = authors.split(', ')
+        author2 = ', '.join(authors[1:])
+        authors = authors[0].strip()
+    else:
+        author2 = ''
+
+
     texts={
             'client': episode.show.client.name, 
             'show': episode.show.name, 
             'title': title, 
             'title2': title2, 
             'tag1': tag1, 
-            'authors': episode.authors,
+            'authors': authors,
+            'author2': author2,
             'presentertitle': "",
             'twitter_id': episode.twitter_id,
             'date': episode.start.strftime("%B %-d, %Y"),
@@ -303,6 +319,7 @@ class enc(process):
 
   def mk_mlt_2(self, title_img, credits_img, episode, cls, rfs):
         """
+        v2.  uses a template created with ShotCut GUI NLE.
         assemble a mlt playlist from:
         mlt template, title screen image, 
         filter parameters (currently just audio) 
@@ -319,8 +336,9 @@ class enc(process):
 # parse the xml into a tree of nodes
         # mlt_template_name = os.path.join(self.show_dir,"bling/chiweb/chiweb.mlt")
         mlt_template_name = "template.mlt"
-        mlt = open(mlt_template_name).read()
-        tree= xml.etree.ElementTree.XMLID(mlt)
+        # mlt = open(mlt_template_name).read()
+        # tree= xml.etree.ElementTree.XMLID(mlt)
+        tree= xml.etree.ElementTree.parse(mlt_template_name)
 
 # grab a reference to all of the nodes that will be manipulated.
         nodes={}
