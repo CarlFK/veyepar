@@ -2017,10 +2017,10 @@ class add_eps(process.process):
         # pprint.pprint(events[-2])
 
  
-        events = [e for e in events 
-                if e['location'] is not None]
-        events = [e for e in events 
-                if e['start'] is not None]
+
+  
+        # events = [e for e in events if e['location'] is not None]
+        # events = [e for e in events if e['start'] is not None]
         # events = [e for e in events 
         #        if e['location'] not in ['Hackers Lounge',] ]
         # events = [e for e in events 
@@ -2028,6 +2028,9 @@ class add_eps(process.process):
 
 
         for event in events: 
+
+            if event['location'] is None:
+                event['location']="Crystal Ballroom"
 
             rooms.add(event['location'])
 
@@ -2039,9 +2042,11 @@ class add_eps(process.process):
             event['authors'] = ", ".join( 
                     a['name'] for a in event['authors'])
 
+            """
             if event['name'] == "Panel: State of OSS .NET": 
                 event['twitter_id'] = "@richcampbell @carlfranklin" 
                 event['authors'] = "Richard Campbell and Carl Franklin"
+            """
 
             event['start'] = datetime.datetime.strptime(
                     event['start'],'%Y-%m-%d %H:%M:%S')
