@@ -85,6 +85,8 @@ def mk_mlt(template, output, params):
         set_text(pi,'resource',clip['filename'])
 
     # add each cut to the timeline
+    # apply audio fade in/out to first/last cut
+    first = True
     for cut in params['cuts']:
 
         node_id = "ti_vid{}".format(cut['id'])
@@ -100,9 +102,22 @@ def mk_mlt(template, output, params):
         ti.set("id", node_id)
         del ti.attrib["in"]
         del ti.attrib["out"]
-        # set_text(pi,'length')
+        set_text(pi,'length')
         set_text(ti,'resource',clip['filename'])
+
+        if first:
+            ti.insert(0,nodes['audio_fade_in'])
+            first = False
+
         mlt.insert(0,ti)
+
+    # ti is left over from the above loop
+    ti.insert(0,nodes['audio_fade_out'])
+
+
+    # find first cut:
+    cut = params['cuts'][0]
+    node_id = "ti_vid{}".format(cut['id'])
 
 
     print("checking...")
