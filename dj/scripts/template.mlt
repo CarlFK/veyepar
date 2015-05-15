@@ -188,8 +188,8 @@
   <playlist id="playlist0">
     <property name="shotcut:video">1</property>
     <property name="shotcut:name">V1</property>
-    <entry id="tl_vid1" producer="ti_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" />
-    <entry producer="ti_vid2" in="00:00:00.000" out="00:00:03.003" sample="2" />
+    <entry producer="ti_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" />
+    <entry id="tl_vid2" producer="ti_vid2" in="00:00:00.000" out="00:00:03.003" sample="2" />
     <entry producer="ti_vid3" in="00:00:00.000" out="00:00:01.902" sample="3" />
   </playlist>
   <producer id="tl_title" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">

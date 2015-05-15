@@ -28,7 +28,7 @@ def mk_mlt(template, output, params):
         'pi_title_img', 'tl_title',
         'pi_foot_img', 'tl_foot',
         'pl_vid0', 'pi_vid0', # Play List and Item
-        'tl_vid1', 'ti_vid1', # Time Line and Item
+        'tl_vid2', 'ti_vid2', # Time Line and Item
         'audio_fade_in', 'audio_fade_out',
         'title_fade','foot_fade',
         ]:
@@ -89,14 +89,14 @@ def mk_mlt(template, output, params):
 
         node_id = "ti_vid{}".format(cut['id'])
 
-        tl = copy.deepcopy( nodes['tl_vid1'] )
+        tl = copy.deepcopy( nodes['tl_vid2'] )
         tl.set("producer", node_id)
         del tl.attrib["in"]
         del tl.attrib["out"]
         # set_text(pe,'length')
         time_line.insert(0,tl)
 
-        ti = copy.deepcopy( nodes['ti_vid1'] )
+        ti = copy.deepcopy( nodes['ti_vid2'] )
         ti.set("id", node_id)
         del ti.attrib["in"]
         del ti.attrib["out"]
