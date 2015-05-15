@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mlt LC_NUMERIC="en_US.UTF-8" version="0.9.6" title="Anonymous Submission" producer="main bin">
   <profile description="automatic" width="720" height="480" progressive="1" sample_aspect_num="32" sample_aspect_den="27" display_aspect_num="853" display_aspect_den="480" frame_rate_num="30000" frame_rate_den="1001" colorspace="601"/>
-  <producer id="pl_vid0" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+  <producer id="pi_vid0" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
@@ -15,7 +15,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
   </producer>
-  <producer id="pl_vid1" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+  <producer id="pi_vid1" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
@@ -29,7 +29,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
   </producer>
-  <producer id="pl_vid2" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+  <producer id="pi_vid2" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
@@ -43,7 +43,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
   </producer>
-  <producer id="pl_vid3" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+  <producer id="pi_vid3" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
@@ -57,7 +57,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
   </producer>
-  <producer id="pl_vid4" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+  <producer id="pi_vid4" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
@@ -71,7 +71,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
   </producer>
-  <producer id="pl_title_img" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
+  <producer id="pi_title_img" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:09:59.993</property>
     <property name="eof">pause</property>
@@ -86,7 +86,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
   </producer>
-  <producer id="pl_foot_img" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
+  <producer id="pi_foot_img" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:09:59.993</property>
     <property name="eof">pause</property>
@@ -102,13 +102,13 @@
   </producer>
   <playlist id="main bin" title="Anonymous Submission">
     <property name="xml_retain">1</property>
-    <entry producer="pl_vid0" in="00:00:00.000" out="00:00:03.003" sample="1" />
-    <entry producer="pl_vid1" in="00:00:00.000" out="00:00:03.003" sample="1" />
-    <entry producer="pl_vid2" in="00:00:00.000" out="00:00:03.003" sample="1" />
-    <entry producer="pl_vid3" in="00:00:00.000" out="00:00:03.003" sample="1" />
-    <entry producer="pl_vid4" in="00:00:00.000" out="00:00:03.003" sample="1" />
-    <entry producer="pl_title_img" in="00:00:00.000" out="00:00:03.937"/>
-    <entry producer="pl_foot_img" in="00:00:00.000" out="00:00:03.937"/>
+    <entry id="pl_vid0" producer="pi_vid0" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_vid1" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_vid2" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_vid3" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_vid4" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_title_img" in="00:00:00.000" out="00:00:03.937"/>
+    <entry producer="pi_foot_img" in="00:00:00.000" out="00:00:03.937"/>
   </playlist>
   <producer id="black" in="00:00:00.000" out="00:00:09.042">
     <property name="mlt_type">producer</property>
@@ -121,7 +121,7 @@
   <playlist id="background">
     <entry producer="black" in="00:00:00.000" out="00:00:09.042"/>
   </playlist>
-  <producer id="tl_vid1" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+  <producer id="ti_vid1" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
@@ -146,7 +146,7 @@
       <property name="end">1</property>
     </filter>
   </producer>
-  <producer id="tl_vid2" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+  <producer id="ti_vid2" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
@@ -160,7 +160,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
   </producer>
-  <producer id="tl_vid3" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+  <producer id="ti_vid3" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
@@ -188,9 +188,9 @@
   <playlist id="playlist0">
     <property name="shotcut:video">1</property>
     <property name="shotcut:name">V1</property>
-    <entry producer="tl_vid1" in="00:00:00.667" out="00:00:03.003"/>
-    <entry producer="tl_vid2" in="00:00:00.000" out="00:00:03.003"/>
-    <entry producer="tl_vid3" in="00:00:00.000" out="00:00:01.902"/>
+    <entry id="tl_vid1" producer="ti_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" />
+    <entry producer="ti_vid2" in="00:00:00.000" out="00:00:03.003" sample="2" />
+    <entry producer="ti_vid3" in="00:00:00.000" out="00:00:01.902" sample="3" />
   </playlist>
   <producer id="tl_title" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
     <property name="mlt_type">producer</property>
