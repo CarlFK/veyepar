@@ -25,8 +25,9 @@ def mk_mlt(template, output, params):
     # grab nodes we are going to store values into
     nodes={}
     for id in [
-        'pi_title_img', 'tl_title',
-        'pi_foot_img', 'tl_foot',
+        'pi_title_img', 'ti_title',
+        'pi_foot_img',  'ti_foot',
+        # 'spacer',
         'pl_vid0', 'pi_vid0', # Play List and Item
         'tl_vid2', 'ti_vid2', # Time Line and Item
         'audio_fade_in', 'audio_fade_out',
@@ -36,6 +37,11 @@ def mk_mlt(template, output, params):
         node = tree.find(".//*[@id='{}']".format(id))
         print(id,node)
         nodes[id] = node
+
+    # special case because Shotcut steps on the id='spacer'
+    # <playlist id="playlist1">
+    # <blank id="spacer" length="00:00:00.267"/>
+    nodes['spacer'] = tree.find("./playlist[@id='playlist1']blank")
 
     # remove all placeholder nodes
     mlt = tree.find('.')
@@ -51,7 +57,6 @@ def mk_mlt(template, output, params):
     # <playlist id="playlist0">
     # <entry producer="tl_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" /> 
     time_line = tree.find("./playlist[@id='playlist0']")
-    # import code; code.interact(local=locals())
     for te in time_line.findall("./entry[@sample]"):
         print("te",te)
         producer = te.get('producer')
@@ -79,7 +84,7 @@ def mk_mlt(template, output, params):
         pi.set("id", node_id)
         del pi.attrib["in"]
         del pi.attrib["out"]
-        # set_text(pi,'length')
+        set_text(pi,'length')
         mlt.insert(0,pi)
 
         set_text(pi,'resource',clip['filename'])
@@ -87,6 +92,7 @@ def mk_mlt(template, output, params):
     # add each cut to the timeline
     # apply audio fade in/out to first/last cut
     first = True
+    total_length = 0
     for cut in params['cuts']:
 
         node_id = "ti_vid{}".format(cut['id'])
@@ -102,7 +108,7 @@ def mk_mlt(template, output, params):
         ti.set("id", node_id)
         del ti.attrib["in"]
         del ti.attrib["out"]
-        set_text(pi,'length')
+        set_text(ti,'length')
         set_text(ti,'resource',clip['filename'])
 
         if first:
@@ -111,28 +117,23 @@ def mk_mlt(template, output, params):
 
         mlt.insert(0,ti)
 
+        total_length += cut['length']
+
     # ti is left over from the above loop
     ti.insert(0,nodes['audio_fade_out'])
 
-
-    # find first cut:
-    cut = params['cuts'][0]
-    node_id = "ti_vid{}".format(cut['id'])
-
-
-    print("checking...")
-
-    for pe in play_list.findall("./entry[@sample]"):
-        producer = pe.get('producer')
-        print(producer)
-
     # set title screen image
     set_text(nodes['pi_title_img'],'resource',params['title_img'])
-    set_text(nodes['tl_title'],'resource',params['title_img'])
+    set_text(nodes['ti_title'],'resource',params['title_img'])
 
     # set footer image
     set_text(nodes['pi_foot_img'],'resource',params['foot_img'])
-    set_text(nodes['tl_foot'],'resource',params['foot_img'])
+    set_text(nodes['ti_foot'],'resource',params['foot_img'])
+
+    # set the lenght of the spacer so it puts the footer image to end-5sec
+    # Duration: 27mn 53s
+    # nodes['ti_foot'].set("in",str(total_length))
+    nodes['spacer'].set("length","00:27:46.00")
 
     tree.write(output)
 
@@ -160,6 +161,7 @@ def test():
                 'filename':'/home/carl/Videos/veyepar/dot_net_fringe/dot_net_fringe_2015/dv/main_stage/2015-04-14/09_02_51.dv',
                 'in':1,
                 'out':None,
+                'length':1673, # Duration: 27mn 53s
                 },], 
         'audio_level': None,
         'channel_copy': None,

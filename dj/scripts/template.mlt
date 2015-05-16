@@ -192,7 +192,7 @@
     <entry id="tl_vid2" producer="ti_vid2" in="00:00:00.000" out="00:00:03.003" sample="2" />
     <entry producer="ti_vid3" in="00:00:00.000" out="00:00:01.902" sample="3" />
   </playlist>
-  <producer id="tl_title" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
+  <producer id="ti_title" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
     <property name="mlt_type">producer</property>
     <property name="length">00:09:59.993</property>
     <property name="eof">pause</property>
@@ -216,7 +216,7 @@
       <property name="alpha">0=1; 89=0</property>
     </filter>
   </producer>
-  <producer id="tl_foot" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
+  <producer id="ti_foot" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
     <property name="mlt_type">producer</property>
     <property name="length">00:09:59.993</property>
     <property name="eof">pause</property>
@@ -242,9 +242,9 @@
   <playlist id="playlist1">
     <property name="shotcut:video">1</property>
     <property name="shotcut:name">V2</property>
-    <entry producer="tl_title" in="00:00:00.000" out="00:00:03.937"/>
-    <blank length="00:00:00.267"/>
-    <entry producer="tl_foot" in="00:00:00.000" out="00:00:04.805"/>
+    <entry producer="ti_title" in="00:00:00.000" out="00:00:03.937"/>
+    <blank id="spacer" length="00:00:00.267"/>
+    <entry producer="ti_foot" in="00:00:00.000" out="00:00:04.805"/>
   </playlist>
   <tractor id="tractor0" title="Anonymous Submission" global_feed="1" in="00:00:00.000" out="00:00:09.042">
     <property name="shotcut">1</property>
