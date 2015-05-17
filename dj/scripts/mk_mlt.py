@@ -66,18 +66,19 @@ def mk_mlt(template, output, params):
         mlt.remove(producer_node)
 
     # add each clip to the playlist
-    for clip in params['clips']:
+    for i,clip in enumerate(params['clips']):
 
         node_id = "pi_vid{}".format(clip['id'])
         print("node_id",node_id)
 
         # setup and add Play List
         pl = copy.deepcopy( nodes['pl_vid0'] )
+        pl.set("id", "pl_vid{}".format(clip['id']))
         pl.set("producer", node_id)
         del pl.attrib["in"]
         del pl.attrib["out"]
         # set_text(pl,'length')
-        play_list.insert(0,pl)
+        play_list.insert(i,pl)
 
         # setup and add Playlist Item
         pi = copy.deepcopy( nodes['pi_vid0'] )
@@ -85,7 +86,7 @@ def mk_mlt(template, output, params):
         del pi.attrib["in"]
         del pi.attrib["out"]
         set_text(pi,'length')
-        mlt.insert(0,pi)
+        mlt.insert(i,pi)
 
         set_text(pi,'resource',clip['filename'])
 
@@ -93,7 +94,8 @@ def mk_mlt(template, output, params):
     # apply audio fade in/out to first/last cut
     first = True
     total_length = 0
-    for cut in params['cuts']:
+    for i,cut in enumerate(params['cuts']):
+        print(i,cut)
 
         node_id = "ti_vid{}".format(cut['id'])
 
@@ -102,20 +104,20 @@ def mk_mlt(template, output, params):
         del tl.attrib["in"]
         del tl.attrib["out"]
         # set_text(pe,'length')
-        time_line.insert(0,tl)
+        time_line.insert(i,tl)
 
         ti = copy.deepcopy( nodes['ti_vid2'] )
         ti.set("id", node_id)
         del ti.attrib["in"]
         del ti.attrib["out"]
         set_text(ti,'length')
-        set_text(ti,'resource',clip['filename'])
+        set_text(ti,'resource',cut['filename'])
 
         if first:
             ti.insert(0,nodes['audio_fade_in'])
             first = False
 
-        mlt.insert(0,ti)
+        mlt.insert(i,ti)
 
         total_length += cut['length']
 
@@ -133,7 +135,8 @@ def mk_mlt(template, output, params):
     # set the lenght of the spacer so it puts the footer image to end-5sec
     # Duration: 27mn 53s
     # nodes['ti_foot'].set("in",str(total_length))
-    nodes['spacer'].set("length","00:27:46.00")
+    # nodes['spacer'].set("length","00:27:46.00")
+    nodes['spacer'].set("length","0:{}.0".format(total_length-6.5))
 
     tree.write(output)
 
@@ -167,31 +170,34 @@ def test():
         'channel_copy': None,
         }
 
-    mk_mlt("template.mlt", "test.mlt",  params)
-    return 
+    # mk_mlt("template.mlt", "test.mlt",  params)
+    # return 
 
     params = {
         'title_img': '/home/carl/Videos/veyepar/test_client/test_show/titles/Lets_make_a_Test.png',
         'foot_img': 'bling/ndv-169.png',
-        'clips':[
-                {'id':'123',
-                'filename':'/home/carl/Videos/veyepar/dot_net_fringe/dot_net_fringe_2015/dv/main_stage/2015-04-14/09_02_51.dv',
-                }
-            ],
-        'cuts':[{'id':'456',
-                'filename':'/home/carl/Videos/veyepar/dot_net_fringe/dot_net_fringe_2015/dv/main_stage/2015-04-14/09_02_51.dv',
-                'in':1,
-                'out':None,
-                },], 
+        'clips':[],
+        'cuts':[], 
         'audio_level': None,
         'channel_copy': None,
         }
 
     for i in range(5):
-        params['clips'].append({'id':str(i),
-            'filename':'/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv',
+        filename = "00_00_{:02}.dv".format(i*3)
+        params['clips'].append(
+                {'id':str(i),
+                'filename':'/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/{}'.format(filename),
                 'in':1,
                 'out':2,
+                'length':2,
+                })
+        if i in [1,2,3]:
+            params['cuts'].append(
+               {'id':str(i),
+                'filename':'/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/{}'.format(filename),
+                'in':1,
+                'out':2,
+                'length':3,
                 })
 
     mk_mlt("template.mlt", "test.mlt",  params)
