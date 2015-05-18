@@ -17,7 +17,18 @@ def mk_mlt(template, output, params):
         if value is None:
             node.remove(p)
         else:
+            if type(value)==int:
+                value = "0:{}.0".format(value)
             p.text = value
+
+    def set_attrib(node, attrib_name, value=None):
+        if value is None:
+            del node.attrib[attrib_name]
+        else:
+            if type(value)==int:
+                value = "0:{}.0".format(value)
+            print(attrib_name, value)
+            node.set(attrib_name, value)
 
     # parse the template 
     tree=xml.etree.ElementTree.parse(template)
@@ -75,16 +86,15 @@ def mk_mlt(template, output, params):
         pl = copy.deepcopy( nodes['pl_vid0'] )
         pl.set("id", "pl_vid{}".format(clip['id']))
         pl.set("producer", node_id)
-        del pl.attrib["in"]
-        del pl.attrib["out"]
-        # set_text(pl,'length')
+        set_attrib(pl, "in")
+        set_attrib(pl, "out")
         play_list.insert(i,pl)
 
         # setup and add Playlist Item
         pi = copy.deepcopy( nodes['pi_vid0'] )
         pi.set("id", node_id)
-        del pi.attrib["in"]
-        del pi.attrib["out"]
+        set_attrib(pi, "in")
+        set_attrib(pi, "out")
         set_text(pi,'length')
         mlt.insert(i,pi)
 
@@ -101,16 +111,15 @@ def mk_mlt(template, output, params):
 
         tl = copy.deepcopy( nodes['tl_vid2'] )
         tl.set("producer", node_id)
-        del tl.attrib["in"]
-        del tl.attrib["out"]
-        # set_text(pe,'length')
+        set_attrib(tl, "in", cut['in'])
+        set_attrib(tl, "out", cut['out'])
         time_line.insert(i,tl)
 
         ti = copy.deepcopy( nodes['ti_vid2'] )
         ti.set("id", node_id)
-        del ti.attrib["in"]
-        del ti.attrib["out"]
-        set_text(ti,'length')
+        set_attrib(ti, "in", cut['in'])
+        set_attrib(ti, "out", cut['out'])
+        set_text(ti,'length' , cut['length'])
         set_text(ti,'resource',cut['filename'])
 
         if first:
@@ -187,16 +196,14 @@ def test():
         params['clips'].append(
                 {'id':str(i),
                 'filename':'/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/{}'.format(filename),
-                'in':1,
-                'out':2,
                 'length':2,
                 })
         if i in [1,2,3]:
             params['cuts'].append(
                {'id':str(i),
                 'filename':'/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/{}'.format(filename),
-                'in':1,
-                'out':2,
+                'in':None,
+                'out':None,
                 'length':3,
                 })
 
