@@ -42,6 +42,9 @@ def mk_mlt(template, output, params):
         'pl_vid0', 'pi_vid0', # Play List and Item
         'tl_vid2', 'ti_vid2', # Time Line and Item
         'audio_fade_in', 'audio_fade_out',
+        'channelcopy', 
+        'mono', 
+        'normalize', 
         'title_fade','foot_fade',
         ]:
 
@@ -75,6 +78,10 @@ def mk_mlt(template, output, params):
         print( "producer", producer )
         time_line.remove(te)
         mlt.remove(producer_node)
+
+    nodes['ti_vid2'].remove(nodes['channelcopy'])
+    nodes['ti_vid2'].remove(nodes['mono'])
+    nodes['ti_vid2'].remove(nodes['normalize'])
 
     # add each clip to the playlist
     for i,clip in enumerate(params['clips']):
@@ -121,6 +128,20 @@ def mk_mlt(template, output, params):
         set_attrib(ti, "out", cut['out'])
         set_text(ti,'length' , cut['length'])
         set_text(ti,'resource',cut['filename'])
+
+        
+        if cut['channelcopy']=='m':
+            ti.insert(0,nodes['mono'])
+        else:
+            channelcopy = copy.deepcopy( nodes['channelcopy'] )
+            set_text(channelcopy,'from' , cut['channelcopy'][0])
+            set_text(channelcopy,'to' , cut['channelcopy'][1])
+            ti.insert(0,channelcopy)
+
+        if cut['normalize']<>'0':
+            normalize = copy.deepcopy( nodes['normalize'] )
+            set_text(normalize,'program' , cut['normalize'])
+            ti.insert(0,normalize)
 
         if first:
             ti.insert(0,nodes['audio_fade_in'])
@@ -174,21 +195,21 @@ def test():
                 'in':None,
                 'out':None,
                 'length':1673, # Duration: 27mn 53s
+                'channelcopy':'01',
+                'normalize':'-12.0',
                 },], 
         'audio_level': None,
         'channel_copy': None,
         }
 
-    # mk_mlt("template.mlt", "test.mlt",  params)
-    # return 
+    mk_mlt("template.mlt", "test.mlt",  params)
+    return 
 
     params = {
         'title_img': '/home/carl/Videos/veyepar/test_client/test_show/titles/Lets_make_a_Test.png',
         'foot_img': 'bling/ndv-169.png',
         'clips':[],
         'cuts':[], 
-        'audio_level': None,
-        'channel_copy': None,
         }
 
     for i in range(5):
@@ -205,6 +226,8 @@ def test():
                 'in':None,
                 'out':None,
                 'length':3,
+                'channelcopy':'01',
+                'normalize':'-12.0',
                 })
 
     mk_mlt("template.mlt", "test.mlt",  params)
