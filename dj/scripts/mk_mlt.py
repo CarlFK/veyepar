@@ -145,7 +145,7 @@ def mk_mlt(template, output, params):
     # Duration: 27mn 53s
     # nodes['ti_foot'].set("in",str(total_length))
     # nodes['spacer'].set("length","00:27:46.00")
-    nodes['spacer'].set("length","0:{}.0".format(total_length-6.5))
+    nodes['spacer'].set("length","0:{}.0".format(total_length-8.8))
 
     tree.write(output)
 
@@ -171,7 +171,7 @@ def test():
             ],
         'cuts':[{'id':'456',
                 'filename':'/home/carl/Videos/veyepar/dot_net_fringe/dot_net_fringe_2015/dv/main_stage/2015-04-14/09_02_51.dv',
-                'in':1,
+                'in':None,
                 'out':None,
                 'length':1673, # Duration: 27mn 53s
                 },], 
