@@ -111,6 +111,12 @@ Admin: <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
 <a href="{% url "admin:main_cut_list_changelist" %}?episode__id__exact={{episode.id}}">cut list</a>
 <a href="{% url "admin:main_raw_file_changelist" %}?location__id__exact={{episode.location.id}}&amp;start__year={{episode.start|date:"Y"}}&amp;start__month={{episode.start|date:"m"}}&amp;start__day={{episode.start|date:"d"}}">raw files day</a>
 
+{%if episode.host %}
+<input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show player...</label>
+    {%if episode.state == 4 %}
+    {# embed player here #}
+    {% endif %}
+{% endif %}
 
 <form method="POST">{% csrf_token %}
 
