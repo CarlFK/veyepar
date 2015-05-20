@@ -34,16 +34,17 @@ class tweet(process):
         print data
         return data['results'].values()[0]['shorturl']
 
-    def mk_tweet(self, prefix, video_name, authors, video_url):
-        message = ' '.join([prefix, video_name, '-', authors, video_url])
+    def mk_tweet(self, prefix, twitter_ids, video_name, authors, video_url):
+        message = ' '.join([prefix, twitter_ids, 
+            video_name, '-', authors, video_url])
         if len(message) > 140:
-            message = ' '.join([prefix, video_name, video_url])
+            message = ' '.join([prefix, twitter_ids, video_name, video_url])
         if len(message) > 140:
             short_url = self.shorten(video_url)
-            message = ' '.join([prefix, video_name, short_url])
+            message = ' '.join([prefix, twitter_ids, video_name, short_url])
         if len(message) > 140:
             video_name = video_name[:140 - len(message) - 3] + '...'
-            message = ' '.join([prefix, video_name, short_url])
+            message = ' '.join([prefix, twitter_ids, video_name, short_url])
         return message
 
     def tweet_tweet(self, user, tweet):
@@ -84,7 +85,11 @@ class tweet(process):
 
         prefix = show.client.tweet_prefix
 
-        tweet = self.mk_tweet(prefix, ep.name, ep.authors, url)
+        # remove commas
+        twitter_ids = ep.twitter_id.replace(',','')
+
+        tweet = self.mk_tweet(prefix, 
+                twitter_ids, ep.name, ep.authors, url)
 
         ret=self.tweet_tweet(user, tweet)
         if ret:
