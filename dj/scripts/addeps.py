@@ -2032,7 +2032,7 @@ class add_eps(process.process):
             if event['location'] is None:
                 event['location']="Crystal Ballroom"
 
-            rooms.add(event['location'])
+            rooms.add(event['location'].lower())
 
             event['twitter_id'] = " ".join( 
                     a['twitter'] for a in event['authors']
