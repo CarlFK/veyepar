@@ -1922,6 +1922,114 @@ class add_eps(process.process):
         return 
 
 
+    def depy15(self, schedule, show):
+
+        room = 'Room LL104'
+        
+        field_maps = [
+                ('title','name'),
+                ('start_time','start'),
+                ('end_time','end'),
+                ('presenter','authors'),
+                ('description','description'),
+                ('released','released'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+        rooms = [room]
+        self.add_rooms(rooms,show)
+
+        for i,event in enumerate(events): 
+            event['location'] = room
+            event['conf_key'] = str(i)
+
+            dt_format='%Y-%m-%d %H:%M'
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], dt_format)
+
+            end = datetime.datetime.strptime(
+                    event['end'], dt_format)
+            seconds=(end - event['start']).seconds 
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            event['duration'] =  duration
+
+            if event['description'] is None:
+                event['description'] = ''
+
+            event['authors'] = ', '.join(event['authors'].split(' and '))
+
+            event['emails'] = ""
+            event['twitter_id'] = ""
+            event['license'] = ""
+            event['conf_url'] = ""
+            event['tags'] = ""
+
+            event['released'] = event['released'] == 'yes'
+
+        self.add_eps(events, show)
+
+        return 
+
+
+
+
+    def blinkon4(self, schedule, show):
+
+        # remove rows that have no crowdsource_ref, because spreadsheet
+        schedule = [s for s in schedule if s['Start Time']]
+        # schedule = [s for s in schedule if 
+        #        s['crowdsource_ref'] or s['released']]
+       
+        # convert all the values to unicode strings
+        schedule = [{k:d[k].decode('utf-8') for k in d} 
+                for d in schedule ] 
+        
+        field_maps = [
+            # ('Title Slide Includes BlinkOn 4',''),
+            ('Title','name'),
+            # ('Notes',''),
+            ('Date','start'),
+            ('Start Time','start'),
+            ('End Time',''),
+            # ('Slides',''),
+            # ('Internal Video URL',''),
+            ('Description for YouTube','description'),
+            ('Speaker','authors'),
+            ('Should Upload?','released'),
+            # ('Good Title Slide',''),
+            # ('Shortname',''),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+        rooms = ['room 1']
+        self.add_rooms(rooms,show)
+
+
+        for i,event in enumerate(events): 
+            event['location'] = "room 1"
+            event['conf_key'] = str(i)
+            # event['authors'] = ', '.join(event['authors'].split(' & '))
+
+            event['start'] = datetime.datetime.strptime( 
+                  event['start'], '%Y/%m/%d %H:%M:%S')
+            print event['start']
+                    
+            event['duration'] = "01:00:00"
+            event['emails'] = ""
+            event['twitter_id'] = ""
+            event['license'] = ""
+            event['conf_url'] = ""
+            event['tags'] = ""
+
+            event['released'] = event['released'] == 'Yes'
+
+        self.add_eps(events, show)
+
+        return 
+
+
+
 
     def wtd_na_2014(self, schedule, show):
 
@@ -2774,6 +2882,12 @@ class add_eps(process.process):
             # pycon.de 2011 
             return self.pyohio(schedule,show)
             # return self.pyconde2011(schedule,show)
+
+        if self.options.show =='blinkon4':
+            return self.blinkon4(schedule,show)
+
+        if self.options.show =='depy_2015':
+            return self.depy15(schedule,show)
 
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
