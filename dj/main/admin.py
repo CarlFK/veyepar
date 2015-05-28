@@ -31,6 +31,7 @@ admin.site.register(Location, LocationAdmin)
 
 class Raw_FileAdmin(admin.ModelAdmin):
     list_display = ('filename', 'show', 'location', 'start', 'duration', 'end', ) 
+    list_editable = ('start', 'duration', )
     list_display_links = ('filename',)
     list_filter = ('location',"start")
     search_fields = ['filename']
@@ -60,26 +61,28 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_display = ('id',
             # 'conf_key', 
             # 'conf_url', 
+            'name', 
+            'authors',
+            'emails',
             'state',
             'host_url',
             'rax_mp4_url',
-            'name', 
             # 'locked_by', 
             'start', 
             # 'duration', 
-            # 'emails',
             # 'location',
 )
     list_editable = (
             'state',
-            'host_url',
-            'rax_mp4_url',
+            # 'host_url',
+            #'rax_mp4_url',
+            'authors',
+            'emails',
             # 'conf_key', 
             # 'conf_url', 
             # 'sequence', 
-            'start', 
+            # 'start', 
             # 'duration', 
-            # 'emails',
             )
 
        
