@@ -51,7 +51,7 @@ class add_dv(process):
           if self.options.verbose: 
               print "checking...", dirpath, d, dirnames, filenames 
           for f in filenames:
-              if f[-3:]=='.dv':
+              if os.path.splitext(f)[1] in ['.dv', '.flv', '.mp4']:
                   seq+=1
                   self.one_file(os.path.join(d,f),show,location,seq)
 
