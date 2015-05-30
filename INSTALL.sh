@@ -83,6 +83,8 @@ pip install -r setup/requirements.txt
 # mv ~/.virtualenvs/veyepar/dabo/locale/ ~/.virtualenvs/veyepar/lib/python2.6/site-packages/dabo
 cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
 
+ln -s /usr/lib/python2.7/dist-packages/gi
+
 git clone https://github.com/dabodev/dabo.git dabo-master
 ln -s dabo-master/dabo 
 
