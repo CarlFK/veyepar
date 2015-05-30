@@ -1,6 +1,11 @@
 
 veyepar:
 
+  talk setup checklist- 
+     laptop sound check
+     confirm talk title
+     ask presenter how they prounounce their name 
+
   move state data def from models.py to initial_data.json fixture.
      use state table, not a constant 
 
