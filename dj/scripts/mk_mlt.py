@@ -19,6 +19,8 @@ def mk_mlt(template, output, params):
         else:
             if type(value)==int:
                 value = "0:{}.0".format(value)
+            elif type(value)==float:
+                value = "0:{}".format(value)
             p.text = value
 
     def set_attrib(node, attrib_name, value=None):
@@ -172,6 +174,8 @@ def mk_mlt(template, output, params):
 
     # import code; code.interact(local=locals())
 
+    return True
+
 """
 pl = tree[1]['main bin']
 for pi in pl.findall("entry[@sample]"): 
@@ -198,8 +202,6 @@ def test():
                 'channelcopy':'01',
                 'normalize':'-12.0',
                 },], 
-        'audio_level': None,
-        'channel_copy': None,
         }
 
     mk_mlt("template.mlt", "test.mlt",  params)
