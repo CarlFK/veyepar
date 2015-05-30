@@ -113,7 +113,7 @@ class add_to_richard(Process):
             pprint.pprint(video_data)
 
         if \
-            not video_data['video_webm_url'] \
+            not video_data['video_mp4_url'] \
             or not video_data['source_url'] \
             or not video_data['embed']:
                 import code
@@ -263,8 +263,8 @@ class add_to_richard(Process):
             'recorded': ep.start.strftime("%Y-%m-%d"),
             'language': 'English',
             'duration': duration,
-            'video_webm_url': ep.rax_mp4_url, # only rax_xxx_url
-            # 'video_mp4_url': ep.rax_mp4_url,
+            # 'video_webm_url': ep.rax_mp4_url, # only rax_xxx_url
+            'video_mp4_url': ep.rax_mp4_url,
             'video_mp4_download_only': False,
         }
         if ep.show.slug=="debconf14":
