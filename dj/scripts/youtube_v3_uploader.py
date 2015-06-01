@@ -4,6 +4,31 @@
 # youtube_v3_uploader.py
 # uploads to youtube using google's api v3
 
+"""
+README
+
+To run this standalone:
+
+1.
+pip install git+https://github.com/CarlFK/google-api-python-client.git#egg=googleapiclient
+
+2. Get a client ID (defines who is running this code)
+https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount
+Warning: Keep your client secret private. If someone obtains your client secret, they could use it to consume your quota, incur charges against your Google APIs Console project, and request access to user data. 
+
+3. To define what youtube account will be uploaded to, 
+   the first time you run this it will prompt for a key:
+    Go to the following link in your browser:
+    https://accounts.google.com/o/oauth2/auth?...
+    Enter verification code: 
+A token gets saved in oauth.json and will be used for all subsiquent runs.
+
+4. if you don't give it a --pathname, it tries to upload itself, 
+which errors with: 
+    ResumableUploadError ... "reason": "badContent", "message": "Media type 'text/x-python' is not supported.
+
+"""
+
 # https://developers.google.com/youtube/v3/
 # https://developers.google.com/youtube/v3/code_samples/python
 # https://github.com/youtube/api-samples/tree/master/python
@@ -197,7 +222,8 @@ def resumable_upload(insert_request):
         exit("The upload failed with an unexpected response: %s" % response)
 
     except ResumableUploadError, e:
-      print("ResumableUploadError", e.content)
+      print("ResumableUploadError e.content:{}".format(e.content))
+      print("to get out of this loop:\nimport sys;sys.exit()")
       import code; code.interact(local=locals())
       # raise e
 
@@ -206,6 +232,7 @@ def resumable_upload(insert_request):
         error = "A retriable HTTP error %d occurred:\n%s" % (
                 e.resp.status, e.content )
       else:
+        print("to get out of this loop:\nimport sys;sys.exit()")
         import code; code.interact(local=locals())
         # raise e
 
@@ -213,6 +240,8 @@ def resumable_upload(insert_request):
       error = "A retriable error occurred: %s" % e
 
     except Exception, e:
+      print("No clue what is going on.  e:{}".format(e))
+      print("to get out of this loop:\nimport sys;sys.exit()")
       import code; code.interact(local=locals())
 
 
