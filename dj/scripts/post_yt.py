@@ -180,7 +180,7 @@ class post(process):
             print 'skipping youtube_upoad.py uploader.upload()'
             print len(meta['description'])
 
-        elif ep.host_url:
+        elif ep.host_url and not self.options.replace:
             print "skipping youtube, already there."
             youtube_success = True
 
@@ -227,7 +227,7 @@ class post(process):
                 print 'test mode...'
                 print 'skipping archive_uploader .upload()'
 
-            elif ep.archive_ogv_url:
+            elif ep.archive_ogv_url and not self.options.replace:
                 # um.. what about other formats?  
                 # kinda buggy here.
                 # but only relevant when things are messed up
@@ -291,7 +291,7 @@ class post(process):
                 print 'skipping rax_uploader .upload()'
                 print 'key_id:', uploader.key_id
 
-            elif ep.rax_mp4_url:
+            elif ep.rax_mp4_url and not self.options.replace:
                 # above assumes rax_mp4_url is what gets filled in below
                 # this is so gross.
                 print "skipping rax, already there."
@@ -351,7 +351,7 @@ class post(process):
             print 'skipping vimeo_upoad.py uploader.upload()'
             print len(meta['description'])
 
-        elif ep.host_url:
+        elif ep.host_url and not self.options.replace:
             print "skipping vimeo, already there."
             youtube_success = True
 
@@ -416,6 +416,9 @@ class post(process):
                 # and rax_success
 
     def add_more_options(self, parser):
+
+        parser.add_option('--replace', action="store_true",
+            help="Upload again, step on existing URL.")
 
         parser.add_option('--release-all', action="store_true",
             help="ignore the released setting.")
