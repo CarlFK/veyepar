@@ -15,15 +15,15 @@ urlpatterns = patterns(
     url(r'start/$', start_here, name='start_here'),
     url(r'clients/$', clients, name='clients'),
     url(r'locations/$', 'locations', name='locations'),
-    url(r'C/(?P<client_slug>\w+)/$', client, name='client'),
-    url(r'^C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/$',
+    url(r'C/(?P<client_slug>[-\w]+)/$', client, name='client'),
+    url(r'^C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/$',
          episodes, name='episode_list'),
     url(r'raw_file/(?P<raw_file_id>\w+)/$', raw_file, name='raw_file'),
 
-    url(r'train/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', train, name='train'),
-    url(r'approve/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', approve_episode, name='approve_episode'),
+    url(r'train/(?P<episode_id>\w+)/(?P<episode_slug>[-\w]+)/(?P<edit_key>\w+)/$', train, name='train'),
+    url(r'approve/(?P<episode_id>\w+)/(?P<episode_slug>[-\w]+)/(?P<edit_key>\w+)/$', approve_episode, name='approve_episode'),
 
-    url(r'E/edit/(?P<episode_id>\w+)/(?P<episode_slug>\w+)/(?P<edit_key>\w+)/$', episode, name='episode'),
+    url(r'E/edit/(?P<episode_id>\w+)/(?P<episode_slug>[-\w]+)/(?P<edit_key>\w+)/$', episode, name='episode'),
 
     url(r'state/(?P<state>\w+)/$', episode_list, name='episode_list'),
     url(r'script/(?P<script>\w+)/$', episodes_script, name='episodes_script'),
@@ -31,12 +31,12 @@ urlpatterns = patterns(
     
     # url(r'^client/(?P<client_slug>[\w\-]+)/(?P<show_slug>[\w\-]+)/$', episodes, name='episode_list'),
 
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>[\w\-]+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/L/(?P<location_slug>[\w\-]+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
     url(r'E/(?P<episode_id>\d+)/$', episode, name='episode'),
     url(r'E/(?P<episode_id>\d+)/claim_lock/$', claim_episode_lock),
 )
@@ -50,10 +50,10 @@ urlpatterns += patterns(
     url(r'show_anomalies/(?P<show_id>\w+)/$', 
         show_anomalies, name='show_anomalies'),
 
-    url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>\w+)_schedule.html$', 
+    url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>[-\w]+)_schedule.html$', 
         schedule, 
         name='schedule', kwargs={'template_name':'schedule.html'}),
-    url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>\w+)_schedule.iframe$', 
+    url(r'schedule/(?P<show_id>\w+)/(?P<show_slug>[-\w]+)_schedule.iframe$', 
         schedule, 
         name='schedule.iframe', kwargs={'template_name':'schedule.iframe'}),
 
@@ -72,13 +72,13 @@ urlpatterns += patterns(
     url(r'pub_play/.*', public_play_list, name='public_play_list'),
     url(r'playlist.m3u$', mk_play_list, name='mk_play_list'),
 
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).csv$', 
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+).csv$', 
         eps_csv,
         name='eps_csv'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+).json$', 
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+).json$', 
         eps_xfer,
         name='eps_xfer'),
-    url(r'C/(?P<client_slug>\w+)/S/(?P<show_slug>\w+)/lanyard.json$', 
+    url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/lanyard.json$', 
         eps_lanynard,
         name='eps_lanynard'),
 
