@@ -112,7 +112,7 @@
   </playlist>
   <producer id="black" in="00:00:00.000" out="00:00:09.042">
     <property name="mlt_type">producer</property>
-    <property name="length">00:00:09.076</property>
+    <property name="length">00:00:10.0</property>
     <property name="eof">pause</property>
     <property name="resource">black</property>
     <property name="aspect_ratio">1.18519</property>
@@ -228,7 +228,7 @@
     <property name="ignore_points">0</property>
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
-    <filter id="title_fade" in="00:00:00.968" out="00:00:03.937">
+    <filter id="title_fade" in="00:00:03.0" out="00:00:05.0">
       <property name="track">0</property>
       <property name="start">1</property>
       <property name="level">1</property>
@@ -264,7 +264,7 @@
   <playlist id="playlist1">
     <property name="shotcut:video">1</property>
     <property name="shotcut:name">V2</property>
-    <entry producer="ti_title" in="00:00:00.000" out="00:00:03.937"/>
+    <entry producer="ti_title" in="00:00:00.000" out="00:00:05.0"/>
     <blank id="spacer" length="00:00:00.267"/>
     <entry producer="ti_foot" in="00:00:00.000" out="00:00:04.805"/>
   </playlist>
