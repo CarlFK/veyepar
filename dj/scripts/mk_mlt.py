@@ -105,13 +105,10 @@ def mk_mlt(template, output, params):
         set_attrib(pi, "in")
         set_attrib(pi, "out")
         set_text(pi,'length')
+        set_text(pi,'resource',clip['filename'])
         mlt.insert(i,pi)
 
-        set_text(pi,'resource',clip['filename'])
-
     # add each cut to the timeline
-    # apply audio fade in/out to first/last cut
-    first = True
     total_length = 0
     for i,cut in enumerate(params['cuts']):
         print(i,cut)
@@ -126,9 +123,9 @@ def mk_mlt(template, output, params):
 
         ti = copy.deepcopy( nodes['ti_vid2'] )
         ti.set("id", node_id)
-        set_attrib(ti, "in", cut['in'])
-        set_attrib(ti, "out", cut['out'])
-        set_text(ti,'length' , cut['length'])
+        set_attrib(ti, "in")
+        set_attrib(ti, "out")
+        set_text(ti,'length')
         set_text(ti,'resource',cut['filename'])
 
         
@@ -145,11 +142,11 @@ def mk_mlt(template, output, params):
             set_text(normalize,'program' , cut['normalize'])
             ti.insert(0,normalize)
 
-        if first:
+        if i==0:
+            # apply audio fade in/out to first/last cut
             ti.insert(0,nodes['audio_fade_in'])
-            first = False
 
-        mlt.insert(i,ti)
+        mlt.insert(i*2,ti)
 
         total_length += cut['length']
 
@@ -168,7 +165,7 @@ def mk_mlt(template, output, params):
     # Duration: 27mn 53s
     # nodes['ti_foot'].set("in",str(total_length))
     # nodes['spacer'].set("length","00:27:46.00")
-    nodes['spacer'].set("length","0:{}.0".format(total_length-8.8))
+    nodes['spacer'].set("length","0:{}.0".format(total_length-8.0))
 
     tree.write(output)
 
