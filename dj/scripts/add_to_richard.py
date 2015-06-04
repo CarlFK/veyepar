@@ -96,7 +96,7 @@ class add_to_richard(Process):
             if "youtu.be" in ep.host_url:  
                 # for some reason this does not give object_embed_code
                 # so fix it with a hammer.
-                ep.host_url = scraped_metadata['link'] 
+                # ep.host_url = scraped_metadata['link'] 
                 scraped_metadata = self.get_scrapevideo_metadata(ep.host_url)
             
             video_data['thumbnail_url'] = scraped_metadata.get('thumbnail_url','')
