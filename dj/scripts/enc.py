@@ -572,7 +572,7 @@ class enc(process):
             # define credits
             credits_img = episode.show.client.credits \
                 if episode.show.client.credits \
-                else 'ndv1-black.png'
+                else 'ndv-169.png'
 
             credits_img = os.path.join(
                 os.path.split(os.path.abspath(__file__))[0],
@@ -1058,13 +1058,16 @@ class enc(process):
                #         cut_list__apply=True).\
 
 # make a .mlt file for this episode
-            # mlt = self.mkmlt_1(title_img, credits_img, episode, cls, rfs)
-            print "cls", cls
-            for cl in cls: print cl
 
-            params = self.get_params(episode, rfs, cls )
-            mlt_pathname = os.path.join(self.work_dir, "%s.mlt" % episode.slug)
-            ret = mk_mlt( "template.mlt", mlt_pathname, params )
+            
+            mlt_pathname = os.path.join(self.work_dir, "custom", "%s.mlt" % episode.slug)
+            if os.path.exists(mlt_pathname):
+                ret = True
+            else:
+
+                mlt_pathname = os.path.join(self.work_dir, "%s.mlt" % episode.slug)
+                params = self.get_params(episode, rfs, cls )
+                ret = mk_mlt( "template.mlt", mlt_pathname, params )
 
             if not ret:
 
