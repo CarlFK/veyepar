@@ -627,6 +627,24 @@ class enc(process):
             ps, does not reference the clips above.
             """
 
+            def hms_to_clock(hms):
+                """
+                Convererts what media players show h:m:s
+                to the mlt time format h:m:s.s 
+                for more on this:
+                http://mltframework.blogspot.com/2012/04/time-properties.html
+                """
+                if not hms:
+                    return None
+
+                if ":" not in hms:
+                    hms = "0:" + hms
+
+                if "." not in hms:
+                    hms = hms + ".0"
+
+                return hms
+
             cuts = []
             for cl in cls:
                 cut = {}
@@ -640,17 +658,11 @@ class enc(process):
                 # set start/end on the clips if they are set in the db
                 # else None
 
-                if cl.start:
-                    cut['in']=cl.start
-                else:
-                    cut['in']=None
-                    
-                if cl.end:
-                    cut['out']=cl.end
-                else:
-                    cut['out']=None
+                cut['in']=hms_to_clock(cl.start)
+                cut['out']=hms_to_clock(cl.end)
 
                 cut['length'] = cl.duration()
+                # cut['length'] = cl.duration()
 
                 if cl.episode.channelcopy:
                     cut['channelcopy'] = cl.episode.channelcopy
