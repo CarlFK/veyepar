@@ -137,9 +137,9 @@ class ck_setup(process):
 
         title_svg = self.client.title_svg
         if title_svg:
-            print('show.title_svg: {}'.format(title_svg))
+            print('client.title_svg: {}'.format(title_svg))
         else:
-            print('show.title_svg is blank. using <show.slug>_title.svg')
+            print('client.title_svg is blank. using <show.slug>_title.svg')
             title_svg = "%s_title.svg" % (self.show.slug,)
         # title_svg = os.path.join(self.show_dir, "bling", title_svg)
         title_svg = os.path.join(
