@@ -1,5 +1,18 @@
 #!/usr/bin/python
 
+"""
+Allow a web page to access local files.
+This makes it easier to preview title screens and video files.
+
+FF stores profiles in ~/.mozilla/firefox/profiles.ini
+FF settings are set by creating a .js file that sets things on startup
+
+1. count number of FF profiles.
+     If more than 1, give up.
+2. get profile dir
+3. create user.js that sets custom settings.
+"""
+
 import os
 import ConfigParser
 
