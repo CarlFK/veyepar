@@ -629,7 +629,7 @@ class enc(process):
 
             def hms_to_clock(hms):
                 """
-                Convererts what media players show h:m:s
+                Converts what media players show h:m:s
                 to the mlt time format h:m:s.s 
                 for more on this:
                 http://mltframework.blogspot.com/2012/04/time-properties.html
