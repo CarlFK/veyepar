@@ -30,7 +30,8 @@ sudo apt-get --assume-yes install python-software-properties
 
 sudo apt-get --assume-yes update
 
-sudo apt-get --assume-yes install python-gtk2 python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-dev 
+sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav
+# python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad 
 # python-lxml 
 # python-dev libxml2-dev libxslt-dev
 # sphinx2-bin 
