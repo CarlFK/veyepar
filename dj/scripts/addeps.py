@@ -2653,6 +2653,7 @@ class add_eps(process.process):
                 ('released','released'),
                 ('speakers','twitter_id'),
                 ('speakers','emails'),
+                ('slug','conf_url'),
             ]
 
         events = self.generic_events(talks, field_maps)
@@ -2681,10 +2682,12 @@ class add_eps(process.process):
             print(event['twitter_id'])
 
             event['license'] = ""
-            event['conf_url'] = ""
+            event['conf_url'] = u"https://djangobirthday.com/talks/#{}".format(event['conf_url'])
             event['tags'] = ""
 
             event['released'] = event['released'] == 'yes'
+
+            pprint.pprint(event)
 
         self.add_eps(events, show)
 
