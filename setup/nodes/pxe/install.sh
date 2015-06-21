@@ -27,7 +27,7 @@ apt-get --force-yes --assume-yes install  \
 #    "squid-deb-proxy squid-deb-proxy/ppa-enable boolean true" 
 
 apt-get --force-yes --assume-yes install  \
- dhcp3-server \
+ isc-dhcp-server \
  bind9 \
  tftpd-hpa \
  syslinux \
