@@ -192,7 +192,13 @@ class add_eps(process.process):
 
         # if the json object is one big key:value, pull the list out
         try:
-            schedule=schedule['schedule']
+            keys= schedule.keys()
+            key = keys[0]
+            # schedule=schedule['schedule']
+            schedule=schedule[key]
+        except AttributeError as k:
+            # AttributeError: 'list' object has no attribute 'keys'
+            pass
         except TypeError as k:
             # TypeError: list indices must be integers, not str
             pass
@@ -202,6 +208,7 @@ class add_eps(process.process):
 
         s_keys = set()
         for s in schedule:
+            print(s)
             s_keys.update(s.keys())
 
         print("keys found in input:")
@@ -2628,6 +2635,62 @@ class add_eps(process.process):
       return 
 
 
+    def djbp10(self, schedule, show):
+
+        room = 'libertyhall'
+        
+        talks=[]
+        for k in schedule['globals']['talks']:
+            if schedule['globals']['talks'][k]['active']:
+                talks.append( schedule['globals']['talks'][k] )
+
+        field_maps = [
+                ('title','name'),
+                ('start_time','start'),
+                ('duration','duration'),
+                ('speakers','authors'),
+                ('abstract','description'),
+                ('released','released'),
+                ('speakers','twitter_id'),
+                ('speakers','emails'),
+            ]
+
+        events = self.generic_events(talks, field_maps)
+        rooms = [room]
+        self.add_rooms(rooms,show)
+
+        for i,event in enumerate(events): 
+            event['location'] = room
+            event['conf_key'] = str(i)
+
+            event['authors'] = ', '.join([
+                a['name'] for a in event['authors'] ])
+
+            event['emails'] = ', '.join([
+                e['slug'] for e in event['emails'] ])
+
+            # print(event['name'])
+            try:
+                event['twitter_id'] = ', '.join([
+                       [ s['link'].split('/')[-1] for s in t['social'] 
+                       if s['title']=="twitter"][0]
+                       for t in event['twitter_id'] ])
+            except IndexError as e:
+                event['twitter_id'] = ""
+
+            print(event['twitter_id'])
+
+            event['license'] = ""
+            event['conf_url'] = ""
+            event['tags'] = ""
+
+            event['released'] = event['released'] == 'yes'
+
+        self.add_eps(events, show)
+
+        return 
+
+
 
 #################################################3
 # main entry point 
@@ -2791,6 +2854,9 @@ class add_eps(process.process):
         if url.endswith('programme/schedule/json'):
             # Zookeepr
             return self.zoo(schedule,show)
+
+        if self.options.show =='djbp10':
+            return self.djbp10(schedule,show)
 
         if self.options.show =='nodevember14':
             return self.nodevember14(schedule,show)
