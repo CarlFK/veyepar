@@ -2637,16 +2637,19 @@ class add_eps(process.process):
 
     def djbp10(self, schedule, show):
 
-        room = 'libertyhall'
+        room = 'Liberty Hall'
         
+        # make list of talks from dict of talks
+        # where video=true
         talks=[]
         for k in schedule['globals']['talks']:
-            if schedule['globals']['talks'][k]['active']:
+            if schedule['globals']['talks'][k]['video']:
                 talks.append( schedule['globals']['talks'][k] )
 
         field_maps = [
+                ('id','conf_key'),
                 ('title','name'),
-                ('start_time','start'),
+                ('start','start'),
                 ('duration','duration'),
                 ('speakers','authors'),
                 ('abstract','description'),
@@ -2660,34 +2663,38 @@ class add_eps(process.process):
         rooms = [room]
         self.add_rooms(rooms,show)
 
-        for i,event in enumerate(events): 
+        for event in events: 
             event['location'] = room
-            event['conf_key'] = str(i)
 
             event['authors'] = ', '.join([
                 a['name'] for a in event['authors'] ])
 
+            event['start'] = datetime.datetime.strptime( 
+                    event['start'], '%Y-%m-%dT%H:%M:%S-05:00' )
+
+            event['duration'] = "00:%s:00" % ( event['duration'] ) 
+
             event['emails'] = ', '.join([
                 e['slug'] for e in event['emails'] ])
 
-            # print(event['name'])
             try:
                 event['twitter_id'] = ', '.join([
                        [ s['link'].split('/')[-1] for s in t['social'] 
                        if s['title']=="twitter"][0]
                        for t in event['twitter_id'] ])
-            except IndexError as e:
+            except (IndexError,KeyError) as e:
                 event['twitter_id'] = ""
 
-            print(event['twitter_id'])
+            if event['description'] is None:
+                event['description'] = ""
+            
 
             event['license'] = ""
             event['conf_url'] = u"https://djangobirthday.com/talks/#{}".format(event['conf_url'])
             event['tags'] = ""
 
-            event['released'] = event['released'] == 'yes'
 
-            pprint.pprint(event)
+            if self.options.verbose: pprint.pprint(event)
 
         self.add_eps(events, show)
 
