@@ -1561,6 +1561,7 @@ class add_eps(process.process):
                             contacts.append(contact)
 
                     event['emails'] = ','.join(contacts)
+                    event['twitter_id'] = ''
 
                     # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.  Is there a reason it 
                     # event['released'] = row.find('released').text == "True"
@@ -1581,7 +1582,8 @@ class add_eps(process.process):
                     event['tags'] = row.find('track').text
 
                     # save the original row so that we can sanity check end time.
-                    event['raw'] = row
+                    # event['raw'] = row
+                    event['raw'] = None
 
                     # if event['conf_key'] in [ "127", "40"]:
                     if row.find('slug').text in [ "hacking-time", ]:
@@ -2655,7 +2657,6 @@ class add_eps(process.process):
                 ('abstract','description'),
                 ('released','released'),
                 ('speakers','twitter_id'),
-                ('speakers','emails'),
                 ('slug','conf_url'),
             ]
 
@@ -2674,9 +2675,6 @@ class add_eps(process.process):
 
             event['duration'] = "00:%s:00" % ( event['duration'] ) 
 
-            event['emails'] = ', '.join([
-                e['slug'] for e in event['emails'] ])
-
             try:
                 event['twitter_id'] = ', '.join([
                        [ s['link'].split('/')[-1] for s in t['social'] 
@@ -2689,6 +2687,7 @@ class add_eps(process.process):
                 event['description'] = ""
             
 
+            event['emails'] = ""
             event['license'] = ""
             event['conf_url'] = u"https://djangobirthday.com/talks/#{}".format(event['conf_url'])
             event['tags'] = ""
@@ -2883,7 +2882,7 @@ class add_eps(process.process):
         if self.options.show =='pytexas2014':
             return self.pytexas2014(schedule,show)
 
-        if self.options.show =='debconf14':
+        if self.options.show =='debconf15':
             return self.summit_penta(schedule,show)
 
         if self.options.show =='bosc_2014':
