@@ -199,7 +199,7 @@ class enc(process):
         elif " using " in title:
             pos = title.index(" using ")
             title, title2 = title[:pos], title[pos + 1:]
-        elif ":" in title:
+        elif ": " in title: # the space keeps 9:00 from breaking
             pos = title.index(":") + 1
             title, title2 = title[:pos], title[pos:].strip()
         elif ";" in title:
