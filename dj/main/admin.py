@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.contrib import messages
 from django.utils.translation import ungettext
 
+from django import forms
+from django.db import models
+
 from main.models import Client, Show, Location, Raw_File, Quality, Episode, Cut_List, State, Log, Image_File
 
 class ClientAdmin(admin.ModelAdmin):
@@ -74,10 +77,11 @@ class EpisodeAdmin(admin.ModelAdmin):
 )
     list_editable = (
             'state',
+            'name',
             # 'host_url',
             #'rax_mp4_url',
             # 'authors',
-            # 'emails',
+            'emails',
             # 'conf_key', 
             # 'conf_url', 
             # 'sequence', 
@@ -102,6 +106,13 @@ class EpisodeAdmin(admin.ModelAdmin):
     search_fields = ['name', 'conf_key']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True
+
+
+    formfield_overrides = {
+            models.TextField: {
+                'widget': forms.Textarea({'cols': 80, 'rows': 2}), 
+            }}
+
     actions = [ 
             'set_stopped', 'clear_locked', 're_slug', 'bump_state',
             'encode_state'] \
