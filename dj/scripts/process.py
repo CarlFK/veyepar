@@ -141,6 +141,9 @@ class process(object):
             u = rax_uploader.Uploader()
 
             u.user = show.client.rax_id
+
+            if not show.client.bucket_id.strip():
+                raise AttributeError("client.bucket_id is blank")
             u.bucket_id = show.client.bucket_id
 
             u.pathname = src 
