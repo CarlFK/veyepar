@@ -8,6 +8,10 @@ import socket
 import datetime
 import random
 
+# from django.forms import Textarea
+from django import forms
+
+
 from unique_slugify import unique_slugify
 
 def time2s(time):
@@ -102,7 +106,9 @@ class Location(models.Model):
 ANN_STATES=((1,'preview'),(2,'review'),(3,'approved')) 
 class Show(models.Model):
     client = models.ForeignKey(Client)
-    locations = models.ManyToManyField(Location, blank=True)
+    locations = models.ManyToManyField(Location, 
+            limit_choices_to={'active': True},
+            blank=True)
     sequence = models.IntegerField(default=1)
     active = models.BooleanField( default=True,
             help_text="Turn off to hide from UI.")
@@ -305,6 +311,12 @@ class Episode(models.Model):
 
     stop = models.NullBooleanField(
              help_text="Stop process.py from processing anymore")
+
+    formfield_overrides = {
+            models.TextField: {
+                'widget': forms.Textarea({'cols': 80, 'rows': 2}), 
+            }}
+
 
     @models.permalink
     def get_absolute_url(self):
