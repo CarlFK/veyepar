@@ -2232,7 +2232,13 @@ class add_eps(process.process):
                     event['start'],'%Y-%m-%dT%H:%M:%S')
 
             event['authors'] = ", ".join(event['authors'])
-            event['emails'] = ", ".join(event['emails'])
+            
+            if event['emails'] == ['redacted']:
+                event['emails'] = ''
+            else:
+                event['emails'] = ", ".join(event['emails'])
+
+            event['twitter_id'] = ''
 
             # if event['duration'] is None: event['duration']=5
 
@@ -2803,6 +2809,8 @@ class add_eps(process.process):
 
                 if self.options.verbose: print "login ret:", ret
 
+                # import code; code.interact(local=locals())
+
             if self.options.show in ['chicagowebconf2012"',
                                         "cusec2013" , ]:
                 payload = {
@@ -2904,7 +2912,7 @@ class add_eps(process.process):
         # if self.options.show =='write_the_docs_2013':
             return self.lanyrd(schedule,show)
 
-        if self.options.show in ['pyohio_2014',"pycon_2014_warmup"]:
+        if self.options.show in ['pyohio_2015',"pycon_2014_warmup"]:
             return self.pyohio2013(schedule,show)
 
         if self.options.show =='pyconca2013':
