@@ -237,6 +237,16 @@
       <property name="shotcut:filter">fadeOutBrightness</property>
       <property name="alpha">0=1; 89=0</property>
     </filter>
+
+    <filter id="filter0" out="00:00:05.005">
+      <property name="track">0</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">webvfx</property>
+      <property name="factory">loader</property>
+      <property name="disable">0</property>
+      <property name="resource">plain:/home/carl/src/veyepar/dj/scripts/bling/djbp/dj.html</property>
+    </filter>
+
   </producer>
   <producer id="ti_foot" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
     <property name="mlt_type">producer</property>
