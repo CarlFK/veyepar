@@ -10,10 +10,10 @@ class Who(forms.Form):
     locked_by = forms.CharField(max_length=32, required=True,
             label="Please enter your name")
 
-class Episode_Form(forms.ModelForm):
-    exclude=[]
-    class Meta:
-        model = Episode
+# class Episode_Form(forms.ModelForm):
+#    exclude=[]
+#    class Meta:
+#        model = Episode
 
 class Episode_Form_Preshow(forms.ModelForm):
     authors = forms.CharField(max_length=255, required=False)
