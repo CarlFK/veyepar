@@ -118,6 +118,17 @@ Admin: <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
     {% endif %}
 {% endif %}
 
+{% if not episode.emails %}
+<br />Mining for emails....
+{% for e in email_eps %}
+  {% if e.emails %}
+  {{e.authors}} &lt;{{e.emails}}&gt;
+  {{e.show.slug}}  {{e.name}} 
+  <br/>
+  {% endif %}
+{% endfor %}
+{% endif %}
+
 <form method="POST">{% csrf_token %}
 
 <input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show more...</label>

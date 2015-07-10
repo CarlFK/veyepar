@@ -562,6 +562,9 @@ def public_play_list(request):
     if "date" in request.GET:
         episodes = episodes.filter( start__startswith=request.GET['date'] )
 
+    if "state" in request.GET:
+        episodes = episodes.filter( state=request.GET['state'] )
+
 
     response = HttpResponse(content_type='audio/mpegurl')
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
@@ -1292,7 +1295,8 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
 
     order_by = request.REQUEST.get('order_by')
 
-    # state = request.REQUEST.get('state')
+    if "state" in request.GET:
+        state = request.REQUEST.get('state')
 
     locations=show.locations.filter(active=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show)
@@ -1415,6 +1419,14 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         # there are other ways of doing this, they suck too.
         form = None
 
+    query_params = request.GET.copy()
+    query_params['client'] = client.slug
+    query_params['show'] = show.slug
+    # query_params[''] = 
+
+    if state is not None:
+        query_params['state'] = state
+
     
     return render_to_response('show.html',
         {'client':client,'show':show,
@@ -1423,7 +1435,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
           'episodes':episodes,
           'episode_form':form,
           'admin_params':admin_params,
-          'query_params':request.GET,
+          'query_params':query_params.urlencode(),
           'now':datetime.datetime.now(),
         },
         context_instance=RequestContext(request) )
@@ -1760,6 +1772,18 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     location=episode.location
     client=show.client
 
+    email_eps = None
+    if request.user.is_authenticated(): 
+        # mine emails
+        email_eps = Episode.objects.filter(
+                    authors__icontains = episode.authors,
+                    emails__isnull=False
+                    )
+                    # authors__icontains="Jacob Kaplan-Moss", 
+    else:
+        # hide emails if user is not logged n
+        episode.emails = None
+ 
     try:
         # why Start/End can't be null:
         # http://code.djangoproject.com/ticket/13611
@@ -1858,9 +1882,6 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
             for e in add_cutlist_to_ep.errors:
                 print e
     else:
-        # hide emails if user is not logged n
-        if not request.user.is_authenticated(): 
-            episode.emails = None
         episode_form = Episode_Form_small(instance=episode) 
         # init data with things in the queryset that need editing
         # this part seems to work.
@@ -1913,6 +1934,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
     return render_to_response('episode.html',
         {'episode':episode,
+        'email_eps': email_eps,
         'offset':offset,
         'chaps':chaps,
         'client':client, 'show':show, 'location':location,
