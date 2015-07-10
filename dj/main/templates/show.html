@@ -13,7 +13,9 @@
 <td> <a href="{% url "admin:main_show_change" show.id %}">show admin</a> </td>
 <td> <a href="{% url "admin:main_episode_changelist" %}?{{admin_params}}">episodes admin</a> </td>
 <td> <a href="{% url "admin:main_image_file_changelist" %}?{{admin_params}}">image_file admin</a> </td>
-<td> <a href="{% url "public_play_list" %}?{{request.META.QUERY_STRING}}">play_list</a> </td>
+<td> 
+    <a href="{% url "public_play_list" %}?{{query_params}}">play_list</a> 
+</td>
 <td>  </td>
 
 </tr>
