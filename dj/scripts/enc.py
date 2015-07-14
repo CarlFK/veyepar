@@ -289,7 +289,7 @@ class enc(process):
         # else make one from the tempalte
         custom_svg_name = os.path.join(
             self.show_dir, "titles", "custom", episode.slug + ".svg")
-        print "custom:", custom_svg_name
+        if self.options.verbose: print "custom:", custom_svg_name
         if os.path.exists(custom_svg_name):
             cooked_svg_name = custom_svg_name
         else:
@@ -1069,8 +1069,9 @@ class enc(process):
                 exclude(trash=True).distinct()
                #         cut_list__apply=True).\
 
-# make a .mlt file for this episode
-
+            # get a .mlt file for this episode (mlt_pathname)
+            # look for custom/slug.mlt and just use it, 
+            # else build one from client.template_mlt, else "template.mlt"
             
             mlt_pathname = os.path.join(self.work_dir, "custom", "%s.mlt" % episode.slug)
             if os.path.exists(mlt_pathname):
@@ -1078,8 +1079,13 @@ class enc(process):
             else:
 
                 mlt_pathname = os.path.join(self.work_dir, "%s.mlt" % episode.slug)
+                if episode.show.client.template_mlt:
+                    template_mlt = episode.show.client.template_mlt
+                else:
+                    template_mlt = "template.mlt"
+                
                 params = self.get_params(episode, rfs, cls )
-                ret = mk_mlt( "template.mlt", mlt_pathname, params )
+                ret = mk_mlt( template_mlt, mlt_pathname, params )
 
             if not ret:
 
