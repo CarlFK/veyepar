@@ -11,7 +11,10 @@
 <a href="{{episode.conf_url}}">{{episode.conf_url}}</a>
 {{episode.name}}
 <br/>
-  <a href="E/{{episode.id}}/"><img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png" width="720"></a><br/>
+  <a href="E/{{episode.id}}/">{{episode.id}} </a>
+  <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png">{{episode.slug}}.png</a>
+  <br/>
+      <img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png" width="720" border="5">
   <hr>
 {% endfor %}
 
