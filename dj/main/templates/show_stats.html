@@ -35,7 +35,7 @@
             <td>
 {# Room header cells #}
                 <span><b>
-                        <a href="{% url "admin:main_location_change" item.loc.id%}">{{ item.loc.slug }}</a>
+                        <a href="{% url "admin:main_location_change" item.loc.id%}">{{ item.loc.name }}</a>
                 </b></span><br/>
 
 <span> <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}"> {{item.count}} </a> </span>
