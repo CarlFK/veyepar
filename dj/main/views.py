@@ -1773,13 +1773,14 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     client=show.client
 
     email_eps = None
-    if request.user.is_authenticated(): 
-        # mine emails
-        email_eps = Episode.objects.filter(
-                    authors__icontains = episode.authors,
-                    emails__isnull=False
-                    )
-                    # authors__icontains="Jacob Kaplan-Moss", 
+    if request.user.is_authenticated():
+        if not episode.emails and episode.authors:
+
+            # mine emails
+            email_eps = Episode.objects.filter(
+                authors__icontains = episode.authors,
+                emails__isnull=False
+                )
     else:
         # hide emails if user is not logged n
         episode.emails = None
