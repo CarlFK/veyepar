@@ -72,25 +72,18 @@ veyepar:
       
    move show.schedule_url to client.
     
-   implement South data migration foo - port to django 1.7
-
    Stop - make it work again - 
      I think it is a buffering problem - 
      the code needs to poll the db, not look at the local cashed value
 
    zip title svg and images
       http://bazaar.launchpad.net/~inkscape.dev/inkscape/trunk/view/head:/share/extensions/svg_and_media_zip_output.py#L208
+      meh, just include all the images in the svg.
 
 encoding:
   remove global -dv-format setting 
-  add support for multiple input formats.  
-    (see: durration and end time formula)
   encode shorter talks first so they can get started uploading sooner.
-  soften jump cuts
-  create list of cut times relative to start of final video
-     - mainly used for Lighting talks to index each talk
-  credits - hold for a few seconds at end.
-  channel_copy - document and verify current behaviour
+  soften jump cuts - If end+start is not back to back, fade to black and back up.
   
   auto-speed up your videos to 1.25x speed as an additional optional feature
   no.
@@ -115,8 +108,10 @@ model:
     track when deleted?  
 
   Once uploaded to a file sharing host,  (archive, rax, mirror...)
-    use data center process to read from it and write to youtube so
+    use a cloud process to read from it and write to youtube so
     that the video file only goes across local connection once.
+
+option to pick transport: popen(rsync...) or rax_uploader 
 
 process to check if a file is avalible for public viewing:
   (neither of these is a real problem, so low priority)
@@ -125,13 +120,10 @@ process to check if a file is avalible for public viewing:
     
 
   change duration from "hh:mm:ss" to float(sec)
-  add a real duration of how long the encoded video is
-    - end-start is not accurate if chunks have been removed
-    - sum of segments is likely good enough
   
   BucketID / Richard Category
     Sometimes this is per client, sometimes per show.
-    thought: one field in each, if Show blank, look to client.
+    thought: one field in each, if Show else look to client.
 
 wallpaper 
   logos:
