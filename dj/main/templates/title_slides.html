@@ -8,14 +8,17 @@
 {% block content %}
 
 {% for episode in episodes %}
-<a href="{{episode.conf_url}}">{{episode.conf_url}}</a>
-{{episode.name}}
-<br/>
-  <a href="E/{{episode.id}}/">{{episode.id}} </a>
-  <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png">{{episode.slug}}.png</a>
-  <br/>
-      <img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png" width="720" border="5">
-  <hr>
+    <hr>
+    <div>
+    <br/>
+title: {{episode.name}}<br/>
+authors: {{episode.authors}}<br/>
+    <a href="E/{{episode.id}}/">{{episode.id}} </a> 
+    <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png">{{episode.slug}}.png</a><br/>
+    <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
+    <img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png" width="720" border="5" style="border-color: gray" ><br/>
+
+    </div>
 {% endfor %}
 
 {% endblock %}
