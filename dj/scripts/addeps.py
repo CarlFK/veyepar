@@ -219,7 +219,8 @@ class add_eps(process.process):
 
         v_keys=('id',
             'location','sequence',
-            'name','slug', 'authors','emails', 'description',
+            'name','slug', 
+            'authors','emails', 'twitter_id',
             'start','duration', 
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
@@ -457,7 +458,7 @@ class add_eps(process.process):
                                 print u'   conf {0}: {1}'.format(f,a2)
                             else:
                                 print f
-                                if max(len(a1),len(a2)) < 160:
+                                if a2 is None or max(len(a1),len(a2)) < 160:
                                   # print a1
                                   # print a2
                                   print u'veyepar {0}: {1}'.format(f,a1)
@@ -891,7 +892,7 @@ class add_eps(process.process):
         return events
 
     def goth_events(self, schedule ):
-        # PyGotham
+        # PyGotham 2011
 
         field_maps = [ 
                 ('room_number','location'),
@@ -1557,7 +1558,8 @@ class add_eps(process.process):
                     contacts = []
                     for p in row.find('persons').getchildren():
                         contact = p.get('contact')
-                        if contact != 'redacted':
+                        if contact not in [
+                                'redacted', "<redacted>" ]:
                             contacts.append(contact)
 
                     event['emails'] = ','.join(contacts)
@@ -1851,11 +1853,11 @@ class add_eps(process.process):
             delta = event['end'] - event['start']
             minutes = delta.seconds/60 
 
-            durration = int( event['duration'].split()[0] )
-            if minutes != durration:
+            duration = int( event['duration'].split()[0] )
+            if minutes != duration:
                 raise "wtf duration"
 
-            event['duration'] = "00:%s:00" % (durration) 
+            event['duration'] = "00:%s:00" % (duration) 
 
             # Bogus, but needed to pass
             event['location'] = 'room_1'
@@ -2309,7 +2311,7 @@ class add_eps(process.process):
                 # set the room to Poster-[1,2,3,4]
                 s['room'] = "Poster-%s" % poster['camera']
 
-                # don't care about end, use durration=5
+                # don't care about end, use duration=5
                 start,end = poster['time'].split('-')
                 h,m = start.split(':')
                 s['start'] = datetime.datetime(2013, 03, 17, int(h), int(m)).isoformat()
@@ -2417,11 +2419,17 @@ class add_eps(process.process):
             #    event['license'] = 'CC BY-SA 2.5 CA'
 
             if event['authors'] is None:
-                event['authors'] = []
+                if "Catherine Devlin" in event['name']:
+                    event['authors'] = ["Catherine Devlin"]
+                else:
+                    event['authors'] = []
+            elif "&" in event['authors'][0]:
+                event['authors']=event['authors'][0].split(' & ')
 
             if ('contact' not in event) or \
                     (event['contact'] is None):
                 event['contact'] = []
+
 
             if event['name'].startswith('**Opening Remarks:**'):
                 event['name'] = "Panel Discussion: So You Wanna Run a Tech Conference."
@@ -2683,7 +2691,7 @@ class add_eps(process.process):
 
             try:
                 event['twitter_id'] = ', '.join([
-                       [ s['link'].split('/')[-1] for s in t['social'] 
+                       [ "@"+s['link'].split('/')[-1] for s in t['social'] 
                        if s['title']=="twitter"][0]
                        for t in event['twitter_id'] ])
             except (IndexError,KeyError) as e:
@@ -2704,6 +2712,62 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
         return 
+
+
+    def pygotham2015(self,schedule,show):
+
+        # PyGotham 2015
+
+        field_maps = [
+                # ('id','id'),
+                ('room','location'),
+                ('title','name'),
+                ('user','authors'),
+                ('user','emails'),
+                ('user','twitter_id'),
+                ('description','description'),
+                ('start','start'),
+                ('duration','duration'),
+                ('','released'),
+                ('license','license'),
+                ('tags','tags'),
+                # ('conf_key','conf_key'),
+                ('id','conf_key'),
+                ('conf_url','conf_url'),
+                ('','host_url'),
+                ('','public_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        # remove events with no room (like Break)
+        # schedule = [s for s in schedule if s['rooms'] ]
+
+        for event in events:
+
+
+            if event['location'] is None:
+                event['location'] = 'Room 1'
+
+            if event['start'] is None:
+                event['start'] = datetime.datetime.now()
+
+            event['duration'] = "00:{}:00".format(event['duration']) 
+
+            if event['license'] == 'Creative Commons':
+                event['license'] = 'CC BY-SA'
+
+            # event['authors']=', '.join(event['authors'])
+            event['authors']=event['authors']['name']
+            event['emails']=event['emails']['email']
+            event['twitter_id']=event['twitter_id']['twitter_id']
+
+
+
+        self.add_eps(events, show)
+
 
 
 
@@ -2915,6 +2979,9 @@ class add_eps(process.process):
         if self.options.show in ['pyohio_2015',"pycon_2014_warmup"]:
             return self.pyohio2013(schedule,show)
 
+        if self.options.show =='pygotham_2015':
+            return self.pygotham2015(schedule,show)
+
         if self.options.show =='pyconca2013':
             return self.pyconca2013(schedule,show)
 
@@ -2993,7 +3060,7 @@ class add_eps(process.process):
             return self.pyohio(schedule,show)
 
         if j.startswith('[{"') and schedule[0].has_key('talk_day_time'):
-            # pyGotham
+            # pyGotham 
             return self.pygotham(schedule,show)
 
         if url.endswith('/program/2012/json'):
