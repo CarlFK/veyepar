@@ -39,6 +39,13 @@
 
 <td><a href="{% url "meet_ann" show.id %}">meeting announcement</a></td>
 </tr>
+
+<tr>
+    <td><a href="{% url "admin:main_episode_changelist" %}?show__id__exact={{show.id}}&locked__isnull=False">locked episodes admin</a></td>
+    <td><a href="{% url "admin:main_raw_file_changelist" %}?show__id__exact={{show.id}}">Raw_File admin</a></td>
+<tr> </tr>
+<tr> </tr>
+</tr>
 <tr>{% include "show_shortcuts.html" %}</tr>
 
 </table>
