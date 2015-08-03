@@ -112,6 +112,11 @@ model:
     that the video file only goes across local connection once.
 
 option to pick transport: popen(rsync...) or rax_uploader 
+manage cloud storage:  
+  png/svg for preview
+  ogv/webm for remote editing
+  audio_image for remote diagnostics 
+  final encode for archive
 
 process to check if a file is avalible for public viewing:
   (neither of these is a real problem, so low priority)
