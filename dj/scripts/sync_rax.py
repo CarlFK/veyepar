@@ -5,6 +5,7 @@
 # no walking the directory tree looking for random files.
 
 import os
+import subprocess
 
 from process import process
 from main.models import Client, Show, Location, Episode, Raw_File
@@ -46,14 +47,27 @@ class SyncRax(process):
         return ret
 
 
-    def rf_ogv(self, show, rf):
-        # look for .ogv
-        # no wait, look for .webm
-        base = os.path.join(
-                "dv", rf.location.slug, rf.basename() + ".webm")
+    def rf_web(self, show, rf):
+        """
+        make a low bitrate version of the raw file 
+        for previewing over the web
+        """
+        base = os.path.join( "dv", rf.location.slug, rf.basename() )
         if self.options.verbose: print base
-        if not self.cdn_exists(show,base):
-            self.file2cdn(show,base)
+
+        # look for .webm on local file system
+        rf = os.path.join(self.show_dir, base + ".dv")
+        web = os.path.join(self.show_dir, base + ".webm")
+        if not os.path.exists(web):
+            cmd = "melt {rf} -consumer avformat:{out} vb=50k progress=1".format(
+                    rf=rf, out=web ).split()
+            p=subprocess.Popen(cmd)
+            p.wait()
+            retcode=p.returncode
+        
+        web = base + ".webm"
+        if not self.cdn_exists(show,web):
+            self.file2cdn(show,web)
 
 
     def rf_audio_png(self, show, rf):
@@ -84,11 +98,12 @@ class SyncRax(process):
             rfs = rfs.filter(location = loc)
 
         # rfs = rfs.cut_list_set.filter(episode__id=8748)
+        # rfs = rfs.cut_list_set.filter(episode__state=1)
 
         for rf in rfs:
             if self.options.verbose: print rf
-            # self.rf_ogv(show, rf)
-            self.rf_audio_png(show, rf)
+            self.rf_web(show, rf)
+            # self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )
@@ -116,7 +131,13 @@ class SyncRax(process):
             # self.sync_final(show,ep)
             # self.sync_final_audio_png(show,ep)
         for ep in Episode.objects.filter(show=show):
-            self.sync_title_png(show,ep)
+            print(ep)
+            # self.sync_title_png(show,ep)
+            if ep.state==1:
+                # import code; code.interact(local=locals())
+                for cl in ep.cut_list_set.all():
+                    self.rf_web(show, cl.raw_file)
+
 
     def init_rax(self, show):
          # user = self.show.client.rax_id
@@ -141,8 +162,8 @@ class SyncRax(process):
         self.set_dirs(show)
         self.init_rax(show)
 
-        self.raw_files(show)
-        # self.episodes(show)
+        # self.raw_files(show)
+        self.episodes(show)
 
 
     def work(self):
