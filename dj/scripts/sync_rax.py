@@ -59,8 +59,7 @@ class SyncRax(process):
         rf = os.path.join(self.show_dir, base + ".dv")
         web = os.path.join(self.show_dir, base + ".webm")
         if not os.path.exists(web):
-            cmd = "melt {rf} -consumer avformat:{out} vb=50k progress=1".format(
-                    rf=rf, out=web ).split()
+            cmd = "melt {rf} -consumer avformat:{out} vb=50k progress=1".format( rf=rf, out=web ).split()
             p=subprocess.Popen(cmd)
             p.wait()
             retcode=p.returncode
@@ -127,16 +126,25 @@ class SyncRax(process):
              self.file2cdn(show,base)
 
     def episodes(self, show):
-        # for ep in Episode.objects.filter(show=show, state=5):
+        eps = Episode.objects.filter(show=show)
+
+	if self.options.day:
+            eps = eps.filter(start__day=self.options.day)
+
+	if self.options.room:
+            loc = Location.objects.get(slug=self.options.room)
+            eps = eps.filter(location = loc)
+
+        # for ep in eps.filter(state=5):
             # self.sync_final(show,ep)
             # self.sync_final_audio_png(show,ep)
-        for ep in Episode.objects.filter(show=show):
+
+        for ep in eps.filter(state=1):
             print(ep)
             # self.sync_title_png(show,ep)
-            if ep.state==1:
-                # import code; code.interact(local=locals())
-                for cl in ep.cut_list_set.all():
-                    self.rf_web(show, cl.raw_file)
+            # import code; code.interact(local=locals())
+            for cl in ep.cut_list_set.all():
+                self.rf_web(show, cl.raw_file)
 
 
     def init_rax(self, show):
