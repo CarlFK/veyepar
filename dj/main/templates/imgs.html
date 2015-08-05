@@ -13,6 +13,7 @@
 
   <a href="{% url "admin:main_image_file_change" img.id%}">
     <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=800 >
+    <img alt="recording sheet" src="http://64966d3674e0a64d8f4a-47c94b14ef8e1f83d5390cdb0629c6ed.r53.cf2.rackcdn.com/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=800 >
 </a>
   </br>
 {{form}} <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
