@@ -16,13 +16,34 @@ pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
 # convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
 
 
-wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.4ubuntu0_amd64.deb
-sudo gdebi python-tesseract_0.9-0.4ubuntu0_amd64.deb
+# wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.4ubuntu0_amd64.deb
+# wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.2ubuntu5_amd64.deb
+wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.5ubuntu3_vivid_amd64.deb
+
+sudo gdebi python-tesseract_0.9-...
+
 sudo apt-get install python-opencv
 
 # serious hack cuz this didn't work: 
   TESSDATA_PREFIX=/usr/share/tesseract-ocr
 ln -s /usr/share/tesseract-ocr/tessdata/ 
+
+cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
+ln -s /usr/lib/python2.7/dist-packages/cv2.so
+cd -
+
+pip install tesseract
+python -c "import tesseract" (maybe)
+Please enter the path to an existing directory where qhull should be installed: ~/
+Unpacking Qhull in /home/carl/...
+
+
+pip install pillow
+
+
+
+
+pip install  numpy
 
 """
 
@@ -62,29 +83,6 @@ box3 = (
 
 """
 
-def savesections(imagefile):
-    """
-    page: 2544x3296
-    start 880
-    end: 1421
-    """
-    head = 880.0/3296.0
-    band = (1420.0-880.0)/3296.0
-
-    im = Image.open(imagefile)
-    # print('complete image: {}'.format(im.size))
-    w, h = im.size
-    for i in range(3):
-        box = im.crop(
-            (0, h * (head + band * i),
-             w, h * (head + band * (i+1)))
-        )
-        print('size of cropped image: {}'.format(box.size))
-        png_base = os.path.splitext(imagefile)[0]
-        box.save('{}{}.png'.format(i))
-
-
-
 class add_img(process):
 
     def ocr_img(self, imgname):
@@ -97,7 +95,6 @@ class add_img(process):
 
         api = tesseract.TessBaseAPI()
         api.Init(".","eng",tesseract.OEM_DEFAULT)
-        #api.SetPageSegMode(tesseract.PSM_SINGLE_WORD)
         api.SetPageSegMode(tesseract.PSM_AUTO)
         tesseract.SetCvImage(image,api)
         text=api.GetUTF8Text()
@@ -137,7 +134,7 @@ class add_img(process):
 
     def one_page(self, src_base, show, locs, eps):
 
-        print src_base
+        print(src_base)
         # foo.ppm
 
         # the scan that was extracted from the pdf
@@ -177,62 +174,24 @@ class add_img(process):
             if word.lower() in text.lower(): 
                 hit_count +=1
                 # print word, hit_count
- 
-        if hit_count >= 3:
-            # start of set
-            """
-            sample page with set header:
-            height (max y): 3296
-            start of first band (size of header) 875
-            end of first band: 1430
-            height of band: 1430-875 = 555
-            """
-            # proportion of page 1
-            head = 875.0/3296.0
-            band = 555.0/3296.0 
+        first_page_of_set = hit_count >= 3
 
-            # A4 
-            """
-            A4 page:
-            page: 3288 x 4666
-            box1 start,end rows: 1160, 1900
-            """
-
-            head = 1160.0/4666.0
-            band = (1900.0-1160.0)/4666.0
-
+        if first_page_of_set:
+            start = 995
+            end = 1547
             bands= 3
             suffix='a'
-
         else:
-
-            """
-            sample of page 2+
-            height 4392
-            start of first band (size of header) 625
-            end of first band: 1350
-            height of band: 1350 - 625 = 725
-            """
-            head = 625.0/4392.0
-            band = 725.0/4392.0
-
-            """
-            A4
-            3296 x 4666
-            start of first band (size of header) 615
-            end: 1350
-            """
-
-            head = 615.0/4666.0
-            band = (1350.0-615.0)/4666.0
-
+            start = 577
+            end = 1127
             bands= 4
             suffix='b'
 
+        head = float(start)/float(page)
+        band = float(end-start)/float(page)
         fudge = 0.02 
        
         im = Image.open(src_name)
-        # print('complete image: {}'.format(im.size))
         w, h = im.size
         for i in range(bands):
 
