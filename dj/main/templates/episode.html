@@ -118,16 +118,11 @@ Admin: <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
     {% endif %}
 {% endif %}
 
-{% if not episode.emails %}
-<br />Mining for emails....
 {% for e in email_eps %}
-  {% if e.emails %}
   {{e.authors}} &lt;{{e.emails}}&gt;
   {{e.show.slug}}  {{e.name}} 
   <br/>
-  {% endif %}
 {% endfor %}
-{% endif %}
 
 <form method="POST">{% csrf_token %}
 
@@ -147,8 +142,8 @@ Admin: <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
 {% if episode.image_file_set.all %}
  <div class="viewer" style="height: 200px; width: 800px;" >
 {% for img in episode.image_file_set.all %}
-{% if episode.show.slug == "debconf14" %}
-    <img alt="recording sheet" src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
+{% if episode.show.slug == "pyohio_2015" %}
+    <img alt="recording sheet" src="http://64966d3674e0a64d8f4a-47c94b14ef8e1f83d5390cdb0629c6ed.r53.cf2.rackcdn.com/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=200 height=400 >
   {% else %}
     <img alt="recording sheet" src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=300 height=400 >
 {% endif %}
