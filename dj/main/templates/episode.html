@@ -195,11 +195,11 @@ $(".viewer").zoomer();
           {% elif episode.show.slug == "debconf14" %}
               src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
           {% else %}
-              src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
+              src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.webm"
           {% endif %}
           controls
           preload="metadata"
-          {# width=200 #}
+          width=400
           {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" #}
           ></video>
       </td>
