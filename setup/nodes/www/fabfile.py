@@ -160,7 +160,7 @@ def setup_django(virtualenv='veyepar'):
     install_site_requirements(virtualenv)
     install_local_settings()
     syncdb(virtualenv)
-    #install_dabo(virtualenv) TODO
+    install_dabo(virtualenv)
     collectstatic(virtualenv)
 
 
@@ -176,9 +176,16 @@ def install_local_settings():
 
 def install_site_requirements(virtualenv):
     vbin = join(home_directory(SITE_USER), 'venvs', virtualenv, 'bin')
-    su('%s/pip install django==1.4.5' % vbin)
+    su('%s/pip install django==1.7.7' % vbin)
+    su('%s/pip install djangorestframework' % vbin)
     su('%s/pip install gunicorn' % vbin)
 
+def install_dabo(virtualenv):
+    vbin = join(home_directory(SITE_USER), 'venvs', virtualenv, 'bin')
+    su('source {}/activate; '.format(vbin) + \
+            'cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"); '
+            'git clone https://github.com/dabodev/dabo.git dabo-master; '
+            'ln -s dabo-master/dabo' )
 
 def collectstatic(site_version):
     vbin = join(home_directory(SITE_USER), 'venvs', site_version, 'bin')
@@ -264,7 +271,7 @@ def install_debian_packages():
         'supervisor',
         'git',
         'postgresql',
-        'postgresql-server-dev-9.1',
+        'postgresql-server-dev-9.4',
         'python-psycopg2',
         'curl',
         'vim',
