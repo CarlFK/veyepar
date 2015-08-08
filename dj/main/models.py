@@ -249,7 +249,7 @@ class Episode(models.Model):
         help_text="(calculated if start and duration are set.)")
     name = models.CharField(max_length=170, 
         help_text="Talk title (synced from primary source)")
-    slug = models.CharField(max_length=135, blank=True, null=False,
+    slug = models.CharField(max_length=170, blank=True, null=False,
         help_text="file name friendly version of name")
     priority = models.IntegerField(null=True,blank=True,
         help_text="lower may not get recorded")
@@ -277,7 +277,7 @@ class Episode(models.Model):
 
     summary = models.TextField(blank=True, help_text="short")
     description = models.TextField(blank=True, help_text="markdown")
-    tags = models.CharField(max_length=135,null=True,blank=True,)
+    tags = models.CharField(max_length=175,null=True,blank=True,)
 
     normalise = models.CharField(max_length=5,null=True,blank=True, )
     channelcopy = models.CharField(max_length=2,null=True,blank=True,
