@@ -24,16 +24,6 @@ from main.models import Client, Show, Location, Episode, State, Log
 
 import rax_uploader
 
-def xfnify(text):
-    """
-    file_name_ify - make a file name out of text, like a talk title.
-    convert spaces to _, remove junk like # and quotes.
-    like slugify, but more file name friendly.
-    """
-    fn = text.replace(' ','_')
-    fn = ''.join([c for c in fn if c.isalpha() or c.isdigit() or (c in '_') ])
-    return fn
-
 class process(object):
   """
   Abstract class for processing.
