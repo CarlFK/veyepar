@@ -1,3 +1,14 @@
+# To deploy webserver and database to a remote box:
+
+fabfile.py
+  'hosts': ['root@104.130.73.49'],
+
+# set up ssh keys
+
+fab prod provision
+
+# do things fabfile.py didn't do for us.
+ssh root@104.130.73.49
 
 # set postgresql to listen on all ports
 sudo vim  /etc/postgresql/9.4/main/postgresql.conf 
@@ -26,4 +37,15 @@ cd site/veyepar/dj/
 ./manage.py createsuperuser
 # then enter a user, bogus email and password
 
+local scripts dir:
+veyepar.cfg
+
+client=debian
+show=debconf15
+schedule=https://summit.debconf.org/debconf15.xml
+
+../dj/local_settings.py
+
+  6  'HOST': '104.130.73.49',
+ 10  'PASSWORD': 'pass123',
 
