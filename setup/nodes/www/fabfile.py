@@ -33,7 +33,7 @@ def dev():
     env.update({
         'site': 'dev.nextdayvideo.com',
         'available': 'veyepar',
-        'hosts': ['192.237.240.167'],
+        'hosts': ['root@104.130.73.49'],
         'site_environment': 'dev',
     })
 
@@ -264,8 +264,9 @@ def install_debian_packages():
     require.deb.packages([
         'python-software-properties',
         'python-dev',
-        #'build-essential',
+        'build-essential',
         'python-reportlab',
+        'python-imaging',
         'nginx-extras',
         #'libxslt1-dev',
         'supervisor',
