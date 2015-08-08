@@ -1,0 +1,29 @@
+
+# set postgresql to listen on all ports
+sudo vim  /etc/postgresql/9.4/main/postgresql.conf 
+
+#listen_addresses = 'localhost' 
+listen_addresses = '*'
+
+# allow connections from known IPs
+sudo vim  /etc/postgresql/9.4/main/pg_hba.conf
+
+# vagrant host:
+host    veyepar      veyepar      10.0.2.2/32       md5
+
+# restart server to read above conf changes
+sudo service postgresql restart
+
+# set dataase server password
+sudo su - postgres
+psql
+alter USER veyepar WITH PASSWORD 'pass123';
+
+# create a django admin:
+sudo su - veyepar
+source venvs/veyepar/bin/activate
+cd site/veyepar/dj/
+./manage.py createsuperuser
+# then enter a user, bogus email and password
+
+
