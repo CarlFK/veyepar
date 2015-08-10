@@ -18,6 +18,7 @@ import  os
 import datetime
 # from dateutil.parser import parse
 
+"""
 from gi.repository import Gst
  
 from gi.repository import GObject
@@ -25,6 +26,7 @@ GObject.threads_init()
 Gst.init(None)
   
 from gi.repository import GstPbutils
+"""
 
 from process import process
 
