@@ -94,6 +94,8 @@ import os
 # from dateutil.parser import parse
 import pprint
 from django.utils.html import strip_tags
+from django.template.defaultfilters import slugify
+
 
 import xml.etree.ElementTree
 
@@ -429,11 +431,12 @@ class add_eps(process.process):
             else:
                 # this is the show diff part.
                 if episode is None: 
-                    print u"{conf_key} not in db, name:{name}".format(
+                    print u"{conf_key} not in db, name:{name}\n{location}".format(
                             **row)
                     print
 
                 else:
+                    # print("tags", episode.tags.__repr__(), row['tags'].__repr__())
                     # check for diffs
                     diff_fields=[]
                     for f in fields:
@@ -448,7 +451,11 @@ class add_eps(process.process):
                     if diff_fields:
                         print 'veyepar #id name: #%s %s' % (
                                 episode.id, episode.name)
-                        print "http://veyepar.nextdayvideo.com/main/E/%s/" % ( episode.id, )
+                        if self.show.slug=="debconf15":
+                            host= "encoding2.dc15.debconf.org" 
+                        else:
+                            host= "veyepar.nextdayvideo.com" 
+                        print "http://%s/main/E/%s/" % ( host, episode.id, )
                         print episode.conf_key, episode.conf_url
                         if self.options.verbose: 
                             pprint.pprint( diff_fields )
@@ -2728,7 +2735,7 @@ class add_eps(process.process):
                 ('description','description'),
                 ('start','start'),
                 ('duration','duration'),
-                ('','released'),
+                ('released','released'),
                 ('license','license'),
                 ('tags','tags'),
                 # ('conf_key','conf_key'),
@@ -2739,25 +2746,40 @@ class add_eps(process.process):
             ]
 
         events = self.generic_events(schedule, field_maps)
-        rooms = self.get_rooms(events)
-        self.add_rooms(rooms,show)
 
         # remove events with no room (like Break)
-        # schedule = [s for s in schedule if s['rooms'] ]
+        events = [e for e in events if e['location'] is not None ]
 
         for event in events:
 
+            if "701" in event['location']:
+                event['location'] = 'Room 701'
 
-            if event['location'] is None:
-                event['location'] = 'Room 1'
+            # if event['start'] is None:
+            #    event['start'] = datetime.datetime.now()
 
-            if event['start'] is None:
-                event['start'] = datetime.datetime.now()
+            # if event['name'] == "Keynote (JM)":
+            #     event['start'] = datetime.datetime(2015,8,16,9,0,0)
+            # else:
+
+            event['start'] = datetime.datetime.strptime( 
+                event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] = "00:{}:00".format(event['duration']) 
 
+            event['tags'] = ''
+
             if event['license'] == 'Creative Commons':
                 event['license'] = 'CC BY-SA'
+
+            if event['conf_url'] is None:
+                base = 'https://pygotham.org/2015/'
+                event['conf_url'] = '{base}talks/{id}/{slug}'.format(
+                    base=base,
+                    id = event['conf_key'],
+                    slug = slugify(event['name']) )
+
+                # https://pygotham.org/2015/talks/169/going-parallel-and-out-of
 
             # event['authors']=', '.join(event['authors'])
             event['authors']=event['authors']['name']
@@ -2765,10 +2787,10 @@ class add_eps(process.process):
             event['twitter_id']=event['twitter_id']['twitter_id']
 
 
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
-
-
 
 
 #################################################3
