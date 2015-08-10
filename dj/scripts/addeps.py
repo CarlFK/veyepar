@@ -474,12 +474,14 @@ class add_eps(process.process):
                                   # long string (prolly description)
                                   for i,cs in enumerate(zip(a1,a2)):
                                     if cs[0] <> cs[1]:
+                                        """
                                         print \
                           "#1, diff found at pos {0}:\n{1}\n{2}".format(
                                   i,cs[0].__repr__(),
                                     cs[1].__repr__()) 
+                                        """
                                         print \
-            "#2, diff found at pos {0}:\nveyepar: {1}\n   conf: {2}".format(
+            "diff found at pos {0}:\nveyepar: {1}\n   conf: {2}".format(
                                   i,a1[i:i+80].__repr__(),
                                     a2[i:i+80].__repr__()) 
                                         break
