@@ -189,19 +189,24 @@ class enc(process):
             title = title.upper()
             authors = authors.upper()
 
-        if " (" in title:
-            pos = title.index(" (")
-            # +1 skip space in " ("
-            title, title2 = title[:pos], title[pos + 1:]
-        elif " - " in title:
-            # error if there is more than 1.
-            title, title2 = title.split(' - ')
-        elif " using " in title:
-            pos = title.index(" using ")
-            title, title2 = title[:pos], title[pos + 1:]
+        if episode.show.slug != 'pygotham_2015' and  len(title) > 80: # crazy long titles need all the lines  
+            title2 = ''
         elif ": " in title: # the space keeps 9:00 from breaking
             pos = title.index(":") + 1
             title, title2 = title[:pos], title[pos:].strip()
+        elif " - " in title:
+            # error if there is more than 1.
+            title, title2 = title.split(' - ')
+        elif " -- " in title:
+            # error if there is more than 1.
+            title, title2 = title.split(' -- ')
+        elif " (" in title:
+            pos = title.index(" (")
+            # +1 skip space in " ("
+            title, title2 = title[:pos], title[pos + 1:]
+        elif " using " in title:
+            pos = title.index(" using ")
+            title, title2 = title[:pos], title[pos + 1:]
         elif ";" in title:
             pos = title.index(";") + 1
             title, title2 = title[:pos], title[pos:].strip()
@@ -233,6 +238,11 @@ class enc(process):
         """
         author2 = ''
 
+        if episode.show.slug == 'pygotham_2015':
+            date = episode.start.strftime("%B %-d, %Y")
+        else:
+            date = episode.start.strftime("%Y-%m-%-d")
+
         texts = {
             'client': episode.show.client.name,
             'show': episode.show.name,
@@ -243,10 +253,10 @@ class enc(process):
             'author2': author2,
             'presentertitle': "",
             'twitter_id': episode.twitter_id,
-            'date': episode.start.strftime("%B %-d, %Y"),
-            # 'date': episode.start.strftime("%-e %B %Y"),
+            'date': date,
             'time': episode.start.strftime("%H:%M"),
             'license': license,
+            'room': episode.location.name,
         }
 
         return texts
