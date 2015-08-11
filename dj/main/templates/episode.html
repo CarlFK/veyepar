@@ -77,16 +77,12 @@
 {% endif %}
 
 {% if episode.public_url %}
-  {% if episode.show.slug == "fosdem_2014" %}
-    <img src ="http://964bdd2f965bbc4ca8f5-3ebaa0e988d98119a4fead51a26da83a.r42.cf2.rackcdn.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
-  {% else %}
     <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
-  {% endif %}
    <br/>
 {% endif %}
 
 <a href="{% url "raw_list" episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
-<a href="{% url "raw_list" episode.id %}{{episode.slug}}-ogv.m3u?ext=ogv">raw-ogv-playlist</a>
+<a href="{% url "raw_list" episode.id %}{{episode.slug}}-webm.m3u?ext=webm">raw-webm-playlist</a>
 
 <a href="{% url "public_play_list" %}{{episode.slug}}.m3u?id={{episode.id}}">encoded-files-playlist</a> 
 
@@ -94,12 +90,14 @@
 {% if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
 {% if episode.twitter_url%}<a href="{{episode.twitter_url}}">tweet</a>{%endif%}
 
+<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/tmp/{{episode.slug}}.mlt">mlt</a>
+<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/tmp/{{episode.slug}}.sh">sh</a>
+
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br/>
 
-<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/ogv/{{episode.slug}}.ogv">ogv</a>
-<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/webm/{{episode.slug}}.webm">webm</a>
+<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
 
 <a href="{% url "pdf" 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
 
@@ -190,13 +188,7 @@ $(".viewer").zoomer();
       <td>
        <video
           id="rawfile{{ cl.id }}"
-          {% if episode.show.slug == "fosdem_2014" %}
-              src="http://veyepar.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
-          {% elif episode.show.slug == "debconf14" %}
-              src="http://veyepar.cdn.dc14.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv"
-          {% else %}
-              src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.webm"
-          {% endif %}
+          src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.webm"
           controls
           preload="metadata"
           width=400
@@ -255,8 +247,8 @@ $(".viewer").zoomer();
             <tr>
                 <td>
                     {# <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">dv</a><br/> #}
-                <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv" target=ogv>ogv</a><br/>
-                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.ogv">ogv.m3u</a>
+                <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.webm" target=webm>webm</a><br/>
+                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.webm">webm.m3u</a>
   </td>
   <td>
                 <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.dv">dv.m3u</a>
