@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mlt LC_NUMERIC="en_US.UTF-8" version="0.9.6" title="Anonymous Submission" producer="main bin">
-  <profile description="automatic" width="720" height="480" progressive="1" sample_aspect_num="32" sample_aspect_den="27" display_aspect_num="853" display_aspect_den="480" frame_rate_num="30000" frame_rate_den="1001" colorspace="601"/>
   <producer id="pi_vid0" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
