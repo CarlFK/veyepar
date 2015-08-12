@@ -116,11 +116,12 @@ Admin: <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
     {% endif %}
 {% endif %}
 
+<table>
 {% for e in email_eps %}
-  {{e.authors}} &lt;{{e.emails}}&gt;
-  {{e.show.slug}}  {{e.name}} 
-  <br/>
+    <tr><td>{{e.authors}} &lt;{{e.emails}}&gt;</td>
+        <td>{{e.show.slug}}  {{e.name}}</td></tr>
 {% endfor %}
+</table>
 
 <form method="POST">{% csrf_token %}
 

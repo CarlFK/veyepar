@@ -1217,6 +1217,9 @@ def title_slides(request, show_id, ):
     if "state" in request.GET:
         kwargs["state"] = request.GET['state']
 
+    # if "active" in request.GET:
+    #    kwargs["location__active"] = request.GET['active'].lower() == "true"
+
     episodes=Episode.objects.filter(**kwargs).order_by(
             'location',
             'start', 
@@ -1779,8 +1782,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
             # mine emails
             email_eps = Episode.objects.filter(
                 authors__icontains = episode.authors,
-                emails__isnull=False
-                )
+                ).exclude( emails='', )
     else:
         # hide emails if user is not logged n
         episode.emails = None
