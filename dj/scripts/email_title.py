@@ -17,11 +17,7 @@ class email_title(email_ab):
 
     subject_template = '[{{ep.show.name}}] Video metadata for "{{ep.name}}"'
 
-    body_template = """
-Hi,
-
-This is Veyepar, the automated video processing system.
-
+    body_body = """
 Please review the following meta data about your talk so that mistakes can be corrected now and not after the video has gone live.
 
 Released: {{ep.released}}
