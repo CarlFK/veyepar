@@ -16,98 +16,17 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
-# http://mltframework.blogspot.com/2012/04/time-properties.html
-
-mlt = """
-<mlt>
-
-  <producer id="title" resource="title.png" in="0" out="149" />
-  <producer id="producer0" resource="/home/juser/vid/t2.dv" />
-
-  <playlist id="playlist0">
-    <entry producer="title"/>
-  </playlist>
-
-  <playlist id="playlist1">
-    <entry id="clip" producer="producer0" in="500" out="690" />
-
-   <filter in="0" out="30" id="fadein">
-    <property name="track">0</property>
-    <property name="window">75</property>
-    <property name="max_gain">20dB</property>
-    <property name="mlt_type">filter</property>
-    <property name="mlt_service">volume</property>
-    <property name="tag">volume</property>
-    <property name="gain">0</property>
-    <property name="end">1</property>
-   </filter>
-
-   <filter in="58" out="87" id="fadeout">
-    <property name="track">0</property>
-    <property name="window">75</property>
-    <property name="max_gain">20dB</property>
-    <property name="mlt_type">filter</property>
-    <property name="mlt_service">volume</property>
-    <property name="tag">volume</property>
-    <property name="gain">1</property>
-    <property name="end">0</property>
-   </filter>
-
-  </playlist>
-
-  <tractor id="tractor0">
-    <multitrack>
-      <track id="track1" producer="playlist1"/>
-      <track id="track0" producer="playlist0"/>
-    </multitrack>
-    <transition id="transition0"
-      mlt_service="luma" in="100" out="149" a_track="2" b_track="1"/>
-    <transition id="transition1"
-      mlt_service="luma" in="-90" out="-60" a_track="1" b_track="0"/>
-
-  <transition in="0" out="30" id="transition0">
-   <property name="a_track">1</property>
-   <property name="b_track">2</property>
-   <property name="mlt_type">transition</property>
-   <property name="mlt_service">mix</property>
-   <property name="always_active">1</property>
-   <property name="combine">1</property>
-   <property name="internal_added">237</property>
-  </transition>
-
-  </tractor>
-
-</mlt>
-"""
-
-# overlay ndv log to obscure sensitive information
-# that leaked into presentation opps.
-"""
-    <filter id="filter0" in="51139" out="51197">
-      <property name="track">1</property>
-      <property name="factory">loader</property>
-      <property name="resource">ndv.png</property>
-      <property name="mlt_type">filter</property>
-      <property name="mlt_service">watermark</property>
-      <property name="composite.geometry">58%,93%,100%,100%</property>
-      <property name="composite.progressive">1</property>
-    </filter>
-"""
-
-
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
     sec = reduce(lambda x, i: x * 60 + i,
                  map(float, time.split(':')))
     return sec
 
-
 def time2f(time, fps):
     if time[-1] == 'f':
         return int(time[:-1])
     else:
         return int(time2s(time) * fps)
-
 
 def time2b(time, fps, bpf, default):
     """
