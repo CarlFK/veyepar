@@ -50,7 +50,7 @@ class clrfForm(forms.Form):
     clid = forms.IntegerField(widget=forms.HiddenInput())
     trash = forms.BooleanField(label="Trash",required=False)
     apply = forms.BooleanField(label="Apply",required=False)
-    split = forms.BooleanField(label="Spilt",required=False)
+    split = forms.BooleanField(label="Split",required=False)
     sequence = forms.IntegerField(label="Sequence",required=False,
       widget=forms.TextInput(attrs={'size':'3','class':'suSpinButton'}))
     start = forms.CharField(max_length=12,label="Start",required=False,
