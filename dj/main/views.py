@@ -1735,17 +1735,17 @@ def mk_cuts(episode,
 
     # Get the overlapping dv,
     # plus some fuzz: start/end_slop
-    dvs = Raw_File.objects.filter(
+    rfs = Raw_File.objects.filter(
             end__gte=episode.start - datetime.timedelta(minutes=start_slop),
             start__lte=episode.end + datetime.timedelta(minutes=end_slop),
             location=episode.location).order_by('start')
 
     seq=0
     started=False ## magic to figure out when talk really started
-    for dv in dvs:
+    for rf in rfs:
         seq+=1
-        if (seq>1 and dv.get_minutes() > short_clip_time) or \
-              episode.start == dv.start: 
+        if (seq>1 and rf.get_minutes() > short_clip_time) or \
+              episode.start == rf.start: 
             # never pre-select the first clip.  
             # unless it starts at the exact time 
             # handles start time entered after the fact.
@@ -1753,16 +1753,22 @@ def mk_cuts(episode,
             started = True
         cl,created = Cut_List.objects.get_or_create(
             episode=episode,
-            raw_file=dv)
+            raw_file=rf)
         if created:
             cl.sequence=seq
+            # If there is only one segment, use it.
+            # else:
             # if the talk has started, 
             # and there isn't something wrong with the raw
             # (like it is a dupe, or lunch)
             # and the segment is in the time slot
-            cl.apply = started \
-                    and not dv.trash \
-                    and (dv.start < episode.end)
+            if rfs.count() == 1:
+                cl.apply = True
+            else:
+                cl.apply = started \
+                    and not rf.trash \
+                    and (rf.start < episode.end)
+
             cl.save()
 
     return Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')
