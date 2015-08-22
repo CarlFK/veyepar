@@ -144,7 +144,7 @@ Admin: <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
 {% if episode.show.slug == "pyohio_2015" %}
     <img alt="recording sheet" src="http://64966d3674e0a64d8f4a-47c94b14ef8e1f83d5390cdb0629c6ed.r53.cf2.rackcdn.com/veyepar/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" height=160 >
   {% else %}
-    <img alt="recording sheet" src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=800 >
+    <img alt="recording sheet" src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=1200 >
 {% endif %}
 {% endfor %}
  </div> <!-- class="viewer" -->
@@ -223,6 +223,7 @@ $(".viewer").zoomer();
                 <td>{{cl.raw_file.duration}}</td>
                 <td>
                     <input type="button" value="-5s" id="back5-{{cl.id}}"> 
+                    <input type="button" value="-1s" id="back1-{{cl.id}}"> 
                     <input type="button" value="+5s" id="fwd5-{{cl.id}}"> 
                     <input type="button" value="end-5s" id="end5-{{cl.id}}"> 
                 </td>
@@ -320,6 +321,11 @@ $(".viewer").zoomer();
     // back 5 seconds 
     $( "#back5-{{cl.id}}" ).click(function() {
             vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-5;
+       });
+
+    // back 1 second 
+    $( "#back1-{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-1;
        });
 
     // fwd 5 seconds 
