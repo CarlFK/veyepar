@@ -388,6 +388,10 @@ class add_eps(process.process):
                 # have an existing episode, 
                 # either update it or diff it.
 
+                # get rid of garbage that snuck into the db.
+                if episode.emails == "<redacted>":
+                    episode.emails = ""
+
                 # special case for email: don't blank it out
                 # use what is in the db.
                 # up here and now below so the diff doesn't wazz
@@ -2143,9 +2147,6 @@ class add_eps(process.process):
                 #[u'speakers', u'title', u'event_id', u'start_time', u'space', u'topics', u'times', u'abstract', u'web_url', u'end_time', u'id', u'day']
 
         # pprint.pprint(events[-2])
-
- 
-
   
         # events = [e for e in events if e['location'] is not None]
         # events = [e for e in events if e['start'] is not None]
@@ -2785,8 +2786,16 @@ class add_eps(process.process):
 
             # event['authors']=', '.join(event['authors'])
             event['authors']=event['authors']['name']
-            event['emails']=event['emails']['email']
-            event['twitter_id']=event['twitter_id']['twitter_id']
+
+            if event['emails']['email']=="<redacted>":
+                event['emails']=""
+            else:
+                event['emails']=event['emails']['email']
+
+            if event['twitter_id']['twitter_id'] is None:
+                event['twitter_id']=""
+            else:
+                event['twitter_id']="@" + event['twitter_id']['twitter_id']
 
 
         rooms = self.get_rooms(events)
