@@ -1651,6 +1651,8 @@ def orphan_dv(request,show_id):
     format = request.GET.get('format')
     trash = request.GET.get('trash')
 
+    size = request.GET.get('size')
+
     show=get_object_or_404(Show,id=show_id)
     client = show.client
 
@@ -1660,6 +1662,9 @@ def orphan_dv(request,show_id):
             rfs=rfs.filter(trash=False)
         if trash.lower() == 'y':
             rfs=rfs.filter(trash=True)
+
+    if size is not None:
+        rfs=rfs.filter(filesize__ge=size)
 
     orphans=[]
     for rf in rfs:
