@@ -16,10 +16,12 @@ class push(process):
     def process_ep(self, ep):
         if self.options.verbose: print ep.id, ep.name
 
+
+        ret = ep.released
+        # Don't bump if not released.
+        # this takes care of the "let my review my video" request.
         # there really is nothing to do here.
         # process.py takes care of bumping the state.
-
-        ret = True
 
         return ret
 

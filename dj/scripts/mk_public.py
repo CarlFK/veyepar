@@ -82,16 +82,22 @@ class mk_public(process):
         # set youtube to public
         # set richard state to live
  
-        ret = True  # if something breaks, this will turn false
+        if ep.released:
 
-        # don't make public if there is no host_url (youtube)
-        if ep.public_url and ep.host_url and ep.show.client.richard_id:
-            ret = ret and self.up_richard(ep)
-            if self.options.verbose: print "Richard public."
+            ret = True  # if something breaks, this will turn false
 
-        if ep.host_url and ep.show.client.youtube_id:
-            ret = ret and self.up_youtube(ep)
-            if self.options.verbose: print "Youtube public."
+            # don't make public if there is no host_url (youtube)
+            if ep.public_url and ep.host_url and ep.show.client.richard_id:
+                ret = ret and self.up_richard(ep)
+                if self.options.verbose: print "Richard public."
+
+            if ep.host_url and ep.show.client.youtube_id:
+                ret = ret and self.up_youtube(ep)
+                if self.options.verbose: print "Youtube public."
+        else:
+
+            ret = False # Nope. Not until it is both approved and Released. 
+        
 
         return ret
 
