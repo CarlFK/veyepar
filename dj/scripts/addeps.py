@@ -2792,16 +2792,62 @@ class add_eps(process.process):
             else:
                 event['emails']=event['emails']['email']
 
-            if event['twitter_id']['twitter_id'] is None:
-                event['twitter_id']=""
-            else:
+            if event['twitter_id']['twitter_id']:
                 event['twitter_id']="@" + event['twitter_id']['twitter_id']
+            else:
+                event['twitter_id']=""
 
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
+
+
+    def kiwipycon2015(self,schedule,show):
+
+        field_maps = [
+                # ('id','id'),
+                ('room','location'),
+                ('name','name'),
+                ('authors','authors'),
+                ('contact','emails'),
+                ('abstract','description'),
+                ('start','start'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('tags','tags'),
+                ('conf_key','conf_key'),
+                ('conf_url','conf_url'),
+                ('','twitter_id'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        # remove events with no room (like Break)
+        # events = [e for e in events if e['location'] is not None ]
+
+        for event in events:
+
+            event['start'] = datetime.datetime.strptime( 
+                event['raw']['date'] + 'T' + event['start'], 
+                '%d/%m/%YT%H:%M:%S' )
+
+            event['duration'] = "00:{}:00".format(event['duration']) 
+
+            if event['license'] == 'CC':
+                event['license'] = 'CC BY-SA'
+
+            event['authors']=', '.join(event['authors'])
+            event['emails']=', '.join(event['emails'])
+
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
 
 
 #################################################3
@@ -2978,8 +3024,9 @@ class add_eps(process.process):
         if self.options.show =='prodconf14':
             return self.prodconf14(schedule,show)
 
-        if self.options.show =='kiwipycon2014':
-            return self.veyepar(schedule,show)
+        if self.options.show =='kiwipycon2015':
+            # return self.veyepar(schedule,show)
+            return self.kiwipycon2015(schedule,show)
 
         if self.options.show =='chicago_erlang_factory_lite_2014':
             return self.erlang_chi_2014(schedule,show)
