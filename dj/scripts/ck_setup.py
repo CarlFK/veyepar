@@ -8,6 +8,8 @@ from main.models import Show, Location, Client
 
 from django.conf import settings
 
+from django.template.defaultfilters import slugify
+
 import pw
 
 import rax_uploader
@@ -157,13 +159,15 @@ class ck_setup(process):
             'title',
             'title2',
             'tag1',
-            'authors', 'presenternames',
+            'authors', 
             'presentertitle',
             'twitter_id',
             'date',
             'time',
+            'room',
             'license', ]
-        print("checking title_svg for object IDs, found:")
+        print("checking title_svg for object IDs: {}".format(keys) )
+        print("found:")
         found=[]
         for key in keys:
             if tree[1].has_key(key):
@@ -203,10 +207,30 @@ class ck_setup(process):
 
         print("checking for category...")
         endpoint = "http://{}/api/v2/".format( secrets['host'] )
+
+        """
+        print(endpoint)
+
+        try: 
+            category = steve.richardapi.get_category(endpoint, category_key)
+            print("category: {}".format(category) )
+        except steve.richardapi.DoesNotExist:
+            print("category: {} not found".format(category_key) )
+
+
+        category_slug = slugify(category_key)
+        try: 
+            category = steve.richardapi.get_category(
+                    endpoint, category_slug)
+            print("category: {}".format(category) )
+        except steve.richardapi.DoesNotExist:
+            print("category slug: {} not found".format(category_slug) )
+        """
+
         categories = steve.richardapi.get_all_categories(endpoint)
         cat_titles = [cat['title'] for cat in categories]
-        print("found {} categories. first 5: {}".format(
-            len(categories), cat_titles[:5] ))
+        print("found {} categories. last 5: {}".format(
+            len(categories), cat_titles[-5:] ))
         if category_key in cat_titles:
             p_okg('client.category_key:"{}" found.'.format(category_key))
         else:
