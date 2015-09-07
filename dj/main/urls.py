@@ -46,6 +46,7 @@ urlpatterns += patterns(
         meet_ann, 
         name='meet_ann'),
     url(r'show_stats/(?P<show_id>\w+)/$', show_stats, name='show_stats'),
+    url(r'show_pipeline/(?P<show_id>\w+)/$', show_pipeline, name='show_pipeline'),
     url(r'processes/(?P<show_id>\w+)/$', processes, name='processes'),
     url(r'show_anomalies/(?P<show_id>\w+)/$', 
         show_anomalies, name='show_anomalies'),
@@ -93,7 +94,7 @@ urlpatterns += patterns(
     url(r'raw_file_audio/$', raw_file_audio, name='raw_file_audio'),
     url(r'final_file_audio/$', final_file_audio, name='final_file_audio'),
 
-    url(r'orphan_dv/(?P<show_id>\w+)/$', orphan_dv,
+    url(r'orphan_dv/(?P<show_id>\w+)/', orphan_dv,
         name='orphan_dv'),
     url(r'rf_set/(?P<location_slug>[\w+\-]+)/$', 
         rf_set, name='rf_set'),
@@ -106,13 +107,13 @@ urlpatterns += patterns(
     url(r'episode_chaps/(?P<episode_id>\d+)/$', 
         episode_chaps, name='episode_chaps'),
 
-    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/(?P<episode_id>\w+)/.*$', 
+    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/(?P<episode_id>\w+)/.*\.pdf$', 
         episode_pdfs, name='pdf'),
 
     url(r'title_slides/(?P<show_id>\w+)/', 
         title_slides, name='title_slides'),
 
-    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/.*$', 
+    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/.*\.pdf$', 
         episode_pdfs, name='pdfs'),
 
     url(r'tests', tests, name='tests'),
