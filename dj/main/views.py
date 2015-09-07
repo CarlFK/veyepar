@@ -824,15 +824,35 @@ def show_anomalies(request, show_id, ):
 
 def show_pipeline(request, show_id ):
 
-    show=get_object_or_404(show,id=show_id)
+    show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=episode.objects.filter(show=show,location__active=true)
+    # episodes=Episode.objects.filter(show=show,location__active=True)
+    # ep_states = Episode.objects.values('state').annotate(Count('state')).order_by().filter(show=show,location__active=True).order_by('state')
+
+    states = State.objects.all()
+    statesl = [] 
+    for s in states:
+
+        ep_states = Episode.objects.values('state').annotate(Count('state')).order_by().filter(show=show,location__active=True, state=s.sequence)
+
+        if ep_states:
+            count=ep_states[0]['state__count']
+        else:
+            count=0
+
+        stated = {
+                'sequence':s.sequence,
+                'slug':s.slug,
+                'description':s.description,
+                'count':count }
+
+        statesl.append(stated)
 
     return render_to_response('show_pipeline.html',
         {
           'client':client,
           'show':show,
-          'eps':eps,
+          'statesl':statesl,
         },
     context_instance=RequestContext(request) )
 

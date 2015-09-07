@@ -1,6 +1,7 @@
 <td>
 <a href="{% url "show_stats" show.id %}" title="{{show.name}} status grid">status grid</a>
 <a href="{% url "processes" show.id %}" >processes</a>
+<a href="{% url "show_pipeline" show.id %}" title="{{show.name}} pipeline">pipeline</a>
 </td>  
 <td><a href="{% url "pdfs" 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf">recording_sheets.pdf</a>
 <a href="{% url "pdfs" 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf?day={{now|date:"d"}}">today's</a>
