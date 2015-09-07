@@ -1,0 +1,40 @@
+{# show_pipeline.html #}
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/show_stats.css">
+<title>veyepar - Show: {{client.name}} {{show.name}} </title>
+{% endblock %}
+
+{% block content %}
+
+<a href="{% url "client" client.slug %}">{{ client.name }}</a>
+<a href="{% url "episode_list" client.slug show.slug%}">{{ show.name }}</a>
+</p>
+
+<table>
+    <tr>
+        <th>State</th>
+        <th>Count</th>
+        <th>Description</th>
+    </tr>
+
+{% for s in statesl %}
+
+    <tr>
+        <td> {{s.sequence}} - {{s.slug}}: </td>
+        <td style="background-color:#{{item.alarm_color}};">
+  {% if s.count %}
+
+   <a style="background-color:pink" href="{% url "episode_list" client_slug=client.slug show_slug=show.slug state=s.sequence %}">{{s.count}}</a>
+  {%else%}
+   0
+  {% endif %}
+        </td>
+        <td> {{s.description}} </td>
+    </tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
