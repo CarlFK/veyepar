@@ -6,12 +6,8 @@
 
 <a href="{% url "episode" episode.id %}">
     <h3>{{episode.name}}</h3>
-    {# hack to use fosdem files: #}
-  {% if episode.show.slug == "fosdem_2014" %}
-     <img src ="http://964bdd2f965bbc4ca8f5-3ebaa0e988d98119a4fead51a26da83a.r42.cf2.rackcdn.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
-  {% else %}
+    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/mp4/{{episode.slug}}_audio.png" alt="final audio"><br/>
     <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio"><br/>
-  {% endif %}
     <br/>
     </a>
     {{episode.comment}}
