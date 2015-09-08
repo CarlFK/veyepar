@@ -77,6 +77,7 @@
 {% endif %}
 
 {% if episode.public_url %}
+    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/mp4/{{episode.slug}}_audio.png" alt="final audio">
     <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
    <br/>
 {% endif %}
