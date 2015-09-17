@@ -1719,22 +1719,25 @@ def episode_chaps(request, episode_id):
             episode=episode).order_by('sequence','raw_file__start','start')
 
     # start times of chapters (included cuts)
-    start_chap = (0,"00:00") # frame, timestamp
-    chaps,frame_total = [],0 
+    start_chap = "00:00"
+    chaps,total_time = [],0 
     for cut in cuts:
         if cut.apply:
-            frame_total+=int(cut.duration()) # durration is in seconds :p
-            h,m,s = (frame_total//3600, 
-                    (frame_total%3600)//60, 
-                    frame_total%60) 
-            end_chap = (int(frame_total*29.27), "%s:%02i:%02i" % (h,m,s))
+
+            h,m,s = (total_time//3600, 
+                    (total_time%3600)//60, 
+                    total_time%60) 
+            start_chap = "%s:%02i:%02i" % (h,m,s)
 
             yt ="{yt}?t={h}h{m}m{s}s".format(
                     yt=episode.host_url,h=h,m=m,s=s)
 
-            chaps.append((start_chap,end_chap,cut,yt))
+            chaps.append((start_chap,cut,yt))
+            
             # setup for next chapter
-            start_chap=end_chap
+            # start_chap=end_chap
+            total_time+=int(cut.duration()) # durration is in seconds
+
         else:
             chaps.append(('',''))
  
