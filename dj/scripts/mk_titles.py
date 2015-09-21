@@ -27,7 +27,7 @@ class mk_title(enc):
             return 
 
         if self.options.display:
-            png_name = "{}/titles/{}.png".format(
+            png_name = u"{}/titles/{}.png".format(
                     self.show_dir, episode.slug)
             self.run_cmd(['display', png_name])
 

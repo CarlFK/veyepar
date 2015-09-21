@@ -157,10 +157,10 @@ class enc(process):
         """
         author2 = ''
 
-        if episode.show.slug == 'pygotham_2015':
-            date = episode.start.strftime("%B %-d, %Y")
-        else:
-            date = episode.start.strftime("%Y-%m-%-d")
+        date = episode.start.strftime("%B %-d, %Y")
+
+        # DebConf style
+        # date = episode.start.strftime("%Y-%m-%-d")
 
         texts = {
             'client': episode.show.client.name,
@@ -193,7 +193,6 @@ class enc(process):
         # check for the existance of a new png
         if os.path.exists(png_name):
             os.remove(png_name)
-        # cmd=["inkscape", svg_name, "--export-png", png_name]
         cmd = ["inkscape", svg_name,
                "--export-png", png_name,
                # "--export-width", "720",
@@ -217,7 +216,7 @@ class enc(process):
         # if we find titles/custom/(slug).svg, use that
         # else make one from the tempalte
         custom_svg_name = os.path.join(
-            self.show_dir, "titles", "custom", episode.slug + ".svg")
+            self.show_dir, "custom", "titles", episode.slug + ".svg")
         if self.options.verbose: print "custom:", custom_svg_name
         if os.path.exists(custom_svg_name):
             cooked_svg_name = custom_svg_name
@@ -244,14 +243,13 @@ class enc(process):
             # output_base=output_base.encode('utf-8','ignore')
 
             cooked_svg_name = os.path.join(
-                self.show_dir, "titles", '%s.svg' % episode.slug)
+                self.show_dir, "titles", u'%s.svg'.format(episode.slug))
             open(cooked_svg_name, 'w').write(cooked_svg)
 
         png_name = os.path.join(
-            self.show_dir, "titles", '%s.png' % episode.slug)
+            self.show_dir, "titles", u'{}.png'.format(episode.slug))
 
         title_img = self.svg2png(cooked_svg_name, png_name, episode)
-        # title_img=png_name
 
         if title_img is None:
             print "missing title png"
@@ -488,7 +486,7 @@ class enc(process):
             # if we find titles/custom/(slug).svg, use that
             # else make one from the tempalte
             custom_png_name = os.path.join(
-                self.show_dir, "titles", "custom", episode.slug + ".png")
+                self.show_dir, "custom", "titles", episode.slug + ".png")
             print "custom:", custom_png_name
             if os.path.exists(custom_png_name):
                 title_img = custom_png_name
@@ -511,7 +509,7 @@ class enc(process):
             if credits_img[-4:] == ".svg":
                 # convert to png because melt doesn't do svgs as well
                 png_name = credits_img[:-4] + ".png"
-                credits_img = self.svg2png(credits_img,  png_name, episode)
+                credits_img = self.svg2png(credits_img, png_name, episode)
 
             return credits_img
 
@@ -931,7 +929,12 @@ class enc(process):
                     return ret
 
             # run encoder:
-            ret = self.run_cmds(episode, cmds)
+            if self.options.noencode:
+                print "sorce files generated, skipping encode."
+                ret = False
+            else:
+                ret = self.run_cmds(episode, cmds, )
+
 
             if ret and not os.path.exists(out_pathname):
                 print "melt returned %ret, but no output: %s" % \
@@ -946,15 +949,18 @@ class enc(process):
             print "encoding to %s" % (ext,)
             ret = enc_one(ext) and ret
 
+        """
         if self.options.enc_script:
             cmd = [self.options.enc_script,
                    self.show_dir, episode.slug]
             ret = ret and self.run_cmds(episode, [cmd])
+        """
 
         return ret
 
     def dv2theora(self, episode, dv_path_name, cls, rfs):
         """
+        Not used any more.
         transcode dv to ogv
             """
         oggpathname = os.path.join(
@@ -1002,7 +1008,7 @@ class enc(process):
             # look for custom/slug.mlt and just use it, 
             # else build one from client.template_mlt, else "template.mlt"
             
-            mlt_pathname = os.path.join(self.work_dir, "custom", "%s.mlt" % episode.slug)
+            mlt_pathname = os.path.join(self.show_dir, "custom", "mlt", "%s.mlt" % episode.slug)
             if os.path.exists(mlt_pathname):
                 ret = True
             else:
@@ -1061,11 +1067,14 @@ class enc(process):
     def add_more_options(self, parser):
         parser.add_option('--enc-script',
                           help='encode shell script')
+        parser.add_option('--noencode', action="store_true",
+                          help="don't encode, just make svg, png, mlt")
         parser.add_option('--load-temp', action="store_true",
                           help='copy .dv to temp files')
         parser.add_option('--rm-temp',
                           help='remove large temp files')
-        parser.add_option('--threads')
+        parser.add_option('--threads', 
+                          help='thread parameter passed to encoder')
 
     def add_more_option_defaults(self, parser):
         parser.set_defaults(threads=2)
