@@ -90,6 +90,7 @@ import csv
 import requests
 import HTMLParser
 import os
+import urlparse
 
 # from dateutil.parser import parse
 import pprint
@@ -455,10 +456,10 @@ class add_eps(process.process):
                     if diff_fields:
                         print 'veyepar #id name: #%s %s' % (
                                 episode.id, episode.name)
-                        if self.show.slug=="debconf15":
-                            host= "encoding2.dc15.debconf.org" 
-                        else:
-                            host= "veyepar.nextdayvideo.com" 
+                        # if self.show.slug=="debconf15":
+                        #    host= "encoding2.dc15.debconf.org" 
+                        # else:
+                        host= "veyepar.nextdayvideo.com" 
                         print "http://%s/main/E/%s/" % ( host, episode.id, )
                         print episode.conf_key, episode.conf_url
                         if self.options.verbose: 
@@ -1536,6 +1537,7 @@ class add_eps(process.process):
 
     def summit_penta_events( self, schedule ):
         # dc14 summit penta based xml
+        # pyconza2015 dc summit penta based xml
  
         events = []
         id = 0
@@ -1550,6 +1552,12 @@ class add_eps(process.process):
             for room in day:
                 for row in room:
 
+                    if row.find('persons') is None:
+                        continue
+
+                    if self.options.verbose: print row.get('id')
+                    # import code; code.interact(local=locals())
+
                     event={}
                     event['name'] = row.find('title').text
 
@@ -1561,37 +1569,54 @@ class add_eps(process.process):
                             dt_format)
 
                     event['duration'] = \
-                        "%s:00" % row.find('duration').text
+                            row.find('duration').text + ":00"
                     
-                    persons = [p.text for p in 
-                            row.find('persons').getchildren() ]
 
-                    event['authors'] = ', '.join(persons)
-
+                    persons = []
                     contacts = []
+                    twitters = []
                     for p in row.find('persons').getchildren():
+                        
+                        person = p.text
+                        person = person.replace('\n','')
+                        # person = person.replace('\r','')
+                        person = person.strip()
+                        persons.append(person)
+
                         contact = p.get('contact')
                         if contact not in [
-                                'redacted', "<redacted>" ]:
+                                None, 'redacted', "<redacted>" ]:
                             contacts.append(contact)
 
-                    event['emails'] = ','.join(contacts)
-                    event['twitter_id'] = ''
+                        twit = p.get('twitter')
+                        if twit not in [ None, ]:
+                            twitter_id = urlparse.urlparse(twit).path[1:]
+                            # make sure it starts with an @
+                            if not twitter_id.startswith('@'):
+                                twitter_id = '@' + twitter_id
+                            twitters.append(twitter_id)
+
+                    event['authors'] = ', '.join(persons)
+                    event['emails'] = ','.join(contacts) 
+                    event['twitter_id'] = ' '.join(twitters)
 
                     # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.  Is there a reason it 
                     # event['released'] = row.find('released').text == "True"
                     event['released'] = True
 
-                    event['license'] = row.find('license').text
+                    # event['license'] = row.find('license').text
+                    event['license'] = ""
 
                     description = row.find('description').text
-                    if description is None: description = ''
+                    # if description is None: description = ''
                     description = description.replace('\r','')
                     event['description'] = description 
                     
                     event['conf_key'] = row.get('id')
 
-                    event['conf_url'] = 'https://summit.debconf.org%(conf_url)s' % {'conf_url':row.find('conf_url').text}
+                    # event['conf_url'] = 'https://summit.debconf.org' + row.find('conf_url').text
+                    # event['conf_url'] = 'https://za.pycon.org' + row.find('conf_url').text
+                    event['conf_url'] = row.find('full_conf_url').text
 
 
                     event['tags'] = row.find('track').text
@@ -1601,10 +1626,10 @@ class add_eps(process.process):
                     event['raw'] = None
 
                     # if event['conf_key'] in [ "127", "40"]:
-                    if row.find('slug').text in [ "hacking-time", ]:
+                    # if row.find('slug').text in [ "hacking-time", ]:
                         # skip this one
                         # https://summit.debconf.org/debconf14/meeting/127/hacking-time/
-                        continue
+                        # continue
 
                     events.append(event)
                     id += 1
@@ -2928,6 +2953,7 @@ class add_eps(process.process):
             # auth stuff goes here, kinda.
             auth = pw.addeps.get(self.options.client, None)
             if auth is not None:
+                if self.options.verbose: print auth
 
                 # get the csrf token out of login page
                 session.get(auth['login_page'])
@@ -3033,6 +3059,9 @@ class add_eps(process.process):
 
         if self.options.show =='pytexas2014':
             return self.pytexas2014(schedule,show)
+
+        if self.options.show =='pyconza2015':
+            return self.summit_penta(schedule,show)
 
         if self.options.show =='debconf15':
             return self.summit_penta(schedule,show)
