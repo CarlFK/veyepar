@@ -30,7 +30,8 @@ sudo apt-get --assume-yes install python-software-properties
 
 sudo apt-get --assume-yes update
 
-sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav
+sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav gir1.2-gstreamer-1.0
+
 # python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad 
 # python-lxml 
 # python-dev libxml2-dev libxslt-dev
@@ -102,6 +103,16 @@ ln -s /usr/lib/python2.7/dist-packages/tesseract.pyc
 # /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
 ln -s /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
 
+# gstreamer bindings
+# apt-get install gir1.2-gst.* python-gobject # gobject-introspection
+sudo apt-get install python-gi python3-gi \
+    gstreamer1.0-tools \
+    gir1.2-gstreamer-1.0 \
+    gir1.2-gst-plugins-base-1.0 \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-libav
 
 cd -
 
@@ -111,11 +122,6 @@ mkdir static
 cd static
 wget -N http://0x80.org/wordlist/webster-dictionary.txt
 ln -s webster-dictionary.txt dictionary.txt
-
-wget https://www.dropbox.com/sh/02zhv4v7lrdzmmg/W3Jqcs25HK/Synthview%20-%20Novecentowide-Bold.otf
-wget https://www.dropbox.com/sh/02zhv4v7lrdzmmg/imS01PwStJ/Synthview%20-%20Novecentowide-Light.otf
-mkdir -p ~/.fonts/
-mv *.otf ~/.fonts/
 
 
 # removed because sphinx no longer installs - pulled from deb repos
