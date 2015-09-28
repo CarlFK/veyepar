@@ -278,13 +278,8 @@ $(".viewer").zoomer();
   {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
 
-  {% if episode.show.slug == "fosdem_2014" %}
-  <img id="audio_image_{{cl.id}}" alt="audio viz" 
-    src ="http://964bdd2f965bbc4ca8f5-3ebaa0e988d98119a4fead51a26da83a.r42.cf2.rackcdn.com/veyepar/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png">
-{% else %}
   <img id="audio_image_{{cl.id}}" alt="audio viz" 
     src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
-  {% endif %}
 
   {% with forloop.counter0 as x %}
 
