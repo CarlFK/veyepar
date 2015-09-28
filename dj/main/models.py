@@ -212,18 +212,18 @@ class Quality(models.Model):
 
 STATES=[
  (0, 'borked'),
- (1, 'edit'), # enter cutlist data
- (2, 'encode'), # assemble raw assets into final cut
+#  (1, 'edit'), # enter cutlist data
+#  (2, 'encode'), # assemble raw assets into final cut
  (3, 'push to queue'), # push to data center box
- (4, 'post'), # push to yourube and archive.org
+#  (4, 'post'), # push to yourube and archive.org
  (5, 'richard'), # push urls and description to PyVideo.org
  (6, 'review 1'), # staff check to see if they exist on yourube/archive
  (7, 'email'), # send private url to presenter, ask for feedback, 
  (8, 'review 2'), # wait for presenter to say good, or timeout
  (9, 'make public'), # flip private to public
- (10, 'tweet'), # tell world
+ # (10, 'tweet'), # tell world
  (11, 'to-miror'),
- (12, 'done')
+ # (12, 'done')
  ]
 
 
@@ -259,14 +259,14 @@ class Episode(models.Model):
         help_text='primary key of event in conference system database.')
     conf_url = models.CharField(max_length=335,blank=True,default='',
         help_text="Event's details on conference site  (name,desc,time,author,files,etc)")
-    conf_meta = models.TextField(blank=True,default='',
+    conf_meta = models.TextField(blank=True,default='', null=True,
         help_text="Data provided by API")
     authors = models.TextField(null=True,blank=True,)
     emails = models.TextField(null=True,blank=True, 
         help_text="email(s) of the presenter(s)")
-    twitter_id = models.CharField(max_length=135, blank=True, null=False,
+    twitter_id = models.CharField(max_length=135, blank=True, null=True,
         help_text="Data provided by API")
-    language = models.CharField(max_length=20, blank=True, null=False,
+    language = models.CharField(max_length=20, blank=True, null=True,
         help_text="Spoken languge (German, English...)")
 
     edit_key = models.CharField(max_length=32,
@@ -275,7 +275,7 @@ class Episode(models.Model):
             default = str(random.randint(10000000,99999999)),
         help_text="key to allow unauthenticated users to edit this item.")
 
-    summary = models.TextField(blank=True, help_text="short")
+    summary = models.TextField(blank=True, help_text="short", null=True)
     description = models.TextField(blank=True, help_text="markdown")
     tags = models.CharField(max_length=175,null=True,blank=True,)
 
