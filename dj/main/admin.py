@@ -36,7 +36,7 @@ class Raw_FileAdmin(admin.ModelAdmin):
     list_display = ('filename', 'show', 'location', 'start', 'duration', 'end', ) 
     list_editable = ('start', 'duration', )
     list_display_links = ('filename',)
-    list_filter = ('location',"start")
+    list_filter = ('location',"start", "show")
     search_fields = ['filename']
     date_hierarchy = 'start'
 admin.site.register(Raw_File, Raw_FileAdmin)
