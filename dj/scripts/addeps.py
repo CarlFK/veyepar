@@ -1600,7 +1600,7 @@ class add_eps(process.process):
                     event['emails'] = ','.join(contacts) 
                     event['twitter_id'] = ' '.join(twitters)
 
-                    # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.  Is there a reason it 
+                    # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.  
                     # event['released'] = row.find('released').text == "True"
                     event['released'] = True
 
