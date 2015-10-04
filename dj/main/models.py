@@ -212,18 +212,18 @@ class Quality(models.Model):
 
 STATES=[
  (0, 'borked'),
-#  (1, 'edit'), # enter cutlist data
-#  (2, 'encode'), # assemble raw assets into final cut
+ (1, 'edit'), # enter cutlist data
+ (2, 'encode'), # assemble raw assets into final cut
  (3, 'push to queue'), # push to data center box
-#  (4, 'post'), # push to yourube and archive.org
+ (4, 'post'), # push to yourube and archive.org
  (5, 'richard'), # push urls and description to PyVideo.org
  (6, 'review 1'), # staff check to see if they exist on yourube/archive
  (7, 'email'), # send private url to presenter, ask for feedback, 
  (8, 'review 2'), # wait for presenter to say good, or timeout
  (9, 'make public'), # flip private to public
- # (10, 'tweet'), # tell world
+ (10, 'tweet'), # tell world
  (11, 'to-miror'),
- # (12, 'done')
+ (12, 'done')
  ]
 
 
