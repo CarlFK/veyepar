@@ -28,6 +28,7 @@ simplejson
 
 pypng
 # numpy
+reportlab
 
 djangorestframework
 markdown

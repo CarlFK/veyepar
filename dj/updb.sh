@@ -20,8 +20,10 @@ ssh -o BatchMode=yes veyepar@veyepar.nextdayvideo.com /home/veyepar/site/veyepar
 SRC=http://veyepar.nextdayvideo.com/static/temp
 # wget -N $SRC/veyepar_all.json
 # wget -N $SRC/veyepar_noauth.json
-wget -N $SRC/veyepar_main.json
+## wget -N $SRC/veyepar_main.json
 # wget -N $SRC/veyepar_auth.json
+
+scp "veyepar@storage2.dc15.debconf.org:site/veyepar/dj/*.json" .
 
 touch veyepar.db 
 mv  veyepar.db  ~/temp
@@ -35,19 +37,3 @@ python ./manage.py loaddata veyepar_main.json
 # ./runsrv.sh
 exit
 
-alter table main_show add conf_url varchar(200);
-alter table main_episode add priority integer,;
-alter table main_episode add "conf_meta" text;
-alter table main_episode add "twitter_id" varchar(50);
-alter table main_episode add "language" varchar(20);
-alter table main_episode add "summary" text;
-alter table main_episode add ;
-
-priority" integer,
-103a106
->     "conf_meta" text NOT NULL,
-105a109,110
->     "twitter_id" varchar(135) NOT NULL,
->     "language" varchar(20) NOT NULL,
-106a112
->     "summary" text NOT NULL,

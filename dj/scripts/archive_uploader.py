@@ -162,7 +162,6 @@ AttributeError: 'timeout' object has no attribute 'body'
         return ret
 
 
-### Smoke test
 
 def make_parser():
     parser = argparse.ArgumentParser(description="""
@@ -186,6 +185,7 @@ def make_parser():
     return parser
 
 
+### Smoke test
 def test_upload(args):
     u = Uploader()
     u.user = args.user
@@ -208,3 +208,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     test_upload(args)
+

@@ -11,7 +11,6 @@ from main.models import Episode
 
 class Get_vimeo(process):
 
-    # this will bump everything past the review1 step
     ready_state = None
 
     def process_ep(self, ep):

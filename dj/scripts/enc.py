@@ -243,7 +243,7 @@ class enc(process):
             # output_base=output_base.encode('utf-8','ignore')
 
             cooked_svg_name = os.path.join(
-                self.show_dir, "titles", u'%s.svg'.format(episode.slug))
+                self.show_dir, "titles", u'{}.svg'.format(episode.slug))
             open(cooked_svg_name, 'w').write(cooked_svg)
 
         png_name = os.path.join(
@@ -535,7 +535,8 @@ class enc(process):
                 # check for missing input file
                 # typically due to incorrect fs mount
                 if not os.path.exists(rawpathname):
-                    print "can't find rawpathname", rawpathname
+                    print( 'rawpathname not found: "{}"'.format(
+                        rawpathname))
                     return False
 
                 clips.append({

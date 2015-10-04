@@ -41,9 +41,9 @@ def dev():
 @task
 def prod():
     env.update({
-        'site': 'veyepar.nextdayvideo.com',
+        'site': 'encoding2.dc15.debconf.org',
         'available': 'veyepar',
-        'hosts': ['162.209.96.130'],
+        'hosts': ['veyepar@encoding2.dc15.debconf.org'],
         'site_environment': 'prod',
     })
 

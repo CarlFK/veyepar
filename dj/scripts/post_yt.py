@@ -2,6 +2,8 @@
 
 # posts to youtube
 
+from process import process
+
 import youtube_v3_uploader
 import archive_uploader
 import rax_uploader
@@ -11,7 +13,6 @@ import pprint
 
 import pw
 
-from process import process
 from django.db import DatabaseError
 from django.template.defaultfilters import slugify
 

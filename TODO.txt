@@ -5,6 +5,7 @@ veyepar:
      laptop sound check
      confirm talk title
      ask presenter how they prounounce their name 
+     ask audiance for a remote monitor (for IRC)
 
   move state data def from models.py to initial_data.json fixture.
      use state table, not a constant 
@@ -14,15 +15,6 @@ veyepar:
         "saved" page, 1 sec redirect back to episode?
         js to say "saved" that goes away in 5 seconds?
         js to say "saved/dirty" if there are outstanding edits?
-
-  store images of recording sheets
-     ocr just the id:1234
-     man tesseract
-              -psm N
-               4 = Assume a single column of text of variable sizes.
-               tesseract.PSM_SINGLE_COLUMN = 4
-               8 = Treat the image as a single word.
-               tesseract.PSM_SINGLE_WORD = 8
 
   next/prev (match recording sheet: same room/day)
 
@@ -53,6 +45,8 @@ veyepar:
      
   state - need something to handle Canceled talks, breaks, etc.  
     disposition?  
+    priority?
+
   state - mk_titles, email_titles ?
      (currently are done outside of the formal workflow steps, so hard to fix one and re-do)   
   state - really needs something new. like a bunch of "completed" flags.
@@ -67,8 +61,6 @@ veyepar:
       richard: 
         reference back to veyepar page (hidden to public)
         reference to conference site page (for slides)
-      
-      save raw json per episode  - nah, no use.
       
    move show.schedule_url to client.
     
@@ -143,13 +135,6 @@ recording sheets:
     (to help know how long the day is, 
       and help keep track of what the last sheet is.)
 
-live cd: mainly for slave
-  user in video group
-  sudo apt-get install openssh-server dvsource kino mplayer
-  ~/dvswitchrc
-  10.0.0.2
-  avahi to find dvswitch
-
 for unit tests:
   get sphinx or some such speach recognition packaged and in a PPA
     sphinx2-bin fell out of the ubuntu repos due to not being maintained.
@@ -167,9 +152,12 @@ Transcriptions
 
 OCR - http://software-carpentry.org
 
-encoding 
     flag for odd audio (like missing or very low)
     DD - "There is a new audiolevel filter. See output of melt -query filter=audiolevel"
 
 ponder and debate cred management.
+
+voluneer management.
+  flight details: bday, window, ff#
+  list on credit slide.
 

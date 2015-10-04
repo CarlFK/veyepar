@@ -11,6 +11,7 @@ import fixunicode
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dj.settings")
 sys.path.insert(0, '..' )
+sys.path.insert(0, '../lib' )
 
 from django.conf import settings
 from django.db.models import Count,Max
@@ -144,7 +145,7 @@ class process(object):
             ret = u.new_url
 
         else:
-            print("file2cdn can't find {}".format(src))
+            print(u"file2cdn can't find {}".format(src))
             ret = False
 
         return ret

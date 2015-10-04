@@ -86,7 +86,10 @@ class tweet(process):
         prefix = show.client.tweet_prefix
 
         # remove commas
-        twitter_ids = ep.twitter_id.replace(',','')
+        if ep.twitter_id is None:
+            twitter_ids = ""
+        else:
+            twitter_ids = ep.twitter_id.replace(',','')
 
         tweet = self.mk_tweet(prefix, 
                 twitter_ids, ep.name, ep.authors, url)

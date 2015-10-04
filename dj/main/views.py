@@ -1820,9 +1820,11 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         if not episode.emails and episode.authors:
 
             # mine emails
-            email_eps = Episode.objects.filter(
-                authors__icontains = episode.authors,
-                ).exclude( emails='', )
+            email_eps = []
+            for author in episode.authors.split(','):
+                email_eps.extend( Episode.objects.filter(
+                    authors__icontains = author.strip(),
+                    ).exclude( emails='', ))
     else:
         # hide emails if user is not logged n
         episode.emails = None

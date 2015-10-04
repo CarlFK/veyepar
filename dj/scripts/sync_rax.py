@@ -58,8 +58,10 @@ class SyncRax(process):
         # look for .webm on local file system
         rf = os.path.join(self.show_dir, base + ".dv")
         web = os.path.join(self.show_dir, base + ".webm")
+        # vb = "50k"
+        vb = "20k" # for SA
         if not os.path.exists(web):
-            cmd = "melt {rf} -consumer avformat:{out} vb=50k progress=1".format( rf=rf, out=web ).split()
+            cmd = "melt {rf} -consumer avformat:{out} vb={vb} progress=1".format( rf=rf, vb=vb, out=web ).split()
             p=subprocess.Popen(cmd)
             p.wait()
             retcode=p.returncode
@@ -138,21 +140,18 @@ class SyncRax(process):
         # for ep in eps.filter(state=5):
             # self.sync_final(show,ep)
             # self.sync_final_audio_png(show,ep)
-
-        for ep in eps.filter(state=1):
+         
+        eps = eps.filter(state=4)
+        for ep in eps:
             print(ep)
             # self.sync_title_png(show,ep)
             # import code; code.interact(local=locals())
-            for cl in ep.cut_list_set.all():
+            cls = ep.cut_list_set.all()
+            for cl in cls:
                 self.rf_web(show, cl.raw_file)
 
 
     def init_rax(self, show):
-         # user = self.show.client.rax_id
-         # bucket_id = self.show.client.bucket_id
-
-         # user = self.options.cloud_user
-         # bucket_id = self.options.rax_bucket
          user = show.client.rax_id
          bucket_id = show.client.bucket_id
 

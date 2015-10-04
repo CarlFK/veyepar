@@ -2577,6 +2577,52 @@ class add_eps(process.process):
 
         return 
 
+    def citycode15(self,schedule,show):
+
+        field_maps = [
+            ('room','location'),
+                ('title','name'),
+                ('speakers','authors'),
+                ('speakers','emails'),
+                ('speakers','twitter_id'),
+                ('start','start'),
+            ('end','end'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('tags','tags'),
+                ('conf_key','conf_key'),
+                ('conf_url','conf_url'),
+            ('description','description'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events: 
+
+            event['authors'] = event['authors'][0]['name']
+            event['emails'] = event['emails'][0]['email']
+            event['twitter_id'] = event['twitter_id'][0]['email']
+
+            event['start'] = datetime.datetime.strptime( 
+                   event['start'], '%Y-%m-%dT%H:%M:%S' )
+            event['end'] = datetime.datetime.strptime( 
+                   event['end'], '%Y-%m-%dT%H:%M:%S' )
+
+            delta = event['end'] - event['start']
+            minutes = delta.seconds/60 
+            event['duration'] = "00:%s:00" % ( minutes) 
+
+            # event['conf_url'] = "http://www.chicagoerlang.com/{}.html".format(event['conf_key'])
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+        return 
+
+
     def prodconf14(self,schedule,show):
 
       field_maps = [
@@ -3053,6 +3099,9 @@ class add_eps(process.process):
         if self.options.show =='kiwipycon2015':
             # return self.veyepar(schedule,show)
             return self.kiwipycon2015(schedule,show)
+
+        if self.options.show =='citycode15':
+            return self.citycode15(schedule,show)
 
         if self.options.show =='chicago_erlang_factory_lite_2014':
             return self.erlang_chi_2014(schedule,show)

@@ -26,8 +26,8 @@ from main.models import Show, Location, Episode
 import pw
 
 def get_video_id(url):
-        v_id = url.split('/video/')[1].split('/')[0]
-        return v_id
+    v_id = url.split('/video/')[1].split('/')[0]
+    return v_id
 
 class add_to_richard(Process):
 
@@ -211,7 +211,6 @@ class add_to_richard(Process):
 
         """
         try:
-            # video_data['added'] = datetime.datetime.now().isoformat()
             vid = create_video(self.richard_endpoint, 
                     self.host['api_key'], video_data)
             url = 'http://%s/video/%s/%s' % (
@@ -397,9 +396,9 @@ class add_to_richard(Process):
         parser.add_option('--add-all', action="store_true",
            help="Assume it doesn't exist, overwrite previous richard url.")
 
-        # straigth to public
+        # straight to public
         parser.add_option('--public', action="store_true",
-           help="Set it public on upload.")
+           help="Set state to public on upload.")
 
         # use title slide preview as thumb (for metadata preview)
         parser.add_option('--title-thumb', action="store_true",

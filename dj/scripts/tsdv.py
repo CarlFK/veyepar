@@ -163,7 +163,8 @@ class ts_rf(process):
         for rf in Raw_File.objects.filter(show=show, location=location):
             print rf
             if not rf.start or self.options.force:
-                self.one_rf(dir, rf, location.hours_offset)
+                # self.one_rf(dir, rf, location.hours_offset / 10.0)
+                self.one_rf(dir, rf, location.hours_offset )
 
     def work(self):
         """

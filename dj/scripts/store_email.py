@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """
-mkthumbs.py - find thumbs
+store_email.py - find thumbs
 ocr untill we find some text
 
 Start with every 5 seconds until we find more than 5 words
