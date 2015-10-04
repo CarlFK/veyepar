@@ -1732,7 +1732,13 @@ def episode_chaps(request, episode_id):
             yt ="{yt}?t={h}h{m}m{s}s".format(
                     yt=episode.host_url,h=h,m=m,s=s)
 
-            chaps.append((start_chap,cut,yt))
+            cut_duration = cut.duration() // 60
+            if cut_duration:
+                mins = "{} min".format(cut_duration)
+            else:
+                mins = ""
+
+            chaps.append((start_chap,cut,yt,mins))
             
             # setup for next chapter
             # start_chap=end_chap
