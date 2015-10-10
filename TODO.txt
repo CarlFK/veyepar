@@ -2,7 +2,6 @@
 veyepar:
 
   talk setup checklist- 
-     laptop sound check
      confirm talk title
      ask presenter how they prounounce their name 
      ask audiance for a remote monitor (for IRC)

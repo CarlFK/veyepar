@@ -92,50 +92,13 @@
 	</PageHeader>
 
 	<Detail>
-		<Height>226.2</Height>
+		<Height>302.1</Height>
 		<Objects>
 			<Line>
 				<Height>10</Height>
 				<Width>540.0</Width>
-				<y>'220.0 pt'</y>
+				<y>'291.0 pt'</y>
 			</Line>
-			<String>
-				<align>'right'</align>
-				<expr>"Presenter(s):"</expr>
-				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>12</FontSize>
-				<Height>12</Height>
-				<width>'80.0 pt'</width>
-				<x>'7 pt'</x>
-				<y>'32.0 pt'</y>
-			</String>
-			<String>
-				<expr>self.episode_authors</expr>
-				<fontname>'Helvetica'</fontname>
-				<Height>12</Height>
-				<Rotation>0</Rotation>
-				<width>'450.0 pt'</width>
-				<x>'89.6 pt'</x>
-				<y>'32.0 pt'</y>
-			</String>
-			<String>
-				<align>'right'</align>
-				<expr>"Talk Title:"</expr>
-				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>12</FontSize>
-				<Height>12</Height>
-				<width>'80.0 pt'</width>
-				<x>'7 pt'</x>
-				<y>'15.2 pt'</y>
-			</String>
-			<String>
-				<expr>self.episode_name</expr>
-				<fontname>'Helvetica'</fontname>
-				<Height>12</Height>
-				<width>'450.0 pt'</width>
-				<x>'89.6 pt'</x>
-				<y>'15.9 pt'</y>
-			</String>
 			<String>
 				<align>'right'</align>
 				<expr>"Talk Start:"</expr>
@@ -144,7 +107,7 @@
 				<Height>12</Height>
 				<width>'65.0 pt'</width>
 				<x>'118.7 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -154,7 +117,7 @@
 				<height>'14 pt'</height>
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
-				<y>'103.0 pt'</y>
+				<y>'118.0 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -164,7 +127,7 @@
 				<height>'8.0 pt'</height>
 				<width>'25 pt'</width>
 				<x>'513.0 pt'</x>
-				<y>'196.0 pt'</y>
+				<y>'285.0 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -174,7 +137,7 @@
 				<height>'8.0 pt'</height>
 				<Width>38</Width>
 				<x>'500 pt'</x>
-				<y>'188.0 pt'</y>
+				<y>'277.0 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -184,7 +147,7 @@
 				<height>'8.0 pt'</height>
 				<Width>38</Width>
 				<x>'500 pt'</x>
-				<y>'177.0 pt'</y>
+				<y>'266.0 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -194,7 +157,7 @@
 				<height>'14 pt'</height>
 				<width>'170.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'191.2 pt'</y>
+				<y>'233.2 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -204,7 +167,7 @@
 				<height>'14 pt'</height>
 				<width>'470.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'163.2 pt'</y>
+				<y>'206.2 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -214,18 +177,18 @@
 				<height>'14 pt'</height>
 				<width>'470.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'177.2 pt'</y>
+				<y>'220.2 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
 				<comment>'(Green Green on switchbox)'</comment>
-				<expr>"[  ] Both Projectors and confidence monitor switched to Presenter's laptop"</expr>
+				<expr>"[  ] Both Projector and confidence monitor switched to Presenter's laptop"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
 				<width>'470.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'135.2 pt'</y>
+				<y>'151.2 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -235,7 +198,7 @@
 				<height>'14 pt'</height>
 				<width>'210.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'149.2 pt'</y>
+				<y>'173.2 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -245,7 +208,7 @@
 				<height>'14 pt'</height>
 				<width>'490.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'122.2 pt'</y>
+				<y>'137.2 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_start.strftime("%I:%M %p").strip('0').lower()</expr>
@@ -254,7 +217,7 @@
 				<height>'18.0 pt'</height>
 				<width>'52.0 pt'</width>
 				<x>'185.0 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -264,7 +227,7 @@
 				<Height>12</Height>
 				<width>'62.0 pt'</width>
 				<x>'0.7 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<expr>(self.episode_start+datetime.timedelta(minutes=-5)).strftime("%I:%M %p").strip('0').lower()</expr>
@@ -273,7 +236,7 @@
 				<height>'13.0 pt'</height>
 				<width>'52.0 pt'</width>
 				<x>'64.0 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -283,7 +246,7 @@
 				<Height>12</Height>
 				<width>'50.0 pt'</width>
 				<x>'238.7 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_duration</expr>
@@ -292,7 +255,7 @@
 				<height>'18.0 pt'</height>
 				<width>'53.0 pt'</width>
 				<x>'290.0 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -302,7 +265,7 @@
 				<Height>12</Height>
 				<width>'30.0 pt'</width>
 				<x>'453.7 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_end.strftime("%I:%M %p").strip('0').lower()</expr>
@@ -311,7 +274,7 @@
 				<height>'18.0 pt'</height>
 				<width>'52.0 pt'</width>
 				<x>'485.0 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -321,7 +284,7 @@
 				<Height>12</Height>
 				<width>'52.0 pt'</width>
 				<x>'345.7 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<expr>(self.episode_end+datetime.timedelta(minutes=-5)).strftime("%I:%M %p").strip('0').lower()</expr>
@@ -330,7 +293,7 @@
 				<height>'13.0 pt'</height>
 				<width>'52.0 pt'</width>
 				<x>'400.0 pt'</x>
-				<y>'210.0 pt'</y>
+				<y>'248.0 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -340,7 +303,7 @@
 				<height>'14 pt'</height>
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
-				<y>'47.0 pt'</y>
+				<y>'80.0 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -350,7 +313,54 @@
 				<height>'14 pt'</height>
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
-				<y>'61.0 pt'</y>
+				<y>'94.0 pt'</y>
+			</String>
+			<String>
+				<align>'right'</align>
+				<expr>"Presenter(s):"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>12</FontSize>
+				<Height>12</Height>
+				<width>'80.0 pt'</width>
+				<x>'7 pt'</x>
+				<y>'282.0 pt'</y>
+			</String>
+			<String>
+				<expr>self.episode_authors</expr>
+				<fontname>'Helvetica'</fontname>
+				<Height>12</Height>
+				<Rotation>0</Rotation>
+				<width>'450.0 pt'</width>
+				<x>'89.6 pt'</x>
+				<y>'282.0 pt'</y>
+			</String>
+			<String>
+				<expr>self.episode_name</expr>
+				<fontname>'Helvetica'</fontname>
+				<Height>12</Height>
+				<width>'450.0 pt'</width>
+				<x>'89.6 pt'</x>
+				<y>'265.9 pt'</y>
+			</String>
+			<String>
+				<align>'right'</align>
+				<expr>"Talk Title:"</expr>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>12</FontSize>
+				<Height>12</Height>
+				<width>'80.0 pt'</width>
+				<x>'7 pt'</x>
+				<y>'265.2 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
+				<expr>'[  ] laptop sound?  Plug in, play sound.'</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>12</FontSize>
+				<height>'14 pt'</height>
+				<width>'470.0 pt'</width>
+				<x>'10.7 pt'</x>
+				<y>'190.2 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
