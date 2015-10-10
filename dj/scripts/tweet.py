@@ -89,7 +89,14 @@ class tweet(process):
         if ep.twitter_id is None:
             twitter_ids = ""
         else:
-            twitter_ids = ep.twitter_id.replace(',','')
+            twitter_ids = []
+            for tid in ep.twitter_id.split(','):
+                tid = tid.strip()
+                if not tid.startswith('@'):
+                    tid = "@" + tid
+                twitter_ids.append(tid)
+            twitter_ids = ' '.join(twitter_ids)
+
 
         tweet = self.mk_tweet(prefix, 
                 twitter_ids, ep.name, ep.authors, url)
