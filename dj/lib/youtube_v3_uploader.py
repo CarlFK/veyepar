@@ -129,6 +129,7 @@ RETRIABLE_EXCEPTIONS = (
 # Always retry when an apiclient.errors.HttpError with one of these status
 # codes is raised.
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
+
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
 def get_authenticated_service(user_key):
@@ -307,10 +308,9 @@ class Uploader():
             part='status',
             body={
                 'id':video_id,
-                'status':privacyStatus,
+                'status':dict(privacyStatus=privacyStatus),
                 }
             ).execute()
-
 
         return True
 
@@ -393,9 +393,10 @@ def test_upload(args):
     else:
         print u.ret_text
 
-def test_set_pub(video_url):
+def test_set_pub(args,video_url):
     
     u = Uploader()
+    u.user=args.user
     u.set_permission(video_url)
 
     return
@@ -429,6 +430,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     url = test_upload(args)
-
-    test_set_pub(url)
+    test_set_pub(args,url)
 
