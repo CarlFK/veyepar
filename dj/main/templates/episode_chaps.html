@@ -13,6 +13,14 @@
 
 {% for chap in chaps %}
   {% if chap.0 and chap.1.comment %}
+ {{chap.0}} {{chap.1.comment}}<br/>
+  {%endif%}
+{%endfor%}
+
+<p> <hr>
+
+{% for chap in chaps %}
+  {% if chap.0 and chap.1.comment %}
  * [({{chap.0}})]({{chap.2}})  {{chap.1.comment}}<br/>
   {%endif%}
 {%endfor%}
