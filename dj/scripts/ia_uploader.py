@@ -75,14 +75,14 @@ class Uploader(object):
             'mediatype': "movies",
             'language': self.meta['language'],
             'collection': 'opensource_movies',
+            'title':self.meta['title'],
             # this is visible on the web page under 'Keywords: '
-            'subject':self.meta['title'],
+            'subject':self.meta['tags'],
             # this is visible on the web page as the license
             # 'licenseurl', 'http://creativecommons.org/licenses/by/4.0/',
             'licenseurl': "http://creativecommons.org/licenses/by/3.0/",
             # this is visible on the web page as the description
             'description':self.meta['description'],
-            'tags':self.meta['tags'],
         }
 
 
@@ -100,6 +100,9 @@ class Uploader(object):
         # auth['access'], auth['secret'] 
 
         md = self.get_metadata()
+
+        print(1, md)
+        return False
 
         pf = ProgressFile(self.pathname, 'r')
 
