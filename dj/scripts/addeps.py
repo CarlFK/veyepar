@@ -398,11 +398,78 @@ class add_eps(process.process):
                 # up here and now below so the diff doesn't wazz
                 if episode.emails and not row['emails']:
                     row['emails'] = episode.emails
-
             else:
                 episode = None
 
-            if self.options.update:
+            # this is the show diff part.
+            diff=False
+            if episode is None: 
+                diff=True
+                print u"{conf_key} not in db, name:{name}\n{location}".format(
+                        **row)
+                print
+
+            else:
+                # print("tags", episode.tags.__repr__(), row['tags'].__repr__())
+                # check for diffs
+                diff_fields=[]
+                for f in fields:
+                    # veyepar, remote
+                    a1,a2 = getattr(episode,f), row[f]
+                    if f=="description":
+                        a1 = a1.replace('\r','')
+                        a2 = a2.replace('\r','')
+                    if (a1 or a2) and (a1 != a2): 
+                        diff=True
+                        diff_fields.append((f,a1,a2))
+                # report if different
+                if diff:
+                    print 'veyepar #id name: #%s %s' % (
+                            episode.id, episode.name)
+                    # if self.show.slug=="debconf15":
+                    #    host= "encoding2.dc15.debconf.org" 
+                    # else:
+                    host= "veyepar.nextdayvideo.com" 
+                    print "http://%s/main/E/%s/" % ( host, episode.id, )
+                    print episode.conf_key, episode.conf_url
+                    if self.options.verbose: 
+                        pprint.pprint( diff_fields )
+                    for f,a1,a2 in diff_fields:
+                        if not isinstance(a1,basestring):
+                            print u'veyepar {0}: {1}'.format(f,a1)
+                            print u'   conf {0}: {1}'.format(f,a2)
+                        else:
+                            print f
+                            if a2 is None or max(len(a1),len(a2)) < 160:
+                              # print a1
+                              # print a2
+                              print u'veyepar {0}: {1}'.format(f,a1)
+                              print u'   conf {0}: {1}'.format(f,a2)
+                            else:
+                              # long string (prolly description)
+                              for i,cs in enumerate(zip(a1,a2)):
+                                if cs[0] <> cs[1]:
+                                    """
+                                    print \
+                      "#1, diff found at pos {0}:\n{1}\n{2}".format(
+                              i,cs[0].__repr__(),
+                                cs[1].__repr__()) 
+                                    """
+                                    print \
+        "diff found at pos {0}:\nveyepar: {1}\n   conf: {2}".format(
+                              i,a1[i:i+80].__repr__(),
+                                a2[i:i+80].__repr__()) 
+                                    break
+                    print
+
+
+            if diff and episode.state > 5: # add_to_richard
+                print(u"not updating conf_key: {conf_key}, name:{name}".format(**row))
+                print(episode.public_url)
+                print()
+                continue
+
+            if self.options.update and diff:
                 if episode is None:
                     print "adding conf_key: %(conf_key)s, name:%(name)s" % row
                     # I am not sure why some fields are here in .create
@@ -418,8 +485,9 @@ class add_eps(process.process):
                     episode.sequence=seq
                     episode.state=1
                     seq+=1
+
                 else:
-                    print "updating conf_key: %(conf_key)s, name:%(name)s" % row
+                    print(u"updating conf_key: {conf_key}, name:{name}").format(**row)
 
                 episode.location=Location.objects.get(
                         name__iexact=row['location'])
@@ -432,66 +500,6 @@ class add_eps(process.process):
                 episode.conf_meta=json.dumps(row['raw'])
 
                 episode.save()
-
-            else:
-                # this is the show diff part.
-                if episode is None: 
-                    print u"{conf_key} not in db, name:{name}\n{location}".format(
-                            **row)
-                    print
-
-                else:
-                    # print("tags", episode.tags.__repr__(), row['tags'].__repr__())
-                    # check for diffs
-                    diff_fields=[]
-                    for f in fields:
-                        # veyepar, remote
-                        a1,a2 = getattr(episode,f), row[f]
-                        if f=="description":
-                            a1 = a1.replace('\r','')
-                            a2 = a2.replace('\r','')
-                        if (a1 or a2) and (a1 != a2): 
-                            diff_fields.append((f,a1,a2))
-                    # report if different
-                    if diff_fields:
-                        print 'veyepar #id name: #%s %s' % (
-                                episode.id, episode.name)
-                        # if self.show.slug=="debconf15":
-                        #    host= "encoding2.dc15.debconf.org" 
-                        # else:
-                        host= "veyepar.nextdayvideo.com" 
-                        print "http://%s/main/E/%s/" % ( host, episode.id, )
-                        print episode.conf_key, episode.conf_url
-                        if self.options.verbose: 
-                            pprint.pprint( diff_fields )
-                        for f,a1,a2 in diff_fields:
-                            if not isinstance(a1,basestring):
-                                print u'veyepar {0}: {1}'.format(f,a1)
-                                print u'   conf {0}: {1}'.format(f,a2)
-                            else:
-                                print f
-                                if a2 is None or max(len(a1),len(a2)) < 160:
-                                  # print a1
-                                  # print a2
-                                  print u'veyepar {0}: {1}'.format(f,a1)
-                                  print u'   conf {0}: {1}'.format(f,a2)
-                                else:
-                                  # long string (prolly description)
-                                  for i,cs in enumerate(zip(a1,a2)):
-                                    if cs[0] <> cs[1]:
-                                        """
-                                        print \
-                          "#1, diff found at pos {0}:\n{1}\n{2}".format(
-                                  i,cs[0].__repr__(),
-                                    cs[1].__repr__()) 
-                                        """
-                                        print \
-            "diff found at pos {0}:\nveyepar: {1}\n   conf: {2}".format(
-                                  i,a1[i:i+80].__repr__(),
-                                    a2[i:i+80].__repr__()) 
-                                        break
-
-                        print
 
 
     def addlocs(self, schedule, show):
@@ -2602,7 +2610,7 @@ class add_eps(process.process):
 
             event['authors'] = event['authors'][0]['name']
             event['emails'] = event['emails'][0]['email']
-            event['twitter_id'] = event['twitter_id'][0]['email']
+            event['twitter_id'] = event['twitter_id'][0]['twitter_id']
 
             event['start'] = datetime.datetime.strptime( 
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
@@ -2612,6 +2620,9 @@ class add_eps(process.process):
             delta = event['end'] - event['start']
             minutes = delta.seconds/60 
             event['duration'] = "00:%s:00" % ( minutes) 
+
+            event['released'] =  event['released'] == "yes"
+
 
             # event['conf_url'] = "http://www.chicagoerlang.com/{}.html".format(event['conf_key'])
 
