@@ -312,6 +312,21 @@ class Uploader():
                 }
             ).execute()
 
+        """
+        >>> videos_update_response
+        {u'status': {u'publicStatsViewable': False, u'privacyStatus':
+        u'public', u'uploadStatus': u'processed', u'license': u'youtube',
+        u'embeddable': False}, u'kind': u'youtube#video', u'etag':
+        u'"fpJ9onbY0Rl_LqYLG6rOCJ9h9N8/yzjxcIfiMnHpq7I5wbMY44afabU"', u'id':
+        u'cUvNths_5RA'}
+        """
+
+        stat = videos_update_response['status']['privacyStatus']
+        if stat != privacyStatus:
+            pprint.pprint(videos_update_response)
+            import code; code.interact(local=locals())
+
+
         return True
 
     def upload(self):
@@ -364,10 +379,8 @@ def test_upload(args):
 
     u = Uploader()
    
-    description = ("test " * (5/5)) + "Look as this -> >1< <- I rule."
-
     u.meta = {
-      'description': description,
+      'description': "test description",
       'title': "test title",
       'category': 22, # 22 is maybe "Education",
       'tags': [u'test', u'tests', ],
