@@ -5,7 +5,7 @@
 from process import process
 
 import youtube_v3_uploader
-import archive_uploader
+import ia_uploader
 import rax_uploader
 
 import os
@@ -208,40 +208,45 @@ class post(process):
 
         return youtube_success
 
-    def do_arc(self, ep, files, meta):
-        # upload to archive.org too.. yuck.
-        # this should be in post_arc.py, but
+    def do_ia(self, ep, files, meta):
+        # upload to archive.org too.
+        # this should be in post_ia.py, but
         # but I don't want 2 processes uploading at the same time.
         # bcause bandwidth?
 
-        uploader = archive_uploader.Uploader()
+        uploader = ia_uploader.Uploader()
 
         uploader.user = ep.show.client.archive_id
-        uploader.bucket_id = ep.show.client.bucket_id
 
         for f in files:
 
             uploader.pathname = f['pathname']
-            uploader.key_id = "%s.%s" % ( ep.slug[:30], f['ext'] )
+            uploader.verbose = self.options.verbose
+
+            uploader.slug = u"{show}-{slug}".format(
+                    show=ep.show.slug,
+                    slug=ep.slug)
+
+            # uploader.slug = "{show} - %s.%s" % ( ep.slug[:30], f['ext'] )
 
             if self.options.test:
                 print 'test mode...'
                 print 'skipping archive_uploader .upload()'
 
-            elif ep.archive_ogv_url and not self.options.replace:
+            elif ep.archive_mp4_url and not self.options.replace:
                 # um.. what about other formats?  
                 # kinda buggy here.
                 # but only relevant when things are messed up
                 # and looking for problemss.
                 print "skipping archive, ogv already there."
-                archive_success = True
+                ia_success = True
 
             else:
 
                 # actually upload
                 # uploader.debug_mode=True
-                archive_success = uploader.upload()
-                if archive_success:
+                ia_success = uploader.upload()
+                if ia_success:
                     if self.options.verbose: print uploader.new_url
                     # this is pretty gross.
                     # store the archive url
@@ -259,11 +264,11 @@ class post(process):
 
 
                 else:
-                    print "internet archive error!"
+                    print "Internet archive.org error!"
 
                 save_me(ep)
 
-            return archive_success
+            return ia_success
 
 
     def do_rax(self, ep, files, meta):
@@ -401,7 +406,7 @@ class post(process):
 
         # upload archive.org
         if not ep.show.client.archive_id: archive_success = True
-        else: archive_success = self.do_arc(ep,files,meta)
+        else: archive_success = self.do_ia(ep,files,meta)
 
         # upload rackspace cdn
         if not ep.show.client.rax_id: rax_success = True
