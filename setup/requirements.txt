@@ -11,7 +11,9 @@ steve
 python-dateutil
 
 progressbar
-boto
+
+# boto
+internetarchive
 
 requests
 
