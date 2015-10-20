@@ -86,7 +86,8 @@ class tweet(process):
         prefix = show.client.tweet_prefix
 
         # remove commas
-        if ep.twitter_id is None:
+        if ep.twitter_id is None \
+                or not ep.twitter_id:
             twitter_ids = ""
         else:
             twitter_ids = []
