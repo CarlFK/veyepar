@@ -121,6 +121,9 @@ class post(process):
         meta['description'] = self.construct_description(ep)
         meta['tags'] = self.get_tags(ep)
 
+        meta['language'] = ep.language
+        meta['language'] = "eng"
+
         # if ep.license:
         #    meta['license'] = str(ep.license)
 
@@ -227,11 +230,12 @@ class post(process):
                     show=ep.show.slug,
                     slug=ep.slug)
 
-            # uploader.slug = "{show} - %s.%s" % ( ep.slug[:30], f['ext'] )
+            uploader.meta = meta
 
             if self.options.test:
                 print 'test mode...'
                 print 'skipping archive_uploader .upload()'
+                ia_success = False
 
             elif ep.archive_mp4_url and not self.options.replace:
                 # um.. what about other formats?  
