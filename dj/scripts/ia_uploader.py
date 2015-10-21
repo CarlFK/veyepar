@@ -7,8 +7,11 @@
 import optparse
 import os
 import sys
+import datetime
 
 import internetarchive as ia
+
+from requests.exceptions import HTTPError
 
 """
 Uploader for Internet Archive that uses internetarchive
@@ -76,6 +79,7 @@ class Uploader(object):
             'language': self.meta['language'],
             'collection': 'opensource_movies',
             'title':self.meta['title'],
+            'creator':self.meta['authors'],
             # this is visible on the web page under 'Keywords: '
             'subject':self.meta['tags'],
             # this is visible on the web page as the license
@@ -83,11 +87,13 @@ class Uploader(object):
             'licenseurl': "http://creativecommons.org/licenses/by/3.0/",
             # this is visible on the web page as the description
             'description':self.meta['description'],
+            'publicdate':self.meta['start'],
         }
 
 
         if self.test:
-            meta['x-archive-meta-collection'] = 'test_collection'
+            # meta['x-archive-meta-collection'] = 'test_collection'
+            meta['collection'] = 'test_collection'
 
         return meta
 
@@ -100,9 +106,6 @@ class Uploader(object):
         # auth['access'], auth['secret'] 
 
         md = self.get_metadata()
-
-        print(1, md)
-        return False
 
         pf = ProgressFile(self.pathname, 'r')
 
@@ -123,7 +126,7 @@ class Uploader(object):
             print( "foo: {}".format(self.new_url))
             ret = True
 
-        except Exception as e:
+        except HTTPError as e: 
 
             print e
 
@@ -167,10 +170,12 @@ def parse_args(argv):
 
 ### Smoke test
 def test_upload(args):
+
     u = Uploader()
     u.user = args.user
     u.debug_mode = args.debug
-    u.test = args.test
+    # u.test = args.test
+    u.test = True
     u.verbose = args.verbose
     u.pathname = args.filename
     u.slug = os.path.splitext(os.path.basename(u.pathname))[0]
@@ -180,6 +185,15 @@ def test_upload(args):
       'language': "eng",
       'tags': [u'test', u'tests', ],
     }
+    u.meta = {
+ 'authors': [u'Simon Cross'],
+ 'category': 22,
+ 'description': u'Adrianna Pi\u0144ska',
+ 'language': 'eng',
+ 'privacyStatus': 'unlisted',
+ 'start': datetime.datetime(2015, 10, 2, 15, 30),
+ 'tags': [u'pyconza', u'pyconza2015', u'python', u'SimonCross'],
+ 'title': u'Friday Lightning Talks'}
 
     ret = u.upload()
     if ret:

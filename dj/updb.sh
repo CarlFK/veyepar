@@ -17,13 +17,12 @@ fi
 # BatchMode will cause this to fail and continue to the wget
 ssh -o BatchMode=yes veyepar@veyepar.nextdayvideo.com /home/veyepar/site/veyepar/utils/dumpdata.sh
 
+
 SRC=http://veyepar.nextdayvideo.com/static/temp
 # wget -N $SRC/veyepar_all.json
 # wget -N $SRC/veyepar_noauth.json
-## wget -N $SRC/veyepar_main.json
+wget -N $SRC/veyepar_main.json
 # wget -N $SRC/veyepar_auth.json
-
-scp "veyepar@storage2.dc15.debconf.org:site/veyepar/dj/*.json" .
 
 touch veyepar.db 
 mv  veyepar.db  ~/temp

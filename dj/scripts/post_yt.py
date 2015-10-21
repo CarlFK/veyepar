@@ -65,7 +65,8 @@ class post(process):
 
         tags = [ ep.show.client.slug, ep.show.slug, ] 
 
-        for more_tags in [ ep.show.client.tags, ep.tags, ep.authors ]:
+        # for more_tags in [ ep.show.client.tags, ep.tags, ep.authors ]:
+        for more_tags in [ ep.show.client.tags, ep.authors ]:
             if more_tags is not None:
                 tags += more_tags.split(',')
 
@@ -118,9 +119,11 @@ class post(process):
 
         meta = {}
         meta['title'] = ep.name
+        meta['authors'] = ep.authors.split(',')
         meta['description'] = self.construct_description(ep)
         meta['tags'] = self.get_tags(ep)
 
+        meta['start'] = ep.start
         meta['language'] = ep.language
         meta['language'] = "eng"
 
