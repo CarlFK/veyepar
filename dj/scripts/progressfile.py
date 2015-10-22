@@ -28,7 +28,8 @@ class ProgressFile(file):
 
     @property
     def name(self):
-        return super(ProgressFile, self).name.encode('ascii', 'replace')
+        return super(ProgressFile, self).name
+        # return super(ProgressFile, self).name.encode('ascii', 'replace')
 
     def size(self):
         return self.len

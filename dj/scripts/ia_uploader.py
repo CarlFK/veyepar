@@ -103,12 +103,8 @@ class Uploader(object):
         print "Uploading file to Archive.org..."
 
         auth = archive[self.user] ## from dict of credentials 
-        # auth['access'], auth['secret'] 
-
         md = self.get_metadata()
-
         pf = ProgressFile(self.pathname, 'r')
-
         item = ia.get_item(self.slug)
 
         try:
@@ -116,6 +112,7 @@ class Uploader(object):
             # actually upload
             ret = item.upload(pf, metadata=md, 
                     access_key=auth['access'], secret_key=auth['secret'],
+                    ignore_preexisting_bucket=True,
                     verbose=self.verbose)
 
             if self.debug_mode:
@@ -123,12 +120,12 @@ class Uploader(object):
                 
             self.new_url = item.url
                 
-            print( "foo: {}".format(self.new_url))
+            print( "ia: {}".format(self.new_url))
             ret = True
 
         except HTTPError as e: 
 
-            print e
+            print( "ia_uploader.py", e )
 
             # self.ret_text = "internet archive error: %s" % ( e.body )
 
@@ -178,23 +175,30 @@ def test_upload(args):
     u.test = True
     u.verbose = args.verbose
     u.pathname = args.filename
-    u.slug = os.path.splitext(os.path.basename(u.pathname))[0]
+    u.pathname = u'/home/carl/Videos/veyepar/pyconza/pyconza2015/mp4/PyCon_Montréal_in_30_min.mp4'
+    # u.slug = os.path.splitext(os.path.basename(u.pathname))[0]
+    u.slug = u"PyCon_Montréal"
+    # u.slug = "PyCon_Mont"
     u.meta = {
       'title': "test title",
       'description': "test description",
       'language': "eng",
       'tags': [u'test', u'tests', ],
+      'authors':'people',
+      'start':datetime.datetime.now()
     }
     u.meta = {
- 'authors': [u'Simon Cross'],
- 'category': 22,
- 'description': u'Adrianna Pi\u0144ska',
- 'language': 'eng',
- 'privacyStatus': 'unlisted',
- 'start': datetime.datetime(2015, 10, 2, 15, 30),
- 'tags': [u'pyconza', u'pyconza2015', u'python', u'SimonCross'],
- 'title': u'Friday Lightning Talks'}
+     'authors': [u'Simon Cross'],
+     'category': 22,
+     'description': u'Adrianna Pi\u0144ska',
+     'language': 'eng',
+     'privacyStatus': 'unlisted',
+     'start': datetime.datetime(2015, 10, 2, 15, 30),
+     'tags': [u'pyconza', u'pyconza2015', u'python', u'SimonCross'],
+     'title': u'Friday Lightning Talks'}
 
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
     ret = u.upload()
     if ret:
         print u.new_url
