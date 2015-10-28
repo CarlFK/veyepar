@@ -413,6 +413,11 @@ class add_eps(process.process):
                 # print("tags", episode.tags.__repr__(), row['tags'].__repr__())
                 # check for diffs
                 diff_fields=[]
+                if episode.location <> row['location']:
+                    diff=True
+                    diff_fields.append(('loc',
+                        episode.location, row['location']))
+
                 for f in fields:
                     # veyepar, remote
                     a1,a2 = getattr(episode,f), row[f]
@@ -2779,9 +2784,11 @@ class add_eps(process.process):
 
         for event in events:
 
-            if "Derwent 1" in event['location'] \
-                    or event['location']==[]:
+            if "Derwent 1" in event['location']:
                 event['location'] = 'Derwent 1'
+
+            if not event['location']:
+                event['location'] = 'Riviera'
 
             event['start'] = datetime.datetime.strptime( 
                 event['start'], '%Y-%m-%dT%H:%M:%S' )
