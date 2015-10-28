@@ -9,6 +9,7 @@ twit = {
 } 
    }
 bitly = {'user':'fred', 'password':'R_longstringofstuff'}
+addeps = {}
 
 yt = {
 'veyepar_test':{

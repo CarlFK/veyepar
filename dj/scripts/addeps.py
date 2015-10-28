@@ -3010,7 +3010,12 @@ class add_eps(process.process):
             session = requests.session()
 
             # auth stuff goes here, kinda.
-            auth = pw.addeps.get(self.options.client, None)
+            
+	    try:
+		auth = pw.addeps.get(self.options.client, None)
+	    except:
+		auth = None
+
             if auth is not None:
                 if self.options.verbose: print auth
 
