@@ -708,7 +708,7 @@ class add_eps(process.process):
       rooms=set()
       for row in schedule:
           if self.options.verbose: print row
-          room = row[key]
+	  room = row[key]
           if room is None: room = "None"
           rooms.add(room)
       return rooms
@@ -994,6 +994,65 @@ class add_eps(process.process):
         events = self.pct_events(schedule)
         self.add_eps(events, show)
         return 
+
+    def osdc2015(self, schedule, show):
+	schedule = schedule['schedule']
+	print "consumer OSDC2015"
+        rooms = self.get_rooms(schedule,'room')
+	rooms = [r for r in rooms if r != 'Riviera')]
+	self.add_rooms(rooms,show)
+
+        events=[]
+
+        for row in schedule:
+            if self.options.verbose: pprint.pprint( row )
+            event={}
+            event['id'] = row['conf_key']
+            event['name'] = row['name']
+
+            # event['location'] = row['room']
+            # if event['location']=='Plenary': event['location'] = "Cartoon 1" 
+            # if event['location'] is None: event['location'] = "Track 1" 
+            # if event['location']=='Plenary': event['location'] = "Track 1" 
+            # event['location'] = "%s - %s" % ( 
+            #        row['room_name'], row['room'] )
+            event['location'] = row['room']
+
+            event['start'] = datetime.datetime.strptime(
+                    row['start'], '%Y-%m-%dT%H:%M:%S' )
+
+            # if "Poster" in row["tags"]:
+            # event['start'] += datetime.timedelta(hours=-3)
+
+            break_min = 0 ## no time for breaks!
+            seconds=(row['duration'] - break_min ) * 60
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            duration = "%02d:%02d:%02d" % hms
+            event['duration'] =  duration
+
+            try:
+		event['authors'] = row['authors']
+		event['description'] = row['description']
+		event['conf_url'] = row['conf_url']
+	    except:
+		event['conf_url'] = ""
+
+            #event['released'] = row['released']
+            #event['license'] = row['license']
+            event['conf_key'] = row['conf_key']
+            #event['conf_url'] = row['conf_url']
+
+            if event['conf_key'] is None: event['conf_key'] = ""
+
+            event['tags'] = ''
+
+            # save the original row so that we can sanity check end time.
+            event['raw'] = row
+
+            events.append(event)
+
+        self.add_eps(events, show)
+        return
 
     def pyohio(self, schedule, show):
         # print "consumer PyOhio"
@@ -2741,9 +2800,6 @@ class add_eps(process.process):
       self.add_eps(events, show)
 
       return 
-
-    def osdc2015(self, schedule, show):
-        return self.djbp10(schedule, show)
 
     def djbp10(self, schedule, show):
 
