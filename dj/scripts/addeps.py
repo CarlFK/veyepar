@@ -2742,6 +2742,8 @@ class add_eps(process.process):
 
       return 
 
+    def osdc2015(self, schedule, show):
+        return self.djbp10(schedule, show)
 
     def djbp10(self, schedule, show):
 
@@ -3098,6 +3100,9 @@ class add_eps(process.process):
             # Zookeepr
             return self.zoo(schedule,show)
 
+        if self.options.show =='osdc2015':
+            return self.osdc2015(schedule,show)
+	   
         if self.options.show =='djbp10':
             return self.djbp10(schedule,show)
 
@@ -3167,8 +3172,7 @@ class add_eps(process.process):
         if self.options.show == 'pyconde2012':
             return self.pyconde2012(schedule,show)
 
-        if url.endswith("/schedule/conference.json"):
-            # this is Ver pycon2013
+        if self.options.show == 'pycon2013':
             return self.pycon2013(schedule,show)
 
         # if self.options.show =='chicagowebconf2012':

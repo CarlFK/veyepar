@@ -32,6 +32,8 @@ sudo apt-get --assume-yes update
 
 sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav gir1.2-gstreamer-1.0
 
+sudo apt-get --assume-yes install libyaml-dev libjpeg-dev
+
 # python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad 
 # python-lxml 
 # python-dev libxml2-dev libxslt-dev
@@ -89,6 +91,9 @@ ln -s /usr/lib/python2.7/dist-packages/gi
 
 git clone https://github.com/dabodev/dabo.git dabo-master
 ln -s dabo-master/dabo 
+
+# force latest six
+pip uninstall six -y; pip install six
 
 # to hookinto local open-cv
 # python -c "import cv2;print cv2.__file__" 
