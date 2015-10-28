@@ -221,7 +221,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'start', 'duration', 
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
-            'host_url', 'public_url', 'rax_mp4_url',
+            'host_url', 'public_url', 'rax_mp4_url', 'archive_mp4_url',
             'twitter_url', 
             'comment',
         ]

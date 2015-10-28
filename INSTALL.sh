@@ -92,9 +92,6 @@ ln -s /usr/lib/python2.7/dist-packages/gi
 git clone https://github.com/dabodev/dabo.git dabo-master
 ln -s dabo-master/dabo 
 
-# force latest six
-pip uninstall six -y; pip install six
-
 # to hookinto local open-cv
 # python -c "import cv2;print cv2.__file__" 
 # /usr/lib/python2.7/dist-packages/cv2.so

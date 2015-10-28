@@ -463,11 +463,13 @@ class add_eps(process.process):
                     print
 
 
+            """
             if diff and episode.state > 5: # add_to_richard
                 print(u"not updating conf_key: {conf_key}, name:{name}".format(**row))
                 print(episode.public_url)
                 print()
                 continue
+            """
 
             if self.options.update and diff:
                 if episode is None:
@@ -2743,7 +2745,59 @@ class add_eps(process.process):
       return 
 
     def osdc2015(self, schedule, show):
-        return self.djbp10(schedule, show)
+
+        schedule = schedule['schedule']
+        schedule = [s for s in schedule if 'authors' in s]
+        schedule = [s for s in schedule if s['rooms']]
+
+        field_maps = [
+                ('room','location'),
+                ('name','name'),
+                ('description','description'),
+                ('authors','authors'),
+                ('authors','emails'),
+                ('start','start'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('tags','tags'),
+                ('conf_key','conf_key'),
+                ('conf_url','conf_url'),
+                ('','twitter_id'),
+                ('','host_url'),
+                ('','public_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        # for event in events:
+        #    pprint.pprint( event )
+
+        # remove events with no room (like Break)
+        events = [e for e in events if e['location'] is not None ]
+        events = [e for e in events if e['location'] is not None ]
+
+        for event in events:
+            pprint.pprint( event )
+
+            if "Derwent 1" in event['location']:
+                event['location'] = 'Derwent 1'
+
+            event['start'] = datetime.datetime.strptime( 
+                event['start'], '%Y-%m-%dT%H:%M:%S' )
+
+            event['duration'] = "00:{}:00".format(event['duration']) 
+
+            event['authors']=', '.join(event['authors'])
+            event['emails']=', '.join(event['emails'])
+
+            event['tags'] = ''
+
+        self.add_eps(events, show)
+
+        return 
 
     def djbp10(self, schedule, show):
 
@@ -3011,10 +3065,7 @@ class add_eps(process.process):
 
             # auth stuff goes here, kinda.
             
-	    try:
-		auth = pw.addeps.get(self.options.client, None)
-	    except:
-		auth = None
+            auth = pw.addeps.get(self.options.client, None)
 
             if auth is not None:
                 if self.options.verbose: print auth
