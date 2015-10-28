@@ -2748,7 +2748,6 @@ class add_eps(process.process):
 
         schedule = schedule['schedule']
         schedule = [s for s in schedule if 'authors' in s]
-        schedule = [s for s in schedule if s['rooms']]
 
         field_maps = [
                 ('room','location'),
@@ -2777,12 +2776,11 @@ class add_eps(process.process):
 
         # remove events with no room (like Break)
         events = [e for e in events if e['location'] is not None ]
-        events = [e for e in events if e['location'] is not None ]
 
         for event in events:
-            pprint.pprint( event )
 
-            if "Derwent 1" in event['location']:
+            if "Derwent 1" in event['location'] \
+                    or event['location']==[]:
                 event['location'] = 'Derwent 1'
 
             event['start'] = datetime.datetime.strptime( 
