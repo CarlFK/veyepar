@@ -46,3 +46,8 @@ git+https://github.com/CarlFK/google-api-python-client.git#egg=googleapiclient
 # for util/dirmon.py
 git+https://github.com/maliubiao/python_inotify.git 
 
+python-keystoneclient
+oslo.utils
+oslo.serialization
+boto
+beautifulsoup4
