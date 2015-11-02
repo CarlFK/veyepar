@@ -715,7 +715,7 @@ class add_eps(process.process):
       rooms=set()
       for row in schedule:
           if self.options.verbose: print row
-          room = row[key]
+	  room = row[key]
           if room is None: room = "None"
           rooms.add(room)
       return rooms
