@@ -92,7 +92,8 @@ import HTMLParser
 import os
 import urlparse
 
-# from dateutil.parser import parse
+from dateutil.parser import parse
+# import dateutil
 import pprint
 from django.utils.html import strip_tags
 from django.template.defaultfilters import slugify
@@ -381,8 +382,7 @@ class add_eps(process.process):
                     # this means the uniquie ID is not unique,
                     # and there is a dube in the veyepar db.
                     # import pdb; pdb.set_trace()
-                    import code
-                    code.interact(local=locals())
+                    import code; code.interact(local=locals())
                     # then continue on.  
 
                 episode = episodes[0]
@@ -413,7 +413,8 @@ class add_eps(process.process):
                 # print("tags", episode.tags.__repr__(), row['tags'].__repr__())
                 # check for diffs
                 diff_fields=[]
-                if episode.location <> row['location']:
+
+                if episode.location.name.upper() <> row['location'].upper():
                     diff=True
                     diff_fields.append(('loc',
                         episode.location, row['location']))
@@ -2773,8 +2774,6 @@ class add_eps(process.process):
             ]
 
         events = self.generic_events(schedule, field_maps)
-        rooms = self.get_rooms(events)
-        self.add_rooms(rooms,show)
 
         # for event in events:
         #    pprint.pprint( event )
@@ -2787,8 +2786,23 @@ class add_eps(process.process):
             if "Derwent 1" in event['location']:
                 event['location'] = 'Derwent 1'
 
-            if not event['location']:
+            """
+            if event['conf_key']==23:
+                # name": "Crash-safe Replication with MariaDB...
                 event['location'] = 'Riviera'
+            
+            if event['conf_key']==20:
+                # name": "SubPos...
+                event['location'] = 'Derwent 1'
+
+            if event['conf_key']==21:
+                # name": "Intro to OpenStreetMap
+                event['location'] = 'Derwent 1'
+
+            if event['conf_key']==75:
+                # name": "Opportunities in Openness...
+                event['location'] = 'Derwent 1'
+            """
 
             event['start'] = datetime.datetime.strptime( 
                 event['start'], '%Y-%m-%dT%H:%M:%S' )
@@ -2800,9 +2814,84 @@ class add_eps(process.process):
 
             event['tags'] = ''
 
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
         self.add_eps(events, show)
 
         return 
+
+    def nodevember15(self,schedule,show):
+
+      schedule = schedule['schedule']
+
+      s1 = []
+      x=1
+      for day in schedule:
+          date = day["date"]  #: "November 13, 2015",
+          for s in day['slots']: 
+              if "speaker" in s:
+
+                  if s['room'] == "Ezel 301":
+                    s['room'] = "Ezell 301"
+                  if s['room'] == "Stow 108":
+                    s['room'] = "Stowe Hall"
+
+                  s['start'] = "{} {}".format( date, s['time'] )
+                  s['duration'] = 60 if s['keynote'] else 40
+                  s['key'] = x
+                  s['released'] = True
+                  x += 1
+                  s1.append(s)
+
+      # import code; code.interact(local=locals())
+      
+      field_maps = [
+              ('room','location'),
+              ('title','name'),
+              ('speaker','authors'),
+              ('','emails'),
+              ('summary','description'),
+              ('start','start'),
+              ('','twitter_id'),
+              ('duration','duration'),
+              ('released','released'),
+              ('','license'),
+              ('','tags'),
+              ('key','conf_key'),
+              ('','conf_url'),
+       ]
+
+
+
+      # remove rows where id='empty' 
+      # schedule = [s for s in schedule if s['id'] != 'empty']
+
+      events = self.generic_events(s1, field_maps)
+
+      for event in events: 
+        if self.options.verbose: 
+            print("event:")
+            pprint.pprint(event)
+
+        # event['start'] = dateutil.parser.parse( event['start'] )
+        event['start'] = parse( event['start'] )
+        # datetime.datetime.strptime( 
+        #       event['start'], '%B %d, %Y %I:%M %p' )
+
+        
+        event['duration'] = "00:{:02}:00".format(event['duration'])
+
+        event['conf_url'] = event['conf_url'].replace(".org.com", ".org")
+
+
+      rooms = self.get_rooms(events)
+      print rooms
+      self.add_rooms(rooms,show)
+
+      self.add_eps(events, show)
+
+      return 
+
 
     def djbp10(self, schedule, show):
 
@@ -3167,6 +3256,9 @@ class add_eps(process.process):
         if self.options.show =='djbp10':
             return self.djbp10(schedule,show)
 
+        if self.options.show =='nodevember15':
+            return self.nodevember15(schedule,show)
+	   
         if self.options.show =='nodevember14':
             return self.nodevember14(schedule,show)
 
