@@ -14,11 +14,11 @@ last frame
 
 """
 
-import  os
+import os
+import re
 import datetime
 # from dateutil.parser import parse
 
-"""
 from gi.repository import Gst
  
 from gi.repository import GObject
@@ -26,7 +26,8 @@ GObject.threads_init()
 Gst.init(None)
   
 from gi.repository import GstPbutils
-"""
+
+import exiftool
 
 from process import process
 
@@ -73,6 +74,42 @@ class ts_rf(process):
             start=datetime.datetime.strptime(filename,'%Y-%m-%d/%H_%M_%S')
             return start
 
+        def re_name(pathname):
+            # parse string into datetime useing RE
+
+            dt_re = r".*/(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+).*(?P<hour>\d+)_(?P<minute>\d+)_(?P<second>\d+)"
+
+
+            dt_o = re.match(dt_re, pathname)
+            dt_parts = dt_o.groupdict()
+            print dt_parts
+
+            dt_parts = {k:int(v) for k,v in dt_parts.items()}
+            print dt_parts
+
+
+            start=datetime.datetime( **dt_parts )
+            print start
+            return start
+
+        def PyExifTool(pathname):
+            # use PyExifTool to read Time Code
+            """
+            >>> metadata['H264:TimeCode']
+            u'03:25:30:12'
+             u'H264:DateTimeOriginal': u'2015:11:03 10:22:23+00:00',
+            """
+
+            with exiftool.ExifTool() as et:
+                metadata = et.get_metadata(pathname)
+            dt = metadata['H264:DateTimeOriginal']
+            
+            start=datetime.datetime.strptime(dt,'%Y:%m:%d %H:%M:%S+00:00')
+            print start
+            return start
+
+
+
         def frame_time(pathname):
             # get timestamp from first frame
             pass
@@ -84,6 +121,8 @@ class ts_rf(process):
             # seconds = d.get_duration() / float(Gst.SECOND)
             tags= d.get_tags()
             dt=tags.get_date_time("datetime")[1]
+
+            import code; code.interact(local=locals())
 
             print(dt.to_iso8601_string())
             start = datetime.datetime(
@@ -99,9 +138,19 @@ class ts_rf(process):
 
         def auto(pathname):
             # try to figure out what to use
+
+            time_re = r".*(?P<h>\d+)_(?P<m>\d+)_(?P<s>\d+)"
             ext = os.path.splitext(pathname)[1]
-            if ext == ".dv":
+
+            if re.match( time_re, pathname ) is not None:
+                start = re_name(pathname)
+
+            elif ext == ".dv":
                 start = parse_name(pathname)
+
+            elif ext == ".MTS":
+                start = PyExifTool(pathname)
+
             else:
                 start = gst_discover(pathname)
 
