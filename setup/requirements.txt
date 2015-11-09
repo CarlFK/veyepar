@@ -51,3 +51,7 @@ python-keystoneclient
 oslo.utils
 oslo.serialization
 beautifulsoup4
+
+git+https://github.com/smarnach/pyexiftool.git
+
+

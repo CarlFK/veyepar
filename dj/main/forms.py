@@ -76,3 +76,13 @@ class AddImageToEp(forms.Form):
     image_id = forms.IntegerField(widget=forms.HiddenInput())
     episode_id  = forms.IntegerField(required=False,)
  
+class AddEpisodeToRaw(forms.ModelForm):
+    class Meta:
+	model = Episode
+        fields = ('name', 
+                'duration', 
+               # 'comment',
+                )
+    raw_id = forms.IntegerField(widget=forms.HiddenInput())
+
+

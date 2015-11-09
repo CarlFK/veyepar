@@ -37,18 +37,31 @@ class mkdirs(process):
         for d in dirs.split():
             full_dir = os.path.join(self.show_dir,d)
             ret = self.mkdir(full_dir)
-        # cmd = ['ln', '-s', 'bling', self.show_dir ]
-        # self.run_cmd(cmd)
 
-# get episodes for this show
-        eps = Episode.objects.filter(show=show)
-# get locations of the episodes
-        for loc in Location.objects.filter(
-                show=show, active=True):
-             dir = os.path.join(self.show_dir,'dv',loc.slug)
-             ret = self.mkdir(dir)
+        if self.options.raw_slugs:
+
+    # get episodes for this show
+            eps = Episode.objects.filter(show=show)
+            for ep in eps:
+                loc = ep.location.slug
+                dt = ep.start.strftime("%Y-%m-%d")
+                slug = ep.slug
+                full_dir = os.path.join(self.show_dir,'dv',loc,dt,slug)
+                ret = self.mkdir(full_dir)
+
+        else:
+
+    # get locations of the episodes
+            for loc in Location.objects.filter(
+                    show=show, active=True):
+                 dir = os.path.join(self.show_dir,'dv',loc.slug)
+                 ret = self.mkdir(dir)
 
         return
+
+  def add_more_options(self, parser):
+      parser.add_option('--raw-slugs', action="store_true",
+                          help="Make a dir for each talk's raw files")
 
 if __name__=='__main__': 
     p=mkdirs()
