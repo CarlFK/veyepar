@@ -77,7 +77,7 @@ class ts_rf(process):
         def re_name(pathname):
             # parse string into datetime useing RE
 
-            dt_re = r".*/(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+).*(?P<hour>\d+)_(?P<minute>\d+)_(?P<second>\d+)"
+            dt_re = r".*/(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+).*/(?P<hour>\d+)_(?P<minute>\d+)_(?P<second>\d+)"
 
 
             dt_o = re.match(dt_re, pathname)
