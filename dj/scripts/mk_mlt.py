@@ -12,7 +12,7 @@ import pprint
 def mk_mlt(template, output, params):
 
     def set_text(node,prop_name,value=None):
-        print(node,prop_name,value)
+        # print(node,prop_name,value)
         p = node.find("property[@name='{}']".format(prop_name))
         if value is None:
             node.remove(p)
@@ -29,7 +29,7 @@ def mk_mlt(template, output, params):
         else:
             if type(value)==int:
                 value = "0:{}.0".format(value)
-            print(attrib_name, value)
+            # print(attrib_name, value)
             node.set(attrib_name, value)
 
     # parse the template 
@@ -51,7 +51,7 @@ def mk_mlt(template, output, params):
         ]:
 
         node = tree.find(".//*[@id='{}']".format(id))
-        print(id,node)
+        # print(id,node)
         nodes[id] = node
 
     # special case because Shotcut steps on the id='spacer'
@@ -66,7 +66,7 @@ def mk_mlt(template, output, params):
     for pe in play_list.findall("./entry[@sample]"):
         producer = pe.get('producer')
         producer_node = tree.find("./producer[@id='{}']".format(producer))
-        print( producer )
+        # print( producer )
         play_list.remove(pe)
         mlt.remove(producer_node)
 
@@ -74,10 +74,10 @@ def mk_mlt(template, output, params):
     # <entry producer="tl_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" /> 
     time_line = tree.find("./playlist[@id='playlist0']")
     for te in time_line.findall("./entry[@sample]"):
-        print("te",te)
+        # print("te",te)
         producer = te.get('producer')
         producer_node = tree.find("./producer[@id='{}']".format(producer))
-        print( "producer", producer )
+        # print( "producer", producer )
         time_line.remove(te)
         mlt.remove(producer_node)
 
@@ -89,21 +89,21 @@ def mk_mlt(template, output, params):
     for i,clip in enumerate(params['clips']):
 
         node_id = "pi_vid{}".format(clip['id'])
-        print("node_id",node_id)
+        # print("node_id",node_id)
 
         # setup and add Play List
         pl = copy.deepcopy( nodes['pl_vid0'] )
         pl.set("id", "pl_vid{}".format(clip['id']))
         pl.set("producer", node_id)
-        set_attrib(pl, "in")
-        set_attrib(pl, "out")
+        set_attrib(pl, "in", clip['in'])
+        set_attrib(pl, "out", clip['out'])
         play_list.insert(i,pl)
 
         # setup and add Playlist Item
         pi = copy.deepcopy( nodes['pi_vid0'] )
         pi.set("id", node_id)
-        set_attrib(pi, "in")
-        set_attrib(pi, "out")
+        set_attrib(pi, "in", clip['in'])
+        set_attrib(pi, "out", clip['out'])
         set_text(pi,'length')
         set_text(pi,'resource',clip['filename'])
         mlt.insert(i,pi)
@@ -111,7 +111,7 @@ def mk_mlt(template, output, params):
     # add each cut to the timeline
     total_length = 0
     for i,cut in enumerate(params['cuts']):
-        print(i,cut)
+        # print(i,cut)
 
         node_id = "ti_vid{}".format(cut['id'])
 
@@ -213,11 +213,18 @@ def test():
 
     for i in range(5):
         filename = "00_00_{:02}.dv".format(i*3)
-        params['clips'].append(
-                {'id':str(i),
+        clip = {'id':str(i),
                 'filename':'/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/{}'.format(filename),
                 'length':2,
-                })
+                'in':None,
+                'out':None,
+                }
+
+        if i==0: 
+            clip['in']=1
+
+        params['clips'].append(clip)
+
         if i in [1,2,3]:
             params['cuts'].append(
                {'id':str(i),
@@ -228,6 +235,7 @@ def test():
                 'channelcopy':'01',
                 'normalize':'-12.0',
                 })
+
 
     mk_mlt("template.mlt", "test.mlt",  params)
 

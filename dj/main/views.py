@@ -1803,6 +1803,22 @@ def mk_cuts(episode,
                     and not rf.trash \
                     and (rf.start < episode.end)
 
+            # Trim the start/end clips
+            # does not make sense for scheduled (estimated) start time
+            # does make sense if the episode start/end is accurate.
+            if rf.start < episode.start < rf.end:
+                d = episode.start - rf.start
+                # print(d)
+                cl.start = d.total_seconds()
+
+            if rf.start < episode.end < rf.end:
+                d = episode.end - rf.start
+                cl.end = d.total_seconds()
+
+            # Bad bad bad hack for Node...
+            if "mkv" in rf.filename:
+                cl.apply = False
+
             cl.save()
 
     return Cut_List.objects.filter(episode=episode).order_by('sequence','raw_file__start')

@@ -513,7 +513,7 @@ class enc(process):
 
             return credits_img
 
-        def get_clips(rfs):
+        def get_clips(rfs, ep):
 
             """
             return list of possible input files
@@ -525,6 +525,8 @@ class enc(process):
 
             clips = []
             for rf in rfs:
+
+                clip = {'id': rf.id }
 
                 # if rf.filename.startswith('\\'):
                 #     rawpathname = rf.filename
@@ -539,10 +541,30 @@ class enc(process):
                         rawpathname))
                     return False
 
-                clips.append({
-                    'id': rf.id,
-                    'filename': rawpathname,
-                    })
+                clip['filename']=rawpathname
+
+                # trim start/end based on episode start/end
+                if rf.start < ep.start < rf.end:
+                    # if the ep start falls durring this clip, 
+                    #trim it
+                    d = ep.start - rf.start
+                    clip['in']="00:00:{}".format(d.total_seconds())
+                else:
+                    clip['in']=None
+
+                # if "mkv" in rf.filename:
+                #    import code; code.interact(local=locals())
+
+                if rf.start < ep.end < rf.end:
+                    # if the ep end falls durring this clip, 
+                    d = ep.end - rf.start
+                    clip['out']="00:00:{}".format(d.total_seconds())
+                else:
+                    clip['out']=None
+
+                pprint.pprint(clip)
+
+                clips.append(clip)
 
             return clips
 
@@ -609,7 +631,7 @@ class enc(process):
         params = {}
         params['title_img'] = get_title(episode)
         params['foot_img'] = get_foot(episode)
-        params['clips'] = get_clips(rfs)
+        params['clips'] = get_clips(rfs, episode)
         params['cuts'] = get_cuts(cls)
 
         return params
