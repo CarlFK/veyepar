@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mlt LC_NUMERIC="en_US.UTF-8" version="0.9.6" title="Anonymous Submission" producer="main bin">
+  <producer id="pi_vid0" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+    <property name="mlt_type">mlt_producer</property>
+    <property name="length">00:00:03.036</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_00.dv</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">1</property>
+    <property name="mlt_service">avformat</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
+  <producer id="pi_vid1" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+    <property name="mlt_type">mlt_producer</property>
+    <property name="length">00:00:03.036</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">1</property>
+    <property name="mlt_service">avformat</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
+  <producer id="pi_vid2" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+    <property name="mlt_type">mlt_producer</property>
+    <property name="length">00:00:03.036</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_06.dv</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">1</property>
+    <property name="mlt_service">avformat</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
+  <producer id="pi_vid3" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+    <property name="mlt_type">mlt_producer</property>
+    <property name="length">00:00:03.036</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_09.dv</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">1</property>
+    <property name="mlt_service">avformat</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
+  <producer id="pi_vid4" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+    <property name="mlt_type">mlt_producer</property>
+    <property name="length">00:00:03.036</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_12.dv</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">1</property>
+    <property name="mlt_service">avformat</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
+  <producer id="pi_title_img" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
+    <property name="mlt_type">mlt_producer</property>
+    <property name="length">00:09:59.993</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/titles/Lets_make_a_Test.png</property>
+    <property name="ttl">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="progressive">1</property>
+    <property name="seekable">1</property>
+    <property name="loop">1</property>
+    <property name="mlt_service">pixbuf</property>
+    <property name="ignore_points">0</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
+  <producer id="pi_foot_img" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
+    <property name="mlt_type">mlt_producer</property>
+    <property name="length">00:09:59.993</property>
+    <property name="eof">pause</property>
+    <property name="resource">bling/ndv-169.png</property>
+    <property name="ttl">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="progressive">1</property>
+    <property name="seekable">1</property>
+    <property name="loop">1</property>
+    <property name="mlt_service">pixbuf</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
+  <playlist id="main bin" title="Anonymous Submission">
+    <property name="xml_retain">1</property>
+    <entry id="pl_vid0" producer="pi_vid0" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_vid1" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_vid2" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_vid3" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_vid4" in="00:00:00.000" out="00:00:03.003" sample="1" />
+    <entry producer="pi_title_img" in="00:00:00.000" out="00:00:03.937"/>
+    <entry producer="pi_foot_img" in="00:00:00.000" out="00:00:03.937"/>
+  </playlist>
+  <producer id="black" in="00:00:00.000" out="00:00:09.042">
+    <property name="mlt_type">producer</property>
+    <property name="length">00:00:10.0</property>
+    <property name="eof">pause</property>
+    <property name="resource">black</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="mlt_service">color</property>
+  </producer>
+  <playlist id="background">
+    <entry producer="black" in="00:00:00.000" out="00:00:09.042"/>
+  </playlist>
+  <producer id="ti_vid1" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+    <property name="mlt_type">producer</property>
+    <property name="length">00:00:03.036</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">1</property>
+    <property name="mlt_service">avformat</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+    <property name="ignore_points">0</property>
+
+    <filter id="pic_in_pic">
+      <property name="track">0</property>
+      <property name="background">colour:0</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">affine</property>
+      <property name="shotcut:filter">affineSizePosition</property>
+      <property name="transition.fill">0</property>
+      <property name="transition.distort">0</property>
+      <property name="transition.geometry">60.00%/60.00%:40.00%x40.00%</property>
+      <property name="transition.valign">bottom</property>
+      <property name="transition.halign">right</property>
+    </filter>
+ 
+    <filter id="audio_fade_in" in="00:00:00.667" out="00:00:01.635">
+      <property name="track">0</property>
+      <property name="window">75</property>
+      <property name="max_gain">20dB</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">volume</property>
+      <property name="shotcut:filter">fadeInVolume</property>
+      <property name="gain">0</property>
+      <property name="end">1</property>
+    </filter>
+  </producer>
+  <producer id="ti_vid2" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+    <property name="mlt_type">mlt_producer</property>
+    <property name="length">00:00:03.036</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_06.dv</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">1</property>
+    <property name="mlt_service">avformat</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+    <filter id="channelcopy">
+      <property name="track">0</property>
+      <property name="to">1</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">channelcopy</property>
+      <property name="shotcut:filter">audioChannelCopy</property>
+      <property name="from">0</property>
+    </filter>
+    <filter id="mono">
+      <property name="track">0</property>
+      <property name="channels">-1</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">mono</property>
+    </filter>
+    <filter id="normalize">
+      <property name="track">0</property>
+      <property name="program">-23.0</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">loudness</property>
+    </filter>
+
+
+  </producer>
+  <producer id="ti_vid3" title="Anonymous Submission" in="00:00:00.000" out="00:00:03.003">
+    <property name="mlt_type">producer</property>
+    <property name="length">00:00:03.036</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_09.dv</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1.18519</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">1</property>
+    <property name="mlt_service">avformat</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+    <property name="ignore_points">0</property>
+    <filter id="audio_fade_out" in="00:00:-0.067" out="00:00:01.902">
+      <property name="track">0</property>
+      <property name="window">75</property>
+      <property name="max_gain">20dB</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">volume</property>
+      <property name="shotcut:filter">fadeOutVolume</property>
+      <property name="gain">1</property>
+      <property name="end">0</property>
+    </filter>
+  </producer>
+  <playlist id="playlist0">
+    <property name="shotcut:video">1</property>
+    <property name="shotcut:name">V1</property>
+    <entry producer="ti_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" />
+    <entry id="tl_vid2" producer="ti_vid2" in="00:00:00.000" out="00:00:03.003" sample="2" />
+    <entry producer="ti_vid3" in="00:00:00.000" out="00:00:01.902" sample="3" />
+  </playlist>
+  <producer id="ti_title" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
+    <property name="mlt_type">producer</property>
+    <property name="length">00:09:59.993</property>
+    <property name="eof">pause</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/titles/Lets_make_a_Test.png</property>
+    <property name="ttl">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="progressive">1</property>
+    <property name="seekable">1</property>
+    <property name="loop">1</property>
+    <property name="mlt_service">pixbuf</property>
+    <property name="ignore_points">0</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+    <filter id="title_fade" in="00:00:03.0" out="00:00:05.0">
+      <property name="track">0</property>
+      <property name="start">1</property>
+      <property name="level">1</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">brightness</property>
+      <property name="shotcut:filter">fadeOutBrightness</property>
+      <property name="alpha">0=1; 89=0</property>
+    </filter>
+
+  </producer>
+  <producer id="ti_foot" title="Anonymous Submission" in="00:00:00.000" out="00:09:59.960">
+    <property name="mlt_type">producer</property>
+    <property name="length">00:09:59.993</property>
+    <property name="eof">pause</property>
+    <property name="resource">bling/ndv-169.png</property>
+    <property name="ttl">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="progressive">1</property>
+    <property name="seekable">1</property>
+    <property name="loop">1</property>
+    <property name="mlt_service">pixbuf</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+    <filter id="foot_fade" out="00:00:02.970">
+      <property name="track">0</property>
+      <property name="start">1</property>
+      <property name="level">1</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">brightness</property>
+      <property name="shotcut:filter">fadeInBrightness</property>
+      <property name="alpha">0=0; 89=1</property>
+    </filter>
+  </producer>
+  <playlist id="playlist1">
+    <property name="shotcut:video">1</property>
+    <property name="shotcut:name">V2</property>
+    <entry producer="ti_title" in="00:00:00.000" out="00:00:05.0"/>
+    <blank id="spacer" length="00:00:00.267"/>
+    <entry producer="ti_foot" in="00:00:00.000" out="00:00:04.805"/>
+  </playlist>
+  <playlist id="playlist2">
+    <property name="shotcut:video">1</property>
+    <property name="shotcut:name">V3</property>
+    <blank length="00:00:00.033"/>
+  </playlist>
+  <tractor id="tractor0" title="Anonymous Submission" global_feed="1" in="00:00:00.000" out="00:00:09.042">
+    <property name="shotcut">1</property>
+    <property name="shotcut:scaleFactor">2.17573</property>
+    <property name="shotcut:trackHeight">30</property>
+    <track producer="background"/>
+    <track producer="playlist2"/>
+    <track producer="playlist0"/>
+    <track producer="playlist1" hide="audio"/>
+    <transition id="transition0">
+      <property name="a_track">0</property>
+      <property name="b_track">1</property>
+      <property name="mlt_type">transition</property>
+      <property name="mlt_service">mix</property>
+      <property name="always_active">1</property>
+      <property name="combine">1</property>
+    </transition>
+    <transition id="transition1">
+      <property name="a_track">0</property>
+      <property name="b_track">1</property>
+      <property name="version">0.9</property>
+      <property name="mlt_type">transition</property>
+      <property name="mlt_service">frei0r.cairoblend</property>
+      <property name="disable">1</property>
+    </transition>
+    <transition id="transition2">
+      <property name="a_track">0</property>
+      <property name="b_track">2</property>
+      <property name="mlt_type">transition</property>
+      <property name="mlt_service">mix</property>
+      <property name="always_active">1</property>
+      <property name="combine">1</property>
+    </transition>
+    <transition id="transition3">
+      <property name="a_track">1</property>
+      <property name="b_track">2</property>
+      <property name="version">0.9</property>
+      <property name="mlt_type">transition</property>
+      <property name="mlt_service">frei0r.cairoblend</property>
+      <property name="disable">0</property>
+    </transition>
+  </tractor>
+</mlt>

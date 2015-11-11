@@ -44,6 +44,7 @@ def mk_mlt(template, output, params):
         'pl_vid0', 'pi_vid0', # Play List and Item
         'tl_vid2', 'ti_vid2', # Time Line and Item
         'audio_fade_in', 'audio_fade_out',
+        'pic_in_pic',
         'channelcopy', 
         'mono', 
         'normalize', 
@@ -129,6 +130,8 @@ def mk_mlt(template, output, params):
         set_text(ti,'resource',cut['filename'])
 
         
+        # apply the filters to te cuts
+
         if cut['channelcopy']=='m':
             ti.insert(0,nodes['mono'])
         else:
@@ -141,6 +144,8 @@ def mk_mlt(template, output, params):
             normalize = copy.deepcopy( nodes['normalize'] )
             set_text(normalize,'program' , cut['normalize'])
             ti.insert(0,normalize)
+
+        ti.insert(0,nodes['pic_in_pic'])
 
         if i==0:
             # apply audio fade in/out to first/last cut
