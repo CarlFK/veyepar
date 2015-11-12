@@ -41,6 +41,7 @@ class Episode_Form_small(forms.ModelForm):
     class Meta:
 	model = Episode
         fields = ('state', 'locked', 'locked_by', 'start', 'duration',
+                  'name',
                   'emails',
                   'released',
                   'normalise', 'channelcopy',
