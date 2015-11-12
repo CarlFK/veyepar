@@ -1400,7 +1400,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                     'show':show.id,
                     'location':episode.location.id,
                     'sequence':sequence,
-                    'start':episode.end,
+                    'start':episode.end + datetime.timedelta(minutes=5),
                     'duration':episode.duration,
                     'state':1,
                     }
