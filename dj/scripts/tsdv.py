@@ -179,16 +179,17 @@ class ts_rf(process):
         frames = dv.filesize/self.bpf
         dv_seconds = frames/self.fps 
 
-        """
         # use gstreamer to find get_duration
         discoverer = GstPbutils.Discoverer()
-        d = discoverer.discover_uri('file://{}'.format(pathname))
-        seconds = d.get_duration() / float(Gst.SECOND)
+        try:
+            d = discoverer.discover_uri('file://{}'.format(pathname))
+            seconds = d.get_duration() / float(Gst.SECOND)
+        except :
+            seconds=dv_seconds
 
         print(dv_seconds,seconds)
         # assert(abs(dv_seconds-seconds)<max(dv_seconds/100.0,.1))
-        """
-        seconds=dv_seconds
+        # seconds=dv_seconds
 
         # store duration in fancy human readable format (bad idea) 
         hms = seconds//3600, (seconds%3600)//60, seconds%60
