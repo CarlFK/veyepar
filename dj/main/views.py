@@ -1283,6 +1283,45 @@ def episodes_script(request, script=None):
     return response 
 
 
+def episode_assets(request, episode_id):
+    """
+    returns a list of URLs of the assets (in preview form)
+    and the .mlt and .sh
+    """
+
+    assets=[]
+
+    episode=get_object_or_404(Episode,id=episode_id)
+    slug = episode.slug
+    show=episode.show
+    client=show.client
+
+    # create the bas of the URLs
+    head=settings.MEDIA_URL
+    show_url = os.path.join(head,client.slug,show.slug)
+
+    assets.append( "{}/tmp/{}.mlt".format(show_url,slug) )
+    assets.append( "{}/tmp/{}.sh".format(show_url,slug) )
+    assets.append( "{}/titles/{}.png".format(show_url,slug) )
+
+    # add the raw files
+    cuts = Cut_List.objects.filter(episode=episode).order_by('sequence', 'raw_file__start')
+    if request.GET.get('apply') == 'yes':
+        cuts = cuts.filter(apply=True)
+
+    for cut in cuts:
+        assets.append( "{}/dv/{}/{}.webm".format(show_url,
+            cut.raw_file.location.slug, cut.raw_file.basename() ) )
+
+        
+    response = HttpResponse('\n'.join(assets), content_type="text/plain")
+    response['Content-Disposition'] = \
+            'inline; filename={}.urls'.format(slug)
+
+    return response
+
+
+    
 def episode_list(request, state=None):
 
     states = State.objects.all()

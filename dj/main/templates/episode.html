@@ -100,6 +100,8 @@
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/webm/{{episode.slug}}.webm">webm</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/mp4/{{episode.slug}}.mp4">mp4</a>
 
+<a href="{% url "episode_assets" episode.id %}{{episode.slug}}.urls">assets</a>
+
 <a href="{% url "pdf" 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
 
 <a href="{% url "eps_xfer" episode.show.client.slug episode.show.slug %}?id={{episode.id}}">{{episode.slug}}.json</a>
