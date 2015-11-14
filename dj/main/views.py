@@ -1311,7 +1311,8 @@ def episode_assets(request, episode_id):
 
     for cut in cuts:
         assets.append( "{}/dv/{}/{}.webm".format(show_url,
-            cut.raw_file.location.slug, cut.raw_file.basename() ) )
+            cut.raw_file.location.slug, cut.raw_file.filename ) )
+            # cut.raw_file.location.slug, cut.raw_file.basename() ) )
 
         
     response = HttpResponse('\n'.join(assets), content_type="text/plain")
