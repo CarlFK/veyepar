@@ -329,6 +329,23 @@ class Uploader():
 
         return True
 
+    def delete_video(self, video_url):
+        # https://developers.google.com/youtube/v3/docs/videos/delete
+        # https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/youtube_v3.videos.html
+
+        youtube = get_authenticated_service(user_key=self.user)
+        video_id = get_id_from_url(video_url)
+
+        videos_delete_response = youtube.videos().delete(
+                id=video_id
+                    ).execute()
+
+        print("deleted {}".format(video_url))
+
+        # videos_delete_response is '' 
+        return videos_delete_response
+
+
     def upload(self):
 
         youtube = get_authenticated_service(user_key=self.user)
@@ -414,6 +431,15 @@ def test_set_pub(args,video_url):
 
     return
 
+
+def test_delete(args,video_url):
+    
+    u = Uploader()
+    u.user=args.user
+    u.delete_video(video_url)
+
+    return
+
 """
 errors!
 A retriable HTTP error 500 occurred:
@@ -443,5 +469,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     url = test_upload(args)
-    test_set_pub(args,url)
+    # test_set_pub(args,url)
+    test_delete(args,url)
 

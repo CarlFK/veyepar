@@ -175,10 +175,6 @@ class post(process):
         uploader.meta = meta
         uploader.private = private
 
-        # for replacing.
-        # (currently not implemented in youtube_v3_uploader
-        uploader.old_url = ep.host_url
-
         if self.options.test:
             print 'test mode:'
             print "user key:", uploader.user
@@ -192,6 +188,9 @@ class post(process):
             youtube_success = True
 
         else:
+
+            if ep.host_url:
+                uploader.delete_video(ep.host_url)
 
             # down to next layer of code that will do the uploading
             # uploader.debug_mode=True
@@ -416,8 +415,8 @@ class post(process):
         else: archive_success = self.do_ia(ep,files,meta)
 
         # upload rackspace cdn
-        if not ep.show.client.rax_id: rax_success = True
-        else: rax_success = self.do_rax(ep,files,meta)
+        # if not ep.show.client.rax_id: rax_success = True
+        # else: rax_success = self.do_rax(ep,files,meta)
 
         # upload vimeo (needs upgrading to new api)
         # if not ep.show.client.vimeo_id: vimeo_success = True
