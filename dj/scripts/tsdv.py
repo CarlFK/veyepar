@@ -139,7 +139,7 @@ class ts_rf(process):
         def auto(pathname):
             # try to figure out what to use
 
-            time_re = r".*(?P<h>\d+)_(?P<m>\d+)_(?P<s>\d+)"
+            time_re = r".*(?P<h>\d+)_(?P<m>\d+)_(?P<s>\d+)\."
             ext = os.path.splitext(pathname)[1]
 
             if re.match( time_re, pathname ) is not None:
@@ -174,6 +174,9 @@ class ts_rf(process):
         start += datetime.timedelta(hours=self.options.offset_hours)
         if offset_hours:
             start += datetime.timedelta(hours=offset_hours)
+
+        if self.options.offset_seconds:
+            start += datetime.timedelta(seconds=self.options.offset_seconds)
 
         # calc duration from size
         frames = dv.filesize/self.bpf
@@ -212,6 +215,12 @@ class ts_rf(process):
         print show,location,dir
         for rf in Raw_File.objects.filter(show=show, location=location):
             print rf
+
+            if self.options.ext:
+                if not rf.filename.endswith(self.options.ext):
+                    # skip
+                    continue
+
             if not rf.start or self.options.force:
                 # self.one_rf(dir, rf, location.hours_offset / 10.0)
                 self.one_rf(dir, rf, location.hours_offset )
@@ -230,9 +239,13 @@ class ts_rf(process):
     def add_more_options(self, parser):
         parser.add_option('--offset_hours', type="int",
            help="adjust time to deal with clock in wrong time zone.")
+        parser.add_option('--offset_seconds', type="float",
+           help="adjust time to deal with clock wrong.")
         parser.add_option('--time_source', 
            help="one of fn, fs, frame, gst\n" \
              "(file name, file system, dv frame, gst lib, auto)")
+        parser.add_option('--ext', 
+           help="only hit this ext")
 
     def add_more_option_defaults(self, parser):
         parser.set_defaults(offset_hours=0)
