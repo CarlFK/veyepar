@@ -77,8 +77,8 @@
 {% endif %}
 
 {% if episode.public_url %}
-    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/mp4/{{episode.slug}}_audio.png" alt="final audio">
-    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio">
+    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/mp4/{{episode.slug}}.mp4.wav.png" alt="final audio">
+    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}.webm.wav.png" alt="final audio">
    <br/>
 {% endif %}
 
@@ -188,7 +188,7 @@ $(".viewer").zoomer();
   <div class="cl-detail">
       {{clrfform.clid}}
 
-~/Videos/veyepar/{{cl.raw_file.base_url}}.dv 
+      ~/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}
       <table>
       <tr>
       <td>
@@ -283,7 +283,7 @@ $(".viewer").zoomer();
   {% endif %}
 
   <img id="audio_image_{{cl.id}}" alt="audio viz" 
-    src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}_audio.png">
+    src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/raw/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}.wav.png">
 
   {% with forloop.counter0 as x %}
 

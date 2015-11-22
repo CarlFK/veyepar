@@ -15,8 +15,8 @@
 <table>
 <tr><td> <a href="{% url "admin:main_raw_file_change" raw_file.id %}">{{raw_file.filename}}</a> </td></tr> 
 
-<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}_audio.png">
-{{raw_file.basename}}_audio.png</a></td></tr>
+<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.filename}}.wav.png">
+{{raw_file.filename}}.wav.png</a></td></tr>
 
 <tr><td> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv">
             {{raw_file.basename}}.ogv</a></td></tr>
@@ -49,6 +49,6 @@
 
 </table>
 {# <img src="{{MEDIA_URL}}/{{raw_file.base_url}}_audio.png"/> #}
-<img src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/audio_png/dv/{{raw_file.location.slug}}/{{raw_file.basename}}_audio.png">
+<img src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/audio_png/raw/{{raw_file.location.slug}}/{{raw_file.basename}}_audio.png">
 
 {% endblock %}
