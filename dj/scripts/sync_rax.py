@@ -52,14 +52,17 @@ class SyncRax(process):
         make a low bitrate version of the raw file 
         for previewing over the web
         """
-        base = os.path.join( "dv", rf.location.slug, rf.basename() )
+        # base = os.path.join( "dv", rf.location.slug, rf.basename() )
+        base = os.path.join( "dv", rf.location.slug, rf.filename )
         if self.options.verbose: print base
 
         # look for .webm on local file system
-        rf = os.path.join(self.show_dir, base + ".dv")
+        # ext = os.path.splitext(rf.filename)[1]
+        # rf = os.path.join(self.show_dir, base + ext)
+        rf = os.path.join(self.show_dir, base )
         web = os.path.join(self.show_dir, base + ".webm")
-        # vb = "50k"
-        vb = "20k" # for SA
+        vb = "50k"
+        # vb = "20k" # for SA
         if not os.path.exists(web):
             cmd = "melt {rf} -consumer avformat:{out} vb={vb} progress=1".format( rf=rf, vb=vb, out=web ).split()
             p=subprocess.Popen(cmd)
@@ -67,6 +70,7 @@ class SyncRax(process):
             retcode=p.returncode
         
         web = base + ".webm"
+        # Don't upload over phone.
         if not self.cdn_exists(show,web):
             self.file2cdn(show,web)
 
@@ -76,8 +80,9 @@ class SyncRax(process):
         rf_base = os.path.join( "dv", 
             rf.location.slug, rf.filename )
 
-        png_base = os.path.join( "audio_png", "dv", 
-            rf.location.slug, rf.basename() + "_audio.png")
+        png_base = os.path.join( "audio_png", "raw", 
+            rf.location.slug, rf.filename + ".wav.png")
+            # rf.location.slug, rf.basename() + "_audio.png")
 
         if not self.cdn_exists(show,png_base):
             print rf.filesize
@@ -98,13 +103,16 @@ class SyncRax(process):
             loc = Location.objects.get(slug=self.options.room)
             rfs = rfs.filter(location = loc)
 
+        # rfs = rfs.exclude(id=12212)
+        rfs = rfs.exclude(filesize__lt=800000)
+
         # rfs = rfs.cut_list_set.filter(episode__id=8748)
         # rfs = rfs.cut_list_set.filter(episode__state=1)
 
         for rf in rfs:
             if self.options.verbose: print rf
-            self.rf_web(show, rf)
-            # self.rf_audio_png(show, rf)
+            # self.rf_web(show, rf)
+            self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )
@@ -141,7 +149,7 @@ class SyncRax(process):
             # self.sync_final(show,ep)
             # self.sync_final_audio_png(show,ep)
          
-        eps = eps.filter(state=4)
+        # eps = eps.filter(state=4)
         for ep in eps:
             print(ep)
             # self.sync_title_png(show,ep)
@@ -169,8 +177,8 @@ class SyncRax(process):
         self.set_dirs(show)
         self.init_rax(show)
 
-        # self.raw_files(show)
-        self.episodes(show)
+        self.raw_files(show)
+        # self.episodes(show)
 
 
     def work(self):

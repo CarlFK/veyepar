@@ -122,7 +122,7 @@ class ts_rf(process):
             tags= d.get_tags()
             dt=tags.get_date_time("datetime")[1]
 
-            import code; code.interact(local=locals())
+            # import code; code.interact(local=locals())
 
             print(dt.to_iso8601_string())
             start = datetime.datetime(
