@@ -64,7 +64,7 @@ class SyncRax(process):
         vb = "50k"
         # vb = "20k" # for SA
         if not os.path.exists(web):
-            cmd = ["melt", rf, "meta.attr.titles=1", "meta.attr.titles.markup=#timecode#", "-attach", "data_show", "dynamic=1", "-consumer", "avformat:"+out, "vb="+vb, "progress=1"]
+            cmd = ["melt", rf, "meta.attr.titles=1", "meta.attr.titles.markup=#timecode#", "-attach", "data_show", "dynamic=1", "-consumer", "avformat:"+web, "vb="+vb, "progress=1"]
             # cmd = "melt {rf} -consumer avformat:{out} vb={vb} progress=1".format( rf=rf, vb=vb, out=web ).split()
             p=subprocess.Popen(cmd)
             p.wait()
