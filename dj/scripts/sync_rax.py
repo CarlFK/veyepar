@@ -26,7 +26,7 @@ class SyncRax(process):
         dst is the local fs.
         """
         p = gslevels.Make_png()
-        p.uri = src
+        p.location = src
         p.verbose = self.options.verbose
         p.setup()
         p.start()
