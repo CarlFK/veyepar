@@ -64,7 +64,8 @@ class SyncRax(process):
         vb = "50k"
         # vb = "20k" # for SA
         if not os.path.exists(web):
-            cmd = "melt {rf} -consumer avformat:{out} vb={vb} progress=1".format( rf=rf, vb=vb, out=web ).split()
+            cmd = "melt {rf} meta.attr.titles=1 meta.attr.titles.markup=#timecode# -attach data_show dynamic=1 -consumer avformat:{out} vb={vb} progress=1".format( rf=rf, vb=vb, out=web ).split()
+            # cmd = "melt {rf} -consumer avformat:{out} vb={vb} progress=1".format( rf=rf, vb=vb, out=web ).split()
             p=subprocess.Popen(cmd)
             p.wait()
             retcode=p.returncode
@@ -111,8 +112,8 @@ class SyncRax(process):
 
         for rf in rfs:
             if self.options.verbose: print rf
-            # self.rf_web(show, rf)
-            self.rf_audio_png(show, rf)
+            self.rf_web(show, rf)
+            # self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
             base = os.path.join("webm", ep.slug + ".webm" )
