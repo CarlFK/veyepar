@@ -5,50 +5,51 @@
 <table>
 
 <tr>
-    <td> <video src ="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv" 
-      controls poster = "{{MEDIA_URL}}/{{raw_file.base_url}}.png" 
+    <td> 
+        <video src ="{{MEDIA_URL}}/{{raw_file.base_url}}.webm" 
+            width=600
+      controls 
+      poster = "{{MEDIA_URL}}/{{raw_file.filename}}.png" 
       preload="none"
-    ></video>
-</td>
+        ></video>
+    </td>
 
-<td>
-<table>
-<tr><td> <a href="{% url "admin:main_raw_file_change" raw_file.id %}">{{raw_file.filename}}</a> </td></tr> 
+    <td> <table>
+    <tr><td> <a href="{% url "admin:main_raw_file_change" raw_file.id %}">admin</a> </td></tr> 
 
-<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.filename}}.wav.png">
-{{raw_file.filename}}.wav.png</a></td></tr>
+    <tr><td colspan="2"> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}.wav.png">
+    {{raw_file.filename}}.wav.png</a></td></tr>
 
-<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv">
-            {{raw_file.basename}}.ogv</a></td></tr>
+    <tr><td colspan="2"> <a href="{{MEDIA_URL}}{{raw_file.base_url}}.webm">
+                {{raw_file.filename}}.webm</a></td></tr>
 
-     <tr> <td>Location:</td><td>{{raw_file.location}}</td> </tr>
-     <tr> <td>Start:</td><td>{{raw_file.start}}</td> </tr>
-      <tr> <td>Duration:</td> <td>{{raw_file.duration}}</td> </tr>
-      <tr> <td>End:</td><td> {{raw_file.end}}</td> </tr>
-      <tr> <td>Comments:</td> <td>{{raw_file.comment}}</td> </tr>
+         <tr> <td>Location:</td><td>{{raw_file.location}}</td> </tr>
+         <tr> <td>Start:</td><td>{{raw_file.start}}</td> </tr>
+          <tr> <td>Duration:</td> <td>{{raw_file.duration}}</td> </tr>
+          <tr> <td>End:</td><td> {{raw_file.end}}</td> </tr>
+          <tr> <td>Comments:</td> <td>{{raw_file.comment}}</td> </tr>
 
-</table>
- </td>
-<td>
-<table>
+    </table> </td>
+    <td> <table>
+
 {% for ep in eps %}
-  <tr>
-      <td><a href="{% url "admin:main_episode_change" ep.id %}">
-              {{ep.id}}</a></td>
-     <td><a href="{% url "episode" ep.id %}">{{ep.name}}</a></td>
-  </tr>
-  <tr>
-     <td>{{ep.location}}</td>
-  </tr>
-  <tr>
-     <td>{{ep.start}}</td><td>{{ep.duration}}</td><td>{{ep.end}}</td>
-  </tr>
+      <tr>
+          <td><a href="{% url "admin:main_episode_change" ep.id %}">
+                  {{ep.id}}</a></td>
+         <td><a href="{% url "episode" ep.id %}">{{ep.name}}</a></td>
+      </tr>
+      <tr>
+         <td>{{ep.location}}</td>
+      </tr>
+      <tr>
+         <td>{{ep.start}}</td><td>{{ep.duration}}</td><td>{{ep.end}}</td>
+      </tr>
 {% endfor %}
-</table>
-</tr> 
-
+        </table> </td>
+    </tr> 
 </table>
 {# <img src="{{MEDIA_URL}}/{{raw_file.base_url}}_audio.png"/> #}
-<img src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/audio_png/raw/{{raw_file.location.slug}}/{{raw_file.basename}}_audio.png">
+<img src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/audio_png/raw/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png">
 
 {% endblock %}
+

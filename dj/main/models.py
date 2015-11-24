@@ -172,9 +172,10 @@ class Raw_File(models.Model):
 
     def base_url(self):
         """ Returns the url for the file, minus the MEDIA_URL and extension """
-        return "%s/%s/dv/%s/%s" % (self.show.client.slug, self.show.slug, 
+        return "%s/%s/dv/%s/%s" % (self.show.client.slug, 
+                                    self.show.slug, 
                                     self.location.slug, 
-                                    self.basename())
+                                    self.filename)
 
     def get_start_seconds(self):
         return time2s( self.start )
@@ -441,11 +442,20 @@ def set_slug(sender, instance, **kwargs):
         return unique_slugify(instance, instance.name)
 
 def set_end(sender, instance, **kwargs):
-    if instance.start and instance.duration:
-        seconds = reduce(lambda x, i: x*60 + i,
-            map(float, instance.duration.split(':')))
-        instance.end = instance.start + \
-           datetime.timedelta(seconds=seconds)
+    if instance.start:
+        if instance.duration:
+            seconds = reduce(lambda x, i: x*60 + i,
+                map(float, instance.duration.split(':')))
+            instance.end = instance.start + \
+               datetime.timedelta(seconds=seconds)
+        elif instance.end:
+            # calc duration based on End
+            d = instance.end - instance.start
+            seconds = d.total_seconds()
+            hms = seconds//3600, (seconds%3600)//60, seconds%60
+            instance.duration = "%02d:%02d:%02d" % hms
+        else:
+            instance.end = None
     else:
         instance.end = None
 

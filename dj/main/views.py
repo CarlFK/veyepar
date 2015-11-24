@@ -1300,8 +1300,8 @@ def episode_assets(request, episode_id):
     head=settings.MEDIA_URL
     show_url = os.path.join(head,client.slug,show.slug)
 
-    assets.append( "{}/tmp/{}.mlt".format(show_url,slug) )
-    assets.append( "{}/tmp/{}.sh".format(show_url,slug) )
+    assets.append( "{}/mlt/{}.mlt".format(show_url,slug) )
+    # assets.append( "{}/tmp/{}.sh".format(show_url,slug) )
     assets.append( "{}/titles/{}.png".format(show_url,slug) )
 
     # add the raw files
@@ -1895,7 +1895,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         prev_episode = None
            
     try:
-        next_episode = episode.get_next_by_start(show=show)
+        next_episode = episode.get_next_by_start(
+                show=show, location=location)
     except Episode.DoesNotExist:
         next_episode = None
 
