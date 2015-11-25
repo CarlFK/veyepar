@@ -22,7 +22,6 @@
 
    {% for rfa in rfas.list %}
    {% if forloop.first %}
-     {{ rfas.grouper }}
      {{ rfa.rf.start|date:"D b d H:i" }}
      <br/>
    {% endif%} 
