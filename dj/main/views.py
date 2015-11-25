@@ -1097,13 +1097,14 @@ def raw_file_audio(request):
 
     if "active" in request.GET:
         locations=locations.filter(active=True)
-    if "location" in request.GET:
-        locations=locations.filter(slug=request.GET['location'])
+    if "location_slug" in request.GET:
+        locations=locations.filter(slug=request.GET['location_slug'])
 
     rfs=Raw_File.objects.filter(show=show,
             trash=False,
             location__in=locations,
             ).order_by('start')
+
     if "start_date" in request.GET:
         start_date=request.GET['start_date']
         rfs=rfs.filter(start__startswith=start_date)
@@ -1146,7 +1147,7 @@ def raw_file_audio(request):
     return render_to_response('raw_file_audio.html',
         {
           'show':show,
-          'start_date':start_date,
+    #      'start_date':start_date,
           'prev_location':prev_location,
           'location':location,
           'next_location':next_location,
