@@ -129,7 +129,6 @@ def mk_mlt(template, output, params):
         set_text(ti,'length')
         set_text(ti,'resource',cut['filename'])
 
-        
         # apply the filters to te cuts
 
         if cut['channelcopy']=='m':
@@ -145,7 +144,9 @@ def mk_mlt(template, output, params):
             set_text(normalize,'program' , cut['normalize'])
             ti.insert(0,normalize)
 
-        ti.insert(0,nodes['pic_in_pic'])
+        if nodes['pic_in_pic'] is not None:
+            # for Node 15
+            ti.insert(0,nodes['pic_in_pic'])
 
         if i==0:
             # apply audio fade in/out to first/last cut
@@ -173,7 +174,6 @@ def mk_mlt(template, output, params):
     nodes['spacer'].set("length","0:{}.0".format(total_length-8.0))
 
     tree.write(output)
-
     # import code; code.interact(local=locals())
 
     return True

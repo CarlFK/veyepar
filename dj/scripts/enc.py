@@ -218,10 +218,11 @@ class enc(process):
 
         # if we find titles/custom/(slug).svg, use that
         # else make one from the tempalte
-        custom_svg_name = os.path.join(
-            self.show_dir, "custom", "titles", episode.slug + ".svg")
+        custom_svg_name = os.path.join( "..",
+            "custom", "titles", episode.slug + ".svg")
         if self.options.verbose: print "custom:", custom_svg_name
-        if os.path.exists(custom_svg_name):
+        abs_path =  os.path.join( self.show_dir, "tmp", custom_svg_name )
+        if os.path.exists(abs_path):
             cooked_svg_name = custom_svg_name
         else:
             svg_name = episode.show.client.title_svg
@@ -230,12 +231,14 @@ class enc(process):
                 os.path.split(os.path.abspath(__file__))[0],
                 "bling",
                 svg_name)
+
+            raw_svg = open(template).read()
+
             # happy_filename = episode.slug.encode('utf-8')
             happy_filename = episode.slug
             # happy_filename = ''.join([c for c in happy_filename if c.isalpha()])
-            title_base = os.path.join(self.show_dir, "titles", happy_filename)
-            raw_svg = open(template).read()
-            # tree=xml.etree.ElementTree.XMLID(raw_svg)
+            # title_base = os.path.join(self.show_dir, "titles", happy_filename)
+            title_base = os.path.join("..", "titles", happy_filename)
             texts = self.get_title_text(episode)
             cooked_svg = self.mk_title_svg(raw_svg, texts)
 
@@ -249,16 +252,18 @@ class enc(process):
                 self.show_dir, "titles", u'{}.svg'.format(episode.slug))
             open(cooked_svg_name, 'w').write(cooked_svg)
 
-        png_name = os.path.join(
-            self.show_dir, "titles", u'{}.png'.format(episode.slug))
+        png_name = os.path.join( "..",
+            "titles", u'{}.png'.format(episode.slug))
 
-        title_img = self.svg2png(cooked_svg_name, png_name, episode)
+        abs_path = os.path.join( self.show_dir, "tmp", png_name ) 
+
+        title_img = self.svg2png(cooked_svg_name, abs_path, episode)
 
         if title_img is None:
             print "missing title png"
             return False
 
-        return title_img
+        return png_name
 
     def mkmlt_1(self, title_img, credits_img, episode, cls, rfs):
         """
@@ -302,11 +307,14 @@ class enc(process):
         pos = 1
         for rf in rfs:
             if self.options.load_temp:
+                """
+                # needs to work with reletive paths
                 src_pathname = os.path.join(self.episode_dir, rf.filename)
                 dst_path = os.path.join(
                     self.tmp_dir, episode.slug, os.path.dirname(rf.filename))
                 rawpathname = os.path.join(
                     self.tmp_dir, episode.slug, rf.filename)
+                """
                 # self.tmp_dir,episode.slug,rf.filename.replace(':','_'))
                 cmds = [['mkdir', '-p', dst_path],
                         ['rsync', '--progress', '--size-only',
@@ -316,7 +324,8 @@ class enc(process):
                 if rf.filename.startswith('\\'):
                     rawpathname = rf.filename
                 else:
-                    rawpathname = os.path.join(self.episode_dir, rf.filename)
+                    # rawpathname = os.path.join(self.episode_dir, rf.filename)
+                    raw_pathname = os.path.join("../dv", rf.filename)
 
             # check for missing input file
             # typically due to incorrect fs mount
@@ -504,17 +513,11 @@ class enc(process):
                 if episode.show.client.credits \
                 else 'ndv-169.png'
 
-            credits_img = os.path.join(
-                os.path.split(os.path.abspath(__file__))[0],
-                "bling",
-                credits_img)
+            print(1, credits_img)
 
-            if credits_img[-4:] == ".svg":
-                # convert to png because melt doesn't do svgs as well
-                png_name = credits_img[:-4] + ".png"
-                credits_img = self.svg2png(credits_img, png_name, episode)
+            credits_pathname = os.path.join("..", "assets", credits_img )
 
-            return credits_img
+            return credits_pathname
 
         def get_clips(rfs, ep):
 
@@ -534,17 +537,21 @@ class enc(process):
                 # if rf.filename.startswith('\\'):
                 #     rawpathname = rf.filename
                 # else:
-                rawpathname = os.path.join(
-                    self.episode_dir, rf.filename)
+                raw_pathname = os.path.join( "../dv", 
+                        rf.location.slug, rf.filename)
+                    # self.episode_dir, rf.filename)
 
                 # check for missing input file
                 # typically due to incorrect fs mount
-                if not os.path.exists(rawpathname):
-                    print( 'rawpathname not found: "{}"'.format(
-                        rawpathname))
+                abs_path =  os.path.join( 
+                        self.show_dir, "tmp", raw_pathname)
+                
+                if not os.path.exists(abs_path):
+                    print( 'raw_pathname not found: "{}"'.format(
+                        abs_path))
                     return False
 
-                clip['filename']=rawpathname
+                clip['filename']=raw_pathname
 
                 # trim start/end based on episode start/end
                 if rf.start < ep.start < rf.end:
@@ -604,8 +611,9 @@ class enc(process):
 
                 cut['id'] = cl.id
 
-                rawpathname = os.path.join(
-                    self.episode_dir, cl.raw_file.filename)
+                rawpathname = os.path.join( "../dv", 
+                        cl.raw_file.location.slug, cl.raw_file.filename)
+                    # self.episode_dir, cl.raw_file.filename)
                 cut['filename'] = rawpathname
 
                 # set start/end on the clips if they are set in the db
@@ -671,12 +679,15 @@ class enc(process):
         pos = 1
         for rf in rfs:
             if self.options.load_temp:
+                """
+                # make this work with rel paths
                 src_pathname = os.path.join(self.episode_dir, rf.filename)
                 dst_path = os.path.join(
                     self.tmp_dir, episode.slug, os.path.dirname(rf.filename))
                 rawpathname = os.path.join(
                     self.tmp_dir, episode.slug, rf.filename)
               # self.tmp_dir,episode.slug,rf.filename.replace(':','_'))
+                """
                 cmds = [['mkdir', '-p', dst_path],
                         ['rsync', '--progress', '--size-only',
                             src_pathname, rawpathname]]
@@ -685,8 +696,8 @@ class enc(process):
                 if rf.filename.startswith('\\'):
                     rawpathname = rf.filename
                 else:
-                    rawpathname = os.path.join(
-                        self.episode_dir, rf.filename)
+                    rawpathname = os.path.join("../dv/", rf.filename)
+                        # self.episode_dir, rf.filename)
 
             # check for missing input file
             # typically due to incorrect fs mount
@@ -1005,7 +1016,7 @@ class enc(process):
 
         cls = Cut_List.objects.filter(
             episode=episode, apply=True).order_by('sequence')
-        # print len(cls), episode.name.__repr__()
+        print len(cls), episode.name.__repr__()
 
         if cls:
 
@@ -1039,13 +1050,18 @@ class enc(process):
                 ret = True
             else:
 
-                mlt_pathname = os.path.join(self.work_dir, "%s.mlt" % episode.slug)
                 if episode.show.client.template_mlt:
                     template_mlt = episode.show.client.template_mlt
                 else:
                     template_mlt = "template.mlt"
                 
+                mlt_pathname = os.path.join(self.show_dir, 
+                        "mlt", "%s.mlt" % episode.slug)
+
                 params = self.get_params(episode, rfs, cls )
+
+                pprint.pprint(params)
+                print(2, mlt_pathname)
                 ret = mk_mlt( template_mlt, mlt_pathname, params )
 
             if not ret:

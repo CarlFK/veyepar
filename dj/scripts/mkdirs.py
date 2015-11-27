@@ -33,10 +33,28 @@ class mkdirs(process):
         client = Client.objects.get(slug=self.options.client)
         show = Show.objects.get(client=client,slug=self.options.show)
         self.set_dirs(show)
-        dirs = "dv tmp/dv titles webm mp4 txt thumb img mlt custom/titles custom/mlt"
+        dirs = "dv assets tmp titles webm mp4 mlt custom/titles custom/mlt"
         for d in dirs.split():
             full_dir = os.path.join(self.show_dir,d)
             ret = self.mkdir(full_dir)
+
+        # copy the footer image 
+        # not sure where this should happen *shrug*
+
+        credits_img = client.credits \
+            if client.credits \
+            else 'ndv-169.png'
+
+        credits_src = os.path.join(
+            os.path.split(os.path.abspath(__file__))[0],
+            "bling",
+            credits_img)
+
+        # copy footer into show/assetts
+        credits_pathname = os.path.join(
+                self.show_dir, "assets", credits_img )
+
+        self.run_cmd( ["cp", credits_src, credits_pathname] )
 
         if self.options.raw_slugs:
 

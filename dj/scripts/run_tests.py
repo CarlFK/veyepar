@@ -191,13 +191,13 @@ pix_fmt=yuv411p" % parms
 
    # dv_dir = os.path.join(self.show_dir,'dv', 'test_loc','2010-05-21')
    tmp_dir = os.path.join(self.show_dir, 'tmp')
-   bling_dir = os.path.join(self.show_dir, 'bling')
+   assets_dir = os.path.join(self.show_dir, 'assets')
    text_file = os.path.join(tmp_dir, "source.txt")
    dv_file = os.path.join(tmp_dir,"footer.dv") 
    parms={'input_file':text_file, 
            'dv_file':dv_file,
            'text_file':text_file,
-           'bling_dir':bling_dir,
+           'assets_dir':assets_dir,
            'format':self.options.dv_format,
            'video_frames':1,
            'audio_frames':1 }
@@ -224,7 +224,7 @@ pix_fmt=yuv411p" % parms
    cmd = "mplayer \
            -frames 1 \
            -ao null \
-           -vo png:outdir=%(bling_dir)s \
+           -vo png:outdir=%(assets_dir)s \
            %(dv_file)s" % parms
    self.run_cmd(cmd.split())
 
