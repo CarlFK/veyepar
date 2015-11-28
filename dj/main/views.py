@@ -1301,9 +1301,15 @@ def episode_assets(request, episode_id):
     head=settings.MEDIA_URL
     show_url = os.path.join(head,client.slug,show.slug)
 
+    assets.append( "# wget --force-directories -i http://" 
+            + request.META['HTTP_HOST'] + request.get_full_path() )
+
     assets.append( "{}/mlt/{}.mlt".format(show_url,slug) )
     # assets.append( "{}/tmp/{}.sh".format(show_url,slug) )
     assets.append( "{}/titles/{}.png".format(show_url,slug) )
+
+    foot_img = client.credits if client.credits else "ndv-169.png"
+    assets.append( "{}/assets/{}".format(show_url,foot_img) )
 
     # add the raw files
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence', 'raw_file__start')
@@ -1313,7 +1319,10 @@ def episode_assets(request, episode_id):
     for cut in cuts:
         assets.append( "{}/dv/{}/{}.webm".format(show_url,
             cut.raw_file.location.slug, cut.raw_file.filename ) )
-            # cut.raw_file.location.slug, cut.raw_file.basename() ) )
+
+    for cut in cuts:
+        filename = os.path.split(cut.raw_file.filename)[1]
+        assets.append( "ln -s {0}.webm {0}".format(filename) )
 
         
     response = HttpResponse('\n'.join(assets), content_type="text/plain")

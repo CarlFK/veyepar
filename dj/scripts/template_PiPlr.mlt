@@ -8,7 +8,6 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
@@ -22,7 +21,6 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
@@ -36,7 +34,6 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
@@ -50,7 +47,6 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
@@ -64,7 +60,6 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
@@ -128,7 +123,6 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
@@ -147,7 +141,18 @@
       <property name="transition.valign">bottom</property>
       <property name="transition.halign">right</property>
     </filter>
- 
+
+    <filter id="opacity">
+      <property name="track">0</property>
+      <property name="start">1</property>
+      <property name="level">1</property>
+      <property name="mlt_type">filter</property>
+      <property name="mlt_service">brightness</property>
+      <property name="shotcut:filter">brightnessOpacity</property>
+      <property name="alpha">0.78</property>
+      <property name="opacity">0.78</property>
+    </filter>
+
     <filter id="audio_fade_in" in="00:00:00.667" out="00:00:01.635">
       <property name="track">0</property>
       <property name="window">75</property>
@@ -167,7 +172,6 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
@@ -203,7 +207,6 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
@@ -308,7 +311,7 @@
       <property name="b_track">1</property>
       <property name="version">0.9</property>
       <property name="mlt_type">transition</property>
-      <property name="mlt_service">frei0r.cairoblend</property>
+      <property name="mlt_service">frei0r.composition</property>
       <property name="disable">1</property>
     </transition>
     <transition id="transition2">
@@ -324,7 +327,7 @@
       <property name="b_track">2</property>
       <property name="version">0.9</property>
       <property name="mlt_type">transition</property>
-      <property name="mlt_service">frei0r.cairoblend</property>
+      <property name="mlt_service">frei0r.composition</property>
       <property name="disable">0</property>
     </transition>
   </tractor>

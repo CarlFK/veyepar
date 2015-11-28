@@ -73,7 +73,8 @@ class SyncRax(process):
         web = base + ".webm"
         # Don't upload over phone.
         if not self.cdn_exists(show,web):
-            self.file2cdn(show,web)
+            pass
+            # self.file2cdn(show,web)
 
 
     def rf_audio_png(self, show, rf):
@@ -127,14 +128,20 @@ class SyncRax(process):
              ret = self.mk_audio_png(ep.public_url,png_name) 
              self.file2cdn(show,base)
 
+    def cut_list(self,show,ep):
+        cls = ep.cut_list_set.all()
+        for cl in cls:
+            self.rf_web(show, cl.raw_file)
+
 
     def sync_title_png(self,show,ep):
         base = os.path.join("titles", ep.slug + ".png" )
-        p = u"base:{}".format(base)
-        print(p)
         if not self.cdn_exists(show,base):
-             png_name = os.path.join( self.show_dir, base )
-             self.file2cdn(show,base)
+            self.file2cdn(show,base)
+
+    def mlt(self,show,ep):
+        base = os.path.join("mlt", ep.slug + ".mlt" )
+        self.file2cdn(show,base)
 
     def episodes(self, show):
         eps = Episode.objects.filter(show=show)
@@ -155,10 +162,13 @@ class SyncRax(process):
             print(ep)
             # self.sync_title_png(show,ep)
             # import code; code.interact(local=locals())
-            cls = ep.cut_list_set.all()
-            for cl in cls:
-                self.rf_web(show, cl.raw_file)
+            # self.cut_list(show,ep)
+            self.mlt(show,ep)
 
+    def show_assets(self,show):
+        foot_img = show.client.credits
+        base = os.path.join("assets", foot_img )
+        self.file2cdn(show,base)
 
     def init_rax(self, show):
          user = show.client.rax_id
@@ -178,6 +188,7 @@ class SyncRax(process):
         self.set_dirs(show)
         self.init_rax(show)
 
+        # self.show_assets(show)
         self.raw_files(show)
         # self.episodes(show)
 

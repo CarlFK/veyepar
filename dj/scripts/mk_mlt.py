@@ -44,7 +44,7 @@ def mk_mlt(template, output, params):
         'pl_vid0', 'pi_vid0', # Play List and Item
         'tl_vid2', 'ti_vid2', # Time Line and Item
         'audio_fade_in', 'audio_fade_out',
-        'pic_in_pic',
+        'pic_in_pic', 'opacity',
         'channelcopy', 
         'mono', 
         'normalize', 
@@ -147,6 +147,7 @@ def mk_mlt(template, output, params):
         if nodes['pic_in_pic'] is not None:
             # for Node 15
             ti.insert(0,nodes['pic_in_pic'])
+            # ti.insert(0,nodes['opacity'])
 
         if i==0:
             # apply audio fade in/out to first/last cut

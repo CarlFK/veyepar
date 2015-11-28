@@ -64,19 +64,20 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_display = ('id',
             # 'conf_key', 
             # 'conf_url', 
-            'state',
+            # 'state',
             'name', 
             # 'authors',
             # 'emails',
-            'archive_mp4_url',
+            # 'archive_mp4_url',
             # 'host_url',
             # 'locked_by', 
             'start', 
-            # 'duration', 
+            'duration', 
+            'end', 
             # 'location',
 )
     list_editable = (
-            'state',
+            # 'state',
             'name',
             # 'host_url',
             #'rax_mp4_url',
@@ -85,8 +86,9 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'conf_key', 
             # 'conf_url', 
             # 'sequence', 
-            # 'start', 
-            # 'duration', 
+            'start', 
+            'duration', 
+            'end', 
             )
 
        

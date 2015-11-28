@@ -508,15 +508,8 @@ class enc(process):
             return title_img
 
         def get_foot(episode):
-            # define credits
-            credits_img = episode.show.client.credits \
-                if episode.show.client.credits \
-                else 'ndv-169.png'
-
-            print(1, credits_img)
-
+            credits_img = episode.show.client.credits
             credits_pathname = os.path.join("..", "assets", credits_img )
-
             return credits_pathname
 
         def get_clips(rfs, ep):

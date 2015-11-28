@@ -172,6 +172,17 @@ class ck_setup(process):
             p_warn("no keys found in {}".format(title_svg))
 
 
+    def ck_foot(self):
+        credits_img =  os.path.join(
+                self.show_dir,
+                "assets", 
+                self.client.credits )
+
+        if not os.path.exists(credits_img):
+            p_fail("credits_img not found: {}".format(credits_img))
+ 
+        p_okg("credits: {}".format(self.client.credits))
+
     def ck_email(self):
         if self.client.contacts:
             p_okg("client.contacts: {}".format(self.client.contacts))
@@ -344,6 +355,7 @@ class ck_setup(process):
 
             self.ck_dir()
             self.ck_title()
+            self.ck_foot()
 
             self.ck_schedule_api()
 

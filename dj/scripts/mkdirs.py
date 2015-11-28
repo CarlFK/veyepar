@@ -40,17 +40,15 @@ class mkdirs(process):
 
         # copy the footer image 
         # not sure where this should happen *shrug*
+        # It's really just for the default, 
+        # If there is a non default, it will live under show_dir/assets/.
 
-        credits_img = client.credits \
-            if client.credits \
-            else 'ndv-169.png'
-
+        credits_img = client.credits
         credits_src = os.path.join(
             os.path.split(os.path.abspath(__file__))[0],
             "bling",
             credits_img)
-
-        # copy footer into show/assetts
+        # copy into show/assetts
         credits_pathname = os.path.join(
                 self.show_dir, "assets", credits_img )
 
@@ -58,7 +56,7 @@ class mkdirs(process):
 
         if self.options.raw_slugs:
 
-    # get episodes for this show
+        # get episodes for this show
             eps = Episode.objects.filter(show=show)
             for ep in eps:
                 loc = ep.location.slug

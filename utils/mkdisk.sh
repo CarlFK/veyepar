@@ -1,10 +1,10 @@
 #!/bin/bash -ex
 
 lab=$1
-dev=sdb1
+dev=sdc1
 mp=/media/carl/$lab
 
-pumount /dev/$dev
+# pumount /dev/$dev
 sudo mkfs.ext4 -L $lab -O sparse_super,extent,uninit_bg -E lazy_itable_init=1 -m 0 /dev/$dev
 sleep 5
 pmount /dev/$dev

@@ -43,12 +43,13 @@ class Client(models.Model):
         help_text='template to make cutlist mlt from.')
     title_svg = models.CharField(max_length=30, blank=True, null=True,
         help_text='template for event/title/authors')
-    preroll = models.CharField(max_length=335, blank=True, 
-        help_text="name of video to prepend (not implemented)")
-    postroll = models.CharField(max_length=335, blank=True,
-        help_text="name of video to postpend (not implemented)")
+    # preroll = models.CharField(max_length=335, blank=True, 
+    #    help_text="name of video to prepend (not implemented)")
+    #postroll = models.CharField(max_length=335, blank=True,
+    #    help_text="name of video to postpend (not implemented)")
     credits = models.CharField(max_length=30, blank=True, 
-        help_text='template for ending credits')
+            default="ndv-169.png",
+        help_text='added to end, store in assets dir')
 
     # remote accounts to post to
     host_user = models.CharField(max_length=30, blank=True, null=True,
@@ -201,7 +202,7 @@ class Raw_File(models.Model):
         return ('raw_file', [self.id,])
 
     class Meta:
-        ordering = ["filename"]
+        ordering = ["start", "location", "filename"]
 
 
 class Quality(models.Model):
