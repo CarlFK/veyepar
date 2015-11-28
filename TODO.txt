@@ -37,7 +37,6 @@ veyepar:
   youtube:
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
-     delete old version when replaced by new encode.
      don't re-upload the same video (causes duplicate video error)
      # invalid tags cause fail and loop forever - fix this. 
          (fixed by not setting tags)
@@ -76,9 +75,6 @@ encoding:
   encode shorter talks first so they can get started uploading sooner.
   soften jump cuts - If end+start is not back to back, fade to black and back up.
   
-  auto-speed up your videos to 1.25x speed as an additional optional feature
-  no.
-
 slugify talk titles- 
   truncate on word boundary when over X chars.
 
@@ -103,6 +99,7 @@ model:
     that the video file only goes across local connection once.
 
 option to pick transport: popen(rsync...) or rax_uploader 
+
 manage cloud storage:  
   png/svg for preview
   ogv/webm for remote editing
