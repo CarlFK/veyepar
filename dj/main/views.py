@@ -31,6 +31,8 @@ from cStringIO import StringIO
 from pprint import pprint
 import operator
 
+import urlparse
+
 from main.models import \
         Client,Show,Location,Episode,Cut_List,Raw_File,State,Image_File
 
@@ -1307,9 +1309,7 @@ def episode_assets(request, episode_id):
     assets.append( "{}/mlt/{}.mlt".format(show_url,slug) )
     # assets.append( "{}/tmp/{}.sh".format(show_url,slug) )
     assets.append( "{}/titles/{}.png".format(show_url,slug) )
-
-    foot_img = client.credits if client.credits else "ndv-169.png"
-    assets.append( "{}/assets/{}".format(show_url,foot_img) )
+    assets.append( "{}/assets/{}".format(show_url, client.credits) )
 
     # add the raw files
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence', 'raw_file__start')
@@ -1320,11 +1320,17 @@ def episode_assets(request, episode_id):
         assets.append( "{}/dv/{}/{}.webm".format(show_url,
             cut.raw_file.location.slug, cut.raw_file.filename ) )
 
+    # make symlinks from epected filename to smaller webm 
+    show_path = urlparse.urlparse(show_url)
+    first_dir = '"{}{}/dv/{}/{}"'.format( show_path.netloc, show_path.path,
+            cut.raw_file.location.slug, 
+            os.path.split(cut.raw_file.filename)[0])
+
+    assets.append("cd " + first_dir)
     for cut in cuts:
         filename = os.path.split(cut.raw_file.filename)[1]
         assets.append( "ln -s {0}.webm {0}".format(filename) )
 
-        
     response = HttpResponse('\n'.join(assets), content_type="text/plain")
     response['Content-Disposition'] = \
             'inline; filename={}.urls'.format(slug)
