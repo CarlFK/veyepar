@@ -2031,7 +2031,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
         wall_start = episode.start \
                 + datetime.timedelta(seconds = cut.get_start_seconds())
-        wall_end = episode.end \
+        wall_end = episode.start \
                 + datetime.timedelta(seconds = cut.get_end_seconds())
 
           
