@@ -2029,9 +2029,9 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         else:
             chap = ['','']
 
-        wall_start = episode.start \
+        wall_start = cut.raw_file.start \
                 + datetime.timedelta(seconds = cut.get_start_seconds())
-        wall_end = episode.start \
+        wall_end = cut.raw_file.start \
                 + datetime.timedelta(seconds = cut.get_end_seconds())
 
           
