@@ -1303,12 +1303,13 @@ def episode_assets(request, episode_id):
     head=settings.MEDIA_URL
     show_url = os.path.join(head,client.slug,show.slug)
 
-    assets.append( "# wget --force-directories -i http://" 
+    assets.append( "wget -N --force-directories -i http://"
             + request.META['HTTP_HOST'] + request.get_full_path() )
 
     assets.append( "{}/mlt/{}.mlt".format(show_url,slug) )
     # assets.append( "{}/tmp/{}.sh".format(show_url,slug) )
     assets.append( "{}/titles/{}.png".format(show_url,slug) )
+    assets.append( "{}/titles/{}.svg".format(show_url,slug) )
     assets.append( "{}/assets/{}".format(show_url, client.credits) )
 
     # add the raw files
@@ -1905,7 +1906,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         # why Start/End can't be null:
         # http://code.djangoproject.com/ticket/13611
         # prev_episode = episode.get_previous_by_start(show=show)
-        prev_episode = episode.get_previous_by_start(show=show)
+        prev_episode = episode.get_previous_by_start(
+                show=show, location=location)
     except Episode.DoesNotExist:
         # at edge of the set of nulls or values.  
         prev_episode = None
@@ -2016,15 +2018,28 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     start_chap = (0,"00:00") # frame, timestamp
     chaps,frame_total = [],0 
     for cut in cuts:
+
         if cut.apply:
             frame_total+=int(cut.duration())
             end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
               (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
-            chaps.append((start_chap,end_chap,cut))
+            chap = [start_chap,end_chap,cut]
             # setup for next chapter
             start_chap=end_chap
         else:
-            chaps.append(('',''))
+            chap = ['','']
+
+        wall_start = episode.start \
+                + datetime.timedelta(seconds = cut.get_start_seconds())
+        wall_end = episode.end \
+                + datetime.timedelta(seconds = cut.get_end_seconds())
+
+          
+        x = (wall_start,wall_end)
+        chap.append(x)
+        chap.append((wall_start,wall_end,))
+
+        chaps.append(chap)
  
     # default to next Raw_File 
     rf_filename = ''

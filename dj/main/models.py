@@ -16,8 +16,12 @@ from unique_slugify import unique_slugify
 
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
-    sec = reduce(lambda x, i: x*60 + i,  
-        map(float, time.split(':')))  
+    if time:
+        sec = reduce(lambda x, i: x*60 + i,  
+            map(float, time.split(':')))  
+    else:
+        sec = 0.0
+        
     return sec 
 
 
@@ -386,6 +390,13 @@ class Cut_List(models.Model):
         return "%s - %s" % (self.raw_file, self.episode.name)
     class Meta:
         ordering = ["sequence"]
+
+    def get_start_seconds(self):
+        return time2s( self.start )
+
+    def get_end_seconds(self):
+        return time2s( self.end )
+
     def duration(self):
         # calc size of clip in secconds 
         # may be size of raw, but take into account trimming start/end
