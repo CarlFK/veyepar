@@ -33,7 +33,7 @@ class mkdirs(process):
         client = Client.objects.get(slug=self.options.client)
         show = Show.objects.get(client=client,slug=self.options.show)
         self.set_dirs(show)
-        dirs = "dv assets tmp titles webm mp4 mlt custom/titles custom/mlt"
+        dirs = "dv assets tmp titles webm mp4 mlt custom/titles"
         for d in dirs.split():
             full_dir = os.path.join(self.show_dir,d)
             ret = self.mkdir(full_dir)

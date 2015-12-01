@@ -495,7 +495,7 @@ class enc(process):
         and cutlist+raw filenames
         """
         def get_title(episode):
-            # if we find titles/custom/(slug).svg, use that
+            # if we find show_dir/custom/titles/(slug).svg, use that
             # else make one from the tempalte
             custom_png_name = os.path.join(
                 self.show_dir, "custom", "titles", episode.slug + ".png")
@@ -1002,51 +1002,33 @@ class enc(process):
         return cmd
 
     def process_ep(self, episode):
-        # print episode
-        print episode.name
 
         ret = False
 
         cls = Cut_List.objects.filter(
             episode=episode, apply=True).order_by('sequence')
-        print len(cls), episode.name.__repr__()
 
         if cls:
-
-            """
-            for cl in cls:
-                print cl.start, cl.end
-            # title and footer were here
-            title_img = self.mk_title(episode)
-
-            credits_img = episode.show.client.credits \
-                if episode.show.client.credits \
-                else 'ndv1-black.png'
-            credits_img = os.path.join(
-                os.path.split(os.path.abspath(__file__))[0],
-                "bling",
-                credits_img)
-            """
 
             # get list of raw footage for this episode
             rfs = Raw_File.objects. \
                 filter(cut_list__episode=episode).\
                 exclude(trash=True).distinct()
-               #         cut_list__apply=True).\
 
             # get a .mlt file for this episode (mlt_pathname)
             # look for custom/slug.mlt and just use it, 
-            # else build one from client.template_mlt, else "template.mlt"
+            # else build one from client.template_mlt
             
-            mlt_pathname = os.path.join(self.show_dir, "custom", "mlt", "%s.mlt" % episode.slug)
+            mlt_pathname = os.path.join(
+                    self.show_dir, "custom", 
+                    "{}.mlt".format(episode.slug))
+
             if os.path.exists(mlt_pathname):
+                print("found custom/slug.mlt.")
                 ret = True
             else:
 
-                if episode.show.client.template_mlt:
-                    template_mlt = episode.show.client.template_mlt
-                else:
-                    template_mlt = "template.mlt"
+                template_mlt = episode.show.client.template_mlt
                 
                 mlt_pathname = os.path.join(self.show_dir, 
                         "mlt", "%s.mlt" % episode.slug)

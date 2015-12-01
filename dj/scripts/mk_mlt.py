@@ -147,7 +147,7 @@ def mk_mlt(template, output, params):
         if nodes['pic_in_pic'] is not None:
             # for Node 15
             ti.insert(0,nodes['pic_in_pic'])
-            # ti.insert(0,nodes['opacity'])
+            ti.insert(0,nodes['opacity'])
 
         if i==0:
             # apply audio fade in/out to first/last cut
