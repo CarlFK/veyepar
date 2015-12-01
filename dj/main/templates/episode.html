@@ -198,7 +198,7 @@ $(".viewer").zoomer();
           controls
           preload="metadata"
           width=400
-          {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png" #}
+          {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
           ></video>
       </td>
 
@@ -256,12 +256,12 @@ $(".viewer").zoomer();
             <tr>
                 <td>
                     {# <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">dv</a><br/> #}
-                <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.webm" target=webm>webm</a><br/>
-                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.webm">webm.m3u</a>
+                <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.webm" target=webm>webm</a><br/>
+                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.webm">webm.m3u</a>
   </td>
   <td>
-                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.dv">dv.m3u</a>
-                {#<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.basename}}.png">png</a> #}
+                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.dv">dv.m3u</a>
+                {#<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png">png</a> #}
       
                 <td>
                     {{ clrfform.split.label_tag }}{{ clrfform.split }}
@@ -285,7 +285,7 @@ $(".viewer").zoomer();
   {% endif %}
 
   <img id="audio_image_{{cl.id}}" alt="audio viz" 
-    src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/raw/{{cl.raw_file.location.slug}}/{{cl.raw_file.basename}}.wav.png">
+    src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/audio_png/raw/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
 
   {% with forloop.counter0 as x %}
 

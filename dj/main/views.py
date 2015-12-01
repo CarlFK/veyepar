@@ -2023,20 +2023,18 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
             frame_total+=int(cut.duration())
             end_chap = (int(frame_total*29.27), "%s:%02i:%02i" %  
               (frame_total//3600, (frame_total%3600)//60, frame_total%60) )
-            chap = [start_chap,end_chap,cut]
+            chap = [start_chap,end_chap]
             # setup for next chapter
             start_chap=end_chap
         else:
             chap = ['','']
 
+        chap.append(cut)
+
         wall_start = cut.raw_file.start \
                 + datetime.timedelta(seconds = cut.get_start_seconds())
         wall_end = cut.raw_file.start \
                 + datetime.timedelta(seconds = cut.get_end_seconds())
-
-          
-        x = (wall_start,wall_end)
-        chap.append(x)
         chap.append((wall_start,wall_end,))
 
         chaps.append(chap)
