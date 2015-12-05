@@ -43,10 +43,10 @@ class Client(models.Model):
             help_text = "Category for Richard")
 
     # video encoding 
-    template_mlt = models.CharField(max_length=60,
+    template_mlt = models.CharField(max_length=60, null=True,
         default="template.mlt",
         help_text='template to make cutlist mlt from.')
-    title_svg = models.CharField(max_length=60, 
+    title_svg = models.CharField(max_length=60, null=True,
         default="title.svg",
         help_text='template for event/title/authors title slide.')
     # preroll = models.CharField(max_length=335, blank=True, 
