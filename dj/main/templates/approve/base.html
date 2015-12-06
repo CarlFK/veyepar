@@ -24,10 +24,19 @@
 {% block point  %}
 {% endblock %}
 
+{% if episode.comment %}
+    <br/><div style="border-color: gray; background-color: #F5F5F5;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 4px;" >
+    Production Notes: {{episode.comment|linebreaks}}
+    </div> <br >
+{% endif %}
+
 {% if user.is_authenticated %}
 <hr>
 <a href="{% url "admin:main_episode_change" episode.id %}">admin</a> <br>
-<a href="E/{{episode.id}}/">{{ episode.name }}</a> <br>
+<a href="e/{{episode.id}}/">{{ episode.name }}</a> <br>
 {% endif %}
+
 
 {% endblock %}
