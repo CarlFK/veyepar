@@ -374,7 +374,8 @@ class add_eps(process.process):
                       conf_key=row['conf_key'], 
                       )
 
-                     #  start__day = row['start'].day,
+            location=Location.objects.get(
+                    name__iexact=row['location'])
 
             if episodes:
                 if len(episodes)>1:
@@ -414,10 +415,11 @@ class add_eps(process.process):
                 # check for diffs
                 diff_fields=[]
 
-                if episode.location.name.upper() <> row['location'].upper():
+                if episode.location is None or \
+                        episode.location.name.upper() <> row['location'].upper():
                     diff=True
                     diff_fields.append(('loc',
-                        episode.location, row['location']))
+                        location, row['location']))
 
                 for f in fields:
                     # veyepar, remote
@@ -497,8 +499,8 @@ class add_eps(process.process):
                 else:
                     print(u"updating conf_key: {conf_key}, name:{name}").format(**row)
 
-                episode.location=Location.objects.get(
-                        name__iexact=row['location'])
+                episode.location = location
+
                 # copy all the fields 
                 # from the source row to the episode object
                 for f in fields:
@@ -694,6 +696,8 @@ class add_eps(process.process):
             event['conf_url'] = row.get('URL','')
 
             event['tags'] = ''
+            event['twitter_id'] = ''
+
             event['raw'] = row
 
             events.append(event)
@@ -1417,12 +1421,18 @@ class add_eps(process.process):
 
     def zoo(self, schedule, show):
         rooms = self.zoo_cages(schedule)
+        print rooms
         self.add_rooms(rooms,show)
 
         # rooms=['Cafeteria', 'Caro', 'Studio', 'C001', 'T101', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
         # good rooms=['Caro', 'Studio', 'C001', 'T101', ]
 
-        bad_rooms=['Cafeteria', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
+        # bad_rooms=['Cafeteria', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
+
+        bad_rooms = [ u'Costa Hall Foyer', u'uncatered', 
+                u'Super Awesome Venue TBA',
+                u'The Pier - http://www.thepiergeelong.com.au' ]
+
         locs=Location.objects.filter(name__in = bad_rooms)
         for loc in locs:
             loc.active = False
@@ -1430,6 +1440,7 @@ class add_eps(process.process):
 
         events = self.zoo_events(schedule)
         self.add_eps(events, show)
+
         return 
 
     def fos_events( self, schedule ):
