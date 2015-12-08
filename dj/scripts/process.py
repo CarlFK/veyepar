@@ -180,7 +180,7 @@ class process(object):
     # save the lock to disk
     episode.save()
     try:
-        state = State.objects.get(id=episode.state)
+        state = State.objects.get(sequence=episode.state)
     except State.DoesNotExist:
         state = None
     self.start=datetime.datetime.now()
@@ -208,8 +208,8 @@ class process(object):
     episode.save()
 
   def process_ep(self, episode):
-    print "stubby process_ep", episode.id, episode.name
-    return 
+      print("stubby process_ep: #{} state:{} {}".format( episode.id, episode.state, episode.name ) )
+      return 
 
   def process_eps(self, episodes):
 
