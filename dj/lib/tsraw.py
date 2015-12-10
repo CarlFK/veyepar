@@ -5,6 +5,7 @@ tsraw.py - timestamp raw files
 gets start/end times of raw files
 
 Gets start from one of:
+metadata via gst.discover()
 the file name (assumes yy_mm_dd/hh_mm_ss.dv format)
 the file system time stamp, 
 the first frame of the dv
@@ -18,7 +19,6 @@ last frame
 import os
 import re
 import datetime
-# from dateutil.parser import parse
 
 from gi.repository import Gst
  

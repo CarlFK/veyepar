@@ -30,7 +30,7 @@ sudo apt-get --assume-yes install python-software-properties
 
 sudo apt-get --assume-yes update
 
-sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape ffmpeg2theora mplayer vlc git vim mencoder python-virtualenv screen sox melt python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav gir1.2-gstreamer-1.0
+sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape mplayer vlc git vim mencoder python-virtualenv sox python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav gir1.2-gstreamer-1.0
 
 sudo apt-get --assume-yes install libyaml-dev libjpeg-dev
 
@@ -52,6 +52,19 @@ sudo apt-get --assume-yes build-dep python-lxml python-psycopg2
 # python-psycopg2 python-imaging python-virtualenv virtualenvwrapper 
 # ttf-dejavu-core (for pdfs)
 
+# gstreamer bindings
+# apt-get install gir1.2-gst.* python-gobject # gobject-introspection
+sudo apt-get install python-gi \
+    gstreamer1.0-tools \
+    gir1.2-gstreamer-1.0 \
+    gir1.2-gst-plugins-base-1.0 \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-libav
+
+# Why am I installing py3 stuff?
+    # python3-gi \
 
 # curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv 
 
@@ -104,17 +117,6 @@ ln -s /usr/lib/python2.7/dist-packages/tesseract.pyc
 # python -c "import _tesseract;print _tesseract.__file__"
 # /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
 ln -s /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
-
-# gstreamer bindings
-# apt-get install gir1.2-gst.* python-gobject # gobject-introspection
-sudo apt-get install python-gi python3-gi \
-    gstreamer1.0-tools \
-    gir1.2-gstreamer-1.0 \
-    gir1.2-gst-plugins-base-1.0 \
-    gstreamer1.0-plugins-good \
-    gstreamer1.0-plugins-ugly \
-    gstreamer1.0-plugins-bad \
-    gstreamer1.0-libav
 
 cd -
 
