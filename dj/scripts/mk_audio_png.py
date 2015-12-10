@@ -1,13 +1,12 @@
 #!/usr/bin/python
 
-# mk_audio_png.py - mass fix some goof
-
+# mk_audio_png.py - visualize audio of final encode
 
 import os
 
-import gslevels 
-
 from process import process
+
+import gslevels 
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
@@ -37,7 +36,8 @@ class mk_audio_png(process):
         base = os.path.join(ext, ep.slug + ".{}.png".format(ext) )
         png_name = os.path.join( self.show_dir, base )
         ret = self.mk_audio_png( ep.public_url, png_name ) 
-        self.file2cdn( ep.show, base )
+        if ret and self.options.rsync:
+            self.file2cdn( ep.show, base )
         
         ep.save()
 
@@ -46,7 +46,11 @@ class mk_audio_png(process):
         self.ret = ret
         return ret
 
+    def add_more_options(self, parser):
+        parser.add_option('--rsync', action="store_true",
+            help="upload to DS box.")
+
 if __name__ == '__main__':
-    p=fix()
+    p=mk_audio_png()
     p.main()
 

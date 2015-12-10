@@ -1024,7 +1024,7 @@ class enc(process):
                     "{}.mlt".format(episode.slug))
 
             if os.path.exists(mlt_pathname):
-                print("found custom/slug.mlt.")
+                print("found custom/slug.mlt:\n{}".format( mlt_pathname ))
                 ret = True
             else:
 
