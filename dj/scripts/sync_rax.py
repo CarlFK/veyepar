@@ -71,20 +71,16 @@ class SyncRax(process):
             retcode=p.returncode
         
         web = base + ".webm"
-        # Don't upload over phone.
         if not self.cdn_exists(show,web):
-            pass
-            # self.file2cdn(show,web)
+            self.file2cdn(show,web)
 
 
     def rf_audio_png(self, show, rf):
-        # check for audio image
         rf_base = os.path.join( "dv", 
             rf.location.slug, rf.filename )
 
         png_base = os.path.join( "audio_png", "raw", 
             rf.location.slug, rf.filename + ".wav.png")
-            # rf.location.slug, rf.basename() + "_audio.png")
 
         if not self.cdn_exists(show,png_base):
             print rf.filesize
@@ -117,15 +113,17 @@ class SyncRax(process):
             # self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
-            base = os.path.join("webm", ep.slug + ".webm" )
-            if not self.cdn_exists(show,base):
-                 self.file2cdn(show,base)
+        ext = "mp4"
+        base = os.path.join( ext, "{}.{}".format(ep.slug, ext) )
+        # if not self.cdn_exists(show,base):
+        self.file2cdn(show,base)
 
     def sync_final_audio_png(self,show,ep):
-        base = os.path.join("webm", ep.slug + "_audio.png" )
+        ext = "webm"
+        base = os.path.join(ext, ep.slug + ".{}.png".format(ext) )
         if not self.cdn_exists(show,base):
              png_name = os.path.join( self.show_dir, base )
-             ret = self.mk_audio_png(ep.public_url,png_name) 
+             ret = self.mk_audio_png( ep.public_url, png_name ) 
              self.file2cdn(show,base)
 
     def cut_list(self,show,ep):
@@ -140,8 +138,18 @@ class SyncRax(process):
             self.file2cdn(show,base)
 
     def mlt(self,show,ep):
-        base = os.path.join("mlt", ep.slug + ".mlt" )
-        self.file2cdn(show,base)
+        # put whatever is found into target/mlt
+        # kinda wonky, but not sure how to handle this yet.
+
+        mlt = os.path.join("mlt", ep.slug + ".mlt" )
+
+        custom_mlt = os.path.join("custom", ep.slug + ".mlt" )
+        if os.path.exists( os.path.join(self.show_dir, custom_mlt )):
+            src = custom_mlt
+        else:
+            src = mlt
+
+        self.file2cdn(show,src,mlt)
 
     def episodes(self, show):
         eps = Episode.objects.filter(show=show)
@@ -153,17 +161,18 @@ class SyncRax(process):
             loc = Location.objects.get(slug=self.options.room)
             eps = eps.filter(location = loc)
 
-        # for ep in eps.filter(state=5):
-            # self.sync_final(show,ep)
-            # self.sync_final_audio_png(show,ep)
-         
-        # eps = eps.filter(state=4)
+        if self.args:
+            eps = eps.filter(id__in=self.args)
+
+        # eps = eps.filter(state=3)
+
         for ep in eps:
             print(ep)
             # self.sync_title_png(show,ep)
-            # import code; code.interact(local=locals())
             # self.cut_list(show,ep)
             self.mlt(show,ep)
+            self.sync_final(show,ep)
+            # self.sync_final_audio_png(show,ep)
 
     def show_assets(self,show):
         foot_img = show.client.credits
@@ -189,8 +198,8 @@ class SyncRax(process):
         self.init_rax(show)
 
         # self.show_assets(show)
-        self.raw_files(show)
-        # self.episodes(show)
+        # self.raw_files(show)
+        self.episodes(show)
 
 
     def work(self):
