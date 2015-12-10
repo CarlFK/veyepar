@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 # Veyepar instalation script
 
 # boot strap command to get this file and run it.
@@ -32,6 +32,10 @@ sudo apt-get --assume-yes update
 
 sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape mplayer vlc git vim mencoder python-virtualenv sox python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav gir1.2-gstreamer-1.0
 
+# Use Shotcut's melt for production,
+# but install this for the test at the end of this script
+sudo apt-get --assume-yes install melt
+
 sudo apt-get --assume-yes install libyaml-dev libjpeg-dev
 
 # python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad 
@@ -54,7 +58,7 @@ sudo apt-get --assume-yes build-dep python-lxml python-psycopg2
 
 # gstreamer bindings
 # apt-get install gir1.2-gst.* python-gobject # gobject-introspection
-sudo apt-get install python-gi \
+sudo apt-get --assume-yes install python-gi \
     gstreamer1.0-tools \
     gir1.2-gstreamer-1.0 \
     gir1.2-gst-plugins-base-1.0 \
@@ -94,16 +98,20 @@ fi
 cd veyepar
 
 pip install -r setup/requirements.txt
-# fix broken dabo installer
+
+# fix a bunch of things that don't pip install well
+cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
+
+# Dabo
 # maybe it works now?  http://trac.dabodev.com/changeset/5554
 # mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 # mv ~/.virtualenvs/veyepar/dabo/locale/ ~/.virtualenvs/veyepar/lib/python2.6/site-packages/dabo
-cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
-
-ln -s /usr/lib/python2.7/dist-packages/gi
 
 git clone https://github.com/dabodev/dabo.git dabo-master
 ln -s dabo-master/dabo 
+
+
+ln -s /usr/lib/python2.7/dist-packages/gi
 
 # to hookinto local open-cv
 # python -c "import cv2;print cv2.__file__" 
@@ -122,10 +130,10 @@ cd -
 
 # grab some text files I don't want to check into the repo
 cd dj/scripts
-mkdir static
+mkdir -p static
 cd static
-wget -N http://0x80.org/wordlist/webster-dictionary.txt
-ln -s webster-dictionary.txt dictionary.txt
+# wget -N http://0x80.org/wordlist/webster-dictionary.txt
+# ln -s webster-dictionary.txt dictionary.txt
 
 
 # removed because sphinx no longer installs - pulled from deb repos
@@ -144,13 +152,18 @@ cd ../..
 
 # this assumes FireFox has been run, 
 # which will create ~/.mozilla/firefox/profiles.ini
-if [[ -f  ~/.mozilla/firefox/profiles.ini ]]; then 
-    python setup/nodes/review/set_ff_prefs.py
+
+# This no longer works :(
+
+# if [[ -f  ~/.mozilla/firefox/profiles.ini ]]; then 
+#    python setup/nodes/review/set_ff_prefs.py
+# fi
+
 # adds these lines to FireFox config 
 # user_pref("capability.policy.policynames", "localfilelinks");
 # user_pref("capability.policy.localfilelinks.sites", "http://localhost:8080");
 # user_pref("capability.policy.localfilelinks.checkloaduri.enabled", "allAccess");
-fi
+
 
 echo INSTALL complte.
 echo running tests...
