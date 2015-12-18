@@ -287,7 +287,8 @@ pix_fmt=yuv411p" % parms
   p=enc.enc()
   p.set_options(
     upload_formats=self.upload_formats, 
-    rm_temp=False, debug_log=False)
+    # rm_temp=False, 
+    debug_log=False)
   p.main()
   self.episode = p.episode
   return
@@ -360,6 +361,7 @@ pix_fmt=yuv411p" % parms
   p.set_options(
       upload_formats=self.upload_formats,
       debug_log=True,
+      replace=True,
       )
   p.private=True
   p.main()
