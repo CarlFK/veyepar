@@ -12,11 +12,9 @@ bitly = {'user':'fred', 'password':'R_longstringofstuff'}
 addeps = {}
 
 yt = {
-'veyepar_test':{
-    'email': 'veyepar_test@gmail.com',
-    'password': '', 
-    'dev_key':'',
-    },
+  'test':{
+      'name':'Test uploads',
+      'filename':'oauth2-test.json'},
 }
 
 archive={

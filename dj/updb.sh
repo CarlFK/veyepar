@@ -15,7 +15,7 @@ fi
 
 # If the current user doesn't have ssh key access, 
 # BatchMode will cause this to fail and continue to the wget
-ssh -o BatchMode=yes veyepar@veyepar.nextdayvideo.com /home/veyepar/site/veyepar/utils/dumpdata.sh
+### ssh -o BatchMode=yes veyepar@veyepar.nextdayvideo.com /home/veyepar/site/veyepar/utils/dumpdata.sh
 
 
 SRC=http://veyepar.nextdayvideo.com/static/temp

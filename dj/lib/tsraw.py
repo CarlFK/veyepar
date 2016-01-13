@@ -20,6 +20,8 @@ import os
 import re
 import datetime
 
+import exiftool
+
 from gi.repository import Gst
  
 from gi.repository import GObject
@@ -28,7 +30,6 @@ Gst.init(None)
   
 from gi.repository import GstPbutils
 
-import exiftool
 
 def get_start( pathname, time_source ):
 
@@ -100,8 +101,6 @@ def get_start( pathname, time_source ):
         start=datetime.datetime.strptime(dt,'%Y:%m:%d %H:%M:%S+00:00')
         print start
         return start
-
-
 
     def frame_time(pathname):
         # get timestamp from first frame
@@ -216,7 +215,9 @@ def add_more_options(parser):
 
     parser.set_defaults(time_source="auto")
 
-if __name__=='__main__': 
+def main():
+
+    """
     filenames = [
             "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Stowe_Hall/2015-11-14/graphics swang 11:14/Clip1GTK19.mov",
     "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Stowe_Hall/2015-11-14/video swang 11:14/Clip1ATK1.mov",
@@ -227,4 +228,9 @@ if __name__=='__main__':
 
     for filename in filenames:
         test(filename)
+    """
+    test("/home/carl/temp/segment-0.ts")
+
+if __name__=='__main__': 
+    main()
 

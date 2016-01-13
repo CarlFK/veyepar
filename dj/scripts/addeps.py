@@ -1420,18 +1420,26 @@ class add_eps(process.process):
 
 
     def zoo(self, schedule, show):
-        rooms = self.zoo_cages(schedule)
-        print rooms
-        self.add_rooms(rooms,show)
 
         # rooms=['Cafeteria', 'Caro', 'Studio', 'C001', 'T101', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
         # good rooms=['Caro', 'Studio', 'C001', 'T101', ]
 
         # bad_rooms=['Cafeteria', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
 
-        bad_rooms = [ u'Costa Hall Foyer', u'uncatered', 
+        bad_rooms = [ u'Costa Hall Foyer', 
+                u'uncatered', 
                 u'Super Awesome Venue TBA',
-                u'The Pier - http://www.thepiergeelong.com.au' ]
+                u'The Pier - http://www.thepiergeelong.com.au',
+                u'Edge Bar, Western Beach Road',
+                ]
+
+        rooms = self.zoo_cages(schedule)
+        print rooms
+        rooms = [r for r in rooms if r not in bad_rooms]
+        print rooms
+        schedule = [s for s in schedule if s['Room Name'] in rooms]
+
+        self.add_rooms(rooms,show)
 
         locs=Location.objects.filter(name__in = bad_rooms)
         for loc in locs:

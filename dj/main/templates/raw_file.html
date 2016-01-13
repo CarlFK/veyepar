@@ -6,10 +6,10 @@
 
 <tr>
     <td> 
-        <video src ="{{MEDIA_URL}}/{{raw_file.base_url}}.webm" 
+        <video src ="{{MEDIA_URL}}{{raw_file.base_url}}.webm" 
             width=600
       controls 
-      poster = "{{MEDIA_URL}}/{{raw_file.filename}}.png" 
+      poster = "{{MEDIA_URL}}{{raw_file.filename}}.png" 
       preload="none"
         ></video>
     </td>
@@ -17,7 +17,7 @@
     <td> <table>
     <tr><td> <a href="{% url "admin:main_raw_file_change" raw_file.id %}">admin</a> </td></tr> 
 
-    <tr><td colspan="2"> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}.wav.png">
+    <tr><td colspan="2"> <a href="{{MEDIA_URL}}{{raw_file.base_url}}.wav.png">
     {{raw_file.filename}}.wav.png</a></td></tr>
 
     <tr><td colspan="2"> <a href="{{MEDIA_URL}}{{raw_file.base_url}}.webm">

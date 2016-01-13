@@ -99,7 +99,7 @@ class post(process):
             # put the mlt and .sh stuff into the log
             # blip and firefox want it to be xml, so jump though some hoops
             log = "<log>\n"
-            mlt_pathname = os.path.join( self.show_dir, 'tmp', "%s.mlt"%(ep.slug,))
+            mlt_pathname = os.path.join( self.show_dir, 'mlt', "%s.mlt"%(ep.slug,))
             log += open(mlt_pathname).read()
             sh_pathname = os.path.join( self.show_dir, 'tmp', "%s.sh"%(ep.slug,))
             shs = open(sh_pathname).read().split('\n')

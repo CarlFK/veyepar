@@ -78,7 +78,7 @@ class enc(process):
             title = title.upper()
             authors = authors.upper()
 
-        if episode.show.slug != 'pygotham_2015' and  len(title) > 80: # crazy long titles need all the lines  
+        if False and episode.show.slug != 'pygotham_2015' and  len(title) > 80: # crazy long titles need all the lines  
             title2 = ''
         elif ": " in title: # the space keeps 9:00 from breaking
             pos = title.index(":") + 1

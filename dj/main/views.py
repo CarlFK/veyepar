@@ -34,7 +34,8 @@ import operator
 import urlparse
 
 from main.models import \
-        Client,Show,Location,Episode,Cut_List,Raw_File,State,Image_File
+        Client,Show,Location,Episode,Cut_List,Raw_File,\
+        State,Image_File,Log
 
 from main.models import STATES, ANN_STATES
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep, Who, AddImageToEp
@@ -572,8 +573,18 @@ def public_play_list(request):
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
     response['Content-Disposition'] = 'inline; filename=playlist.m3u'
 
+    # create the base of the URLs
+    head=settings.MEDIA_URL
+    # show_url = os.path.join(head,client.slug,show.slug)
+
+    ext = "mp4"
+
     writer = csv.writer(response)
     for ep in episodes:
+        show_url = os.path.join("/home/carl/Videos/veyepar", 
+                ep.show.client.slug, ep.show.slug)
+        writer.writerow([os.path.join(
+            show_url, ext, "{}.{}".format(ep.slug,ext))])
         if ep.public_url:
             writer.writerow([ep.public_url])
 
@@ -1046,6 +1057,8 @@ def raw_file(request, raw_file_id):
 
     rf=Raw_File.objects.get(id=raw_file_id)
     eps = scheduled_episodes(rf)
+    # Raw_File.objects.filter(cut_list__episode=episode)
+    # eps = Episode.objects.filter(cut_list__raw_file=rf)
 
     return render_to_response('raw_file.html',
         {
@@ -1299,7 +1312,7 @@ def episode_assets(request, episode_id):
     show=episode.show
     client=show.client
 
-    # create the bas of the URLs
+    # create the base of the URLs
     head=settings.MEDIA_URL
     show_url = os.path.join(head,client.slug,show.slug)
 
@@ -1548,8 +1561,15 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
                 who = Who(request.POST)
                 if who.is_valid(): 
                     episode.locked_by = who.cleaned_data['locked_by']
-                    # all systems go! Approve the video!
-                    episode.state += 1;
+                    state = State.objects.get(sequence=episode.state)
+                    log=Log(episode=episode,
+                        state=state,
+                        ready = datetime.datetime.now(),
+                        start = datetime.datetime.now(),
+                        end = datetime.datetime.now(),
+                        result = episode.locked_by )
+                    log.save()
+                    episode.state += 1
                     episode.save()
                     template = 'approved'
 

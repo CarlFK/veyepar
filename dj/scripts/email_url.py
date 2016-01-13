@@ -23,7 +23,7 @@ To approve it click the Approve button at
     As soon as you or someone approves your video, it will be tweeted on @NextDayVideo{% if ep.show.client.tweet_prefix %} tagged {{ep.show.client.tweet_prefix}}{% endif %}.  It will also be sent to the event organizers in hopes that they add it to the event website.  
     {% endif %}
     {% if ep.twitter_url %}
-It has been tweeted: {{ ep.twitter_url }}
+It has been tweeted: {{ ep.twitter_url }} 
 Re-tweet it, blog it, whatever it.  No point in making videos if no one watches them.
     {% endif %}
     """ 
