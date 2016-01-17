@@ -2057,6 +2057,55 @@ class add_eps(process.process):
 
 
 
+    def jupyter_chicago_2016(self, schedule, show):
+
+        room = 'Civis'
+        
+        field_maps = [
+                ('Talk Title','name'),
+                ('start','start'),
+                ('duration','duration'),
+                ('First Name','authors'),
+                # ('Last Name',''),
+                ('Twitter Handle','twitter_id'),
+                # ('Bio',''),
+                # ('Website',''),
+                ('Talk Abstract','description'),
+                # ('Github Handle',''),
+                ('Email','emails'),
+                ('Do you give us permission to record and release video of your presentation?','released'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+        rooms = [room]
+        self.add_rooms(rooms,show)
+
+        # event_date="February 20th, 2016"
+        event_date="2016-02-16"
+
+        for i,event in enumerate(events): 
+            event['location'] = room
+            event['conf_key'] = str(i)
+
+            dt_format='%Y-%m-%d %H:%M'
+            event['start'] = datetime.datetime.strptime(
+                    event_date + ' ' + event['start'], dt_format)
+
+            event['authors'] = \
+                    event['authors']+' '+event['raw']['Last Name']
+
+            event['license'] = ""
+            event['conf_url'] = ""
+            event['tags'] = ""
+
+            event['released'] = event['released'] == 'Yes'
+
+        self.add_eps(events, show)
+
+        return 
+
+
+
 
     def blinkon4(self, schedule, show):
 
@@ -3383,6 +3432,9 @@ class add_eps(process.process):
 
         if self.options.show =='depy_2015':
             return self.depy15(schedule,show)
+
+        if self.options.show =='jupyter_chicago_2016':
+            return self.jupyter_chicago_2016(schedule,show)
 
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au

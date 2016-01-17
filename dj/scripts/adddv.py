@@ -1,16 +1,44 @@
 #!/usr/bin/python
 
-# Adds the .dv files to the raw files table
+# Adds the media asset files to the Raw_Files table
+# also adds the Cut Clicks to te Mark table
 
 import  os
+import datetime
 
 from process import process
 
-from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
+from main.models import Client, Show, Location, Episode, Raw_File, Mark
 
 class add_dv(process):
 
+    def mark_file(self,pathname,show,location):
+        # one file of timestamps when Cut was Clicked
+        fullpathname = os.path.join(
+                self.show_dir, "dv", location.slug, pathname )
+
+        for line in open(fullpathname).read().split('\n'):
+            try:
+                click = datetime.datetime.strptime(
+                        line,'%Y-%m-%d/%H_%M_%S')
+            except ValueError as e:
+                print e
+                continue
+
+            print click, 
+
+            mark, created = Mark.objects.get_or_create(
+                show=show, location=location,
+                click=click)
+            
+            if created: 
+                print "(new)"
+                mark.save()
+            else:
+                print "(exists)"
+
     def one_file(self,pathname,show,location,seq):
+        # one video asset file
         print pathname,
         if self.options.test:
             rfs = Raw_File.objects.filter(
@@ -51,6 +79,10 @@ class add_dv(process):
           if self.options.verbose: 
               print "checking...", dirpath, d, dirnames, filenames 
           for f in filenames:
+
+              if os.path.splitext(f)[1] == ".log":
+                  self.mark_file(os.path.join(d,f),show,location)
+
               if os.path.splitext(f)[1] in [
                       '.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov' ]:
                   seq+=1

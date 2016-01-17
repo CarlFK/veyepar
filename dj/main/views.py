@@ -35,7 +35,7 @@ import urlparse
 
 from main.models import \
         Client,Show,Location,Episode,Cut_List,Raw_File,\
-        State,Image_File,Log
+        State,Image_File,Log,Mark
 
 from main.models import STATES, ANN_STATES
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep, Who, AddImageToEp
@@ -1892,6 +1892,21 @@ def mk_cuts(episode,
                 d = episode.end - rf.start
                 cl.end = d.total_seconds()
 
+            # if there are mark clicks, 
+            marks = Mark.objects.filter(
+                    click__gte = rf.start, click__lte = rf.end)
+            middle = episode.start + (episode.end-episode.start)/2
+            print middle
+            # If the mark is before the middle, it is probably the start
+            # else it is probably the end.
+            for mark in marks:
+                # d is offset from start, in and out points
+                d = mark.click - rf.start
+                if mark.click < middle:
+                    cl.start = d.total_seconds()
+                else:
+                    cl.end = d.total_seconds()
+            
             # Bad bad bad hack for Node...
             if "mkv" in rf.filename:
                 cl.apply = False

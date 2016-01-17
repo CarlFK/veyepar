@@ -49,10 +49,10 @@ class Client(models.Model):
     title_svg = models.CharField(max_length=60, null=True,
         default="title.svg",
         help_text='template for event/title/authors title slide.')
-    # preroll = models.CharField(max_length=335, blank=True, 
-    #    help_text="name of video to prepend (not implemented)")
-    #postroll = models.CharField(max_length=335, blank=True,
-    #    help_text="name of video to postpend (not implemented)")
+    preroll = models.CharField(max_length=335, blank=True, 
+        help_text="name of video to prepend (not implemented)")
+    postroll = models.CharField(max_length=335, blank=True,
+        help_text="name of video to postpend (not implemented)")
     credits = models.CharField(max_length=30, blank=True, 
             default="ndv-169.png",
         help_text='added to end, store in assets dir')
@@ -210,7 +210,12 @@ class Raw_File(models.Model):
     class Meta:
         ordering = ["start", "location", "filename"]
 
-
+class Mark(models.Model):
+    location = models.ForeignKey(Location)
+    show = models.ForeignKey(Show)
+    click = models.DateTimeField(
+        help_text='When Cut was Clicked.')
+ 
 class Quality(models.Model):
     level = models.IntegerField()
     name = models.CharField(max_length=35)
