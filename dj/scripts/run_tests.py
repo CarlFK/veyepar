@@ -431,7 +431,7 @@ pix_fmt=yuv411p" % parms
           'filename':filename,
           }
   cmd = "mplayer \
-    -ss 12 \
+    -ss 9 \
     -vf framestep=20 \
     -ao null \
     -vo pnm:outdir=%(tmp_dir)s \
@@ -439,13 +439,17 @@ pix_fmt=yuv411p" % parms
   print cmd
   self.run_cmd(cmd.split())
 
-  test_file = os.path.join(tmp_dir, "00000006.ppm" )
+  test_file = os.path.join(tmp_dir, "00000002.ppm" )
   gocr_outs = self.run_cmd(['gocr', test_file], True )
   text = gocr_outs['sout']
-  print text
   
   # not sure what is tacking on the \n, but it is there, so it is here.
-  result = (text in ["ABCDEFG\n","_BCDEFG\n"])
+  acceptables = ["ABCDEFG\n","_BCDEFG\n"]
+  print "acceptables:", acceptables
+
+  print "ocr results:", text
+  
+  result = (text in acceptables)
 
   return result
 
@@ -559,7 +563,7 @@ def main():
     result['email'] = t.email_url()
     result['tweet'] = t.tweet()
     t.csv()
-    result['video'] = t.ocr_test()
+    result['ocr'] = t.ocr_test()
     # result['audio'] = t.sphinx_test() # sphinx no longer packaged :(
     result['sizes'] = t.size_test()
 
