@@ -6,6 +6,8 @@ mp=/media/carl/$lab
 
 # pumount /dev/$dev
 sudo mkfs.ext4 -L $lab -O sparse_super,extent,uninit_bg -E lazy_itable_init=1 -m 0 /dev/$dev
+# sudo mkfs.ntfs /dev/sdc1 --label nodevids1415 --fast --no-indexing
+
 sleep 5
 pmount /dev/$dev
 mp=/media/$dev

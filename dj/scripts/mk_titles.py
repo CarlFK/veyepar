@@ -23,9 +23,13 @@ class mk_title(enc):
 
         if self.options.rsync:
             self.file2cdn(episode.show, "titles/%s.png" % (episode.slug))
-            self.file2cdn(episode.show, "titles/%s.svg" % (episode.slug))
-            self.file2cdn(episode.show, "tmp/%s.mlt" % (episode.slug))
-            self.file2cdn(episode.show, "tmp/%s.sh" % (episode.slug))
+
+            if self.options.assets:
+                self.file2cdn(episode.show, "tmp/%s.mlt" % (episode.slug))
+                self.file2cdn(episode.show, "tmp/%s.sh" % (episode.slug))
+                self.file2cdn(episode.show, 
+                        "titles/%s.svg" % (episode.slug))
+
             return 
 
         if self.options.display:
@@ -38,8 +42,11 @@ class mk_title(enc):
     def add_more_options(self, parser):
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
+        parser.add_option('--assets', action="store_true",
+            help="upload cutlist too.")
         parser.add_option('--display', action="store_true",
             help="display the png.")
+
 
 if __name__ == '__main__':
     p=mk_title()

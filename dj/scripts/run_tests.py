@@ -348,7 +348,9 @@ pix_fmt=yuv411p" % parms
               upload_formats=self.upload_formats,
           )
       p.main()
-      ret = p.ret
+      # ret = p.ret # retuns False cuz half baked
+
+      ret = [os.path.exists(f) for f in p.files]
 
       return ret
 

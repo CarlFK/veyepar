@@ -46,8 +46,6 @@ admin.site.register(Raw_File, Raw_FileAdmin)
 
 class MarkAdmin(admin.ModelAdmin):
     list_display = ('click',)
-
-    pass
 admin.site.register(Mark, MarkAdmin)
 
 class Image_FileAdmin(admin.ModelAdmin):
