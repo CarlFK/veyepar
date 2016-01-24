@@ -1,2 +1,7 @@
 
+# once the cashe is warmed up, set this and you don't need the net 
+sudo vim /etc/squid-deb-proxy/squid-deb-proxy.conf 
+offline_mode on
+sudo service squid-deb-proxy restart
+
  "offline_mode" : http://www.squid-cache.org/Doc/config/offline_mode/

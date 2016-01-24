@@ -419,7 +419,8 @@ class add_eps(process.process):
                         episode.location.name.upper() <> row['location'].upper():
                     diff=True
                     diff_fields.append(('loc',
-                        location, row['location']))
+                        episode.location.name, row['location']))
+                    # print(episode.location.name, row['location'])
 
                 for f in fields:
                     # veyepar, remote
