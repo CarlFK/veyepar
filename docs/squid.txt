@@ -5,3 +5,13 @@ offline_mode on
 sudo service squid-deb-proxy restart
 
  "offline_mode" : http://www.squid-cache.org/Doc/config/offline_mode/
+
+
+squidclient -p 8000 -m PURGE http://au.archive.ubuntu.com/ubuntu/dists/wily/Release
+
+squid.conf must add
+
+acl Purge method PURGE
+http_access allow localhost Purge
+http_access allow localnet Purge
+http_access deny Purge
