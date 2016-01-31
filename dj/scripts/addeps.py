@@ -1440,6 +1440,9 @@ class add_eps(process.process):
         print rooms
         schedule = [s for s in schedule if s['Room Name'] in rooms]
 
+        schedule = [s for s in schedule 
+                if s['Id'] not in [185,] ]
+
         self.add_rooms(rooms,show)
 
         locs=Location.objects.filter(name__in = bad_rooms)

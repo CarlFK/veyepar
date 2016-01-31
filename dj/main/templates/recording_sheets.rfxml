@@ -265,11 +265,21 @@
 				<x>'4.5 pt'</x>
 				<y>'30.0 pt'</y>
 			</String>
+			<String>
+				<align>'right'</align>
+				<expr>self.location_dir</expr>
+				<fontname>'Helvetica-Bold'</fontname>
+				<FontSize>13</FontSize>
+				<hanchor>'right'</hanchor>
+				<width>'80.0 pt'</width>
+				<x>'441.0 pt'</x>
+				<y>'34.0 pt'</y>
+			</String>
 		</Objects>
 	</PageHeader>
 
 	<Detail>
-		<Height>132.0</Height>
+		<Height>134.3</Height>
 		<Objects>
 			<String>
 				<expr>"NOT Released"</expr>
@@ -474,7 +484,7 @@
 				<Show>not self.episode_emails</Show>
 				<width>'79.0 pt'</width>
 				<x>'461.3 pt'</x>
-				<y>'66.0 pt'</y>
+				<y>'56.0 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_conf_key</expr>
@@ -493,6 +503,39 @@
 				<width>'113.0 pt'</width>
 				<x>'3.0 pt'</x>
 				<y>'115.0 pt'</y>
+			</String>
+			<String>
+				<expr>"(  ) vga"</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<width>'50.0 pt'</width>
+				<x>'477.2 pt'</x>
+				<y>'90.3 pt'</y>
+			</String>
+			<String>
+				<expr>"(  ) mDP"</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<width>'50.0 pt'</width>
+				<x>'477.2 pt'</x>
+				<y>'118.3 pt'</y>
+			</String>
+			<String>
+				<expr>"(  ) hdmi"</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<width>'50.0 pt'</width>
+				<x>'477.2 pt'</x>
+				<y>'104.3 pt'</y>
+			</String>
+			<String>
+				<expr>"(O)ther__________"</expr>
+				<fontcolor>(.60, .60, .60)</fontcolor>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>13</FontSize>
+				<width>'95.0 pt'</width>
+				<x>'442.2 pt'</x>
+				<y>'71.3 pt'</y>
 			</String>
 		</Objects>
 	</Detail>

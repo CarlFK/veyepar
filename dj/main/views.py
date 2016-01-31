@@ -469,6 +469,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     for ep in episodes:
         if ep.location:
             location_name=ep.location.name
+            location_dir=ep.location.dirname
         else:
             location_name='None'
         ds.append({'episode_id':ep.id,
@@ -483,6 +484,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
           'episode_end':ep.end,
           'episode_released':ep.released,
           'location_name':location_name,
+          'location_dir':location_dir,
           'client_name':client.name,
           'show_name':show.name,
           })
