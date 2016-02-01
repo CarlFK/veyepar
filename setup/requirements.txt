@@ -56,3 +56,10 @@ beautifulsoup4
 git+https://github.com/smarnach/pyexiftool.git
 
 
+git+https://github.com/openstack/oslo.i18n.git
+debtcollector
+monotonic
+keystoneauth1
+git+https://github.com/openstack/oslo.config.git
+netifaces
+
