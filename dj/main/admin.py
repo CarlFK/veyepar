@@ -7,8 +7,8 @@ from django.db import models
 
 from main.models import \
         Client, Show, Location, Raw_File, Quality, Episode, \
-        Cut_List, State, Log, Image_File, \
-        Mark
+        Cut_List, State, Log, Image_File  #, Mark
+
 
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('active', 'name', 'bucket_id',)
@@ -44,9 +44,11 @@ class Raw_FileAdmin(admin.ModelAdmin):
     date_hierarchy = 'start'
 admin.site.register(Raw_File, Raw_FileAdmin)
 
+"""
 class MarkAdmin(admin.ModelAdmin):
     list_display = ('click',)
 admin.site.register(Mark, MarkAdmin)
+"""
 
 class Image_FileAdmin(admin.ModelAdmin):
     list_display = ('filename', 'show', 'location', ) 

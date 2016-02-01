@@ -210,11 +210,13 @@ class Raw_File(models.Model):
     class Meta:
         ordering = ["start", "location", "filename"]
 
+"""
 class Mark(models.Model):
     location = models.ForeignKey(Location)
     show = models.ForeignKey(Show)
     click = models.DateTimeField(
         help_text='When Cut was Clicked.')
+"""
  
 class Quality(models.Model):
     level = models.IntegerField()
