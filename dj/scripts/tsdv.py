@@ -34,7 +34,7 @@ class ts_rf(process):
         if offset is not None:
             start += datetime.timedelta(seconds=offset)
 
-        if os.path.splitext(f)[1] in [ '.ts' ]:
+        if os.path.splitext(rf.filename)[1] in [ '.ts' ]:
             seconds = 600
         else:
             seconds = tsraw.get_duration(pathname)
