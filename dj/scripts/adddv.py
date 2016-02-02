@@ -84,7 +84,7 @@ class add_dv(process):
                   self.mark_file(os.path.join(d,f),show,location)
 
               if os.path.splitext(f)[1] in [
-                      '.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov' ]:
+                      '.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov', 'ts' ]:
                   seq+=1
                   self.one_file(os.path.join(d,f),show,location,seq)
 
