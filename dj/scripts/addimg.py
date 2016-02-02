@@ -82,7 +82,7 @@ class add_img(process):
         To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
         """
  
-        return ''
+        # return ''
 
         image=cv.LoadImage(imgname, cv.CV_LOAD_IMAGE_GRAYSCALE)
 
@@ -171,23 +171,24 @@ class add_img(process):
                 # print word, hit_count
         first_page_of_set = hit_count >= 3
 
+        """
         first_page_of_set = src_base in [
                 "pygoth-{:03d}.ppm".format(i-1) for i in [
                     1, 4, 7, 9, 12, 14, 17, 20, ]]
-
+        """
 
         if first_page_of_set:
-            start = 820 # 995
-            end = 1370 # 1547
+            start = 728 # 820 # 995
+            end = 1071 # 1370 # 1547
             bands= 3
             suffix='a'
         else:
-            start = 400 # 577
-            end = 960 # 1127
+            start = 452 # 400 # 577
+            end = 791 # 960 # 1127
             bands= 4
             suffix='b'
 
-        page = 3216
+        page = 2338 # 3216
 
         head = float(start)/float(page)
         band = float(end-start)/float(page)

@@ -34,8 +34,8 @@ import operator
 import urlparse
 
 from main.models import \
-        Client,Show,Location,Episode,Cut_List,Raw_File,\
-        State,Image_File,Log # ,Mark
+        Client, Show, Location, Episode, Cut_List, Raw_File,\
+        State, Image_File,Log ,Mark
 
 from main.models import STATES, ANN_STATES
 from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep, Who, AddImageToEp
@@ -1894,7 +1894,6 @@ def mk_cuts(episode,
                 d = episode.end - rf.start
                 cl.end = d.total_seconds()
 
-            """
             # if there are mark clicks, 
             marks = Mark.objects.filter(
                     click__gte = rf.start, click__lte = rf.end)
@@ -1909,7 +1908,6 @@ def mk_cuts(episode,
                     cl.start = d.total_seconds()
                 else:
                     cl.end = d.total_seconds()
-            """
 
             # for Node PiP mixing
             # Bad bad bad hack for Node...
