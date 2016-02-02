@@ -18,12 +18,14 @@ start
   <form method="POST">{% csrf_token %}{{ iefs.management_form }}
       <table>{{form}} </table><input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
   </form>
-  <a href="{% url "admin:main_image_file_change" img.id%}">
   </br>
     {{img.text}}
   </br>
+  <a href="{% url "admin:main_image_file_change" img.id%}">
+      edit
+  </a>
   <a href="{% url "admin:main_image_file_delete" img.id%}">
-      /admin/main/episode/10212/delete/
+      delete image
   </a>
   </div>
   <hr>

@@ -178,17 +178,17 @@ class add_img(process):
         """
 
         if first_page_of_set:
-            start = 728 # 820 # 995
-            end = 1071 # 1370 # 1547
+            start = 1100 # 728 # 820 # 995
+            end = 1705 # 1071 # 1370 # 1547
             bands= 3
             suffix='a'
         else:
-            start = 452 # 400 # 577
-            end = 791 # 960 # 1127
+            start = 802 # 400 # 577
+            end = 1318 # 960 # 1127
             bands= 4
             suffix='b'
 
-        page = 2338 # 3216
+        page = 3450 # 2338 # 3216
 
         head = float(start)/float(page)
         band = float(end-start)/float(page)
@@ -239,6 +239,11 @@ class add_img(process):
           Image_File.objects.filter(show=show).delete()
 
       eps = Episode.objects.filter(show=show)
+      if self.options.day:
+          eps = eps.filter(start__day=self.options.day)
+      if self.options.room:
+          eps = eps.filter(location__slug=self.options.room)
+
       locs = Location.objects.filter(show=show)
 
       self.set_dirs(show)
@@ -252,6 +257,13 @@ class add_img(process):
               print "checking...", dirpath, d, dirnames, filenames 
           for f in filenames:
               if os.path.splitext(f)[1] in [ ".ppm", ".pbm" ]:
+                  print f
+
+                  if self.options.base and \
+                          not f.startswith(self.options.base):
+                        # doesn't match the 'filger'
+                        continue
+
                   self.one_page(os.path.join(d,f),show,locs,eps)
 
                   if self.options.test:
@@ -272,6 +284,9 @@ class add_img(process):
     def add_more_options(self, parser):
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
+
+        parser.add_option('--base', 
+            help="source filename base.")
 
 if __name__=='__main__': 
     p=add_img()
