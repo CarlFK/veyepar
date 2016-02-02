@@ -7,7 +7,7 @@ from django.db import models
 
 from main.models import \
         Client, Show, Location, Raw_File, Quality, Episode, \
-        Cut_List, State, Log, Image_Filem, Mark
+        Cut_List, State, Log, Image_File, Mark
 
 
 class ClientAdmin(admin.ModelAdmin):
