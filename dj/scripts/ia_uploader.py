@@ -175,18 +175,20 @@ def test_upload(args):
     u.test = True
     u.verbose = args.verbose
     u.pathname = args.filename
-    u.pathname = u'/home/carl/Videos/veyepar/pyconza/pyconza2015/mp4/PyCon_Montréal_in_30_min.mp4'
-    # u.slug = os.path.splitext(os.path.basename(u.pathname))[0]
-    u.slug = u"PyCon_Montréal"
+    # u.pathname = u'/home/carl/Videos/veyepar/pyconza/pyconza2015/mp4/PyCon_Montréal_in_30_min.mp4'
+    u.slug = os.path.splitext(os.path.basename(u.pathname))[0]
+    # u.slug = u"PyCon_Montréal"
     # u.slug = "PyCon_Mont"
+    u.slug = unicode(u.slug)
     u.meta = {
-      'title': "test title",
-      'description': "test description",
+      'title': u"test title",
+      'description': u"test description",
       'language': "eng",
       'tags': [u'test', u'tests', ],
-      'authors':'people',
+      'authors':u'people',
       'start':datetime.datetime.now()
     }
+    """
     u.meta = {
      'authors': [u'Simon Cross'],
      'category': 22,
@@ -196,6 +198,7 @@ def test_upload(args):
      'start': datetime.datetime(2015, 10, 2, 15, 30),
      'tags': [u'pyconza', u'pyconza2015', u'python', u'SimonCross'],
      'title': u'Friday Lightning Talks'}
+    """
 
     import logging
     logging.basicConfig(level=logging.DEBUG)
