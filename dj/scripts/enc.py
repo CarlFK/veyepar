@@ -440,7 +440,7 @@ class enc(process):
                     "threads=%(threads)s "\
                     "progressive=1 "\
                     "strict=-2 "\
-                    "properties=x264-medium "\
+                    "properties=x264-high "\
                     "ab=256k "\
                     % parms
 
@@ -632,7 +632,7 @@ class enc(process):
                           help='thread parameter passed to encoder')
 
     def add_more_option_defaults(self, parser):
-        parser.set_defaults(threads=2)
+        parser.set_defaults(threads=0)
 
 if __name__ == '__main__':
     p = enc()
