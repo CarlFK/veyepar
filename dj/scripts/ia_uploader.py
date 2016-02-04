@@ -91,7 +91,7 @@ class Uploader(object):
         }
 
         meta['description'] = \
-                meta['description'].replace(u'\u2019'","'")
+                meta['description'].replace(u'\u2019',"'")
 
         if self.test:
             # meta['x-archive-meta-collection'] = 'test_collection'
