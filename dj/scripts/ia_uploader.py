@@ -95,9 +95,11 @@ class Uploader(object):
         meta['description'] = \
                 meta['description'].replace(u'\u2013',"-")
         meta['description'] = \
-                meta['description'].replace(u'\u2022',"o")
+                meta['description'].replace(u'\u2014','-')
         meta['description'] = \
                 meta['description'].replace(u'\u201c','"')
+        meta['description'] = \
+                meta['description'].replace(u'\u2022',"o")
 
 
         if self.test:
