@@ -284,7 +284,6 @@ https://developers.google.com/youtube/v3/docs/videos#properties
     description = description.replace("->",u"→")
     description = description.replace("<",u"‹")
     description = description.replace(">",u"›")
-    description = description.replace(u'\u2019',u"'") # fancy quote
     return description
 
 class Uploader():

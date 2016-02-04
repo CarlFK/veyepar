@@ -90,6 +90,8 @@ class Uploader(object):
             'publicdate':self.meta['start'],
         }
 
+        meta['description'] = \
+                meta['description'].replace(u'\u2019'","'")
 
         if self.test:
             # meta['x-archive-meta-collection'] = 'test_collection'
