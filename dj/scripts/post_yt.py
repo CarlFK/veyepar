@@ -244,7 +244,7 @@ class post(process):
                 # kinda buggy here.
                 # but only relevant when things are messed up
                 # and looking for problemss.
-                print "skipping archive, ogv already there."
+                print "skipping archive, file already there."
                 ia_success = True
 
             else:
@@ -256,6 +256,7 @@ class post(process):
                     if self.options.verbose: print uploader.new_url
                     # this is pretty gross.
                     # store the archive url
+                    # it should really just be: archive_url 
                     if f['ext'] == "mp4":
                         ep.archive_mp4_url = uploader.new_url
                     elif f['ext'] == "ogv":

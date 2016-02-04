@@ -105,6 +105,7 @@ class Uploader(object):
         auth = archive[self.user] ## from dict of credentials 
         md = self.get_metadata()
         pf = ProgressFile(self.pathname, 'r')
+
         item = ia.get_item(self.slug)
 
         try:
@@ -118,8 +119,8 @@ class Uploader(object):
             if self.debug_mode:
                 import code; code.interact(local=locals())
                 
-            self.new_url = item.url
-                
+            # https://archive.org/details/lca2016-Internet_Archive_Universal_Access_Open_APIs
+            self.new_url = "https://archive.org/details/{}".format(self.slug)
             print( "ia: {}".format(self.new_url))
             ret = True
 
