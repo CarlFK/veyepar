@@ -1888,11 +1888,13 @@ def mk_cuts(episode,
             if rf.start < episode.start < rf.end:
                 d = episode.start - rf.start
                 # print(d)
-                cl.start = d.total_seconds()
+                ### pulling - this makes it harder when done the right way
+                # cl.start = d.total_seconds()
 
             if rf.start < episode.end < rf.end:
                 d = episode.end - rf.start
-                cl.end = d.total_seconds()
+                ### pulling - this makes it harder when done the right way
+                # cl.end = d.total_seconds()
 
             # if there are mark clicks, 
             marks = Mark.objects.filter(

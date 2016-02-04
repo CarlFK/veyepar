@@ -78,6 +78,13 @@ class add_dv(process):
           d=dirpath[len(ep_dir)+1:]
           if self.options.verbose: 
               print "checking...", dirpath, d, dirnames, filenames 
+
+          if self.options.subs:
+              # subs holds a bit of the dirs we want,
+              # like graphics,video,Camera,GFX
+              if not self.options.subs in dirpath:
+                  continue
+
           for f in filenames:
 
               if os.path.splitext(f)[1] == ".log":
@@ -103,6 +110,10 @@ class add_dv(process):
             self.one_show(show)
 
         return
+
+    def add_more_options(self, parser):
+        parser.add_option('--subs', 
+           help="only include path that include string.")
 
 if __name__=='__main__': 
     p=add_dv()
