@@ -71,7 +71,7 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_display = ('id',
             # 'conf_key', 
             # 'conf_url', 
-            # 'state',
+            'state',
             'name', 
             # 'authors',
             # 'emails',
@@ -79,12 +79,12 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'host_url',
             # 'locked_by', 
             'start', 
-            'duration', 
-            'end', 
+            # 'duration', 
+            # 'end', 
             # 'location',
 )
     list_editable = (
-            # 'state',
+            'state',
             'name',
             # 'host_url',
             #'rax_mp4_url',
@@ -94,8 +94,8 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'conf_url', 
             # 'sequence', 
             'start', 
-            'duration', 
-            'end', 
+            # 'duration', 
+            # 'end', 
             )
 
        
@@ -123,7 +123,8 @@ class EpisodeAdmin(admin.ModelAdmin):
             }}
 
     actions = [ 
-            'set_stopped', 'clear_locked', 're_slug', 'bump_state',
+            'set_stopped', 'clear_locked', 're_slug',
+            'bump_state', 'smack_state',
             'encode_state'] \
             + admin.ModelAdmin.actions
 
@@ -193,6 +194,25 @@ class EpisodeAdmin(admin.ModelAdmin):
         }
         messages.success(request, msg)
     bump_state.short_discription = "bump state"
+
+    def smack_state(self, request, queryset):
+        rows_updated = 0
+        for obj in queryset:
+            obj.state -= 1
+            obj.save()
+            rows_updated +=1
+
+        msg = ungettext(
+            'smacked state in %(count)d %(name)s successfully.',
+            'smacked state in %(count)d %(name_plural)s successfully.',
+            rows_updated
+        ) % {
+            'count': rows_updated,
+            'name': self.model._meta.verbose_name.title(),
+            'name_plural': self.model._meta.verbose_name_plural.title()
+        }
+        messages.success(request, msg)
+    bump_state.short_discription = "smacke state back a notch"
 
 
     def encode_state(self, request, queryset):
