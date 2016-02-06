@@ -1440,8 +1440,9 @@ class add_eps(process.process):
         print rooms
         schedule = [s for s in schedule if s['Room Name'] in rooms]
 
-        schedule = [s for s in schedule 
-                if s['Id'] not in [185,] ]
+        # schedule = [s for s in schedule if s['Id'] not in [185,] ]
+        schedule = [s for s in schedule if s['Id'] in [185,] ]
+        schedule[0]['Title']="Security Topics in Open Cloud: Advanced Threats, 2015's Vulnerabilities, Advancements in OpenStack Trusted Computing and Hadoop Encryption"
 
         schedule = [s for s in schedule 
                 if s['Title'] not in [

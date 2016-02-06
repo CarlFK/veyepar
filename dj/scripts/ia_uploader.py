@@ -49,6 +49,20 @@ except ImportError:
                 }   
             }   
 
+def translitr(s):
+    for f,t in [
+        (u'\xf6',"o"),
+        (u'\u2019',"'"),
+        (u'\u2013',"-"),
+        (u'\u2014','-'),
+        (u'\u2019',"'"),
+        (u'\u201c','"'),
+        (u'\u2022',"o"),
+        (u'\u2039',"<"),
+            ]:
+        s = s.replace(f,t)
+
+    return s
 
 class Uploader(object):
 
@@ -78,7 +92,7 @@ class Uploader(object):
             'mediatype': "movies",
             'language': self.meta['language'],
             'collection': 'opensource_movies',
-            'title':self.meta['title'],
+            'title':translitr(self.meta['title']),
             'creator':self.meta['authors'],
             # this is visible on the web page under 'Keywords: '
             'subject':self.meta['tags'],
@@ -86,23 +100,9 @@ class Uploader(object):
             # 'licenseurl', 'http://creativecommons.org/licenses/by/4.0/',
             'licenseurl': "http://creativecommons.org/licenses/by/3.0/",
             # this is visible on the web page as the description
-            'description':self.meta['description'],
+            'description':translitr(self.meta['description']),
             'publicdate':self.meta['start'],
         }
-
-        meta['description'] = \
-                meta['description'].replace(u'\u2019',"'")
-        meta['description'] = \
-                meta['description'].replace(u'\u2013',"-")
-        meta['description'] = \
-                meta['description'].replace(u'\u2014','-')
-        meta['description'] = \
-                meta['description'].replace(u'\u201c','"')
-        meta['description'] = \
-                meta['description'].replace(u'\u201d','"')
-        meta['description'] = \
-                meta['description'].replace(u'\u2022',"o")
-
 
         if self.test:
             # meta['x-archive-meta-collection'] = 'test_collection'

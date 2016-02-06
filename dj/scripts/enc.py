@@ -195,7 +195,8 @@ class enc(process):
         if self.options.verbose: print "custom:", custom_svg_name
         abs_path =  os.path.join( self.show_dir, "tmp", custom_svg_name )
         if os.path.exists(abs_path):
-            cooked_svg_name = custom_svg_name
+            # cooked_svg_name = custom_svg_name
+            cooked_svg_name = abs_path
         else:
             svg_name = episode.show.client.title_svg
             print svg_name
