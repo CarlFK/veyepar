@@ -99,6 +99,8 @@ class Uploader(object):
         meta['description'] = \
                 meta['description'].replace(u'\u201c','"')
         meta['description'] = \
+                meta['description'].replace(u'\u201d','"')
+        meta['description'] = \
                 meta['description'].replace(u'\u2022',"o")
 
 

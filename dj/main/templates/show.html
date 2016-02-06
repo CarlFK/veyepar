@@ -58,7 +58,7 @@ Episode Count: {{episodes.count}}
  <td> <a href="/databrowse/main/episode/fields/start/{{episode.start|date:"Y-m-d H:i:s"}}"> {{episode.start|date:"D d H:i"}} </a> </td>
  <td>{{episode.end|date:"H:i"}}</td>
         <td>{{episode.duration}}</td>
-        <td>{{episode.state}}</td>
+        <td>{{episode.state}}{{episode.locked|yesno:"*, "}}</td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/#ep-sm">{{ episode.name }}</a></td>
         <td style="white-space:normal">{{episode.authors}}</td>
         <td>{{episode.emails|yesno:"y,"}}</td>

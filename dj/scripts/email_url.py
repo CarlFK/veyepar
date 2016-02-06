@@ -27,6 +27,29 @@ It has been tweeted: {{ ep.twitter_url }}
 Re-tweet it, blog it, whatever it.  No point in making videos if no one watches them.
     {% endif %}
     """ 
+
+    body_ryan = """
+Your LCA2016 talk has been published on Youtube:
+    {{url}}
+
+    The video will shortly also be available as WebM on the LA mirror at http://mirror.linux.org.au/linux.conf.au/2016/
+    
+    Please retweet, blog, share the video!
+
+    {% if ep.twitter.url %}
+    Your video has already been tweeted at: {{ ep.twitter_url }}
+    {% endif %}
+
+    If there are any issues with the video, please reply to this email.
+
+    Thanks,
+
+    LCA2016 AV Video Team
+    
+    """
+
+    body_body = body_ryan
+
     py_name = "email_url.py"
 
     def more_context(self, ep):
