@@ -45,7 +45,7 @@
 					</Rectangle>
 					<Rectangle>
 						<height>'31.0 pt'</height>
-						<width>'446.0 pt'</width>
+						<width>'416.0 pt'</width>
 						<x>'4.0 pt'</x>
 						<y>'67.0 pt'</y>
 					</Rectangle>
@@ -57,7 +57,7 @@
 						<y>'0.0 pt'</y>
 					</Rectangle>
 					<String>
-						<expr>"Kit Number:"</expr>
+						<expr>"Kit No:"</expr>
 						<FontName>'Helvetica'</FontName>
 						<FontSize>14</FontSize>
 						<Height>15</Height>
@@ -66,7 +66,7 @@
 						<y>'73.0 pt'</y>
 					</String>
 					<String>
-						<expr>"[  ] Sound levels on DVswitch  L[   ]  R[   ]" </expr>
+						<expr>"Sound levels: [   ] L-house   [   ] R-cam " </expr>
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'243.0 pt'</width>
@@ -87,7 +87,7 @@
 						<FontSize>14</FontSize>
 						<Height>15</Height>
 						<width>'82.0 pt'</width>
-						<x>'115.4 pt'</x>
+						<x>'91.4 pt'</x>
 						<y>'73.0 pt'</y>
 					</String>
 					<String>
@@ -96,7 +96,7 @@
 						<FontSize>14</FontSize>
 						<Height>15</Height>
 						<width>'62.0 pt'</width>
-						<x>'341.5 pt'</x>
+						<x>'317.5 pt'</x>
 						<y>'73.0 pt'</y>
 					</String>
 					<String>
@@ -105,7 +105,7 @@
 						<FontSize>14</FontSize>
 						<Height>15</Height>
 						<width>'59.0 pt'</width>
-						<x>'238.0 pt'</x>
+						<x>'214.0 pt'</x>
 						<y>'73.0 pt'</y>
 					</String>
 					<String>
@@ -131,7 +131,7 @@
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'25.0 pt'</y>
+						<y>'15.0 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] Review - done"</expr>
@@ -139,7 +139,7 @@
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'6.0 pt'</y>
+						<y>'2.0 pt'</y>
 					</String>
 					<String>
 						<expr>"Post production:"</expr>
@@ -169,12 +169,34 @@
 						<y>'39.0 pt'</y>
 					</String>
 					<String>
-						<expr>"[  ] Scanned"</expr>
+						<expr>"[  ] Set Scanned"</expr>
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'45.0 pt'</y>
+						<y>'31.0 pt'</y>
+					</String>
+					<Rectangle>
+						<height>'31.0 pt'</height>
+						<width>'116.0 pt'</width>
+						<x>'421.0 pt'</x>
+						<y>'67.0 pt'</y>
+					</Rectangle>
+					<String>
+						<expr>"File count: _______"</expr>
+						<fontname>'Helvetica'</fontname>
+						<FontSize>13</FontSize>
+						<width>'109.0 pt'</width>
+						<x>'425.0 pt'</x>
+						<y>'75.0 pt'</y>
+					</String>
+					<String>
+						<expr>"[  ] Files synked"</expr>
+						<fontname>'Helvetica'</fontname>
+						<FontSize>13</FontSize>
+						<width>'108.0 pt'</width>
+						<x>'415.0 pt'</x>
+						<y>'47.0 pt'</y>
 					</String>
 				</Objects>
 			</GroupHeader>
@@ -267,10 +289,11 @@
 			</String>
 			<String>
 				<align>'right'</align>
-				<expr>self.location_dir</expr>
+				<expr>self.location_slug</expr>
 				<fontname>'Helvetica-Bold'</fontname>
 				<FontSize>13</FontSize>
 				<hanchor>'right'</hanchor>
+				<show>self.loction_name.lower() &lt;&gt; self.location_slug.lower()</show>
 				<width>'80.0 pt'</width>
 				<x>'441.0 pt'</x>
 				<y>'34.0 pt'</y>
@@ -439,7 +462,7 @@
 				<Show>not self.episode_released</Show>
 				<width>'243.0 pt'</width>
 				<x>'129.0 pt'</x>
-				<y>'45.0 pt'</y>
+				<y>'31.0 pt'</y>
 			</String>
 			<Line>
 				<height>'6.0 pt'</height>
@@ -712,9 +735,9 @@
 	</PageForeground>
 
 	<TestCursor>
-		<record episode_primary="3201" episode_conf_key="u&apos;abc&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3101" episode_emails="u&apos;p@ulmcnett.com&apos;" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_name="u&apos;Dabo for Desktops&apos;" episode_duration="u&apos;04:10:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" />
-		<record episode_primary="3202" episode_conf_key="u&apos;def&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3123" episode_emails="u&apos;&apos;" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" />
-		<record episode_primary="3203" episode_conf_key="u&apos;ghi&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3123" episode_emails="None" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" />
+		<record episode_primary="3201" episode_conf_key="u&apos;abc&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3101" episode_emails="u&apos;p@ulmcnett.com&apos;" episode_released="True" episode_authors="u&apos;Ed Leafe, Paul McNett&apos;" episode_name="u&apos;Dabo for Desktops&apos;" location_slug="u&apos;r1mix&apos;" episode_duration="u&apos;04:10:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 15)" episode_start="datetime.datetime(2005, 9, 27, 10, 05)" />
+		<record episode_primary="3202" episode_conf_key="u&apos;def&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3123" episode_emails="u&apos;&apos;" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" location_slug="u&apos;r1mix&apos;" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" />
+		<record episode_primary="3203" episode_conf_key="u&apos;ghi&apos;" client_name="u&apos;Happy Co.&apos;" location_name="u&apos;Hollister&apos;" show_name="u&apos;Great Event&apos;" episode_id="3123" episode_emails="None" episode_released="False" episode_authors="u&apos;Kevin Fricovsky, Joseph K, Russell Keith-Magee, Simon Willison, James Bennett, Brian Rosner&apos;" episode_name="u&apos;How to name your open source Django project after a famous Jazz musicians, and concepts behind Django-Mingus, a project leveraging only reusable app.&apos;" location_slug="u&apos;r1mix&apos;" episode_duration="u&apos;00:15:00&apos;" episode_end="datetime.datetime(2005, 9, 27, 14, 30)" episode_start="datetime.datetime(2005, 9, 27, 14, 15)" />
 	</TestCursor>
 
 </Report>

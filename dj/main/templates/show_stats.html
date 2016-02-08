@@ -93,7 +93,7 @@
 
                  <span class="left">expected raw:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                 <span class="left"><a style="display: inline-block;" href="{% url "rf_set" loc.loc.slug %}?start_date={{item.date|date:"Y-m-d"}}">{{item.files}}</a> 
+                 <span class="left">[  ]<a style="display: inline-block;" href="{% url "rf_set" loc.loc.slug %}?start_date={{item.date|date:"Y-m-d"}}">{{item.files}}</a> 
                      {{item.raw.start|date:"H:i" }} -
                      {{item.raw.end|date:"H:i" }}
                  </span>
