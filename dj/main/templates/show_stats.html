@@ -36,7 +36,8 @@
 {# Room header cells #}
                 <span><b>
                         <a href="{% url "admin:main_location_change" item.loc.id%}">{{ item.loc.name }}</a>
-                </b></span><br/>
+                </b></span>
+                {{item.loc.slug}}
 
 <span> <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}"> {{item.count}} </a> </span>
 <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
@@ -90,10 +91,15 @@
                  {% endfor %}
                  <br/>
 
-                 <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
+                 <span class="left">expected raw:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                 <span class="left">files: <a style="display: inline-block;" href="{% url "rf_set" loc.loc.slug %}?start_date={{item.date|date:"Y-m-d"}}">{{item.files}}</a> {{item.alarm}}%</span>
+                 <span class="left"><a style="display: inline-block;" href="{% url "rf_set" loc.loc.slug %}?start_date={{item.date|date:"Y-m-d"}}">{{item.files}}</a> 
+                     {{item.raw.start|date:"H:i" }} -
+                     {{item.raw.end|date:"H:i" }}
+                 </span>
+                     {# {{item.alarm}}%</span> #}
                  <span class="right">{{item.gig}} g</span><br>
+
                  <span class="right">{{item.variance}} g</span>
 
                  <span class="left">

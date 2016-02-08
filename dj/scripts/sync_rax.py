@@ -171,7 +171,7 @@ class SyncRax(process):
             # self.sync_title_png(show,ep)
             # self.cut_list(show,ep)
             self.mlt(show,ep)
-            self.sync_final(show,ep)
+            # self.sync_final(show,ep)
             # self.sync_final_audio_png(show,ep)
 
     def show_assets(self,show):

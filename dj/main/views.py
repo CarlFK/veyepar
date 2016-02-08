@@ -887,7 +887,9 @@ def show_stats(request, show_id, ):
     empty_stat = {'count':0,'minutes':0, 
                'start':None, 'end':None, 'states':[0]*len(STATES),
                'files':0, 'bytes':0, 
-               'loc':None, 'date':None }
+               'loc':None, 'date':None,
+               'raw':{'start':None, 'end':None,},
+               }
  
     # get the range of dates used by this show
     # which is a combonation of scheduled dates and dates of videos
@@ -896,8 +898,9 @@ def show_stats(request, show_id, ):
     dates=[] 
 
     for rf in raw_files:
-        dt = rf.start.date()
-        if dt not in dates: dates.append(dt)
+        if rf.start is not None:
+            dt = rf.start.date()
+            if dt not in dates: dates.append(dt)
 
     for ep in episodes:
         dt = ep.start.date()
@@ -944,6 +947,8 @@ def show_stats(request, show_id, ):
         else:
             stat['states'][0]+=1        
 
+        return
+
     for ep in episodes:
         dt = ep.start.date()
         loc = ep.location.id
@@ -964,6 +969,10 @@ def show_stats(request, show_id, ):
     def add_rf_to_stat(rf,stat):
         stat['files'] += 1
         stat['bytes'] += rf.filesize
+
+        stat['raw']['start']=rf.start if stat['raw']['start'] is None else min(stat['raw']['start'],rf.start)
+        stat['raw']['end']=rf.end if stat['raw']['end'] is None else max(stat['raw']['end'],rf.end)
+        return
 
     # gather raw_file stats
     for rf in raw_files:
@@ -988,8 +997,15 @@ def show_stats(request, show_id, ):
             stat['variance'] = stat['talk_gig'] - stat['gig']   
 
             # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
-            stat['alarm']= int( abs(stat['variance']) / (stat['minutes']/60.0*13 + 1) * 100 )
-            stat['alarm_color'] = "%02x%02x%02x" % ( 255, 255-stat['alarm'], 255-stat['alarm'] )
+            stat['alarm']= int(
+                   stat['variance'] / (stat['minutes']/60.0*13 + 1) * 100 )
+            if stat['alarm'] > 0: # red
+                stat['alarm_color'] = "%02x%02x%02x" % ( 
+                        255, 255-stat['alarm'], 255-stat['alarm'] )
+            else: # yellow
+                # 250, 255, 189
+                stat['alarm_color'] = "%02x%02x%02x" % ( 
+                        250, 255, 189-stat['alarm'] )
             return stat
  
     show_stat = calc_stat(show_stat)
