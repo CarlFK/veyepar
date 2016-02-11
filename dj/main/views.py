@@ -884,11 +884,20 @@ def show_stats(request, show_id, ):
     raw_files=Raw_File.objects.filter(show=show,location__active=True)
     locations=show.locations.filter(active=True).order_by('sequence')
     
-    empty_stat = {'count':0,'minutes':0, 
+    # needs better organazation.  refactor please.
+    empty_stat = {
+            'ep':{
+               'times': [False] * 24,
+               },
+               'count':0,'minutes':0, 
                'start':None, 'end':None, 'states':[0]*len(STATES),
-               'files':0, 'bytes':0, 
                'loc':None, 'date':None,
-               'raw':{'start':None, 'end':None,},
+               'raw':{
+                   'start':None, 
+                   'end':None,
+                   'times': [False] * 24,
+                   },
+               'files':0, 'bytes':0, 
                }
  
     # get the range of dates used by this show
@@ -936,7 +945,20 @@ def show_stats(request, show_id, ):
 
     # gather episode stats
     # func to update one:
+
+
+    def set_times(times,s,e):
+        # times: list of bools
+        # s,e: start/end datetimes
+        sh = s.hour
+        eh = (e + datetime.timedelta(minutes=59)).hour # bump up to next h
+        times[sh:eh] = [True]*(eh-sh)
+
+
     def add_ep_to_stat(ep,stat):
+
+        set_times( stat['ep']['times'], ep.start, ep.end)
+
         stat['count']+=1        
         duration=ep.end-ep.start        
         stat['minutes']+=duration.seconds/60        
@@ -967,6 +989,7 @@ def show_stats(request, show_id, ):
 
 
     def add_rf_to_stat(rf,stat):
+        set_times( stat['raw']['times'], rf.start, rf.end)
         stat['files'] += 1
         stat['bytes'] += rf.filesize
 
@@ -989,25 +1012,31 @@ def show_stats(request, show_id, ):
  
     # and do some more calcs
     def calc_stat(stat):
-            stat['hours']=int( stat['minutes']/60.0 + .9)
-     
-            stat['talk_gig']=int(stat['minutes']*13/60)
-            stat['gig']=stat['bytes']/(1024**3)
 
-            stat['variance'] = stat['talk_gig'] - stat['gig']   
+        stat['ep']['times_display'] = ''.join( 
+                'x' if t else 'o' for t in stat['ep']['times'])
+        stat['raw']['times_display'] = ''.join( 
+                'x' if t else 'o' for t in stat['raw']['times'])
 
-            # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
-            stat['alarm']= int(
-                   stat['variance'] / (stat['minutes']/60.0*13 + 1) * 100 )
-            if stat['alarm'] > 0: # red
-                stat['alarm_color'] = "%02x%02x%02x" % ( 
-                        255, 255-stat['alarm'], 255-stat['alarm'] )
-            else: # yellow
-                # 250, 255, 189
-                stat['alarm_color'] = "%02x%02x%02x" % ( 
-                        250, 255, 189-stat['alarm'] )
-            return stat
+        stat['hours']=int( stat['minutes']/60.0 + .9)
  
+        stat['talk_gig']=int(stat['minutes']*13/60)
+        stat['gig']=stat['bytes']/(1024**3)
+
+        stat['variance'] = stat['talk_gig'] - stat['gig']   
+
+        # alarm is % of expected gig, 0=perfect, 20 or more = wtf?
+        stat['alarm']= int(
+               stat['variance'] / (stat['minutes']/60.0*13 + 1) * 100 )
+        if stat['alarm'] > 0: # red
+            stat['alarm_color'] = "%02x%02x%02x" % ( 
+                    255, 255-stat['alarm'], 255-stat['alarm'] )
+        else: # yellow
+            # 250, 255, 189
+            stat['alarm_color'] = "%02x%02x%02x" % ( 
+                    255, 255, 255 + stat['alarm'] )
+        return stat
+
     show_stat = calc_stat(show_stat)
     l = []
     for dt in dates:
