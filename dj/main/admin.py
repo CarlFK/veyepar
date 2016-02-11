@@ -51,7 +51,7 @@ admin.site.register(Mark, MarkAdmin)
 class Image_FileAdmin(admin.ModelAdmin):
     list_display = ('filename', 'show', 'location', ) 
     list_display_links = ('filename',)
-    list_filter = ('location','show')
+    list_filter = ('location','show', )
     search_fields = ['filename', 'text']
 admin.site.register(Image_File, Image_FileAdmin)
 
