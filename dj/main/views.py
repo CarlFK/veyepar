@@ -1017,6 +1017,12 @@ def show_stats(request, show_id, ):
                 'x' if t else 'o' for t in stat['ep']['times'])
         stat['raw']['times_display'] = ''.join( 
                 'x' if t else 'o' for t in stat['raw']['times'])
+        stat['times_display'] = ''.join( {
+            (False, False):' ',
+            (False, True) :'~',
+            (True, False) :'!',
+            (True, True)  :'.'}[er] for er in zip( 
+                stat['ep']['times'], stat['raw']['times']) ).strip()
 
         stat['hours']=int( stat['minutes']/60.0 + .9)
  

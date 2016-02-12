@@ -100,10 +100,13 @@
                      {# {{item.alarm}}%</span> #}
                  <span class="right">{{item.gig}} g</span><br>
 
-                 <span class="right">{{item.variance}} g</span>
+                 <span class="left">{{item.times_display}}</span>
+                 <span class="right">{{item.variance}} g</span><br>
 
+                 <!-- 
                  <span class="left">{{item.ep.times_display}}</span>
                  <span class="left">{{item.raw.times_display}}</span>
+                 --!>
 
                  <span class="left">
                    <a style="display: inline-block;" href="{% url "raw_file_audio" %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio</a>
