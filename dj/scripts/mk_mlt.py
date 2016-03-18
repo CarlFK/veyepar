@@ -131,7 +131,9 @@ def mk_mlt(template, output, params):
 
         # apply the filters to te cuts
 
-        if cut['channelcopy']=='m':
+        if cut['channelcopy']=='00':
+            pass
+        elif cut['channelcopy']=='m':
             ti.insert(0,nodes['mono'])
         else:
             channelcopy = copy.deepcopy( nodes['channelcopy'] )
@@ -173,6 +175,9 @@ def mk_mlt(template, output, params):
     # nodes['ti_foot'].set("in",str(total_length))
     # nodes['spacer'].set("length","00:27:46.00")
     nodes['spacer'].set("length","0:{}.0".format(total_length-8.0))
+
+    # put the 1.5 fadeout at the end
+    nodes['audio_fade_out'].set("in","0:{}.0".format(total_length-1.5))
 
     tree.write(output)
     # import code; code.interact(local=locals())

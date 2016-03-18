@@ -134,7 +134,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
     <property name="ignore_points">0</property>
-    <filter id="audio_fade_in" in="00:00:00.667" out="00:00:01.635">
+    <filter id="audio_fade_in" in="00:00:00.0" out="00:00:01.5">
       <property name="track">0</property>
       <property name="window">75</property>
       <property name="max_gain">20dB</property>
