@@ -79,7 +79,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'host_url',
             # 'locked_by', 
             'start', 
-            # 'duration', 
+            'duration', 
             # 'end', 
             # 'location',
 )
@@ -94,7 +94,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             # 'conf_url', 
             # 'sequence', 
             'start', 
-            # 'duration', 
+            'duration', 
             # 'end', 
             )
 

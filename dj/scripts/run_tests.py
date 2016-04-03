@@ -189,18 +189,19 @@ pix_fmt=yuv411p" % parms
    convert that frame to footer.png
    """
 
-   # dv_dir = os.path.join(self.show_dir,'dv', 'test_loc','2010-05-21')
    tmp_dir = os.path.join(self.show_dir, 'tmp')
    assets_dir = os.path.join(self.show_dir, 'assets')
    text_file = os.path.join(tmp_dir, "source.txt")
-   dv_file = os.path.join(tmp_dir,"footer.dv") 
+   out_file = os.path.join(tmp_dir,"footer.mp4") 
    parms={'input_file':text_file, 
-           'dv_file':dv_file,
+           'out_file':out_file,
            'text_file':text_file,
            'assets_dir':assets_dir,
            'format':self.options.dv_format,
            'video_frames':1,
-           'audio_frames':1 }
+           'audio_frames':1,
+           'pix_fmt':'yuv411p',
+           }
    print parms
 
    # make a text file to use as encoder input
@@ -214,8 +215,12 @@ pix_fmt=yuv411p" % parms
  -profile %(format)s \
  -audio-track -producer noise out=%(audio_frames)s \
  -video-track %(input_file)s out=%(video_frames)s \
- -consumer avformat:%(dv_file)s \
- pix_fmt=yuv411p" % parms
+ -consumer avformat:%(out_file)s \
+ strict=-2 \
+ " % parms
+
+   # pix_fmt=%(pix_fmt)s
+   print cmd
    self.run_cmd(cmd.split())
 
    # grab a frame
@@ -225,7 +230,7 @@ pix_fmt=yuv411p" % parms
            -frames 1 \
            -ao null \
            -vo png:outdir=%(assets_dir)s \
-           %(dv_file)s" % parms
+           %(out_file)s" % parms
    self.run_cmd(cmd.split())
 
    # "00000001.png"

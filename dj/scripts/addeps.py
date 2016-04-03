@@ -98,6 +98,7 @@ import pprint
 from django.utils.html import strip_tags
 from django.template.defaultfilters import slugify
 
+import operator
 
 import xml.etree.ElementTree
 
@@ -270,7 +271,7 @@ class add_eps(process.process):
       seq=0
       for room in rooms:
           if self.options.verbose: print room
-          seq+=1
+          seq+=10
 
           # __iexact won't work with ger_or_add to don't try to use it
           try:
@@ -418,8 +419,12 @@ class add_eps(process.process):
                 if episode.location is None or \
                         episode.location.name.upper() <> row['location'].upper():
                     diff=True
-                    diff_fields.append(('loc',
-                        episode.location.name, row['location']))
+                    if episode.location is None:
+                        diff_fields.append(('loc',
+                            "(None)", row['location']))
+                    else:
+                        diff_fields.append(('loc',
+                            episode.location.name, row['location']))
                     # print(episode.location.name, row['location'])
 
                 for f in fields:
@@ -1370,36 +1375,47 @@ class add_eps(process.process):
 
 
     def chipy_v3(self, schedule, show):
-        schedule = schedule[-1]  ## last one on list is next meeting
 
-        room = schedule['where']['name']
+        schedule = max(schedule, key=operator.itemgetter('when'))
+        when = schedule['when']
+        where = schedule['where']
+        # ['name']
+        pprint.pprint( schedule['where'] )
+
         schedule = schedule['topics']
         schedule = [s for s in schedule if s['approved']]
+        # schedule = [s for s in schedule if s['start_time']]
+        for s in schedule:
+            print(s['title'], s['start_time'])
 
         field_maps = [ 
                 ('id', 'conf_key'), 
                 ('title', 'name'),
                 ('description', 'description'),
-                ('presentors', 'authors'),
-                ('presentors', 'emails'), 
-                ('presentors', 'released'), 
+                ('presenters', 'authors'),
+                ('presenters', 'emails'), 
+                ('presenters', 'released'), 
                 ('license','license'),
                 ('start_time', 'start'),
                 ('length', 'duration'),
                 ('', 'conf_url'), 
                 ('', 'tags'), 
+                ('', 'twitter_id'), 
                 ]
 
         events = self.generic_events(schedule, field_maps)
         for event in events:
+            print("1, event:")
+            pprint.pprint(event)
 
-            event['location'] = room
+            event['location'] = where['name']
 
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['authors'] =  ', '.join( 
                     [ a['name'] for a in  event['authors'] ])
+
             event['emails'] =  ', '.join( 
                     [ a['email'] for a in  event['emails'] 
                         if a['email'] ])
@@ -1414,6 +1430,16 @@ class add_eps(process.process):
 
         rooms = set(row['location'] for row in events)
         self.add_rooms(rooms,show)
+
+        # __iexact won't work with ger_or_add to don't try to use it
+        try:
+            loc = Location.objects.get(name__iexact=where['name'])
+            loc.description = where['address']
+            loc.save()
+        except Location.DoesNotExist:
+            # test mode I guess
+            pass
+
 
         self.add_eps(events, show)
 

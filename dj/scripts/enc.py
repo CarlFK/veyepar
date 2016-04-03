@@ -300,7 +300,7 @@ class enc(process):
                 # trim start/end based on episode start/end
                 if rf.start < ep.start < rf.end:
                     # if the ep start falls durring this clip, 
-                    #trim it
+                    # trim it
                     d = ep.start - rf.start
                     clip['in']="00:00:{}".format(d.total_seconds())
                 else:

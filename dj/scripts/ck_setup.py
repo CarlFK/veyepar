@@ -154,7 +154,7 @@ class ck_setup(process):
             'title',
             'title2',
             'tag1',
-            'authors', 
+            'presenternames',  # authors
             'presentertitle',
             'twitter_id',
             'date',
@@ -171,12 +171,32 @@ class ck_setup(process):
         if not found:
             p_warn("no keys found in {}".format(title_svg))
 
+    def ck_mlt(self):
+
+        mlt = self.client.template_mlt
+        print('client.template_mlt: {}'.format(mlt))
+
+        if not mlt:
+            p_fail("client.template_mlt not set.")
+
+        mlt = os.path.join(
+                os.path.split(os.path.abspath(__file__))[0],
+                mlt)
+        p_okg(mlt)
+        if not os.path.exists(mlt):
+            p_fail("mlt not found.")
 
     def ck_foot(self):
+
+        credits_img = self.client.credits
+
+        if not credits_img:
+            p_fail("client.credits not set.")
+
         credits_img =  os.path.join(
                 self.show_dir,
                 "assets", 
-                self.client.credits )
+                 credits_img)
 
         if not os.path.exists(credits_img):
             p_fail("credits_img not found: {}".format(credits_img))
@@ -356,6 +376,7 @@ class ck_setup(process):
             self.ck_dir()
             self.ck_title()
             self.ck_foot()
+            self.ck_mlt()
 
             self.ck_schedule_api()
 

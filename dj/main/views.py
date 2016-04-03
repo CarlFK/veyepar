@@ -1545,14 +1545,15 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             else:
                 # first Episode of the show
                 print "locations", locations
-                location = locations[0].id
+                if locations:
+                    location = locations[0].id
                 sequence = 1
                 # today at 6pm
                 start = datetime.datetime.combine(
                             datetime.date.today(),datetime.time(18))
             inits = {
                 'show':show.id,
-                'location':location,
+                # 'location':location,
                 'sequence':sequence, 
                 'start': start,
                 'duration':'00:45:00',
