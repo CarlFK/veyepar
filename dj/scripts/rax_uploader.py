@@ -11,14 +11,14 @@ import pyrax
 pyrax.set_setting("identity_type", "rackspace")
 
 from pyrax.exceptions import PyraxException
-import urllib 
+import urllib.request, urllib.parse, urllib.error 
 
 # The following 2 imports are wrapped in try/except so that 
 # this code will run without any additional files.
 try:
     # ProgressFile is a subclass of the python open class
     # as data is read, it prints a visible progress bar 
-    from progressfile import ProgressFile
+    import ProgressFile
 except ImportError:
     # or just use python's open for testing
     ProgressFile = open
@@ -67,7 +67,7 @@ class Uploader(object):
 
     def upload(self):
 
-        print "Uploading file to RackSpace CDN..."
+        print("Uploading file to RackSpace CDN...")
 
         pyrax.set_setting("region", self.region)
 
@@ -75,7 +75,7 @@ class Uploader(object):
 
         if self.verbose: print("getting container...")
         if self.debug_mode:
-            print("cf.get_all_containers", cf.get_all_containers())
+            print(("cf.get_all_containers", cf.get_all_containers()))
         container = cf.get_container(self.bucket_id)
 
         # check if object already exists:
@@ -111,17 +111,17 @@ class Uploader(object):
                     ret = True
 
                 except pyrax.exceptions.ClientException as e:
-                    print "caught pyrax.exceptions.ClientException as e"
-                    print e
-                    print e.code, e.details, e.message
+                    print("caught pyrax.exceptions.ClientException as e")
+                    print(e)
+                    print(e.code, e.details, e.message)
 
                     if e.code in [408,503]:
                         # 408 Request timeout
                         # 503 Service Unavailable - The server is currently unavailable. Please try again at a later time. 
-                        print "looping..."
+                        print("looping...")
                         continue
 
-                    print e
+                    print(e)
                     # self.ret_text = "rax error: %s" % ( e.body )
 
                     import code
@@ -129,7 +129,7 @@ class Uploader(object):
 
 
                 except Exception as e:
-                    print "caught Exception as e"
+                    print("caught Exception as e")
 
                     """
 HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retries exceeded with url: /v1/MossoCloudFS_fd6d6695-7fe7-4f77-9b4a-da7696e71dc2/fosdem/veyepar/debian/debconf14/dv/plenary/2014-08-23/16_00_03.ogv (Caused by <class 'socket.error'>: [Errno 104] Connection reset by peer)
@@ -137,7 +137,7 @@ HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retrie
 HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retries exceeded with url: /v1/MossoCloudFS_fd6d6695-7fe7-4f77-9b4a-da7696e71dc2/fosdem/veyepar/debian/debconf14/dv/room338/2014-08-25/10_02_05.ogv (Caused by <class 'socket.error'>: [Errno 32] Broken pipe)
 """
 
-                    print e
+                    print(e)
                     # self.ret_text = "rax error: %s" % ( e.body )
 
                     import code
@@ -149,9 +149,9 @@ HTTPSConnectionPool(host='storage101.ord1.clouddrive.com', port=443): Max retrie
         # filenames may have chars that need to be quoted for a URL.
         # cdn_streaming because.. video? (not sure really)
         # self.new_url = container.cdn_streaming_uri +"/"+ urllib.quote(obj.name)
-        self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name.encode('utf-8'))
+        self.new_url = container.cdn_uri +"/"+ urllib.parse.quote(obj.name.encode('utf-8'))
         # self.new_url = container.cdn_uri +"/"+ urllib.quote(obj.name)
-        print "Rackspace: ", self.new_url
+        print("Rackspace: ", self.new_url)
 
         return ret
 
@@ -199,5 +199,5 @@ if __name__ == '__main__':
 
     ret = u.upload()
 
-    print u.new_url
+    print(u.new_url)
 

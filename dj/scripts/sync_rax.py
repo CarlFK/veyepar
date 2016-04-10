@@ -10,7 +10,7 @@ import subprocess
 from process import process
 from main.models import Client, Show, Location, Episode, Raw_File
 
-import rax_uploader
+from . import rax_uploader
 import gslevels
 
 class SyncRax(process):
@@ -54,7 +54,7 @@ class SyncRax(process):
         """
         # base = os.path.join( "dv", rf.location.slug, rf.basename() )
         base = os.path.join( "dv", rf.location.slug, rf.filename )
-        if self.options.verbose: print base
+        if self.options.verbose: print(base)
 
         # look for .webm on local file system
         # ext = os.path.splitext(rf.filename)[1]
@@ -83,7 +83,7 @@ class SyncRax(process):
             rf.location.slug, rf.filename + ".wav.png")
 
         if not self.cdn_exists(show,png_base):
-            print rf.filesize
+            print(rf.filesize)
             src = os.path.join(self.show_dir,rf_base)
             dst = os.path.join(self.show_dir,png_base)
             ret = self.mk_audio_png(src,dst)
@@ -91,7 +91,7 @@ class SyncRax(process):
 
    
     def raw_files(self, show):
-        print "getting raw files..."
+        print("getting raw files...")
         rfs = Raw_File.objects.filter(show=show,)
 
 	if self.options.day:
@@ -108,7 +108,7 @@ class SyncRax(process):
         # rfs = rfs.cut_list_set.filter(episode__state=1)
 
         for rf in rfs:
-            if self.options.verbose: print rf
+            if self.options.verbose: print(rf)
             self.rf_web(show, rf)
             # self.rf_audio_png(show, rf)
 
@@ -185,13 +185,13 @@ class SyncRax(process):
 
          cf = rax_uploader.auth(user)
 
-         print "cf.get_all_containers", cf.get_all_containers()
+         print("cf.get_all_containers", cf.get_all_containers())
          
          container = cf.get_container(bucket_id)
          objects = container.get_objects()
-         print "loading names..."
+         print("loading names...")
          self.names = {o.name for o in objects}
-         print "loaded."
+         print("loaded.")
 
     def one_show(self, show):
         self.set_dirs(show)

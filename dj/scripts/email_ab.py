@@ -75,7 +75,7 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
         # like for lightning talks.
         emails = ep.emails or ep.show.client.contacts
 
-        if self.options.verbose: print emails
+        if self.options.verbose: print(emails)
 
         if emails: 
             tos = [e.strip() for e in emails.split(',')]
@@ -108,22 +108,22 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
                         }    
 
             if self.options.test:
-                print "tos:", tos
-                print "subject:", subject
-                print "headers:", headers
-                print "context:", context
-                print "body:", body
+                print("tos:", tos)
+                print("subject:", subject)
+                print("headers:", headers)
+                print("context:", context)
+                print("body:", body)
                 ret = False
             else:
 
                 email = EmailMessage(subject, body, sender, tos, headers=headers ) 
                 connection = get_connection()
                 ret = connection.send_messages([email])
-                print tos, ret
+                print(tos, ret)
                 ret = True # need to figure out what .send_messages returns
 
         else:
-            print "no emails!"
+            print("no emails!")
             ret = False
 
         return ret

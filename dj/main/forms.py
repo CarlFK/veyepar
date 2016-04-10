@@ -21,7 +21,7 @@ class Episode_Form_Preshow(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         locations = kwargs.get('locations', Location.objects.all())
-        if kwargs.has_key('locations'):
+        if 'locations' in kwargs:
            del kwargs['locations']
         super(Episode_Form_Preshow, self).__init__(*args, **kwargs)
         self.fields['location']._set_choices([(l.id, l.name) for l in locations])
@@ -39,7 +39,7 @@ class Episode_Form_Preshow(forms.ModelForm):
 
 class Episode_Form_small(forms.ModelForm):
     class Meta:
-	model = Episode
+        model = Episode
         fields = ('state', 'locked', 'locked_by', 'start', 'duration',
                   'name',
                   'emails',
@@ -79,7 +79,7 @@ class AddImageToEp(forms.Form):
  
 class AddEpisodeToRaw(forms.ModelForm):
     class Meta:
-	model = Episode
+        model = Episode
         fields = ('name', 
                 'duration', 
                # 'comment',

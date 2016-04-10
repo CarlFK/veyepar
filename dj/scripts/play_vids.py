@@ -14,11 +14,11 @@ class play_vids(process):
 
     def process_ep(self, ep):
         exts = self.options.upload_formats
-        if self.options.verbose: print exts
+        if self.options.verbose: print(exts)
         for ext in exts:
             filename = "%s.%s"%(ep.slug,ext)
             pathname = os.path.join( self.show_dir, ext, filename )
-            if self.options.verbose: print pathname
+            if self.options.verbose: print(pathname)
             # cmd = "mplayer -speed 4 -osdlevel 3 %s"  % (pathname)
             parms = {'id':ep.id, 
                 'filename':filename, 'pathname':pathname, 
@@ -29,9 +29,9 @@ class play_vids(process):
                 "meta.attr.titles.markup=%s" % markup,
                 "-attach", "data_show", "dynamic=1", ]
 
-            if self.options.verbose: print cmd
+            if self.options.verbose: print(cmd)
             if self.options.test:
-                print "test mode, not running command."
+                print("test mode, not running command.")
             else:
                 p=subprocess.Popen(cmd).wait()
 

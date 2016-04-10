@@ -14,7 +14,7 @@ class push(process):
     ready_state = 8
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
+        if self.options.verbose: print(ep.id, ep.name)
 
 
         ret = ep.released

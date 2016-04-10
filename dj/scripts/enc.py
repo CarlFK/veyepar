@@ -28,15 +28,15 @@ class enc(process):
 
         for key in texts:
             if self.options.verbose:
-                print "looking for:", key
+                print("looking for:", key)
             # tollerate template where tokens have been removed
-            if tree[1].has_key(key):
+            if key in tree[1]:
 
                 if key == "license":
                     # CC license image
                     if self.options.verbose:
-                        print "found in svg:", tree[1][key]
-                        print "replacing with:", texts[key]
+                        print("found in svg:", tree[1][key])
+                        print("replacing with:", texts[key])
                         t = tree[1][key]
                         # import code; code.interact(local=locals())
                     if texts[key] is None:
@@ -47,14 +47,14 @@ class enc(process):
                         t.set('{http://www.w3.org/1999/xlink}href', texts[key])
                 else:
                     if self.options.verbose:
-                        print "found in svg:", tree[1][key].text
-                        print "replacing with:", texts[key]  # .encode()
+                        print("found in svg:", tree[1][key].text)
+                        print("replacing with:", texts[key])  # .encode()
                     tree[1][key].text = texts[key]
 
         # cooked_svg = xml.etree.ElementTree.tostring(tree[0])
         # print "testing...", "license" in cooked_svg
 
-        if tree[1].has_key('presenternames'):
+        if 'presenternames' in tree[1]:
             # some people like to add spiffy text near the presenter name(s)
             if texts['authors']:
                 # prefix = u"Featuring" if "," in texts['authors'] else "By"
@@ -64,8 +64,7 @@ class enc(process):
                 # remove the text (there is a placholder to make editing sane)
                 tree[1]['presenternames'].text = ""
 
-        cooked_svg = xml.etree.ElementTree.tostring(tree[0])
-        print "testing...", "license" in cooked_svg
+        cooked_svg = xml.etree.ElementTree.tostring(tree[0]).decode('ascii')
 
         return cooked_svg
 
@@ -177,10 +176,10 @@ class enc(process):
 
         # if self.options.verbose: print cooked_svg
         if self.options.verbose:
-            print png_name
+            print(png_name)
 
         if not ret:
-            print "svg:", svg_name
+            print("svg:", svg_name)
             png_name = None
 
         return png_name
@@ -192,14 +191,14 @@ class enc(process):
         # else make one from the tempalte
         custom_svg_name = os.path.join( "..",
             "custom", "titles", episode.slug + ".svg")
-        if self.options.verbose: print "custom:", custom_svg_name
+        if self.options.verbose: print("custom:", custom_svg_name)
         abs_path =  os.path.join( self.show_dir, "tmp", custom_svg_name )
         if os.path.exists(abs_path):
             # cooked_svg_name = custom_svg_name
             cooked_svg_name = abs_path
         else:
             svg_name = episode.show.client.title_svg
-            print svg_name
+            print(svg_name)
             template = os.path.join(
                 os.path.split(os.path.abspath(__file__))[0],
                 "bling",
@@ -222,18 +221,18 @@ class enc(process):
             # output_base=output_base.encode('utf-8','ignore')
 
             cooked_svg_name = os.path.join(
-                self.show_dir, "titles", u'{}.svg'.format(episode.slug))
+                self.show_dir, "titles", '{}.svg'.format(episode.slug))
             open(cooked_svg_name, 'w').write(cooked_svg)
 
         png_name = os.path.join( "..",
-            "titles", u'{}.png'.format(episode.slug))
+            "titles", '{}.png'.format(episode.slug))
 
         abs_path = os.path.join( self.show_dir, "tmp", png_name ) 
 
         title_img = self.svg2png(cooked_svg_name, abs_path, episode)
 
         if title_img is None:
-            print "missing title png"
+            print("missing title png")
             return False
 
         return png_name
@@ -250,7 +249,7 @@ class enc(process):
             # else make one from the tempalte
             custom_png_name = os.path.join(
                 self.show_dir, "custom", "titles", episode.slug + ".png")
-            print "custom:", custom_png_name
+            print("custom:", custom_png_name)
             if os.path.exists(custom_png_name):
                 title_img = custom_png_name
             else:
@@ -291,8 +290,8 @@ class enc(process):
                         self.show_dir, "tmp", raw_pathname)
                 
                 if not os.path.exists(abs_path):
-                    print( 'raw_pathname not found: "{}"'.format(
-                        abs_path))
+                    print(( 'raw_pathname not found: "{}"'.format(
+                        abs_path)))
                     return False
 
                 clip['filename']=raw_pathname
@@ -499,15 +498,15 @@ class enc(process):
 
             # run encoder:
             if self.options.noencode:
-                print "sorce files generated, skipping encode."
+                print("sorce files generated, skipping encode.")
                 ret = False
             else:
                 ret = self.run_cmds(episode, cmds, )
 
 
             if ret and not os.path.exists(out_pathname):
-                print "melt returned %ret, but no output: %s" % \
-                    (ret, out_pathname)
+                print("melt returned %ret, but no output: %s" % \
+                    (ret, out_pathname))
                 ret = False
 
             return ret
@@ -515,7 +514,7 @@ class enc(process):
         ret = True
         # create all the formats for uploading
         for ext in self.options.upload_formats:
-            print "encoding to %s" % (ext,)
+            print("encoding to %s" % (ext,))
             ret = enc_one(ext) and ret
 
         """
@@ -563,7 +562,7 @@ class enc(process):
                     "{}.mlt".format(episode.slug))
 
             if os.path.exists(mlt_pathname):
-                print("found custom/slug.mlt:\n{}".format( mlt_pathname ))
+                print(("found custom/slug.mlt:\n{}".format( mlt_pathname )))
                 ret = True
             else:
 
@@ -575,7 +574,7 @@ class enc(process):
                 params = self.get_params(episode, rfs, cls )
 
                 pprint.pprint(params)
-                print(2, mlt_pathname)
+                print((2, mlt_pathname))
                 ret = mk_mlt( template_mlt, mlt_pathname, params )
 
             if not ret:
@@ -609,7 +608,7 @@ class enc(process):
             episode.comment += "\nenc error: %s\n" % (err_msg,)
             episode.save()
 
-            print err_msg
+            print(err_msg)
             return False
 
         if self.options.test:

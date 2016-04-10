@@ -40,7 +40,7 @@ which errors with:
 import argparse
 from collections import namedtuple
 
-import httplib
+import http.client
 import httplib2
 import os
 import random
@@ -49,8 +49,8 @@ import time
 
 import pprint
 
-from urlparse import urlparse
-from urlparse import parse_qs
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
 
 """
 from apiclient.discovery import build
@@ -121,10 +121,10 @@ MAX_RETRIES = 10
 
 # Always retry when these exceptions are raised.
 RETRIABLE_EXCEPTIONS = (
-        httplib2.HttpLib2Error, IOError, httplib.NotConnected,
-        httplib.IncompleteRead, httplib.ImproperConnectionState,
-        httplib.CannotSendRequest, httplib.CannotSendHeader,
-        httplib.ResponseNotReady, httplib.BadStatusLine)
+        httplib2.HttpLib2Error, IOError, http.client.NotConnected,
+        http.client.IncompleteRead, http.client.ImproperConnectionState,
+        http.client.CannotSendRequest, http.client.CannotSendHeader,
+        http.client.ResponseNotReady, http.client.BadStatusLine)
 
 # Always retry when an apiclient.errors.HttpError with one of these status
 # codes is raised.
@@ -179,7 +179,7 @@ def initialize_upload(youtube, filename, metadata):
 
   # Call the API's videos.insert method to create and upload the video.
   insert_request = youtube.videos().insert(
-    part=",".join(body.keys()),
+    part=",".join(list(body.keys())),
     body=body,
     # The chunksize parameter specifies the size of each chunk of data, in
     # bytes, that will be uploaded at a time. Set a higher value for
@@ -210,25 +210,25 @@ def resumable_upload(insert_request):
   retry = 0
   while response is None:
 
-    print "Uploading file to YouTube..."
+    print("Uploading file to YouTube...")
     try:
 
       status, response = insert_request.next_chunk()
       if response is None:
-          print status.progress()
+          print(status.progress())
 
       if 'id' in response:
-         print "Video id '%s' was successfully uploaded." % response['id']
+         print("Video id '%s' was successfully uploaded." % response['id'])
       else:
         exit("The upload failed with an unexpected response: %s" % response)
 
-    except ResumableUploadError, e:
-      print("ResumableUploadError e.content:{}".format(e.content))
+    except ResumableUploadError as e:
+      print(("ResumableUploadError e.content:{}".format(e.content)))
       print("to get out of this loop:\nimport sys;sys.exit()")
       import code; code.interact(local=locals())
       # raise e
 
-    except HttpError, e:
+    except HttpError as e:
       if e.resp.status in RETRIABLE_STATUS_CODES:
         error = "A retriable HTTP error %d occurred:\n%s" % (
                 e.resp.status, e.content )
@@ -237,24 +237,24 @@ def resumable_upload(insert_request):
         import code; code.interact(local=locals())
         # raise e
 
-    except RETRIABLE_EXCEPTIONS, e:
+    except RETRIABLE_EXCEPTIONS as e:
       error = "A retriable error occurred: %s" % e
 
-    except Exception, e:
-      print("No clue what is going on.  e:{}".format(e))
+    except Exception as e:
+      print(("No clue what is going on.  e:{}".format(e)))
       print("to get out of this loop:\nimport sys;sys.exit()")
       import code; code.interact(local=locals())
 
 
     if error is not None:
-      print error
+      print(error)
       retry += 1
       if retry > MAX_RETRIES:
         exit("No longer attempting to retry.")
 
       max_sleep = 2 ** retry
       sleep_seconds = random.random() * max_sleep
-      print "Sleeping %f seconds and then retrying..." % sleep_seconds
+      print("Sleeping %f seconds and then retrying..." % sleep_seconds)
       time.sleep(sleep_seconds)
 
   return status, response
@@ -280,10 +280,10 @@ https://developers.google.com/youtube/v3/docs/videos#properties
 
     # replace <- and -> with arrows, < > with pointy things.
     # another way of coding the arrows: u"\N{LEFTWARDS ARROW}"
-    description = description.replace("<-",u"←")
-    description = description.replace("->",u"→")
-    description = description.replace("<",u"‹")
-    description = description.replace(">",u"›")
+    description = description.replace("<-","←")
+    description = description.replace("->","→")
+    description = description.replace("<","‹")
+    description = description.replace(">","›")
     return description
 
 class Uploader():
@@ -340,7 +340,7 @@ class Uploader():
                 id=video_id
                     ).execute()
 
-        print("deleted {}".format(video_url))
+        print(("deleted {}".format(video_url)))
 
         # videos_delete_response is '' 
         return videos_delete_response
@@ -351,7 +351,7 @@ class Uploader():
         youtube = get_authenticated_service(user_key=self.user)
 
         if self.debug:
-            print self.pathname
+            print(self.pathname)
             pprint.pprint(self.meta)
 
         pf = ProgressFile(self.pathname)
@@ -400,7 +400,7 @@ def test_upload(args):
       'description': "test description",
       'title': "test title",
       'category': 22, # 22 is maybe "Education",
-      'tags': [u'test', u'tests', ],
+      'tags': ['test', 'tests', ],
       'privacyStatus':'private',
       # 'latlon': (37.0,-122.0),
     }
@@ -418,10 +418,10 @@ def test_upload(args):
 
     ret = u.upload()
     if ret:
-        print u.new_url
+        print(u.new_url)
         return u.new_url
     else:
-        print u.ret_text
+        print(u.ret_text)
 
 def test_set_pub(args,video_url):
     

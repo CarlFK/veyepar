@@ -10,7 +10,8 @@ feedparser
 steve
 python-dateutil
 
-progressbar
+# progressbar
+git+https://github.com/niltonvolpato/python-progressbar.git
 
 boto
 internetarchive

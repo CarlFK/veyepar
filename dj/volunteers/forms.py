@@ -55,7 +55,7 @@ class CutListExpansionFormSet(BaseModelFormSet):
     def _construct_forms(self):
         # overriding to pass parent obj to child form
         self.forms = []
-        for i in xrange(min(self.total_form_count(), self.absolute_max)):
+        for i in range(min(self.total_form_count(), self.absolute_max)):
             self.forms.append(self._construct_form(i, parent=self.parent))
             
     def save(self, *args, **kwargs):

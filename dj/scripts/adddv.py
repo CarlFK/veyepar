@@ -22,37 +22,37 @@ class add_dv(process):
                 click = datetime.datetime.strptime(
                         line,'%Y-%m-%d/%H_%M_%S')
             except ValueError as e:
-                print e
+                print(e)
                 continue
 
-            print click, 
+            print(click, end=' ') 
 
             mark, created = Mark.objects.get_or_create(
                 show=show, location=location,
                 click=click)
             
             if created: 
-                print "(new)"
+                print("(new)")
                 mark.save()
             else:
-                print "(exists)"
+                print("(exists)")
 
     def one_file(self,pathname,show,location,seq):
         # one video asset file
-        print pathname,
+        print(pathname, end=' ')
         if self.options.test:
             rfs = Raw_File.objects.filter(
                 show=show, location=location,
                 filename=pathname,)
-            if rfs: print "in db:", rfs
-            else: print "not in db"
+            if rfs: print("in db:", rfs)
+            else: print("not in db")
         else:
             rf, created = Raw_File.objects.get_or_create(
                 show=show, location=location,
                 filename=pathname,)
             
             if created: 
-               print "(new)"
+               print("(new)")
                rf.sequence=seq
 
                fullpathname = os.path.join(
@@ -62,7 +62,7 @@ class add_dv(process):
 
                rf.save()
             else:
-               print "(exists)"
+               print("(exists)")
    
     def one_loc(self,show,location):
       """
@@ -72,12 +72,12 @@ class add_dv(process):
           Raw_File.objects.filter(show=show).delete()
 
       ep_dir=os.path.join(self.show_dir,'dv',location.slug)
-      if self.options.verbose:  print "episode dir:", ep_dir
+      if self.options.verbose:  print("episode dir:", ep_dir)
       seq=0
       for dirpath, dirnames, filenames in os.walk(ep_dir,followlinks=True):
           d=dirpath[len(ep_dir)+1:]
           if self.options.verbose: 
-              print "checking...", dirpath, d, dirnames, filenames 
+              print("checking...", dirpath, d, dirnames, filenames) 
 
           if self.options.subs:
               # subs holds a bit of the dirs we want,

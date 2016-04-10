@@ -76,14 +76,14 @@ def get_start( pathname, time_source ):
 
         dt_o = re.match(dt_re, pathname)
         dt_parts = dt_o.groupdict()
-        print dt_parts
+        print(dt_parts)
 
-        dt_parts = {k:int(v) for k,v in dt_parts.items()}
-        print dt_parts
+        dt_parts = {k:int(v) for k,v in list(dt_parts.items())}
+        print(dt_parts)
 
 
         start=datetime.datetime( **dt_parts )
-        print start
+        print(start)
         return start
 
     def PyExifTool(pathname):
@@ -99,7 +99,7 @@ def get_start( pathname, time_source ):
         dt = metadata['H264:DateTimeOriginal']
         
         start=datetime.datetime.strptime(dt,'%Y:%m:%d %H:%M:%S+00:00')
-        print start
+        print(start)
         return start
 
     def frame_time(pathname):
@@ -196,11 +196,11 @@ def get_duration(pathname):
     # return start, seconds 
 
 def test(pathname):
-    print pathname
+    print(pathname)
     start = get_start(pathname, "auto")
-    print start
+    print(start)
     seconds = get_duration(pathname)
-    print seconds
+    print(seconds)
 
     return 
 

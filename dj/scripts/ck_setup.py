@@ -10,10 +10,10 @@ from django.conf import settings
 
 from django.template.defaultfilters import slugify
 
-import pw
+from . import pw
 
-import rax_uploader
-import archive_uploader
+from . import rax_uploader
+from . import archive_uploader
 import steve.richardapi
 
 import os
@@ -36,15 +36,15 @@ def p_print(text):
     return 
 
 def p_okg(text):
-    print(bcolors.OKGREEN + text +bcolors.ENDC)
+    print((bcolors.OKGREEN + text +bcolors.ENDC))
     return 
 
 def p_warn(text):
-    print(bcolors.WARNING + text +bcolors.ENDC)
+    print((bcolors.WARNING + text +bcolors.ENDC))
     return 
 
 def p_fail(text):
-    print(bcolors.FAIL + text +bcolors.ENDC)
+    print((bcolors.FAIL + text +bcolors.ENDC))
     return 
 
 class ck_setup(process):
@@ -64,15 +64,15 @@ class ck_setup(process):
             p_fail('pw.py does not have: "{}"'.format(service))
             return False
 
-        keys = creds.keys()
-        print "keys for service {}: {}".format( service, keys )
+        keys = list(creds.keys())
+        print("keys for service {}: {}".format( service, keys ))
 
         key = getattr(self.client, client_id_field, None)
 
         # import code; code.interact(local=locals())
 
-        print 'checking client.{} & pw.py for "{}" in: "{}={{..."'.format(
-                client_id_field,key,service)
+        print('checking client.{} & pw.py for "{}" in: "{}={{..."'.format(
+                client_id_field,key,service))
 
         if not key:
             p_warn('client.{} is blank'.format(client_id_field))
@@ -85,9 +85,9 @@ class ck_setup(process):
 
         secrets = creds[key]
         # try not to display secret values
-        print('names of secrets in pw.py {}:{}'.format( 
-            key, secrets.keys() ))
-        print('checking for existance of {}'.format(cred_keys))
+        print(('names of secrets in pw.py {}:{}'.format( 
+            key, list(secrets.keys()) )))
+        print(('checking for existance of {}'.format(cred_keys)))
         for cred_key in cred_keys:
             if cred_key not in secrets:
                 p_warn('"{}" NOT found.'.format(cred_key))
@@ -129,7 +129,7 @@ class ck_setup(process):
 
     def ck_dir(self):
         if os.path.exists(self.show_dir):
-            print("~/Videos/showdir exits: {}".format(self.show_dir))
+            print(("~/Videos/showdir exits: {}".format(self.show_dir)))
         else:
             # print(bcolors.FAIL + "~/Videos/showdir not created yet.  run mk_dirs.py"+bcolors.ENDC)
             p_fail("~/Videos/showdir not created yet.  run mk_dirs.py")
@@ -138,7 +138,7 @@ class ck_setup(process):
     def ck_title(self):
 
         title_svg = self.client.title_svg
-        print('client.title_svg: {}'.format(title_svg))
+        print(('client.title_svg: {}'.format(title_svg)))
         title_svg = os.path.join(
                 os.path.split(os.path.abspath(__file__))[0],
                 "bling", 
@@ -161,20 +161,20 @@ class ck_setup(process):
             'time',
             'room',
             'license', ]
-        print("checking title_svg for object IDs: {}".format(keys) )
+        print(("checking title_svg for object IDs: {}".format(keys) ))
         print("found:")
         found=[]
         for key in keys:
-            if tree[1].has_key(key):
+            if key in tree[1]:
                 found.append(key)
-                print(key,tree[1][key].text)
+                print((key,tree[1][key].text))
         if not found:
             p_warn("no keys found in {}".format(title_svg))
 
     def ck_mlt(self):
 
         mlt = self.client.template_mlt
-        print('client.template_mlt: {}'.format(mlt))
+        print(('client.template_mlt: {}'.format(mlt)))
 
         if not mlt:
             p_fail("client.template_mlt not set.")
@@ -255,8 +255,8 @@ class ck_setup(process):
 
         categories = steve.richardapi.get_all_categories(endpoint)
         cat_titles = [cat['title'] for cat in categories]
-        print("found {} categories. last 5: {}".format(
-            len(categories), cat_titles[-5:] ))
+        print(("found {} categories. last 5: {}".format(
+            len(categories), cat_titles[-5:] )))
         if category_key in cat_titles:
             p_okg('client.category_key:"{}" found.'.format(category_key))
         else:
@@ -277,11 +277,11 @@ class ck_setup(process):
         else:
             p_fail("client.bucket_id not set.")
 
-        print "checking for valid bucket..."
+        print("checking for valid bucket...")
         cf = rax_uploader.auth(rax_id)
         containers = cf.get_all_containers()
         container_names = [container.name for container in containers]
-        print "container_names", container_names
+        print("container_names", container_names)
         if bucket_id in container_names:
             p_okg('"{}" found.'.format(bucket_id))
         else:
@@ -305,13 +305,13 @@ class ck_setup(process):
         else:
             p_fail("client.bucket_id not set.")
 
-        print "auth..."
+        print("auth...")
         service = archive_uploader.auth(archive_id)
 
-        print "checking for valid bucket..."
+        print("checking for valid bucket...")
         buckets = service.get_all_buckets()
         bucket_names = [bucket.name for bucket in buckets]
-        print "bucket_names", bucket_names
+        print("bucket_names", bucket_names)
         if bucket_id in bucket_names:
             p_okg('"{}" found.'.format(bucket_id))
         else:
@@ -330,7 +330,7 @@ class ck_setup(process):
         if not os.path.exists('client_secrets.json'):
             p_fail("client_secrets.json NOT found.")
             ret = False
-        print("looking for {}".format(secrets['filename']))
+        print(("looking for {}".format(secrets['filename'])))
         if not os.path.exists(secrets['filename']):
             p_fail("{} NOT found.".format(secrets['filename']))
             ret = False
@@ -348,17 +348,17 @@ class ck_setup(process):
         if schedule_url.startswith('file'):
             url = schedule_url[7:]
             if not os.path.exists(url):
-                print("{} NOT found.".format(url))
+                print(("{} NOT found.".format(url)))
         else:
             print("getting...")
             session = requests.session()
             response = session.get(schedule_url, verify=False)
             text = response.text
-            print text[:75]
+            print(text[:75])
 
         auth = pw.addeps.get(self.show.slug, None)
         if auth is not None:
-            print("found in pw.addeps:{}".format(auth.keys()))
+            print(("found in pw.addeps:{}".format(list(auth.keys()))))
 
 
     def work(self):
@@ -403,9 +403,9 @@ class ck_setup(process):
 
 
         except Exception as e:
-            print "tests stopped at"
-            print e.message 
-            print e.__class__, e
+            print("tests stopped at")
+            print(e.message) 
+            print(e.__class__, e)
             # import code; code.interact(local=locals())
             # raise e
 

@@ -12,7 +12,7 @@ class fix(process):
     ready_state = 7
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
+        if self.options.verbose: print(ep.id, ep.name)
 
         ep.state = 4
         ep.save()

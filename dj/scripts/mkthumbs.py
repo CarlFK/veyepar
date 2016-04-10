@@ -12,7 +12,7 @@ then check less and less as we get farther into the file, and even less if we fi
 import  os
 # import pkg_resources
 
-import gsocr
+from . import gsocr
 # import ocrdv
 
 from process import process
@@ -33,8 +33,8 @@ class add_dv(process):
         dv_pathname = os.path.join(dir,dv.filename)
         png_pathname = os.path.join(dir,"%s.png"%dv.basename())
         if self.options.verbose: 
-            print "dv:", dv_pathname
-            print "png:", png_pathname
+            print("dv:", dv_pathname)
+            print("png:", png_pathname)
 
         if not os.path.exists(png_pathname):
             if not self.options.test: 
@@ -48,7 +48,7 @@ class add_dv(process):
                 dv.save()
 	      return p.base_name
             else:
-              print "test mode, gsocr not called."
+              print("test mode, gsocr not called.")
 
         return None
 
@@ -72,14 +72,14 @@ class add_dv(process):
     def one_loc(self,location,dir):
       for dv in Raw_File.objects.filter(location=location):
           imgname=self.one_dv(dir,dv)
-          if self.options.verbose: print imgname
+          if self.options.verbose: print(imgname)
 
 
     def one_show(self, show):
       self.set_dirs(show)
       for loc in Location.objects.filter(show=show):
         dir=os.path.join(self.show_dir,'dv',loc.slug)
-        if self.options.verbose: print show,loc,dir
+        if self.options.verbose: print(show,loc,dir)
         self.one_loc(loc, dir)
 
     def work(self):

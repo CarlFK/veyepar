@@ -13,7 +13,7 @@ class review1(process):
     ready_state = 6
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
+        if self.options.verbose: print(ep.id, ep.name)
 
         ret = True
 

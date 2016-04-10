@@ -2,12 +2,12 @@
 
 # posts to archive.org
 
-import archive_uploader
+from . import archive_uploader
 
 import os
 import datetime
 
-import pw
+from . import pw
 from process import process
 
 from main.models import Client
@@ -17,11 +17,11 @@ class post(process):
   ready_state = 4
 
   def process_ep(self, ep):
-    if self.options.verbose: print ep.id, ep.name
+    if self.options.verbose: print(ep.id, ep.name)
     if not ep.released: # and not self.options.release_all:
         # --release-all will force the upload, overrides ep.released
         # if someone uncomments the # and not... above.
-        if self.options.verbose: print "not released:", ep.released
+        if self.options.verbose: print("not released:", ep.released)
         return False
 
     loc = ep.location
@@ -127,14 +127,14 @@ class post(process):
    
     host_user =  self.options.host_user if self.options.host_user \
                     else client.host_user if client.host_user \
-                    else pw.host.keys()[0]
+                    else list(pw.host.keys())[0]
 
     if self.options.test:
-        print 'test mode:'
-        print 'files %s' % files
-        print 'meta %s' % meta
-        print 'thumb %s' % thumb
-        print
+        print('test mode:')
+        print('files %s' % files)
+        print('meta %s' % meta)
+        print('thumb %s' % thumb)
+        print()
 
     else:
    
@@ -155,22 +155,22 @@ class post(process):
 
         if ret:
 
-            if self.options.verbose: print uploader.new_url
+            if self.options.verbose: print(uploader.new_url)
             ep.host_url = uploader.new_url
             self.last_url = uploader.new_url # hook for tests so that it can be browsed
 
-            print dir(uploader)
+            print(dir(uploader))
             import code
             # code.interact(local=locals())
 
         else:
-            print "error!"
+            print("error!")
 
         # tring to fix the db timeout problem
         # ep=Episode.objects.get(pk=ep.id)
         try:
             ep.save()
-        except DatabaseError, e:
+        except DatabaseError as e:
             from django.db import connection
             connection.connection.close()
             connection.connection = None
@@ -193,11 +193,11 @@ class post(process):
 
     conn =  archive_uploader.auth(client.archive_id)
 
-    print (conn, bucket_id, meta)
+    print((conn, bucket_id, meta))
     if self.options.test:
-        print "test mode, not creating bucket."
+        print("test mode, not creating bucket.")
     else:
-        print archive_uploader.make_bucket(conn, bucket_id, meta)
+        print(archive_uploader.make_bucket(conn, bucket_id, meta))
 
     return 
 

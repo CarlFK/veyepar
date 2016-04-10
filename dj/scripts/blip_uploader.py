@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#    Copyright 2008 Michael Fötsch <foetsch@yahoo.com>
+#    Copyright 2008 Michael Fotsch <foetsch@yahoo.com>
 #    
 #    Permission is hereby granted, free of charge, to any person obtaining
 #    a copy of this software and associated documentation files (the
@@ -59,16 +59,16 @@
 """
 
 import optparse
-import ConfigParser
+import configparser
 import getpass
-import httplib, socket
+import http.client, socket
 import mimetypes
 import os
 import datetime,time
 import re
 import sys
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import xml.etree.ElementTree
 import xml.dom.minidom 
 import xml.sax.saxutils 
@@ -123,7 +123,7 @@ class Blip(object):
         # filedatas - list of tuples: [(metadata1, filename1),(m2,f2)...]
         # footdata - string, final "\n--file delimiter--\n"
         data = []
-        for field_name, value in fields.iteritems():
+        for field_name, value in fields.items():
             data.append('--' + self.MULTIPART_BOUNDARY)
             data.append( "Content-type: text/plain; charset=UTF-8" )
             data.append('Content-Disposition: form-data; name="%s"' % field_name)
@@ -151,22 +151,22 @@ class Blip(object):
         datalen += len(footdata)
 
         # open the connection, send the headers (not part of datas)
-        host, selector = urlparts = urlparse.urlsplit(url)[1:3]
-        h = httplib.HTTPConnection(host)
+        host, selector = urlparts = urllib.parse.urlsplit(url)[1:3]
+        h = http.client.HTTPConnection(host)
         h.putrequest("POST", selector)
         h.putheader("content-type", content_type)
         h.putheader("content-length", datalen)
         h.endheaders()
 
         # send the datas
-        if self.debug: print fieldsdata.__repr__()
-        if self.debug: print fieldsdata
+        if self.debug: print(fieldsdata.__repr__())
+        if self.debug: print(fieldsdata)
         self.start_time = datetime.datetime.now()
         h.send(fieldsdata)
         bytes_sent = len(fieldsdata)
         for filedata, filename in filedatas:
-            if self.debug: print "%s (%s)" % (filedata.__repr__(), filename)
-            if self.debug: print "%s (%s)" % (filedata, filename)
+            if self.debug: print("%s (%s)" % (filedata.__repr__(), filename))
+            if self.debug: print("%s (%s)" % (filedata, filename))
             h.send(filedata)
             bytes_sent += len(filedata)
             f = open(filename,'rb')
@@ -178,13 +178,13 @@ class Blip(object):
                 self.progress(bytes_sent,datalen)
                 # time.sleep(.06)
                 block=f.read(block_size)
-        if self.debug: print footdata.__repr__()
+        if self.debug: print(footdata.__repr__())
         h.send(footdata)
         bytes_sent += len(footdata)
         self.progress(bytes_sent,datalen)
 
         response = h.getresponse()
-        print "\n", response.status, response.reason
+        print("\n", response.status, response.reason)
         return response
 
     def Upload(self, video_id, username, password, files, meta={}, thumbname=None):
@@ -233,8 +233,8 @@ class Blip(object):
             response = self.PostMultipart(self.BLIP_UPLOAD_URL, fields, files)
             done=True
 
-          except socket.error, e:
-            print e
+          except socket.error as e:
+            print(e)
             # and try again...
             """
 r/lib/python2.6/httplib.py", line 759, in send
@@ -243,8 +243,8 @@ r/lib/python2.6/httplib.py", line 759, in send
 socket.error: [Errno 104] Connection reset by peer
 """
 
-          except httplib.BadStatusLine:
-            print e
+          except http.client.BadStatusLine:
+            print(e)
             # and try again...
             """
   File "/usr/lib/python2.6/httplib.py", line 391, in begin
@@ -261,7 +261,7 @@ httplib.BadStatusLine
         Get the list of licenses blip crrently supports.
         """
         url = 'http://www.blip.tv/?section=licenses&cmd=view&skin=api'
-        xml_code = urllib2.urlopen(url).read()
+        xml_code = urllib.request.urlopen(url).read()
         return xml_code
            
     def Get_Categories(self):
@@ -269,7 +269,7 @@ httplib.BadStatusLine
         Get the list of categories blip crrently supports.
         """
         url = 'http://www.blip.tv/?section=categories&cmd=view&skin=api'
-        xml_code = urllib2.urlopen(url).read()
+        xml_code = urllib.request.urlopen(url).read()
         return xml_code
 
     def Get_VideoMeta(self, video_id):
@@ -279,8 +279,8 @@ httplib.BadStatusLine
         @return xml of all the metadata.
         """
         url = 'http://blip.tv/file/%s?skin=rss' % video_id
-        if self.debug: print url
-        xml_code = urllib2.urlopen(url).read()
+        if self.debug: print(url)
+        xml_code = urllib.request.urlopen(url).read()
         return xml_code
 
     def Get_TextFromDomNode(self, node):
@@ -339,8 +339,8 @@ httplib.BadStatusLine
         # http://blip.tv/dashboard/episode_detailed/4840010?users_id=613931&userlogin=veyepar_test&password=bdff6680&skin=json
         url = "http://blip.tv/dashboard/episode_detailed/%(mystery_id)s?users_id=%(users_id)s&userlogin=%(user_name)s&password=%(password)s&skin=json" % { 'mystery_id':mystery_id, 
                 'users_id':user_id, 'user_name':user_name, 'password':password }
-        if self.debug: print url
-        json_like_data = urllib2.urlopen(url).read()
+        if self.debug: print(url)
+        json_like_data = urllib.request.urlopen(url).read()
 
         json_data = json_like_data[len('blip_ws_results('):-3]
         return json_data
@@ -380,7 +380,7 @@ class Blip_CLI(Blip):
         xml_code = self.Get_Licenses()
         tree = xml.etree.ElementTree.fromstring(xml_code)
         for node in tree.findall('payload/license'):
-            print node.find('id').text, node.find('name').text
+            print(node.find('id').text, node.find('name').text)
         return
            
     def List_Categories(self):
@@ -390,28 +390,28 @@ class Blip_CLI(Blip):
         xml_code = self.Get_Categories()
         tree = xml.etree.ElementTree.fromstring(xml_code)
         for node in tree.findall('payload/category'):
-            print node.find('id').text, node.find('name').text
+            print(node.find('id').text, node.find('name').text)
         return
 
     def List_VideoMeta(self, video_id):
-        print "Loading..."
+        print("Loading...")
         xml_code = self.Get_VideoMeta(video_id)
         # print xml_code
         info = self.Parse_VideoMeta(xml_code)
         # print info
-        print "Title           =", info['title']
-        print "Description     =", info['description']
-        print "Link            =", info['link']
+        print("Title           =", info['title'])
+        print("Description     =", info['description'])
+        print("Link            =", info['link'])
         if info['embed_code'].strip():
-            print "Embed code      =", info['embed_code']
+            print("Embed code      =", info['embed_code'])
         else:
-            print "Embed code      = <The video hasn't been converted to Flash yet>"
-        print "Files:"
-        for role,urls in info['existing_mime_types'].items():
-            print role
+            print("Embed code      = <The video hasn't been converted to Flash yet>")
+        print("Files:")
+        for role,urls in list(info['existing_mime_types'].items()):
+            print(role)
             for url in urls:
-                print "\t%s" % url
-        print info['contents']
+                print("\t%s" % url)
+        print(info['contents'])
 
     def parse_args(self):
 
@@ -432,13 +432,13 @@ class Blip_CLI(Blip):
         [('category', '7'), ('topics', 'test'), ('license', '13')]
         """
 
-        config = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
         files=config.read(['blip_uploader.cfg', 
                     os.path.expanduser('~/blip_uploader.cfg')])
         if files:
             d=dict(config.items('global')) 
             parser.set_defaults(**d) 
-            if d.get('verbose'): print "using config file(s):", files
+            if d.get('verbose'): print("using config file(s):", files)
 
         # command line options override config file
         parser.add_option('-f', '--filename', 
@@ -488,7 +488,7 @@ class Blip_CLI(Blip):
                 self.List_VideoMeta(video_id)
                 return 0
             else:
-                print "You must suply a video ID to get info about it."
+                print("You must suply a video ID to get info about it.")
                 return 1
 
         # this gets messy because there is metadata about the episode,
@@ -538,7 +538,7 @@ class Blip_CLI(Blip):
         if not video_id:
             # no video_id = new Episode
             if not files:
-                print "Must either supply video_id or filename"
+                print("Must either supply video_id or filename")
                 return 1
             if not options.title:
                 # make a title from the filename (strip the path, leave the ext.)
@@ -549,30 +549,30 @@ class Blip_CLI(Blip):
 
       
         username = options.username if options.username \
-            else raw_input("blip.tv Username: ")
+            else input("blip.tv Username: ")
         pwd = options.password if options.password \
             else getpass.getpass("blip.tv Password: ")
 
         self.debug=options.verbose
-        if options.verbose: print meta
+        if options.verbose: print(meta)
 
         if options.test:
-            print "Upload(video_id, username, pwd, files, meta, options.thumb)"
-            print "video_id:", video_id
-            print "username:", username 
-            print "pwd", pwd, 
-            print "files", files, 
-            print "meta", meta 
-            print "options.thumb", options.thumb
+            print("Upload(video_id, username, pwd, files, meta, options.thumb)")
+            print("video_id:", video_id)
+            print("username:", username) 
+            print("pwd", pwd, end=' ') 
+            print("files", files, end=' ') 
+            print("meta", meta) 
+            print("options.thumb", options.thumb)
         else:
             response = self.Upload(video_id, username, pwd, files, meta, options.thumb)
             response_xml = response.read()
-            if options.verbose: print response_xml
+            if options.verbose: print(response_xml)
             tree = xml.etree.ElementTree.fromstring(response_xml)
             rep_node=tree.find('response')
-            print rep_node.text,
+            print(rep_node.text, end=' ')
             posturl_node=rep_node.find('post_url')
-            print posturl_node.text
+            print(posturl_node.text)
             
         return 0
 

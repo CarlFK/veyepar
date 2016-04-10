@@ -32,7 +32,7 @@ def auth(username,password):
 
 def logax(request):
 
-    print 1
+    print(1)
     if request.method == 'POST':
         form=forms.LoginForm(request.POST)
         if form.is_valid():
@@ -48,7 +48,7 @@ def logax(request):
     else:
         ret = {'error_no':-2, 'error_text':'not POST'}
 
-    print "#2", ret
+    print("#2", ret)
 
     response = HttpResponse(json.dumps(ret,indent=1))
     response['Content-Type'] = 'application/json'

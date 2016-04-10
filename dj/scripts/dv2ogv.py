@@ -11,7 +11,7 @@
 import  os
 import subprocess
 
-import rax_uploader
+from . import rax_uploader
 
 from process import process
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
@@ -19,10 +19,10 @@ from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 class mkpreview(process):
 
     def one_dv(self,loc_dir,dv):
-        print dv.filename, 
+        print(dv.filename, end=' ') 
         src = os.path.join(loc_dir,dv.filename)
         dst = os.path.join(loc_dir,dv.basename()+'.ogv')
-        print os.path.exists(dst) 
+        print(os.path.exists(dst)) 
         if (not os.path.exists(dst)) or self.options.whack:
             cmd="ffmpeg2theora --videoquality 1 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --keyint 256".split()
             # cmd="ffmpeg2theora --videoquality 1 --audioquality 3 --audiobitrate 48 --speedlevel 2 --width 360 --height 240 --framerate 2 --keyint 256 --channels 1".split()
@@ -30,7 +30,7 @@ class mkpreview(process):
             cmd+=[ src, '-o', dst, ]
             # print ' '.join(cmd)
             if self.options.test:
-                print "testing"
+                print("testing")
             else:
                 p=subprocess.Popen(cmd).wait()
                 
@@ -41,7 +41,7 @@ class mkpreview(process):
             src = os.path.join( 
                     'dv',dv.location.slug, dv.basename()+'.ogv')
             if self.options.test:
-                print "file2cdn src:", src
+                print("file2cdn src:", src)
             else:
                 self.file2cdn(dv.show, src )
 

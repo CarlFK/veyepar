@@ -65,7 +65,7 @@ ret: 12
         # this seems to work:
         try:
             ep.save()
-        except DatabaseError, e:
+        except DatabaseError as e:
             from django.db import connection
             connection.connection.close()
             connection.connection = None

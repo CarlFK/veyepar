@@ -12,7 +12,7 @@ then check less and less as we get farther into the file, and even less if we fi
 import  os
 # import pkg_resources
 
-import find_email as ocr
+from . import find_email as ocr
 # import ocrdv
 
 from process import process
@@ -32,7 +32,7 @@ class store_emails(process):
         
         dv_pathname = os.path.join(dir,dv.filename)
         if self.options.verbose: 
-            print "dv:", dv_pathname
+            print("dv:", dv_pathname)
 
         if not self.options.test: 
               p=ocr.Main(dv_pathname)
@@ -43,7 +43,7 @@ class store_emails(process):
                 dv.save()
                 return p.words
         else:
-              print "test mode, gsocr not called."
+              print("test mode, gsocr not called.")
 
         return None
 
@@ -67,14 +67,14 @@ class store_emails(process):
     def one_loc(self,location,dir):
       for dv in Raw_File.objects.filter(location=location):
           text=self.one_dv(dir,dv)
-          if self.options.verbose: print text
+          if self.options.verbose: print(text)
 
 
     def one_show(self, show):
       self.set_dirs(show)
       for loc in Location.objects.filter(show=show):
         dir=os.path.join(self.show_dir,'dv',loc.slug)
-        if self.options.verbose: print show,loc,dir
+        if self.options.verbose: print(show,loc,dir)
         self.one_loc(loc, dir)
 
     def work(self):

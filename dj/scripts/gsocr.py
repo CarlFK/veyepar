@@ -12,7 +12,7 @@ and even less if we find more words.
 
 import subprocess
 import os
-from cStringIO import StringIO
+from io import StringIO
 import ImageFile
 
 import optparse
@@ -76,7 +76,7 @@ def one_frame( sink,buffer,pad, it):
                 stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             p.stdin.write(it.buffer)  
             sout, serr = p.communicate(buffer)
-            if it.debug: print sout, serr
+            if it.debug: print(sout, serr)
 
             # buffin = StringIO()
             # buffin.write(it.buffer)
@@ -130,7 +130,7 @@ class Main:
 
         # self.imgname="%s.pnm" % os.path.splitext(filename)[0] 
         self.base_name=os.path.splitext(filename)[0]
-        if self.debug: print self.base_name
+        if self.debug: print(self.base_name)
 
         pipeline = gst.Pipeline("mypipeline")
         self.pipeline=pipeline
@@ -172,10 +172,10 @@ class Main:
             # print the pipeline 
             elements=list(pipeline.elements())
             elements.reverse()
-            print "pipeline elements:",
+            print("pipeline elements:", end=' ')
             for e in elements:
-                print e.get_factory().get_name(),
-            print
+                print(e.get_factory().get_name(), end=' ')
+            print()
 
         bus = pipeline.get_bus()
         bus.add_signal_watch()
@@ -196,11 +196,11 @@ class Main:
         # if t == gst.MESSAGE_ELEMENT:
         #     pass
         if t == gst.MESSAGE_ERROR:
-            print "error:", message, dir(message), message.parse_error()
+            print("error:", message, dir(message), message.parse_error())
             self.pipeline.set_state(gst.STATE_NULL)  
             gtk.main_quit()
         if t == gst.MESSAGE_EOS:
-            if self.debug: print self.frame, self.words
+            if self.debug: print(self.frame, self.words)
             self.pipeline.set_state(gst.STATE_NULL)  
             gtk.main_quit()
 
@@ -217,7 +217,7 @@ class Main:
         # like jargon, sorce code syntax, presenters notes.
         dictionary=self.dictionaries[0]
         words = [w for w in ocrtext.split() if w.upper() in dictionary]
-        if self.debug: print ocrtext.__repr__()[:70]
+        if self.debug: print(ocrtext.__repr__()[:70])
         # self.words = words found so far
         # None = no words have been found, so anything is better.
         # sec/100 = few words near the front of the file are better than
@@ -226,7 +226,7 @@ class Main:
         if self.words is None or \
                 len(self.words) < (len(words)-self.seek_sec/100):
             self.words = words
-            if self.debug: print words
+            if self.debug: print(words)
             ret = True
 
       return ret

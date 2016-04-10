@@ -8,11 +8,11 @@
 
 import twitter
 
-import urllib2
-import urllib
+import urllib.request, urllib.error, urllib.parse
+import urllib.request, urllib.parse, urllib.error
 import pprint
 
-import pw  # see pw_samp.py for sample.
+from . import pw  # see pw_samp.py for sample.
 
 from process import process
 
@@ -27,12 +27,12 @@ class tweet(process):
         ## Out[15]: '{\n    "errorCode": 203, \n    "errorMessage": "You must be authenticated to access shorten", \n    "statusCode": "ERROR"\n}'
 
         d=dict(version='2.0.1',login=pw.bitly['user'], apikey=pw.bitly['password'], longurl=url)
-        q = urllib.urlencode(d)
-        print q
+        q = urllib.parse.urlencode(d)
+        print(q)
         url = 'http://api.bit.ly/shorten?' + q
-        data = eval(urllib2.urlopen(url).read())
-        print data
-        return data['results'].values()[0]['shorturl']
+        data = eval(urllib.request.urlopen(url).read())
+        print(data)
+        return list(data['results'].values())[0]['shorturl']
 
     def mk_tweet(self, prefix, twitter_ids, video_name, authors, video_url):
         message = ' '.join([prefix, twitter_ids, 
@@ -49,24 +49,24 @@ class tweet(process):
 
     def tweet_tweet(self, user, tweet):
         if self.options.test:
-            print 'test mode:' 
-            print 'user:', user
-            print tweet
+            print('test mode:') 
+            print('user:', user)
+            print(tweet)
             ret=False
         else:
-            print 'tweeting:', tweet
+            print('tweeting:', tweet)
             # print user,password
             t = pw.twit[user]
             api = twitter.Api(consumer_key=t['consumer_key'], 
                      consumer_secret=t['consumer_secret'],
                      access_token_key=t['access_key'], 
                      access_token_secret=t['access_secret'] )
-            if self.options.verbose: print api.VerifyCredentials()
+            if self.options.verbose: print(api.VerifyCredentials())
             status = api.PostUpdate(tweet)
             d=status.AsDict()
             self.last_tweet = d
             self.last_tweet_url = "http://twitter.com/#!/NextDayVideo/status/{}".format(d["id"], )
-            print self.last_tweet_url
+            print(self.last_tweet_url)
             # pprint.pprint(d)
 
             ret=True

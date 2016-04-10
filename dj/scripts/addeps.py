@@ -78,7 +78,7 @@ def mk_fieldlist():
             field,desc = line.split(' - ',1)
             fields.append(field)
 
-    print """printf '{}\\n'|xclip -selection clipboard""".format('\\t'.join(fields))
+    print("""printf '{}\\n'|xclip -selection clipboard""".format('\\t'.join(fields)))
 
 
 
@@ -88,9 +88,9 @@ def mk_fieldlist():
 import datetime 
 import csv
 import requests
-import HTMLParser
+import html.parser
 import os
-import urlparse
+import urllib.parse
 
 from dateutil.parser import parse
 # import dateutil
@@ -111,10 +111,10 @@ except ImportError:
 # import gdata.calendar.service
 
 # for google calandar:
-import pw 
+from . import pw 
 # import lxml.etree
 
-import process
+from . import process
 
 from main.models import Client, Show, Location, Episode, Raw_File
 
@@ -134,7 +134,7 @@ def goog(show,url):
         client = gdata.calendar.service.CalendarService()
         client.ClientLogin(pw.goocal_email, pw.goocal_password, client.source)
         fcal = client.GetAllCalendarsFeed().entry[7]
-        print "fcal title:", fcal.title.text
+        print("fcal title:", fcal.title.text)
         a_link = fcal.GetAlternateLink()
         feed = client.GetCalendarEventFeed(a_link.href)
         seq=0
@@ -150,7 +150,7 @@ def goog(show,url):
             goo_start = event.when[0].start_time 
             goo_end = event.when[0].end_time
 
-            print goo_start
+            print(goo_start)
             start = datetime.datetime.strptime(goo_start,'%Y-%m-%dT%H:%M:%S.000-05:00')
             end = datetime.datetime.strptime(goo_end,'%Y-%m-%dT%H:%M:%S.000-05:00')
 
@@ -162,7 +162,7 @@ def goog(show,url):
             duration="%s:%s:00" % ( hours,minutes) 
 
             # print name, authors, location, start, duration
-            print "%s: %s - %s" % ( authors, location, start.time() )
+            print("%s: %s - %s" % ( authors, location, start.time() ))
 
             seq+=1
             # broke this, use add_eps()
@@ -197,7 +197,7 @@ class add_eps(process.process):
 
         # if the json object is one big key:value, pull the list out
         try:
-            keys= schedule.keys()
+            keys= list(schedule.keys())
             key = keys[0]
             # schedule=schedule['schedule']
             schedule=schedule[key]
@@ -208,18 +208,18 @@ class add_eps(process.process):
             # TypeError: list indices must be integers, not str
             pass
         except KeyError as k:
-            print k
+            print(k)
             if k != 'schedule': raise
 
         s_keys = set()
         for s in schedule:
             print(s)
-            s_keys.update(s.keys())
+            s_keys.update(list(s.keys()))
 
         print("keys found in input:")
         print(s_keys)
         for k in s_keys:
-            print("('{}',''),".format(k))
+            print(("('{}',''),".format(k)))
         print("\n")
 
         v_keys=('id',
@@ -235,25 +235,25 @@ class add_eps(process.process):
         # for f,g in field_maps:
         #    print "('%s','%s')," % (g,f)
 
-        print "keys match 1:1 with veyepar names:"
-        print [k for k in v_keys if k in s_keys]
+        print("keys match 1:1 with veyepar names:")
+        print([k for k in v_keys if k in s_keys])
 
         for k in [k for k in v_keys if k not in s_keys]:
-            print("('{}',''),".format(k))
+            print(("('{}',''),".format(k)))
         print("\n")
 
         for k in v_keys:
             k2 = k if k in s_keys else ''
-            print "('%s','%s')," % (k2,k)
-        print
+            print("('%s','%s')," % (k2,k))
+        print()
  
         # lines to mix n match in the editor
         for k in s_keys:
-            print "('%s'," % (k,)
-        print
+            print("('%s'," % (k,))
+        print()
         for k in v_keys:
-            print "'%s')," % k
-        print
+            print("'%s')," % k)
+        print()
 
 
         return
@@ -261,16 +261,16 @@ class add_eps(process.process):
     def add_rooms(self, rooms, show):
 
       if self.options.test:
-            print "test mode, not adding locations to db\n"
+            print("test mode, not adding locations to db\n")
             return 
 
       if not self.options.update:
-            print "no --update, not adding locations to db\n"
+            print("no --update, not adding locations to db\n")
             return 
 
       seq=0
       for room in rooms:
-          if self.options.verbose: print room
+          if self.options.verbose: print(room)
           seq+=10
 
           # __iexact won't work with ger_or_add to don't try to use it
@@ -301,7 +301,7 @@ class add_eps(process.process):
      
         events=[]
         for row in schedule:
-            if self.options.verbose: print row
+            if self.options.verbose: print(row)
             event={}
 
             for jk,vk in field_maps:  # json key, veyepar key
@@ -360,7 +360,7 @@ class add_eps(process.process):
                 )
 
         if self.options.test:
-            print "test mode, not adding to db"
+            print("test mode, not adding to db")
             return 
 
         seq=0
@@ -407,9 +407,9 @@ class add_eps(process.process):
             diff=False
             if episode is None: 
                 diff=True
-                print u"{conf_key} not in db, name:{name}\n{location}".format(
-                        **row)
-                print
+                print("{conf_key} not in db, name:{name}\n{location}".format(
+                        **row))
+                print()
 
             else:
                 # print("tags", episode.tags.__repr__(), row['tags'].__repr__())
@@ -417,7 +417,7 @@ class add_eps(process.process):
                 diff_fields=[]
 
                 if episode.location is None or \
-                        episode.location.name.upper() <> row['location'].upper():
+                        episode.location.name.upper() != row['location'].upper():
                     diff=True
                     if episode.location is None:
                         diff_fields.append(('loc',
@@ -438,43 +438,42 @@ class add_eps(process.process):
                         diff_fields.append((f,a1,a2))
                 # report if different
                 if diff:
-                    print 'veyepar #id name: #%s %s' % (
-                            episode.id, episode.name)
+                    print('veyepar #id name: #%s %s' % (
+                            episode.id, episode.name))
                     # if self.show.slug=="debconf15":
                     #    host= "encoding2.dc15.debconf.org" 
                     # else:
                     host= "veyepar.nextdayvideo.com" 
-                    print "http://%s/main/E/%s/" % ( host, episode.id, )
-                    print episode.conf_key, episode.conf_url
+                    print("http://%s/main/E/%s/" % ( host, episode.id, ))
+                    print(episode.conf_key, episode.conf_url)
                     if self.options.verbose: 
                         pprint.pprint( diff_fields )
                     for f,a1,a2 in diff_fields:
-                        if not isinstance(a1,basestring):
-                            print u'veyepar {0}: {1}'.format(f,a1)
-                            print u'   conf {0}: {1}'.format(f,a2)
+                        if not isinstance(a1,str):
+                            print('veyepar {0}: {1}'.format(f,a1))
+                            print('   conf {0}: {1}'.format(f,a2))
                         else:
-                            print f
+                            print(f)
                             if a2 is None or max(len(a1),len(a2)) < 160:
                               # print a1
                               # print a2
-                              print u'veyepar {0}: {1}'.format(f,a1)
-                              print u'   conf {0}: {1}'.format(f,a2)
+                              print('veyepar {0}: {1}'.format(f,a1))
+                              print('   conf {0}: {1}'.format(f,a2))
                             else:
                               # long string (prolly description)
                               for i,cs in enumerate(zip(a1,a2)):
-                                if cs[0] <> cs[1]:
+                                if cs[0] != cs[1]:
                                     """
                                     print \
                       "#1, diff found at pos {0}:\n{1}\n{2}".format(
                               i,cs[0].__repr__(),
                                 cs[1].__repr__()) 
                                     """
-                                    print \
-        "diff found at pos {0}:\nveyepar: {1}\n   conf: {2}".format(
+                                    print("diff found at pos {0}:\nveyepar: {1}\n   conf: {2}".format(
                               i,a1[i:i+80].__repr__(),
-                                a2[i:i+80].__repr__()) 
+                                a2[i:i+80].__repr__())) 
                                     break
-                    print
+                    print()
 
 
             """
@@ -487,7 +486,7 @@ class add_eps(process.process):
 
             if self.options.update and diff:
                 if episode is None:
-                    print "adding conf_key: %(conf_key)s, name:%(name)s" % row
+                    print("adding conf_key: %(conf_key)s, name:%(name)s" % row)
                     # I am not sure why some fields are here in .create
                     # and the rest are in setattr( episode, f, row[f] )
                     # name is here so .save() will create a slug
@@ -503,7 +502,7 @@ class add_eps(process.process):
                     seq+=1
 
                 else:
-                    print(u"updating conf_key: {conf_key}, name:{name}").format(**row)
+                    print(("updating conf_key: {conf_key}, name:{name}").format(**row))
 
                 episode.location = location
 
@@ -551,7 +550,7 @@ class add_eps(process.process):
       seq=0
       for row in schedule:
           # row=row['node']
-          if self.options.verbose: print row
+          if self.options.verbose: print(row)
           room = row['room']
           if room in [
              '',
@@ -568,7 +567,7 @@ class add_eps(process.process):
               show.locations.add(loc)
               show.save()
           else:
-            print row
+            print(row)
 
     def  talk_time(self, day, time):
 # Day: "Wed 24 Nov"
@@ -605,7 +604,7 @@ class add_eps(process.process):
                 "false":False}[tf]
 
     def snake_bites(self, schedule,):
-        print "Snake Bites"
+        print("Snake Bites")
 
         fields=(
                 'location',
@@ -629,7 +628,7 @@ class add_eps(process.process):
             pk = row['pk']
 
             row = row['fields']
-            if self.options.verbose: print row
+            if self.options.verbose: print(row)
             event={}
             for f in fields:
                 event[f] = row[f]
@@ -646,7 +645,7 @@ class add_eps(process.process):
     def zoo_events(self, schedule):
         events=[]
         for row in schedule:
-            if self.options.verbose: print row
+            if self.options.verbose: print(row)
             if row['Title'] in [
                 'Registration', 
                 'Morning Tea', "Lunch", 'Afternoon Tea',
@@ -714,7 +713,7 @@ class add_eps(process.process):
       rooms=[]
       for row in schedule:
           # row=row['node']
-          if self.options.verbose: print row
+          if self.options.verbose: print(row)
           room = row['Room Name']
           if room not in rooms: rooms.append(room)
 
@@ -725,7 +724,7 @@ class add_eps(process.process):
     def get_rooms(self, schedule, key='location'):
       rooms=set()
       for row in schedule:
-          if self.options.verbose: print row
+          if self.options.verbose: print(row)
           room = row[key]
           if room is None: room = "None"
           rooms.add(room)
@@ -790,7 +789,7 @@ class add_eps(process.process):
     def ddu_events(self, schedule ):
         # Drupal Down Under 2012
 
-        html_parser = HTMLParser.HTMLParser()
+        html_parser = html.parser.HTMLParser()
 
         # these fields exist in both json and veyepar:
         common_fields = [ 'name', 'authors', 'description', 
@@ -807,7 +806,7 @@ class add_eps(process.process):
 
         events=[]
         for row in schedule:
-            if self.options.verbose: print row
+            if self.options.verbose: print(row)
             event={}
 
             for k in common_fields:
@@ -820,7 +819,7 @@ class add_eps(process.process):
                 event[k1] = row[k2]
 
             if isinstance(event['authors'],dict):
-                event['authors'] = ", ".join( event['authors'].values() )
+                event['authors'] = ", ".join( list(event['authors'].values()) )
             
             if row["entities"] == "true":
                 for k in html_encoded_fields:
@@ -869,7 +868,7 @@ class add_eps(process.process):
 
         events=[]
         for row in schedule:
-            if self.options.verbose: print row
+            if self.options.verbose: print(row)
             event={}
 
             for k in common_fields:
@@ -974,7 +973,7 @@ class add_eps(process.process):
         events=[]
         for event_id in schedule['events']:
           src_event=schedule['events'][event_id]
-          if self.options.verbose: print src_event
+          if self.options.verbose: print(src_event)
           if src_event['type'] != 'Social Event':
             event={}
             # event['id'] = event_id
@@ -1041,7 +1040,7 @@ class add_eps(process.process):
 
         events = self.symp_events(schedule)
         for e in events:
-            print e
+            print(e)
             end  = datetime.datetime.strptime(
                     e['raw']['end_iso'], '%Y-%m-%dT%H:%M:%S' )
             td = end - e['start']
@@ -1060,7 +1059,7 @@ class add_eps(process.process):
         rooms = self.get_rooms(schedule,'room_number')
         rooms = list(rooms)
         rooms.sort()
-        print rooms
+        print(rooms)
         self.add_rooms(rooms,show)
 
         events = self.goth_events(schedule)
@@ -1186,7 +1185,7 @@ class add_eps(process.process):
 
         events=[]
         for row in schedule:
-            if self.options.verbose: print row
+            if self.options.verbose: print(row)
             event={}
             event['id'] = row[0]
             event['name'] = row[1]
@@ -1245,7 +1244,7 @@ class add_eps(process.process):
         rooms = set(row['location'] for row in events)
         self.add_rooms(rooms,show)
 
-        html_parser = HTMLParser.HTMLParser()
+        html_parser = html.parser.HTMLParser()
 
         for event in events: 
 
@@ -1274,7 +1273,7 @@ class add_eps(process.process):
 
 
     def ictev(self, schedule, show):
-        print "ictev"
+        print("ictev")
 
         # drupal down under 2012
         rooms = self.get_rooms(schedule, "Room", )
@@ -1300,7 +1299,7 @@ class add_eps(process.process):
         for event in events:
             row = event['raw']
 
-            if self.options.verbose: print "event", event
+            if self.options.verbose: print("event", event)
 
             # authors is either a string or a dict
             # if isinstance(event['authors'],dict):
@@ -1333,7 +1332,7 @@ class add_eps(process.process):
                 v = s[k]
                 field_name = v['label']
                 value = v['content']
-                print "#1", field_name, value
+                print("#1", field_name, value)
                 row[field_name] = value
             pprint.pprint(row)
             ret_rows.append(row)    
@@ -1386,7 +1385,7 @@ class add_eps(process.process):
         schedule = [s for s in schedule if s['approved']]
         # schedule = [s for s in schedule if s['start_time']]
         for s in schedule:
-            print(s['title'], s['start_time'])
+            print((s['title'], s['start_time']))
 
         field_maps = [ 
                 ('id', 'conf_key'), 
@@ -1453,17 +1452,17 @@ class add_eps(process.process):
 
         # bad_rooms=['Cafeteria', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
 
-        bad_rooms = [ u'Costa Hall Foyer', 
-                u'uncatered', 
-                u'Super Awesome Venue TBA',
-                u'The Pier - http://www.thepiergeelong.com.au',
-                u'Edge Bar, Western Beach Road',
+        bad_rooms = [ 'Costa Hall Foyer', 
+                'uncatered', 
+                'Super Awesome Venue TBA',
+                'The Pier - http://www.thepiergeelong.com.au',
+                'Edge Bar, Western Beach Road',
                 ]
 
         rooms = self.zoo_cages(schedule)
-        print rooms
+        print(rooms)
         rooms = [r for r in rooms if r not in bad_rooms]
-        print rooms
+        print(rooms)
         schedule = [s for s in schedule if s['Room Name'] in rooms]
 
         # schedule = [s for s in schedule if s['Id'] not in [185,] ]
@@ -1497,7 +1496,7 @@ class add_eps(process.process):
             # >>> schedule[1].get('date')
             # '2012-02-04'
             start_date = day.get('date')
-            print start_date
+            print(start_date)
             for room in day:
                 for row in room:
                     # >>> event.find('start').text
@@ -1618,14 +1617,14 @@ class add_eps(process.process):
             # >>> schedule[1].get('date')
             # '2012-02-04'
             start_date = day.get('date')
-            print start_date
+            print(start_date)
             for room in day:
                 for row in room:
 
                     if row.find('persons') is None:
                         continue
 
-                    if self.options.verbose: print row.get('id')
+                    if self.options.verbose: print(row.get('id'))
                     # import code; code.interact(local=locals())
 
                     event={}
@@ -1660,7 +1659,7 @@ class add_eps(process.process):
 
                         twit = p.get('twitter')
                         if twit not in [ None, ]:
-                            twitter_id = urlparse.urlparse(twit).path[1:]
+                            twitter_id = urllib.parse.urlparse(twit).path[1:]
                             # make sure it starts with an @
                             if not twitter_id.startswith('@'):
                                 twitter_id = '@' + twitter_id
@@ -1719,7 +1718,7 @@ class add_eps(process.process):
 
         rooms = [ r.get('name') for r in schedule[1] ]
 
-        print "rooms", rooms
+        print("rooms", rooms)
         self.add_rooms(rooms,show)
         
         """
@@ -1769,15 +1768,15 @@ class add_eps(process.process):
         events = self.generic_events(schedule, field_maps)
 
         for event in events:
-            if self.options.verbose: print "event", event
+            if self.options.verbose: print("event", event)
             row = event['raw']
             
-            if 'speakers' not in row.keys(): 
+            if 'speakers' not in list(row.keys()): 
                 # del(event)
                 # continue
                 pass
 
-            if 'speakers' in row.keys(): 
+            if 'speakers' in list(row.keys()): 
                 # pprint.pprint( row['speakers'] )
                 authors = ', '.join( s['name'] for s in row['speakers'] )
             else:
@@ -1785,7 +1784,7 @@ class add_eps(process.process):
             event['authors'] = authors
             # print authors
 
-            if 'description' not in row.keys(): 
+            if 'description' not in list(row.keys()): 
                 event['description']=''
 
             start = parse(event['start'])        
@@ -1845,7 +1844,7 @@ class add_eps(process.process):
 
         for event in events:
 
-            if self.options.verbose: print "event", event
+            if self.options.verbose: print("event", event)
             raw = event['raw']
             
             event['authors'] =  ', '.join( event['authors'] )
@@ -1894,7 +1893,7 @@ class add_eps(process.process):
         events = self.generic_events(schedule, field_maps)
 
         for event in events:
-            if self.options.verbose: print "event", event
+            if self.options.verbose: print("event", event)
             raw = event['raw']
             if self.options.verbose: pprint.pprint(raw)
             
@@ -1919,7 +1918,7 @@ class add_eps(process.process):
     def nodepdx(self, schedule, show):
         # Troy's json
 
-        html_parser = HTMLParser.HTMLParser()
+        html_parser = html.parser.HTMLParser()
 
         field_maps = [
             #('','location'),
@@ -2033,7 +2032,7 @@ class add_eps(process.process):
             event['released'] = event['released'].lower() == 'y'
 
         rooms = self.get_rooms(events)
-        print rooms
+        print(rooms)
         self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
@@ -2181,7 +2180,7 @@ class add_eps(process.process):
 
             event['start'] = datetime.datetime.strptime( 
                   event['start'], '%Y/%m/%d %H:%M:%S')
-            print event['start']
+            print(event['start'])
                     
             event['duration'] = "01:00:00"
             event['emails'] = ""
@@ -2354,7 +2353,7 @@ class add_eps(process.process):
         # pycon.us 2013
 
         rooms = self.get_rooms(schedule, "room", )
-        if self.options.verbose: print rooms
+        if self.options.verbose: print(rooms)
 
         self.add_rooms(rooms,show)
 
@@ -2382,7 +2381,7 @@ class add_eps(process.process):
 
             raw = event['raw']
             if self.options.verbose: pprint.pprint(raw)
-            if self.options.verbose: print "event", event
+            if self.options.verbose: print("event", event)
             
             event['start'] = datetime.datetime.strptime(
                     event['start'],'%Y-%m-%dT%H:%M:%S')
@@ -2468,14 +2467,14 @@ class add_eps(process.process):
                 # don't care about end, use duration=5
                 start,end = poster['time'].split('-')
                 h,m = start.split(':')
-                s['start'] = datetime.datetime(2013, 03, 17, int(h), int(m)).isoformat()
+                s['start'] = datetime.datetime(2013, 0o3, 17, int(h), int(m)).isoformat()
 
         self.symposion2(schedule,show)
 
         return 
 
     def pydata_2013(self,show):
-        print "pydata_2013"
+        print("pydata_2013")
         # f = open('schedules/pydata2013/day1.csv' )
         f = open('schedules/pydata2013/PyData Talks and Speakers.csv', 'rU' )
         schedule = csv.DictReader(f)
@@ -2988,7 +2987,7 @@ class add_eps(process.process):
 
 
       rooms = self.get_rooms(events)
-      print rooms
+      print(rooms)
       self.add_rooms(rooms,show)
 
       self.add_eps(events, show)
@@ -3048,7 +3047,7 @@ class add_eps(process.process):
 
             event['emails'] = ""
             event['license'] = ""
-            event['conf_url'] = u"https://djangobirthday.com/talks/#{}".format(event['conf_url'])
+            event['conf_url'] = "https://djangobirthday.com/talks/#{}".format(event['conf_url'])
             event['tags'] = ""
 
 
@@ -3251,7 +3250,7 @@ class add_eps(process.process):
  
         client = show.client
         url = show.schedule_url
-        if self.options.verbose: print url
+        if self.options.verbose: print(url)
 
         if url.startswith('file'):
             f = open(url[7:])
@@ -3265,7 +3264,7 @@ class add_eps(process.process):
             auth = pw.addeps.get(self.options.client, None)
 
             if auth is not None:
-                if self.options.verbose: print auth
+                if self.options.verbose: print(auth)
 
                 # get the csrf token out of login page
                 session.get(auth['login_page'])
@@ -3282,13 +3281,13 @@ class add_eps(process.process):
                 login_data = auth['login_data']
                 login_data['csrfmiddlewaretoken'] = token 
 
-                if self.options.verbose: print "login_data", login_data
+                if self.options.verbose: print("login_data", login_data)
 
                 ret = session.post(auth['login_page'], 
                         data=login_data, 
                         headers={'Referer':auth['login_page']})
 
-                if self.options.verbose: print "login ret:", ret
+                if self.options.verbose: print("login ret:", ret)
 
                 # import code; code.interact(local=locals())
 
@@ -3479,19 +3478,19 @@ class add_eps(process.process):
             # veyepar show export
             return self.veyepar(schedule,show)
 
-        if j.startswith('[{"') and schedule[0].has_key('room_name'):
+        if j.startswith('[{"') and 'room_name' in schedule[0]:
             # PyCon 2012
             return self.symposium(schedule,show)
 
-        if j.startswith('[{"') and schedule[0].has_key('last_updated'):
+        if j.startswith('[{"') and 'last_updated' in schedule[0]:
             # pyohio
             return self.pyohio(schedule,show)
 
-        if j.startswith('[{"') and schedule[0].has_key('start_iso'):
+        if j.startswith('[{"') and 'start_iso' in schedule[0]:
             # pyTexas
             return self.pyohio(schedule,show)
 
-        if j.startswith('[{"') and schedule[0].has_key('talk_day_time'):
+        if j.startswith('[{"') and 'talk_day_time' in schedule[0]:
             # pyGotham 
             return self.pygotham(schedule,show)
 
@@ -3520,8 +3519,8 @@ class add_eps(process.process):
             # ddu 2012
             schedule = [s['session'] for s in schedule['ddu2012']]
             # pprint.pprint( schedule )
-            s_keys = schedule[0].keys()
-            print s_keys
+            s_keys = list(schedule[0].keys())
+            print(s_keys)
             v_keys=('id',
                 'location','sequence',
                 'name','slug', 'authors','emails', 'description',
@@ -3530,8 +3529,8 @@ class add_eps(process.process):
                 'conf_key', 'conf_url',
                 'host_url', 'public_url',
                 )    
-            print [k for k in v_keys if k in s_keys]
-            print [k for k in v_keys if k not in s_keys]
+            print([k for k in v_keys if k in s_keys])
+            print([k for k in v_keys if k not in s_keys])
 
             return self.ddu(schedule,show)
 
@@ -3565,9 +3564,9 @@ class add_eps(process.process):
 
             rfs = Raw_File.objects.filter(show=show)
             if rfs and not self.options.force:
-                print "There are Raw Fiels... --force to whack."
-                print rfs
-                print "whacking aborted."
+                print("There are Raw Fiels... --force to whack.")
+                print(rfs)
+                print("whacking aborted.")
                 return False
 
             rfs.delete()

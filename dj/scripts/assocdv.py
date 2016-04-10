@@ -3,13 +3,13 @@
 # creates cutlist items for dv files that might belong to an episode
 
 import os, datetime
-import process
+from process import process
 from main.models import Location, Episode, Raw_File, Cut_List, Client, Show
 from main.views import mk_cuts
 
 from django.db.models import Q
 
-class ass_dv(process.process):
+class ass_dv(process):
 
     ready_state = 1
 
@@ -24,7 +24,7 @@ class ass_dv(process.process):
 
         self.cuts = mk_cuts(episode, 
                 start_slop=5, end_slop=11)
-        print "self.cuts", self.cuts
+        print("self.cuts", self.cuts)
 
 if __name__=='__main__': 
     p=ass_dv()

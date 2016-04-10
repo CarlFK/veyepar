@@ -22,13 +22,13 @@ User/Password are stored in pw.py
 
 """
 
-import vimeo
-import vimeo.config
-import vimeo.convenience
+from . import vimeo
+from . import vimeo.config
+from . import vimeo.convenience
 
 import time
 
-import pw 
+from . import pw 
 
 class Uploader(object):
 
@@ -69,7 +69,7 @@ class Uploader(object):
         self.new_url = "http://vimeo.com/%s" % vid
 
         if self.debug_mode:
-            print vid
+            print(vid)
             import code
             code.interact(local=locals())
 
@@ -112,6 +112,6 @@ if __name__ == '__main__':
 
     u.upload()
 
-    print u.new_url
+    print(u.new_url)
 
 

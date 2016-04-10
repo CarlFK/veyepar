@@ -12,13 +12,14 @@ import random
 from django import forms
 
 
-from unique_slugify import unique_slugify
+from .unique_slugify import unique_slugify
+from functools import reduce
 
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
     if time:
         sec = reduce(lambda x, i: x*60 + i,  
-            map(float, time.split(':')))  
+            list(map(float, time.split(':'))))  
     else:
         sec = 0.0
         
@@ -157,7 +158,7 @@ class Raw_File(models.Model):
     ocrtext = models.TextField(null=True,blank=True)
     comment = models.TextField(blank=True)
 
-    def next(self):
+    def __next__(self):
         """
         gets the next clip in the room.
         """
@@ -411,7 +412,7 @@ class Cut_List(models.Model):
             # convert h:m:s to s
             if time:
                 sec = reduce(lambda x, i: x*60 + i, 
-                    map(float, time.split(':'))) 
+                    list(map(float, time.split(':')))) 
             else:
                 sec=default
             return sec
@@ -464,7 +465,7 @@ def set_end(sender, instance, **kwargs):
     if instance.start:
         if instance.duration:
             seconds = reduce(lambda x, i: x*60 + i,
-                map(float, instance.duration.split(':')))
+                list(map(float, instance.duration.split(':'))))
             instance.end = instance.start + \
                datetime.timedelta(seconds=seconds)
         elif instance.end:

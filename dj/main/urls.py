@@ -4,7 +4,7 @@ from django.conf.urls import patterns, url
 
 # from django.views.generic import list_detail
 
-from views import *
+from .views import *
 
 # client_list={"queryset": Client.objects.all(), }
 #    "template_object_name": "client_list" }

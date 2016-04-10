@@ -52,7 +52,7 @@ class AudioPreviewer:
 
     def process(self, levs):
         # hook for more useful things.
-        print self.count, levs
+        print(self.count, levs)
         self.count += 1
         return
 
@@ -60,15 +60,15 @@ class AudioPreviewer:
     def _messageCb(self, bus, message):
 
         if message is None:
-            print("_messageCb called with bus:{} message:{}".format(
-                bus, message))
+            print(("_messageCb called with bus:{} message:{}".format(
+                bus, message)))
             import code; code.interact(local=locals())
 
         t = message.type
 
         if self.verbose:
-            print( "verbose: _messageCb called with bus:{} message:{}".format(bus, message))
-            print( "type:", t )
+            print(( "verbose: _messageCb called with bus:{} message:{}".format(bus, message)))
+            print(( "type:", t ))
             # import code; code.interact(local=locals())
         
         if t == Gst.MessageType.ELEMENT \
@@ -81,17 +81,17 @@ class AudioPreviewer:
                     levs[type] = s.get_value(type)
 
                 if self.verbose:
-                    print levs
+                    print(levs)
 
                 self.process(levs)
 
             except ValueError as e:
-                print e
+                print(e)
 
         elif t == Gst.MessageType.ERROR:
             gerror, dbg_msg = message.parse_error()
-            print "Error : ", gerror.message
-            print "Debug details : ", dbg_msg
+            print("Error : ", gerror.message)
+            print("Debug details : ", dbg_msg)
             self.quit()
 
         elif t == Gst.MessageType.EOS:
@@ -99,11 +99,11 @@ class AudioPreviewer:
 
     def start(self):
         if self.verbose:
-            print "playing..."
+            print("playing...")
         self.pipeline.set_state(Gst.State.PLAYING)
         self.mainloop = GLib.MainLoop()
         if self.verbose:
-            print "looping..."
+            print("looping...")
         self.mainloop.run()
 
     def quit(self):
@@ -117,7 +117,7 @@ class AudioPreviewer:
 
 import png
 import numpy 
-import urlparse
+import urllib.parse
 
 class Make_png(AudioPreviewer):
 
@@ -226,7 +226,7 @@ def lvlpng(filename, png_name=None):
         png_name = pathname+".wav.png"
 
     p.mk_png(png_name)
-    print png_name
+    print(png_name)
 
 
 def many(indir, outdir):
@@ -246,8 +246,8 @@ def many(indir, outdir):
                 rf_name = os.path.join(options.indir,d,f)
                 png_name = os.path.join(outdir,d,f+".wav.png")
                 if options.verbose:
-                    print rf_name
-                    print png_name
+                    print(rf_name)
+                    print(png_name)
                 if not os.path.exists(png_name):
                     lvlpng( rf_name, png_name )
 

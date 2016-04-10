@@ -16,7 +16,7 @@ if [ ! -e ../veyepar.db ]; then
   ../manage.py syncdb --noinput
 fi
 
-python2 run_tests.py --client test_client --show test_show -v --unlock --force
+python3 run_tests.py --client test_client --show test_show -v --unlock --force
 # coverage run run_tests.py --client test_client --show test_show -v --unlock --force
 
 # display ~/Videos/veyepar/test_client/test_show/titles/Lets_make_a_Test.png

@@ -13,13 +13,13 @@ def get_timestamp(dvfilename):
         p = subprocess.Popen( ['dvgrab', '-d', '1', '-I', dvfilename, '/tmp/dvg'], stderr=subprocess.PIPE ) 
         time.sleep(10)
         if p.poll() is None:
-            print "die!"
+            print("die!")
             # p.send_signal()
             p.kill()
             time.sleep(1)
             subprocess.Popen(['pkill','-9','dvgrab']).wait()
             time.sleep(1)
-            print "dead?"
+            print("dead?")
             subprocess.Popen(['pgrep','dvgrab']).wait()
         else:
             out,err = p.communicate()
@@ -36,11 +36,11 @@ def get_timestamp(dvfilename):
         info = info.split()
         pos = info.index('date')+1 # +1 becaue the date/time come after it
     except:
-        print out, err
-        print text
+        print(out, err)
+        print(text)
         raise
     dt=info[pos:pos+2]
-    print dt
+    print(dt)
     dt="%s %s" % tuple(dt)
 # prolly use:
 # datetime.strptime(date_string, format)
@@ -50,9 +50,9 @@ def get_timestamp(dvfilename):
 if __name__=='__main__':
     dvfile = 'pyohio.dv' 
     dt = get_timestamp(dvfile)
-    print dt
+    print(dt)
     ts = time.mktime(dt.timetuple()) 
-    print ts
+    print(ts)
     # os.utime(path, times) Set the access and modified 
     # os.utime(dvfile,(ts,ts))
 

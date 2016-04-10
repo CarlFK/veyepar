@@ -13,16 +13,16 @@ class mkdirs(process):
   def mkdir(self,dir):
       """ makes the dir if it doesn't exist """
       ret = False
-      print dir,
+      print(dir, end=' ')
       if os.path.exists(dir):
-         print '(exists)'
+         print('(exists)')
       else:
          if self.options.test:
-             print '(testing, skipped)'
+             print('(testing, skipped)')
          else:
              os.makedirs(dir)
              ret = True
-         print
+         print()
 
       return ret
 

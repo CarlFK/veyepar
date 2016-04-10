@@ -23,22 +23,22 @@ class ck_sched(process):
     def compare(self, events, eps):
         for ep in eps:
             if ep not in events:
-                print "json:", ep 
+                print("json:", ep) 
                 break
         for event in events:
             if event not in eps:
-                print "html:", event
+                print("html:", event)
                 break
                 
 
     def one_show(self, show):
-        if self.options.verbose:  print "show:", show.slug
+        if self.options.verbose:  print("show:", show.slug)
         f = open('schedules/pyconca2013.html')
         events = self.scrape_schedule(f)
-        print events[0]
+        print(events[0])
         eps = Episode.objects.filter(show=show)
         eps = [ep.name for ep in eps]
-        print eps[0]
+        print(eps[0])
         self.compare(events,eps)
         
         

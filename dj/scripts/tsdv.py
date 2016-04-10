@@ -39,7 +39,7 @@ class ts_rf(process):
         else:
             seconds = tsraw.get_duration(pathname)
 
-        print( pathname, start, seconds )
+        print(( pathname, start, seconds ))
         rf.start = start
 
         hms = seconds//3600, (seconds%3600)//60, seconds%60
@@ -50,7 +50,7 @@ class ts_rf(process):
         rf.save()
 
     def one_loc(self, show, location):
-        print show,location
+        print(show,location)
         for rf in Raw_File.objects.filter(show=show, location=location):
             # print rf
 

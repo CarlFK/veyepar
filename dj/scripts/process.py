@@ -3,7 +3,7 @@
 # abstract class for processing episodes
 
 import optparse
-import ConfigParser
+import configparser
 import os,sys,subprocess,socket
 import datetime,time
 
@@ -25,7 +25,7 @@ from main.models import Client, Show, Location, Episode, State, Log
 
 import rax_uploader
 
-class process(object):
+class process():
   """
   Abstract class for processing.
   Provides basic options and itarators.
@@ -58,11 +58,11 @@ class process(object):
     runs it, returns pass/fail.
     """
     if self.options.verbose:
-        print cmd
-        print ' '.join(cmd)
+        print(cmd)
+        print(' '.join(cmd))
 
     if self.options.test:
-        print "TEST: not running command."
+        print("TEST: not running command.")
         return True
 
     p=subprocess.Popen(cmd)
@@ -70,8 +70,8 @@ class process(object):
     retcode=p.returncode
     if retcode:
         if self.options.verbose:
-            print "command failed"
-            print retcode
+            print("command failed")
+            print(retcode)
         ret = False
     else:
         ret = True
@@ -90,13 +90,21 @@ class process(object):
 
       for cmd in cmds: 
           if type(cmd)==list:
-              print cmd
+              print(cmd)
               log_text = ' '.join(cmd)
           else:
               log_text = cmd
               cmd=cmd.split()
-          sh.writelines([t.encode('utf-8','ignore') for t in log_text])
-          # sh.writelines(log_text)
+
+          try:
+            # Not sure what python v3 wants. str I guess. 
+            # .write(b'a') and .writeline(b'a') - Errpr must be str, not b 
+            sh.writelines(log_text)
+            # sh.writelines([t.encode('utf-8','ignore') for t in log_text])
+          except Exception as e:
+            import code; code.interact(local=locals())
+            import sys; sys.exit()
+
           # if isinstance(s, unicode): return s.encode('utf-8') else: return s
           sh.write('\n')
           # self.log_info(log_text)
@@ -120,7 +128,7 @@ class process(object):
         if it does, try to upload it to cdn
         (rax_uploader will skip if same file exists).
         """
-        print "checking:", src 
+        print("checking:", src) 
 
         if dst is None: dst = src 
 
@@ -141,11 +149,11 @@ class process(object):
             u.key_id = dst 
 
             ret = u.upload()
-            print u.new_url 
+            print(u.new_url) 
             ret = u.new_url
 
         else:
-            print(u"file2cdn can't find {}".format(src))
+            print(("file2cdn can't find {}".format(src)))
             ret = False
 
         return ret
@@ -208,7 +216,7 @@ class process(object):
     episode.save()
 
   def process_ep(self, episode):
-      print("stubby process_ep: #{} state:{} {}".format( episode.id, episode.state, episode.name ) )
+      print(("stubby process_ep: #{} state:{} {}".format( episode.id, episode.state, episode.name ) ))
       return 
 
   def process_eps(self, episodes):
@@ -234,7 +242,7 @@ class process(object):
       if self.options.unlock: ep.locked=None
       if ep.locked and not self.options.force:
         if self.options.verbose:
-          print '#%s: "%s" locked on %s by %s' % (ep.id, ep.name, ep.locked, ep.locked_by)
+          print('#%s: "%s" locked on %s by %s' % (ep.id, ep.name, ep.locked, ep.locked_by))
           ret = None
       else:
         # ready_state:
@@ -249,25 +257,25 @@ class process(object):
             self.episode_dir=os.path.join( 
                 self.show_dir, 'dv', ep.location.slug )
 
-            if self.options.verbose: print ep.name
+            if self.options.verbose: print(ep.name)
      
             if self.options.lag:
                 if sleepytime: 
                     # don't lag on the first one that needs processing,
                     # we only want to lag between the fence posts.
-                    print "lagging....", self.options.lag
+                    print("lagging....", self.options.lag)
                     time.sleep(self.options.lag)
                 else:
                      sleepytime = True
 
             self.log_in(ep)
 
-            if not self.options.quiet: print self.__class__.__name__, ep.id, ep.name
+            if not self.options.quiet: print(self.__class__.__name__, ep.id, ep.name)
             if self.options.skip:
                 ret = True
             else:
                 ret = self.process_ep(ep)
-            if self.options.verbose: print "process_ep:", ret
+            if self.options.verbose: print("process_ep:", ret)
 
             # .process is long running (maybe, like encode or post) 
             # so refresh episode in case its .stop was set 
@@ -295,7 +303,7 @@ class process(object):
             ep.save()
             self.log_out(ep)
             if ep.stop: 
-                if self.options.verbose: print ".STOP set on the episode."
+                if self.options.verbose: print(".STOP set on the episode.")
                 # send message to .process_eps which bubbles up to .poll 
                 self.stop = True
                 # re-set the stop flag.
@@ -305,8 +313,8 @@ class process(object):
 
         else:
             if self.options.verbose:
-                print '#%s: "%s" is in state %s, ready is %s' % (
-                    ep.id, ep.name, ep.state, self.ready_state)
+                print('#%s: "%s" is in state %s, ready is %s' % (
+                    ep.id, ep.name, ep.state, self.ready_state))
 
     return ret
 
@@ -322,7 +330,7 @@ class process(object):
         locs = locs.filter(slug=self.options.room)
 
     for loc in locs:
-        if self.options.verbose: print loc.name
+        if self.options.verbose: print(loc.name)
         # episodes = Episode.objects.filter( location=loc).order_by(
         #    'sequence','start',)
         # if self.options.day:
@@ -357,7 +365,7 @@ class process(object):
         self.end=datetime.datetime.now()
         work_time = self.end-self.start
         if work_time.seconds or True:
-            print "run time: %s minutes" % (work_time.seconds/60)
+            print("run time: %s minutes" % (work_time.seconds/60))
 
         return ret
 
@@ -368,7 +376,7 @@ class process(object):
             if self.stop:
                 done=True
             else: 
-                if self.options.verbose: print "sleeping...."
+                if self.options.verbose: print("sleeping....")
                 time.sleep(int(self.options.poll))
         return ret
 
@@ -383,24 +391,24 @@ class process(object):
             .order_by('max_date')
 
     for client in clients:
-        print "\nName: %s  Slug: %s" %( client.name, client.slug )
+        print("\nName: %s  Slug: %s" %( client.name, client.slug ))
         shows=Show.objects.filter(client=client)\
                 .annotate( max_date=Max('episode__start'))\
                 .order_by('max_date')
 
         for show in shows:
-            print "\tName: %s  Slug: %s" %( show.name, show.slug )
-            print "\t--client %s --show %s" %( client.slug, show.slug )
-            print "client=%s\nshow=%s" %( client.slug, show.slug )
+            print("\tName: %s  Slug: %s" %( show.name, show.slug ))
+            print("\t--client %s --show %s" %( client.slug, show.slug ))
+            print("client=%s\nshow=%s" %( client.slug, show.slug ))
             locations=show.locations.filter(
                     active=True).order_by('sequence')
             for loc in locations:
-                print("room={}".format(loc.slug))
+                print(("room={}".format(loc.slug)))
 
             if self.options.verbose:
                 for ep in Episode.objects.filter(show=show):
-                    print "\t\t id: %s state: %s %s" % ( 
-                        ep.id, ep.state, ep )
+                    print("\t\t id: %s state: %s %s" % ( 
+                        ep.id, ep.state, ep ))
     return
 
   def add_more_options(self, parser):
@@ -414,7 +422,7 @@ class process(object):
     self.extra_options=extra_options
 
   def get_options(self):
-    for k,v in self.extra_options.iteritems():
+    for k,v in self.extra_options.items():
       self.options.ensure_value(k,v)
       setattr(self.options, k, v)
 
@@ -441,7 +449,7 @@ class process(object):
     [('category', '7'), ('topics', 'test'), ('license', '13')]
     """
 
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     files=config.read(['veyepar.cfg',
                 os.path.expanduser('~/veyepar.cfg')])
 
@@ -450,8 +458,8 @@ class process(object):
         d['whack']=False # don't want this somehow getting set in .config - too dangerous.
         parser.set_defaults(**d)
         if 'verbose' in d: 
-            print "using config file(s):", files
-            print d
+            print("using config file(s):", files)
+            print(d)
 
 
     parser.add_option('-m', '--media-dir', 
@@ -498,7 +506,7 @@ class process(object):
     self.get_options()
 
     if self.options.verbose:
-        print self.options, self.args
+        print(self.options, self.args)
 
     if "pal" in self.options.dv_format:
         self.fps=25.0

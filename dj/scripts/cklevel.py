@@ -20,7 +20,7 @@ class Main:
 
     def next_file(self):
         filename=self.files.pop()
-        print filename
+        print(filename)
         self.min,self.max = None,None
         self.pipeline.set_state(gst.STATE_NULL)
         self.filesrc.set_property("location", filename)
@@ -72,7 +72,7 @@ class Main:
 
 
     def OnDynamicPad(self, dbin, pad, islast):
-        print "OnDynamicPad Called!"
+        print("OnDynamicPad Called!")
         # print pad.get_caps()[0].get_name()
         if pad.get_caps()[0].get_name().startswith('audio'):
             pad.link(self.convert.get_pad("sink"))
@@ -93,7 +93,7 @@ class Main:
             if self.max is None or lev > self.max:
                 self.max = lev
             dif= self.max-self.min
-            print levs, self.min, self.max, dif
+            print(levs, self.min, self.max, dif)
             if levs[1]>-10:
                 pass
                 # self.next_file()

@@ -9,7 +9,8 @@
 # so this can wait till I have a problem
 
 import os
-import gslevels, gsocr
+import gslevels
+from . import gsocr
 
 from process import process
 
@@ -31,13 +32,13 @@ class ckbroke(process):
             # p.frame=30*5 # start 5 seconds into it (past the title)
             p.seek_sec = 1
             
-            if self.options.verbose: print "checking ", ext
+            if self.options.verbose: print("checking ", ext)
 
             gsocr.gtk.main()
-            print p.words
+            print(p.words)
             if p.words: ## ["INVALID"] is kinda the only thing it can be
-                print ep.id, ep.name
-                print p.words
+                print(ep.id, ep.name)
+                print(p.words)
                 ep.name = "INVALID " + ep.name
                 ep.state = -1
                 ep.save()

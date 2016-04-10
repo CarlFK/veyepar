@@ -5,18 +5,18 @@
 from process import process
 
 import youtube_v3_uploader
-import ia_uploader
-import rax_uploader
+from . import ia_uploader
+from . import rax_uploader
 
 import os
 import pprint
 
-import pw
+from . import pw
 
 from django.db import DatabaseError
 from django.template.defaultfilters import slugify
 
-from add_to_richard import get_video_id
+from .add_to_richard import get_video_id
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
@@ -24,7 +24,7 @@ def save_me(ep):
     # tring to fix the db timeout problem
     try:
         ep.save()
-    except DatabaseError, e:
+    except DatabaseError as e:
         from django.db import connection
         connection.connection.close()
         connection.connection = None
@@ -74,7 +74,7 @@ class post(process):
         tags = [ tag.replace(' ','') for tag in tags ]
 
         # remove any empty tags
-        tags = filter(None, tags)
+        tags = [_f for _f in tags if _f]
 
         return tags
 
@@ -90,7 +90,7 @@ class post(process):
             else:
                 # crapy place to abort, but meh, works for now.
                 # maybe this is the place to use raise?
-                print "not found:", src_pathname
+                print("not found:", src_pathname)
 
                 raise FileNotFound(src_pathname)
 
@@ -176,15 +176,15 @@ class post(process):
         uploader.private = private
 
         if self.options.test:
-            print 'test mode:'
-            print "user key:", uploader.user
-            print 'files = %s' % files
-            print 'meta = %s' % pprint.pformat(meta)
-            print 'skipping youtube_upoad.py uploader.upload()'
-            print len(meta['description'])
+            print('test mode:')
+            print("user key:", uploader.user)
+            print('files = %s' % files)
+            print('meta = %s' % pprint.pformat(meta))
+            print('skipping youtube_upoad.py uploader.upload()')
+            print(len(meta['description']))
 
         elif ep.host_url and not self.options.replace:
-            print "skipping youtube, already there."
+            print("skipping youtube, already there.")
             youtube_success = True
 
         else:
@@ -198,7 +198,7 @@ class post(process):
 
             if youtube_success:
                 # if self.options.verbose: print uploader.new_url
-                print(uploader.new_url)
+                print((uploader.new_url))
 
                 # save new youtube url
                 ep.host_url = uploader.new_url
@@ -206,7 +206,7 @@ class post(process):
                 self.last_url = uploader.new_url
 
             else:
-                print "youtube error! zomg"
+                print("youtube error! zomg")
                 ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
             save_me(ep)
@@ -228,15 +228,15 @@ class post(process):
             uploader.pathname = f['pathname']
             uploader.verbose = self.options.verbose
 
-            uploader.slug = u"{show}-{slug}".format(
+            uploader.slug = "{show}-{slug}".format(
                     show=ep.show.slug,
                     slug=ep.slug)
 
             uploader.meta = meta
 
             if self.options.test:
-                print 'test mode...'
-                print 'skipping archive_uploader .upload()'
+                print('test mode...')
+                print('skipping archive_uploader .upload()')
                 ia_success = False
 
             elif ep.archive_mp4_url and not self.options.replace:
@@ -244,7 +244,7 @@ class post(process):
                 # kinda buggy here.
                 # but only relevant when things are messed up
                 # and looking for problemss.
-                print "skipping archive, file already there."
+                print("skipping archive, file already there.")
                 ia_success = True
 
             else:
@@ -253,7 +253,7 @@ class post(process):
                 # uploader.debug_mode=True
                 ia_success = uploader.upload()
                 if ia_success:
-                    if self.options.verbose: print uploader.new_url
+                    if self.options.verbose: print(uploader.new_url)
                     # this is pretty gross.
                     # store the archive url
                     # it should really just be: archive_url 
@@ -271,7 +271,7 @@ class post(process):
 
 
                 else:
-                    print "Internet archive.org error!"
+                    print("Internet archive.org error!")
 
                 save_me(ep)
 
@@ -285,7 +285,7 @@ class post(process):
         # bcause bandwidth?  or something.  
         # Not sure what the problem is really.
 
-        if self.options.verbose: print "do_rax..."
+        if self.options.verbose: print("do_rax...")
 
         success = False
 
@@ -300,14 +300,14 @@ class post(process):
             uploader.key_id = self.mk_key(ep, f)
 
             if self.options.test:
-                print 'test mode...'
-                print 'skipping rax_uploader .upload()'
-                print 'key_id:', uploader.key_id
+                print('test mode...')
+                print('skipping rax_uploader .upload()')
+                print('key_id:', uploader.key_id)
 
             elif ep.rax_mp4_url and not self.options.replace:
                 # above assumes rax_mp4_url is what gets filled in below
                 # this is so gross.
-                print "skipping rax, already there."
+                print("skipping rax, already there.")
                 success = True
 
             else:
@@ -322,7 +322,7 @@ class post(process):
                 # bad name, mark as error and continue to next
 
                 if success:
-                    if self.options.verbose: print uploader.new_url
+                    if self.options.verbose: print(uploader.new_url)
                     # this is pretty gross.
                     # store the url
                     if f['ext'] == "mp4":
@@ -340,7 +340,7 @@ class post(process):
 
 
                 else:
-                    print "rax error!"
+                    print("rax error!")
 
                 save_me(ep)
 
@@ -357,15 +357,15 @@ class post(process):
         uploader.meta = meta
 
         if self.options.test:
-            print 'test mode:'
-            print "user key:", uploader.user
-            print 'files = %s' % files
-            print 'meta = %s' % pprint.pformat(meta)
-            print 'skipping vimeo_upoad.py uploader.upload()'
-            print len(meta['description'])
+            print('test mode:')
+            print("user key:", uploader.user)
+            print('files = %s' % files)
+            print('meta = %s' % pprint.pformat(meta))
+            print('skipping vimeo_upoad.py uploader.upload()')
+            print(len(meta['description']))
 
         elif ep.host_url and not self.options.replace:
-            print "skipping vimeo, already there."
+            print("skipping vimeo, already there.")
             youtube_success = True
 
         else:
@@ -376,7 +376,7 @@ class post(process):
 
 
             if youtube_success:
-                if self.options.verbose: print uploader.new_url
+                if self.options.verbose: print(uploader.new_url)
 
                 # save new youtube url
                 ep.host_url = uploader.new_url
@@ -384,7 +384,7 @@ class post(process):
                 self.last_url = uploader.new_url
 
             else:
-                print "youtube error! zomg"
+                print("youtube error! zomg")
                 ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
             save_me(ep)
@@ -395,13 +395,13 @@ class post(process):
 
         if not ep.released: # and not self.options.release_all:
             # --release will force the upload, overrides ep.released
-            if self.options.verbose: print "not released:", ep.released
+            if self.options.verbose: print("not released:", ep.released)
             return False
 
         # collect data needed for uploading
         files = self.get_files(ep)
         if self.options.verbose: 
-            print "[files]:",
+            print("[files]:", end=' ')
             pprint.pprint(files)
 
         meta = self.collect_metadata(ep)

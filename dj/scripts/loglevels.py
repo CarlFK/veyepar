@@ -28,8 +28,8 @@ class cklev(process):
                 x='10'
 
             if [1 for l in levs if l[0]<l[1]]:
-                print ep.id, ep.name
-                print x,levs
+                print(ep.id, ep.name)
+                print(x,levs)
         
             # ep.comment = "\n".join([x,levs.__str__(), ep.comment])
 

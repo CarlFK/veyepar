@@ -7,9 +7,9 @@
 import os
 import subprocess
 
-import rax_uploader
+from . import rax_uploader
 
-from enc import enc
+from .enc import enc
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
@@ -33,7 +33,7 @@ class mk_title(enc):
             return 
 
         if self.options.display:
-            png_name = u"{}/titles/{}.png".format(
+            png_name = "{}/titles/{}.png".format(
                     self.show_dir, episode.slug)
             self.run_cmd(['display', png_name])
 

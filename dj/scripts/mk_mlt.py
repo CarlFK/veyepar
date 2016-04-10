@@ -141,7 +141,7 @@ def mk_mlt(template, output, params):
             set_text(channelcopy,'to' , cut['channelcopy'][1])
             ti.insert(0,channelcopy)
 
-        if cut['normalize']<>'0':
+        if cut['normalize']!='0':
             normalize = copy.deepcopy( nodes['normalize'] )
             set_text(normalize,'program' , cut['normalize'])
             ti.insert(0,normalize)

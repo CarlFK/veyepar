@@ -10,14 +10,14 @@ import optparse
 try:
     # ProgressFile is a subclass of the Python open class
     # as data is read, it prints a visible progress bar 
-    from progressfile import ProgressFile
+    from .progressfile import ProgressFile
 except ImportError:
     # If ProgressFile is not available, default to Python's open
     ProgressFile = open
 
 try:
     # read credentials from a file
-    from pw import archive 
+    from .pw import archive 
 except ImportError:
     # you can fill in your credentials here
     # but better to put in pw.py so that they don't leak
@@ -57,7 +57,7 @@ class Uploader(object):
 
     def upload(self):
 
-        print "Uploading file to foo..."
+        print("Uploading file to foo...")
 
         service = auth(self.user)
 
@@ -71,13 +71,13 @@ class Uploader(object):
             if self.debug_mode:
                 import code; code.interact(local=locals())
 
-            self.new_url = 
-            print( "foo: {}".format(self.new_url))
+            self.new_url = url
+            print(( "foo: {}".format(self.new_url)))
             ret = True
 
         except Exception as e:
 
-            print e
+            print(e)
 
             # self.ret_text = "internet archive error: %s" % ( e.body )
 
@@ -88,7 +88,7 @@ class Uploader(object):
         return ret
 
 
-def parser.parse_args(argv):
+def parse_args(argv):
 
     parser = optparse.OptionParser()
 
@@ -133,9 +133,9 @@ def test_upload(args):
 
     ret = u.upload()
     if ret:
-        print u.new_url
+        print(u.new_url)
     else:
-        print u.ret_text
+        print(u.ret_text)
 
 
 if __name__ == '__main__':

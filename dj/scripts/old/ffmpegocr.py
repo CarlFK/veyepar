@@ -8,7 +8,7 @@ import optparse
 import pyffmpeg
 # http://code.google.com/p/pyffmpeg/issues/detail?id=9#c4
 
-from cStringIO import StringIO
+from io import StringIO
 from csv import DictReader
 from collections import defaultdict
 
@@ -36,12 +36,12 @@ def ocrdv(dvfn):
         p = subprocess.Popen(['gocr', '-'], stdin=subprocess.PIPE, 
             stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         ocrtext, stderrdata = p.communicate(img)
-        if stderrdata: print "ERR:", stderrdata
-        if ocrtext: print "OUT:", ocrtext
+        if stderrdata: print("ERR:", stderrdata)
+        if ocrtext: print("OUT:", ocrtext)
 
         frameno+=30*15  # bump about 15 seconds
 
-        print frameno
+        print(frameno)
 
     return ocrtext,image
 

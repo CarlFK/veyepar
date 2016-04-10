@@ -2,13 +2,13 @@
 
 # posts to blip.tv
 
-import blip_uploader
+from . import blip_uploader
 
 import re
 import os
 import xml.etree.ElementTree
 
-import pw
+from . import pw
 from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
@@ -30,9 +30,9 @@ class post(process):
   ready_state = 4
 
   def process_ep(self, ep):
-    if self.options.verbose: print ep.id, ep.name
+    if self.options.verbose: print(ep.id, ep.name)
     if not ep.released:
-        if self.options.verbose: print "not released:", ep.released
+        if self.options.verbose: print("not released:", ep.released)
         return False
 
     loc = ep.location
@@ -157,24 +157,24 @@ class post(process):
     # print "client blip_user", client.blip_user
     blip_user =  self.options.host_user if self.options.host_user \
                     else client.host_user if client.host_user \
-                    else pw.host.keys()[0]
+                    else list(pw.host.keys())[0]
     # print "user", blip_user
     blip_pw = pw.blip[blip_user]
 
     if self.options.test:
-        print 'test mode:'
-        print 'blip_cli.Upload( video_id, user, pw, files, meta, thumb)'
-        print video_id
-        print 'files %s' % files
-        print 'meta %s' % meta
-        print 'thumb %s' % thumb
-        print
+        print('test mode:')
+        print('blip_cli.Upload( video_id, user, pw, files, meta, thumb)')
+        print(video_id)
+        print('files %s' % files)
+        print('meta %s' % meta)
+        print('thumb %s' % thumb)
+        print()
     
         blipcmd = "./blip_uploader.py --fileno %s --role %s --filename %s" % (files[0])
         blipcmd += " --thumb %s" % thumb 
-        for i in meta.items():
+        for i in list(meta.items()):
             blipcmd += " --%s %s" % i 
-        print blipcmd 
+        print(blipcmd) 
 
     else:
    
@@ -196,7 +196,7 @@ class post(process):
           else:
             done=True
 
-        if self.options.verbose: print response_xml
+        if self.options.verbose: print(response_xml)
         ep.comment += "\n%s\n%s\n" % (reponse_code,response_xml)
         ep.save()
 
@@ -262,24 +262,24 @@ Your file called Test Episode #0 has been successfully posted.
         response = tree.find('response')
         post_url=response.find('post_url')
         if xml.etree.ElementTree.iselement(post_url):
-            print post_url.text
+            print(post_url.text)
             self.last_url = post_url.text # hook for tests so that it can be browsed
 # <post_url>http://blip.tv/file/3734423</post_url>
             blip_id=post_url.text.split('/')[-1]
             if self.options.verbose:
-                print "blip id:", blip_id
+                print("blip id:", blip_id)
             ep.host_url = blip_id
             ep.comment += post_url.text
             self.log_info(response.text)
             ret=True
         else:
             # don't print it again if it was just printed 
-            if not self.options.verbose: print response_xml
+            if not self.options.verbose: print(response_xml)
             ep.comment += "upload failed\n%s\n" % response_xml
             # look for the error message
             notice=response.find('notice')
             if xml.etree.ElementTree.iselement(notice):
-                print "blip notice:", notice.text
+                print("blip notice:", notice.text)
                 self.log_info(notice.text)
             ret=False
         ep.save()

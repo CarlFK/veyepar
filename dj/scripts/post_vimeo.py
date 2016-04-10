@@ -2,7 +2,7 @@
 
 # posts to vimeo
 
-import vimeo_uploader as vimeo_uploader
+from . import vimeo_uploader as vimeo_uploader
 
 import os
 
@@ -16,11 +16,11 @@ class post(process):
   ready_state = 4
 
   def process_ep(self, ep):
-    if self.options.verbose: print ep.id, ep.name
+    if self.options.verbose: print(ep.id, ep.name)
     if not ep.released: # and not self.options.release_all:
         # --release-all will force the upload, overrides ep.released
         # if someone uncomments the # and not... above.
-        if self.options.verbose: print "not released:", ep.released
+        if self.options.verbose: print("not released:", ep.released)
         return False
 
     loc = ep.location
@@ -129,11 +129,11 @@ class post(process):
                     # if client.host_user 
 
     if self.options.test:
-        print 'test mode:'
-        print 'files %s' % files
-        print 'meta %s' % meta
-        print 'thumb %s' % thumb
-        print
+        print('test mode:')
+        print('files %s' % files)
+        print('meta %s' % meta)
+        print('thumb %s' % thumb)
+        print()
 
     else:
    
@@ -151,7 +151,7 @@ class post(process):
 
         if ret:
 
-            if self.options.verbose: print uploader.new_url
+            if self.options.verbose: print(uploader.new_url)
             ep.host_url = uploader.new_url
             self.last_url = uploader.new_url # hook for tests so that it can be browsed
 
@@ -159,13 +159,13 @@ class post(process):
             # code.interact(local=locals())
 
         else:
-            print "error!"
+            print("error!")
 
         # tring to fix the db timeout problem
         # ep=Episode.objects.get(pk=ep.id)
         try:
             ep.save()
-        except DatabaseError, e:
+        except DatabaseError as e:
             from django.db import connection
             connection.connection.close()
             connection.connection = None

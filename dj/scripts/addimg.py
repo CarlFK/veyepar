@@ -93,7 +93,7 @@ class add_img(process):
         text=api.GetUTF8Text()
         conf=api.MeanTextConf()
 
-        print text
+        print(text)
 
         return text
 
@@ -108,12 +108,12 @@ class add_img(process):
 
         def is_in( obj, attrib, text ):
             # check if obj.attrib is in text
-            val = unicode(getattr(obj, attrib))
+            val = str(getattr(obj, attrib))
             if val in ['','2014',]:
                 # blacklisted values
                 return
             if val.lower().encode('utf-8','ignore') in text:
-                print "found", attrib, val
+                print("found", attrib, val)
                 ret=True
             else:
                 ret=False
@@ -205,7 +205,7 @@ class add_img(process):
 
             png_name = '{}-{}{}.png'.format(
                     os.path.splitext(src_base)[0], i, suffix)
-            print png_name
+            print(png_name)
             box.save( os.path.join( self.show_dir, "img", png_name ))
 
             # upload it
@@ -234,7 +234,7 @@ class add_img(process):
       self.show = show
       self.client = show.client
 
-      if self.options.verbose:  print "show:", show.slug
+      if self.options.verbose:  print("show:", show.slug)
       if self.options.whack:
           Image_File.objects.filter(show=show).delete()
 
@@ -249,15 +249,15 @@ class add_img(process):
       self.set_dirs(show)
       ep_dir=os.path.join(self.show_dir,'img')
       if self.options.verbose: 
-          print "ep_dir:", ep_dir
+          print("ep_dir:", ep_dir)
 
       for dirpath, dirnames, filenames in os.walk(ep_dir,followlinks=True):
           d=dirpath[len(ep_dir)+1:]
           if self.options.verbose: 
-              print "checking...", dirpath, d, dirnames, filenames 
+              print("checking...", dirpath, d, dirnames, filenames) 
           for f in filenames:
               if os.path.splitext(f)[1] in [ ".ppm", ".pbm" ]:
-                  print f
+                  print(f)
 
                   if self.options.base and \
                           not f.startswith(self.options.base):
@@ -267,7 +267,7 @@ class add_img(process):
                   self.one_page(os.path.join(d,f),show,locs,eps)
 
                   if self.options.test:
-                      print "Test mode, only doing one."
+                      print("Test mode, only doing one.")
                       return
 
     def work(self):

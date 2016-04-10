@@ -14,11 +14,11 @@ from steve.richardapi import \
 
 from steve.restapi import Http4xxException
 
-from add_to_richard import get_video_id
+from .add_to_richard import get_video_id
 
 import youtube_v3_uploader
 
-import pw
+from . import pw
 
 from process import process
 import pprint
@@ -42,7 +42,7 @@ class mk_public(process):
                 video_id=v_id)
 
         if video_data['state'] == STATE_LIVE:
-            print "Already STATE_LIVE, 403 coming."
+            print("Already STATE_LIVE, 403 coming.")
         else:
             video_data['state'] = 1
 
@@ -52,10 +52,10 @@ class mk_public(process):
                     video_id=v_id, 
                     video_data=video_data)
         except Http4xxException as exc:
-            print exc
-            print "told you this was coming."
+            print(exc)
+            print("told you this was coming.")
         except MissingRequiredData as exc:
-            print exc
+            print(exc)
             # this shouldn't happen, prolly debugging something.
             import code
             code.interact(local=locals())
@@ -66,12 +66,12 @@ class mk_public(process):
 
         uploader = youtube_v3_uploader.Uploader()
         uploader.user = ep.show.client.youtube_id
-        if self.options.verbose: print "Setting Youtube to public..."
+        if self.options.verbose: print("Setting Youtube to public...")
         try:
             ret = uploader.set_permission( ep.host_url )
         # except apiclient.errors.HttpError as e:
         except youtube_v3_uploader.HttpError as e:
-            print e
+            print(e)
             # this shouldn't happen, prolly debugging something.
             import code
             code.interact(local=locals())
@@ -89,11 +89,11 @@ class mk_public(process):
             # don't make public if there is no host_url (youtube)
             if ep.public_url and ep.host_url and ep.show.client.richard_id:
                 ret = ret and self.up_richard(ep)
-                if self.options.verbose: print "Richard public."
+                if self.options.verbose: print("Richard public.")
 
             if ep.host_url and ep.show.client.youtube_id:
                 ret = ret and self.up_youtube(ep)
-                if self.options.verbose: print "Youtube public."
+                if self.options.verbose: print("Youtube public.")
         else:
 
             ret = False # Nope. Not until it is both approved and Released. 

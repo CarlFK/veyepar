@@ -27,11 +27,11 @@ import os
 import csv
 from copy import deepcopy
 
-from cStringIO import StringIO
+from io import StringIO
 from pprint import pprint
 import operator
 
-import urlparse
+import urllib.parse
 
 from main.models import \
         Client, Show, Location, Episode, Cut_List, Raw_File,\
@@ -124,9 +124,9 @@ def del_test_data():
 def tests(request):
 
     if request.method == 'POST': 
-        if request.POST.has_key('create'):
+        if 'create' in request.POST:
             make_test_data()
-        if request.POST.has_key('delete'):
+        if 'delete' in request.POST:
             del_test_data()
 
     locations=Location.objects.filter(slug__contains="test")
@@ -357,9 +357,9 @@ def emailer(show_id, ):
              3: announce_lists}[show.announcement_state]
 
     subject,body=meet_ann(None,show_id)
-    print subject
-    print body
-    print tos
+    print(subject)
+    print(body)
+    print(tos)
     
     # connect to the smtp server
     connection = get_connection()
@@ -371,7 +371,7 @@ def emailer(show_id, ):
     for to in tos:
         email = EmailMessage(subject, body, sender, [to], headers=headers ) 
         ret = connection.send_messages([email])
-        print to, ret
+        print(to, ret)
 
     return
 
@@ -608,7 +608,7 @@ def enc_play_list(request,episode_id):
     for ext in exts:
         
       foot_pathname = os.path.join(client.slug,show.slug, ext, '%s.%s' % (episode.slug, ext))
-      print os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)
+      print(os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname))
 
       if os.path.exists( 
           os.path.join(os.path.expanduser('~/Videos/veyepar'), foot_pathname)):
@@ -1073,8 +1073,8 @@ def show_stats(request, show_id, ):
             row.append((stat,loc))
         rows.append(row)
     
-    states = zip( show_stat['states'], STATES)
-    rows = zip(dates,rows)
+    states = list(zip( show_stat['states'], STATES))
+    rows = list(zip(dates,rows))
 
     return render_to_response('show_stats.html',
         {
@@ -1279,7 +1279,7 @@ def orphan_img(request, show_id, ):
             {
           'client':client,
           'show':show,
-          'imgsfs':zip(orphan_images,formset.forms),
+          'imgsfs':list(zip(orphan_images,formset.forms)),
           'iefs':formset,
           },
         context_instance=RequestContext(request) )
@@ -1336,7 +1336,7 @@ def episodes_script(request, script=None):
     episodes=Episode.objects.filter(**kwargs).order_by('start')
 
     # episodes=Episode.objects.filter(show__slug="fosdem_2014", state='5').order_by('start')
-    print len(episodes)
+    print(len(episodes))
 
     response = render_to_response(
             'episodes_script.txt',
@@ -1388,7 +1388,7 @@ def episode_assets(request, episode_id):
             cut.raw_file.location.slug, cut.raw_file.filename ) )
 
     # make symlinks from epected filename to smaller webm 
-    show_path = urlparse.urlparse(show_url)
+    show_path = urllib.parse.urlparse(show_url)
     first_dir = '"{}{}/dv/{}/{}"'.format( show_path.netloc, show_path.path,
             cut.raw_file.location.slug, 
             os.path.split(cut.raw_file.filename)[0])
@@ -1517,7 +1517,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                 if episode.sequence is None:
                     sequence=2
                 else:
-                    print episode.sequence
+                    print(episode.sequence)
                     sequence=episode.sequence+1
                 inits={
                     'show':show.id,
@@ -1535,7 +1535,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
             if episodes:
                 # use last Episode as a base for defaults
                 episode = episodes[len(episodes)-1]
-                print episode
+                print(episode)
                 location = episode.location.id
                 if episode.sequence is None:
                     sequence = 2
@@ -1544,7 +1544,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                 start = episode.end
             else:
                 # first Episode of the show
-                print "locations", locations
+                print("locations", locations)
                 if locations:
                     location = locations[0].id
                 sequence = 1
@@ -1759,7 +1759,7 @@ def mini_conf(request):
             )
 
     magic = request.GET.get('magic')
-    print(day,magic)
+    print((day,magic))
     good12 = [379,380] # Case 2 & 3
     good13 = [376,378,379,380]
     if magic == '1':
@@ -1952,7 +1952,7 @@ def mk_cuts(episode,
             marks = Mark.objects.filter(
                     click__gte = rf.start, click__lte = rf.end)
             middle = episode.start + (episode.end-episode.start)/2
-            print middle
+            print(middle)
             # If the mark is before the middle, it is probably the start
             # else it is probably the end.
             for mark in marks:
@@ -2088,11 +2088,11 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
         else:
             # pass
-            print "ep errors:", episode_form.errors
-            print "clrf errors:", clrfformset.errors
-            print "add cut.. errors:", add_cutlist_to_ep.errors
+            print("ep errors:", episode_form.errors)
+            print("clrf errors:", clrfformset.errors)
+            print("add cut.. errors:", add_cutlist_to_ep.errors)
             for e in add_cutlist_to_ep.errors:
-                print e
+                print(e)
     else:
         episode_form = Episode_Form_small(instance=episode) 
         # init data with things in the queryset that need editing
@@ -2137,7 +2137,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     if cuts:
         ## use cut left over from somewhere above.  should work.
         seq = cut.sequence + 10 
-        next_rf = cut.raw_file.next()
+        next_rf = next(cut.raw_file)
         if next_rf is not None:
             rf_filename = next_rf.filename
 
@@ -2165,14 +2165,14 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         'next_episode':next_episode,
         'same_dates':same_dates,
         'episode_form':episode_form,
-        'clrffs':zip(cuts,chaps,clrfformset.forms),
+        'clrffs':list(zip(cuts,chaps,clrfformset.forms)),
         'clrfformset':clrfformset,
         'add_cutlist_to_ep':add_cutlist_to_ep,
         },
         context_instance=RequestContext(request) )
         
 def episode_logs(request, episode_id):
-    print episode_id
+    print(episode_id)
     episode = get_object_or_404(Episode, id=episode_id)
     logs = episode.log_set.order_by('start')
     return render_to_response('episode_logs.html',

@@ -14,7 +14,7 @@ class Get_vimeo(process):
     ready_state = None
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
+        if self.options.verbose: print(ep.id, ep.name)
 
         meta = scrapevideo(ep.host_url)
 
@@ -24,11 +24,11 @@ class Get_vimeo(process):
         ep.description = description 
 
         title = html_to_markdown(meta['title'])
-        if ep.name <> title:
-            print ep.host_url
-            print "veyepar:\t%s" %( ep.name, )
-            print "  vimeo:\t%s" %( title, )
-            print
+        if ep.name != title:
+            print(ep.host_url)
+            print("veyepar:\t%s" %( ep.name, ))
+            print("  vimeo:\t%s" %( title, ))
+            print()
 
 
         ep.save()

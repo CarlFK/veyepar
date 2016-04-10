@@ -74,7 +74,7 @@ class Command(BaseCommand):
             if not eps:
                 # look for slug
                 slug = arg.split('/')[-1][:-5]
-                print slug
+                print(slug)
                 eps = Episode.objects.filter(
                         show__slug='fosdem_2014', slug = slug)
 
@@ -87,43 +87,43 @@ class Command(BaseCommand):
             if not eps:
                 # look for room day
                 # http://video.fosdem.org/2014/K4401/Sunday/
-                print "guessing this is a room day.."
+                print("guessing this is a room day..")
                 x = arg.split('/')
                 year = x[3]
                 location_slug = x[4]
                 day = {'Saturday':1,
                         'Sunday':2 }[x[5]]
-                print year, location_slug, day
+                print(year, location_slug, day)
 
                 url = reverse( "episode_list", args= [
                     'fosdem',
                     'fosdem_2014',
                     ])
-                print url
+                print(url)
                 qps="?client=fosdem&show=fosdem_2014&location_slug=%s&date=%s-02-0%s" %( location_slug, year, day )
-                print qps
+                print(qps)
                 url = "http://veyepar.nextdayvideo.com" + \
                         url + qps
-                print url
+                print(url)
                 subprocess.Popen(['firefox', url])
                 url = "http://veyepar.nextdayvideo.com/main/rf_set/%s/?start_date=%s-02-0%s" % ( location_slug, year, day )
-                print url
+                print(url)
                 subprocess.Popen(['firefox', url])
 
                 return
 
 
             for ep in eps:
-                print ep
-                print "current state:", ep.state
+                print(ep)
+                print("current state:", ep.state)
                 url = "http://veyepar.nextdayvideo.com" + \
                         ep.get_absolute_url()
                 subprocess.Popen(['firefox', url])
                 if len(args)==2 and args[1]: # empty email doesn't count
                     edit_url = reverse( "approve_episode", args= [
                             ep.id, ep.slug, ep.edit_key ] )
-                    print edit_url
-                    print "emails:", ep.emails
+                    print(edit_url)
+                    print("emails:", ep.emails)
                     ep.state=1
                     if len(args) == 2:
                         email = args[1]
@@ -132,19 +132,19 @@ class Command(BaseCommand):
                             email = email[:-2]
                         email = " ".join(args[1:])
                     ep.add_email(email)
-                    print email
-                    print """
+                    print(email)
+                    print("""
 Here is the URL someone can use to make the fix: 
 http://veyepar.nextdayvideo.com/%s
 Once that happens, the system will encode, upload and send an email to:
 %s
 
 Feel free to reply with questions, we are still working out this process.
-""" % (edit_url, args[1] )
+""" % (edit_url, args[1] ))
 
 
         def handle(self, *args, **options):
-            print args
+            print(args)
             
             # ignore blank parameters
             if not args[0]: return

@@ -13,9 +13,9 @@
 import os
 import xml.etree.ElementTree
 
-import blip_uploader
-from post_blip import roles
-import pw
+from . import blip_uploader
+from .post_blip import roles
+from . import pw
 
 from process import process
 
@@ -40,13 +40,13 @@ class ckblip(process):
     src_pathname = '%s/ogv/%s.ogv'%(self.show_dir, ep.slug)
 
     if self.options.test:
-        print "Test mode, not uploading:", files 
+        print("Test mode, not uploading:", files) 
     else:
         response = blip_cli.Upload(
             ep.host_url, user, password, files, {'title':ep.name})
 
         response_xml = response.read()
-        if self.options.verbose: print response_xml
+        if self.options.verbose: print(response_xml)
         ep.comment += "\n%s\n" % response_xml
 
   def delete_from_blip(self, episode_id, posts_id, file_id, user, password, reason):
@@ -55,12 +55,12 @@ class ckblip(process):
 
     if self.last_del_id != episode_id:
        # only print this once per episode_id
-       print "http://blip.tv/file/%s" % (episode_id, )
-       print "http://blip.tv/file/%s?skin=rss" % (episode_id, )
-       print "http://blip.tv/dashboard/episode/%s" % (posts_id,)
+       print("http://blip.tv/file/%s" % (episode_id, ))
+       print("http://blip.tv/file/%s?skin=rss" % (episode_id, ))
+       print("http://blip.tv/dashboard/episode/%s" % (posts_id,))
        self.last_del_id = episode_id
 
-    print "delete:", file_id
+    print("delete:", file_id)
     return 
 
     # user,password = ('veyepar_test','bdff6680')
@@ -82,13 +82,13 @@ class ckblip(process):
     response = blip_cli.PostMultipart(blip_delete_url, fields)
  
     response_xml = response.read()
-    if self.options.verbose: print response_xml
+    if self.options.verbose: print(response_xml)
     tree = xml.etree.ElementTree.fromstring(response_xml)
     response = tree.find('response')
-    if self.options.verbose: print "response.txt", response.text
+    if self.options.verbose: print("response.txt", response.text)
     notice=response.find('notice')
     if xml.etree.ElementTree.iselement(notice):
-        print "notice.text", notice.text
+        print("notice.text", notice.text)
 
     return response
 
@@ -107,7 +107,7 @@ class ckblip(process):
         blip_cli=blip_uploader.Blip_CLI()
         blip_cli.debug = self.options.verbose
         xml_code = blip_cli.Get_VideoMeta(ep.host_url)
-        if self.options.verbose: print xml_code
+        if self.options.verbose: print(xml_code)
         blip_meta = blip_cli.Parse_VideoMeta(xml_code)
 
         # get int used to get to episode edit page
@@ -129,14 +129,14 @@ class ckblip(process):
                 st = os.stat(pathname)
                 local_size = st.st_size
                 for content in blip_meta['contents']:
-                    if self.options.verbose: print content
+                    if self.options.verbose: print(content)
                     if content['type']==t['mime']:
                         blip_size = int(content['fileSize'])
                         if local_size == blip_size:
                             match = True
                             # ep.state=5
                             # ep.save()
-                            if self.options.verbose: print t['ext'], "right size"
+                            if self.options.verbose: print(t['ext'], "right size")
                         else:
                             # file size mismatch
                             # probably blip file is out of date
@@ -153,13 +153,13 @@ class ckblip(process):
                     if c['type']==t['mime']]
                 if matches: 
                     if self.options.verbose: 
-                        print "On blip but not local", matches
+                        print("On blip but not local", matches)
                 else:
-                    print t['ext'], "missing from http://blip.tv/file/%s" % ep.host_url , ep
+                    print(t['ext'], "missing from http://blip.tv/file/%s" % ep.host_url , ep)
                    
 
         if file_types_to_upload: 
-            if self.options.verbose: print "upload:", file_types_to_upload    
+            if self.options.verbose: print("upload:", file_types_to_upload)    
             # self.post(ep,file_types_to_upload,user,password)
 
         """
@@ -236,13 +236,13 @@ class ckblip(process):
     response = blip_cli.Upload(
             ep.host_url, user, password, [], meta, )
     response_xml = response.read()
-    if self.options.verbose: print response_xml
+    if self.options.verbose: print(response_xml)
 
     return 
 
  
   def process_ep(self, ep):
-    if self.options.verbose: print ep.id, ep.name, ep.host_url
+    if self.options.verbose: print(ep.id, ep.name, ep.host_url)
 
     if ep.state in [-1,0]: return 
     if ep.state != 5: return 
@@ -254,7 +254,7 @@ class ckblip(process):
         # episode not on blip, 
         # This code doens't post new episodes,
         # use post.py to set title, thumb, etc.
-        print "Not on blip: %s - %s" % (ep.id, ep.name)
+        print("Not on blip: %s - %s" % (ep.id, ep.name))
         ret = True
 
     # always return False so that state doesn't get bumped

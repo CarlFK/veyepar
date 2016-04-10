@@ -11,10 +11,10 @@ feed = feedparser.parse('http://python.mirocommunity.org/feeds/category/pyohio-2
 
 import feedparser 
 
-import blip_uploader
+from . import blip_uploader
 
 # from process import process
-from tweet import tweet
+from .tweet import tweet
 
 # from main.models import Episode, Raw_File, Cut_List
 
@@ -25,7 +25,7 @@ class pmc_tweet(tweet):
     feed = ''
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
+        if self.options.verbose: print(ep.id, ep.name)
         show = ep.show
         client = show.client
 
@@ -57,7 +57,7 @@ class pmc_tweet(tweet):
                 if u[1] == host_url]
                 # if u[1].split('/')[-1] == ep.host_url]
 
-        print public_urls
+        print(public_urls)
         if public_urls:
 
             # urls[0] because there can be only 1

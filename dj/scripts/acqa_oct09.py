@@ -3,7 +3,7 @@
 # adds episodes from an external source, like a csv
 
 import datetime 
-import process
+from . import process
 
 from main.models import Client, Show, Location, Episode
 
@@ -50,7 +50,7 @@ class process_sched(process.process):
                start=row['start'], end=row['end'],
                state=self.state_done)
             if self.options.verbose:
-                print ep.__dict__
+                print(ep.__dict__)
             ep.save()
 
     def main(self):
@@ -64,7 +64,7 @@ class process_sched(process.process):
         show,created = Show.objects.get_or_create(client=client,
             name=options.show, slug=options.show)
         if options.verbose:
-            print client, show
+            print(client, show)
         if options.whack:
 # clear out previous runs for this show
             Episode.objects.filter(location__show=show).delete()

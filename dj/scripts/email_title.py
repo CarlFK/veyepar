@@ -8,7 +8,7 @@ from django.core.mail import get_connection, EmailMessage
 from django.template import Context, Template
 
 from process import process
-from email_ab import email_ab
+from .email_ab import email_ab
 # from django.conf import settings
 
 class email_title(email_ab):

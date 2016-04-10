@@ -4,7 +4,7 @@
 
 import datetime
 import pprint
-from urlparse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs
 from process import process as Process
 
 from steve.richardapi import \
@@ -23,7 +23,7 @@ from django.conf import settings
 
 from main.models import Show, Location, Episode
 
-import pw
+from . import pw
 
 def get_video_id(url):
     v_id = url.split('/video/')[1].split('/')[0]
@@ -109,7 +109,7 @@ class add_to_richard(Process):
             video_data['embed'] ="""<object width="640" height="480"><param name="allowfullscreen" value="true"><param name="allowscriptaccess" value="always"><param name="movie" value="http://vimeo.com/moogaloop.swf?show_byline=1&amp;fullscreen=1&amp;clip_id=%(vimeo_id)s&amp;color=&amp;server=vimeo.com&amp;show_title=1&amp;show_portrait=0"><embed src="http://vimeo.com/moogaloop.swf?show_byline=1&amp;fullscreen=1&amp;clip_id=%(vimeo_id)s&amp;color=&amp;server=vimeo.com&amp;show_title=1&amp;show_portrait=0" allowscriptaccess="always" height="480" width="640" allowfullscreen="true" type="application/x-shockwave-flash"></embed></object>""" % params 
 
         if self.options.verbose: 
-            print "1. video_data:"
+            print("1. video_data:")
             pprint.pprint(video_data)
 
         if \
@@ -131,10 +131,10 @@ class add_to_richard(Process):
                 ret = False
             else: 
                 if self.options.verbose: 
-                    print "Adding new..."
+                    print("Adding new...")
 
                 self.pvo_url = self.create_richard(video_data)
-                print 'new richard url', self.pvo_url
+                print('new richard url', self.pvo_url)
                 ep.public_url = self.pvo_url
                 ret = self.pvo_url
 
@@ -159,15 +159,15 @@ class add_to_richard(Process):
         # if self.options.verbose: pprint.pprint( video_data )
      
         if video_data['state'] == STATE_LIVE:
-            print "Currently STATE_LIVE, 403 coming."
+            print("Currently STATE_LIVE, 403 coming.")
 
         if self.options.test:
-            print 'test mode, not updating richard' 
-            print 'veyepar:', pprint.pprint(new_data)
-            print 'ricard:', pprint.pprint(video_data)
+            print('test mode, not updating richard') 
+            print('veyepar:', pprint.pprint(new_data))
+            print('ricard:', pprint.pprint(video_data))
             ret = False
         else: 
-            print '2. updating richard', v_id
+            print('2. updating richard', v_id)
             if self.options.verbose: pprint.pprint( video_data )
             video_data.update(new_data)
             try:
@@ -180,7 +180,7 @@ class add_to_richard(Process):
                 ret = True
 
             except MissingRequiredData as e:
-                print '#2, Missing required fields', e.errors
+                print('#2, Missing required fields', e.errors)
                 import code
                 code.interact(local=locals())
                 raise e
@@ -188,15 +188,15 @@ class add_to_richard(Process):
             except Http4xxException as e:
                 if video_data['state'] == STATE_LIVE:
                     if e.response.status_code == 403:
-                        print "told you 403 was coming."
-                        print "maybe you can fix it with this:"
-                        print "http://{host}/admin/videos/video/{id}/".format(host=self.host['host'],id=v_id) 
-                        print "don't forget to unlock veyepar too."
+                        print("told you 403 was coming.")
+                        print("maybe you can fix it with this:")
+                        print("http://{host}/admin/videos/video/{id}/".format(host=self.host['host'],id=v_id)) 
+                        print("don't forget to unlock veyepar too.")
                     else:
-                        print "expected 403 due to STATE_LIVE, but now..."
+                        print("expected 403 due to STATE_LIVE, but now...")
 
-                print e.response.status_code
-                print e.response.content
+                print(e.response.status_code)
+                print(e.response.content)
                 import code
                 code.interact(local=locals())
                 raise e
@@ -218,11 +218,11 @@ class add_to_richard(Process):
             return url
 
         except MissingRequiredData as e:
-            print '#3, Missing required fields', e
+            print('#3, Missing required fields', e)
             raise e
         except Http4xxException as exc:
-            print exc.response.status_code
-            print exc.response.content
+            print(exc.response.status_code)
+            print(exc.response.content)
 
     def create_richard_episode_dict(self, ep, state=1):
         """ create dict for richard based on Episode
@@ -318,8 +318,8 @@ class add_to_richard(Process):
             tags = [t.strip() for t in tags]
             tags = [t for t in tags 
                     if t not in [
-                     u'enthought', u'scipy_2012', 
-                     u'Introductory/Intermediate',
+                     'enthought', 'scipy_2012', 
+                     'Introductory/Intermediate',
                      ] 
                      and '/' not in t 
                      and t]
@@ -358,16 +358,16 @@ class add_to_richard(Process):
                 scraped_meta = scrapevideo(host_url)
                 break
             except KeyError as e: 
-                print "KeyError", e
+                print("KeyError", e)
             except requests.exceptions.Timeout as e: 
                 # requests.exceptions.Timeout: HTTPConnectionPool(host='www.youtube.com', port=80): Request timed out. (timeout=3)
-                print "requests.exceptions.Timeout:", e
-                print "looping..."
+                print("requests.exceptions.Timeout:", e)
+                print("looping...")
 
 
             
         if self.options.verbose: 
-            print "scraped_meta"
+            print("scraped_meta")
             pprint.pprint( scraped_meta )
 
         return scraped_meta
@@ -381,7 +381,7 @@ class add_to_richard(Process):
             ret = ep.public_url
 
         if self.options.verbose: 
-            print "is_already_in_richard", ret
+            print("is_already_in_richard", ret)
 
         return ret
 

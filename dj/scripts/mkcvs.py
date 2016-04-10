@@ -2,7 +2,7 @@
 
 # exports a cvs file of all epsides in a show
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import xml.etree.ElementTree
 import os
 import pprint
@@ -28,7 +28,7 @@ class csv(process):
         """
         url = 'http://blip.tv/file/%s?skin=rss' % video_id
         # print url
-        xml_code = urllib2.urlopen(url).read()
+        xml_code = urllib.request.urlopen(url).read()
         # open('foo.xml','w').write(xml_code)
         return xml_code
 
@@ -58,7 +58,7 @@ class csv(process):
      if role=='*':
          ret = [ m.attrib['url'] for m in ms ]
      else:
-         roles=[dict(m.items())['{http://blip.tv/dtd/blip/1.0}role'] for m in ms]
+         roles=[dict(list(m.items()))['{http://blip.tv/dtd/blip/1.0}role'] for m in ms]
          # print roles
          try:
             ri=roles.index(role)
@@ -94,10 +94,10 @@ class csv(process):
     # blip_pathname = os.path.join( self.show_dir, "txt", basename+"_blip.xml" )
 
     if self.options.verbose: 
-        print "filenames:" 
+        print("filenames:") 
         for n in ( json_pathname, csv_pathname, txt_pathname, 
                 wget_pathname, html_pathname, ):
-            print n
+            print(n)
 
 # fields to export:
     fields="id conf_key conf_url state name slug primary host_url public_url source archive_mp4_url".split()
@@ -105,7 +105,7 @@ class csv(process):
 # setup csv 
     csv = DictWriter(open(csv_pathname, "w"),fields)
     # write out field names
-    csv.writerow(dict(zip(fields,fields)))
+    csv.writerow(dict(list(zip(fields,fields))))
 
 # setup txt
     txt=open(txt_pathname, "w")
@@ -133,7 +133,7 @@ class csv(process):
         # fields includes output fields that are derived below
         # so fill them with None for now.
         row = dict([(f,getattr(ep,f,None)) for f in fields])
-        if self.options.verbose: print row
+        if self.options.verbose: print(row)
         
         # blip_cli=blip_uploader.Blip_CLI()
         # blip_cli.debug = self.options.verbose
@@ -163,7 +163,7 @@ class csv(process):
         row['name'] = row['name'].encode('utf-8')
         
 
-        if self.options.verbose: print row
+        if self.options.verbose: print(row)
         json_data.append(row)
         csv.writerow(row)
         # txt.write("%s %s\n" % (row['blip'],row['name']))

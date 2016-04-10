@@ -11,7 +11,7 @@ maybe do better later
 
 import subprocess
 import os
-from cStringIO import StringIO
+from io import StringIO
 import ImageFile
 
 import optparse
@@ -110,7 +110,7 @@ class Main:
         self.ocr_cmd = ['tesseract', '/tmp/image.pnm', '/tmp/text'] 
 
         self.base_name=os.path.splitext(filename)[0]
-        if self.debug: print self.base_name
+        if self.debug: print(self.base_name)
 
         pipeline = gst.Pipeline("mypipeline")
         self.pipeline=pipeline
@@ -152,10 +152,10 @@ class Main:
             # print the pipeline 
             elements=list(pipeline.elements())
             elements.reverse()
-            print "pipeline elements:",
+            print("pipeline elements:", end=' ')
             for e in elements:
-                print e.get_factory().get_name(),
-            print
+                print(e.get_factory().get_name(), end=' ')
+            print()
 
         bus = pipeline.get_bus()
         bus.add_signal_watch()
@@ -176,11 +176,11 @@ class Main:
         # if t == gst.MESSAGE_ELEMENT:
         #     pass
         if t == gst.MESSAGE_ERROR:
-            print "error:", message, dir(message), message.parse_error()
+            print("error:", message, dir(message), message.parse_error())
             self.pipeline.set_state(gst.STATE_NULL)  
             gtk.main_quit()
         if t == gst.MESSAGE_EOS:
-            if self.debug: print self.frame, self.words
+            if self.debug: print(self.frame, self.words)
             self.pipeline.set_state(gst.STATE_NULL)  
             gtk.main_quit()
 

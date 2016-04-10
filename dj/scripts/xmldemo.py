@@ -49,7 +49,7 @@ for producer in producers:
 ids=[p.attrib['id'] for p in producers]
 rawfile_index = ids.index('rawvid')
 rawfile_node = producers[rawfile_index]
-print( "rawfile_node resource: %s" % rawfile_node.attrib['resource'] )
+print(( "rawfile_node resource: %s" % rawfile_node.attrib['resource'] ))
 
 # set it to some filename:
 rawfile_node.attrib['resource'] = 'foo.dv'
@@ -62,7 +62,7 @@ new_node=xml.etree.ElementTree.Element('producer', {'resource': 'bar.dv'} )
 #  insert after that:
 nodes = tree.findall('*')
 position=nodes.index(rawfile_node)
-print("rawfile_node position in tree %s" % position )
+print(("rawfile_node position in tree %s" % position ))
 tree.insert(position+1,new_node)
 
 # replace the playlist entry with 2 new ones.
@@ -83,7 +83,7 @@ new_node=xml.etree.ElementTree.Element('entry', {'in':'30', 'out':'40'} )
 # posision 1 because 0 will put it before the one we just added, which would be odd.
 playlist.insert(1,new_node)
 
-print xml.etree.ElementTree.tostring(tree)
+print(xml.etree.ElementTree.tostring(tree))
 
 #############
 # do it again, only using XMLID, wich relies on id attributes being unique across the whole xml file.

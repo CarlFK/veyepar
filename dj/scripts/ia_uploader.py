@@ -31,14 +31,14 @@ Test buckets that have been created for checking this script:
 try:
     # ProgressFile is a subclass of the Python open class
     # as data is read, it prints a visible progress bar 
-    from progressfile import ProgressFile
+    from .progressfile import ProgressFile
 except ImportError:
     # If ProgressFile is not available, default to Python's open
     ProgressFile = open
 
 try:
     # read credentials from a file
-    from pw import archive 
+    from .pw import archive 
 except ImportError:
     # you can fill in your credentials here
     # but better to put in pw.py so that they don't leak
@@ -51,14 +51,14 @@ except ImportError:
 
 def translitr(s):
     for f,t in [
-        (u'\xf6',"o"),
-        (u'\u2019',"'"),
-        (u'\u2013',"-"),
-        (u'\u2014','-'),
-        (u'\u2019',"'"),
-        (u'\u201c','"'),
-        (u'\u2022',"o"),
-        (u'\u2039',"<"),
+        ('\xf6',"o"),
+        ('\u2019',"'"),
+        ('\u2013',"-"),
+        ('\u2014','-'),
+        ('\u2019',"'"),
+        ('\u201c','"'),
+        ('\u2022',"o"),
+        ('\u2039',"<"),
             ]:
         s = s.replace(f,t)
 
@@ -113,7 +113,7 @@ class Uploader(object):
 
     def upload(self):
 
-        print "Uploading file to Archive.org..."
+        print("Uploading file to Archive.org...")
 
         auth = archive[self.user] ## from dict of credentials 
         md = self.get_metadata()
@@ -134,12 +134,12 @@ class Uploader(object):
                 
             # https://archive.org/details/lca2016-Internet_Archive_Universal_Access_Open_APIs
             self.new_url = "https://archive.org/details/{}".format(self.slug)
-            print( "ia: {}".format(self.new_url))
+            print(( "ia: {}".format(self.new_url)))
             ret = True
 
         except HTTPError as e: 
 
-            print( "ia_uploader.py", e )
+            print(( "ia_uploader.py", e ))
 
             # self.ret_text = "internet archive error: %s" % ( e.body )
 
@@ -193,20 +193,20 @@ def test_upload(args):
     u.slug = os.path.splitext(os.path.basename(u.pathname))[0]
     # u.slug = u"PyCon_Montréal"
     # u.slug = "PyCon_Mont"
-    u.slug = unicode(u.slug)
+    u.slug = str(u.slug)
     u.meta = {
-      'title': u"test title",
-      'description': u"test description",
+      'title': "test title",
+      'description': "test description",
       'language': "eng",
-      'tags': [u'test', u'tests', ],
-      'authors':u'people',
+      'tags': ['test', 'tests', ],
+      'authors':'people',
       'start':datetime.datetime.now()
     }
     """
     u.meta = {
      'authors': [u'Simon Cross'],
      'category': 22,
-     'description': u'Adrianna Pi\u0144ska',
+     'description': u'Adrianna Pi\\u0144ska',
      'language': 'eng',
      'privacyStatus': 'unlisted',
      'start': datetime.datetime(2015, 10, 2, 15, 30),
@@ -218,9 +218,9 @@ def test_upload(args):
     logging.basicConfig(level=logging.DEBUG)
     ret = u.upload()
     if ret:
-        print u.new_url
+        print(u.new_url)
     else:
-        print u.ret_text
+        print(u.ret_text)
 
 
 if __name__ == '__main__':

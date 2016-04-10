@@ -58,7 +58,7 @@ sudo apt-get --assume-yes build-dep python-lxml python-psycopg2
 
 # gstreamer bindings
 # apt-get install gir1.2-gst.* python-gobject # gobject-introspection
-sudo apt-get --assume-yes install python-gi \
+sudo apt-get --assume-yes install python3-gi \
     gstreamer1.0-tools \
     gir1.2-gstreamer-1.0 \
     gir1.2-gst-plugins-base-1.0 \
@@ -100,7 +100,7 @@ cd veyepar
 pip install -r setup/requirements.txt
 
 # fix a bunch of things that don't pip install well
-cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
+cd $(python -c "from distutils.sysconfig import get_python_lib; print( get_python_lib())")
 
 # Dabo
 # maybe it works now?  http://trac.dabodev.com/changeset/5554
@@ -111,20 +111,25 @@ git clone https://github.com/dabodev/dabo.git dabo-master
 ln -s dabo-master/dabo 
 
 
-ln -s /usr/lib/python2.7/dist-packages/gi
+pydp=/usr/lib/python3/dist-packages
+# ln -s /usr/lib/python2.7/dist-packages/gi
+ln -s $pydp/dist-packages/gi
 
 # to hookinto local open-cv
 # python -c "import cv2;print cv2.__file__" 
 # /usr/lib/python2.7/dist-packages/cv2.so
-ln -s /usr/lib/python2.7/dist-packages/cv2.so
+# ln -s /usr/lib/python2.7/dist-packages/cv2.so
+ln -s $pydp/cv2.so
 
 # python -c "import tesseract; print tesseract.__file__"
 # /usr/lib/python2.7/dist-packages/tesseract.pyc
-ln -s /usr/lib/python2.7/dist-packages/tesseract.pyc
+# ln -s /usr/lib/python2.7/dist-packages/tesseract.pyc
+ln -s $pydp/tesseract.pyc
 
 # python -c "import _tesseract;print _tesseract.__file__"
 # /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
-ln -s /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
+# ln -s /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
+ln -s $pydp/_tesseract.x86_64-linux-gnu.so
 
 cd -
 

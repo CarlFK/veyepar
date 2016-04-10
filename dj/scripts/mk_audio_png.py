@@ -40,7 +40,7 @@ class mk_audio_png(process):
         
     
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
+        if self.options.verbose: print(ep.id, ep.name)
 
         self.files = []
         for ext in self.options.upload_formats:

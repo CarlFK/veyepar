@@ -34,7 +34,7 @@ def callme_maybe(f):
 
     # if the name is on the list, call it.
     if name in call_list:
-        print "running %s..." % name
+        print("running %s..." % name)
         return f
     else:
         def skip(*args,**kwargs):
@@ -63,8 +63,8 @@ class Run_Tests(object):
 
         if ret['returncode']: 
             ret['command'] = cmd
-            print "command returned", ret
-            print "cmd:", cmd
+            print("command returned", ret)
+            print("cmd:", cmd)
         return ret
 
 
@@ -77,7 +77,7 @@ class Run_Tests(object):
     user.is_superuser=True
     user.is_staff=True
     user.save()
-    print user
+    print(user)
   return
 
  # @callme_maybe
@@ -121,7 +121,7 @@ class Run_Tests(object):
    # get melt version to stick into video
    melt_outs = self.run_cmd(['melt', '--version'], True )
    melt_ver = melt_outs['serr'].split('\n')[0]
-   print melt_ver
+   print(melt_ver)
 
    dv_dir = self.show_dir + '/dv/test_loc/2010-05-21'
    if not os.path.exists(dv_dir): os.makedirs(dv_dir)
@@ -149,7 +149,7 @@ class Run_Tests(object):
            parms['audio-track'] = "static/goforward.wav" 
            parms['bgcolour'] = "blue"
 
-       print parms
+       print(parms)
 
        # make a text file to use as encoder input
        text = ["test %s - %s" % ( i, self.options.dv_format),
@@ -158,7 +158,7 @@ class Run_Tests(object):
                   '',
                   socket.gethostname()
               ]
-       print text
+       print(text)
        tf = open(text_file,'w')
        tf.write('\n'.join(text))
        tf.close()
@@ -202,7 +202,7 @@ pix_fmt=yuv411p" % parms
            'audio_frames':1,
            'pix_fmt':'yuv411p',
            }
-   print parms
+   print(parms)
 
    # make a text file to use as encoder input
    text = ["ABCDEFG", ]
@@ -220,7 +220,7 @@ pix_fmt=yuv411p" % parms
  " % parms
 
    # pix_fmt=%(pix_fmt)s
-   print cmd
+   print(cmd)
    self.run_cmd(cmd.split())
 
    # grab a frame
@@ -269,14 +269,14 @@ pix_fmt=yuv411p" % parms
   # this should associate clips2,3,4 with the test episode
   # from main.views import mk_cuts
   # cuts = mk_cuts(episode)
-  print "assing dv..."
+  print("assing dv...")
   import assocdv
   p=assocdv.ass_dv()
   p.main()
-  print p.cuts
+  print(p.cuts)
   cut=p.cuts[1]
   # cut=cuts[1]
-  print cut
+  print(cut)
   # cut.start="0:0:1"
   # cut.end="0:0:10"
   # cut.apply=False
@@ -441,7 +441,7 @@ pix_fmt=yuv411p" % parms
     -ao null \
     -vo pnm:outdir=%(tmp_dir)s \
     %(filename)s" % parms
-  print cmd
+  print(cmd)
   self.run_cmd(cmd.split())
 
   test_file = os.path.join(tmp_dir, "00000002.ppm" )
@@ -450,9 +450,9 @@ pix_fmt=yuv411p" % parms
   
   # not sure what is tacking on the \n, but it is there, so it is here.
   acceptables = ["ABCDEFG\n","_BCDEFG\n"]
-  print "acceptables:", acceptables
+  print("acceptables:", acceptables)
 
-  print "ocr results:", text
+  print("ocr results:", text)
   
   result = (text in acceptables)
 
@@ -502,7 +502,7 @@ pix_fmt=yuv411p" % parms
   for line in text.split('\n'):
       if "BESTPATH" in line:
           words = line.split()
-          print words
+          print(words)
           text = words[3:-2]
           result = ( text == ['GO', 'FORWARD', 'TEN', 'METERS'] )
 
@@ -528,11 +528,11 @@ pix_fmt=yuv411p" % parms
          err = abs(delta * 100 / expected_size )
          if err > tolerance or self.options.verbose:
              ret = False
-             print ext
-             print "expectected: %15d" % expected_size
-             print "actual:      %15d" % actual_size
-             print "delta:       %15d" % delta
-             print "error:       %15d%%" % err
+             print(ext)
+             print("expectected: %15d" % expected_size)
+             print("actual:      %15d" % actual_size)
+             print("delta:       %15d" % delta)
+             print("error:       %15d%%" % err)
 
      return ret
 
@@ -572,12 +572,12 @@ def main():
     # result['audio'] = t.sphinx_test() # sphinx no longer packaged :(
     result['sizes'] = t.size_test()
 
-    print 
-    print 'test results', 
+    print() 
+    print('test results', end=' ') 
     pprint.pprint(result)
 
     if not os.path.exists(test_filename):
-        print '\n'.join(fnames)
+        print('\n'.join(fnames))
         open(test_filename,'w').write('\n'.join(fnames))
 
 if __name__=='__main__':

@@ -28,7 +28,7 @@ file_names="sacwedding/sacwedding003.dv"
 seq=0
 for fn in file_names.split('\n'): 
     pn= date_dir+'/'+fn 
-    print pn, 
+    print(pn, end=' ') 
     dv = Raw_File.objects.get(filename = pn)
     seq+=1
 

@@ -16,7 +16,7 @@ class mv(process):
     ready_state = None
 
     def process_ep(self, ep):
-        if self.options.verbose: print ep.id, ep.name
+        if self.options.verbose: print(ep.id, ep.name)
         file_name = ep.slug + ".mp4"
         src = os.path.join( self.show_dir, "mp4", file_name )
         dst = os.path.join( self.show_dir, "mp4", "found", file_name )
