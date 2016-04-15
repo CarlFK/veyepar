@@ -31,14 +31,14 @@ Test buckets that have been created for checking this script:
 try:
     # ProgressFile is a subclass of the Python open class
     # as data is read, it prints a visible progress bar 
-    from .progressfile import ProgressFile
+    from progressfile import ProgressFile
 except ImportError:
     # If ProgressFile is not available, default to Python's open
     ProgressFile = open
 
 try:
     # read credentials from a file
-    from .pw import archive 
+    from pw import archive 
 except ImportError:
     # you can fill in your credentials here
     # but better to put in pw.py so that they don't leak
@@ -101,11 +101,10 @@ class Uploader(object):
             'licenseurl': "http://creativecommons.org/licenses/by/3.0/",
             # this is visible on the web page as the description
             'description':translitr(self.meta['description']),
-            'publicdate':self.meta['start'],
+            'publicdate':self.meta['start'].isoformat(),
         }
 
         if self.test:
-            # meta['x-archive-meta-collection'] = 'test_collection'
             meta['collection'] = 'test_collection'
 
         return meta
@@ -117,7 +116,7 @@ class Uploader(object):
 
         auth = archive[self.user] ## from dict of credentials 
         md = self.get_metadata()
-        pf = ProgressFile(self.pathname, 'r')
+        pf = ProgressFile(self.pathname, 'rb')
 
         item = ia.get_item(self.slug)
 
@@ -126,7 +125,7 @@ class Uploader(object):
             # actually upload
             ret = item.upload(pf, metadata=md, 
                     access_key=auth['access'], secret_key=auth['secret'],
-                    ignore_preexisting_bucket=True,
+                    # ignore_preexisting_bucket=True,
                     verbose=self.verbose)
 
             if self.debug_mode:

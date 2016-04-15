@@ -30,7 +30,7 @@ sudo apt-get --assume-yes install python-software-properties
 
 sudo apt-get --assume-yes update
 
-sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape mplayer vlc git vim mencoder python-virtualenv sox python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav gir1.2-gstreamer-1.0
+sudo apt-get --assume-yes install python-gtk2 gocr imagemagick python-imaging python-reportlab python-pip mercurial subversion inkscape mplayer vlc git vim python3.4-venv sox python-dev python-gst-1.0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-libav gir1.2-gstreamer-1.0
 
 # Use Shotcut's melt for production,
 # but install this for the test at the end of this script
@@ -87,7 +87,8 @@ sudo apt-get --assume-yes install python3-gi \
 # printf "workon veyepar\n" >> ~/.bashrc
 
 mkdir -p ~/.virtualenvs/
-virtualenv ~/.virtualenvs/veyepar
+# virtualenv ~/.virtualenvs/veyepar
+pyvenv-3.4 ~/.virtualenvs/veyepar
 printf "source  ~/.virtualenvs/veyepar/bin/activate\n" >> ~/.bashrc
 source  ~/.virtualenvs/veyepar/bin/activate
 

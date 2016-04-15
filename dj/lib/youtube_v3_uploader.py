@@ -354,11 +354,12 @@ class Uploader():
             print(self.pathname)
             pprint.pprint(self.meta)
 
-        pf = ProgressFile(self.pathname)
+        pf = ProgressFile(self.pathname, 'rb')
 
         self.meta['description'] = clean_description(
                 self.meta['description'])
 
+        # status, response = initialize_upload(youtube, self.pathname, self.meta)
         status, response = initialize_upload(youtube, pf, self.meta)
 
         self.response = response

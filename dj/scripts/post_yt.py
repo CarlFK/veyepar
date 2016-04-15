@@ -5,18 +5,18 @@
 from process import process
 
 import youtube_v3_uploader
-from . import ia_uploader
-from . import rax_uploader
+import ia_uploader
+import rax_uploader
 
 import os
 import pprint
 
-from . import pw
+import pw
 
 from django.db import DatabaseError
 from django.template.defaultfilters import slugify
 
-from .add_to_richard import get_video_id
+# from add_to_richard import get_video_id
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 

@@ -10,10 +10,10 @@ from django.conf import settings
 
 from django.template.defaultfilters import slugify
 
-from . import pw
+import pw
 
-from . import rax_uploader
-from . import archive_uploader
+import rax_uploader
+import archive_uploader
 import steve.richardapi
 
 import os

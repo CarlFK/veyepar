@@ -120,7 +120,8 @@ class Run_Tests(object):
    """
    # get melt version to stick into video
    melt_outs = self.run_cmd(['melt', '--version'], True )
-   melt_ver = melt_outs['serr'].split('\n')[0]
+   melt_ver = melt_outs['serr'].split(b'\n')[0]
+   melt_ver = str(melt_ver)
    print(melt_ver)
 
    dv_dir = self.show_dir + '/dv/test_loc/2010-05-21'

@@ -11,7 +11,6 @@ import random
 # from django.forms import Textarea
 from django import forms
 
-
 from .unique_slugify import unique_slugify
 from functools import reduce
 

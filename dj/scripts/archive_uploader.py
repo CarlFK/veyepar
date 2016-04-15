@@ -30,14 +30,14 @@ Test buckets that have been created for checking this script:
 try:
     # ProgressFile is a subclass of the Python open class
     # as data is read, it prints a visible progress bar 
-    from .progressfile import ProgressFile
+    from progressfile import ProgressFile
 except ImportError:
     # If ProgressFile is not available, default to Python's open
     ProgressFile = open
 
 try:
     # read credentials from a file
-    from .pw import archive 
+    from pw import archive 
 except ImportError:
     # you can fill in your credentials here
     # but better to put in pw.py so that they don't leak

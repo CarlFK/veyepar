@@ -102,10 +102,7 @@ import operator
 
 import xml.etree.ElementTree
 
-try:
-    import json
-except ImportError:
-    import simplejson as json
+import json
 
 # import gdata.calendar.client
 # import gdata.calendar.service
