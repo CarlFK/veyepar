@@ -375,7 +375,19 @@ def emailer(show_id, ):
 
     return
 
+def show_urls(request,show_id):
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+    episodes=Episode.objects.filter(show=show).order_by('start')
 
+    return render_to_response("show_urls.html",
+        {
+          'client':client,
+            'show':show, 
+            'episodes':episodes,
+            },
+        context_instance=RequestContext(request) )
+ 
 def schedule(request, show_id, show_slug, template_name):
 
     if "blank" in request.GET:

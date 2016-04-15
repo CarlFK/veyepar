@@ -37,7 +37,11 @@
 <td><a href="{% url "pdfs" 'talk_signs' show.id %}{{show.slug}}_room_signs.pdf">room_signs.pdf</a></td>
 <td><a href="{% url "pdfs" 'release_agreements' show.id %}{{show.slug}}_release.pdf">release.pdf</a></td>
 
-<td><a href="{% url "meet_ann" show.id %}">meeting announcement</a></td>
+<td>
+    <a href="{% url "meet_ann" show.id %}">meeting announcement</a>
+    <a href="{% url "show_urls" show.id %}">show_urls</a>
+</td>
+
 </tr>
 
 <tr>

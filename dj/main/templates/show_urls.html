@@ -1,0 +1,5 @@
+{{client.name}}<br>
+{{show.name}}<br>
+{% for episode in episodes %} {{forloop.counter}}. {{ episode.name }} ({{episode.authors}}) {{episode.host_url}}<br>
+{% endfor %}
+
