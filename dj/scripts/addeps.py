@@ -108,10 +108,10 @@ import json
 # import gdata.calendar.service
 
 # for google calandar:
-from . import pw 
+import pw 
 # import lxml.etree
 
-from . import process
+import process
 
 from main.models import Client, Show, Location, Episode, Raw_File
 
@@ -3181,6 +3181,67 @@ class add_eps(process.process):
 
 
 
+    def linuxwochen(self,schedule,show):
+
+        conf = schedule['schedule']['conference']
+
+        schedule = []
+        for day in conf['days']:
+            for room in day['rooms']:
+                for event in day['rooms'][room]:
+                    if self.options.verbose: pprint.pprint(event)
+                    schedule.append(event)
+
+        field_maps = [
+                # ('id','id'),
+                ('room','location'),
+                ('title','name'),
+                ('persons','authors'),
+                ('','emails'),
+                ('description','description'),
+                ('date','start'),
+                ('duration','duration'),
+                # ('released','released'),
+                # ('license','license'),
+                ('track','tags'),
+                ('language','language'),
+                ('id','conf_key'),
+                ('id','conf_url'),
+                ('','twitter_id'),
+            ]
+        # https://cfp.linuxwochen.at/de/LWW16/public/events/396
+
+        events = self.generic_events(schedule, field_maps)
+
+        # remove events with no room (like Break)
+        # events = [e for e in events if e['location'] is not None ]
+
+        for event in events:
+            if self.options.verbose: pprint.pprint(event)
+
+            event['conf_key']=str(event['conf_key'])
+
+            event['start'] = datetime.datetime.strptime( 
+                event['start'], 
+                '%Y-%m-%dT%H:%M:%S+02:00' )
+
+            event['duration'] = "{}:00".format(event['duration']) 
+
+
+            event['authors']=', '.join([
+                p['full_public_name'] for p in event['authors']])
+
+            event['released']=False
+            event['license'] = 'CC BY-SA'
+
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
+
 #################################################3
 # main entry point 
 
@@ -3349,6 +3410,9 @@ class add_eps(process.process):
             # Zookeepr
             return self.zoo(schedule,show)
 
+        if self.options.show =='linuxwochen_wien_2016':
+            return self.linuxwochen(schedule,show)
+	   
         if self.options.show =='osdc2015':
             return self.osdc2015(schedule,show)
 	   
