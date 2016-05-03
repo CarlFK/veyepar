@@ -3221,6 +3221,8 @@ class add_eps(process.process):
 
             event['conf_key']=str(event['conf_key'])
 
+            event['conf_url']="https://cfp.linuxwochen.at/de/LWW16/public/events/{}".format(event['conf_key'])
+
             event['start'] = datetime.datetime.strptime( 
                 event['start'], 
                 '%Y-%m-%dT%H:%M:%S+02:00' )
@@ -3234,6 +3236,63 @@ class add_eps(process.process):
             event['released']=False
             event['license'] = 'CC BY-SA'
 
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
+
+    def amberapp(self,schedule,show):
+
+        schedule = schedule['speaker_list']
+
+        field_maps = [
+                # ('id','id'),
+                ('room','location'),
+                ('title','name'),
+                ('presenter_list','authors'),
+                ('presenter_list','emails'),
+                ('presenter_list','twitter_id'),
+                ('description','description'),
+                ('start_time','start'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('','tags'),
+                ('talk_language','language'),
+                ('id','conf_key'),
+                ('conf_url','conf_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        # remove events with no room (like Break)
+        # events = [e for e in events if e['location'] is not None ]
+
+        for event in events:
+            if self.options.verbose: pprint.pprint(event)
+
+            event['conf_key']=str(event['conf_key'])
+
+            event['start'] = datetime.datetime.strptime( 
+                event['start'], 
+                '%Y-%m-%d %H:%M:%S' )
+
+            event['duration'] = "{}:00".format(event['duration']) 
+
+
+            event['authors']=', '.join(
+                [ d[list(d.keys())[0]]['name'] for d in event['authors']])
+            
+            event['twitter_id']=', '.join(
+                [ d[list(d.keys())[0]]['twitter_id'] for d in event['twitter_id']])
+
+            event['emails']=', '.join(
+                [ d[list(d.keys())[0]]['email'] for d in event['emails']])
+            
+            
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
@@ -3410,6 +3469,10 @@ class add_eps(process.process):
             # Zookeepr
             return self.zoo(schedule,show)
 
+
+        if self.options.show =='depy_2016':
+            return self.amberapp(schedule,show)
+    
         if self.options.show =='linuxwochen_wien_2016':
             return self.linuxwochen(schedule,show)
 	   
