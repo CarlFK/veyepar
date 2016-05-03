@@ -51,6 +51,16 @@ label bootnext
 	# The alternative is to use 
 	localboot 0
 
+label ubuntu-xenial-amd64-handsoff
+        linux ubuntu/xenial/amd64/linux
+        append initrd=ubuntu/xenial/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= netcfg/dhcpv6_timeout=5 DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" partman-auto/disk="/dev/sdb" -- vga=6
+        ipappend 2
+
+label ubuntu-wily-amd64-handsoff
+        linux ubuntu/wily/amd64/linux
+        append initrd=ubuntu/wily/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= netcfg/dhcpv6_timeout=5 DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" partman-auto/disk="/dev/hda" -- vga=6
+        ipappend 2
+
 label ubuntu-vivid-amd64-handsoff
 	linux ubuntu/vivid/amd64/linux
 	append initrd=ubuntu/vivid/amd64/initrd.gz root=/dev/rd/0 rw auto=true netcfg/wireless_wep= interface=auto hostname= netcfg/dhcpv6_timeout=5 DEBCONF_DEBUG=5 url=g2a tasks="ubuntu-desktop" -- vga=6

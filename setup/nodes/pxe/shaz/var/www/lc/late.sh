@@ -135,7 +135,7 @@ wget -N http://boot.ipxe.org/ipxe.lkrn
 # sed docs http://www.opengroup.org/onlinepubs/009695399/utilities/sed.html
 
 case $suite in
-  trusty|utopic|vivid)
+  trusty|utopic|vivid|wily|xenial)
   CONF=/etc/lightdm
   if [ -d $CONF ]; then
     cd $CONF
