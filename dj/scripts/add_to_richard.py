@@ -7,14 +7,16 @@ import pprint
 from urllib.parse import urlparse, parse_qs
 from process import process as Process
 
+"""
 from steve.richardapi import \
         create_video, get_video, update_video, \
         STATE_DRAFT, STATE_LIVE, \
         MissingRequiredData
+"""
 
-from steve.restapi import Http4xxException
+# from steve.restapi import Http4xxException
 
-from steve.util import scrapevideo
+# from steve.util import scrapevideo
 
 import requests
 
@@ -23,7 +25,7 @@ from django.conf import settings
 
 from main.models import Show, Location, Episode
 
-from . import pw
+import pw
 
 def get_video_id(url):
     v_id = url.split('/video/')[1].split('/')[0]

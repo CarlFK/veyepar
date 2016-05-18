@@ -748,6 +748,10 @@ def client(request,client_slug=None):
 
     client=get_object_or_404(Client,slug=client_slug)
 
+    shows=Show.objects.filter(client=client)\
+            .annotate( max_date=Max('episode__start'))\
+            .order_by('-max_date')
+
     class Show_Form(ModelForm):
         class Meta:
             model=Show
@@ -765,19 +769,24 @@ def client(request,client_slug=None):
                 # print form.errors
         else:
 
+
             # locations=Location.objects.filter(active=True).order_by('sequence')
             # I am not sure what a good default is for locations.
             locations=[]
 
-            form=Show_Form(
-                initial={'client':client.id, 'sequence':1,
-                         'locations': [o.pk for o in locations] })
+            initial={'client':client.id, 'sequence':1}
+            if shows:
+                last_show = shows[0]
+                initial['name']=last_show.name
+                initial['locations']=\
+                        last_show.locations.filter(
+                        # last_show.locations.get_queryset().filter(
+                        active=True)
+                initial['sequence']=last_show.sequence+1
+
+            form=Show_Form( initial=initial )
     else:
         form=None
-
-    shows=Show.objects.filter(client=client)\
-            .annotate( max_date=Max('episode__start'))\
-            .order_by('-max_date')
 
     return render_to_response('client.html',
         {'client':client,
@@ -1920,6 +1929,7 @@ def mk_cuts(episode,
     seq=0
     started=False ## magic to figure out when talk really started
     for rf in rfs:
+        print("rf s:{}  e{}".format(rf.start, rf.end))
         seq+=1
         if (seq>1 and rf.get_minutes() > short_clip_time) or \
               episode.start == rf.start: 
@@ -1940,45 +1950,40 @@ def mk_cuts(episode,
             # (like it is a dupe, or lunch)
             # and the segment is in the time slot
             if rfs.count() == 1:
-                cl.apply = True
+                apply = True
             else:
-                cl.apply = started \
+                apply = started \
                     and not rf.trash \
                     and (rf.start < episode.end)
-
-            # Trim the start/end clips
-            # does not make sense for scheduled (estimated) start time
-            # does make sense if the episode start/end is accurate.
-            if rf.start < episode.start < rf.end:
-                d = episode.start - rf.start
-                # print(d)
-                ### pulling - this makes it harder when done the right way
-                # cl.start = d.total_seconds()
-
-            if rf.start < episode.end < rf.end:
-                d = episode.end - rf.start
-                ### pulling - this makes it harder when done the right way
-                # cl.end = d.total_seconds()
+            cl.apply = apply
 
             # if there are mark clicks, 
+            #   break the current file into more cuts
             marks = Mark.objects.filter(
-                    click__gte = rf.start, click__lte = rf.end)
-            middle = episode.start + (episode.end-episode.start)/2
-            print(middle)
-            # If the mark is before the middle, it is probably the start
-            # else it is probably the end.
+                    location=episode.location,
+                    click__gte = rf.start, click__lte = rf.end
+                        ).order_by('click')
             for mark in marks:
-                # d is offset from start, in and out points
-                d = mark.click - rf.start
-                if mark.click < middle:
-                    cl.start = d.total_seconds()
-                else:
-                    cl.end = d.total_seconds()
+                print("mark:{}".format(mark))
+                seq+=1
+                # dif is offset from start, in and out points
+                dif = mark.click - rf.start
+                end = dif.total_seconds()
+                print('end: {}'.format(end))
+                cl.end = end
+                cl.save()
 
-            # for Node PiP mixing
-            # Bad bad bad hack for Node...
-            # if "mkv" in rf.filename:
-            #    cl.apply = False
+                start = end
+                cl,created = Cut_List.objects.get_or_create(
+                    episode=episode,
+                    raw_file=rf,
+                    start = start,
+                    )
+                print("cl,created: {},{}".format(cl,created))
+                if created:
+                    cl.sequence=seq
+                    cl.apply = apply
+
 
             cl.save()
 

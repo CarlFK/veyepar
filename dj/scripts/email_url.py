@@ -3,7 +3,7 @@
 # email_url.py
 # emails the video URL to the presenters
 
-from .email_ab import email_ab
+from email_ab import email_ab
 
 class email_url(email_ab):
 

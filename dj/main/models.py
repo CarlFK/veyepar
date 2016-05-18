@@ -71,7 +71,7 @@ class Client(models.Model):
     email_id = models.CharField(max_length=10, blank=True, null=True)
     tweet_id = models.CharField(max_length=10, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @models.permalink
@@ -106,7 +106,7 @@ class Location(models.Model):
     def natural_key(self):
         return self.name
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s" % ( self.name )
 
     class Meta:
@@ -135,7 +135,7 @@ class Show(models.Model):
     @property
     def client_name(self):
         return self.client
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s" % ( self.client_name, self.name )
     @models.permalink
     def get_absolute_url(self):
@@ -200,7 +200,7 @@ class Raw_File(models.Model):
         # return durration in minutes (float)
         return self.get_seconds()/60.0
 
-    def __unicode__(self):
+    def __str__(self):
         return self.filename
 
     @models.permalink
@@ -220,7 +220,7 @@ class Quality(models.Model):
     level = models.IntegerField()
     name = models.CharField(max_length=35)
     description = models.TextField(blank=True)
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 STATES=[
@@ -337,7 +337,7 @@ class Episode(models.Model):
     def get_absolute_url(self):
         return ('episode', [self.id])
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
  
     def cuts_time(self):
@@ -393,7 +393,7 @@ class Cut_List(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('episode', [self.episode.id])
-    def __unicode__(self):
+    def __str__(self):
         return "%s - %s" % (self.raw_file, self.episode.name)
     class Meta:
         ordering = ["sequence"]
@@ -401,8 +401,24 @@ class Cut_List(models.Model):
     def get_start_seconds(self):
         return time2s( self.start )
 
+    def get_start_wall(self):
+        if self.start:
+            return self.raw_file.start + \
+                    datetime.timedelta(seconds=self.get_start_seconds())
+        else:
+            return self.raw_file.start
+
     def get_end_seconds(self):
         return time2s( self.end )
+
+    def get_end_wall(self):
+        if self.end:
+            return self.raw_file.start + \
+                    datetime.timedelta(seconds=self.get_end_seconds())
+        else:
+            return self.raw_file.end
+
+
 
     def duration(self):
         # calc size of clip in secconds 
@@ -429,7 +445,7 @@ class State(models.Model):
     description = models.CharField(max_length=135, blank=True)
     class Meta:
         ordering = ["sequence"]
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
 class Image_File(models.Model):

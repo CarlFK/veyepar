@@ -22,8 +22,8 @@ django-extensions
 
 # pyrax
 # till my bug fix patch hits pypi
-git+https://github.com/rackspace/pyrax.git@working#egg=pyrax
-pbr==0.11
+# git+https://github.com/rackspace/pyrax.git@working#egg=pyrax
+# pbr==0.11
 prettytable
 babel
 iso8601

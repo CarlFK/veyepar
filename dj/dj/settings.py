@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'volunteers',
     'rest_framework',
     'api',
+    'django_extensions',
     # "debug_toolbar",
     # 'django_databrowse',
 )

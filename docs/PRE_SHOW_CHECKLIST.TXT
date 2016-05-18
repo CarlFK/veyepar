@@ -8,10 +8,13 @@ client checklist:
     - room access times for setup, warmup, packup.
     - small room for storage of extra gear and shipping box (optional)
     - security for equipment left in rooms overnight
-    - Podium, 2 tables, 2 chairs, room layout diagrams
-       (attached image is from another venue)
-    - power and 6 outlet power strip at each of the 2 tables.
-    - AV contact to arrange audio (xlr from PA to camera)
+    - 17" or larger 16:9 lcd monitor for presenter, hdmi in
+    - Podium, 
+    - 48" tall small table for LCD and equipment.
+    - hdmi cable to send 720p presentation to projector
+    - about 30' in front of podium: classroom table and  2 chairs
+    - ballanced mono xlr from PA to camera
+    - 21" or larger 16:9 lcd monitor for video mixer, hdmi in
     - internet access (to process and upload videos overnight and during show)
 
   youtube account (will use NextDayVideo if none specified)

@@ -9,10 +9,9 @@
 import twitter
 
 import urllib.request, urllib.error, urllib.parse
-import urllib.request, urllib.parse, urllib.error
 import pprint
 
-from . import pw  # see pw_samp.py for sample.
+import pw  # see pw_samp.py for sample.
 
 from process import process
 

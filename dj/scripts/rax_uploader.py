@@ -11,7 +11,8 @@ import pyrax
 pyrax.set_setting("identity_type", "rackspace")
 
 from pyrax.exceptions import PyraxException
-import urllib.request, urllib.parse, urllib.error 
+# import urllib.request, urllib.parse, urllib.error 
+import urllib
 
 # The following 2 imports are wrapped in try/except so that 
 # this code will run without any additional files.

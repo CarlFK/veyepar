@@ -8,7 +8,7 @@ from django.core.mail import get_connection, EmailMessage
 from django.template import Context, Template
 
 from process import process
-from .email_ab import email_ab
+from email_ab import email_ab
 # from django.conf import settings
 
 class email_title(email_ab):
@@ -31,7 +31,7 @@ http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.sh
 {% endif %}
 {% if ep.public_url%}The main page for the video will be here:
 {{ep.public_url}} 
-{% else %}and the Description:
+{% else %}Description:
   {% if ep.description%}
     === begin ===
     {{ep.description}} 
@@ -60,6 +60,8 @@ Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} 
             image_url = True
         else:
             image_url = False
+        # rax upload broken
+        image_url = False
 
         return {'image_url':image_url}
 

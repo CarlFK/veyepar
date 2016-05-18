@@ -7,6 +7,7 @@
 # public = advertised, it is ready for the world to view.  
 #     It will be tweeted at @NextDayVideo
 
+"""
 from steve.richardapi import \
         get_video, update_video, \
         STATE_DRAFT, STATE_LIVE, \
@@ -14,13 +15,15 @@ from steve.richardapi import \
 
 from steve.restapi import Http4xxException
 
-from .add_to_richard import get_video_id
+from add_to_richard import get_video_id
+"""
+
+from process import process
 
 import youtube_v3_uploader
 
-from . import pw
+import pw
 
-from process import process
 import pprint
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
