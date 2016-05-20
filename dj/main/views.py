@@ -778,10 +778,8 @@ def client(request,client_slug=None):
             if shows:
                 last_show = shows[0]
                 initial['name']=last_show.name
-                initial['locations']=\
-                        last_show.locations.filter(
-                        # last_show.locations.get_queryset().filter(
-                        active=True)
+                initial['locations']= \
+                        last_show.locations.filter(active=True)
                 initial['sequence']=last_show.sequence+1
 
             form=Show_Form( initial=initial )

@@ -2197,6 +2197,10 @@ class add_eps(process.process):
 
     def wtd_na_2014(self, schedule, show):
 
+        # given a google doc sheet, 
+        #  export to someting
+        #  read in the local file.
+
         # remove rows that have no crowdsource_ref, because spreadsheet
         # schedule = [s for s in schedule if s['Time Start']]
         schedule = [s for s in schedule if 
@@ -3527,6 +3531,7 @@ class add_eps(process.process):
 
         if url.startswith("http://lanyrd.com"):
         # if self.options.show =='write_the_docs_2013':
+        # if self.options.show =='write_the_docs_2016':
             return self.lanyrd(schedule,show)
 
         if self.options.show in ['pyohio_2015',"pycon_2014_warmup"]:
