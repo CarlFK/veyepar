@@ -2267,7 +2267,7 @@ class add_eps(process.process):
             ('title','name'),
             ('speakers','authors'),
             ('twitter','twitter_id'),
-            # ('','emails'),
+            ('email','emails'),
             ('abstract','description'),
             ('start_time','start'),
             ('end_time','end'),
@@ -2310,6 +2310,9 @@ class add_eps(process.process):
             event['twitter_id'] = " ".join( 
                     a['twitter'] for a in event['authors']
                     if a['twitter'] is not None)
+            while len(event['twitter_id'])>50: # 135:
+                event['twitter_id'] = " ".join( 
+                        event['twitter_id'].split()[:-1])
 
             # clobber author object with names.
             event['authors'] = ", ".join( 
@@ -2338,8 +2341,9 @@ class add_eps(process.process):
             event['tags'] = ", ".join( event['tags'])
 
             # Bogus, but needed to pass
-            event['emails'] = ''
-            event['released'] = True
+            # event['emails'] = ''
+            # event['released'] = bool(event['twitter_id'])
+            event['released'] = "*" not in event['name']
             event['license'] =  ''
 
 
@@ -3532,6 +3536,10 @@ class add_eps(process.process):
         if url.startswith("http://lanyrd.com"):
         # if self.options.show =='write_the_docs_2013':
         # if self.options.show =='write_the_docs_2016':
+            return self.lanyrd(schedule,show)
+
+        if self.options.show =='write_docs_na_2016':
+            # for Eric's email me a file process
             return self.lanyrd(schedule,show)
 
         if self.options.show in ['pyohio_2015',"pycon_2014_warmup"]:

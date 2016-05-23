@@ -73,7 +73,7 @@ class enc(process):
         title = episode.name
         authors = episode.authors
 
-        if episode.show.slug == 'wtd_na_2015':
+        if episode.show.slug == 'write_docs_na_2016':
             title = title.upper()
             authors = authors.upper()
 
