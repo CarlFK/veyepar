@@ -1,0 +1,36 @@
+date of show
+primary point of contact, secodary to be CCed, plus chair.
+presenters given the option to release as part of talk submission
+data driven schedule
+URL of public facing schedule (html)
+URL of schedule api (json)
+URL of test data schedule (json)
+URL of sponsor name's and logo URLs (json)
+sponsor logo slide show loop to display between talks odp
+title slide template for videos
+venue contact (works for the venue, has final say in what is and isn't allowed, what has been contracted, what will cost extra, etc.)
+    - shipping department to receive 800 lb box of gear  (it has wheels)
+    - room access times for setup, warmup, packup.
+    - small room for storage of extra gear and shipping box (optional)
+    - security for equipment left in rooms overnight
+    - 17" or larger 16:9 lcd monitor for presenter, hdmi in
+    - Podium (and power for presenter laptop, lcd and recording gear) 
+    - 48" tall small table for LCD and equipment.
+    - hdmi cable to send 720p presentation to projector
+    - about 30' in front of podium: classroom table and 2 chairs
+    - ballanced mono xlr from PA to camera at table
+    - 21" or larger 16:9 lcd monitor for video mixer, hdmi in
+    - internet access (to process and upload videos overnight and during show)
+
+  youtube account (will use NextDayVideo if none specified)
+  twitter hashtag for event
+    will tweet from NextDayVideo if none specified.
+  volunteers
+    names and contact info
+    training
+      days/weeks before show
+        process training video 
+        read tips - http://dvswitch.alioth.debian.org/wiki/event_volunteer/
+      attend 30 min training at show
+    conference reg for whole crew
+    rooms at preferred hotel - 5 min walk from venue
