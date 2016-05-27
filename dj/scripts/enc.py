@@ -378,6 +378,7 @@ class enc(process):
                 else:
                     cut['normalize']='-12.0'
 
+                cut['video_delay']='0.0'
                 cuts.append(cut)
 
             return cuts
@@ -499,6 +500,8 @@ class enc(process):
             # run encoder:
             if self.options.noencode:
                 print("sorce files generated, skipping encode.")
+                if self.options.melt:
+                    self.run_cmd(['melt', mlt_pathname])
                 ret = False
             else:
                 ret = self.run_cmds(episode, cmds, )
@@ -624,6 +627,8 @@ class enc(process):
                           help='encode shell script')
         parser.add_option('--noencode', action="store_true",
                           help="don't encode, just make svg, png, mlt")
+        parser.add_option('--melt', action="store_true",
+                          help="call melt slug.melt (only w/noencode)")
         parser.add_option('--load-temp', action="store_true",
                           help='copy .dv to temp files')
         parser.add_option('--rm-temp',
