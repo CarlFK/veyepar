@@ -23,7 +23,7 @@ django.setup()
 # import django
 from main.models import Client, Show, Location, Episode, State, Log
 
-import rax_uploader
+import swift_uploader as rax_uploader
 
 class process():
   """
@@ -144,6 +144,7 @@ class process():
             if not show.client.bucket_id.strip():
                 raise AttributeError("client.bucket_id is blank")
             u.bucket_id = show.client.bucket_id
+            u.bucket = show.client.bucket_id
 
             u.pathname = src 
             u.key_id = dst 

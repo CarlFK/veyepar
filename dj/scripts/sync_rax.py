@@ -8,15 +8,18 @@ import os
 import subprocess
 
 from process import process
-from main.models import Client, Show, Location, Episode, Raw_File
+from main.models import Client, Show, Location, Episode, \
+  Raw_File, Cut_List
 
-from . import rax_uploader
+import swift_uploader as rax_uploader
 import gslevels
 
 class SyncRax(process):
 
     def cdn_exists(self, show, dst):
         dst = os.path.join("veyepar",show.client.slug,show.slug,dst)
+        # import code; code.interact(local=locals())
+
         return dst in self.names
 
     def mk_audio_png(self,src,png_name):
@@ -94,18 +97,20 @@ class SyncRax(process):
         print("getting raw files...")
         rfs = Raw_File.objects.filter(show=show,)
 
-	if self.options.day:
+        if self.options.day:
             rfs = rfs.filter(start__day=self.options.day)
 
-	if self.options.room:
+        if self.options.room:
             loc = Location.objects.get(slug=self.options.room)
             rfs = rfs.filter(location = loc)
 
         # rfs = rfs.exclude(id=12212)
-        rfs = rfs.exclude(filesize__lt=800000)
+        # rfs = rfs.exclude(filesize__lt=800000)
 
-        # rfs = rfs.cut_list_set.filter(episode__id=8748)
-        # rfs = rfs.cut_list_set.filter(episode__state=1)
+        if self.args:
+            eps = Episode.objects.filter(id__in=self.args)
+            cls = Cut_List.objects.filter(episode__in=eps)
+            rfs = rfs.filter(cut_list__in=cls).distinct()
 
         for rf in rfs:
             if self.options.verbose: print(rf)
@@ -154,10 +159,10 @@ class SyncRax(process):
     def episodes(self, show):
         eps = Episode.objects.filter(show=show)
 
-	if self.options.day:
+        if self.options.day:
             eps = eps.filter(start__day=self.options.day)
 
-	if self.options.room:
+        if self.options.room:
             loc = Location.objects.get(slug=self.options.room)
             eps = eps.filter(location = loc)
 
@@ -168,7 +173,7 @@ class SyncRax(process):
 
         for ep in eps:
             print(ep)
-            # self.sync_title_png(show,ep)
+            self.sync_title_png(show,ep)
             # self.cut_list(show,ep)
             self.mlt(show,ep)
             # self.sync_final(show,ep)
@@ -183,14 +188,21 @@ class SyncRax(process):
          user = show.client.rax_id
          bucket_id = show.client.bucket_id
 
-         cf = rax_uploader.auth(user)
+         conn = rax_uploader.auth(user)
 
-         print("cf.get_all_containers", cf.get_all_containers())
+         # print("cf.get_all_containers", cf.get_all_containers())
          
-         container = cf.get_container(bucket_id)
-         objects = container.get_objects()
+         container = conn.get_container(bucket_id)
+         objects = container[1]
+
+         """
+         for data in conn.get_container(container_name)[1]:
+                     print( '{0}\t{1}\t{2}'.format(data['name'], data['bytes'], data['last_modified']))
+         """
+
+         # objects = container.get_objects()
          print("loading names...")
-         self.names = {o.name for o in objects}
+         self.names = {o['name'] for o in objects}
          print("loaded.")
 
     def one_show(self, show):
@@ -198,8 +210,8 @@ class SyncRax(process):
         self.init_rax(show)
 
         # self.show_assets(show)
-        # self.raw_files(show)
-        self.episodes(show)
+        self.raw_files(show)
+        # self.episodes(show)
 
 
     def work(self):
