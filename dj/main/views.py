@@ -1401,20 +1401,22 @@ def episode_assets(request, episode_id):
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence', 'raw_file__start')
     if request.GET.get('apply') == 'yes':
         cuts = cuts.filter(apply=True)
+    
+    rfs = Raw_File.objects.filter(cut_list__in=cuts).distinct()
 
-    for cut in cuts:
+    for rf in rfs:
         assets.append( "{}/dv/{}/{}.webm".format(show_url,
-            cut.raw_file.location.slug, cut.raw_file.filename ) )
+            rf.location.slug, rf.filename ) )
 
     # make symlinks from epected filename to smaller webm 
     show_path = urllib.parse.urlparse(show_url)
     first_dir = '"{}{}/dv/{}/{}"'.format( show_path.netloc, show_path.path,
-            cut.raw_file.location.slug, 
-            os.path.split(cut.raw_file.filename)[0])
+            rf.location.slug, 
+            os.path.split(rf.filename)[0])
 
     assets.append("cd " + first_dir)
-    for cut in cuts:
-        filename = os.path.split(cut.raw_file.filename)[1]
+    for rf in rfs:
+        filename = os.path.split(rf.filename)[1]
         assets.append( "ln -s {0}.webm {0}".format(filename) )
 
     response = HttpResponse('\n'.join(assets), content_type="text/plain")
@@ -1981,7 +1983,7 @@ def mk_cuts(episode,
                 if created:
                     cl.sequence=seq
                     cl.apply = apply
-
+                apply=True
 
             cl.save()
 
