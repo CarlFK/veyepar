@@ -435,6 +435,13 @@ class Cut_List(models.Model):
         end = to_sec( self.end, to_sec(self.raw_file.duration))
         dur = end-start
         return dur
+
+    def duration_hms(self):
+        seconds = self.duration()
+        hms = seconds//3600, (seconds%3600)//60, seconds%60
+        duration = "%02d:%02d:%02d" % hms
+        return duration
+
     def base_url(self):
         """ Returns the url for the file, minus the MEDIA_URL and extension """
         return self.raw_file.base_url()
