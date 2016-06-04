@@ -1,5 +1,5 @@
 # rax_uploader.py 
-# rackspace cdn (openhatch) specific code
+# rackspace cdn (openstack) specific code
 
 # caled from post_rak.py 
 # that is a lie.  it is currently called from post_yt.py.  

@@ -179,6 +179,7 @@ $(".viewer").zoomer();
   {{cl.raw_file.filename}}
   {{ clrfform.apply }}{{ clrfform.apply.label_tag }}
   {{ cl.get_start_wall|date:"H:i:s" }} - {{ cl.get_end_wall|date:"H:i:s" }}  
+  ( {{ cl.duration_hms }} )
 
   <u><b>S:</b> {{cl.raw_file.start|date:"H:i:s"}} - <b>E:</b> {{cl.raw_file.end|date:"H:i:s"}} <b>D:</b> {{cl.raw_file.duration}} </u>
           {% if clrfform.start.value %} (<b>Start:</b> {{ clrfform.start.value }}){% endif %} 

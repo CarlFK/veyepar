@@ -128,6 +128,7 @@ def mk_mlt(template, output, params):
         set_attrib(ti, "out")
         set_text(ti,'length')
         set_text(ti,'resource',cut['filename'])
+        set_text(ti,'video_delay',cut['video_delay'])
 
         # apply the filters to te cuts
 
@@ -209,6 +210,7 @@ def test():
                 'length':1673, # Duration: 27mn 53s
                 'channelcopy':'01',
                 'normalize':'-12.0',
+                'video_delay':'0.0',
                 },], 
         }
 
@@ -245,6 +247,7 @@ def test():
                 'length':3,
                 'channelcopy':'01',
                 'normalize':'-12.0',
+                'video_delay':'0.0',
                 })
 
 

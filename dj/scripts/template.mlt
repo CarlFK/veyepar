@@ -134,6 +134,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
     <property name="ignore_points">0</property>
+    <property name="video_delay">0.0</property>
     <filter id="audio_fade_in" in="00:00:00.0" out="00:00:01.5">
       <property name="track">0</property>
       <property name="window">75</property>
@@ -158,6 +159,7 @@
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
+    <property name="video_delay">0.0</property>
     <filter id="channelcopy">
       <property name="track">0</property>
       <property name="to">1</property>
@@ -195,6 +197,7 @@
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
     <property name="ignore_points">0</property>
+    <property name="video_delay">0.0</property>
     <filter id="audio_fade_out" in="00:00:-0.067" out="00:00:01.902">
       <property name="track">0</property>
       <property name="window">75</property>

@@ -357,6 +357,7 @@ class enc(process):
                 rawpathname = os.path.join( "../dv", 
                         cl.raw_file.location.slug, cl.raw_file.filename)
                     # self.episode_dir, cl.raw_file.filename)
+                # print(rawpathname)
                 cut['filename'] = rawpathname
 
                 # set start/end on the clips if they are set in the db
