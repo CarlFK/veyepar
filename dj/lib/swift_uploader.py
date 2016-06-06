@@ -1,24 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# foo_uploader.py 
-# template for future upload 
+# swift_uploader.py 
+# upload a file to an OpenStack host.
+
+# TODO: 
+# add support for returning the URL the file can be retrieved from. 
 
 import os, sys
 import argparse
-import pprint
 
 import swiftclient
-
-from swiftclient.service import SwiftError, SwiftService, SwiftUploadObject
-
-try:
-    # ProgressFile is a subclass of the Python open class
-    # as data is read, it prints a visible progress bar 
-    from progressfile import ProgressFile
-except ImportError:
-    # If ProgressFile is not available, default to Python's open
-    ProgressFile = open
 
 try:
     # read credentials from a file
@@ -34,42 +26,47 @@ except ImportError:
                 }   
             }   
 
-
-def auth(upload_user):
-    # 
-    """ get a service connection to archive.org
-    """
-    creds = swift[upload_user] ## from dict of credentials 
-    connection = swiftclient.Connection(**creds)
-    return connection
-
 class Uploader(object):
+
+    """
+    Auth and Upload a file.
+    """
 
     # input attributes:
     user = '' # key to lookup user/pw in pw.py
     pathname = ''  # path to video file to upload`
-    bucket = "" # archive/s3 butcket, or container ID for rax
+    bucket = "" # rackspace coiner/archive/s3 butcket, or container ID for rax
     key_id = "" # slug used to make URL
 
-    debug_mode = False
+    verbose = False
     test = False
+    debug_mode = False
 
     # return attributes:
     ret_text = ''
     new_url = ''
 
+    def auth(self):
+        """ 
+        get a connection to the host
+        """
+        creds = swift[self.user] ## from dict of credentials 
+
+        if self.verbose: print("authurl: {}".format(creds['authurl']))
+
+        connection = swiftclient.Connection(**creds)
+
+        return connection
+
     def upload(self):
 
-        print("Uploading file to foo...")
+        if self.verbose: print("Uploading file to CDN...")
 
-        connection = auth(self.user)
+        connection = self.auth()
 
         with open(self.pathname, 'rb') as f:
 
             try:
-
-                # print('bucket', self.bucket)
-                # print('key', self.key_id)
 
                 obj = connection.put_object(
                         self.bucket,
@@ -77,11 +74,13 @@ class Uploader(object):
                         contents = f,
                         )
 
+                if self.verbose: print("Uploaded.")
+
                 if self.debug_mode:
                     import code; code.interact(local=locals())
 
                 # self.new_url = url
-                # print(( "foo: {}".format(self.new_url)))
+                # print(( "new_url: {}".format(self.new_url)))
                 ret = True
 
             except Exception as e:
@@ -106,7 +105,7 @@ def parse_args():
 
     parser.add_argument('--user', '-u', 
             default='test',
-            help='archive user. default: test')
+            help='key to user auth. default: test')
 
     parser.add_argument('--filename', '-f', 
             default=os.path.abspath(__file__),
@@ -137,6 +136,7 @@ def parse_args():
 def test_upload(args):
     u = Uploader()
     u.user = args.user
+    u.verbose = args.verbose
     u.debug_mode = args.debug_mode
     u.test = args.test
     u.pathname = args.filename
@@ -145,10 +145,6 @@ def test_upload(args):
     u.key_id = args.key if args.key else os.path.basename(u.pathname)
 
     ret = u.upload()
-    if ret:
-        print(u.new_url)
-    else:
-        print(u.ret_text)
 
 
 if __name__ == '__main__':
