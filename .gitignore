@@ -24,4 +24,5 @@ dj/scripts/schedules/
 .vagrant
 archive/
 .idea
+__pycache__/
 

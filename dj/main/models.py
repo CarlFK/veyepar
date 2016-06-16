@@ -96,8 +96,7 @@ class Location(models.Model):
         help_text="path to raw files. overrieds show/slug.")
     channelcopy = models.CharField(max_length=2, blank=True,
         help_text='audio adjustment for this room')
-    hours_offset =  models.IntegerField(max_length=2, 
-        blank=True, null=True,
+    hours_offset =  models.IntegerField(blank=True, null=True,
         help_text='Adjust for bad clock setting')
     description = models.TextField(blank=True)
     lon = models.FloatField(null=True, blank=True )
