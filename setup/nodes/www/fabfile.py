@@ -52,10 +52,10 @@ def prod():
 @task
 def vagrant():
     env.update({
-        'user': 'vagrant',
+        'user': 'veyepar',
         'site': '127.0.0.1:2222',
         'available': 'veyepar',
-        'hosts': ['127.0.0.1:2222'],
+        'hosts': ['ubuntu@127.0.0.1:2222'],
         'site_environment': 'vagrant',
         'key_filename': local('vagrant ssh-config | grep IdentityFile | cut -f4 -d " "', capture=True),
     })
@@ -99,7 +99,7 @@ def provision(version_tag=None):
         provided_by=('dev', 'prod', 'vagrant'))
     install_dependencies()
     # lockdowns()
-    setup_postgres()
+    # setup_postgres()
     if not fabtools.user.exists(SITE_USER):
         sudo('useradd -s/bin/bash -d/home/%s -m %s' % (SITE_USER, SITE_USER))
     deploy_www_root()
@@ -160,8 +160,10 @@ def install_local_settings():
 
 def install_site_requirements(virtualenv):
     vbin = join(home_directory(SITE_USER), 'venvs', virtualenv, 'bin')
-    su('%s/pip install django==1.7.7' % vbin)
+    su('%s/pip install django' % vbin)
+    # su('%s/pip install django==1.7.7' % vbin)
     su('%s/pip install djangorestframework' % vbin)
+    su('%s/pip install django_extensions' % vbin)
     su('%s/pip install gunicorn' % vbin)
 
 def install_dabo(virtualenv):
@@ -184,7 +186,7 @@ def syncdb(site_version):
     vbin = join(home_directory(SITE_USER), 'venvs', site_version, 'bin')
     djangodir = join(home_directory(SITE_USER), 'site', SITE_NAME, 'dj')
     with cd(djangodir):
-        su('source %s/activate; ./manage.py syncdb --noinput' % vbin)
+        su('source %s/activate; ./manage.py migrate --noinput' % vbin)
 
 
 def deploy_www_root():
