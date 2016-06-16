@@ -64,6 +64,8 @@ class Uploader(object):
 
         connection = self.auth()
 
+        response_dict = {}
+
         with open(self.pathname, 'rb') as f:
 
             try:
@@ -72,9 +74,10 @@ class Uploader(object):
                         self.bucket,
                         self.key_id,
                         contents = f,
+                        response_dict = response_dict,
                         )
 
-                if self.verbose: print("Uploaded.")
+                if self.verbose: print("Uploaded.", response_dict)
 
                 if self.debug_mode:
                     import code; code.interact(local=locals())

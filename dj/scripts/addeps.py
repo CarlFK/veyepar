@@ -2302,8 +2302,12 @@ class add_eps(process.process):
 
         for event in events: 
 
+            if "Lunch" in event['name']:
+                event['location']="Main Room"
+
             if event['location'] is None:
-                event['location']="Crystal Ballroom"
+                event['location']="room 1"
+
 
             rooms.add(event['location'].lower())
 

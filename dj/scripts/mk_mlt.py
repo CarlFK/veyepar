@@ -159,6 +159,7 @@ def mk_mlt(template, output, params):
         mlt.insert(i*2,ti)
 
         total_length += cut['length']
+        print( total_length )
 
     # ti is left over from the above loop
     ti.insert(0,nodes['audio_fade_out'])

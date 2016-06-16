@@ -23,6 +23,7 @@ class mk_title(enc):
 
         if self.options.rsync:
             self.file2cdn(episode.show, "titles/%s.png" % (episode.slug))
+            self.file2cdn(episode.show, "titles/%s.svg" % (episode.slug))
 
             if self.options.assets:
                 self.file2cdn(episode.show, "tmp/%s.mlt" % (episode.slug))

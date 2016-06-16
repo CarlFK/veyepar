@@ -367,7 +367,6 @@ class enc(process):
                 cut['out']=hms_to_clock(cl.end)
 
                 cut['length'] = cl.duration()
-                # cut['length'] = cl.duration()
 
                 if cl.episode.channelcopy:
                     cut['channelcopy'] = cl.episode.channelcopy
@@ -380,6 +379,7 @@ class enc(process):
                     cut['normalize']='-12.0'
 
                 cut['video_delay']='0.0'
+
                 cuts.append(cut)
 
             return cuts

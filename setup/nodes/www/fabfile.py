@@ -22,7 +22,8 @@ from fabtools.user import home_directory
 import fabtools
 
 env.disable_known_hosts = True
-SITE_USER = 'veyepar'
+SITE_USER = 'vp'
+# SITE_USER = 'veyepar'
 SITE_GROUP = 'veyepar'
 SITE_NAME = 'veyepar'
 SITE_REPO = 'https://github.com/CarlFK/veyepar.git'
@@ -31,9 +32,9 @@ FAB_HOME = dirname(abspath(__file__))
 @task
 def dev():
     env.update({
-        'site': 'dev.nextdayvideo.com',
+        'site': 'veyepar3.nextdayvideo.com',
         'available': 'veyepar',
-        'hosts': ['root@104.130.73.49'],
+        'hosts': ['root@veyepar3.nextdayvideo.com'],
         'site_environment': 'dev',
     })
 
@@ -41,9 +42,9 @@ def dev():
 @task
 def prod():
     env.update({
-        'site': 'encoding2.dc15.debconf.org',
+        'site': 'veyepar3.nextdayvideo.com',
         'available': 'veyepar',
-        'hosts': ['veyepar@encoding2.dc15.debconf.org'],
+        'hosts': ['vp@veyepar3.nextdayvideo.com'],
         'site_environment': 'prod',
     })
 
@@ -81,7 +82,7 @@ def deploy(version_tag=None):
     supervisor.stop_process(SITE_NAME)
     #new_env = virtualenv_name(commit=version_tag)
     virtualenv = 'veyepar'
-    #mkvirtualenv(new_env)
+    mkvirtualenv(new_env)
     deploy_www_root()
     checkout_repo(commit=version_tag)
     install_site_requirements(virtualenv)
@@ -97,7 +98,7 @@ def provision(version_tag=None):
     fabric.api.require('site', 'available', 'hosts', 'site_environment',
         provided_by=('dev', 'prod', 'vagrant'))
     install_dependencies()
-    lockdowns()
+    # lockdowns()
     setup_postgres()
     if not fabtools.user.exists(SITE_USER):
         sudo('useradd -s/bin/bash -d/home/%s -m %s' % (SITE_USER, SITE_USER))
@@ -106,23 +107,6 @@ def provision(version_tag=None):
     setup_django()
     setup_nginx()
     setup_supervisor()
-
-
-@task
-def papertrail(port):
-    """install rsyslog and setup papertrail logs
-    """
-    fabric.api.require('site', 'available', 'hosts', 'site_environment',
-        provided_by=('dev', 'prod', 'vagrant'))
-    su('curl -sSL https://get.rvm.io | bash -s stable --ruby')
-    su('source %s' % join(home_directory(SITE_USER), '.rvm', 'scripts', 'rvm'))
-    # TODO
-    # set up path since run does not source bashrc
-    # gem install remote_syslog
-    # rvm wrapper ruby-2.0.1 bootup remote_syslog
-    #
-    # upload yaml template with host and port
-    # upload supervisor template, update supervisor
 
 
 def setup_nginx():
@@ -272,7 +256,7 @@ def install_debian_packages():
         'supervisor',
         'git',
         'postgresql',
-        'postgresql-server-dev-9.4',
+        # 'postgresql-server-dev-9.4',
         'python-psycopg2',
         'curl',
         'vim',
@@ -280,15 +264,16 @@ def install_debian_packages():
         'htop',
         'tig',
         'ack-grep',
+        'python3-pip',
     ])
 
 
 def install_python_packages():
 
-    sudo('wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py')
-    sudo('wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
-    sudo('python ez_setup.py')
-    sudo('python get-pip.py')
+    # sudo('wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py')
+    # sudo('wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
+    # sudo('python ez_setup.py')
+    # sudo('python get-pip.py')
 
     # install global python packages
     require.python.packages([
@@ -332,4 +317,5 @@ def virtualenv_name(commit=None):
 
 def mkvirtualenv(virtualenv):
     with cd(join(home_directory(SITE_USER), 'venvs')):
-        su('virtualenv --system-site-packages %s' % virtualenv)
+        su('virtualenv --python=python3.5 --system-site-packages %s' % virtualenv)
+

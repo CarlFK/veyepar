@@ -188,10 +188,13 @@ class SyncRax(process):
          user = show.client.rax_id
          bucket_id = show.client.bucket_id
 
-         conn = rax_uploader.auth(user)
+         u = rax_uploader.Uploader()
+         u.user = show.client.rax_id
+         conn = u.auth()
 
          # print("cf.get_all_containers", cf.get_all_containers())
          
+         print(bucket_id)
          container = conn.get_container(bucket_id)
          objects = container[1]
 
@@ -210,8 +213,8 @@ class SyncRax(process):
         self.init_rax(show)
 
         # self.show_assets(show)
-        self.raw_files(show)
-        # self.episodes(show)
+        # self.raw_files(show)
+        self.episodes(show)
 
 
     def work(self):
