@@ -149,6 +149,6 @@ REST_FRAMEWORK = {
     ]
 }
 
-try:    from local_settings import *
+try:    from dj.local_settings import *
 except ImportError:    pass
 
