@@ -684,6 +684,7 @@ def meet_ical(request,location_id):
 def former(request, Model, parents, inits={}):
 
     class xForm(ModelForm):
+        exclude=[]
         class Meta:
             model=Model
 
