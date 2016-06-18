@@ -22,8 +22,7 @@ from fabtools.user import home_directory
 import fabtools
 
 env.disable_known_hosts = True
-SITE_USER = 'vp'
-# SITE_USER = 'veyepar'
+SITE_USER = 'veyepar'
 SITE_GROUP = 'veyepar'
 SITE_NAME = 'veyepar'
 SITE_REPO = 'https://github.com/CarlFK/veyepar.git'
@@ -44,7 +43,7 @@ def prod():
     env.update({
         'site': 'veyepar3.nextdayvideo.com',
         'available': 'veyepar',
-        'hosts': ['vp@veyepar3.nextdayvideo.com'],
+        'hosts': ['root@veyepar3.nextdayvideo.com'],
         'site_environment': 'prod',
     })
 
@@ -80,7 +79,7 @@ def deploy(version_tag=None):
         provided_by=('dev', 'prod', 'vagrant'))
 
     supervisor.stop_process(SITE_NAME)
-    #new_env = virtualenv_name(commit=version_tag)
+    new_env = virtualenv_name(commit=version_tag)
     virtualenv = 'veyepar'
     mkvirtualenv(new_env)
     deploy_www_root()
@@ -99,7 +98,7 @@ def provision(version_tag=None):
         provided_by=('dev', 'prod', 'vagrant'))
     install_dependencies()
     # lockdowns()
-    # setup_postgres()
+    setup_postgres()
     if not fabtools.user.exists(SITE_USER):
         sudo('useradd -s/bin/bash -d/home/%s -m %s' % (SITE_USER, SITE_USER))
     deploy_www_root()
@@ -125,6 +124,12 @@ def setup_nginx():
 
 
 def setup_supervisor():
+
+    # hacky workaround to ???
+    sudo('touch /var/run/supervisor.sock')
+    sudo('chmod 777 /var/run/supervisor.sock')
+    sudo('service supervisor restart')
+
     site_root = join(home_directory(SITE_USER), 'site')
     upload_template('veyepar.conf', 
         '/etc/supervisor/conf.d/veyepar.conf',
@@ -150,9 +155,11 @@ def setup_django(virtualenv='veyepar'):
 
 def install_local_settings():
     settings_dir = join(home_directory(SITE_USER), 'site', SITE_NAME, 'dj', 'dj')
+    staticdir = join(home_directory(SITE_USER), 'site', 'static')
     with cd(settings_dir):
         upload_template('local_settings.py', 'local_settings.py',
             context={
+                'staticdir': staticdir,
                 'secret_key': randomstring(32),
             },
             use_jinja=True, use_sudo=True, chown=True, user=SITE_USER)
@@ -161,17 +168,17 @@ def install_local_settings():
 def install_site_requirements(virtualenv):
     vbin = join(home_directory(SITE_USER), 'venvs', virtualenv, 'bin')
     su('%s/pip install django' % vbin)
-    # su('%s/pip install django==1.7.7' % vbin)
     su('%s/pip install djangorestframework' % vbin)
     su('%s/pip install django_extensions' % vbin)
     su('%s/pip install gunicorn' % vbin)
+    su('%s/pip install psycopg2' % vbin)
 
 def install_dabo(virtualenv):
     vbin = join(home_directory(SITE_USER), 'venvs', virtualenv, 'bin')
     su('source {}/activate; '.format(vbin) + \
-            'cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"); '
+            'cd $(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"); '
             'git clone https://github.com/dabodev/dabo.git dabo-master; '
-            'ln -s dabo-master/dabo' )
+            'ln -sf dabo-master/dabo' )
 
 def collectstatic(site_version):
     vbin = join(home_directory(SITE_USER), 'venvs', site_version, 'bin')
@@ -235,7 +242,7 @@ def lockdowns():
 
 def install_dependencies():
     require.deb.uptodate_index(max_age={'hour': 1})
-    #add_apt_sources()
+    add_apt_sources()
     install_debian_packages()
     install_python_packages()
 
@@ -258,7 +265,6 @@ def install_debian_packages():
         'supervisor',
         'git',
         'postgresql',
-        # 'postgresql-server-dev-9.4',
         'python-psycopg2',
         'curl',
         'vim',
@@ -269,13 +275,10 @@ def install_debian_packages():
         'python3-pip',
     ])
 
+    sudo('apt build-dep -y psycopg2')
+
 
 def install_python_packages():
-
-    # sudo('wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py')
-    # sudo('wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py')
-    # sudo('python ez_setup.py')
-    # sudo('python get-pip.py')
 
     # install global python packages
     require.python.packages([
@@ -301,7 +304,6 @@ def checkout_repo(commit=None):
         if commit is None:
             commit = 'origin/master'
         su('git checkout %s' % commit)
-
 
 
 def randomstring(n):
