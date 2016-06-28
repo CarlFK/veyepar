@@ -27,7 +27,7 @@ import os
 import csv
 from copy import deepcopy
 
-from io import StringIO
+from io import BytesIO
 from pprint import pprint
 import operator
 
@@ -472,7 +472,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     rfxmlfile  = os.path.join(base,'templates', rfxml+".rfxml")
      
     # buffer to create pdf in
-    buffer = StringIO()
+    buf = BytesIO()
 
     # nonstandard font.  (not sure what standard is.)
     # fontfile = get_templete_abspath('badges/fonts/FreeSans.ttf')
@@ -503,12 +503,12 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
           })
         
     # generate the pdf in the buffer, using the layout and data
-    rw = dReportWriter(OutputFile=buffer, ReportFormFile=rfxmlfile, Cursor=ds)
+    rw = dReportWriter(OutputFile=buf, ReportFormFile=rfxmlfile, Cursor=ds)
     rw.write()
 
     # get the pdf out of the buffer
-    pdf = buffer.getvalue()
-    buffer.close()
+    pdf = buf.getvalue()
+    buf.close()
 
     response = HttpResponse(content_type='application/pdf')
     e_id = episode_id if episode_id else 'all'
