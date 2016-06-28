@@ -60,8 +60,8 @@ Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} 
             image_url = True
         else:
             image_url = False
-        # rax upload broken
-        image_url = False
+        # rax upload fixed?
+        image_url = True
 
         return {'image_url':image_url}
 

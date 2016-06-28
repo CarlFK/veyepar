@@ -14,7 +14,7 @@ import pw
 
 import rax_uploader
 import archive_uploader
-# import steve.richardapi
+import steve.richardapi
 
 import os
 import xml.etree.ElementTree

@@ -75,6 +75,8 @@ class SyncRax(process):
         
         web = base + ".webm"
         if not self.cdn_exists(show,web):
+            # raw file (huge!!!)
+            # self.file2cdn(show,base)
             self.file2cdn(show,web)
 
 
@@ -174,9 +176,9 @@ class SyncRax(process):
         for ep in eps:
             print(ep)
             self.sync_title_png(show,ep)
-            # self.cut_list(show,ep)
+            self.cut_list(show,ep)
             self.mlt(show,ep)
-            # self.sync_final(show,ep)
+            self.sync_final(show,ep)
             # self.sync_final_audio_png(show,ep)
 
     def show_assets(self,show):
@@ -212,7 +214,7 @@ class SyncRax(process):
         self.set_dirs(show)
         self.init_rax(show)
 
-        # self.show_assets(show)
+        self.show_assets(show)
         # self.raw_files(show)
         self.episodes(show)
 

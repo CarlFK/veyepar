@@ -144,7 +144,8 @@ def start_here(request):
     and wants to help.
     """
 
-    show=get_object_or_404(Show,client__slug='debian',slug='fosdem_2014')
+    show=get_object_or_404(Show,
+            client__slug='eric',slug='write_docs_na_2016')
     episodes = Episode.objects.filter(show=show,
             location__active=True,
             state=1,
@@ -1385,7 +1386,7 @@ def episode_assets(request, episode_id):
     show=episode.show
     client=show.client
 
-    # create the base of the URLs
+    # the base of the URLs
     head=settings.MEDIA_URL
     show_url = os.path.join(head,client.slug,show.slug)
 
@@ -1450,21 +1451,21 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     show=get_object_or_404(Show,client=client,slug=show_slug)
 
     location_slug = location_slug if location_slug \
-            else request.REQUEST.get('location_slug')
+            else request.GET.get('location_slug')
 
-    start_date = request.REQUEST.get('date')
+    start_date = request.GET.get('date')
 
-    cuts = request.REQUEST.get('cuts')
-    emails = request.REQUEST.get('emails')
-    comment = request.REQUEST.get('comment')
-    released = request.REQUEST.get('released')
-    images = request.REQUEST.get('images')
-    log_has = request.REQUEST.get('log_has')
+    cuts = request.GET.get('cuts')
+    emails = request.GET.get('emails')
+    comment = request.GET.get('comment')
+    released = request.GET.get('released')
+    images = request.GET.get('images')
+    log_has = request.GET.get('log_has')
 
-    order_by = request.REQUEST.get('order_by')
+    order_by = request.GET.get('order_by')
 
     if "state" in request.GET:
-        state = request.REQUEST.get('state')
+        state = request.GET.get('state')
 
     locations=show.locations.filter(active=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show)
@@ -2031,7 +2032,9 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     cuts = Cut_List.objects.filter(
             episode=episode).order_by('sequence','raw_file__start','start')
 
-    # If this episode doesn't have a cut list yet, try to create one.
+    # If this episode is still being edited, create or add cuts
+    # if episode.state==1:
+    # This didn't work, put back the "only if empty"
     if not cuts:
         cuts = mk_cuts(episode)
 

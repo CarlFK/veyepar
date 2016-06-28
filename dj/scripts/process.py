@@ -391,13 +391,20 @@ class process():
             .filter(active=True) \
             .order_by('max_date')
 
+    if self.options.client: 
+            clients = clients.filter(slug=self.options.client)
+       
     for client in clients:
         print("\nName: %s  Slug: %s" %( client.name, client.slug ))
         shows=Show.objects.filter(client=client)\
                 .annotate( max_date=Max('episode__start'))\
                 .order_by('max_date')
 
+        # if self.options.show: 
+        #    shows = shows.filter(slug=self.options.show)
+
         for show in shows:
+            print(show)
             print("\tName: %s  Slug: %s" %( show.name, show.slug ))
             print("\t--client %s --show %s" %( client.slug, show.slug ))
             print("client=%s\nshow=%s" %( client.slug, show.slug ))
