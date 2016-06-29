@@ -49,6 +49,7 @@ def get_start( pathname, time_source ):
         return ts_start
 
     def parse_name(pathname):
+        # print("parse_name")
         # parse string into datetime
 
         # remove extention
@@ -69,6 +70,7 @@ def get_start( pathname, time_source ):
         return start
 
     def re_name(pathname):
+        # print("re_name...")
         # parse string into datetime useing RE
 
         dt_re = r".*/(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+).*/(?P<hour>\d+)_(?P<minute>\d+)_(?P<second>\d+)"
@@ -81,9 +83,9 @@ def get_start( pathname, time_source ):
         dt_parts = {k:int(v) for k,v in list(dt_parts.items())}
         print(dt_parts)
 
-
         start=datetime.datetime( **dt_parts )
         print(start)
+
         return start
 
     def PyExifTool(pathname):
@@ -99,7 +101,7 @@ def get_start( pathname, time_source ):
         dt = metadata['H264:DateTimeOriginal']
         
         start=datetime.datetime.strptime(dt,'%Y:%m:%d %H:%M:%S+00:00')
-        print(start)
+        # print(start)
         return start
 
     def frame_time(pathname):
@@ -108,7 +110,7 @@ def get_start( pathname, time_source ):
 
     def gst_discover_start(pathname):
         # get start time using gstreamer to read the media file header
-        print("gst_discover_start")
+        # print("gst_discover_start")
 
         discoverer = GstPbutils.Discoverer()
         d = discoverer.discover_uri('file://{}'.format(pathname))
@@ -131,6 +133,7 @@ def get_start( pathname, time_source ):
 
     def auto(pathname):
         # try to figure out what to use
+        # print("auto...")
 
         time_re = r".*(?P<h>\d+)_(?P<m>\d+)_(?P<s>\d+)\."
         ext = os.path.splitext(pathname)[1]
@@ -148,6 +151,8 @@ def get_start( pathname, time_source ):
             start = gst_discover_start(pathname)
 
         return start
+
+    # get_start() starts here..
 
     # wacky python case statement 
     # it's fun!
@@ -176,7 +181,7 @@ def get_duration(pathname):
 
     def gst_discover_duration(pathname):
         # use gstreamer to find get_duration
-        print("gst_discover_duration")
+        # print("gst_discover_duration")
         discoverer = GstPbutils.Discoverer()
         # try:
         d = discoverer.discover_uri('file://{}'.format(pathname))

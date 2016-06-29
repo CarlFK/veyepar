@@ -30,7 +30,11 @@ class ts_rf(process):
         pathname=os.path.join(self.show_dir, 'dv',
                 rf.location.slug, rf.filename)
 
-        start = tsraw.get_start(pathname, "auto")
+        if self.options.verbose: print(pathname)
+
+        # print( "tsraw.get_start", (pathname, self.options.time_source ) )
+        start = tsraw.get_start(pathname, self.options.time_source )
+
         if offset is not None:
             start += datetime.timedelta(seconds=offset)
 
