@@ -156,7 +156,7 @@ def mk_mlt(template, output, params):
             # apply audio fade in/out to first/last cut
             ti.insert(0,nodes['audio_fade_in'])
 
-        mlt.insert(i*2,ti)
+        mlt.insert(i,ti)
 
         total_length += cut['length']
         print( total_length )
