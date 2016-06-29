@@ -25,9 +25,13 @@
 <th>
     <span><b>TOTAL</b></span><br/>
 <span> <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug %}"> {{show_stat.count}} </a> </span>
-<span class="left">expected:</span><span class="right">{{show_stat.talk_gig}} g</span><br/>
+<p>
+<span class="left">expected:</span><span class="right">{{show_stat.talk_gig|floatformat:0}}g</span><br/>
+                 </p>
                  {% if show_stat.files %}
-                   <span class="left">files:{{show_stat.files}}</span><span class="right">{{show_stat.gig}} g</span><br/>
+                 <p>
+                 <span class="left">files:{{show_stat.files}}</span><span class="right">{{show_stat.gig|floatformat:0}} g</span>
+                 </p>
                  {% endif %}
 </th>
 
@@ -42,8 +46,8 @@
 <span> <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug %}"> {{item.count}} </a> </span>
 <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                   <span class="left">files:{{item.files}}</span><span class="right">{{item.gig}} g</span><br/>
-                   {% if item.alarm >= 0 %} <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance}} g</span> {% endif %}
+                   <span class="left">files:{{item.files}}</span><span class="right">{{item.gig|floatformat:0}} g</span><br/>
+                   {% if item.alarm >= 0 %} <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance|floatformat:0}} g</span> {% endif %}
                  {% endif %}
  
 </td>
@@ -66,8 +70,8 @@
 
 <span class="left">expected:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                   <span class="left">files: {{item.files}}</span><span class="right">{{item.gig}} g</span><br/>
-                   <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance}} g</span>
+                   <span class="left">files: {{item.files}}</span><span class="right">{{item.gig|floatformat:0}} g</span><br/>
+                   <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance|floatformat:0}} g</span>
                  {% endif %}
 </td>
 
@@ -98,10 +102,10 @@
                      {{item.raw.end|date:"H:i" }}
                  </span>
                      {# {{item.alarm}}%</span> #}
-                 <span class="right">{{item.gig}} g</span><br>
+                 <span class="right">{{item.gig|floatformat:0}} g</span><br>
 
                  <span class="left">{{item.times_display}}</span>
-                 <span class="right">{{item.variance}} g</span><br>
+                 <span class="right">{{item.variance|floatformat:0}} g</span><br>
 
                  <!-- 
                  <span class="left">{{item.ep.times_display}}</span>
