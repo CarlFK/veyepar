@@ -8,8 +8,8 @@
 # ./manage.py dumpdata auth > main/fixtures/veyepar_auth.json
 
 
-if grep ^DATABASES local_settings.py; then
-    vim local_settings.py
+if grep ^DATABASES dj/local_settings.py; then
+    vim dj/local_settings.py
     exit
 fi
 
