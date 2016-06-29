@@ -108,7 +108,9 @@ cd $(python -c "from distutils.sysconfig import get_python_lib; print( get_pytho
 # mv dabo/locale/ ./lib/python2.5/site-packages/dabo
 # mv ~/.virtualenvs/veyepar/dabo/locale/ ~/.virtualenvs/veyepar/lib/python2.6/site-packages/dabo
 
-git clone https://github.com/dabodev/dabo.git dabo-master
+# git clone https://github.com/dabodev/dabo.git dabo-master
+# get my py3 fork
+git clone https://github.com/CarlFK/dabo.git dabo-master
 ln -s dabo-master/dabo 
 
 
