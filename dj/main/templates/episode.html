@@ -342,7 +342,8 @@ $(".viewer").zoomer();
     // move to 5 sec before the end
     // (for "oh, it started!")
     $( "#end5-{{cl.id}}" ).click(function() {
-        vid{{x}}[0].currentTime = {{cl.raw_file.get_seconds}}-5;
+        // end time -5
+            vid{{x}}[0].currentTime = endbox{{x}}.val()-5;
        });
 
     // move to designated end
