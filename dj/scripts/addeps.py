@@ -365,15 +365,11 @@ class add_eps(process.process):
             if self.options.verbose: pprint.pprint( row )
 
             # try to find an existing item in the db
-            # this assumes we have some handle on the data
 
             episodes = Episode.objects.filter(
                       show=show, 
                       conf_key=row['conf_key'], 
                       )
-
-            location=Location.objects.get(
-                    name__iexact=row['location'])
 
             if episodes:
                 if len(episodes)>1:
@@ -500,6 +496,9 @@ class add_eps(process.process):
 
                 else:
                     print(("updating conf_key: {conf_key}, name:{name}").format(**row))
+
+                location=Location.objects.get(
+                        name__iexact=row['location'])
 
                 episode.location = location
 
@@ -3098,8 +3097,8 @@ class add_eps(process.process):
 
         for event in events:
 
-            if "701" in event['location']:
-                event['location'] = 'Room 701'
+            # if "701" in event['location']:
+            #    event['location'] = 'Room 701'
 
             # if event['start'] is None:
             #    event['start'] = datetime.datetime.now()
@@ -3549,7 +3548,7 @@ class add_eps(process.process):
         if self.options.show in ['pyohio_2015',"pycon_2014_warmup"]:
             return self.pyohio2013(schedule,show)
 
-        if self.options.show =='pygotham_2015':
+        if self.options.show =='pygotham_2016':
             return self.pygotham2015(schedule,show)
 
         if self.options.show =='pyconca2013':
