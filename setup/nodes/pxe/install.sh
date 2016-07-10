@@ -8,7 +8,7 @@
 SHAZ=$(hostname)
 # change scripts to use this user
 NUSER=$SUDO_USER
-NUSER=videoteam
+# NUSER=videoteam
 
 # default webroot for nginx
 # WEBROOT=/usr/share/nginx/www

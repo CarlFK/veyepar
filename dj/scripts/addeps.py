@@ -107,6 +107,8 @@ import json
 # import gdata.calendar.client
 # import gdata.calendar.service
 
+from icalendar import Calendar, Event
+
 # for google calandar:
 import pw 
 # import lxml.etree
@@ -3097,6 +3099,9 @@ class add_eps(process.process):
 
         for event in events:
 
+            if event['location'] == "Room CR4 & Room CR5 & Room CR6 & Room CR7":
+                event['location'] = 'Room CR4'
+
             # if "701" in event['location']:
             #    event['location'] = 'Room 701'
 
@@ -3118,8 +3123,10 @@ class add_eps(process.process):
                 event['license'] = 'CC BY-SA'
 
             if event['conf_url'] is None:
-                base = 'https://pygotham.org/2015/'
-                event['conf_url'] = '{base}talks/{id}/{slug}'.format(
+                # URL base is now https://2016.pygotham.org/talks/
+                # base = 'https://pygotham.org/2015/'
+                base = 'https://2016.pygotham.org'
+                event['conf_url'] = '{base}/talks/{id}/{slug}'.format(
                     base=base,
                     id = event['conf_key'],
                     slug = slugify(event['name']) )

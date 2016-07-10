@@ -17,7 +17,8 @@ class email_title(email_ab):
 
     subject_template = '[{{ep.show.name}}] Video metadata for "{{ep.name}}"'
 
-    body_body = """
+    body_body = """Projector hookup: HDMI 720p.  There will be adaptors for mini-DP, thunderbolt and DVI.  If you need something else, let us know now and we will try to accomodate.  You should test in the speaker ready room (aka green room.)
+
 Please review the following meta data about your talk so that mistakes can be corrected now and not after the video has gone live.
 
 Released: {{ep.released}}

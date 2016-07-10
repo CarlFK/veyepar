@@ -12,7 +12,7 @@ from django.template.defaultfilters import slugify
 
 import pw
 
-import rax_uploader
+# import rax_uploader
 import archive_uploader
 import steve.richardapi
 
@@ -389,7 +389,7 @@ class ck_setup(process):
             if secrets:
                 self.ck_richard(secrets)
 
-            secrets = self.ck_pw("rax","rax_id",['api_key', 'user'])
+            secrets = self.ck_pw("swift","rax_id",['api_key', 'user'])
             if secrets:
                 self.ck_cdn(secrets)
 
