@@ -3322,6 +3322,16 @@ class add_eps(process.process):
 
     def ics(self,schedule,show):
 
+        # pull in data fro Troy's goog sheet
+        fn = "schedules/dnf16d1.csv"
+        f=open(fn)
+        rows = csv.DictReader(f)
+        talks={}
+        for row in rows:
+            if row['Lanyrd Link']:
+                conf_key = str(row['Lanyrd Link']).split('/')[-2]
+                talks[conf_key] = row
+
         events=[]
         for component in schedule.walk():
             if component.name == "VEVENT":
@@ -3357,10 +3367,15 @@ class add_eps(process.process):
                 event['conf_url'] = str(k)
                 event['conf_key'] = str(k).split('/')[-2]
 
-                event['authors']='' 
-                event['emails']='' 
+                if event['conf_key'] in talks:
+                    event['authors']=talks[event['conf_key']]['Speaker']
+                    event['emails']=talks[event['conf_key']]['Email']
+                else:
+                    event['authors']=''
+                    event['emails']=''
+
                 event['twitter_id']='' 
-                event['description']='' 
+                event['description'] = str(component.get('description'))
                 event['tags']='' 
 
                 event['released']='True' 

@@ -361,12 +361,19 @@ class process():
 
         # episodes = Episode.objects.order_by( 'sequence','start',)
 
-        self.start=datetime.datetime.now()
-        ret = self.process_eps(episodes)
-        self.end=datetime.datetime.now()
-        work_time = self.end-self.start
-        if work_time.seconds or True:
-            print("run time: %s minutes" % (work_time.seconds/60))
+        if episodes:
+            self.start=datetime.datetime.now()
+            ret = self.process_eps(episodes)
+            self.end=datetime.datetime.now()
+            work_time = self.end-self.start
+            if work_time.seconds or True:
+                print("run time: %s minutes" % (work_time.seconds/60))
+        else:
+            if self.options.poll == -1:
+                print("queue empty, poll -1, exiting.")
+                ret = False
+            else:
+                ret = True
 
         return ret
 

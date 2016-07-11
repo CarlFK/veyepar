@@ -1965,6 +1965,7 @@ def mk_cuts(episode,
                     location=episode.location,
                     click__gte = rf.start, click__lte = rf.end
                         ).order_by('click')
+            apply=True
             for mark in marks:
                 print("mark:{}".format(mark))
                 seq+=1
@@ -1984,8 +1985,8 @@ def mk_cuts(episode,
                 print("cl,created: {},{}".format(cl,created))
                 if created:
                     cl.sequence=seq
-                    cl.apply = apply
-                apply=True
+                    cl.apply = mark.click < episode.end
+                            # datetime.timedelta(minutes=end_slop))
 
             cl.save()
 
