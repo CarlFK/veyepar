@@ -108,6 +108,9 @@ import json
 # import gdata.calendar.service
 
 from icalendar import Calendar, Event
+from icalendar import vDatetime
+
+from django.utils.timezone import localtime
 
 # for google calandar:
 import pw 
@@ -3317,6 +3320,64 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
+    def ics(self,schedule,show):
+
+        events=[]
+        for component in schedule.walk():
+            if component.name == "VEVENT":
+
+                event={}
+
+                event['name'] = str(component.get('summary'))
+
+                s = component.get('dtstart')
+                start = s.from_ical(s) - datetime.timedelta(hours=7)
+                print(s,start)
+                # event['start'] = localtime(start) #.replace(tzinfo=None)
+                # print("import sys;sys.exit()")
+                # import code; code.interact(local=locals())
+                try:
+                    event['start'] = start.replace(tzinfo=None)
+                except TypeError:
+                    continue
+
+                e = component.get('dtend')
+                end = e.from_ical(e) - datetime.timedelta(hours=7)
+                event['end'] = end.replace(tzinfo=None)
+
+                delta = end - start
+                minutes = delta.seconds/60 # - 5 for talk slot that includes break
+
+                event['duration'] = "00:%s:00" % ( minutes) 
+
+                l = component.get('location')
+                event['location'] = str(l)
+
+                k =  component.get('URL')
+                event['conf_url'] = str(k)
+                event['conf_key'] = str(k).split('/')[-2]
+
+                event['authors']='' 
+                event['emails']='' 
+                event['twitter_id']='' 
+                event['description']='' 
+                event['tags']='' 
+
+                event['released']='True' 
+                event['license']='CC-BY' 
+
+                event['raw']='' 
+
+                print( event )
+                events.append(event)
+
+                pprint.pprint(component)
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
 
 
 #################################################3
@@ -3424,7 +3485,6 @@ class add_eps(process.process):
 
                 if self.options.verbose: print("login ret:", ret)
 
-                # import code; code.interact(local=locals())
 
             if self.options.show in ['chicagowebconf2012"',
                                         "cusec2013" , ]:
@@ -3457,6 +3517,9 @@ class add_eps(process.process):
             schedule=xml.etree.ElementTree.XML(
                     response.content)
 
+        elif ext=='.ics':
+            schedule=Calendar.from_ical(f.read())
+
         else:
             # lets hope it is json, like everything should be.
             # j = response.text
@@ -3488,6 +3551,9 @@ class add_eps(process.process):
             return self.zoo(schedule,show)
 
 
+        if ext =='.ics':
+            return self.ics(schedule,show)
+    
         if self.options.show =='depy_2016':
             return self.amberapp(schedule,show)
     
