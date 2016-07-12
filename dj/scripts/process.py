@@ -369,8 +369,8 @@ class process():
             if work_time.seconds or True:
                 print("run time: %s minutes" % (work_time.seconds/60))
         else:
-            if self.options.poll == -1:
-                print("queue empty, poll -1, exiting.")
+            if self.options.poll == 0:
+                print("queue empty, poll 0, exiting.")
                 ret = False
             else:
                 ret = True

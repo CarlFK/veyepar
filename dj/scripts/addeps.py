@@ -447,6 +447,9 @@ class add_eps(process.process):
                     if self.options.verbose: 
                         pprint.pprint( diff_fields )
                     for f,a1,a2 in diff_fields:
+                        if self.options.verbose:
+                            print(1, a1.__repr__())
+                            print(2, a2.__repr__())
                         if not isinstance(a1,str):
                             print('veyepar {0}: {1}'.format(f,a1))
                             print('   conf {0}: {1}'.format(f,a2))
@@ -3323,14 +3326,15 @@ class add_eps(process.process):
     def ics(self,schedule,show):
 
         # pull in data fro Troy's goog sheet
-        fn = "schedules/dnf16d1.csv"
-        f=open(fn)
-        rows = csv.DictReader(f)
         talks={}
-        for row in rows:
-            if row['Lanyrd Link']:
-                conf_key = str(row['Lanyrd Link']).split('/')[-2]
-                talks[conf_key] = row
+        for d in [1,2]:
+            fn = "schedules/dnf16d{}.csv".format(d)
+            f=open(fn)
+            rows = csv.DictReader(f)
+            for row in rows:
+                if row['Lanyrd Link']:
+                    conf_key = str(row['Lanyrd Link']).split('/')[-2]
+                    talks[conf_key] = row
 
         events=[]
         for component in schedule.walk():
@@ -3339,6 +3343,7 @@ class add_eps(process.process):
                 event={}
 
                 event['name'] = str(component.get('summary'))
+                if "Lighting" in event['name']: continue
 
                 s = component.get('dtstart')
                 start = s.from_ical(s) - datetime.timedelta(hours=7)
@@ -3378,7 +3383,7 @@ class add_eps(process.process):
                 event['description'] = str(component.get('description'))
                 event['tags']='' 
 
-                event['released']='True' 
+                event['released']=True 
                 event['license']='CC-BY' 
 
                 event['raw']='' 
@@ -3533,7 +3538,8 @@ class add_eps(process.process):
                     response.content)
 
         elif ext=='.ics':
-            schedule=Calendar.from_ical(f.read())
+            schedule=Calendar.from_ical(response.content)
+            # schedule=Calendar.from_ical(f.read())
 
         else:
             # lets hope it is json, like everything should be.
