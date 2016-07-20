@@ -92,6 +92,8 @@ pyvenv ~/.virtualenvs/veyepar
 printf "source  ~/.virtualenvs/veyepar/bin/activate\n" >> ~/.bashrc
 source  ~/.virtualenvs/veyepar/bin/activate
 
+pip install --upgrade pip
+
 if [ ! -d veyepar ]; then
   git clone git://github.com/CarlFK/veyepar.git
 fi
