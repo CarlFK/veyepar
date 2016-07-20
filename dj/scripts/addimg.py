@@ -16,6 +16,8 @@ pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
 # convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
 
 
+# https://bitbucket.org/3togo/python-tesseract/downloads
+
 # wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.4ubuntu0_amd64.deb
 # wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.2ubuntu5_amd64.deb
 wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.5ubuntu3_vivid_amd64.deb
@@ -28,7 +30,7 @@ sudo apt-get install python-opencv
   TESSDATA_PREFIX=/usr/share/tesseract-ocr
 ln -s /usr/share/tesseract-ocr/tessdata/ 
 
-cd $(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
+cd $(python -c "from distutils.sysconfig import get_python_lib; print( get_python_lib())")
 ln -s /usr/lib/python2.7/dist-packages/cv2.so
 cd -
 

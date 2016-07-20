@@ -3336,6 +3336,21 @@ class add_eps(process.process):
                     conf_key = str(row['Lanyrd Link']).split('/')[-2]
                     talks[conf_key] = row
 
+        fn = "schedules/dnf_lighning_talks.txt"
+        f=open(fn)
+        for line in f.read().split('\n'):
+            print(line)
+            # by Andrea Goulet Ford
+            if line.startswith('by'):
+                speaker=line[3:]
+            elif line.startswith('Lightning'):
+                title=line
+            elif line.startswith('http://lanyrd.com'):
+                conf_key = line.split('/')[-2]
+                talks[conf_key] = {
+                        'Speaker':speaker,
+                        'Email':''}
+
         events=[]
         for component in schedule.walk():
             if component.name == "VEVENT":

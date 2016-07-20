@@ -12,7 +12,7 @@ from django.template.defaultfilters import slugify
 
 import pw
 
-# import rax_uploader
+import rax_uploader
 import archive_uploader
 import steve.richardapi
 

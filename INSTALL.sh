@@ -116,7 +116,7 @@ ln -s dabo-master/dabo
 
 pydp=/usr/lib/python3/dist-packages
 # ln -s /usr/lib/python2.7/dist-packages/gi
-ln -s $pydp/dist-packages/gi
+ln -s $pydp/gi
 
 # to hookinto local open-cv
 # python -c "import cv2;print cv2.__file__" 
