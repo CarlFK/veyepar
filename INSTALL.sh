@@ -134,6 +134,8 @@ ln -s $pydp/tesseract.pyc
 # ln -s /usr/lib/python2.7/dist-packages/_tesseract.x86_64-linux-gnu.so
 ln -s $pydp/_tesseract.x86_64-linux-gnu.so
 
+2to3 -w steve vidscraper
+
 cd -
 
 # grab some text files I don't want to check into the repo

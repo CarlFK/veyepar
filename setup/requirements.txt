@@ -64,3 +64,5 @@ keystoneauth1
 git+https://github.com/openstack/oslo.config.git
 netifaces
 
+python-swiftclient
+

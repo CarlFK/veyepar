@@ -2,6 +2,7 @@
 
 # ck_setup.py - checks the veyepar setup - reports what features are ready.
 
+
 from process import process
 
 from main.models import Show, Location, Client
@@ -12,11 +13,12 @@ from django.template.defaultfilters import slugify
 
 import pw
 
-import rax_uploader
+import swift_uploader
 import archive_uploader
 import steve.richardapi
 
 import os
+import pprint
 import xml.etree.ElementTree
 import requests
 
@@ -277,8 +279,18 @@ class ck_setup(process):
         else:
             p_fail("client.bucket_id not set.")
 
+        print("logging in...")
+        uploader = swift_uploader.Uploader()
+        # pprint.pprint(pw.swift[rax_id])
+        uploader.user=rax_id
+        cf = uploader.auth()
+
         print("checking for valid bucket...")
-        cf = rax_uploader.auth(rax_id)
+        from swiftclient.service import SwiftService
+        swift = SwiftService()
+        stats_it = swift.stat(container=bucket_id)
+
+        """
         containers = cf.get_all_containers()
         container_names = [container.name for container in containers]
         print("container_names", container_names)
@@ -286,6 +298,7 @@ class ck_setup(process):
             p_okg('"{}" found.'.format(bucket_id))
         else:
             p_fail('"{}" not found.'.format(bucket_id))
+        """
 
         # not sure what to do with this...
         # container = cf.get_container(bucket_id)
