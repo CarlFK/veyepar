@@ -13,7 +13,7 @@
 
 # rm ../veyepar.db
 if [ ! -e ../veyepar.db ]; then
-  ../manage.py syncdb --noinput
+  ../manage.py migrate --noinput
 fi
 
 python3 run_tests.py --client test_client --show test_show -v --unlock --force
