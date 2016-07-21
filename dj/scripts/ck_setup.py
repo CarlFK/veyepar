@@ -312,17 +312,19 @@ class ck_setup(process):
             p_warn("client.archive_id not set.")
             return 
 
+        print("archive auth...")
+        service = archive_uploader.auth(archive_id)
+        buckets = service.get_all_buckets()
+
+        # this make no sense now that each talk gets it's own bucket:
+        """
         if self.client.bucket_id:
             bucket_id = self.client.bucket_id
             p_okg("client.bucket_id: {}".format(bucket_id))
         else:
             p_fail("client.bucket_id not set.")
 
-        print("auth...")
-        service = archive_uploader.auth(archive_id)
-
         print("checking for valid bucket...")
-        buckets = service.get_all_buckets()
         bucket_names = [bucket.name for bucket in buckets]
         print("bucket_names", bucket_names)
         if bucket_id in bucket_names:
@@ -334,6 +336,8 @@ class ck_setup(process):
         bucket = service.get_bucket(bucket_id,headers={})
         # not sure what to do with this...
         # container = cf.get_container(bucket_id)
+        """
+
         return
 
 
