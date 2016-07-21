@@ -103,7 +103,7 @@ cd veyepar
 pip install -r setup/requirements.txt
 
 # fix a bunch of things that don't pip install well
-cd $(python -c "from distutils.sysconfig import get_python_lib; print( get_python_lib())")
+cd $(python3 -c "from distutils.sysconfig import get_python_lib; print( get_python_lib())")
 
 # Dabo
 # maybe it works now?  http://trac.dabodev.com/changeset/5554

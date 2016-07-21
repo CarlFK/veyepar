@@ -56,7 +56,7 @@ class mkdirs(process):
 
         if self.options.raw_slugs:
 
-        # get episodes for this show
+            # get episodes for this show
             eps = Episode.objects.filter(show=show)
             for ep in eps:
                 loc = ep.location.slug
@@ -67,7 +67,7 @@ class mkdirs(process):
 
         else:
 
-    # get locations of the episodes
+            # get locations of the episodes
             for loc in Location.objects.filter(
                     show=show, active=True):
                  dir = os.path.join(self.show_dir,'dv',loc.slug)
