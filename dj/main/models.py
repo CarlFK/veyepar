@@ -371,7 +371,7 @@ class Episode(models.Model):
             self.save()
 
     def get_authors(self):
-        authors = self.authors.split(',')
+        authors = self.authors.split(',') if self.authors else []
         return authors
         
 

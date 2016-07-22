@@ -220,6 +220,7 @@ def ep_json(request, ep_id):
                 ( 'archive', ep.archive_url ),
                 ( 'archive', ep.archive_mp4_url ),
                 ( 'rax', ep.rax_mp4_url ),
+                ( 'conf', ep.conf_url ),
                 ( 'tweet', ep.twitter_url ),
             ):
         if u:
@@ -243,7 +244,7 @@ def ep_json(request, ep_id):
       "source_url": ep.host_url,
       "speakers": ep.get_authors(),
       "summary": ep.summary,
-      "tags": ep.tags.split(','),
+      "tags": [] if ep.tags is None else ep.tags.split(','),
       "thumbnail_url": ep.thumbnail,
       "title": ep.name,
       "videos": videos,
@@ -251,6 +252,21 @@ def ep_json(request, ep_id):
 
     response = HttpResponse(content_type="application/json")
     json.dump(d,response)
+    return response
+
+def pytube_jsons(request):
+
+    episodes = eps_filters(request.GET)
+
+    urls=[ "wget -i http://"
+            + request.META['HTTP_HOST'] + request.get_full_path() ]
+    for ep in episodes:
+        urls.append("http://{host}/main/E/{id}.json".format(host=request.META['HTTP_HOST'],id=ep.id))
+
+    response = HttpResponse('\n'.join(urls), content_type="text/plain")
+    response['Content-Disposition'] = \
+            'inline; filename=veyepar.urls'
+
     return response
 
 def eps_xfer(request,client_slug=None,show_slug=None):
@@ -609,12 +625,39 @@ def raw_play_list(request, episode_id):
 
     return response
 
+def eps_filters(rGET):
+
+    episodes = Episode.objects.all()
+
+    if "id" in rGET:
+        episodes = episodes.filter( id=rGET['id'] )
+
+    if "client" in rGET:
+        episodes = episodes.filter(
+                show__client__slug=rGET['client'] )
+
+    if "show" in rGET:
+        episodes = episodes.filter( show__slug=rGET['show'] )
+
+    if "location" in rGET:
+        episodes = episodes.filter( location__slug=rGET['location'] )
+
+    if "date" in rGET:
+        episodes = episodes.filter( start__startswith=rGET['date'] )
+
+    if "state" in rGET:
+        episodes = episodes.filter( state=rGET['state'] )
+
+    return episodes
+
+
 def public_play_list(request):
     # experiment to construct a playlist that is based on query params
     
     # build up the filter:
-    episodes = Episode.objects
+    episodes = eps_filters(request.GET)
 
+    """
     if "id" in request.GET:
         episodes = episodes.filter( id=request.GET['id'] )
 
@@ -634,6 +677,7 @@ def public_play_list(request):
     if "state" in request.GET:
         episodes = episodes.filter( state=request.GET['state'] )
 
+    """
 
     response = HttpResponse(content_type='audio/mpegurl')
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
