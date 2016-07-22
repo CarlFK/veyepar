@@ -370,6 +370,11 @@ class Episode(models.Model):
                 self.emails = email
             self.save()
 
+    def get_authors(self):
+        authors = self.authors.split(',')
+        return authors
+        
+
     class Meta:
         ordering = ["sequence"]
         # unique_together = [("show", "slug")]
