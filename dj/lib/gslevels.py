@@ -242,7 +242,7 @@ def many(indir, outdir):
     for dirpath, dirnames, filenames in os.walk( indir, followlinks=True):
         d=dirpath[len(options.indir)+1:]
         for f in filenames:
-            if os.path.splitext(f)[1]=='.dv':
+            if os.path.splitext(f)[1] in ['.mov','.ts' '.dv']:
                 rf_name = os.path.join(options.indir,d,f)
                 png_name = os.path.join(outdir,d,f+".wav.png")
                 if options.verbose:
@@ -294,6 +294,7 @@ def parse_args():
 
 def main():
 
+    """
     filenames = [
    # "/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4",
    # "/home/carl/temp/Manageable_Puppet_Infrastructure.webm",
@@ -313,8 +314,8 @@ def main():
             lvlpng(filename)
 
     return 
+    """
     
-    # what?
     if options.indir:
         many(options.indir, options.outdir)
     else:
