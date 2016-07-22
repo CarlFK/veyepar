@@ -244,7 +244,8 @@ def ep_json(request, ep_id):
       "source_url": ep.host_url,
       "speakers": ep.get_authors(),
       "summary": ep.summary,
-      "tags": [] if ep.tags is None else ep.tags.split(','),
+      "tags": [] if ( (ep.tags is None) or (not ep.tags)) \
+              else ep.tags.split(','),
       "thumbnail_url": ep.thumbnail,
       "title": ep.name,
       "videos": videos,
@@ -258,8 +259,10 @@ def pytube_jsons(request):
 
     episodes = eps_filters(request.GET)
 
-    urls=[ "wget -i http://"
-            + request.META['HTTP_HOST'] + request.get_full_path() ]
+    urls=[ 'wget -i "http://{host}{path}"'.format(
+                host = request.META['HTTP_HOST'], 
+                path = request.get_full_path() )
+            ]
     for ep in episodes:
         urls.append("http://{host}/main/E/{id}.json".format(host=request.META['HTTP_HOST'],id=ep.id))
 
