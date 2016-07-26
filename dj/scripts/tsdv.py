@@ -38,10 +38,14 @@ class ts_rf(process):
         if offset is not None:
             start += datetime.timedelta(seconds=offset)
 
+        """
+        # when did this start working?
         if os.path.splitext(rf.filename)[1] in [ '.ts' ]:
             seconds = 1800
         else:
             seconds = tsraw.get_duration(pathname)
+        """
+        seconds = tsraw.get_duration(pathname)
 
         print(( pathname, start, seconds ))
         rf.start = start
@@ -92,8 +96,8 @@ class ts_rf(process):
         parser.add_option('--offset_seconds', type="float",
            help="adjust time to deal with clock wrong.")
         parser.add_option('--time_source', 
-           help="one of fn, fs, frame, gst\n" \
-             "(file name, file system, dv frame, gst lib, auto)")
+           help="one of fn, fs, frame, gst, un, auto\n" \
+             "(file name, file system, dv frame, gst lib, UN files, auto)")
         parser.add_option('--ext', 
            help="only hit this ext")
 

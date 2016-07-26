@@ -39,7 +39,7 @@
       <td> <a href="/main/clients/">Clients</a> </td>
       {% if request.META.HTTP_HOST == "localhost:8080" %}
         <td> <a href="http://validator.w3.org/check?uri=http://veyepar.nextdayvideo.com{{request.get_full_path}}">val</a></td>
-        <td><a href="http://veyepar.nextdayvideo.com{{request.get_full_path}}">prod</a> </td>
+        <td><a href="http://veyepar3.nextdayvideo.com{{request.get_full_path}}">prod</a> </td>
       {% else %}
         <td> <a href="http://validator.w3.org/check?uri={{request.META.HTTP_HOST}}{{request.get_full_path}}">val</a></td>
         <td> <a href="http://localhost:8080{{request.get_full_path}}">dev</a> </td>

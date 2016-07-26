@@ -379,7 +379,7 @@ class enc(process):
                     cut['normalize']='-12.0'
 
                 if cl.episode.comment.startswith('delay'):
-                    delay = cl.episode.comment.split('\n')[0].split('=')[1]
+                    delay = cl.episode.comment.split('\n')[0].split('=')[1].strip()
                     cut['video_delay']=delay
                 else:
                     cut['video_delay']='0.0'

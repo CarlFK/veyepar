@@ -6,7 +6,7 @@ from process import process
 
 import youtube_v3_uploader
 import ia_uploader
-import rax_uploader
+# import rax_uploader
 
 import os
 import pprint

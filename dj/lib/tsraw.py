@@ -16,9 +16,11 @@ last frame
 
 """
 
+import datetime
+import pprint
 import os
 import re
-import datetime
+import subprocess
 
 import exiftool
 
@@ -51,6 +53,7 @@ def get_start( pathname, time_source ):
     def parse_name(pathname):
         # print("parse_name")
         # parse string into datetime
+        # expects room/yyy-mm-dd/hh_mm_ss-x.ext
 
         # remove extention
         filename = os.path.splitext(pathname)[0]
@@ -131,6 +134,49 @@ def get_start( pathname, time_source ):
 
         return start
 
+    def un(pathname):
+        # files from the UN.
+
+        date_re = r"(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)"
+        time_re = rb"(?P<hour>\d+):(?P<minute>\d+):(?P<second>\d+)"
+
+        # d+_DMOICT...move stuff so it errors if it finds something else
+        start_date_re = r".*/" + date_re + ".*/\d+_DMOICT.*\.mov"
+
+        start_date_o =  re.match(start_date_re, pathname)
+        dt_parts = start_date_o.groupdict()
+        print("date_parts:", dt_parts)
+
+        
+        cmd = ['mediainfo', 
+                '--Inform=Video;%TimeCode_FirstFrame%', 
+                pathname ]
+        p = subprocess.Popen(
+                cmd,
+                stdout = subprocess.PIPE )
+        stdout = p.stdout.read()
+        # '07:50:00:00\n'
+
+        # time_code = stdout.strip().split(':')
+
+        start_time_re = time_re + rb":\d\d\n"
+
+        start_time_o =  re.match(start_time_re, stdout)
+        start_time_d = start_time_o.groupdict()
+        print("start_time_d:",start_time_d)
+
+        dt_parts.update(start_time_d)
+        pprint.pprint(dt_parts)
+
+        dt_parts = {k:int(v) for k,v in list(dt_parts.items())}
+        print(dt_parts)
+
+        start=datetime.datetime( **dt_parts )
+        print(start)
+
+        return start
+
+
     def auto(pathname):
         # try to figure out what to use
         # print("auto...")
@@ -160,6 +206,7 @@ def get_start( pathname, time_source ):
              'fs':fs_time,
              'frame':frame_time,
              'gst':gst_discover_start,
+             'un':un,
              'auto':auto,
              }[time_source](pathname)
 
@@ -200,9 +247,10 @@ def get_duration(pathname):
 
     # return start, seconds 
 
-def test(pathname):
-    print(pathname)
-    start = get_start(pathname, "auto")
+def test(pathname,ts="auto"):
+    print(pathname, ts)
+    # start = get_start(pathname, ts)
+    start = get_start(pathname, ts)
     print(start)
     seconds = get_duration(pathname)
     print(seconds)
@@ -234,7 +282,10 @@ def main():
     for filename in filenames:
         test(filename)
     """
-    test("/home/carl/temp/segment-0.ts")
+    # test("/home/carl/temp/segment-0.ts")
+    d = u"/home/carl/mnt/rad/Videos/veyepar/big_apple_py/pygotham_2016/dv/Room_CR7/2016-07-16/"
+    test(d + "1672828_DMOICT Open Camps CR7 8AM-12PM 16 JULY 16.mov", "un")
+    test(d + "12_14_09.ts", 'auto')
 
 if __name__=='__main__': 
     main()
