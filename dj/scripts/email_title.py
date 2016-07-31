@@ -17,12 +17,12 @@ class email_title(email_ab):
 
     subject_template = '[{{ep.show.name}}] Video metadata for "{{ep.name}}"'
 
-    body_body = """Projector hookup: HDMI 720p.  There will be adaptors for mini-DP, thunderbolt and DVI.  If you need something else, let us know now and we will try to accomodate.  You should test in the speaker ready room (aka green room.)
+    body_body = """Projector hookup: HDMI 720p.  There will be adaptors for mini-DP, thunderbolt and DVI.  If you need something else, let us know now and we will try to accomodate.
 
 Please review the following meta data about your talk so that mistakes can be corrected now and not after the video has gone live.
 
 Released: {{ep.released}}
-{% if ep.released %}Permission has been given to record your talk and post it online.
+{% if ep.released %}Permission has been given to record your talk and post it online.  Once it is up, you will get another e-mail with a URL that is not public until someone approves it.  Once it's approved it will be made public and tweeted {{ep.show.client.tweet_prefix}}.
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% else %} "None" means it may get recorded and processed, but it will not be made public.
 "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
@@ -47,6 +47,9 @@ Problems with the text should be fixed in the event database that drives: {{ep.c
 If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
 
 Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.  
+
+
+
 
 """
     py_name = "email_title.py"

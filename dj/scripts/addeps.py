@@ -3520,7 +3520,6 @@ class add_eps(process.process):
 
                 if self.options.verbose: print("login ret:", ret)
 
-
             if self.options.show in ['chicagowebconf2012"',
                                         "cusec2013" , ]:
                 payload = {
@@ -3654,7 +3653,8 @@ class add_eps(process.process):
             # for Eric's email me a file process
             return self.lanyrd(schedule,show)
 
-        if self.options.show in ['pyohio_2015',"pycon_2014_warmup"]:
+        if self.options.show in [
+                'pyohio_2016','pyohio_2015',"pycon_2014_warmup"]:
             return self.pyohio2013(schedule,show)
 
         if self.options.show =='pygotham_2016':

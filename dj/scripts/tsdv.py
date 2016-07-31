@@ -35,8 +35,10 @@ class ts_rf(process):
         # print( "tsraw.get_start", (pathname, self.options.time_source ) )
         start = tsraw.get_start(pathname, self.options.time_source )
 
+        """
         if offset is not None:
             start += datetime.timedelta(seconds=offset)
+        """
 
         """
         # when did this start working?

@@ -18,12 +18,14 @@ class add_dv(process):
                 self.show_dir, "dv", location.slug, pathname )
 
         for line in open(fullpathname).read().split('\n'):
-            try:
-                click = datetime.datetime.strptime(
-                        line,'%Y-%m-%d/%H_%M_%S')
-            except ValueError as e:
-                print(e)
-                continue
+            if line:
+                try:
+                    click = datetime.datetime.strptime(
+                            line,'%Y-%m-%d/%H_%M_%S')
+                    # click = click + datetime.timedelta(hours=-1)
+                except ValueError as e:
+                    print(e)
+                    continue
 
             print(click, end=' ') 
 
@@ -70,6 +72,7 @@ class add_dv(process):
       """
       if self.options.whack:
           Raw_File.objects.filter(show=show).delete()
+          Mark.objects.filter(show=show).delete()
 
       ep_dir=os.path.join(self.show_dir,'dv',location.slug)
       if self.options.verbose:  print("episode dir:", ep_dir)

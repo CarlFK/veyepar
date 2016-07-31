@@ -2019,6 +2019,11 @@ def mk_cuts(episode,
 
     """
 
+
+    location=episode.location
+    start_slop += location.hours_offset * 60
+    end_slop += location.hours_offset * 60
+
     # Get the overlapping dv,
     # plus some fuzz: start/end_slop
     rfs = Raw_File.objects.filter(

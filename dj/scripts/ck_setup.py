@@ -156,7 +156,8 @@ class ck_setup(process):
             'title',
             'title2',
             'tag1',
-            'presenternames',  # authors
+            'presenternames',  
+            'authors',
             'presentertitle',
             'twitter_id',
             'date',
