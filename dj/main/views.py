@@ -2019,10 +2019,11 @@ def mk_cuts(episode,
 
     """
 
-
     location=episode.location
-    start_slop += location.hours_offset * 60
-    end_slop += location.hours_offset * 60
+    if location.hours_offset is not None:
+        if episode.start.date == datetime.date(2016, 7, 30):
+            start_slop += location.hours_offset * 60
+            end_slop += location.hours_offset * 60
 
     # Get the overlapping dv,
     # plus some fuzz: start/end_slop
