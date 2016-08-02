@@ -27,9 +27,9 @@ wget -N $SRC/veyepar_main.json
 touch veyepar.db 
 mv  veyepar.db  ~/temp
 
-python ./manage.py syncdb --noinput
+python ./manage.py migrate --noinput
 python ./manage.py loaddata veyepar_main.json 
-# python ./manage.py loaddata veyepar_auth.json
+python ./manage.py loaddata veyepar_auth.json
 
 # echo ./manage.py changepassword
 
