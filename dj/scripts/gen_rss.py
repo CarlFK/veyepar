@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
-# push encoded files to data center box
-# uses rsync. 
+# create an rss feed file. 
+# needs to get the file size from the file system, 
+# so needs to be run on a box with fiile system access to the files
 
 import os, subprocess, sys
 from process import process
