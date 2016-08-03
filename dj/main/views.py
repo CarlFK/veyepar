@@ -2019,19 +2019,29 @@ def mk_cuts(episode,
 
     """
 
+    # start,end of talk bracket to look for video data:
+    # slop goes out from the talk, offset shifts.. so math.
     location=episode.location
+    # print("loc offset", location.hours_offset)
     if location.hours_offset is not None:
         # only adjust PyOhio day 1.
         # fix this some day.
-        if episode.start.date == datetime.date(2016, 7, 30):
-            start_slop += location.hours_offset * 60
+        if episode.start.date() == datetime.date(2016, 7, 30):
+            start_slop -= location.hours_offset * 60
             end_slop += location.hours_offset * 60
+            # print( start_slop, end_slop )
+
+    start = episode.start - datetime.timedelta(minutes=start_slop)
+    end = episode.end + datetime.timedelta(minutes=end_slop)
+
+    # print("start:",start)
+    # print("end:",end)
 
     # Get the overlapping dv,
     # plus some fuzz: start/end_slop
     rfs = Raw_File.objects.filter(
-            end__gte=episode.start - datetime.timedelta(minutes=start_slop),
-            start__lte=episode.end + datetime.timedelta(minutes=end_slop),
+            end__gte=start,
+            start__lte=end,
             location=episode.location).order_by('start')
 
     seq=0

@@ -27,8 +27,12 @@ class gen_rss(process):
         if os.path.exists( fullpathname ):
 
             # this should be ep.some_url but oh well.
-            url = '%s/%s/%s/%s.%s' % (self.options.base_url,
-                    ep.start.year, ep.show.slug, ep.slug, ext)
+            url = '{base}/{year}/{show}/{ext}/{slug}.{ext}'.format(
+                    base=self.options.base_url,
+                    year=ep.start.year, 
+                    show=ep.show.slug, 
+                    slug=ep.slug, 
+                    ext=ext)
 
             info = PyRSS2Gen.RSSItem(
                 title = ep.name,
