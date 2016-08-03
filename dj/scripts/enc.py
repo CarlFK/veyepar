@@ -502,20 +502,24 @@ class enc(process):
                 else:
                     return ret
 
-            # run encoder:
             if self.options.noencode:
                 print("sorce files generated, skipping encode.")
                 if self.options.melt:
                     self.run_cmd(['melt', mlt_pathname])
                 ret = False
             else:
+                # run encoder:
                 ret = self.run_cmds(episode, cmds, )
 
+                file_size = os.stat( out_pathname ).st_size
+                print( out_pathname, file_size )
 
+            # check results
             if ret and not os.path.exists(out_pathname):
                 print("melt returned %ret, but no output: %s" % \
                     (ret, out_pathname))
                 ret = False
+
 
             return ret
 

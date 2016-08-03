@@ -25,7 +25,7 @@ import tsraw
 
 class ts_rf(process):
 
-    def one_rf(self, rf, offset):
+    def one_rf(self, rf):
 
         pathname=os.path.join(self.show_dir, 'dv',
                 rf.location.slug, rf.filename)
@@ -75,11 +75,11 @@ class ts_rf(process):
                 if not self.options.subs in rf.filename:
                     continue
 
-            offset = self.options.offset_seconds
+            # offset = self.options.offset_seconds
             
             if not rf.start or self.options.force:
-                # self.one_rf(dir, rf, location.hours_offset / 10.0)
-                self.one_rf(rf, offset )
+                # self.one_rf(rf, offset )
+                self.one_rf(rf )
 
     def work(self):
         """
@@ -93,22 +93,23 @@ class ts_rf(process):
         return
 
     def add_more_options(self, parser):
-        parser.add_option('--offset_hours', type="int",
-           help="adjust time to deal with clock in wrong time zone.")
-        parser.add_option('--offset_seconds', type="float",
-           help="adjust time to deal with clock wrong.")
+        # parser.add_option('--offset_hours', type="int",
+        #   help="adjust time to deal with clock in wrong time zone.")
+        # parser.add_option('--offset_seconds', type="float",
+        #    help="adjust time to deal with clock wrong.")
+
         parser.add_option('--time_source', 
            help="one of fn, fs, frame, gst, un, auto\n" \
              "(file name, file system, dv frame, gst lib, UN files, auto)")
+
         parser.add_option('--ext', 
            help="only hit this ext")
-
         parser.add_option('--subs', 
            help="string to use for subs stuff that makes me cry.")
 
     def add_more_option_defaults(self, parser):
-        parser.set_defaults(offset_hours=0)
-        parser.set_defaults(offset_seconds=0)
+        # parser.set_defaults(offset_hours=0)
+        #  parser.set_defaults(offset_seconds=0)
         parser.set_defaults(time_source="auto")
 
 
