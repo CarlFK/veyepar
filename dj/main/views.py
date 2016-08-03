@@ -2021,6 +2021,8 @@ def mk_cuts(episode,
 
     location=episode.location
     if location.hours_offset is not None:
+        # only adjust PyOhio day 1.
+        # fix this some day.
         if episode.start.date == datetime.date(2016, 7, 30):
             start_slop += location.hours_offset * 60
             end_slop += location.hours_offset * 60
