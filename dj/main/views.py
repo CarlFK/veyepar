@@ -304,7 +304,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
     response = HttpResponse(content_type="application/json")
     serializers.serialize("json", eps, 
-            fields=fields, use_natural_keys=True,
+            fields=fields, use_natural_foreign_keys=True,
             stream=response)
 
     return response

@@ -373,6 +373,10 @@ class enc(process):
                 else:
                     cut['channelcopy']='01'
 
+                if cl.comment.startswith('channelcopy'):
+                   channelcopy = cl.comment.split('\n')[0].split('=')[1].strip()
+                   cut['channelcopy']=channelcopy
+
                 if cl.episode.normalise:
                     cut['normalize'] = cl.episode.normalise
                 else:
