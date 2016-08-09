@@ -1456,12 +1456,24 @@ class add_eps(process.process):
 
         # bad_rooms=['Cafeteria', 'Studio 1', 'Studio 2', 'Studio 3', 'B901', 'T102', 'Mercure Ballarat', 'Mystery Location', 'Ballarat Mining Exchange']
 
-        bad_rooms = [ 'Costa Hall Foyer', 
-                'uncatered', 
-                'Super Awesome Venue TBA',
-                'The Pier - http://www.thepiergeelong.com.au',
-                'Edge Bar, Western Beach Road',
+        # bad_rooms = [ 'Costa Hall Foyer', 'uncatered', 'Super Awesome Venue TBA', 'The Pier - http://www.thepiergeelong.com.au', 'Edge Bar, Western Beach Road', ]
+
+        bad_rooms = [ 
+                ' ', 
+                'Bayview Eden, 6 Queens Road, Melbourne'
                 ]
+
+
+        for s in schedule:
+
+            # Plenarys
+            if s['Room Name']=='Room 105 & 106':
+                s['Room Name']='Room 105'
+
+            # Breaks?
+            if s['Room Name']==' ':
+                print( s['Title'] )
+
 
         rooms = self.zoo_cages(schedule)
         print(rooms)
@@ -1469,9 +1481,10 @@ class add_eps(process.process):
         print(rooms)
         schedule = [s for s in schedule if s['Room Name'] in rooms]
 
+        # some hack to fix a long talk title, I guess.
         # schedule = [s for s in schedule if s['Id'] not in [185,] ]
-        schedule = [s for s in schedule if s['Id'] in [185,] ]
-        schedule[0]['Title']="Security Topics in Open Cloud: Advanced Threats, 2015's Vulnerabilities, Advancements in OpenStack Trusted Computing and Hadoop Encryption"
+        # schedule = [s for s in schedule if s['Id'] in [185,] ]
+        # schedule[0]['Title']="Security Topics in Open Cloud: Advanced Threats, 2015's Vulnerabilities, Advancements in OpenStack Trusted Computing and Hadoop Encryption"
 
         schedule = [s for s in schedule 
                 if s['Title'] not in [
