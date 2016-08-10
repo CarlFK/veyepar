@@ -2030,9 +2030,9 @@ def mk_cuts(episode,
     if location.hours_offset is not None:
         # only adjust PyOhio day 1.
         # fix this some day.
-        if episode.start.date() == datetime.date(2016, 7, 30):
-            start += datetime.timedelta( hours = location.hours_offset )
-            end += datetime.timedelta( hours = location.hours_offset )
+        # if episode.start.date() == datetime.date(2016, 7, 30):
+        start += datetime.timedelta( hours = location.hours_offset )
+        end += datetime.timedelta( hours = location.hours_offset )
 
     # print("start:",start)
     # print("end:",end)
