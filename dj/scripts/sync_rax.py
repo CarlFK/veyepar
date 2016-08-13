@@ -55,6 +55,7 @@ class SyncRax(process):
         make a low bitrate version of the raw file 
         for previewing over the web
         """
+        ext = "mp4"
         # base = os.path.join( "dv", rf.location.slug, rf.basename() )
         base = os.path.join( "dv", rf.location.slug, rf.filename )
         if self.options.verbose: print(base)
@@ -63,21 +64,21 @@ class SyncRax(process):
         # ext = os.path.splitext(rf.filename)[1]
         # rf = os.path.join(self.show_dir, base + ext)
         rf = os.path.join(self.show_dir, base )
-        web = os.path.join(self.show_dir, base + ".webm")
+        web = os.path.join(self.show_dir, base + ext)
         vb = "50k"
         # vb = "20k" # for SA
         if not os.path.exists(web):
             cmd = ["melt", rf, "meta.attr.titles=1", "meta.attr.titles.markup=#timecode#", "-attach", "data_show", "dynamic=1", "-consumer", "avformat:"+web, "vb="+vb, "progress=1"]
-            # cmd = "melt {rf} -consumer avformat:{out} vb={vb} progress=1".format( rf=rf, vb=vb, out=web ).split()
             p=subprocess.Popen(cmd)
             p.wait()
             retcode=p.returncode
         
-        web = base + ".webm"
+        web = base + ext
         if not self.cdn_exists(show,web):
             # raw file (huge!!!)
             # self.file2cdn(show,base)
-            self.file2cdn(show,web)
+            # self.file2cdn(show,web)
+            pass
 
 
     def rf_audio_png(self, show, rf):
@@ -214,9 +215,9 @@ class SyncRax(process):
         self.set_dirs(show)
         self.init_rax(show)
 
-        self.show_assets(show)
-        # self.raw_files(show)
-        self.episodes(show)
+        # self.show_assets(show)
+        self.raw_files(show)
+        # self.episodes(show)
 
 
     def work(self):
