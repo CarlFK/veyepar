@@ -242,7 +242,9 @@ admin.site.register(Episode, EpisodeAdmin)
 class Cut_ListAdmin(admin.ModelAdmin):
     list_display = ('sequence', 'apply', 'episode', 'start','end', 'raw_file',)
     list_editable = ('apply', 'start', 'end',)
-    list_filter = ('episode__show',)
+    list_filter = ('episode__show','episode__location')
+    # date_hierarchy = 'episode__start'
+
     admin_order_field = list_display
 
     actions = ['un_apply' ] + admin.ModelAdmin.actions

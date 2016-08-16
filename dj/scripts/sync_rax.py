@@ -76,8 +76,8 @@ class SyncRax(process):
         web = base + ext
         if not self.cdn_exists(show,web):
             # raw file (huge!!!)
-            # self.file2cdn(show,base)
-            # self.file2cdn(show,web)
+            ### self.file2cdn(show,base)
+            self.file2cdn(show,web)
             pass
 
 
@@ -224,10 +224,14 @@ class SyncRax(process):
         """
         find and process show
         """
-        if self.options.client and self.options.show:
+        if self.options.show:
+            show = Show.objects.get(slug=self.options.show)
+
+        if self.options.client:
             client = Client.objects.get(slug=self.options.client)
-            show = Show.objects.get(client=client, slug=self.options.show)
-            self.one_show(show)
+            show = show.filter(client=client)
+
+        self.one_show(show)
 
         return
 
