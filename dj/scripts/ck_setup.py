@@ -101,7 +101,7 @@ class ck_setup(process):
         try:
             client_slug = self.options.client
         except AttributeError as e:
-            p_fail("No client set in config file or command line.")
+            p_warn("No client set in config file or command line.")
             raise e
         p_okg("client_slug: {}".format(client_slug))
 
@@ -123,6 +123,7 @@ class ck_setup(process):
 
         try:
             self.show = Show.objects.get(slug=show_slug)
+            self.client = self.show.client
         except Show.DoesNotExist as e:
             p_fail( "show slug not found in db." )
             raise e
@@ -387,7 +388,7 @@ class ck_setup(process):
         """
 
         try:
-            self.ck_client()
+            # self.ck_client() # just use show?
             self.ck_show()
             self.set_dirs(self.show)
 
@@ -402,10 +403,12 @@ class ck_setup(process):
             # self.ck_pw("smtp","email_id")
             self.ck_email()
 
+            """
             secrets = self.ck_pw( "richard","richard_id",
                     ['host', 'api_key', ])
             if secrets:
                 self.ck_richard(secrets)
+            """
 
             secrets = self.ck_pw("swift","rax_id",['api_key', 'user'])
             if secrets:
