@@ -63,10 +63,12 @@ admin.site.register(Quality, QualityAdmin)
 
 class EpisodeAdmin(admin.ModelAdmin):
 
+    """
     def state_bumper(self,obj):
         return '<input type="submit" value="+" class=pb>' 
     state_bumper.allow_tags = True
     state_bumper.short_description = 'bump'
+    """
 
     list_display = ('id',
             # 'conf_key', 
