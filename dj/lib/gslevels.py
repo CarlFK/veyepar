@@ -14,6 +14,8 @@ import optparse
 import numpy
 import os
 
+import gi
+gi.require_version('Gst', '1.0')
 from gi.repository import Gst, GLib
 Gst.init(None)
 
@@ -28,8 +30,9 @@ class AudioPreviewer:
     def mk_pipe(self):
 
         # self.pipeline = Gst.parse_launch( "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink name=faked" )
+        # self.pipeline = Gst.parse_launch( "filesrc name=filesrc ! qtdemux ! audioconvert ! level name=wavelevel ! fakesink")
         self.pipeline = Gst.parse_launch( 
-            "filesrc name=filesrc ! qtdemux ! audioconvert ! level name=wavelevel ! fakesink"
+            "filesrc name=filesrc ! decodebin ! audioconvert ! level name=wavelevel ! fakesink"
             )
 
         # if self.uri.startswith('/'):
