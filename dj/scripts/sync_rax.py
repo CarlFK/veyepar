@@ -87,11 +87,14 @@ class SyncRax(process):
         png_base = os.path.join( "audio_png", "raw", 
             rf.location.slug, rf.filename + ".wav.png")
 
-        if not self.cdn_exists(show,png_base):
-            print(rf.filesize)
-            src = os.path.join(self.show_dir,rf_base)
-            dst = os.path.join(self.show_dir,png_base)
+        src = os.path.join(self.show_dir,rf_base)
+        dst = os.path.join(self.show_dir,png_base)
+
+        if not os.path.exists(dst) or self.options.force:
             ret = self.mk_audio_png(src,dst)
+
+        if self.options.force or not self.cdn_exists(show,png_base):
+            print(rf.filesize)
             self.file2cdn(show,png_base)
 
    
@@ -116,8 +119,8 @@ class SyncRax(process):
 
         for rf in rfs:
             if self.options.verbose: print(rf)
-            self.rf_web(show, rf)
-            # self.rf_audio_png(show, rf)
+            # self.rf_web(show, rf)
+            self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
         ext = "mp4"

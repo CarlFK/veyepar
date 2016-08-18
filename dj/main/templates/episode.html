@@ -13,7 +13,7 @@
 {% block content %}
 
 --client <a href="{% url "client" client.slug %}">{{ client.slug }}</a>
---show <a href="{% url "episode_list" client.slug show.slug%}">{{ show.slug }}</a> {{episode.id}} --force
+--show <a href="{% url "episode_list" client.slug show.slug%}">{{ show.slug }}</a> --room {{episode.location.slug}} {{episode.id}} --force
 <br/>
 
 {% if prev_episode %}
@@ -31,7 +31,7 @@
 <table>
 <tbody>
 <tr><td>Name</td><td><b>{{episode.name}}</b></td></tr>
-<tr><td>State</td><td>{{episode.state}} </td></tr>
+<tr><td>Author(s):</td><td>{{episode.authors}} </td></tr>
 <tr><td>Location</td><td><a href="{% url "admin:main_location_change" location.id%}">{{episode.location}}</a></td><td>{{episode.location.channelcopy}}</td>
 </tr>
 <tr><td>Date</td><td><a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug %}?client={{client.slug}}&amp;show={{show.slug}}&amp;location_slug={{episode.location.slug}}&amp;date={{episode.start|date:"Y-m-d"}}">
