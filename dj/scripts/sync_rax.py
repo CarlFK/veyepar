@@ -113,9 +113,14 @@ class SyncRax(process):
         # rfs = rfs.exclude(filesize__lt=800000)
 
         if self.args:
+            """
             eps = Episode.objects.filter(id__in=self.args)
             cls = Cut_List.objects.filter(episode__in=eps)
             rfs = rfs.filter(cut_list__in=cls).distinct()
+            """
+            rfs = rfs.exclude(filename__in=self.args)
+
+        rfs = rfs.exclude(filename="2016-07-30/12_55_51.ts")
 
         for rf in rfs:
             if self.options.verbose: print(rf)

@@ -37,37 +37,7 @@ For fields yuou don't have, plug in a value.  If you don't have 'released'
 give me "Yes" and then let the presenters know.
 
 End and Duration:  give me what you have in your database 
-and derive the other one if it isn't too much trouble.  
-I'll use it to verify the transformations.  
-"""
 
-"""
-datetime and json:
-There is a issue here because json doesn't define a date format.  Do whatever makes the server side code smallest and easiest to code.  Easy to read data is good too.  
-
-Here is PyCon 2010's impemtation:
-datetime objects are represented as a time tuple of six elements:
-    (year, month, day, hour, min, sec) 
-        "start":      [2010, 2, 19, 9, 30, 0],
-        "duration":   30, # in min
-http://us.pycon.org/2010/conference/schedule/json/
-Easy to code, kinda hard to read.
-I parse it with 
-          start = datetime.datetime(*row['start'])
-good.
-
-This is also good:
-    json: Start: "2011-06-09 19:00:00"
-    parser:  datetime.datetime.strptime( x, '%Y-%m-%d %H:%M:%S' )
-good.
-    
-Easy to read, harder to parse/assemble into start duration.
-http://2010.osdc.com.au/program/json
-# Day: "Tue 23 Nov"
-# Time: "09:00 - 17:00"
-but if that is how it is stored on the server, don't try to transform it.
-
-Again, keep the server side code simple.
 I can fix my consumer easier than I can get someone else's website updated.
 """
 

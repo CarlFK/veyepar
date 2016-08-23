@@ -198,7 +198,7 @@ $(".viewer").zoomer();
       <td>
        <video
           id="rawfile{{ cl.id }}"
-          src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.webm"
+          src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.mp4"
           controls
           preload="metadata"
           width=400
@@ -270,7 +270,7 @@ $(".viewer").zoomer();
                 <td>
                     {{ clrfform.split.label_tag }}{{ clrfform.split }}
                     {{ clrfform.sequence.label_tag }}: {{ clrfform.sequence }}
-                    <a href="{% url "admin:main_cut_list_change" cl.id%}delete/">delete</a>
+                    <a href="{% url "admin:main_cut_list_delete" cl.id%}">delete</a>
                 </td>
             </tr>
         </table>
