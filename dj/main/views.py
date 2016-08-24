@@ -207,7 +207,7 @@ def eps_csv(request,client_slug=None,show_slug=None):
 def ep_json(request, ep_id):
 
     """
-    for pytube
+    for pyvideo
     """
 
     ep = Episode.objects.get( id=ep_id )
@@ -252,7 +252,7 @@ def ep_json(request, ep_id):
     }
 
     response = HttpResponse(content_type="application/json")
-    json.dump(d,response)
+    json.dump(d,response, indent=2)
     return response
 
 def pytube_jsons(request):

@@ -85,10 +85,14 @@ class ts_rf(process):
         """
         find and process show
         """
-        if self.options.client and self.options.show:
+        if self.options.client:
             client = Client.objects.get(slug=self.options.client)
-            show = Show.objects.get(client=client, slug=self.options.show)
-            self.one_show(show)
+            show = Show.objects.get(
+                    client=client, slug=self.options.show)
+        else:
+            show = Show.objects.get(slug=self.options.show)
+ 
+        self.one_show(show)
 
         return
 

@@ -11,6 +11,7 @@ To run this standalone:
 
 1.
 pip install git+https://github.com/CarlFK/google-api-python-client.git#egg=googleapiclient
+pip install google-api-python-client
 
 2. Get a client ID (defines who is running this code)
 https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount
@@ -66,28 +67,8 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run_flow
 
-# The following 2 imports are wrapped in try/except so that 
+# The following import is wrapped in try/except so that 
 # this code will run without any additional files.
-try:
-    # ProgressFile is a subclass of the python open class
-    # as data is read, it prints a visible progress bar 
-    from progressfile import ProgressFile
-except ImportError:
-    # or just use python's open for testing
-    ProgressFile = open
-
-"""
-to use progressfile you need to patch 
-@ 418  ~/.virtualenvs/veyepar/local/lib/python2.7/site-packages/apiclient/http.py
-
-    if isinstance(filename,file):
-        fd = filename
-        filename = fd.name
-    else:
-        fd = open(self._filename, 'rb')
-
-"""
-
 try:
     # read credentials from a file
     from pw import yt 
@@ -354,13 +335,11 @@ class Uploader():
             print(self.pathname)
             pprint.pprint(self.meta)
 
-        pf = ProgressFile(self.pathname, 'rb')
-
         self.meta['description'] = clean_description(
                 self.meta['description'])
 
-        # status, response = initialize_upload(youtube, self.pathname, self.meta)
-        status, response = initialize_upload(youtube, pf, self.meta)
+        status, response = initialize_upload(youtube, 
+                self.pathname, self.meta)
 
         self.response = response
 

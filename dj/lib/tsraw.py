@@ -115,6 +115,12 @@ def get_start( pathname, time_source ):
         # get start time using gstreamer to read the media file header
         # print("gst_discover_start")
 
+        """
+     If you add an 'audioparse' element (or 'rawaudioparse' in >= 1.9/git
+     master) after filesrc and configure it with the right properties, it
+     should be able to report the duration correctly.
+        """
+
         discoverer = GstPbutils.Discoverer()
         d = discoverer.discover_uri('file://{}'.format(pathname))
         tags= d.get_tags()
