@@ -293,8 +293,7 @@
 				<fontname>'Helvetica-Bold'</fontname>
 				<FontSize>13</FontSize>
 				<hanchor>'right'</hanchor>
-				<show>self.loction_name.lower() &lt;&gt; self.location_slug.lower()</show>
-				<width>'80.0 pt'</width>
+				<width>'90.0 pt'</width>
 				<x>'441.0 pt'</x>
 				<y>'34.0 pt'</y>
 			</String>
