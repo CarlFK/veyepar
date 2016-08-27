@@ -24,6 +24,7 @@
 <td>
     <a href="{% url "eps_xfer" client.slug show.slug %}">{{show.slug}}.json</a> </br>
     <a href="{% url "eps_csv" client.slug show.slug %}">{{show.slug}}.csv</a>
+    <a href="{% url "pyvid_jsons" %}?client={{client.slug}}&show={{show.slug}}">pyvid_jsons.urls</a>
 </td>
 <td><a href="{% url "final_file_audio" %}?show_id={{show.id}}">final_file_audio</a></td>
 <td>
@@ -50,8 +51,10 @@
         <a href="{% url "admin:main_raw_file_changelist" %}?show__id__exact={{show.id}}">raw_File admin</a>
         <a href="{% url "admin:main_mark_changelist" %}?show__id__exact={{show.id}}">mark admin</a>
     </td>
-<tr> </tr>
-<tr> </tr>
+    <td> </td>
+    <td> 
+        <a href="{% url "veyepar_cfg" client.slug show.slug%}">veyepar.cfg</a>
+    </td>
 </tr>
 <tr>{% include "show_shortcuts.html" %}</tr>
 

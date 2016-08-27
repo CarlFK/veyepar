@@ -386,7 +386,10 @@ class enc(process):
                     delay = cl.episode.comment.split('\n')[0].split('=')[1].strip()
                     cut['video_delay']=delay
                 else:
-                    cut['video_delay']='0.0'
+                    if cl.episode.show.slug == "pygotham_2016":
+                        cut['video_delay']='1.0'
+                    else:
+                        cut['video_delay']='0.0'
 
                 cuts.append(cut)
 

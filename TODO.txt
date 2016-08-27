@@ -18,6 +18,8 @@ veyepar:
         "saved" page, 1 sec redirect back to episode?
         js to say "saved" that goes away in 5 seconds?
         js to say "saved/dirty" if there are outstanding edits?
+     When an Edit is saved, move to next_episode
+     
 
   next/prev (match recording sheet: same room/day)
 

@@ -44,6 +44,9 @@ from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_C
 from accounts.forms import LoginForm
 
 
+def main(request):
+    return render_to_response('main.html',
+        context_instance=RequestContext(request) )
 
 def make_test_data(
         title="Test Episode", 
@@ -174,6 +177,24 @@ def start_here(request):
          'who':who,},
        context_instance=RequestContext(request) )
 
+def veyepar_cfg(request,client_slug,show_slug):
+
+    cfg = """[global]
+client={client}
+show={show}
+""".format(client=client_slug, show=show_slug)
+
+    show=get_object_or_404(Show,client__slug=client_slug,slug=show_slug)
+    locations=show.locations.filter(active=True).order_by('sequence')
+    for loc in locations:
+        cfg += "# room={slug}\n".format(slug=loc.slug)
+
+    response = HttpResponse(cfg, content_type="text/plain")
+    response['Content-Disposition'] = 'inline; filename=veyepar.cfg'
+
+    return response
+
+
 def eps_csv(request,client_slug=None,show_slug=None):
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
@@ -249,13 +270,14 @@ def ep_json(request, ep_id):
       "thumbnail_url": ep.thumbnail,
       "title": ep.name,
       "videos": videos,
+      "veyepar_state": ep.state,
     }
 
     response = HttpResponse(content_type="application/json")
     json.dump(d,response, indent=2)
     return response
 
-def pytube_jsons(request):
+def pyvid_jsons(request):
 
     episodes = eps_filters(request.GET)
 
@@ -363,10 +385,6 @@ def eps_lanynard(request,client_slug=None,show_slug=None):
     json.dump(sessions,response)
 
     return response
-
-def main(request):
-    return render_to_response('main.html',
-        context_instance=RequestContext(request) )
 
 def meet_ann(request,show_id):
     show=get_object_or_404(Show,id=show_id)
@@ -552,7 +570,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     for ep in episodes:
         if ep.location:
             location_name=ep.location.name
-            location_dir=ep.location.dirname
+            location_slug=ep.location.slug
         else:
             location_name='None'
         ds.append({'episode_id':ep.id,
@@ -567,7 +585,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
           'episode_end':ep.end,
           'episode_released':ep.released,
           'location_name':location_name,
-          'location_dir':location_dir,
+          'location_slug':location_slug,
           'client_name':client.name,
           'show_name':show.name,
           })
