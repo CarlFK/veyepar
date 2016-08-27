@@ -238,7 +238,9 @@ class add_eps(process.process):
 
       if not self.options.update:
             print("no --update, not adding locations to db\n")
-            return 
+            return  
+
+      rooms = sorted(rooms)
 
       seq=0
       for room in rooms:
@@ -249,7 +251,8 @@ class add_eps(process.process):
           try:
               loc = Location.objects.get(name__iexact=room)
           except Location.DoesNotExist:
-              loc = Location(name=room, sequence=seq)
+              slug = slugify(room).replace('-','_')
+              loc = Location(name=room, sequence=seq, slug=slug)
               loc.save()
 
           show.locations.add(loc)
@@ -280,7 +283,11 @@ class add_eps(process.process):
                 if jk: 
                     # if self.options.verbose: print jk, row[jk]
                     try:
-                        event[vk] = row[jk]
+                        if '{' in jk:
+                            #  ('{date}T{start}', 'start'),
+                            event[vk] = jk.format(**row)
+                        else:
+                            event[vk] = row[jk]
                     except: 
                         event[vk] = None
                         # pass
@@ -489,6 +496,14 @@ class add_eps(process.process):
                 episode.conf_meta=json.dumps(row['raw'])
 
                 episode.save()
+
+        print("checking for removed talks...")
+        conf_keys = [str(row['conf_key']) for row in schedule]
+        episodes = Episode.objects.filter( show=show, )
+        for ep in episodes:
+            if ep.conf_key not in conf_keys:
+                print("conf_key: {conf_key}, name:{name}".format(
+                    conf_key=ep.conf_key, name=ep.name))
 
 
     def addlocs(self, schedule, show):
@@ -3306,6 +3321,48 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
+    def nzpug(self,schedule,show):
+
+        field_maps = [
+                ('room','location'),
+                ('name','name'),
+                ('authors','authors'),
+                ('contact','emails'),
+                ('description','description'),
+                # ('abstract','description'),
+                ('','twitter_id'),
+                ('{date} {start}','start'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('tags','tags'),
+                ('conf_key','conf_key'),
+                ('conf_url','conf_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events:
+            if self.options.verbose: pprint.pprint(event)
+
+            event['conf_key']=str(event['conf_key'])
+
+            event['start'] = datetime.datetime.strptime( 
+                event['start'], '%d/%m/%Y %H:%M:%S' )
+
+            event['duration'] = "{}:00".format(event['duration']) 
+
+            event['authors']=', '.join( event['authors'] )
+
+            event['emails']=', '.join( event['emails'] )
+            
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
     def ics(self,schedule,show):
 
         # pull in data fro Troy's goog sheet
@@ -3571,6 +3628,9 @@ class add_eps(process.process):
 
         if ext =='.ics':
             return self.ics(schedule,show)
+    
+        if self.options.client =='kiwipycon':
+            return self.nzpug(schedule,show)
     
         if self.options.show =='depy_2016':
             return self.amberapp(schedule,show)
