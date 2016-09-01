@@ -214,6 +214,8 @@ class Mark(models.Model):
     show = models.ForeignKey(Show)
     click = models.DateTimeField(
         help_text='When Cut was Clicked.')
+    class Meta:
+        ordering = ["click"]
  
 class Quality(models.Model):
     level = models.IntegerField()

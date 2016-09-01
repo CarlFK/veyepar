@@ -177,17 +177,34 @@ def start_here(request):
          'who':who,},
        context_instance=RequestContext(request) )
 
-def veyepar_cfg(request,client_slug,show_slug):
+def veyepar_cfg(request):
 
-    cfg = """[global]
-client={client}
-show={show}
-""".format(client=client_slug, show=show_slug)
+    cfg_lines = ["[global]"]
 
-    show=get_object_or_404(Show,client__slug=client_slug,slug=show_slug)
-    locations=show.locations.filter(active=True).order_by('sequence')
-    for loc in locations:
-        cfg += "# room={slug}\n".format(slug=loc.slug)
+    shows=Show.objects.annotate( max_date=Max('episode__start'))\
+            .order_by('-max_date')
+    # filter(max_date__ge=now)\
+
+    for show in shows:
+        print(show)
+        if show.max_date is None:
+            continue
+        if show.max_date < datetime.datetime.now():
+            break
+
+        cfg_lines.append("")
+
+        active = "" if show.active else "# "
+        cfg_lines.append("{active}client={client}".format(
+            active=active,client=show.client.slug))
+        cfg_lines.append("{active}show={show}".format(
+            active=active,show=show.slug))
+
+        locations=show.locations.filter(active=True).order_by('sequence')
+        for loc in locations:
+            cfg_lines.append("# room={slug}".format(slug=loc.slug))
+
+    cfg = '\n'.join(cfg_lines)
 
     response = HttpResponse(cfg, content_type="text/plain")
     response['Content-Disposition'] = 'inline; filename=veyepar.cfg'
@@ -1521,21 +1538,22 @@ def episode_assets(request, episode_id):
         cuts = cuts.filter(apply=True)
     
     rfs = Raw_File.objects.filter(cut_list__in=cuts).distinct()
+    if rfs:
 
-    for rf in rfs:
-        assets.append( "{}/dv/{}/{}.webm".format(show_url,
-            rf.location.slug, rf.filename ) )
+        for rf in rfs:
+            assets.append( "{}/dv/{}/{}.webm".format(show_url,
+                rf.location.slug, rf.filename ) )
 
-    # make symlinks from epected filename to smaller webm 
-    show_path = urllib.parse.urlparse(show_url)
-    first_dir = '"{}{}/dv/{}/{}"'.format( show_path.netloc, show_path.path,
-            rf.location.slug, 
-            os.path.split(rf.filename)[0])
+        # make symlinks from epected filename to smaller webm 
+        show_path = urllib.parse.urlparse(show_url)
+        first_dir = '"{}{}/dv/{}/{}"'.format( show_path.netloc, show_path.path,
+                rf.location.slug, 
+                os.path.split(rf.filename)[0])
 
-    assets.append("cd " + first_dir)
-    for rf in rfs:
-        filename = os.path.split(rf.filename)[1]
-        assets.append( "ln -s {0}.webm {0}".format(filename) )
+        assets.append("cd " + first_dir)
+        for rf in rfs:
+            filename = os.path.split(rf.filename)[1]
+            assets.append( "ln -s {0}.webm {0}".format(filename) )
 
     response = HttpResponse('\n'.join(assets), content_type="text/plain")
     response['Content-Disposition'] = \
@@ -2052,14 +2070,19 @@ def mk_cuts(episode,
         start += datetime.timedelta( hours = location.hours_offset )
         end += datetime.timedelta( hours = location.hours_offset )
 
-    # print("start:",start)
-    # print("end:",end)
+    print("start:",start, start.__repr__())
+    print("end:",end, end.__repr__())
+
+# start: 2016-07-16 10:00:00
+# end: 2016-07-16 10:25:00
 
     # Get the overlapping dv,
     rfs = Raw_File.objects.filter(
             end__gte=start,
             start__lte=end,
             location=episode.location).order_by('start')
+
+    print(rfs)
 
     seq=100
     started=False ## magic to figure out when talk really started
