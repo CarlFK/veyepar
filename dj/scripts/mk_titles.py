@@ -7,8 +7,6 @@
 import os
 import subprocess
 
-import rax_uploader
-
 from enc import enc
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List

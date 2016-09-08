@@ -90,12 +90,16 @@ class add_dv(process):
 
           for f in filenames:
 
+              if self.args and f not in self.args:
+                  continue
+
               if os.path.splitext(f)[1] == ".log":
                   self.mark_file(os.path.join(d,f),show,location)
 
               if os.path.splitext(f)[1] in [
                       '.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov', '.ts' ]:
                   seq+=1
+                  # print("doing",f)
                   self.one_file(os.path.join(d,f),show,location,seq)
 
     def one_show(self, show):

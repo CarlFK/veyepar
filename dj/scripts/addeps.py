@@ -502,8 +502,7 @@ class add_eps(process.process):
         episodes = Episode.objects.filter( show=show, )
         for ep in episodes:
             if ep.conf_key not in conf_keys:
-                print("conf_key: {conf_key}, name:{name}".format(
-                    conf_key=ep.conf_key, name=ep.name))
+                print("state:{state} conf_url: {conf_url} name:{name}".format(state=ep.state, conf_url=ep.conf_url, name=ep.name))
 
 
     def addlocs(self, schedule, show):

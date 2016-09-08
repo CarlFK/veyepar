@@ -23,6 +23,8 @@ import re
 import subprocess
 
 import exiftool
+# from MediaInfoDLL3 import MediaInfo
+from pymediainfo import MediaInfo
 
 from gi.repository import Gst
  
@@ -143,8 +145,26 @@ def get_start( pathname, time_source ):
     def un(pathname):
         # files from the UN.
 
-        date_re = r"(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)"
-        time_re = rb"(?P<hour>\d+):(?P<minute>\d+):(?P<second>\d+)"
+         # date is in the file name
+         # time is in other: time_code_of_first_frame
+         # 1672828_DMOICT Open Camps CR7 8AM-12PM 16 JULY 16.mov
+
+        year = "2016"
+        month = 'JULY' 
+        day = pathname.split(month)[0].split()[-1]
+
+        media_info = MediaInfo.parse(pathname)
+        t3=media_info.tracks[3]
+        time = t3.time_code_of_first_frame
+
+        dt = "{year}-{month}-{day} {time}".format(
+                year=year, month=month, day=day, time=time)
+
+        # start = datetime.datetime.strptime("16 JULY 2016 07:50:00;00", "%d %B %Y %H:%M:%S;00")
+        start = datetime.datetime.strptime(dt, "%Y-%B-%d %H:%M:%S;00")
+        print( start )
+
+        return start
 
         # d+_DMOICT...move stuff so it errors if it finds something else
         start_date_re = r".*/" + date_re + ".*/\d+_DMOICT.*\.mov"
@@ -207,7 +227,6 @@ def get_start( pathname, time_source ):
     # get_start() starts here..
 
     # wacky python case statement 
-    # it's fun!
     start = {'fn':parse_name,
              'fs':fs_time,
              'frame':frame_time,
@@ -253,13 +272,22 @@ def get_duration(pathname):
 
     # return start, seconds 
 
-def test(pathname,ts="auto"):
+def test(pathname,ts="all"):
     print(pathname, ts)
-    # start = get_start(pathname, ts)
-    start = get_start(pathname, ts)
-    print(start)
-    seconds = get_duration(pathname)
-    print(seconds)
+
+    if ts == "all":
+        for ts in [ 'fn', 'fs', 'frame', 'gst', 'un', 'auto', ]:
+            try:
+                print("Start (using {ts}):".format(ts=ts), 
+                        get_start(pathname, ts) )
+            except (ValueError,AttributeError) as e:
+                print(e)
+
+    else:
+
+        print("Start (using {}):".format(ts), get_start(pathname, ts) )
+
+    print("Duration (using {}):".format(ts), get_duration(pathname))
 
     return 
 
@@ -290,9 +318,14 @@ def main():
     """
     # test("/home/carl/temp/segment-0.ts")
     d = u"/home/carl/mnt/rad/Videos/veyepar/big_apple_py/pygotham_2016/dv/Room_CR7/2016-07-16/"
-    test(d + "1672828_DMOICT Open Camps CR7 8AM-12PM 16 JULY 16.mov", "un")
-    test(d + "12_14_09.ts", 'auto')
+
+    d = "/home/carl/temp/"
+    test(d + "1672828_DMOICT Open Camps CR7 8AM-12PM 16 JULY 16.mov", "all")
+
+    # test(d + "12_14_09.ts", 'auto')
+    # test("/home/carl/temp/1672828_DMOICT.mov", 'all')
 
 if __name__=='__main__': 
     main()
+
 
