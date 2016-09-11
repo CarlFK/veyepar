@@ -41,6 +41,7 @@ veyepar:
      needs default, currently hardcoded to "Education"
 
   youtube:
+     playlists - 1 for show. maybe ndv, presenter, tags?
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      don't re-upload the same video (causes duplicate video error)
