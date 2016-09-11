@@ -5,7 +5,7 @@
 
 set -x
 
-suite=$1 # oneiric, saucy, trusty, utopic, vivid
+suite=$1 # oneiric, saucy, trusty, utopic, vivid, wily
 nuser=$2 # juser
 
 # url=(hostname) of pxe server
@@ -31,9 +31,11 @@ cd
 EOT
 
   cat <<EOT > $PROFDIR/show_fwguid.sh
-echo
-find /sys/bus/firewire/devices/ -name "fw?" -exec printf "{} " \; -exec cat {}/guid \;
-echo
+if [ -d /sys/bus/firewire/devices/ ]; then
+  echo
+  find /sys/bus/firewire/devices/ -name "fw?" -exec printf "{} " \; -exec cat {}/guid \;
+  echo
+fi
 EOT
 
 fi
@@ -208,6 +210,7 @@ if [ -d $CONF ]; then
   get_nm_conf 192.168.0.1
   get_nm_conf dhcpipv4
   get_nm_conf auto-magic
+  get_nm_conf eyes
 
 fi
 
@@ -308,21 +311,42 @@ chown -R $nuser:$nuser .dvswitchrc
 
 cat <<EOT > veyepar.cfg
 [global]
-client=nodevember 
-show=nodevember14 
-
-# room=auditorium
-# room=room_100
-# room=room_200
-# room=room_300
-# room=room_400
-
+client=test_client
+show=test_show
+room=test_loc
 upload_formats=mp4 
 EOT
 chown -R $nuser:$nuser veyepar.cfg
 
 
-# APP=x.sh
+cat <<EOT > .voctomix.ini 
+[mix]
+videocaps=video/x-raw,format=I420,width=1280,height=720,framerate=30000/1001,pixel-aspect-ratio=1/1
+sources=cam1,grabber
+
+[mainvideo]
+playaudio=true
+
+[previews]
+enabled=false
+videocaps=video/x-raw,width=1280,height=720,framerate=30000/1001
+
+[videodisplay]
+# system=gl
+# system=xv
+# system=x
+
+EOT
+chown -R $nuser:$nuser .voctomix.ini 
+
+fn=.minirc.dfl
+cat <<EOT > $fn
+pu port             /dev/ttyACM0
+pu addcarreturn     Yes
+EOT
+chown -R $nuser:$nuser $fl
+
+
 # echo svn co svn://svn/vga2usb >$APP
 # chmod 777 $APP 
 # chown $nuser:$nuser $APP 
@@ -342,12 +366,23 @@ wget http://$SHAZ/$APP
 chmod 744 $APP 
 chown $nuser:$nuser $APP 
 
+## script to install analog clock
+APP=inst_clocky.sh
+cat <<EOT >> $APP
+#!/bin/bash -x
+# sudo apt-get install python-wxgtk2.8
+git clone git://github.com/CarlFK/clocky.git
+EOT
+chmod 744 $APP
+chown $nuser:$nuser $APP
+
+
 ## script to install carl's custom dvswitch suite
 APP=inst_dvs.sh
 cat <<EOT >> $APP
 #!/bin/bash -x
-sudo apt-get install python-wxgtk2.8
-git clone git://github.com/CarlFK/dvsmon.git
+# sudo apt-get install python-wxgtk2.8
+# git clone git://github.com/CarlFK/dvsmon.git
 # sudo apt-add-repository --yes ppa:carlfk
 # sudo apt-get --assume-yes update
 # sudo apt-get --assume-yes install dvswitch dvsource dvsink
@@ -364,32 +399,62 @@ chmod u+x INSTALL.sh
 EOT
 chmod 744 $APP 
 chown $nuser:$nuser $APP 
-# su $nuser git clone git://github.com/CarlFK/veyepar.git
 
-## gst-switch  
-APP=inst_gsts.sh
+## vocto  
+APP=inst_vocto.sh
 cat <<EOT >> $APP
 #!/bin/bash -ex
-git clone https://github.com/timvideos/gst-switch.git
-cd gst-switch
-./build-min-trusty.sh
+git clone https://github.com/voc/voctomix.git
 
-# wget -N https://raw.github.com/hyades/gst-switch/master/scripts/install.sh 
-# chmod u+x install.sh 
-# sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise universe"
-# sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu precise multiverse"
-# ./install.sh 
+git clone git://github.com/CarlFK/voctomix-outcasts.git
+git clone git://github.com/CarlFK/dvsmon.git
+
+cd ~/bin
+
+ln -s ~/voctomix/voctocore/voctocore.py voctocore
+ln -s ~/voctomix/voctogui/voctogui.py voctogui
+
+ln -s ~/voctomix-outcasts/ingest.py ingest
+
+ln -s ~/voctomix-outcasts/record-timestamp.sh record-timestamp
+ln -s ~/voctomix-outcasts/record-mixed-av.sh record-mixed-av
+ln -s ~/voctomix-outcasts/generate-cut-list.py generate-cut-list
+
 EOT
 chmod 744 $APP 
 chown $nuser:$nuser $APP 
 
+# I wonder if this will work?
+# ./$APP
+# chown -R $nuser:$nuser voctomix voctomix-outcasts dvsmon
 
-# build melt and all deps
-APP=mkmlt.sh
-wget http://$SHAZ/lc/$APP
-# wget -N http://github.com/CarlFK/veyepar/raw/master/setup/nodes/encode/$APP 
+
+
+## gst-uninstalled  
+APP=mk_gst.sh
+cat <<EOT >> $APP
+#!/bin/bash -ex
+# http://arunraghavan.net/2014/07/quick-start-guide-to-gst-uninstalled-1-x/
+sudo apt-get build-dep gstreamer1.0-plugins-{base,good,bad,ugly}
+curl https://cgit.freedesktop.org/gstreamer/gstreamer/plain/scripts/create-uninstalled-setup.sh | sh
+ln -sf ~/gst/master/gstreamer/scripts/gst-uninstalled ~/bin/gst-master
+gst-master ./gstreamer/scripts/git-update.sh
+EOT
 chmod 744 $APP 
 chown $nuser:$nuser $APP 
+
+sudo apt-get build-dep gstreamer1.0-plugins-{base,good,bad,ugly,libav}
+
+# https://www.blackmagicdesign.com/support/family/capture-and-playback
+mkdir blackmagic; cd blackmagic
+wget http://$SHAZ/lc/bm/desktopvideo_10.6.8a2_amd64.deb .
+dpkg -i desktopvideo_10.6.8a2_amd64.deb
+# wget http://$SHAZ/lc/bm/Blackmagic_Desktop_Video_Linux_10.6.8.tar.gz
+# tar xvf Blackmagic_Desktop_Video_Linux_10.6.8.tar.gz
+# cd Blackmagic_Desktop_Video_Linux_10.6.8/deb/amd64/
+
+cd /home/$nuser
+
 
 ## get mplayer default config 
 APP=.mplayer/config
@@ -398,29 +463,24 @@ chmod 744 $APP
 chown $nuser:$nuser $APP 
 
 cd bin
-
-## net-console to log kernel errors of some other box
-APP=netcons.sh
-wget http://$SHAZ/lc/$APP
-chmod 744 $APP 
-chown $nuser:$nuser $APP 
+ln -s /home/$nuser/local/Shotcut/Shotcut.app/melt
 
 cd ..
 
 cd Desktop
+# logo loop for shows
 # APP=pyohio_2014_logos.odp
 # wget http://$SHAZ/lc/$APP
 # chown $nuser:$nuser $APP 
 
 cd ..
 
-# APP=slcomp.py
-# wget http://$SHAZ/$APP
-# chmod 744 $APP 
-# chown $nuser:$nuser $APP 
+cd temp
 
-# wget http://$SHAZ/dvs.tar
-# tar xf dvs.tar
-# chmod -R 744 dvswitch
-# chown -R $nuser:$nuser dvswitch
+APP=fix_grub.sh
+wget http://$SHAZ/lc/$APP  
+chmod 744 $APP 
+chown $nuser:$nuser $APP 
+
+cd ..
 
