@@ -5,6 +5,7 @@
 
 import  os
 import datetime
+from fnmatch import fnmatch 
 
 from process import process
 
@@ -90,7 +91,8 @@ class add_dv(process):
 
           for f in filenames:
 
-              if self.args and f not in self.args:
+              if self.args and any(fnmatch(f,mask) for mask in self.args):
+                  # only add files listed on the command line
                   continue
 
               if os.path.splitext(f)[1] == ".log":
