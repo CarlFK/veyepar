@@ -1025,6 +1025,17 @@ def show_pipeline(request, show_id ):
         },
     context_instance=RequestContext(request) )
 
+def show_parameters(request, show_id ):
+
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+    return render_to_response('show_parameters.html',
+        {
+          'client':client,
+          'show':show,
+        },
+    context_instance=RequestContext(request) )
+
 
 def show_stats(request, show_id, ):
     """

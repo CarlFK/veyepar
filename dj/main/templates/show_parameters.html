@@ -1,0 +1,9 @@
+{# clients.html #}
+{% extends "base.html" %}
+
+{% block content %}
+
+Client: <a href="{% url "client" client.slug %}">{{ client.name }}</a>
+
+{% endblock %}
+

@@ -16,6 +16,7 @@ last frame
 
 import os
 import datetime
+from fnmatch import fnmatch
 
 from process import process
 
@@ -62,7 +63,17 @@ class ts_rf(process):
     def one_loc(self, show, location):
         print(show,location)
         for rf in Raw_File.objects.filter(show=show, location=location):
-            # print rf
+            if self.options.verbose: 
+                print(1, rf.filename)
+                print(1, self.args)
+
+            if self.args:
+                print(2, rf.filename)
+                print(2, self.args)
+                if not any(
+                    fnmatch(rf.filename,mask) for mask in self.args):
+                    # only process files listed on the command line
+                    continue
 
             if self.options.ext:
                 if not rf.filename.endswith(self.options.ext):

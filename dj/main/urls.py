@@ -48,6 +48,7 @@ urlpatterns += patterns(
     url(r'show_urls/(?P<show_id>\w+)/$', show_urls, name='show_urls'),
     url(r'show_stats/(?P<show_id>\w+)/$', show_stats, name='show_stats'),
     url(r'show_pipeline/(?P<show_id>\w+)/$', show_pipeline, name='show_pipeline'),
+    url(r'show_parameters/(?P<show_id>\w+)/$', show_parameters),
     url(r'processes/(?P<show_id>\w+)/$', processes, name='processes'),
     url(r'show_anomalies/(?P<show_id>\w+)/$', 
         show_anomalies, name='show_anomalies'),
