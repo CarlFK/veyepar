@@ -129,31 +129,7 @@ class add_img(process):
 
         return founds
 
-    def one_page(self, src_base, show, locs, eps):
-
-        print(src_base)
-        # foo.ppm
-
-        # the scan that was extracted from the pdf
-        src_name = os.path.join( self.show_dir, "img", src_base )
-
-        # the base png name to use for the db and html
-        # foo.png
-        png_base = os.path.splitext(src_base)[0] + ".png"
-
-        # create the png (and add the full path to png_name
-        # (png because browsers don't suppport ppm)
-        self.to_png(src_name,
-            os.path.join( self.show_dir, "img", png_base ))
-
-        # upload it
-        if self.options.rsync:
-            self.file2cdn(show, os.path.join( "img", png_base ))
-
-        # make sure the png name is in the db
-        img_page,created = Image_File.objects.get_or_create(
-                show=show, 
-                filename=png_base,)
+    def slice_dice(self,img_page):
 
         # ocr 
         text = self.ocr_img(src_name)
@@ -214,7 +190,7 @@ class add_img(process):
             if self.options.rsync:
                 self.file2cdn(show, os.path.join( "img", png_name ))
 
-            # make sure the png name is in the db
+            # put the png name is in the db
             img_band,created = Image_File.objects.get_or_create(
                     show=show, 
                     filename=png_name,)
@@ -230,6 +206,46 @@ class add_img(process):
             for found in founds:
                 img_band.episodes.add(found)
                 img_page.episodes.add(found)
+
+
+    def one_page(self, src_base, show, locs, eps):
+
+        """
+        convert ppm to png
+        upload png to cdn
+        add png name to db under current show
+        ocr png page
+        link to episodes it may be a part of
+        chop into strips
+        add strips to db/cdn, ocr, link
+        """
+
+        print(src_base)
+        # foo.ppm
+
+        # the scan that was extracted from the pdf
+        src_name = os.path.join( self.show_dir, "img", src_base )
+
+        # the base png name to use for the db and html
+        # foo.png
+        png_base = os.path.splitext(src_base)[0] + ".png"
+
+        # create the png (and add the full path to png_name
+        # (png because browsers don't suppport ppm)
+        self.to_png(src_name,
+            os.path.join( self.show_dir, "img", png_base ))
+
+        # upload it
+        if self.options.rsync:
+            self.file2cdn(show, os.path.join( "img", png_base ))
+
+        # make sure the png name is in the db
+        img_page,created = Image_File.objects.get_or_create(
+                show=show, 
+                filename=png_base,)
+
+        if not self.options.dumb:
+            self.slice_dice(img_page,)
 
     def one_show(self, show):
 
@@ -258,12 +274,13 @@ class add_img(process):
           if self.options.verbose: 
               print("checking...", dirpath, d, dirnames, filenames) 
           for f in filenames:
-              if os.path.splitext(f)[1] in [ ".ppm", ".pbm" ]:
+              if os.path.splitext(f)[1] in [ 
+                      ".ppm", ".pbm", ".jpg" ]:
                   print(f)
 
                   if self.options.base and \
                           not f.startswith(self.options.base):
-                        # doesn't match the 'filger'
+                        # doesn't match the 'filter'
                         continue
 
                   self.one_page(os.path.join(d,f),show,locs,eps)
@@ -289,6 +306,9 @@ class add_img(process):
 
         parser.add_option('--base', 
             help="source filename base.")
+
+        parser.add_option('--dumb', 
+            help="just add to show, no ocr, no guessing.")
 
 if __name__=='__main__': 
     p=add_img()

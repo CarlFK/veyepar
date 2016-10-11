@@ -370,6 +370,8 @@ class enc(process):
 
                 if cl.episode.channelcopy:
                     cut['channelcopy'] = cl.episode.channelcopy
+                elif cl.episode.location.channelcopy:
+                    cut['channelcopy'] = cl.episode.location.channelcopy
                 else:
                     cut['channelcopy']='01'
 

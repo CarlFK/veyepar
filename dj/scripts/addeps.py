@@ -1717,7 +1717,7 @@ class add_eps(process.process):
         # <day date="2012-02-05" index="2"></day>
         # each day has a list of rooms
 
-        rooms = [ r.get('name') for r in schedule[1] ]
+        rooms = [ r.get('name') for r in schedule[2] ]
 
         print("rooms", rooms)
         self.add_rooms(rooms,show)
@@ -3665,7 +3665,7 @@ class add_eps(process.process):
         if self.options.show =='pytexas2014':
             return self.pytexas2014(schedule,show)
 
-        if self.options.show =='pyconza2015':
+        if self.options.show in ['pyconza2015', 'pyconza2016']:
             return self.summit_penta(schedule,show)
 
         if self.options.show =='debconf15':

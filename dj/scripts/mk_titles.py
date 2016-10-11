@@ -19,7 +19,12 @@ class mk_title(enc):
 
         title_img=self.mk_title(episode)
 
+        print("syncing {}".format(episode.slug))
         if self.options.rsync:
+            print("syncing {}".format(episode.slug))
+            if self.options.verbose: 
+                print("syncing {}".format(episode.slug))
+
             self.file2cdn(episode.show, "titles/%s.png" % (episode.slug))
             self.file2cdn(episode.show, "titles/%s.svg" % (episode.slug))
 

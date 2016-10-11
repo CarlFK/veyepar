@@ -295,7 +295,7 @@ class Episode(models.Model):
 
     normalise = models.CharField(max_length=5,null=True,blank=True, )
     channelcopy = models.CharField(max_length=2,null=True,blank=True,
-          help_text='m=mono, 01=copy left to right, 10=right to left.' )
+          help_text='m=mono, 01=copy left to right, 10=right to left, 00=ignore.' )
 
     license = models.CharField(max_length=20, null=True,blank=True,
             default='CC BY-SA',

@@ -1419,20 +1419,21 @@ def orphan_img(request, show_id, ):
 
     # dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
 
+    AddImageToEpFormSet = formset_factory(AddImageToEp, extra=0)
     if request.user.is_authenticated():
-        AddImageToEpFormSet = formset_factory(AddImageToEp, extra=0)
         if request.method == 'POST':
             formset = AddImageToEpFormSet(request.POST)
             for form in formset:
                 if form.is_valid():
-                    episode_id = form.cleaned_data['episode_id']
-                    if episode_id is not None:
-                        img = get_object_or_404(Image_File, 
-                                id=form.cleaned_data['image_id'])
-                        episode = get_object_or_404(Episode,id=episode_id)
-                        img.episodes.add(episode)
-                    # I wonder how this should get handled
-                    # form.errors
+                    episode_ids = form.cleaned_data['episode_ids']
+                    if episode_ids is not None:
+                        for episode_id in episode_ids.split():
+                            img = get_object_or_404(Image_File, 
+                                    id=form.cleaned_data['image_id'])
+                            episode = get_object_or_404(Episode,id=episode_id)
+                            img.episodes.add(episode)
+                        # I wonder how this should get handled
+                        # form.errors
 
     orphan_images = Image_File.objects.annotate(
             Count("episodes")).filter(show=show,episodes__count=0)
@@ -1529,19 +1530,20 @@ def episode_assets(request, episode_id):
     slug = episode.slug
     show=episode.show
     client=show.client
+    lq_ext="mp4"
 
     # the base of the URLs
     head=settings.MEDIA_URL
     show_url = os.path.join(head,client.slug,show.slug)
 
-    assets.append( "wget -N --force-directories -i http://"
-            + request.META['HTTP_HOST'] + request.get_full_path() )
+    wget="wget -N --force-directories"
+    # assets.append( "wget -N --force-directories -i http://" + request.META['HTTP_HOST'] + request.get_full_path() )
 
-    assets.append( "{}/mlt/{}.mlt".format(show_url,slug) )
-    # assets.append( "{}/tmp/{}.sh".format(show_url,slug) )
-    assets.append( "{}/titles/{}.png".format(show_url,slug) )
-    assets.append( "{}/titles/{}.svg".format(show_url,slug) )
-    assets.append( "{}/assets/{}".format(show_url, client.credits) )
+    assets.append( "{} {}/mlt/{}.mlt".format(wget,show_url,slug) )
+    # assets.append( "{} {}/tmp/{}.sh".format(wget,show_url,slug) )
+    assets.append( "{} {}/titles/{}.png".format(wget,show_url,slug) )
+    assets.append( "{} {}/titles/{}.svg".format(wget,show_url,slug) )
+    assets.append( "{} {}/assets/{}".format(wget,show_url, client.credits) )
 
     # add the raw files
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence', 'raw_file__start')
@@ -1552,8 +1554,8 @@ def episode_assets(request, episode_id):
     if rfs:
 
         for rf in rfs:
-            assets.append( "{}/dv/{}/{}.webm".format(show_url,
-                rf.location.slug, rf.filename ) )
+            assets.append( "{} {}/dv/{}/{}.{}".format(wget, show_url,
+                rf.location.slug, rf.filename, lq_ext ) )
 
         # make symlinks from epected filename to smaller webm 
         show_path = urllib.parse.urlparse(show_url)
@@ -1563,8 +1565,8 @@ def episode_assets(request, episode_id):
 
         assets.append("cd " + first_dir)
         for rf in rfs:
-            filename = os.path.split(rf.filename)[1]
-            assets.append( "ln -s {0}.webm {0}".format(filename) )
+            rf_filename = os.path.split(rf.filename)[1]
+            assets.append( "ln -s {rf_filename}.{lq_ext} {rf_filename}".format(rf_filename=rf_filename, lq_ext=lq_ext) )
 
     response = HttpResponse('\n'.join(assets), content_type="text/plain")
     response['Content-Disposition'] = \
