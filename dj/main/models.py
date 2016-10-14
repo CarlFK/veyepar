@@ -125,6 +125,8 @@ class Show(models.Model):
         help_text="dir name to store input files")
     category_key = models.CharField(max_length=30, blank=True, null=True,
             help_text = "Category for Richard")
+    youtube_playlist_id = models.CharField(max_length=50, blank=True, null=True,
+            help_text = "Playlist ID for YouTube")
     tags = models.TextField(null=True,blank=True,)
     description = models.TextField(blank=True)
     conf_url = models.CharField(max_length=200, null=True, blank=True)
