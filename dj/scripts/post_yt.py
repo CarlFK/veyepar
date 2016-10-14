@@ -230,7 +230,7 @@ class post(process):
 
             uploader.slug = "{show}-{slug}".format(
                     show=ep.show.slug,
-                    slug=ep.slug)
+                    slug=ep.slug)[:100]
 
             uploader.meta = meta
 
