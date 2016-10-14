@@ -310,6 +310,23 @@ class Uploader():
 
         return True
 
+    def add_to_playlist(self, video_url, playlist_id):
+        youtube = get_authenticated_service(user_key=self.user)
+        video_id = get_id_from_url(video_url)
+        youtube.playlistItems().insert(
+            part='snippet',
+            body={
+                'snippet': {
+                    'playlistId': playlist_id,
+                    'resourceId': {
+                        'kind': 'youtube#video',
+                        'videoId': video_id,
+                    },
+                },
+            }
+        ).execute()
+        return True
+
     def delete_video(self, video_url):
         # https://developers.google.com/youtube/v3/docs/videos/delete
         # https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/youtube_v3.videos.html
