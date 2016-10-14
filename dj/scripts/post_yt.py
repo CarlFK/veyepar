@@ -133,7 +133,7 @@ class post(process):
         # meta['rating'] = self.options.rating
 
         # http://gdata.youtube.com/schemas/2007/categories.cat
-        meta['category'] = 22 # "Education"
+        meta['category'] = 27 # "Education"
 
         if ep.location.lat and ep.location.lon:
             meta['latlon'] = (ep.location.lat, ep.location.lon)
