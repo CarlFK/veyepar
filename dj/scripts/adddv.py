@@ -101,6 +101,11 @@ class add_dv(process):
                 if extension == ".log":
                     self.mark_file(os.path.join(d,f),show,location)
 
+                if basename in filenames:
+                    if os.path.splitext(basename)[1] in VIDEO_EXTENSIONS:
+                        # This must be a preview mp4 for web editing
+                        continue
+
                 if extension in VIDEO_EXTENSIONS:
                     seq+=1
                     # print("doing",f)
