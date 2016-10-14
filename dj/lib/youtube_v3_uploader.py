@@ -189,11 +189,10 @@ def resumable_upload(insert_request):
   response = None
   error = None
   retry = 0
+  print("Uploading file to YouTube...")
   while response is None:
 
-    print("Uploading file to YouTube...")
     try:
-
       status, response = insert_request.next_chunk()
       if response is None:
         print(status.progress())
