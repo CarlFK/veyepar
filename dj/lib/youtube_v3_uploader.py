@@ -155,6 +155,7 @@ def initialize_upload(youtube, filename, metadata):
               },
           'status':{
               'privacyStatus':metadata['privacyStatus'],
+              'license':metadata['license'],
               }
           }
 
@@ -289,9 +290,12 @@ class Uploader():
             part='status',
             body={
                 'id':video_id,
-                'status':dict(privacyStatus=privacyStatus),
-                }
-            ).execute()
+                'status': {
+                    'privacyStatus': privacyStatus,
+                    'license': 'creativeCommon',
+                },
+            },
+        ).execute()
 
         """
         >>> videos_update_response
