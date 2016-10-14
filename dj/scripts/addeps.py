@@ -3574,8 +3574,8 @@ class add_eps(process.process):
 
             response = session.get(url, params=payload, verify=False)
 
-
-        ext = os.path.splitext(url)[1]
+        parsed = urllib.parse.urlparse(url)
+        ext = os.path.splitext(parsed.path)[1]
         if ext=='.csv':
             # schedule = list(csv.reader(f))
             schedule = list(csv.DictReader(f))
