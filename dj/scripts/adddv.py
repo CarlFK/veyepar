@@ -11,6 +11,8 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Mark
 
+VIDEO_EXTENSIONS = ('.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov', '.ts')
+
 class add_dv(process):
 
     def mark_file(self,pathname,show,location):
@@ -90,16 +92,16 @@ class add_dv(process):
                     continue
 
             for f in filenames:
-
                 if self.args and any(fnmatch(f,mask) for mask in self.args):
                     # only add files listed on the command line
                     continue
 
-                if os.path.splitext(f)[1] == ".log":
+                basename, extension = os.path.splitext(f)
+
+                if extension == ".log":
                     self.mark_file(os.path.join(d,f),show,location)
 
-                if os.path.splitext(f)[1] in [
-                        '.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov', '.ts' ]:
+                if extension in VIDEO_EXTENSIONS:
                     seq+=1
                     # print("doing",f)
                     self.one_file(os.path.join(d,f),show,location,seq)
