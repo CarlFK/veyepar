@@ -27,15 +27,6 @@ Test buckets that have been created for checking this script:
 
 """
 
-
-try:
-    # ProgressFile is a subclass of the Python open class
-    # as data is read, it prints a visible progress bar 
-    from progressfile import ProgressFile
-except ImportError:
-    # If ProgressFile is not available, default to Python's open
-    ProgressFile = open
-
 try:
     # read credentials from a file
     from pw import archive 
@@ -116,14 +107,13 @@ class Uploader(object):
 
         auth = archive[self.user] ## from dict of credentials 
         md = self.get_metadata()
-        pf = ProgressFile(self.pathname, 'rb')
 
         item = ia.get_item(self.slug)
 
         try:
 
             # actually upload
-            ret = item.upload(pf, metadata=md, 
+            ret = item.upload(self.pathname, metadata=md,
                     access_key=auth['access'], secret_key=auth['secret'],
                     # ignore_preexisting_bucket=True,
                     verbose=self.verbose)
