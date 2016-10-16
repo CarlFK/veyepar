@@ -176,7 +176,8 @@ def initialize_upload(youtube, filename, metadata):
     media_body=MediaFileUpload(filename, 
         # chunksize=5 * 1024 * 1024, resumable=True)
         # chunksize=5000 * 1024, resumable=True)
-        chunksize=-1, resumable=True)
+        # chunksize=-1, resumable=True)
+        chunksize=500 * 1024 * 1024, resumable=True)
   )
 
   status, response = resumable_upload(insert_request)
@@ -189,17 +190,17 @@ def resumable_upload(insert_request):
   response = None
   error = None
   retry = 0
+  print("Uploading file to YouTube...")
   while response is None:
 
-    print("Uploading file to YouTube...")
     try:
-
       status, response = insert_request.next_chunk()
       if response is None:
-          print(status.progress())
+        print(status.progress())
+        continue
 
       if 'id' in response:
-         print("Video id '%s' was successfully uploaded." % response['id'])
+        print("Video id '%s' was successfully uploaded." % response['id'])
       else:
         exit("The upload failed with an unexpected response: %s" % response)
 
