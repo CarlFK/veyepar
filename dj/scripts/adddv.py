@@ -11,6 +11,8 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Raw_File, Mark
 
+VIDEO_EXTENSIONS = ('.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov', '.ts')
+
 class add_dv(process):
 
     def mark_file(self,pathname,show,location):
@@ -66,43 +68,48 @@ class add_dv(process):
                rf.save()
             else:
                print("(exists)")
-   
+
     def one_loc(self,show,location):
-      """
-      finds dv files for this location
-      """
-      if self.options.whack:
-          Raw_File.objects.filter(show=show).delete()
-          Mark.objects.filter(show=show).delete()
+        """
+        finds dv files for this location
+        """
+        if self.options.whack:
+            Raw_File.objects.filter(show=show).delete()
+            Mark.objects.filter(show=show).delete()
 
-      ep_dir=os.path.join(self.show_dir,'dv',location.slug)
-      if self.options.verbose:  print("episode dir:", ep_dir)
-      seq=0
-      for dirpath, dirnames, filenames in os.walk(ep_dir,followlinks=True):
-          d=dirpath[len(ep_dir)+1:]
-          if self.options.verbose: 
-              print("checking...", dirpath, d, dirnames, filenames) 
+        ep_dir=os.path.join(self.show_dir,'dv',location.slug)
+        if self.options.verbose:  print("episode dir:", ep_dir)
+        seq=0
+        for dirpath, dirnames, filenames in os.walk(ep_dir,followlinks=True):
+            d=dirpath[len(ep_dir)+1:]
+            if self.options.verbose: 
+                print("checking...", dirpath, d, dirnames, filenames) 
 
-          if self.options.subs:
-              # subs holds a bit of the dirs we want,
-              # like graphics,video,Camera,GFX
-              if not self.options.subs in dirpath:
-                  continue
+            if self.options.subs:
+                # subs holds a bit of the dirs we want,
+                # like graphics,video,Camera,GFX
+                if not self.options.subs in dirpath:
+                    continue
 
-          for f in filenames:
+            for f in filenames:
+                if self.args and any(fnmatch(f,mask) for mask in self.args):
+                    # only add files listed on the command line
+                    continue
 
-              if self.args and any(fnmatch(f,mask) for mask in self.args):
-                  # only add files listed on the command line
-                  continue
+                basename, extension = os.path.splitext(f)
 
-              if os.path.splitext(f)[1] == ".log":
-                  self.mark_file(os.path.join(d,f),show,location)
+                if extension == ".log":
+                    self.mark_file(os.path.join(d,f),show,location)
 
-              if os.path.splitext(f)[1] in [
-                      '.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov', '.ts' ]:
-                  seq+=1
-                  # print("doing",f)
-                  self.one_file(os.path.join(d,f),show,location,seq)
+                if basename in filenames:
+                    if os.path.splitext(basename)[1] in VIDEO_EXTENSIONS:
+                        # This must be a preview mp4 for web editing
+                        continue
+
+                if extension in VIDEO_EXTENSIONS:
+                    seq+=1
+                    # print("doing",f)
+                    self.one_file(os.path.join(d,f),show,location,seq)
 
     def one_show(self, show):
       if self.options.whack:
