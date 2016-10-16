@@ -127,8 +127,7 @@ class post(process):
         meta['language'] = ep.language
         meta['language'] = "eng"
 
-        # if ep.license:
-        #    meta['license'] = str(ep.license)
+        meta['license'] = 'creativeCommon'
 
         # meta['rating'] = self.options.rating
 
