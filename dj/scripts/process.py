@@ -185,7 +185,7 @@ class process():
         where += ":" + os.environ['STY']
     what_where = "%s@%s" % (self.__class__.__name__, where)
     episode.locked = datetime.datetime.now()
-    episode.locked_by = what_where
+    episode.locked_by = what_where[:35]
     # save the lock to disk
     episode.save()
     try:
