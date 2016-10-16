@@ -69,9 +69,12 @@ class mk_public(process):
 
         uploader = youtube_v3_uploader.Uploader()
         uploader.user = ep.show.client.youtube_id
+        playlist_id = ep.show.youtube_playlist_id
         if self.options.verbose: print("Setting Youtube to public...")
         try:
-            ret = uploader.set_permission( ep.host_url )
+            ret = uploader.set_permission(ep.host_url)
+            if playlist:
+                uploader.add_to_playlist(ep.host_url, playlist_id)
         # except apiclient.errors.HttpError as e:
         except youtube_v3_uploader.HttpError as e:
             print(e)
