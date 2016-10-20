@@ -201,6 +201,9 @@ class post(process):
 
                 # save new youtube url
                 ep.host_url = uploader.new_url
+                # the thumb url 
+                ep.thumbnail = uploader.thumbnail
+
                 # for test framework
                 self.last_url = uploader.new_url
 

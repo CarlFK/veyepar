@@ -76,8 +76,8 @@ class SyncRax(process):
         if not self.cdn_exists(show,low):
             # raw file (huge!!!)
             ### self.file2cdn(show,base)
-            self.file2cdn(show,low)
-            pass
+            if self.options.rsync:
+                self.file2cdn(show,low)
 
 
     def rf_audio_png(self, show, rf):
@@ -128,10 +128,10 @@ class SyncRax(process):
             self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
-        ext = "mp4"
-        base = os.path.join( ext, "{}.{}".format(ep.slug, ext) )
-        # if not self.cdn_exists(show,base):
-        self.file2cdn(show,base)
+        for ext in self.options.upload_formats:
+            base = os.path.join( ext, "{}.{}".format(ep.slug, ext) )
+            # if not self.cdn_exists(show,base):
+            self.file2cdn(show,base)
 
     def sync_final_audio_png(self,show,ep):
         ext = "webm"
@@ -139,7 +139,8 @@ class SyncRax(process):
         if not self.cdn_exists(show,base):
              png_name = os.path.join( self.show_dir, base )
              ret = self.mk_audio_png( ep.public_url, png_name ) 
-             self.file2cdn(show,base)
+             if self.options.rsync:
+                 self.file2cdn(show,base)
 
     def cut_list(self,show,ep):
         cls = ep.cut_list_set.all()
@@ -183,10 +184,13 @@ class SyncRax(process):
 
         for ep in eps:
             print(ep)
-            self.sync_title_png(show,ep)
+            if self.options.rsync:
+                self.sync_title_png(show,ep)
             self.cut_list(show,ep)
-            self.mlt(show,ep)
-            self.sync_final(show,ep)
+            if self.options.rsync:
+                self.mlt(show,ep)
+            if self.options.rsync:
+                self.sync_final(show,ep)
             # self.sync_final_audio_png(show,ep)
 
     def show_assets(self,show):
@@ -220,11 +224,16 @@ class SyncRax(process):
 
     def one_show(self, show):
         self.set_dirs(show)
-        self.init_rax(show)
 
-        # self.show_assets(show)
-        self.raw_files(show)
-        # self.episodes(show)
+        if self.options.rsync:
+            self.init_rax(show)
+
+        if self.options.assets:
+            self.show_assets(show)
+        if self.options.raw:
+            self.raw_files(show)
+        if self.options.cooked:
+            self.episodes(show)
 
 
     def work(self):
@@ -241,6 +250,16 @@ class SyncRax(process):
         self.one_show(show)
 
         return
+
+    def add_more_options(self, parser):
+        parser.add_option('--assets', action="store_true", 
+           help="synd asset files.")
+        parser.add_option('--raw', action="store_true", 
+           help="process raw files.")
+        parser.add_option('--cooked', action="store_true",
+           help="process cooked files.")
+        parser.add_option('--rsync', action="store_true",
+            help="upload to DS box.")
 
 if __name__=='__main__': 
     p=SyncRax()

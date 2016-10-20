@@ -365,7 +365,8 @@ class Uploader():
 
         self.response = response
 
-        self.new_url = "http://youtu.be/%s" % ( response['id'] )
+        self.new_url = "http://youtu.be/{id}".format(**response)
+        self.thumbnail = "https://i.ytimg.com/vi/{id}/hqdefault.jpg".format(**response)
 
         return True
 
@@ -405,6 +406,7 @@ def test_upload(args):
       'tags': ['test', 'tests', ],
       'privacyStatus':'private',
       # 'latlon': (37.0,-122.0),
+      'license':'creativeCommon',
     }
 
     u.user = args.user
@@ -421,6 +423,7 @@ def test_upload(args):
     ret = u.upload()
     if ret:
         print(u.new_url)
+        print(u.thumbnail)
         return u.new_url
     else:
         print(u.ret_text)
@@ -472,5 +475,5 @@ if __name__ == '__main__':
 
     url = test_upload(args)
     # test_set_pub(args,url)
-    test_delete(args,url)
+    # test_delete(args,url)
 
