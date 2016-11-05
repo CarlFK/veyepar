@@ -18,7 +18,7 @@ client checklist:
     - 48" tall small table for LCD and equipment.
     - hdmi cable to send 720p presentation to projector
     - about 30' in front of podium: classroom table and 2 chairs
-    - ballanced mono xlr from PA to camera at table
+    - balanced mono audio - xlr from PA to camera at table
     - 21" or larger 16:9 lcd monitor for video mixer, hdmi in
     - internet access (to process and upload videos overnight and during show)
 

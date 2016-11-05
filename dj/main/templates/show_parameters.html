@@ -4,6 +4,21 @@
 {% block content %}
 
 Client: <a href="{% url "client" client.slug %}">{{ client.name }}</a>
+Contacts: {{client.contacts}}
+
+Show: <a href="{% url "show" client.slug show.slug %}">{{ show.name }}</a>
+
+Rooms:
+{% for location in locations %}
+   <a href="{% url "admin:main_location_change" location.id%}">{{location.name}}</a>
+{% endfor %}
+
+Youtube account:  {{client.youtube_id}}
+
+Twitter account:  {{client.twitter_id}}
+Tweet prefix: {{client.tweet_prefix}}
+{{client.contacts}}
+
 
 {% endblock %}
 
