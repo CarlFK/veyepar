@@ -3,22 +3,38 @@
 
 {% block content %}
 
-Client: <a href="{% url "client" client.slug %}">{{ client.name }}</a>
-Contacts: {{client.contacts}}
-
-Show: <a href="{% url "show" client.slug show.slug %}">{{ show.name }}</a>
+Client: <a href="{% url "client" client.slug %}">{{ client.name }}</a></br>
+Contacts: {{client.contacts}}</br>
+</br>
+Show: <a href="{% url "episode_list" client.slug show.slug %}">{{ show.name }}</a> - <a href="{{show.conf_url}}">{{show.conf_url}}</a>
+</br>
 
 Rooms:
 {% for location in locations %}
-   <a href="{% url "admin:main_location_change" location.id%}">{{location.name}}</a>
-{% endfor %}
+<a href="{% url "admin:main_location_change" location.id%}">{{location.name}}</a>, {% endfor %}
+</br>
+</br>
 
-Youtube account:  {{client.youtube_id}}
+Youtube account:  {{client.youtube_id}}</br>
+Archive.org account:  {{client.archive_id}}</br>
+</br>
 
-Twitter account:  {{client.twitter_id}}
-Tweet prefix: {{client.tweet_prefix}}
-{{client.contacts}}
+Twitter account:  {{client.tweet_id}}</br>
+Tweet prefix: {{client.tweet_prefix}}</br>
+</br>
 
+Schedule API endpoint: <a href="{{show.schedule_url}}">{{show.schedule_url}}</a> </br>
+Item Count: {{episodes.count}} <br>
+<br>
+
+Title slide: {{client.title_svg}}
+<a href="{% url "pdfs" 'title_slides' show.id %}">title slides</a>
+</br>
+
+Credits: {{client.credits}}
+</br>
+</br>
+</br>
 
 {% endblock %}
 

@@ -1029,10 +1029,15 @@ def show_parameters(request, show_id ):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
+    locations=show.locations.filter(active=True).order_by('sequence')
+    episodes=Episode.objects.filter(show=show)
+
     return render_to_response('show_parameters.html',
         {
           'client':client,
           'show':show,
+          'locations':locations,
+          'episodes':episodes,
         },
     context_instance=RequestContext(request) )
 
