@@ -20,6 +20,7 @@
 <td>
     <a href="{{show.schedule_url}}">{{show.schedule_url}}</a>
     <a href="{{show.conf_url}}">{{show.conf_url}}</a>
+    <a href="{% url "show_parameters" show.id %}">show_parameters</a>
 </td>
 <td>
     <a href="{% url "eps_xfer" client.slug show.slug %}">{{show.slug}}.json</a> </br>

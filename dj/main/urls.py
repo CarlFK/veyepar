@@ -48,7 +48,7 @@ urlpatterns += patterns(
     url(r'show_urls/(?P<show_id>\w+)/$', show_urls, name='show_urls'),
     url(r'show_stats/(?P<show_id>\w+)/$', show_stats, name='show_stats'),
     url(r'show_pipeline/(?P<show_id>\w+)/$', show_pipeline, name='show_pipeline'),
-    url(r'show_parameters/(?P<show_id>\w+)/$', show_parameters),
+    url(r'show_parameters/(?P<show_id>\w+)/$', show_parameters, name="show_parameters"),
     url(r'processes/(?P<show_id>\w+)/$', processes, name='processes'),
     url(r'show_anomalies/(?P<show_id>\w+)/$', 
         show_anomalies, name='show_anomalies'),
@@ -118,7 +118,7 @@ urlpatterns += patterns(
     url(r'episode_chaps/(?P<episode_id>\d+)/$', 
         episode_chaps, name='episode_chaps'),
 
-    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/(?P<episode_id>\w+)/.*\.pdf$', 
+    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/(?P<episode_id>\w+)/.*$', 
         episode_pdfs, name='pdf'),
 
     url(r'title_slides/(?P<show_id>\w+)/', 
@@ -127,7 +127,7 @@ urlpatterns += patterns(
     url(r'episode_assets/(?P<episode_id>\w+)/', 
         episode_assets, name='episode_assets'),
 
-    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/.*\.pdf$', 
+    url(r'(?P<rfxml>\w+)/(?P<show_id>\w+)/.*$', 
         episode_pdfs, name='pdfs'),
 
     url(r'tests', tests, name='tests'),
