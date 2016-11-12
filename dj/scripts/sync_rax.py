@@ -55,29 +55,30 @@ class SyncRax(process):
         make a low bitrate version of the raw file 
         for previewing over the web
         """
-        ext = "mp4"
 
-        base = os.path.join( "dv", rf.location.slug, rf.filename )
-        if self.options.verbose: print(base)
+        for ext in self.options.upload_formats:
 
-        rf = os.path.join(self.show_dir, base)
-        low = "{base}.{ext}".format(base=base, ext=ext)
-        out = os.path.join(self.show_dir, low)
+            base = os.path.join( "dv", rf.location.slug, rf.filename )
+            if self.options.verbose: print(base)
 
-        # look for .webm on local file system
-        vb = "50k"
-        # vb = "20k" # for SA
-        if not os.path.exists(out):
-            cmd = ["melt", rf, "meta.attr.titles=1", "meta.attr.titles.markup=#timecode#", "-attach", "data_show", "dynamic=1", "-consumer", "avformat:"+out, "vb="+vb, "progress=1"]
-            p=subprocess.Popen(cmd)
-            p.wait()
-            retcode=p.returncode
-        
-        if not self.cdn_exists(show,low):
-            # raw file (huge!!!)
-            ### self.file2cdn(show,base)
+            rf = os.path.join(self.show_dir, base)
+            low = "{base}.{ext}".format(base=base, ext=ext)
+            out = os.path.join(self.show_dir, low)
+
+            # look for .webm on local file system
+            vb = "50k"
+            # vb = "20k" # for SA
+            if not os.path.exists(out):
+                cmd = ["melt", rf, "meta.attr.titles=1", "meta.attr.titles.markup=#timecode#", "-attach", "data_show", "dynamic=1", "-consumer", "avformat:"+out, "vb="+vb, "progress=1"]
+                p=subprocess.Popen(cmd)
+                p.wait()
+                retcode=p.returncode
+            
             if self.options.rsync:
-                self.file2cdn(show,low)
+                if not self.cdn_exists(show,low):
+                    # raw file (huge!!!)
+                    ### self.file2cdn(show,base)
+                    self.file2cdn(show,low)
 
 
     def rf_audio_png(self, show, rf):
@@ -111,6 +112,7 @@ class SyncRax(process):
 
         # rfs = rfs.exclude(id=12212)
         # rfs = rfs.exclude(filesize__lt=800000)
+        # rfs = rfs.exclude(filename="2016-07-30/12_55_51.ts")
 
         if self.args:
             """
@@ -120,7 +122,6 @@ class SyncRax(process):
             """
             rfs = rfs.exclude(filename__in=self.args)
 
-        rfs = rfs.exclude(filename="2016-07-30/12_55_51.ts")
 
         for rf in rfs:
             if self.options.verbose: print(rf)
@@ -136,13 +137,13 @@ class SyncRax(process):
             self.file2cdn(show,base)
 
     def sync_final_audio_png(self,show,ep):
-        ext = "webm"
-        base = os.path.join(ext, ep.slug + ".{}.png".format(ext) )
-        if not self.cdn_exists(show,base):
-             png_name = os.path.join( self.show_dir, base )
-             ret = self.mk_audio_png( ep.public_url, png_name ) 
-             if self.options.rsync:
-                 self.file2cdn(show,base)
+        for ext in self.options.upload_formats:
+            base = os.path.join(ext, ep.slug + ".{}.png".format(ext) )
+            if not self.cdn_exists(show,base):
+                 png_name = os.path.join( self.show_dir, base )
+                 ret = self.mk_audio_png( ep.public_url, png_name ) 
+                 if self.options.rsync:
+                     self.file2cdn(show,base)
 
     def cut_list(self,show,ep):
         cls = ep.cut_list_set.all()
