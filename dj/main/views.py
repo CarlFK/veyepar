@@ -189,7 +189,8 @@ def veyepar_cfg(request):
         print(show)
         if show.max_date is None:
             continue
-        if show.max_date < datetime.datetime.now():
+        # print( show.max_date,  datetime.datetime.now())#  datetime.timedelta(days=1):
+        if show.max_date < datetime.datetime.now(): # - datetime.timedelta(days=1):
             break
 
         cfg_lines.append("")
@@ -202,7 +203,7 @@ def veyepar_cfg(request):
 
         locations=show.locations.filter(active=True).order_by('sequence')
         for loc in locations:
-            cfg_lines.append("# room={slug}".format(slug=loc.slug))
+            cfg_lines.append("room={slug}".format(slug=loc.slug))
 
     cfg = '\n'.join(cfg_lines)
 

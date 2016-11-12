@@ -124,8 +124,10 @@ class SyncRax(process):
 
         for rf in rfs:
             if self.options.verbose: print(rf)
-            # self.rf_web(show, rf)
-            self.rf_audio_png(show, rf)
+            if self.options.low:
+                self.rf_web(show, rf)
+            if self.options.audio_viz:
+                self.rf_audio_png(show, rf)
 
     def sync_final(self,show,ep):
         for ext in self.options.upload_formats:
@@ -256,6 +258,10 @@ class SyncRax(process):
            help="synd asset files.")
         parser.add_option('--raw', action="store_true", 
            help="process raw files.")
+        parser.add_option('--low', action="store_true", 
+           help="make low quality files.")
+        parser.add_option('--audio-viz', action="store_true", 
+           help="make audio visualization files.")
         parser.add_option('--cooked', action="store_true",
            help="process cooked files.")
         parser.add_option('--rsync', action="store_true",

@@ -265,6 +265,8 @@ def get_duration(pathname):
 
     if os.path.splitext(pathname)[1]==".dv":
         seconds = fs_size(pathname)
+    elif os.path.splitext(pathname)[1]==".ts":
+        seconds = 60 * 30
     else:
         seconds = gst_discover_duration(pathname)
 

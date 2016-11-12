@@ -3007,6 +3007,20 @@ class add_eps(process.process):
 
       return 
 
+    def nodevember16(self,schedule,show):
+
+      s1 = []
+      x=1
+      for day in schedule:
+          date = day["date"]  #: "November 20, 2016"
+          for s in day['slots']: 
+              if s['keynote'] or s['talk']:
+                  s['start'] = "{} {}".format( date, s['time'] )
+                  s['duration'] = 60 if s['keynote'] else 40
+                  s['key'] = x
+                  s['released'] = True
+                  x += 1
+
 
     def djbp10(self, schedule, show):
 

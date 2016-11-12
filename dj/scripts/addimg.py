@@ -5,6 +5,9 @@
 
 
 """
+gscan2pdf
+http://gscan2pdf.sourceforge.net
+
 scan paper to pdf:  
   snap scan on mac, Automatic resolution, Auto color detection
 
@@ -45,8 +48,8 @@ import subprocess
 
 import re
 
-import cv2.cv as cv
-import tesseract
+# import cv2.cv as cv
+# import tesseract
 
 from process import process
 
@@ -307,7 +310,7 @@ class add_img(process):
         parser.add_option('--base', 
             help="source filename base.")
 
-        parser.add_option('--dumb', 
+        parser.add_option('--dumb', action="store_true",
             help="just add to show, no ocr, no guessing.")
 
 if __name__=='__main__': 

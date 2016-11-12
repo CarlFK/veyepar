@@ -122,8 +122,12 @@ class ck_setup(process):
         p_okg("show_slug: {}".format(show_slug))
 
         try:
-            self.show = Show.objects.get(slug=show_slug)
-            self.client = self.show.client
+            if self.client:
+                self.show = Show.objects.get(
+                        client=self.client,slug=show_slug)
+            else:
+                self.show = Show.objects.get(slug=show_slug)
+                self.client = self.show.client
         except Show.DoesNotExist as e:
             p_fail( "show slug not found in db." )
             raise e
@@ -388,7 +392,7 @@ class ck_setup(process):
         """
 
         try:
-            # self.ck_client() # just use show?
+            self.ck_client() # just use show?
             self.ck_show()
             self.set_dirs(self.show)
 
