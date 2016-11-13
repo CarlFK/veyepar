@@ -35,7 +35,12 @@ class Episode_Form_Preshow(forms.ModelForm):
                   'authors',
                   'emails',
                   'released',
-                  'description', 'tags')
+                  'description', 
+                  'summary',
+                  'tags',
+                  'twitter_id', 
+                  'language', 
+                  )
 
 class Episode_Form_small(forms.ModelForm):
     class Meta:
