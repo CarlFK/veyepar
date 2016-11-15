@@ -493,7 +493,7 @@ class add_eps(process.process):
                     setattr( episode, f, row[f] )
 
                 # save whatever data was passed
-                episode.conf_meta=json.dumps(row['raw'])
+                # episode.conf_meta=json.dumps(row['raw'])
 
                 episode.save()
 
@@ -2976,8 +2976,6 @@ class add_eps(process.process):
               ('','conf_url'),
        ]
 
-
-
       # remove rows where id='empty' 
       # schedule = [s for s in schedule if s['id'] != 'empty']
 
@@ -3009,18 +3007,54 @@ class add_eps(process.process):
 
     def nodevember16(self,schedule,show):
 
+      emails={}
+      fn = "schedules/Nodevember 2016 Speakers - 2016 Speakers.csv"
+      f=open(fn)
+      rows = csv.DictReader(f)
+      # dict_keys(['First name', 'Email', 'Last name'])
+      for row in rows:
+          # print(row.keys())
+          k = "{First name} {Last name}".format(**row)
+          emails[k] = row['Email']
+
       s1 = []
-      x=1
       for day in schedule:
           date = day["date"]  #: "November 20, 2016"
           for s in day['slots']: 
               if s['keynote'] or s['talk']:
-                  s['start'] = "{} {}".format( date, s['time'] )
-                  s['duration'] = 60 if s['keynote'] else 40
-                  s['key'] = x
-                  s['released'] = True
-                  x += 1
+                  s['start'] = parse("{} {}".format( date, s['time'] ))
+                  s['duration'] = "00:{}:00".format(s['duration'])
+                  # s['conf_url'] = urllib.parse.quote(s['conf_url'])
+                  s['conf_url'] = s['conf_url'].replace(' ','%20')
+                  try:
+                      s['emails'] = emails[s['speaker']]
+                  except KeyError as e:
+                      print(e)
+                  s1.append(s)
+      
+      field_maps = [
+              ('room','location'),
+              ('title','name'),
+              ('speaker','authors'),
+              ('emails','emails'),
+              ('summary','description'),
+              ('start','start'),
+              ('twitter_id','twitter_id'),
+              ('duration','duration'),
+              ('released','released'),
+              ('license','license'),
+              ('','tags'),
+              ('conf_key','conf_key'),
+              ('conf_url','conf_url'),
+       ]
 
+      events = self.generic_events(s1, field_maps)
+
+      rooms = self.get_rooms(events)
+      print(rooms)
+      self.add_rooms(rooms,show)
+
+      self.add_eps(events, show)
 
     def djbp10(self, schedule, show):
 
@@ -3657,6 +3691,9 @@ class add_eps(process.process):
         if self.options.show =='djbp10':
             return self.djbp10(schedule,show)
 
+        if self.options.show =='nodevember16':
+            return self.nodevember16(schedule,show)
+	   
         if self.options.show =='nodevember15':
             return self.nodevember15(schedule,show)
 	   

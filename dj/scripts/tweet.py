@@ -15,8 +15,6 @@ import pw  # see pw_samp.py for sample.
 
 from process import process
 
-# from main.models import Episode, Raw_File, Cut_List
-
 class tweet(process):
 
     ready_state = 10
