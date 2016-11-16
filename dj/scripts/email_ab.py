@@ -95,20 +95,21 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
 
             # sender = 'Carl Karsten <carl@nextdayvideo.com>'
             sender = settings.EMAIL_SENDER
-            cc = settings.EMAIL_CC
+            ccs = [e.strip() for e in settings.EMAIL_CC.split(',')]
             # make a list of addresses:
-            reply_tos = [sender, cc] + \
+            reply_tos = [sender,] + ccs + \
                     ep.show.client.contacts.split(',')
             # headers={Reply-To... needs to be a string of comma seperated 
             reply_to = ','.join( reply_tos )
             headers = {
                      'Reply-To': reply_to,
-                     'Cc': cc,
+                    # 'Cc': cc,
                     # 'From': sender,
                         }    
 
             if self.options.test:
                 print("tos:", tos)
+                print("ccs:", ccs)
                 print("subject:", subject)
                 print("headers:", headers)
                 print("context:", context)
@@ -116,7 +117,9 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
                 ret = False
             else:
 
-                email = EmailMessage(subject, body, sender, tos, headers=headers ) 
+                email = EmailMessage(
+                        subject, body, sender, tos, 
+                        headers=headers, cc=ccs ) 
                 connection = get_connection()
                 ret = connection.send_messages([email])
                 print(tos, ret)
