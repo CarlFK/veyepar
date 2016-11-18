@@ -8,6 +8,8 @@
 gscan2pdf
 http://gscan2pdf.sourceforge.net
 
+/home/carl/temp/ajschi_2016-11-17.pdf
+
 scan paper to pdf:  
   snap scan on mac, Automatic resolution, Auto color detection
 
@@ -240,7 +242,9 @@ class add_img(process):
 
         # upload it
         if self.options.rsync:
-            self.file2cdn(show, os.path.join( "img", png_base ))
+            png_branch = os.path.join( "img", png_base )
+            print(png_branch)
+            self.file2cdn(show, png_branch)
 
         # make sure the png name is in the db
         img_page,created = Image_File.objects.get_or_create(
