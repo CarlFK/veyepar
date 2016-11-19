@@ -348,6 +348,15 @@
 				<x>'126.8 pt'</x>
 				<y>'55.7 pt'</y>
 			</Memo>
+			<Memo>
+				<expr>self.episode_comment</expr>
+				<FontSize>12</FontSize>
+				<height>'72.0 pt'</height>
+				<vAnchor>'bottom'</vAnchor>
+				<width>'345.0 pt'</width>
+				<x>'126.8 pt'</x>
+				<y>'25.0 pt'</y>
+			</Memo>
 			<String>
 				<expr>self.episode_start.strftime("%H:%M")</expr>
 				<FontName>'Helvetica'</FontName>
@@ -531,7 +540,7 @@
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'120.0 pt'</width>
-				<x>'437.2 pt'</x>
+				<x>'455.0 pt'</x>
 				<y>'57.3 pt'</y>
 			</String>
 			<String>
@@ -539,7 +548,7 @@
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'120.0 pt'</width>
-				<x>'437.2 pt'</x>
+				<x>'455.0 pt'</x>
 				<y>'85.3 pt'</y>
 			</String>
 			<String>
@@ -547,7 +556,7 @@
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'120.0 pt'</width>
-				<x>'437.2 pt'</x>
+				<x>'455.0 pt'</x>
 				<y>'71.3 pt'</y>
 			</String>
 			<String>
@@ -556,7 +565,7 @@
 				<fontname>'Helvetica'</fontname>
 				<FontSize>13</FontSize>
 				<width>'95.0 pt'</width>
-				<x>'435.2 pt'</x>
+				<x>'455.0 pt'</x>
 				<y>'44.3 pt'</y>
 			</String>
 			<String>
@@ -565,7 +574,7 @@
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>10</FontSize>
 				<width>'100.0 pt'</width>
-				<x>'428.0 pt'</x>
+				<x>'440.0 pt'</x>
 				<y>'101.0 pt'</y>
 			</String>
 		</Objects>
