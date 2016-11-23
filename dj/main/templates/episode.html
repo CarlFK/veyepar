@@ -202,6 +202,7 @@ $(".viewer").zoomer();
           preload="metadata"
           width=400
           {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
+          currentTime={{cl.start}}
           >
           <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.mp4" type="video/mp4">
           <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.webm" type="video/webm">
