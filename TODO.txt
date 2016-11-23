@@ -23,7 +23,7 @@ veyepar:
 
   next/prev (match recording sheet: same room/day)
 
-  split long talk (tutorials) into parts.
+  # split long talk (tutorials) into parts.
 
   error handling:
       encode and uploads nead attention
@@ -163,4 +163,12 @@ ponder and debate cred management.
 voluneer management.
   flight details: bday, window, ff#
   list on credit slide.
+
+(veyepar) carl@twist:~/src/veyepar/dj/scripts$ python sync_rax.py --raw --low
+[mpeg1video @ 0x7fdc340cb7e0] interlacing not supported by codec
+[mp2 @ 0x7fdc342935e0] Channel layout not specified
+[mpeg @ 0x7fdc340008c0] VBV buffer size not set, using default size of 130KB
+If you want the mpeg file to be compliant to some specification
+Like DVD, VCD or others, make sure you set the correct buffer size
+[swscaler @ 0x7fdc106311a0] Warning: data is not aligned! This can lead to a speedloss
 
