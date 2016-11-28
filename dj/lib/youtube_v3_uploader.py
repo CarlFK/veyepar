@@ -53,12 +53,6 @@ import pprint
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
-"""
-from apiclient.discovery import build
-from apiclient.errors import HttpError, ResumableUploadError
-from apiclient.http import MediaFileUpload
-"""
-
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError, ResumableUploadError
 from googleapiclient.http import MediaFileUpload

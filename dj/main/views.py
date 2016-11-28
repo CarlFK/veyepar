@@ -2213,7 +2213,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     # if episode.state==1:
     # This didn't work, put back the "only if empty"
     if not cuts:
-        cuts = mk_cuts(episode)
+        cuts = mk_cuts(episode, start_slop=5)
 
     if cuts:
         offset = abs( cuts[0].raw_file.start - episode.start )

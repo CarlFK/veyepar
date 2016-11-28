@@ -134,7 +134,7 @@ class add_img(process):
 
         return founds
 
-    def slice_dice(self,img_page):
+    def slice_dice(self,img_page, src_name):
 
         # ocr 
         text = self.ocr_img(src_name)
@@ -252,7 +252,7 @@ class add_img(process):
                 filename=png_base,)
 
         if not self.options.dumb:
-            self.slice_dice(img_page,)
+            self.slice_dice(img_page,src_name)
 
     def one_show(self, show):
 

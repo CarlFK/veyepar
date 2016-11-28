@@ -57,14 +57,15 @@ def mk_fieldlist():
 
 import datetime 
 import csv
-import requests
 import html.parser
 import os
+from pprint import pprint
+import requests
 import urllib.parse
+from difflib import Differ
 
 from dateutil.parser import parse
 # import dateutil
-import pprint
 from django.utils.html import strip_tags
 from django.template.defaultfilters import slugify
 
@@ -344,7 +345,7 @@ class add_eps(process.process):
 
         seq=0
         for row in schedule:
-            if self.options.verbose: pprint.pprint( row )
+            if self.options.verbose: pprint( row )
 
             # try to find an existing item in the db
 
@@ -422,7 +423,7 @@ class add_eps(process.process):
                     print("http://%s/main/E/%s/" % ( host, episode.id, ))
                     print(episode.conf_key, episode.conf_url)
                     if self.options.verbose: 
-                        pprint.pprint( diff_fields )
+                        pprint( diff_fields )
                     for f,a1,a2 in diff_fields:
                         if self.options.verbose:
                             print(1, a1.__repr__())
@@ -432,6 +433,12 @@ class add_eps(process.process):
                             print('   conf {0}: {1}'.format(f,a2))
                         else:
                             print(f)
+                            d = Differ()
+                            text1 = a1.split('\n')
+                            text2 = a2.split('\n')
+                            result = list(d.compare(text1, text2))
+                            pprint(result)
+
                             if a2 is None or max(len(a1),len(a2)) < 160:
                               # print a1
                               # print a2
@@ -705,7 +712,7 @@ class add_eps(process.process):
           room = row['Room Name']
           if room not in rooms: rooms.append(room)
 
-      if self.options.verbose: pprint.pprint(rooms)
+      if self.options.verbose: pprint(rooms)
 
       return rooms
 
@@ -723,7 +730,7 @@ class add_eps(process.process):
         events=[]
 
         for row in schedule:
-            if self.options.verbose: pprint.pprint( row )
+            if self.options.verbose: pprint( row )
             event={}
             event['id'] = row['conf_url']
             # event['id'] = row['id']
@@ -1253,7 +1260,7 @@ class add_eps(process.process):
             event['released'] =  True
 
             event['tags'] = "" # strip_tags( event['tags'])
-            # pprint.pprint(event)
+            # pprint(event)
 
         self.add_eps(events, show)
 
@@ -1322,7 +1329,7 @@ class add_eps(process.process):
                 value = v['content']
                 print("#1", field_name, value)
                 row[field_name] = value
-            pprint.pprint(row)
+            pprint(row)
             ret_rows.append(row)    
 
         return ret_rows
@@ -1351,7 +1358,7 @@ class add_eps(process.process):
 
         # schedule is al meetings ever
         schedule = schedule[-1]['topic_set']
-        # pprint.pprint( schedule[0] )
+        # pprint( schedule[0] )
 
         rooms = ['room_1']
         self.add_rooms(rooms,show)
@@ -1367,7 +1374,7 @@ class add_eps(process.process):
         when = schedule['when']
         where = schedule['where']
         # ['name']
-        pprint.pprint( schedule['where'] )
+        pprint( schedule['where'] )
 
         schedule = schedule['topics']
         schedule = [s for s in schedule if s['approved']]
@@ -1393,7 +1400,7 @@ class add_eps(process.process):
         events = self.generic_events(schedule, field_maps)
         for event in events:
             print("1, event:")
-            pprint.pprint(event)
+            pprint(event)
 
             event['location'] = where['name']
 
@@ -1742,7 +1749,7 @@ class add_eps(process.process):
 
        
     def sched(self,schedule,show):
-        # pprint.pprint(schedule)
+        # pprint(schedule)
 
         rooms = self.get_rooms(schedule, "venue")
         self.add_rooms(rooms,show)
@@ -1778,7 +1785,7 @@ class add_eps(process.process):
                 pass
 
             if 'speakers' in list(row.keys()): 
-                # pprint.pprint( row['speakers'] )
+                # pprint( row['speakers'] )
                 authors = ', '.join( s['name'] for s in row['speakers'] )
             else:
                 authors = ''
@@ -1816,7 +1823,7 @@ class add_eps(process.process):
 
     def pyconde2012(self,schedule,show):
         # pycon 2012 adn 13
-        # pprint.pprint(schedule)
+        # pprint(schedule)
 
         rooms = self.get_rooms(schedule )
         self.add_rooms(rooms,show)
@@ -1862,7 +1869,7 @@ class add_eps(process.process):
         return 
 
     def pyconca2012(self,schedule,show):
-        # pprint.pprint(schedule)
+        # pprint(schedule)
 
         schedule = schedule['data']['talk_list']
         # return talks, session
@@ -1896,7 +1903,7 @@ class add_eps(process.process):
         for event in events:
             if self.options.verbose: print("event", event)
             raw = event['raw']
-            if self.options.verbose: pprint.pprint(raw)
+            if self.options.verbose: pprint(raw)
             
             event['authors'] = \
               raw['speaker_first_name'] +' ' + raw['speaker_last_name']
@@ -1975,7 +1982,7 @@ class add_eps(process.process):
                     strip_tags(event['description']) )
 
             # event['tags'] = ", ".join( event['tags'])
-            # pprint.pprint(event)
+            # pprint(event)
 
         self.add_eps(events, show)
 
@@ -2294,7 +2301,7 @@ class add_eps(process.process):
             # for session in day['sessions']:
                 #[u'speakers', u'title', u'event_id', u'start_time', u'space', u'topics', u'times', u'abstract', u'web_url', u'end_time', u'id', u'day']
 
-        # pprint.pprint(events[-2])
+        # pprint(events[-2])
   
         # events = [e for e in events if e['location'] is not None]
         # events = [e for e in events if e['start'] is not None]
@@ -2393,7 +2400,7 @@ class add_eps(process.process):
             # print event
 
             raw = event['raw']
-            if self.options.verbose: pprint.pprint(raw)
+            if self.options.verbose: pprint(raw)
             if self.options.verbose: print("event", event)
             
             event['start'] = datetime.datetime.strptime(
@@ -2496,7 +2503,7 @@ class add_eps(process.process):
         events = []
         pk = 1
         for s in schedule:
-            # pprint.pprint(s)
+            # pprint(s)
             # ['IPython-parallel', ' Min Ragan-Kelley', ' IPython', ' A1', ' 10:45am'],
             # Title,Name,Email,Company,Room,Start,End,Date
             e = { 'conf_key': pk,
@@ -2539,8 +2546,8 @@ class add_eps(process.process):
 # 'conf_key':
             """
 
-            # pprint.pprint( schedule )
-            # pprint.pprint( e )
+            # pprint( schedule )
+            # pprint( e )
             events.append(e)
             pk +=1
         
@@ -2774,7 +2781,7 @@ class add_eps(process.process):
       for event in events: 
         if self.options.verbose: 
             print("event:")
-            pprint.pprint(event)
+            pprint(event)
 
         event['conf_key'] = "pk{}".format(pk)
         pk += 1
@@ -2833,7 +2840,7 @@ class add_eps(process.process):
       for event in events: 
         if self.options.verbose: 
             print("event:")
-            pprint.pprint(event)
+            pprint(event)
 
         if event['location'] in ["Room 1","Room 2","Room 3","Room 4"]:
             # room 1 is really room 100, 2 200...
@@ -2891,7 +2898,7 @@ class add_eps(process.process):
         events = self.generic_events(schedule, field_maps)
 
         # for event in events:
-        #    pprint.pprint( event )
+        #    pprint( event )
 
         # remove events with no room (like Break)
         events = [e for e in events if e['location'] is not None ]
@@ -2984,7 +2991,7 @@ class add_eps(process.process):
       for event in events: 
         if self.options.verbose: 
             print("event:")
-            pprint.pprint(event)
+            pprint(event)
 
         # event['start'] = dateutil.parser.parse( event['start'] )
         event['start'] = parse( event['start'] )
@@ -3113,7 +3120,7 @@ class add_eps(process.process):
             event['tags'] = ""
 
 
-            if self.options.verbose: pprint.pprint(event)
+            if self.options.verbose: pprint(event)
 
         self.add_eps(events, show)
 
@@ -3259,7 +3266,7 @@ class add_eps(process.process):
         for day in conf['days']:
             for room in day['rooms']:
                 for event in day['rooms'][room]:
-                    if self.options.verbose: pprint.pprint(event)
+                    if self.options.verbose: pprint(event)
                     schedule.append(event)
 
         field_maps = [
@@ -3287,7 +3294,7 @@ class add_eps(process.process):
         # events = [e for e in events if e['location'] is not None ]
 
         for event in events:
-            if self.options.verbose: pprint.pprint(event)
+            if self.options.verbose: pprint(event)
 
             event['conf_key']=str(event['conf_key'])
 
@@ -3342,7 +3349,7 @@ class add_eps(process.process):
         # events = [e for e in events if e['location'] is not None ]
 
         for event in events:
-            if self.options.verbose: pprint.pprint(event)
+            if self.options.verbose: pprint(event)
 
             event['conf_key']=str(event['conf_key'])
 
@@ -3391,7 +3398,7 @@ class add_eps(process.process):
         events = self.generic_events(schedule, field_maps)
 
         for event in events:
-            if self.options.verbose: pprint.pprint(event)
+            if self.options.verbose: pprint(event)
 
             event['conf_key']=str(event['conf_key'])
 
@@ -3494,7 +3501,7 @@ class add_eps(process.process):
                 print( event )
                 events.append(event)
 
-                pprint.pprint(component)
+                pprint(component)
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
@@ -3661,7 +3668,7 @@ class add_eps(process.process):
         # file(filename,'w').write(j) 
         # j=file(filename).read()
 
-        if self.options.verbose: pprint.pprint(schedule) 
+        if self.options.verbose: pprint(schedule) 
 
         # if self.options.verbose: print j[:40]
         if self.options.keys: return self.dump_keys(schedule)
@@ -3843,7 +3850,7 @@ class add_eps(process.process):
 
             # dig out the data from the nodes:[data]
             schedule = [s['node'] for s in schedule['nodes']]
-            # pprint.pprint( schedule )
+            # pprint( schedule )
 
             return self.ictev(schedule,show)
 
@@ -3852,7 +3859,7 @@ class add_eps(process.process):
             # 'ictev_2013': "http://ictev.vic.edu.au/program/2013/json",
 
             schedule =  self.unfold_origami_unicorn( schedule )
-            # pprint.pprint( schedule )
+            # pprint( schedule )
             # return self.dump_keys(schedule)
 
             return self.ictev_2013(schedule,show)
@@ -3861,7 +3868,7 @@ class add_eps(process.process):
         if url.endswith('program/session-schedule/json'):
             # ddu 2012
             schedule = [s['session'] for s in schedule['ddu2012']]
-            # pprint.pprint( schedule )
+            # pprint( schedule )
             s_keys = list(schedule[0].keys())
             print(s_keys)
             v_keys=('id',

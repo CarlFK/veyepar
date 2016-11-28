@@ -14,13 +14,13 @@ sys.path.insert(0, '..' )
 sys.path.insert(0, '../lib' )
 
 from django.conf import settings
-from django.db.models import Count,Max
+from django.db.models import Count, Max
+from django.db import DatabaseError, connection
 
 import django
 
 django.setup()
 
-# import django
 from main.models import Client, Show, Location, Episode, State, Log
 
 import swift_uploader as rax_uploader
@@ -50,6 +50,15 @@ class process():
   # fps=29.98
   fps=30000/1001.0
   bpf=120000
+
+  def save_me(self,o):
+        # tring to fix the db timeout problem
+        try:
+            o.save()
+        except DatabaseError as e:
+            connection.connection.close()
+            connection.connection = None
+            o.save()
 
   def run_cmd(self,cmd):
     """
@@ -281,7 +290,13 @@ class process():
             # .process is long running (maybe, like encode or post) 
             # so refresh episode in case its .stop was set 
             # (would be set in some other process, like the UI)
-            ep=Episode.objects.get(pk=e.id)
+
+            try:
+                ep=Episode.objects.get(pk=e.id)
+            except DatabaseError as err:
+                connection.connection.close()
+                connection.connection = None
+                ep=Episode.objects.get(pk=e.id)
 
             if ret:
                 # if the process doesn't fail,

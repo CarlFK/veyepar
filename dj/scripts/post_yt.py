@@ -13,22 +13,11 @@ import pprint
 
 import pw
 
-from django.db import DatabaseError
 from django.template.defaultfilters import slugify
 
 # from add_to_richard import get_video_id
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
-
-def save_me(ep):
-    # tring to fix the db timeout problem
-    try:
-        ep.save()
-    except DatabaseError as e:
-        from django.db import connection
-        connection.connection.close()
-        connection.connection = None
-        ep.save()
 
 class FileNotFound(Exception):
     def __init__(self, value):
@@ -211,7 +200,7 @@ class post(process):
                 print("youtube error! zomg")
                 ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
-            save_me(ep)
+            self.save_me(ep)
 
         return youtube_success
 
@@ -275,7 +264,7 @@ class post(process):
                 else:
                     print("Internet archive.org error!")
 
-                save_me(ep)
+                self.save_me(ep)
 
             return ia_success
 
@@ -344,7 +333,7 @@ class post(process):
                 else:
                     print("rax error!")
 
-                save_me(ep)
+                self.save_me(ep)
 
             return success
 
@@ -389,7 +378,7 @@ class post(process):
                 print("youtube error! zomg")
                 ep.comment += "\n%s\n" % (uploader.ret_text.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
-            save_me(ep)
+            self.save_me(ep)
 
         return youtube_success
 

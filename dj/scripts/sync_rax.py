@@ -65,14 +65,24 @@ class SyncRax(process):
             low = "{base}.{ext}".format(base=base, ext=ext)
             out = os.path.join(self.show_dir, low)
 
-            # look for .webm on local file system
+            # look for low on local file system
             vb = "50k"
             # vb = "20k" # for SA
             if not os.path.exists(out):
-                cmd = ["melt", rf, "meta.attr.titles=1", "meta.attr.titles.markup=#timecode#", "-attach", "data_show", "dynamic=1", "-consumer", "avformat:"+out, "vb="+vb, "progress=1"]
+
+                # symaphore? so a 2nd process doesn't do this file too
+                cmd = ['touch', out]
+                self.run_cmd(cmd)
+
+                tmp = "{out}.tmp".format(out=out)
+
+                cmd = ["melt", rf, "meta.attr.titles=1", "meta.attr.titles.markup=#timecode#", "-attach", "data_show", "dynamic=1", "-consumer", "avformat:"+tmp, "vb="+vb, "progress=1", "threads=6"]
                 p=subprocess.Popen(cmd)
                 p.wait()
                 retcode=p.returncode
+                
+                cmd = ['mv', tmp, out]
+                self.run_cmd(cmd)
             
             if self.options.rsync:
                 if not self.cdn_exists(show,low):

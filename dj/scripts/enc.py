@@ -12,6 +12,7 @@ from mk_mlt import mk_mlt
 
 import pprint
 from process import process
+from django.db import connection
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
@@ -621,6 +622,10 @@ class enc(process):
                 dst_path = os.path.join(self.tmp_dir, episode.slug)
                 cmds.append(['rmdir', dst_path])
                 self.run_cmds(episode, cmds)
+
+                connection.connection.close()
+                connection.connection=None
+
 
         else:
 
