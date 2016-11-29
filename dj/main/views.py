@@ -14,6 +14,7 @@ from django.forms.formsets import formset_factory
 
 from django.db.models import Q
 from django.db.models import Count,Max
+# from django.db.models.functions import Trunc
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core import serializers
@@ -560,9 +561,11 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     if episode_id:
         episodes=Episode.objects.filter(id=episode_id)
     else:
-        episodes=Episode.objects.filter(
-                show=show, location__active=True
-                ).order_by('location__sequence','start')
+        episodes=Episode.objects \
+                .annotate(start_date=Trunc('start', 'day')) \
+                .filter(show=show, location__active=True ) \
+                .order_by('start_date', 'location__sequence','start')
+                # ).order_by('location__sequence','start')
 
     if "day" in request.GET:
         episodes = episodes.filter( start__day=request.GET['day'] )

@@ -3,9 +3,6 @@
 import os
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-TEMPLATE_STRING_IF_INVALID = ''
-TEMPLATE_STRING_IF_INVALID = 'template_error'
 
 BASE_DIR = os.path.dirname( os.path.dirname(
         os.path.abspath(__file__)))
@@ -72,7 +69,7 @@ SECRET_KEY = '_)n%2id#&ke+^q_si_9c^v(+d9o6$&6kp*&s*w2sl$%esyx4$v'
 LOGIN_URL = '/accounts/login'
 # LOGIN_REDIRECT_URL = '/main'
 
-TEMPLATE_CONTEXT_PROCESSORS = (
+xTEMPLATE_CONTEXT_PROCESSORS = (
     # 'django.core.context_processors.auth',
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.media',
@@ -81,12 +78,39 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     )
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    #'django.template.loaders.filesystem.load_template_source' is deprecated; use 
+xTEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
-    # 'django.template.loaders.app_directories.load_template_source' is deprecated; use 
     'django.template.loaders.app_directories.Loader'
 )
+
+xTEMPLATE_DEBUG = DEBUG
+xTEMPLATE_STRING_IF_INVALID = 'template_error'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # insert your TEMPLATE_DIRS here
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.request',
+            ],
+           'debug':DEBUG,
+           'string_if_invalid':'error-in-template',
+        },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -110,13 +134,6 @@ if DEBUG:
         MIDDLEWARE_CLASSES
 
 ROOT_URLCONF = 'dj.urls'
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    # BASE_DIR + '/eventcal/templates/',
-)
 
 INSTALLED_APPS = (
     'django.contrib.auth',

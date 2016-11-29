@@ -1,6 +1,7 @@
 # veyepar/dj/urls.py
 
-from django.conf.urls import *
+# from django.conf.urls import *
+from django.conf.urls import url, include
 from django.conf import settings
 
 from django.views.generic.base import RedirectView
@@ -24,21 +25,21 @@ databrowse.site.register(Cut_List)
 """
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
-    ('^main/approve/2341/Flip_Case_Potentiometer/295432$', RedirectView.as_view(url='/main/approve/2341/Flip_Case_Potentiometer/29543200/')),
-    ('^main/approve/2337/thevenins_theorem/862004$', RedirectView.as_view(url='/main/approve/2337/thevenins_theorem/86200400/')),
-    ('^$', RedirectView.as_view(url='/main/')),
-    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    (r'^admin/', include(admin.site.urls)),
+    url('^main/approve/2341/Flip_Case_Potentiometer/295432$', RedirectView.as_view(url='/main/approve/2341/Flip_Case_Potentiometer/29543200/')),
+    url('^main/approve/2337/thevenins_theorem/862004$', RedirectView.as_view(url='/main/approve/2337/thevenins_theorem/86200400/')),
+    url('^$', RedirectView.as_view(url='/main/')),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^admin/', include(admin.site.urls)),
     #(r'^databrowse/(.*)', login_required(databrowse.site.root) ),
-    (r'^main/', include('main.urls')),
-    (r'^accounts/', include('accounts.urls')),
-    (r'^my_admin/jsi18n', 'django.views.i18n.javascript_catalog'),
-    (r'^volunteers/', include('volunteers.urls')),
-    (r'^api/', include('api.urls')),
-)
+    url(r'^main/', include('main.urls')),
+    url(r'^accounts/', include('accounts.urls')),
+    # url(r'^my_admin/jsi18n', django.views.i18n.javascript_catalog),
+    url(r'^volunteers/', include('volunteers.urls')),
+    url(r'^api/', include('api.urls')),
+]
 
 urlpatterns += staticfiles_urlpatterns()
 # urlpatterns += patterns('',
