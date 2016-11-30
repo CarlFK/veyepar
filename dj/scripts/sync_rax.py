@@ -22,7 +22,7 @@ class SyncRax(process):
 
         return dst in self.names
 
-    def mk_audio_png(self,src,png_name):
+    def mk_audio_png(self, src, png_name):
         """ 
         make audio png from source, 
         src can be http:// or file://
@@ -36,19 +36,6 @@ class SyncRax(process):
         ret = p.mk_png(png_name)
 
         return ret
-
-    def mk_final_audio_png(self,ep):
-        """ whack to catch up 
-        if the ep doen't have a png on the local fs, 
-        make it from the public webm.
-        """
-        png_name = os.path.join(
-                    self.show_dir,"webm", ep.slug + "_audio.png")
-        # if not os.path.exists(png_name):
-        ret = self.mk_audio_png(ep.public_url,png_name)
-
-        return ret
-
 
     def rf_web(self, show, rf):
         """
@@ -148,12 +135,25 @@ class SyncRax(process):
 
     def sync_final_audio_png(self,show,ep):
         for ext in self.options.upload_formats:
-            base = os.path.join(ext, ep.slug + ".{}.png".format(ext) )
-            if not self.cdn_exists(show,base):
-                 png_name = os.path.join( self.show_dir, base )
-                 ret = self.mk_audio_png( ep.public_url, png_name ) 
-                 if self.options.rsync:
-                     self.file2cdn(show,base)
+
+            src_tail = os.path.join(ext, ep.slug + ".{}".format(ext) )
+            png_tail = "{src_tail}.wav.png".format(src_tail=src_tail)
+            src_name = os.path.join(self.show_dir, src_tail)
+            png_name = os.path.join(self.show_dir, png_tail)
+
+            if os.path.exists(src_name):
+
+                if not os.path.exists(png_name):
+                    # ret = self.mk_audio_png(ep.public_url, png_name) 
+                    ret = self.mk_audio_png(src_name, png_name)
+                    if self.options.rsync:
+                        self.file2cdn(show, png_tail)
+
+            else:
+                if self.options.verbose:
+                    print("src not found: {src_name}".format(
+                        src_name=src_name))
+
 
     def cut_list(self,show,ep):
         cls = ep.cut_list_set.all()
@@ -197,14 +197,24 @@ class SyncRax(process):
 
         for ep in eps:
             print(ep)
+
             if self.options.rsync:
-                self.sync_title_png(show,ep)
-            self.cut_list(show,ep)
+                self.sync_title_png(show, ep)
             if self.options.rsync:
                 self.mlt(show,ep)
+
             if self.options.rsync:
-                self.sync_final(show,ep)
-            # self.sync_final_audio_png(show,ep)
+                self.sync_final(show, ep)
+
+            if self.options.audio_viz:
+                self.sync_final_audio_png(show,ep)
+
+            if self.options.raw:
+                self.cut_list(show,ep)
+
+            # if ep.state>1:
+            #    return
+            
 
     def show_assets(self,show):
         foot_img = show.client.credits
