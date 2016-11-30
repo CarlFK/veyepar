@@ -1,5 +1,5 @@
 # git+https://github.com/django/django.git#egg=django
-django==1.9.8
+django==1.10
 vobject
 django-debug-toolbar
 git+https://github.com/bear/python-twitter.git

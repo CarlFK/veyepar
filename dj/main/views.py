@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.template import RequestContext
 from django.template import Context, loader
 
@@ -14,7 +15,7 @@ from django.forms.formsets import formset_factory
 
 from django.db.models import Q
 from django.db.models import Count,Max
-# from django.db.models.functions import Trunc
+from django.db.models.functions import Trunc
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core import serializers
@@ -46,8 +47,7 @@ from accounts.forms import LoginForm
 
 
 def main(request):
-    return render_to_response('main.html',
-        context_instance=RequestContext(request) )
+    return render(request, 'main.html')
 
 def make_test_data(
         title="Test Episode", 
@@ -139,9 +139,8 @@ def tests(request):
     shows=Show.objects.filter(slug__contains="test")
     episodes=Episode.objects.filter(slug__contains="test")
 
-    return render_to_response('tests.html',
-       locals(),
-       context_instance=RequestContext(request) )
+    return render(request,'tests.html',
+       locals())
 
 def start_here(request):
     """
@@ -172,11 +171,11 @@ def start_here(request):
     else:
         who = Who()
 
-    return render_to_response('start_here.html',
+    return render(request, 'start_here.html',
         {'show':show, 
          'episode':episode,
          'who':who,},
-       context_instance=RequestContext(request) )
+       )
 
 def veyepar_cfg(request):
 
@@ -488,13 +487,13 @@ def show_urls(request,show_id):
     client=show.client
     episodes=Episode.objects.filter(show=show).order_by('start')
 
-    return render_to_response("show_urls.html",
+    return render(request, "show_urls.html",
         {
           'client':client,
             'show':show, 
             'episodes':episodes,
             },
-        context_instance=RequestContext(request) )
+        )
  
 def schedule(request, show_id, show_slug, template_name):
 
@@ -537,12 +536,12 @@ def schedule(request, show_id, show_slug, template_name):
         days.append([d,rows])
 
 
-    return render_to_response(template_name,
+    return render(request, template_name,
         {'show':show, 
         'locations':locations,
         'blank_me':True,
         'days':days},
-        context_instance=RequestContext(request) )
+         )
        
 def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     """
@@ -813,12 +812,12 @@ def meet_ical(request,location_id):
     client=show.client
     episodes=Episode.objects.filter(show=show).order_by('sequence')
     location=episodes[0].location
-    return render_to_response('meeting_announcement.html',
+    return render(request, 'meeting_announcement.html',
         {'client':client,'show':show,
           'location':location,
           'episodes':episodes,
         },
-        context_instance=RequestContext(request) )
+         )
 
 def former(request, Model, parents, inits={}):
 
@@ -876,10 +875,10 @@ def clients(request):
             .filter(active=True) \
             .order_by('-max_date')
 
-    return render_to_response('clients.html',
+    return render(request, 'clients.html',
         {'clients':clients,
         'client_form':form},
-       context_instance=RequestContext(request) )
+        )
 
 
 def client(request,client_slug=None):
@@ -926,21 +925,21 @@ def client(request,client_slug=None):
     else:
         form=None
 
-    return render_to_response('client.html',
+    return render(request, 'client.html',
         {'client':client,
         'show_form':form,
         'shows':shows},
-       context_instance=RequestContext(request) )
+        )
 
 def locations(request):
     location_form, locations = former(
         request, Location, {},{'sequence':1})
-    return render_to_response('locations.html',
+    return render(request, 'locations.html',
         {
           'locations':locations,
           'location_form':location_form,
         },
-    context_instance=RequestContext(request) )
+     )
  
 def show_anomalies(request, show_id, ):
     show=get_object_or_404(Show,id=show_id)
@@ -983,7 +982,7 @@ def show_anomalies(request, show_id, ):
         else: clean += 1
 
 
-    return render_to_response('show_anomalies.html',
+    return render(request, 'show_anomalies.html',
         {
           'client':client,
           'show':show,
@@ -994,7 +993,7 @@ def show_anomalies(request, show_id, ):
           'max_authors_ep':max_authors_ep,
           'now':datetime.datetime.now(),
         },
-    context_instance=RequestContext(request) )
+     )
 
 def show_pipeline(request, show_id ):
 
@@ -1022,13 +1021,13 @@ def show_pipeline(request, show_id ):
 
         statesl.append(stated)
 
-    return render_to_response('show_pipeline.html',
+    return render(request, 'show_pipeline.html',
         {
           'client':client,
           'show':show,
           'statesl':statesl,
         },
-    context_instance=RequestContext(request) )
+     )
 
 def show_parameters(request, show_id ):
 
@@ -1037,14 +1036,14 @@ def show_parameters(request, show_id ):
     locations=show.locations.filter(active=True).order_by('sequence')
     episodes=Episode.objects.filter(show=show)
 
-    return render_to_response('show_parameters.html',
+    return render(request, 'show_parameters.html',
         {
           'client':client,
           'show':show,
           'locations':locations,
           'episodes':episodes,
         },
-    context_instance=RequestContext(request) )
+     )
 
 
 def show_stats(request, show_id, ):
@@ -1251,7 +1250,7 @@ def show_stats(request, show_id, ):
     states = list(zip( show_stat['states'], STATES))
     rows = list(zip(dates,rows))
 
-    return render_to_response('show_stats.html',
+    return render(request, 'show_stats.html',
         {
           'client':client,
           'show':show,
@@ -1261,7 +1260,7 @@ def show_stats(request, show_id, ):
           'states':states,
           'locked':lockeds,
         },
-    context_instance=RequestContext(request) )
+     )
 
 
 def processes(request, show_id, ):
@@ -1273,13 +1272,13 @@ def processes(request, show_id, ):
     client=show.client
     lockeds=Episode.objects.filter(show=show, locked__isnull=False).order_by('locked')
 
-    return render_to_response('processes.html',
+    return render(request, 'processes.html',
         {
           'client':client,
           'show':show,
           'locked':lockeds,
         },
-    context_instance=RequestContext(request) )
+     )
 
 def raw_file(request, raw_file_id):
 
@@ -1288,12 +1287,12 @@ def raw_file(request, raw_file_id):
     # Raw_File.objects.filter(cut_list__episode=episode)
     # eps = Episode.objects.filter(cut_list__raw_file=rf)
 
-    return render_to_response('raw_file.html',
+    return render(request, 'raw_file.html',
         {
           'raw_file':rf,
           'eps':eps,
         },
-        context_instance=RequestContext(request) )
+         )
 
 def rf_set(request, location_slug):
     # Show files collected for a given location and date
@@ -1319,13 +1318,13 @@ def rf_set(request, location_slug):
         cls = rf.cut_list_set.all()
         rf_cls.append([rf,cls])
     
-    return render_to_response('raw_set.html',
+    return render(request, 'raw_set.html',
         {
           'trash':trash,
           'location':location,
           'rf_cls':rf_cls,
         },
-        context_instance=RequestContext(request) )
+         )
 
 
 def raw_file_audio(request):
@@ -1387,7 +1386,7 @@ def raw_file_audio(request):
         next_location = None
         
 
-    return render_to_response('raw_file_audio.html',
+    return render(request, 'raw_file_audio.html',
         {
           'show':show,
     #      'start_date':start_date,
@@ -1396,7 +1395,7 @@ def raw_file_audio(request):
           'next_location':next_location,
           'rf_audios':rf_audios,
         },
-        context_instance=RequestContext(request) )
+         )
 
 
 def final_file_audio(request):
@@ -1413,13 +1412,13 @@ def final_file_audio(request):
     if epid is not None:
         episodes=episodes.filter(id=epid)
 
-    return render_to_response('final_file_audio.html',
+    return render(request, 'final_file_audio.html',
         {
           'client':client,
           'show':show,
           'episodes':episodes,
         },
-        context_instance=RequestContext(request) )
+         )
 
 
 def orphan_img(request, show_id, ):
@@ -1451,14 +1450,14 @@ def orphan_img(request, show_id, ):
     init = [{'image_id':img.id,} for img in orphan_images]
     formset = AddImageToEpFormSet(initial=init)
 
-    return render_to_response('imgs.html',
+    return render(request, 'imgs.html',
             {
           'client':client,
           'show':show,
           'imgsfs':list(zip(orphan_images,formset.forms)),
           'iefs':formset,
           },
-        context_instance=RequestContext(request) )
+         )
 
 
 def title_slides(request, show_id, ):
@@ -1490,13 +1489,13 @@ def title_slides(request, show_id, ):
             'start', 
             )
 
-    return render_to_response('title_slides.html',
+    return render(request, 'title_slides.html',
             {
           'client':client,
           'show':show,
           'episodes':episodes,
           },
-        context_instance=RequestContext(request) )
+         )
 
 def episodes_script(request, script=None):
 
@@ -1514,12 +1513,10 @@ def episodes_script(request, script=None):
     # episodes=Episode.objects.filter(show__slug="fosdem_2014", state='5').order_by('start')
     print(len(episodes))
 
-    response = render_to_response(
-            'episodes_script.txt',
+    response = render(request, 'episodes_script.txt',
             { 'episodes':episodes,
                 'script':script,
             },
-            context_instance=RequestContext(request),
             content_type="text/plain",
             )
 
@@ -1594,11 +1591,11 @@ def episode_list(request, state=None):
     if "show" in request.GET:
         episodes = episodes.filter( show__slug=request.GET['show'] )
 
-    return render_to_response('episode_list.html',
+    return render(request, 'episode_list.html',
             { 'episodes':episodes,
                 'states':states,
         },
-        context_instance=RequestContext(request) )
+         )
 
 
 def episodes(request, client_slug=None, show_slug=None, location_slug=None,
@@ -1754,8 +1751,8 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     if state is not None:
         query_params['state'] = state
 
-    
-    return render_to_response('show.html',
+    # return render(request, 'show.html',
+    return render( request, 'show.html',  
         {'client':client,'show':show,
           'locations':locations,
           'location_slug':location_slug,
@@ -1765,16 +1762,17 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
           'query_params':query_params.urlencode(),
           'now':datetime.datetime.now(),
         },
-        context_instance=RequestContext(request) )
+        )
+        #  )
 
  
 def train(request,episode_id, episode_slug, edit_key):
 
     episode=get_object_or_404( Episode, id=episode_id )
 
-    return render_to_response("approve/train.html",
+    return render(request, "approve/train.html",
                     { 'episode':episode, },
-                    context_instance=RequestContext(request) )
+                     )
 
 
 def approve_episode(request,episode_id, episode_slug, edit_key):
@@ -1826,11 +1824,11 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
         template = "bad_key"
 
 
-    return render_to_response("approve/%s.html"%template,
+    return render(request, "approve/%s.html"%template,
                     { 'episode':episode,
                         'who':who,
                     },
-                    context_instance=RequestContext(request) )
+                     )
 
 def overlapping_files(request,show_id):
 
@@ -1876,11 +1874,11 @@ def overlapping_files(request,show_id):
         r['end_px']=int((r['end_min']-start)/x)
         r['width_px']=(r['end_px']-r['start_px'])
 
-    return render_to_response('overlapping_raw_files.html',
+    return render(request, 'overlapping_raw_files.html',
         {
           'rfs':rlist,
         },
-            context_instance=RequestContext(request) )
+             )
 
 
 def overlapping_episodes(request,show_id):
@@ -1907,11 +1905,11 @@ def overlapping_episodes(request,show_id):
         e['end_px']=int((e['end_min']-start)/x)
         e['width_px']=(e['end_px']-e['start_px'])
 
-    return render_to_response('overlapping_episodes.html',
+    return render(request, 'overlapping_episodes.html',
         {
           'episodes':elist,
         },
-            context_instance=RequestContext(request) )
+             )
 
 def mini_conf(request):
 
@@ -1954,11 +1952,11 @@ def mini_conf(request):
         else:
             episodes = episodes.filter(location__in=good13) 
 
-    return render_to_response('mini_conf.html',
+    return render(request, 'mini_conf.html',
         {
           'episodes':episodes,
         },
-            context_instance=RequestContext(request) )
+             )
 
 
 def scheduled_episodes(rf):
@@ -2004,9 +2002,9 @@ def orphan_dv(request,show_id):
             orphans.append([rf,eps])
     
     if format is None:
-        return render_to_response('orphan_dv.html',
+        return render(request, 'orphan_dv.html',
             { 'rfs':orphans, },
-            context_instance=RequestContext(request) )
+             )
     elif format == 'json':
         pass
     elif format == 'm3u':
@@ -2058,11 +2056,11 @@ def episode_chaps(request, episode_id):
         else:
             chaps.append(('',''))
  
-    return render_to_response('episode_chaps.html',
+    return render(request, 'episode_chaps.html',
         {'episode':episode,
          'chaps':chaps,
         },
-        context_instance=RequestContext(request) )
+         )
 
 
 
@@ -2356,7 +2354,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         same_dates = same_dates and \
             talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
 
-    return render_to_response('episode.html',
+    return render(request, 'episode.html',
         {'episode':episode,
         'email_eps': email_eps,
         'offset':offset,
@@ -2370,17 +2368,17 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         'clrfformset':clrfformset,
         'add_cutlist_to_ep':add_cutlist_to_ep,
         },
-        context_instance=RequestContext(request) )
+         )
         
 def episode_logs(request, episode_id):
     print(episode_id)
     episode = get_object_or_404(Episode, id=episode_id)
     logs = episode.log_set.order_by('start')
-    return render_to_response('episode_logs.html',
+    return render(request, 'episode_logs.html',
         {'episode':episode,
          'logs':logs,
         },
-        context_instance=RequestContext(request) )
+        )
 
 
 def claim_episode_lock(request, episode_id):
