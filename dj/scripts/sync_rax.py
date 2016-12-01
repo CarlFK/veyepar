@@ -134,20 +134,23 @@ class SyncRax(process):
             self.file2cdn(show,base)
 
     def sync_final_audio_png(self,show,ep):
+
         for ext in self.options.upload_formats:
 
             src_tail = os.path.join(ext, ep.slug + ".{}".format(ext) )
             png_tail = "{src_tail}.wav.png".format(src_tail=src_tail)
+
             src_name = os.path.join(self.show_dir, src_tail)
             png_name = os.path.join(self.show_dir, png_tail)
 
             if os.path.exists(src_name):
 
                 if not os.path.exists(png_name):
-                    # ret = self.mk_audio_png(ep.public_url, png_name) 
-                    ret = self.mk_audio_png(src_name, png_name)
-                    if self.options.rsync:
-                        self.file2cdn(show, png_tail)
+                    # self.mk_audio_png(ep.public_url, png_name) 
+                    self.mk_audio_png(src_name, png_name)
+
+                if self.options.rsync:
+                    self.file2cdn(show, png_tail)
 
             else:
                 if self.options.verbose:

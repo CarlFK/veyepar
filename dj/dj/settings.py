@@ -18,6 +18,7 @@ ADMINS = (
 STATIC_URL = "/static/"
 MEDIA_URL = "file:///%s/"%os.path.expanduser('~/Videos/veyepar')
 
+UPLOAD_FORMATS = ['mp4',]
 
 MANAGERS = ADMINS
 DATABASES =  {'default': {'ENGINE': 'django.db.backends.sqlite3',

@@ -1417,6 +1417,7 @@ def final_file_audio(request):
           'client':client,
           'show':show,
           'episodes':episodes,
+          'exts':settings.UPLOAD_FORMATS,
         },
          )
 
@@ -2367,6 +2368,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         'clrffs':list(zip(cuts,chaps,clrfformset.forms)),
         'clrfformset':clrfformset,
         'add_cutlist_to_ep':add_cutlist_to_ep,
+        'exts':settings.UPLOAD_FORMATS,
         },
          )
         

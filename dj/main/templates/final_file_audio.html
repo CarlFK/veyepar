@@ -5,10 +5,12 @@
 {% for episode in episodes %}
 
 <a href="{% url "episode" episode.id %}">
-    <h3>{{episode.name}}</h3>
-    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/mp4/{{episode.slug}}_audio.png" alt="final audio"><br/>
-    <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png" alt="final audio"><br/>
+    <h3>{{episode.name}} - {{episode.state}}</h3>
+    {% for ext in exts %}
+        <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio"><br/>
     <br/>
+    {% endfor %}
+
     </a>
     {{episode.comment}}
     </p>
