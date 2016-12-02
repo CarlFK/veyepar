@@ -365,13 +365,16 @@ class Uploader():
         return True
 
 def make_parser():
+
     parser = argparse.ArgumentParser(description="""
     Find a video file and upload it to youtube.
     """)
+
     parser.add_argument('--user', '-u', default='test',
             help="key into pw['yt'][key]: secrets. default: test")
+
     # find the test file
-    ext = "webm"
+    ext = "mp4"
     veyepar_dir = os.path.expanduser('~/Videos/veyepar')
     test_dir = os.path.join(veyepar_dir,"test_client/test_show/",ext)
     test_file = os.path.join(test_dir,"Lets_make_a_Test.%s" % (ext))
@@ -431,6 +434,15 @@ def test_set_pub(args,video_url):
     return
 
 
+def test_set_unlisted(args,video_url):
+    
+    u = Uploader()
+    u.user=args.user
+    u.set_permission(video_url, privacyStatus='unlisted')
+
+    return
+
+
 def test_delete(args,video_url):
     
     u = Uploader()
@@ -467,7 +479,8 @@ if __name__ == '__main__':
     parser = make_parser()
     args = parser.parse_args()
 
-    url = test_upload(args)
+    # url = test_upload(args)
     # test_set_pub(args,url)
+    test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
     # test_delete(args,url)
 

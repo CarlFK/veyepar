@@ -79,21 +79,20 @@ class SyncRax(process):
 
 
     def rf_audio_png(self, show, rf):
-        rf_base = os.path.join( "dv", 
-            rf.location.slug, rf.filename )
 
-        png_base = os.path.join( "audio_png", "raw", 
-            rf.location.slug, rf.filename + ".wav.png")
+        rf_tail = os.path.join( "dv", rf.location.slug, rf.filename )
+        png_tail = "{rf_tail}.wav.png".format(rf_tail=rf_tail)
 
-        src = os.path.join(self.show_dir,rf_base)
-        dst = os.path.join(self.show_dir,png_base)
+        src = os.path.join(self.show_dir,rf_tail)
+        dst = os.path.join(self.show_dir,png_tail)
 
         if not os.path.exists(dst) or self.options.force:
             ret = self.mk_audio_png(src,dst)
 
-        if self.options.force or not self.cdn_exists(show,png_base):
-            print(rf.filesize)
-            self.file2cdn(show,png_base)
+        if self.options.rsync and (
+                not self.cdn_exists(show,png_tail) or self.options.force):
+            print("rf.filesize:{}".format(rf.filesize))
+            self.file2cdn(show,png_tail)
 
    
     def raw_files(self, show):

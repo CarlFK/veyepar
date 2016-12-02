@@ -32,7 +32,7 @@ class AudioPreviewer:
         # self.pipeline = Gst.parse_launch( "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink name=faked" )
         # self.pipeline = Gst.parse_launch( "filesrc name=filesrc ! qtdemux ! audioconvert ! level name=wavelevel ! fakesink")
         self.pipeline = Gst.parse_launch( 
-            "filesrc name=filesrc ! decodebin ! audioconvert ! level name=wavelevel ! fakesink"
+            "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
             )
 
         # if self.uri.startswith('/'):

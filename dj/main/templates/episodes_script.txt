@@ -5,7 +5,9 @@ python {{script}}.py --client {{episode.show.client.slug}} --show {{episode.show
 {% endfor %}
 
 {% comment %}
-{#  wget -c http://mirror.as35701.net/video.fosdem.org/2014/{{episode.location.slug}}/{{episode.start|date:"l"}}/{{episode.slug}}.webm -O {{episode.location.slug}}/{{episode.start|date:"l"}}/{{episode.slug}}.webm #}
+{% for ext in exts %}
+{#  wget -c http://mirror.as35701.net/video.fosdem.org/2014/{{episode.location.slug}}/{{episode.start|date:"l"}}/{{episode.slug}}.{{ext}} -O {{episode.location.slug}}/{{episode.start|date:"l"}}/{{episode.slug}}.{{ext}} #}
+{% endfor %}
 
 python {{script}}.py --client {{episode.show.client.slug}} --show {{episode.show.slug}} {{episode.id}} --force --add-all
 {% endcomment %}

@@ -27,7 +27,9 @@
     <a href="{% url "eps_csv" client.slug show.slug %}">{{show.slug}}.csv</a>
     <a href="{% url "pyvid_jsons" %}?client={{client.slug}}&show={{show.slug}}">pyvid_jsons.urls</a>
 </td>
-<td><a href="{% url "final_file_audio" %}?show_id={{show.id}}">final_file_audio</a></td>
+<td>
+    <a href="{% url "raw_file_audio" %}?show_id={{show.id}}">raw_file_audio</a>
+    <a href="{% url "final_file_audio" %}?show_id={{show.id}}">final_file_audio</a></td>
 <td>
     <a href="{% url "mini_conf" %}?show_id={{show.id}}">mini_conf</a>
     <a href="{% url "admin:main_cut_list_changelist" %}?episode__show__id__exact={{show.id}}">Show cut list</a>

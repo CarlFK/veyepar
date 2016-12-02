@@ -35,7 +35,9 @@
             {%if episode.public_url %}<a href="{{episode.public_url}}">R</a>{% endif %}
         </td>
         <td>
-          {%if episode.state %}<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/webm/{{episode.slug}}_audio.png"></a>{% endif %}
+          {% for ext in exts %}
+          {%if episode.state %}<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.png"></a>{% endif %}
+        {% endfor %}
         </td>
 
       </tr>

@@ -1291,6 +1291,7 @@ def raw_file(request, raw_file_id):
         {
           'raw_file':rf,
           'eps':eps,
+           'exts':settings.UPLOAD_FORMATS,
         },
          )
 
@@ -2004,7 +2005,9 @@ def orphan_dv(request,show_id):
     
     if format is None:
         return render(request, 'orphan_dv.html',
-            { 'rfs':orphans, },
+            { 'rfs':orphans, 
+               'exts':settings.UPLOAD_FORMATS,
+                },
              )
     elif format == 'json':
         pass

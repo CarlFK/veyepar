@@ -16,7 +16,10 @@
 <table>
 <tr><td> <a href="/admin/main/raw_file/{{raw_file.id}}/">{{raw_file.filename}}</a> </td></tr> 
 
-<tr><td> <a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.webm">{{raw_file.basename}}.webm</a></td></tr>
+<tr><td> 
+        {% for ext in exts %}<a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.{{ext}}">{{raw_file.basename}}.{{ext}}</a>
+        {% endfor %}
+    </td></tr>
 
      <tr> <td>Location:</td><td>{{raw_file.location}}</td> </tr>
      <tr> <td>Start:</td><td>{{raw_file.start}}</td> </tr>
@@ -44,7 +47,7 @@
 </tr> 
 
 </table>
-<img src="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/audio_png/dv/{{raw_file.location.slug}}/{{raw_file.basename}}_audio.png"> 
+<img src="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png"> 
 
   {% endfor %}
 
