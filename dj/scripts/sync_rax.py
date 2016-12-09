@@ -200,9 +200,8 @@ class SyncRax(process):
         for ep in eps:
             print(ep)
 
-            if self.options.rsync:
+            if self.options.assets and self.options.rsync:
                 self.sync_title_png(show, ep)
-            if self.options.rsync:
                 self.mlt(show,ep)
 
             if self.options.rsync:

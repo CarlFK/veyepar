@@ -101,7 +101,7 @@
    <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}">{{ext}}</a>
 {% endfor %}
 
-<a href="{% url "episode_assets" episode.id %}{{episode.slug}}.urls">assets</a>
+<a href="{% url "episode_assets" episode.id %}{{episode.slug}}.sh">assets</a>
 
 <a href="{% url "pdf" 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
 

@@ -1579,7 +1579,7 @@ def episode_assets(request, episode_id):
 
     response = HttpResponse('\n'.join(assets), content_type="text/plain")
     response['Content-Disposition'] = \
-            'inline; filename={}.urls'.format(slug)
+            'inline; filename={}.sh'.format(slug)
 
     return response
 

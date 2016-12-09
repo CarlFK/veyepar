@@ -9,7 +9,7 @@ from process import process
 
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
-class push(process):
+class review2(process):
 
     ready_state = 8
 
@@ -19,13 +19,13 @@ class push(process):
 
         ret = ep.released
         # Don't bump if not released.
-        # this takes care of the "let my review my video" request.
-        # there really is nothing to do here.
+        # this takes care of the "let me review my video" request.
+        # there really is nothing to do here,
         # process.py takes care of bumping the state.
 
         return ret
 
 if __name__ == '__main__':
-    p=push()
+    p=review2()
     p.main()
 
