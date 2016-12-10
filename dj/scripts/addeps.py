@@ -732,7 +732,7 @@ class add_eps(process.process):
         for row in schedule:
             if self.options.verbose: pprint( row )
             event={}
-            event['id'] = row['conf_url']
+            # event['id'] = row['conf_url']
             # event['id'] = row['id']
             event['name'] = row['title']
             
@@ -1017,8 +1017,67 @@ class add_eps(process.process):
         self.add_eps(events, show)
         return 
 
+    def symposium2(self, schedule, show):
+        schedule = schedule['schedule']
+
+        video_types = (
+                # 'Conference Opening', 'name': 'Slot',
+                'Lightning Talks and Conference Closing',
+                'talk',
+                'tutorial',
+                )
+
+        schedule = [s for s in schedule if s['kind'] in video_types ]
+
+        bad_keys = (80, 82, 91, 100, 102, 103)
+        schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
+
+        rooms = self.get_rooms(schedule,'room')
+
+        field_maps = [ 
+                ('room','location'),
+                ('name','name'),
+                ('abstract','description'),
+                ('authors','authors'),
+                ('contact','emails'),
+                # ('twitter_username','twitter_id'),
+                ('','twitter_id'),
+                ('start','start'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('tags','tags'),
+                ('conf_key','conf_key'),
+                ('conf_url','conf_url'),
+                ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events:
+            pprint(event['raw'])
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], '%Y-%m-%dT%H:%M:%S' )
+
+            event['duration'] =   "0:{}:0".format(event['duration'])
+
+            print(event['authors'])
+            event['authors'] =  ', '.join( event['authors'] )
+
+            if event['emails'] == ["redacted",]: 
+                event['emails'] =  ""
+            else:
+                event['emails'] =  ', '.join( event['emails'] )
+
+        self.add_rooms(rooms,show)
+        self.add_eps(events, show)
+
+        return 
+
+
     def symposium(self, schedule, show):
         # print "consumer symposium"
+
         rooms = self.get_rooms(schedule,'room')
         # self.add_rooms(rooms,show)
 
@@ -3652,7 +3711,8 @@ class add_eps(process.process):
 
         else:
             # lets hope it is json, like everything should be.
-            # j = response.text
+            j = response.text
+            print( j[:30] )
 
             if url.startswith('file'):
                 schedule = json.loads(f.read())
@@ -3679,7 +3739,6 @@ class add_eps(process.process):
         if url.endswith('programme/schedule/json'):
             # Zookeepr
             return self.zoo(schedule,show)
-
 
         if ext =='.ics':
             return self.ics(schedule,show)
@@ -3819,6 +3878,11 @@ class add_eps(process.process):
 
         if self.options.show =='jupyter_chicago_2016':
             return self.jupyter_chicago_2016(schedule,show)
+
+        if j.startswith('{"schedule": [{"'):
+            # {"schedule": [{"tags": "", "co
+            # lca 2017
+            return self.symposium2(schedule,show)
 
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
