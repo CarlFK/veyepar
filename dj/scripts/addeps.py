@@ -22,6 +22,7 @@ duration - int minutes (preferred)
 priority - 0=no video, 5 = maybe video, 9=make sure this gets videod.
 released - speakers have given permission to record and distribute.
 license - CC license 
+reviewers - email addresses of person(s) who will double check this video
 conf_key - PK in source database - unique, used to update this item 
 conf_url - URL of talk page
 language - Spoken language of the talk ("English")
@@ -1027,10 +1028,14 @@ class add_eps(process.process):
                 'tutorial',
                 )
 
+        # Remove types of itmes that aren't for video
         schedule = [s for s in schedule if s['kind'] in video_types ]
 
-        bad_keys = (80, 82, 91, 100, 102, 103)
-        schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
+        # remove empty slots
+        # bad_keys = (80, 82, 91, 100, 102, 103)
+        # schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
+        # remove enteries that don't have authors 
+        schedule = [s for s in schedule if "authors" in s]
 
         rooms = self.get_rooms(schedule,'room')
 
@@ -1054,14 +1059,14 @@ class add_eps(process.process):
         events = self.generic_events(schedule, field_maps)
 
         for event in events:
-            pprint(event['raw'])
+            if self.options.verbose: pprint(event['raw'])
 
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] =   "0:{}:0".format(event['duration'])
 
-            print(event['authors'])
+            # print(event['authors'])
             event['authors'] =  ', '.join( event['authors'] )
 
             if event['emails'] == ["redacted",]: 

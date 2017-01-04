@@ -46,7 +46,9 @@ sudo apt-get --assume-yes install libyaml-dev libjpeg-dev
 # pocketsphinx-utils
 
 # for encoder node
-sudo apt-get --assume-yes install python-psycopg2 inkscape ffmpeg2theora python-imaging python-virtualenv 
+sudo apt-get --assume-yes install python-psycopg2 inkscape ffmpeg2theora python-imaging python3-venv
+# python-virtualenv 
+
 # virtualenvwrapper 
 
 sudo apt-get --assume-yes build-dep python-lxml python-psycopg2

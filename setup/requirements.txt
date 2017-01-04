@@ -60,3 +60,5 @@ netifaces
 python-swiftclient
 
 PyRSS2Gen
+
+icalendar
