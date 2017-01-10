@@ -19,31 +19,31 @@ class email_title(email_ab):
 
     body_body = """Projector hookup: HDMI 720p.  There will be adaptors for mini-DP, thunderbolt and DVI.  If you need something else, let us know now and we will try to accommodate. 
 
-Please review the following meta data about your talk so that everything is correct when the video goes live.
-
 Released: {{ep.released}}
 {% if ep.released %}Permission has been given to record your talk and post it online.  Once it is up, you will get another e-mail with a URL that is not public until someone approves it.  Once it's approved it will be made public and tweeted {{ep.show.client.tweet_prefix}}.
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% else %} "None" means it may get recorded and processed, but it will not be made public.
 "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
+Please review the following meta data about your talk so that everything is correct when the video goes live.
+
+Title: {{ep.name}}
 {% if image_url %}
-The video will be titled with the following image:
+The video will start with the following image:
 http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 {% endif %}
 {% if ep.public_url%}The main page for the video will be here:
 {{ep.public_url}} 
 {% else %}Description:
   {% if ep.description%}
-    === begin ===
+=== begin ===
     {{ep.description}} 
-    === end description ===
+=== end description ===
   {% else %}
     (is blank.)
   {% endif %}
 {% endif %}
-{% if ep.show.schedule_url %}
-Problems with the text should be fixed in the event database that drives: {{ep.conf_url}} 
-{% endif %}
+Problems with the text should be fixed in the event database that drives {{ep.conf_url|default:"the conference site."}} 
+
 If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
 
 Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.  
