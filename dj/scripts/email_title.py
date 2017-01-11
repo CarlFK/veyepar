@@ -17,9 +17,10 @@ class email_title(email_ab):
 
     subject_template = '[{{ep.show.name}}] Video metadata for "{{ep.name}}"'
 
-    body_body = """Projector hookup: HDMI 720p.  There will be adaptors for mini-DP, thunderbolt and DVI.  If you need something else, let us know now and we will try to accommodate. 
+    body_body = """Your talk is scheduled for {{ep.start|date:"l"}} {{ep.start}} in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.  
 
-Released: {{ep.released}}
+Projectors will be HDMI only running at 720p (which is 16:9). Please bring any adaptors you need. If you have any special requests or have forgotten your adapter, please contact us ASAP and we will try to accommodate you.
+
 {% if ep.released %}Permission has been given to record your talk and post it online.  Once it is up, you will get another e-mail with a URL that is not public until someone approves it.  Once it's approved it will be made public and tweeted {{ep.show.client.tweet_prefix}}.
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% else %} "None" means it may get recorded and processed, but it will not be made public.
@@ -45,8 +46,6 @@ http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.sh
 Problems with the text should be fixed in the event database that drives {{ep.conf_url|default:"the conference site."}} 
 
 If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
-
-Your talk is scheduled for {{ep.start}} in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.  
 
 """
     py_name = "email_title.py"

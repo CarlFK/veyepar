@@ -52,7 +52,7 @@ Hi,
 
 This is Veyepar, the automated video processing system.
 
-    """
+"""
     body_body = "stub testing:{{ep.description}}"
 
     body_footer = """
@@ -97,9 +97,16 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
             sender = settings.EMAIL_SENDER
             ccs = [e.strip() for e in settings.EMAIL_CC.split(',')]
             # make a list of addresses:
-            reply_tos = [sender,] + ccs + \
-                    ep.show.client.contacts.split(',')
+            # [a for a if a] is to get rid of the empty CC.
+            # set to get rid of dupes
+            # .strip() do remove the spaces from the front of things.
+            reply_tos = set([a.strip() for a in 
+                    [sender,] \
+                    + ep.show.client.contacts.split(',') \
+                    + ccs \
+                       if a] )
             # headers={Reply-To... needs to be a string of comma seperated 
+            print(reply_tos)
             reply_to = ','.join( reply_tos )
             headers = {
                      'Reply-To': reply_to,
