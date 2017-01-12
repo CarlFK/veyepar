@@ -317,9 +317,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.53274236"
-     inkscape:cx="639.41725"
-     inkscape:cy="348.07718"
+     inkscape:zoom="0.57712583"
+     inkscape:cx="775.2289"
+     inkscape:cy="338.0915"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
      showgrid="false"
@@ -411,14 +411,14 @@
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:100%;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;writing-mode:lr-tb;text-anchor:end;fill:#666666" /></flowRegion><flowPara
          id="date">September 99,9999</flowPara></flowRoot>    <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:56.25px;line-height:100%;font-family:Aldrich;-inkscape-font-specification:'Aldrich, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="477.7182"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:56.25px;line-height:100%;font-family:Aldrich;-inkscape-font-specification:'Aldrich, Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="639.98627"
        y="-16.330097"
        id="showbox"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
          id="show"
-         x="477.7182"
+         x="639.98627"
          y="-16.330097">Show name</tspan></text>
   </g>
 </svg>
