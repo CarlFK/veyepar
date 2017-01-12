@@ -31,17 +31,19 @@ class AudioPreviewer:
 
         # self.pipeline = Gst.parse_launch( "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink name=faked" )
         # self.pipeline = Gst.parse_launch( "filesrc name=filesrc ! qtdemux ! audioconvert ! level name=wavelevel ! fakesink")
+            # "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
         self.pipeline = Gst.parse_launch( 
-            "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
+            "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink"
             )
 
-        # if self.uri.startswith('/'):
-        #    self.uri = "file://" + self.uri
-        # decode = self.pipeline.get_by_name("decode")
-        # decode.set_property( 'uri', self.uri )
+        self.uri = self.location 
+        if self.uri.startswith('/'):
+            self.uri = "file://" + self.uri
+        decode = self.pipeline.get_by_name("decode")
+        decode.set_property( 'uri', self.uri )
 
-        filesrc = self.pipeline.get_by_name("filesrc")
-        filesrc.set_property( 'location', self.location )
+        # filesrc = self.pipeline.get_by_name("filesrc")
+        # filesrc.set_property( 'location', self.location )
 
         wavelevel = self.pipeline.get_by_name( 'wavelevel' )
         wavelevel.set_property( 'interval', int(self.interval * Gst.SECOND))
