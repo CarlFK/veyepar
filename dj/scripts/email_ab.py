@@ -110,8 +110,6 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
             reply_to = ','.join( reply_tos )
             headers = {
                      'Reply-To': reply_to,
-                    # 'Cc': cc,
-                    # 'From': sender,
                         }    
 
             if self.options.test:
@@ -122,6 +120,7 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
                 print("context:", context)
                 print("body:", body)
                 ret = False
+
             else:
 
                 email = EmailMessage(
@@ -129,7 +128,8 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
                         headers=headers, cc=ccs ) 
                 connection = get_connection()
                 ret = connection.send_messages([email])
-                print(tos, ret)
+                print("subject:", subject)
+                print("tos:", tos)
                 ret = True # need to figure out what .send_messages returns
 
         else:
