@@ -61,6 +61,7 @@ import csv
 import html.parser
 import os
 from pprint import pprint
+import re
 import requests
 import urllib.parse
 from difflib import Differ
@@ -375,8 +376,8 @@ class add_eps(process.process):
                 # special case for email: don't blank it out
                 # use what is in the db.
                 # up here and now below so the diff doesn't wazz
-                if episode.emails and not row['emails']:
-                    row['emails'] = episode.emails
+                # if episode.emails and not row['emails']:
+                #    row['emails'] = episode.emails
             else:
                 episode = None
 
@@ -417,9 +418,6 @@ class add_eps(process.process):
                 if diff:
                     print('veyepar #id name: #%s %s' % (
                             episode.id, episode.name))
-                    # if self.show.slug=="debconf15":
-                    #    host= "encoding2.dc15.debconf.org" 
-                    # else:
                     host= "veyepar.nextdayvideo.com" 
                     print("http://%s/main/E/%s/" % ( host, episode.id, ))
                     print(episode.conf_key, episode.conf_url)
@@ -494,6 +492,9 @@ class add_eps(process.process):
                         name__iexact=row['location'])
 
                 episode.location = location
+
+                if self.options.reslug:
+                    episode.slug=''
 
                 # copy all the fields 
                 # from the source row to the episode object
@@ -1022,10 +1023,21 @@ class add_eps(process.process):
         schedule = schedule['schedule']
 
         video_types = (
-                # 'Conference Opening', 'name': 'Slot',
-                'Lightning Talks and Conference Closing',
-                'talk',
-                'tutorial',
+'Keynote',
+'Lightning Talks and Conference Closing',
+'Lightning Talks',
+'Conference Closing',
+'talk',
+'tutorial',
+'Conference Opening',
+'Linux Australia Annual General Meeting',
+'Free Software Law & Policy Miniconf Session',
+'Docs Down Under Miniconf Session',
+'Opening Remarks and Housekeeping',
+'WOOTCONF Session',
+'Games and FOSS Session',
+'Open Knowledge Session',
+'Kernel Session',
                 )
 
         # Remove types of itmes that aren't for video
@@ -1035,9 +1047,8 @@ class add_eps(process.process):
         # bad_keys = (80, 82, 91, 100, 102, 103)
         # schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
         # remove enteries that don't have authors 
-        schedule = [s for s in schedule if "authors" in s]
+        # schedule = [s for s in schedule if "authors" in s]
 
-        rooms = self.get_rooms(schedule,'room')
 
         field_maps = [ 
                 ('room','location'),
@@ -1045,8 +1056,7 @@ class add_eps(process.process):
                 ('abstract','description'),
                 ('authors','authors'),
                 ('contact','emails'),
-                # ('twitter_username','twitter_id'),
-                ('','twitter_id'),
+                ('twitter_username','twitter_id'),
                 ('start','start'),
                 ('duration','duration'),
                 ('released','released'),
@@ -1061,19 +1071,34 @@ class add_eps(process.process):
         for event in events:
             if self.options.verbose: pprint(event['raw'])
 
+            if "Plenary Hall" in event['location']:
+                event['location'] = "Plenary Hall" 
+
+            event['name'] =  re.sub( r'[\n\r]', ':)', event['name'] )
+
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] =   "0:{}:0".format(event['duration'])
 
             # print(event['authors'])
-            event['authors'] =  ', '.join( event['authors'] )
+            if event['authors'] is None:
+                event['authors'] =  ''
+            else:
+                event['authors'] =  ', '.join( event['authors'] )
 
             if event['emails'] == ["redacted",]: 
                 event['emails'] =  ""
             else:
                 event['emails'] =  ', '.join( event['emails'] )
 
+            if event['conf_url'] is None:
+                event['conf_url'] =  ''
+
+            if event['description'] is None:
+                event['description'] =  ''
+
+        rooms = self.get_rooms(events,'location')
         self.add_rooms(rooms,show)
         self.add_eps(events, show)
 
@@ -3717,7 +3742,7 @@ class add_eps(process.process):
         else:
             # lets hope it is json, like everything should be.
             j = response.text
-            print( j[:30] )
+            print( j[:30].__repr__() )
 
             if url.startswith('file'):
                 schedule = json.loads(f.read())
@@ -3884,7 +3909,9 @@ class add_eps(process.process):
         if self.options.show =='jupyter_chicago_2016':
             return self.jupyter_chicago_2016(schedule,show)
 
-        if j.startswith('{"schedule": [{"'):
+        if j.startswith('{"schedule": [{"') or \
+                j.startswith('{\n  "schedule": [\n    {\n      '):
+            # print("symposium2")
             # {"schedule": [{"tags": "", "co
             # lca 2017
             return self.symposium2(schedule,show)
@@ -3960,6 +3987,8 @@ class add_eps(process.process):
           help='update when diff, else print' )
         parser.add_option('-k', '--keys', action="store_true", 
           help='dump keys of input stream' )
+        parser.add_option('--reslug', action="store_true", 
+          help='regenerate slugs' )
 
     def work(self):
       print("working")
