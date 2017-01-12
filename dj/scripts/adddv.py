@@ -52,22 +52,28 @@ class add_dv(process):
             if rfs: print("in db:", rfs)
             else: print("not in db")
         else:
-            rf, created = Raw_File.objects.get_or_create(
-                show=show, location=location,
-                filename=pathname,)
-            
-            if created: 
-               print("(new)")
-               rf.sequence=seq
 
-               fullpathname = os.path.join(
-                       self.show_dir, "dv", location.slug, pathname )
-               st = os.stat(fullpathname)    
-               rf.filesize=st.st_size
+            fullpathname = os.path.join(
+                   self.show_dir, "dv", location.slug, pathname )
+            st = os.stat(fullpathname)    
+            filesize=st.st_size
 
-               rf.save()
+            if filesize == 0:
+               print("(zero size)")
+
             else:
-               print("(exists)")
+
+                rf, created = Raw_File.objects.get_or_create(
+                    show=show, location=location,
+                    filename=pathname,)
+                
+                if created: 
+                   print("(new)")
+                   rf.sequence=seq
+                   rf.filesize=filesize
+                   rf.save()
+                else:
+                   print("(exists)")
 
     def one_loc(self,show,location):
         """
