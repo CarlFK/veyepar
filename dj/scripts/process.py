@@ -189,6 +189,7 @@ class process():
     log_in/out
     create logs, and lock.unlock the episode
     """
+
     where=socket.gethostname()
     if os.environ.get('STY') is not None:
         where += ":" + os.environ['STY']
@@ -278,46 +279,52 @@ class process():
                 else:
                      sleepytime = True
 
-            self.log_in(ep)
-
             if not self.options.quiet: print(self.__class__.__name__, ep.id, ep.name)
             if self.options.skip:
                 ret = True
             else:
+
+                if not self.options.test:
+                    # Don't log or lock when testing
+                    self.log_in(ep)
+
                 ret = self.process_ep(ep)
-            if self.options.verbose: print("process_ep:", ret)
+                if self.options.verbose: print("process_ep:", ret)
 
-            # .process is long running (maybe, like encode or post) 
-            # so refresh episode in case its .stop was set 
-            # (would be set in some other process, like the UI)
+                # .process is long running (maybe, like encode or post) 
+                # so refresh episode in case its .stop was set 
+                # (would be set in some other process, like the UI)
 
-            try:
-                ep=Episode.objects.get(pk=e.id)
-            except DatabaseError as err:
-                connection.connection.close()
-                connection.connection = None
-                ep=Episode.objects.get(pk=e.id)
+                try:
+                    ep=Episode.objects.get(pk=e.id)
+                except DatabaseError as err:
+                    connection.connection.close()
+                    connection.connection = None
+                    ep=Episode.objects.get(pk=e.id)
 
-            if ret:
-                # if the process doesn't fail,
-                # and it was part of the normal process, 
-                # don't bump if the process was forced, 
-                # even if it would have been had it not been forced.
-                # if you force, you know better than the process,
-                # so the process is going to let you bump.
-                # huh?!  
-                # so..  ummm... 
-                # 1. you can't bump None
-                # 2. don't bump when in test mode
-                # 3. if it wasn't forced:, bump.
-                if self.ready_state is not None \
-                        and not self.options.test \
-                        and not self.options.force:
-                    # bump state
-                    ep.state += 1
-            self.end = datetime.datetime.now()
-            ep.save()
-            self.log_out(ep)
+                if ret:
+                    # if the process doesn't fail,
+                    # and it was part of the normal process, 
+                    # don't bump if the process was forced, 
+                    # even if it would have been had it not been forced.
+                    # if you force, you know better than the process,
+                    # so the process is going to let you bump.
+                    # huh?!  
+                    # so..  ummm... 
+                    # 1. you can't bump None
+                    # 2. don't bump when in test mode
+                    # 3. if it wasn't forced:, bump.
+                    if self.ready_state is not None \
+                            and not self.options.test \
+                            and not self.options.force:
+                        # bump state
+                        ep.state += 1
+                self.end = datetime.datetime.now()
+                ep.save()
+
+                if not self.options.test:
+                    self.log_out(ep)
+
             if ep.stop: 
                 if self.options.verbose: print(".STOP set on the episode.")
                 # send message to .process_eps which bubbles up to .poll 
@@ -370,6 +377,18 @@ class process():
             episodes = episodes.filter(location__slug=self.options.room)
         if self.args:
             episodes = episodes.filter(id__in=self.args)
+
+        if self.options.resume:
+            episodes.exclude(log__id__gte=self.options.resume)
+
+            """
+            log = Log.objects.get(id=self.options.resume)
+            start = log.start
+            print(start)
+            episodes = episodes.annotate( max_start=Max('log__start'))
+            episodes.exclude(max_start__gte=start)
+            """
+
         if self.ready_state is not None \
                 and not self.options.force:
             episodes = episodes.filter(state=self.ready_state)
@@ -523,6 +542,8 @@ class process():
               help="whack current episodes, use with care." )
     parser.add_option('--skip', action="store_true",
               help="skip processing and bump state." )
+    parser.add_option('--resume', type="int",
+        help="resume a failed run.")
     parser.add_option('--lag', type="int",
         help="delay in seconds between processing episodes.")
     parser.add_option('--poll',
