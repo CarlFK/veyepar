@@ -4,7 +4,7 @@
 
 """
 fields:
-title - Talk title 
+title - Talk title
 speakers - list of:
   name - person's name.
   email - email address (hide behind auth)
@@ -17,27 +17,27 @@ tags - list of serch terms, including sub topics briefly discussed in the talk.
 room - room as described/labled by the venue
 room_alias - room as described/labled on conference site
 start - '%Y-%m-%dT%H:%M:%S' "2014-11-15T16:35:00",
-end - (provide end or duration) 
+end - (provide end or duration)
 duration - int minutes (preferred)
 priority - 0=no video, 5 = maybe video, 9=make sure this gets videod.
 released - speakers have given permission to record and distribute.
-license - CC license 
+license - CC license
 reviewers - email addresses of person(s) who will double check this video
-conf_key - PK in source database - unique, used to update this item 
+conf_key - PK in source database - unique, used to update this item
 conf_url - URL of talk page
 language - Spoken language of the talk ("English")
 """
 
 """
-NOTE: In general it is better to build the export as simple as posible, 
+NOTE: In general it is better to build the export as simple as posible,
 even at the expense of deviating from the above fields.  Exporting extra
-fields is just fine.  They will be ignored, or maybe I will use them in 
+fields is just fine.  They will be ignored, or maybe I will use them in
 a future version.
 
 For fields yuou don't have, plug in a value.  If you don't have 'released'
 give me "Yes" and then let the presenters know.
 
-End and Duration:  give me what you have in your database 
+End and Duration:  give me what you have in your database
 
 I can fix my consumer easier than I can get someone else's website updated.
 """
@@ -56,7 +56,7 @@ def mk_fieldlist():
 # FireFox plugin to view .json data:
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
 
-import datetime 
+import datetime
 import csv
 import html.parser
 import os
@@ -86,7 +86,7 @@ from icalendar import vDatetime
 from django.utils.timezone import localtime
 
 # for google calandar:
-import pw 
+import pw
 # import lxml.etree
 
 import process
@@ -96,12 +96,12 @@ from main.models import Client, Show, Location, Episode, Raw_File
 def goog(show,url):
     # read from goog spreadsheet api
 
-        loc,created = Location.objects.get_or_create( 
+        loc,created = Location.objects.get_or_create(
                 sequence = 1,
                 name='Illinois Room A', slug='room_a' )
         if created: show.locations.add(loc)
 
-        loc,created = Location.objects.get_or_create( 
+        loc,created = Location.objects.get_or_create(
                 sequence = 2,
                 name='Illinois Room B', slug='room_b' )
         if created: show.locations.add(loc)
@@ -122,7 +122,7 @@ def goog(show,url):
             room = wheres[0].value_string
             location = Location.objects.get(name=room)
 
-            goo_start = event.when[0].start_time 
+            goo_start = event.when[0].start_time
             goo_end = event.when[0].end_time
 
             print(goo_start)
@@ -134,7 +134,7 @@ def goog(show,url):
             hours = minutes/60
             minutes -= hours*60
 
-            duration="%s:%s:00" % ( hours,minutes) 
+            duration="%s:%s:00" % ( hours,minutes)
 
             # print name, authors, location, start, duration
             print("%s: %s - %s" % ( authors, location, start.time() ))
@@ -142,7 +142,7 @@ def goog(show,url):
             seq+=1
             # broke this, use add_eps()
             episode,created = xEpisode.objects.get_or_create(
-                  show=show, 
+                  show=show,
                   location=location,
                   start=start,
                   authors=authors)
@@ -155,14 +155,14 @@ def goog(show,url):
                   episode.sequence=seq
                   episode.state=1
                   episode.save()
-             
-        return 
-        
+
+        return
+
 
 
 class add_eps(process.process):
 
-    # helpers 
+    # helpers
 
     def dump_keys(self, schedule):
 
@@ -199,13 +199,13 @@ class add_eps(process.process):
 
         v_keys=('id',
             'location','sequence',
-            'name','slug', 
+            'name','slug',
             'authors','emails', 'twitter_id',
-            'start','duration', 
+            'start','duration',
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
             'host_url', 'public_url',
-    )    
+    )
 
         # for f,g in field_maps:
         #    print "('%s','%s')," % (g,f)
@@ -221,7 +221,7 @@ class add_eps(process.process):
             k2 = k if k in s_keys else ''
             print("('%s','%s')," % (k2,k))
         print()
- 
+
         # lines to mix n match in the editor
         for k in s_keys:
             print("('%s'," % (k,))
@@ -237,11 +237,11 @@ class add_eps(process.process):
 
       if self.options.test:
             print("test mode, not adding locations to db\n")
-            return 
+            return
 
       if not self.options.update:
             print("no --update, not adding locations to db\n")
-            return  
+            return
 
       rooms = sorted(rooms)
 
@@ -260,30 +260,30 @@ class add_eps(process.process):
 
           show.locations.add(loc)
           show.save()
-          
+
 
     def generic_events(self, schedule, field_maps ):
 
         # step one in transforming the show's data into veyepar data
 
-        # field_maps is a list of (source,dest) field names 
+        # field_maps is a list of (source,dest) field names
         # if source is empty, the create the dest as ''
-        # if there is an error (like key does not exist in source), 
+        # if there is an error (like key does not exist in source),
         #   create dest as None
 
         # TODO:
         # consider only creating destination when there is proper source.
         # current code make add_eps() simpler.
-        # something has to contend with whacky source, 
-        #  currently it is this. 
-     
+        # something has to contend with whacky source,
+        #  currently it is this.
+
         events=[]
         for row in schedule:
             if self.options.verbose: print(row)
             event={}
 
             for jk,vk in field_maps:  # json key, veyepar key
-                if jk: 
+                if jk:
                     # if self.options.verbose: print jk, row[jk]
                     try:
                         if '{' in jk:
@@ -291,14 +291,14 @@ class add_eps(process.process):
                             event[vk] = jk.format(**row)
                         else:
                             event[vk] = row[jk]
-                    except: 
+                    except:
                         event[vk] = None
                         # pass
                 else:
                     event[vk] = ''
 
             # save the original row so that we can sanity check end time.
-            # or transform data 
+            # or transform data
             event['raw'] = row
 
             events.append(event)
@@ -307,14 +307,14 @@ class add_eps(process.process):
 
     def add_eps(self, schedule, show):
         """
-        Given a list of dicts, 
-           diff aginst current veyepar db 
+        Given a list of dicts,
+           diff aginst current veyepar db
            or update the db.
         """
 
         # options:
         # test - do nothing.  Test is for testing the transfromations.
-        # update - update the db.  
+        # update - update the db.
         #   no update will show diff between real and db
 
         # Notes:
@@ -326,24 +326,24 @@ class add_eps(process.process):
         # TODO:
         # add a "lock" to prevent updates to a record.
         # need to figure out what to do with colisions.
- 
+
         # only these fields in the dict are used, the rest are ignored.
         fields=(
-                # 'state', 
-                'name', 'authors', 
-                'emails', 
-                'twitter_id', 
+                # 'state',
+                'name', 'authors',
+                'emails',
+                'twitter_id',
                 'description',
-                'start','duration', 
-                'released', 
-                'license', 
+                'start','duration',
+                'released',
+                'license',
                 'conf_url', 'tags',
                 # 'host_url',  # for pycon.ca youtube URLs
                 )
 
         if self.options.test:
             print("test mode, not adding to db")
-            return 
+            return
 
         seq=0
         for row in schedule:
@@ -352,8 +352,8 @@ class add_eps(process.process):
             # try to find an existing item in the db
 
             episodes = Episode.objects.filter(
-                      show=show, 
-                      conf_key=row['conf_key'], 
+                      show=show,
+                      conf_key=row['conf_key'],
                       )
 
             if episodes:
@@ -363,10 +363,10 @@ class add_eps(process.process):
                     # and there is a dube in the veyepar db.
                     # import pdb; pdb.set_trace()
                     import code; code.interact(local=locals())
-                    # then continue on.  
+                    # then continue on.
 
                 episode = episodes[0]
-                # have an existing episode, 
+                # have an existing episode,
                 # either update it or diff it.
 
                 # get rid of garbage that snuck into the db.
@@ -383,7 +383,7 @@ class add_eps(process.process):
 
             # this is the show diff part.
             diff=False
-            if episode is None: 
+            if episode is None:
                 diff=True
                 print("{conf_key} not in db, name:{name}\n{location}".format(
                         **row))
@@ -411,17 +411,17 @@ class add_eps(process.process):
                     if f=="description":
                         a1 = a1.replace('\r','')
                         a2 = a2.replace('\r','')
-                    if (a1 or a2) and (a1 != a2): 
+                    if (a1 or a2) and (a1 != a2):
                         diff=True
                         diff_fields.append((f,a1,a2))
                 # report if different
                 if diff:
                     print('veyepar #id name: #%s %s' % (
                             episode.id, episode.name))
-                    host= "veyepar.nextdayvideo.com" 
+                    host= "veyepar.nextdayvideo.com"
                     print("http://%s/main/E/%s/" % ( host, episode.id, ))
                     print(episode.conf_key, episode.conf_url)
-                    if self.options.verbose: 
+                    if self.options.verbose:
                         pprint( diff_fields )
                     for f,a1,a2 in diff_fields:
                         if self.options.verbose:
@@ -436,7 +436,7 @@ class add_eps(process.process):
                             text1 = a1.split('\n')
                             text2 = a2.split('\n')
                             result = list(d.compare(text1, text2))
-                            pprint(result)
+                            # pprint(result)
 
                             if a2 is None or max(len(a1),len(a2)) < 160:
                               # print a1
@@ -451,11 +451,15 @@ class add_eps(process.process):
                                     print \
                       "#1, diff found at pos {0}:\n{1}\n{2}".format(
                               i,cs[0].__repr__(),
-                                cs[1].__repr__()) 
+                                cs[1].__repr__())
                                     """
-                                    print("diff found at pos {0}:\nveyepar: {1}\n   conf: {2}".format(
-                              i,a1[i:i+80].__repr__(),
-                                a2[i:i+80].__repr__())) 
+                                    print(
+                                        "diff found at pos {0}".format(i))
+                                    """
+                                    print(
+                                        "veyepar: {1}\n   conf: {2}".format(                               a1[i:i+80].__repr__(),
+                                a2[i:i+80].__repr__()))
+                                    """
                                     break
                     print()
 
@@ -476,7 +480,7 @@ class add_eps(process.process):
                     # name is here so .save() will create a slug
 
                     episode = Episode.objects.create(
-                          show=show, conf_key=row['conf_key'], 
+                          show=show, conf_key=row['conf_key'],
                           start=row['start'],
                           duration=row['duration'],
                           name=row['name'],
@@ -496,7 +500,7 @@ class add_eps(process.process):
                 if self.options.reslug:
                     episode.slug=''
 
-                # copy all the fields 
+                # copy all the fields
                 # from the source row to the episode object
                 for f in fields:
                     setattr( episode, f, row[f] )
@@ -515,7 +519,7 @@ class add_eps(process.process):
 
 
     def addlocs(self, schedule, show):
-      """ pycon 2010 
+      """ pycon 2010
       seq=0
       locs=d['rooms']
       for l_id in locs:
@@ -524,7 +528,7 @@ class add_eps(process.process):
           name = l['name']
           slug=fnify(name)
           slug=slug.replace('_','')
-          if slug in ["Centennial","Hanover F+G"]: 
+          if slug in ["Centennial","Hanover F+G"]:
               continue
           if slug =="RegencyV":
               slug="RegencyVI"
@@ -536,14 +540,14 @@ class add_eps(process.process):
           else:
               loc,created = Location.objects.get_or_create(
                   name=name, slug=slug)
-              if created: 
+              if created:
                   loc.sequence=seq
                   loc.save()
           # save the loc object into the dict
           # so that it can be used for the FK object for episodes
           l['loc']=loc
        """
-          
+
       seq=0
       for row in schedule:
           # row=row['node']
@@ -557,7 +561,7 @@ class add_eps(process.process):
              "Grand Hall - BCEC",
              ]: continue
           loc,created = Location.objects.get_or_create(name=room)
-          if created: 
+          if created:
               seq+=1
               loc.sequence=seq
               loc.save()
@@ -574,13 +578,13 @@ class add_eps(process.process):
         start_dts = day + ' 2010 ' + start_ts
         end_dts = day + ' 2010 ' + end_ts
 
-        start_dt = parse(start_dts)        
-        end_dt = parse(end_dts)        
+        start_dt = parse(start_dts)
+        end_dt = parse(end_dts)
 
         delta = end_dt - start_dt
         minutes = delta.seconds/60 # - 5 for talk slot that includes break
 
-        duration="00:%s:00" % ( minutes) 
+        duration="00:%s:00" % ( minutes)
         return start_dt, duration
 
           # start=datetime.datetime.strptime(row['Start'], '%Y-%m-%d %H:%M:%S' )
@@ -597,7 +601,7 @@ class add_eps(process.process):
 
 
     def str2bool(self, tf):
-        return {'true':True, 
+        return {'true':True,
                 "false":False}[tf]
 
     def snake_bites(self, schedule,):
@@ -609,13 +613,13 @@ class add_eps(process.process):
                 'conf_key','host_url',
             'state',
             'authors',
-            'name','slug', 
+            'name','slug',
             'authors',
-            'emails', 
+            'emails',
             'description',
             'released', 'license',
-            'start','duration', 
-            'conf_key', 
+            'start','duration',
+            'conf_key',
             'conf_url', 'tags',
             # 'public_url'
             )
@@ -629,7 +633,7 @@ class add_eps(process.process):
             event={}
             for f in fields:
                 event[f] = row[f]
-            
+
             # fields that don't flow thought json that nice.
             if not event['conf_key']: event['conf_key'] = "pk{}".format(pk)
             event['start'] = datetime.datetime.strptime(
@@ -644,12 +648,12 @@ class add_eps(process.process):
         for row in schedule:
             if self.options.verbose: print(row)
             if row['Title'] in [
-                'Registration', 
+                'Registration',
                 'Morning Tea', "Lunch", 'Afternoon Tea',
                 'Speakers Dinner', 'Penguin Dinner',
                 'Professional Delegates Networking Session',
                 # 'Sysadmin Miniconf'
-                ]:  
+                ]:
                 continue
             if "AGM" in row['Title']:
                 continue
@@ -737,15 +741,15 @@ class add_eps(process.process):
             # event['id'] = row['conf_url']
             # event['id'] = row['id']
             event['name'] = row['title']
-            
+
             # event['location'] = row['room']
-            # if event['location']=='Plenary': event['location'] = "Cartoon 1" 
-            # if event['location'] is None: event['location'] = "Track 1" 
-            # if event['location']=='Plenary': event['location'] = "Track 1" 
-            if row['room'] == "Plenary": 
+            # if event['location']=='Plenary': event['location'] = "Cartoon 1"
+            # if event['location'] is None: event['location'] = "Track 1"
+            # if event['location']=='Plenary': event['location'] = "Track 1"
+            if row['room'] == "Plenary":
               row['room'] = "Track I (D5)"
               row['room_name'] = "Mission City Ballroom"
-            # event['location'] = "%s - %s" % ( 
+            # event['location'] = "%s - %s" % (
             #        row['room_name'], row['room'] )
             event['location'] = row['room']
 
@@ -764,7 +768,7 @@ class add_eps(process.process):
             event['authors'] = row['authors']
             event['emails'] = row['contact']
             event['released'] = row['released']
-            event['license'] = row['license'] 
+            event['license'] = row['license']
             event['description'] = row['description']
             event['conf_key'] = row['url']
             event['conf_url'] = row['url']
@@ -789,16 +793,16 @@ class add_eps(process.process):
         html_parser = html.parser.HTMLParser()
 
         # these fields exist in both json and veyepar:
-        common_fields = [ 'name', 'authors', 'description', 
-            'start', 'duration', 
+        common_fields = [ 'name', 'authors', 'description',
+            'start', 'duration',
             'released', 'license', 'tags', 'conf_key', 'conf_url']
 
         # mapping of json to veyepar:
-        field_map = [ 
-                ('emails','contact'), 
+        field_map = [
+                ('emails','contact'),
                 ('location','room'),
                 ]
-     
+
         html_encoded_fields = [ 'name', 'authors', 'description', ]
 
         events=[]
@@ -807,7 +811,7 @@ class add_eps(process.process):
             event={}
 
             for k in common_fields:
-                try: 
+                try:
                     event[k] = row[k]
                 except KeyError:
                     event[k] = 'missing'
@@ -817,13 +821,13 @@ class add_eps(process.process):
 
             if isinstance(event['authors'],dict):
                 event['authors'] = ", ".join( list(event['authors'].values()) )
-            
+
             if row["entities"] == "true":
                 for k in html_encoded_fields:
                     # x = html_parser.unescape('&pound;682m')
                     event[k] = html_parser.unescape( event[k] )
 
-            
+
             # x = html_parser.unescape('&pound;682m')
 
             event['start'] = datetime.datetime.strptime(
@@ -852,14 +856,14 @@ class add_eps(process.process):
         # flourish 2012
 
         # these fields exist in both json and veyepar:
-        common_fields = [ 'name', 'description', 
-            'authors', 'contact', 
-            'start', 'end', 
+        common_fields = [ 'name', 'description',
+            'authors', 'contact',
+            'start', 'end',
             'released', 'license', 'tags', 'conf_key', 'conf_url']
 
         # mapping of json to veyepar:
-        field_map = [ 
-                ('emails','contact'), 
+        field_map = [
+                ('emails','contact'),
                 ('location','room'),
                 ]
 
@@ -869,7 +873,7 @@ class add_eps(process.process):
             event={}
 
             for k in common_fields:
-                try: 
+                try:
                     event[k] = row[k]
                 except KeyError:
                     event[k] = 'missing'
@@ -901,16 +905,16 @@ class add_eps(process.process):
     def chipy_events(self, schedule ):
 
         # mapping of json to veyepar:
-        field_maps = [ 
-                ('id', 'conf_key'), 
+        field_maps = [
+                ('id', 'conf_key'),
                 ('title', 'name'),
                 ('description', 'description'),
                 ('presentors', 'authors'),
-                ('presentors', 'emails'), 
+                ('presentors', 'emails'),
                 ('start_time', 'start'),
                 ('length', 'duration'),
-                ('', 'conf_url'), 
-                ('', 'tags'), 
+                ('', 'conf_url'),
+                ('', 'tags'),
                 ]
 
         events = self.generic_events(schedule, field_maps)
@@ -930,7 +934,7 @@ class add_eps(process.process):
     def goth_events(self, schedule ):
         # PyGotham 2011
 
-        field_maps = [ 
+        field_maps = [
                 ('room_number','location'),
                 ('title','name'),
                 ('full_name','authors'),
@@ -997,7 +1001,7 @@ class add_eps(process.process):
             event['raw'] = src_event
 
             events.append(event)
- 
+
         return events
 
     def pctech(self, schedule, show):
@@ -1007,7 +1011,7 @@ class add_eps(process.process):
 
         events = self.pct_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
     def pyohio(self, schedule, show):
         # print "consumer PyOhio"
@@ -1017,7 +1021,7 @@ class add_eps(process.process):
 
         events = self.symp_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
     def symposium2(self, schedule, show):
         schedule = schedule['schedule']
@@ -1046,11 +1050,11 @@ class add_eps(process.process):
         # remove empty slots
         # bad_keys = (80, 82, 91, 100, 102, 103)
         # schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
-        # remove enteries that don't have authors 
+        # remove enteries that don't have authors
         # schedule = [s for s in schedule if "authors" in s]
 
 
-        field_maps = [ 
+        field_maps = [
                 ('room','location'),
                 ('name','name'),
                 ('abstract','description'),
@@ -1072,7 +1076,7 @@ class add_eps(process.process):
             if self.options.verbose: pprint(event['raw'])
 
             if "Plenary Hall" in event['location']:
-                event['location'] = "Plenary Hall" 
+                event['location'] = "Plenary Hall"
 
             event['name'] =  re.sub( r'[\n\r]', ':)', event['name'] )
 
@@ -1087,7 +1091,7 @@ class add_eps(process.process):
             else:
                 event['authors'] =  ', '.join( event['authors'] )
 
-            if event['emails'] == ["redacted",]: 
+            if event['emails'] == ["redacted",]:
                 event['emails'] =  ""
             else:
                 event['emails'] =  ', '.join( event['emails'] )
@@ -1102,7 +1106,7 @@ class add_eps(process.process):
         self.add_rooms(rooms,show)
         self.add_eps(events, show)
 
-        return 
+        return
 
 
     def symposium(self, schedule, show):
@@ -1113,7 +1117,7 @@ class add_eps(process.process):
 
         events = self.symp_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
 
 
@@ -1135,7 +1139,7 @@ class add_eps(process.process):
             e['duration'] =  duration
 
         self.add_eps(events, show)
-        return 
+        return
 
 
     def pygotham(self, schedule, show):
@@ -1148,13 +1152,13 @@ class add_eps(process.process):
 
         events = self.goth_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
     def scipy_events_v1(self, schedule ):
         # SciPy 2012, ver 1
 
         # mapping of json to veyepar:
-        field_maps = [ 
+        field_maps = [
             ('Room','location'),
             ('Name','name'),
             ('speaker',''),
@@ -1170,7 +1174,7 @@ class add_eps(process.process):
             ('','conf_url'),
             ('','released'),
             ('','license'),
-               
+
             ]
 
         events = self.generic_events(schedule, field_maps)
@@ -1192,14 +1196,14 @@ class add_eps(process.process):
     def scipy_events(self, schedule ):
         # SciPy 2012, ver 3
 
-        common_fields = [ 'name', 'description', 
-            'authors', 
-            'start', 'duration', 'end', 
+        common_fields = [ 'name', 'description',
+            'authors',
+            'start', 'duration', 'end',
             'released', 'license', 'tags', 'conf_key', ]
 
         # mapping of json to veyepar:
-        field_maps = [ 
-            ('contact','emails'), 
+        field_maps = [
+            ('contact','emails'),
             ('','conf_url'),
             ('room','location'),
             ]
@@ -1233,7 +1237,7 @@ class add_eps(process.process):
 
         events = self.scipy_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
 
 
@@ -1251,7 +1255,7 @@ class add_eps(process.process):
 
         events = self.scipy_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
     def veyepar(self, schedule, show):
         events = self.snake_bites(schedule)
@@ -1260,7 +1264,7 @@ class add_eps(process.process):
         self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
-        return 
+        return
 
 
     def desktopsummit(self, schedule, show):
@@ -1280,7 +1284,7 @@ class add_eps(process.process):
             end = datetime.datetime.strptime(
                     row[4], dt_format)
 
-            seconds=(end - event['start']).seconds 
+            seconds=(end - event['start']).seconds
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             duration = "%02d:%02d:%02d" % hms
             event['duration'] =  duration
@@ -1298,10 +1302,10 @@ class add_eps(process.process):
             event['raw'] = row
 
             events.append(event)
- 
+
 
         self.add_eps(events, show)
-        return 
+        return
 
     def ictev_2013(self, schedule, show):
         field_maps = [
@@ -1330,13 +1334,13 @@ class add_eps(process.process):
 
         html_parser = html.parser.HTMLParser()
 
-        for event in events: 
+        for event in events:
 
             event['conf_key'] = event['conf_key'].split('</a>')[0].split('>')[1]
- 
+
             event['name'] = html_parser.unescape(strip_tags( event['name'] ))
 
-            event['start'] = datetime.datetime.fromtimestamp( 
+            event['start'] = datetime.datetime.fromtimestamp(
                 int(event['start'])) + datetime.timedelta(hours=14)
 
             event['duration'] = "00:%s:00" % ( event['duration'], )
@@ -1353,7 +1357,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
     def ictev(self, schedule, show):
@@ -1369,7 +1373,7 @@ class add_eps(process.process):
 
         # mapping of json to veyepar:
         # thise are veyepar to json - need to be flipped to make work
-        backward_field_maps = [ 
+        backward_field_maps = [
                 ('location','Room'),
                 ('name','Title'),
                 ('tags','Keywords'),
@@ -1388,8 +1392,8 @@ class add_eps(process.process):
             # authors is either a string or a dict
             # if isinstance(event['authors'],dict):
             #    event['authors'] = ", ".join( event['authors'].values() )
-            
-            # 
+
+            #
             start, duration = self.talk_time(row['Day'],row['Time'])
             event['start'] = start
             event['duration'] = duration
@@ -1403,10 +1407,10 @@ class add_eps(process.process):
 
 
         self.add_eps(events, show)
-        return 
+        return
 
     def unfold_origami_unicorn(self, schedule):
-        # dig out the data from  
+        # dig out the data from
         # {'phpcode_2':{label: "Duration", content: "45"}
 
         ret_rows = []
@@ -1419,7 +1423,7 @@ class add_eps(process.process):
                 print("#1", field_name, value)
                 row[field_name] = value
             pprint(row)
-            ret_rows.append(row)    
+            ret_rows.append(row)
 
         return ret_rows
 
@@ -1431,7 +1435,7 @@ class add_eps(process.process):
 
         events = self.ddu_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
 
     def flourish(self, schedule, show):
@@ -1440,7 +1444,7 @@ class add_eps(process.process):
 
         events = self.flourish_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
 
     def chipy(self, schedule, show):
@@ -1454,7 +1458,7 @@ class add_eps(process.process):
 
         events = self.chipy_events(schedule)
         self.add_eps(events, show)
-        return 
+        return
 
 
     def chipy_v3(self, schedule, show):
@@ -1471,19 +1475,19 @@ class add_eps(process.process):
         for s in schedule:
             print((s['title'], s['start_time']))
 
-        field_maps = [ 
-                ('id', 'conf_key'), 
+        field_maps = [
+                ('id', 'conf_key'),
                 ('title', 'name'),
                 ('description', 'description'),
                 ('presenters', 'authors'),
-                ('presenters', 'emails'), 
-                ('presenters', 'released'), 
+                ('presenters', 'emails'),
+                ('presenters', 'released'),
                 ('license','license'),
                 ('start_time', 'start'),
                 ('length', 'duration'),
-                ('', 'conf_url'), 
-                ('', 'tags'), 
-                ('', 'twitter_id'), 
+                ('', 'conf_url'),
+                ('', 'tags'),
+                ('', 'twitter_id'),
                 ]
 
         events = self.generic_events(schedule, field_maps)
@@ -1496,17 +1500,17 @@ class add_eps(process.process):
             event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
-            event['authors'] =  ', '.join( 
+            event['authors'] =  ', '.join(
                     [ a['name'] for a in  event['authors'] ])
 
-            event['emails'] =  ', '.join( 
-                    [ a['email'] for a in  event['emails'] 
+            event['emails'] =  ', '.join(
+                    [ a['email'] for a in  event['emails']
                         if a['email'] ])
 
             # if not event['emails']: # no email found
             #    event['emails'] = "ChiPy <chicago@python.org>"
 
-            event['released'] = all( 
+            event['released'] = all(
                     [ a['release'] for a in event['released'] ])
 
             event['conf_url'] = "http://www.chipy.org/"
@@ -1526,7 +1530,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
     def zoo(self, schedule, show):
@@ -1538,8 +1542,8 @@ class add_eps(process.process):
 
         # bad_rooms = [ 'Costa Hall Foyer', 'uncatered', 'Super Awesome Venue TBA', 'The Pier - http://www.thepiergeelong.com.au', 'Edge Bar, Western Beach Road', ]
 
-        bad_rooms = [ 
-                ' ', 
+        bad_rooms = [
+                ' ',
                 'Bayview Eden, 6 Queens Road, Melbourne'
                 ]
 
@@ -1566,7 +1570,7 @@ class add_eps(process.process):
         # schedule = [s for s in schedule if s['Id'] in [185,] ]
         # schedule[0]['Title']="Security Topics in Open Cloud: Advanced Threats, 2015's Vulnerabilities, Advancements in OpenStack Trusted Computing and Hadoop Encryption"
 
-        schedule = [s for s in schedule 
+        schedule = [s for s in schedule
                 if s['Title'] not in [
                     'Short break',] ]
 
@@ -1580,11 +1584,11 @@ class add_eps(process.process):
         events = self.zoo_events(schedule)
         self.add_eps(events, show)
 
-        return 
+        return
 
     def fos_events( self, schedule ):
-        # fosdem 14 penta 
- 
+        # fosdem 14 penta
+
         events = []
         id = 0
 
@@ -1600,9 +1604,9 @@ class add_eps(process.process):
                     # '10:30'
                     # >>> [x.tag for x in event]
                     """
-                    tags = ['start', 'duration', 'room', 
-                            'slug', 'title', 'subtitle', 
-                            'track', 'type', 'language', 
+                    tags = ['start', 'duration', 'room',
+                            'slug', 'title', 'subtitle',
+                            'track', 'type', 'language',
                             'abstract', 'description',
                             'persons', 'links']
                     for tag in tags:
@@ -1622,8 +1626,8 @@ class add_eps(process.process):
 
                     event['duration'] = \
                         "%s:00" % row.find('duration').text
-                    
-                    persons = [p.text for p in 
+
+                    persons = [p.text for p in
                             row.find('persons').getchildren() ]
                     event['authors'] = ', '.join(persons)
 
@@ -1635,7 +1639,7 @@ class add_eps(process.process):
                     event['description'] = row.find('description').text
                     if event['description'] is None:
                         event['description'] = ''
-                    
+
                     event['conf_key'] = row.get('id')
 
                     event['conf_url'] = 'https://fosdem.org/2014/schedule/event/%s/' % row.find('slug').text
@@ -1648,7 +1652,7 @@ class add_eps(process.process):
 
                     events.append(event)
                     id += 1
-         
+
         return events
 
 
@@ -1663,7 +1667,7 @@ class add_eps(process.process):
         rooms = [ r.get('name') for r in schedule[1] ]
 
 
-        # remove (foo) stuff from 
+        # remove (foo) stuff from
         # for room in rooms:
         #    room = room.split('(')[0].strip()
 
@@ -1678,7 +1682,7 @@ class add_eps(process.process):
         # return
 
         self.add_rooms(rooms,show)
-        
+
         # sequance the rooms
         # this will whack any manual edits
         if self.options.update:
@@ -1695,16 +1699,16 @@ class add_eps(process.process):
         # no recording in Java room saturday k4201
         events = [ event for event in events if not (
             event['start'].date() != datetime.datetime(2014,2,1) and \
-                    event['location'] == 'K4201') ] 
+                    event['location'] == 'K4201') ]
 
         self.add_eps(events, show)
-        return 
+        return
 
 
     def summit_penta_events( self, schedule ):
         # dc14 summit penta based xml
         # pyconza2015 dc summit penta based xml
- 
+
         events = []
         id = 0
 
@@ -1736,13 +1740,13 @@ class add_eps(process.process):
 
                     event['duration'] = \
                             row.find('duration').text + ":00"
-                    
+
 
                     persons = []
                     contacts = []
                     twitters = []
                     for p in row.find('persons').getchildren():
-                        
+
                         person = p.text
                         person = person.replace('\n','')
                         # person = person.replace('\r','')
@@ -1763,10 +1767,10 @@ class add_eps(process.process):
                             twitters.append(twitter_id)
 
                     event['authors'] = ', '.join(persons)
-                    event['emails'] = ','.join(contacts) 
+                    event['emails'] = ','.join(contacts)
                     event['twitter_id'] = ' '.join(twitters)
 
-                    # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.  
+                    # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.
                     # event['released'] = row.find('released').text == "True"
                     event['released'] = True
 
@@ -1776,8 +1780,8 @@ class add_eps(process.process):
                     description = row.find('description').text
                     # if description is None: description = ''
                     description = description.replace('\r','')
-                    event['description'] = description 
-                    
+                    event['description'] = description
+
                     event['conf_key'] = row.get('id')
 
                     # event['conf_url'] = 'https://summit.debconf.org' + row.find('conf_url').text
@@ -1799,7 +1803,7 @@ class add_eps(process.process):
 
                     events.append(event)
                     id += 1
-         
+
         return events
 
 
@@ -1817,7 +1821,7 @@ class add_eps(process.process):
 
         print("rooms", rooms)
         self.add_rooms(rooms,show)
-        
+
         """
         # sequance the rooms
         # this will whack any manual edits
@@ -1834,9 +1838,9 @@ class add_eps(process.process):
         events = self.summit_penta_events(schedule)
 
         self.add_eps(events, show)
-        return 
+        return
 
-       
+
     def sched(self,schedule,show):
         # pprint(schedule)
 
@@ -1867,13 +1871,13 @@ class add_eps(process.process):
         for event in events:
             if self.options.verbose: print("event", event)
             row = event['raw']
-            
-            if 'speakers' not in list(row.keys()): 
+
+            if 'speakers' not in list(row.keys()):
                 # del(event)
                 # continue
                 pass
 
-            if 'speakers' in list(row.keys()): 
+            if 'speakers' in list(row.keys()):
                 # pprint( row['speakers'] )
                 authors = ', '.join( s['name'] for s in row['speakers'] )
             else:
@@ -1881,16 +1885,16 @@ class add_eps(process.process):
             event['authors'] = authors
             # print authors
 
-            if 'description' not in list(row.keys()): 
+            if 'description' not in list(row.keys()):
                 event['description']=''
 
-            start = parse(event['start'])        
+            start = parse(event['start'])
             end = parse(row['event_end'])
 
             delta = end - start
             minutes = delta.seconds/60 # - 5 for talk slot that includes break
 
-            duration="00:%s:00" % ( minutes) 
+            duration="00:%s:00" % ( minutes)
 
             event['start'] = start
             event['end'] = end
@@ -1907,7 +1911,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
     def pyconde2012(self,schedule,show):
@@ -1943,26 +1947,26 @@ class add_eps(process.process):
 
             if self.options.verbose: print("event", event)
             raw = event['raw']
-            
+
             event['authors'] =  ', '.join( event['authors'] )
             event['emails'] =  ', '.join( event['emails'] )
 
-            event['start'] = parse(event['start'])        
-            event['duration'] = "00:%s:00" % ( event['duration'] ) 
+            event['start'] = parse(event['start'])
+            event['duration'] = "00:%s:00" % ( event['duration'] )
 
             event['license'] =  ''
 
 
         self.add_eps(events, show)
 
-        return 
+        return
 
     def pyconca2012(self,schedule,show):
         # pprint(schedule)
 
         schedule = schedule['data']['talk_list']
         # return talks, session
-        
+
         # remove rejected talks
         schedule = [t for t in schedule if t['schedule_slot_id'] is not None]
 
@@ -1993,7 +1997,7 @@ class add_eps(process.process):
             if self.options.verbose: print("event", event)
             raw = event['raw']
             if self.options.verbose: pprint(raw)
-            
+
             event['authors'] = \
               raw['speaker_first_name'] +' ' + raw['speaker_last_name']
             event['emails'] = raw['user']['email']
@@ -2001,16 +2005,16 @@ class add_eps(process.process):
             event['start'] = datetime.datetime.strptime(
                     event['start'],'%Y-%m-%dT%H:%M:%S-05:00')
 
-            event['duration'] = "00:%s:00" % ( event['duration'] ) 
+            event['duration'] = "00:%s:00" % ( event['duration'] )
 
-            event['released'] = raw['video_release'] 
+            event['released'] = raw['video_release']
 
             event['license'] =  ''
 
 
         self.add_eps(events, show)
 
-        return 
+        return
 
     def nodepdx(self, schedule, show):
         # Troy's json
@@ -2041,7 +2045,7 @@ class add_eps(process.process):
         rooms = ['room_1']
         self.add_rooms(rooms,show)
 
-        for event in events: 
+        for event in events:
 
             # create an ID from day, hour, minute
             event['conf_key'] = \
@@ -2055,19 +2059,19 @@ class add_eps(process.process):
             event['end'] = datetime.datetime.strptime(
                     event['end'],'%Y-%m-%d %H:%M:%S')
             delta = event['end'] - event['start']
-            minutes = delta.seconds/60 
+            minutes = delta.seconds/60
 
             duration = int( event['duration'].split()[0] )
             if minutes != duration:
                 raise "wtf duration"
 
-            event['duration'] = "00:%s:00" % (duration) 
+            event['duration'] = "00:%s:00" % (duration)
 
             # Bogus, but needed to pass
             event['location'] = 'room_1'
             event['license'] =  ''
 
-            event['description'] = html_parser.unescape( 
+            event['description'] = html_parser.unescape(
                     strip_tags(event['description']) )
 
             # event['tags'] = ", ".join( event['tags'])
@@ -2075,19 +2079,19 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
     def bosc_2014(self, schedule, show):
 
         # remove rows that have no crowdsource_ref, because spreadsheet
         # schedule = [s for s in schedule if s['Time Start']]
-        schedule = [s for s in schedule 
+        schedule = [s for s in schedule
                 if s['conf_key'] and s['start'] ]
-       
+
         # convert all the values to unicode strings
-        schedule = [{k:d[k].decode('utf-8') for k in d} 
-                for d in schedule ] 
-        
+        schedule = [{k:d[k].decode('utf-8') for k in d}
+                for d in schedule ]
+
         field_maps = [
             ('conf_key','id'),
             ('conf_key','conf_key'),
@@ -2110,19 +2114,19 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
 
-        for event in events: 
+        for event in events:
 
             event['start'] = datetime.datetime.strptime(
                     "{0} {1}".format(event['raw']['date'],event['start']),
                     '%d/%m/%Y %H:%M')
-                    
+
             event['end'] = datetime.datetime.strptime(
                     "{0} {1}".format(event['raw']['date'],event['end']),
                     '%d/%m/%Y %H:%M')
 
             delta = event['end'] - event['start']
-            minutes = delta.seconds/60 
-            event['duration'] = "00:{}:00".format(minutes) 
+            minutes = delta.seconds/60
+            event['duration'] = "00:{}:00".format(minutes)
 
             # event['duration'] = "00:{0}:00".format(event['duration'])
 
@@ -2134,13 +2138,13 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
     def depy15(self, schedule, show):
 
         room = 'Room LL104'
-        
+
         field_maps = [
                 ('title','name'),
                 ('start_time','start'),
@@ -2154,7 +2158,7 @@ class add_eps(process.process):
         rooms = [room]
         self.add_rooms(rooms,show)
 
-        for i,event in enumerate(events): 
+        for i,event in enumerate(events):
             event['location'] = room
             event['conf_key'] = str(i)
 
@@ -2164,7 +2168,7 @@ class add_eps(process.process):
 
             end = datetime.datetime.strptime(
                     event['end'], dt_format)
-            seconds=(end - event['start']).seconds 
+            seconds=(end - event['start']).seconds
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             duration = "%02d:%02d:%02d" % hms
             event['duration'] =  duration
@@ -2184,14 +2188,14 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
 
     def jupyter_chicago_2016(self, schedule, show):
 
         room = 'Civis'
-        
+
         field_maps = [
                 ('Talk Title','name'),
                 ('start','start'),
@@ -2214,7 +2218,7 @@ class add_eps(process.process):
         # event_date="February 20th, 2016"
         event_date="2016-02-16"
 
-        for i,event in enumerate(events): 
+        for i,event in enumerate(events):
             event['location'] = room
             event['conf_key'] = str(i)
 
@@ -2233,7 +2237,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
 
@@ -2242,13 +2246,13 @@ class add_eps(process.process):
 
         # remove rows that have no crowdsource_ref, because spreadsheet
         schedule = [s for s in schedule if s['Start Time']]
-        # schedule = [s for s in schedule if 
+        # schedule = [s for s in schedule if
         #        s['crowdsource_ref'] or s['released']]
-       
+
         # convert all the values to unicode strings
-        schedule = [{k:d[k].decode('utf-8') for k in d} 
-                for d in schedule ] 
-        
+        schedule = [{k:d[k].decode('utf-8') for k in d}
+                for d in schedule ]
+
         field_maps = [
             # ('Title Slide Includes BlinkOn 4',''),
             ('Title','name'),
@@ -2270,15 +2274,15 @@ class add_eps(process.process):
         self.add_rooms(rooms,show)
 
 
-        for i,event in enumerate(events): 
+        for i,event in enumerate(events):
             event['location'] = "room 1"
             event['conf_key'] = str(i)
             # event['authors'] = ', '.join(event['authors'].split(' & '))
 
-            event['start'] = datetime.datetime.strptime( 
+            event['start'] = datetime.datetime.strptime(
                   event['start'], '%Y/%m/%d %H:%M:%S')
             print(event['start'])
-                    
+
             event['duration'] = "01:00:00"
             event['emails'] = ""
             event['twitter_id'] = ""
@@ -2290,26 +2294,26 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
 
 
     def wtd_na_2014(self, schedule, show):
 
-        # given a google doc sheet, 
+        # given a google doc sheet,
         #  export to someting
         #  read in the local file.
 
         # remove rows that have no crowdsource_ref, because spreadsheet
         # schedule = [s for s in schedule if s['Time Start']]
-        schedule = [s for s in schedule if 
+        schedule = [s for s in schedule if
                 s['crowdsource_ref'] or s['released']]
-       
+
         # convert all the values to unicode strings
-        schedule = [{k:d[k].decode('utf-8') for k in d} 
-                for d in schedule ] 
-        
+        schedule = [{k:d[k].decode('utf-8') for k in d}
+                for d in schedule ]
+
         field_maps = [
             ('key','id'),
             ('Room/Location','location'),
@@ -2335,7 +2339,7 @@ class add_eps(process.process):
         self.add_rooms(rooms,show)
 
 
-        for event in events: 
+        for event in events:
 
             if " - " in event['name']:
                 event['authors'], event['name'] = \
@@ -2345,7 +2349,7 @@ class add_eps(process.process):
             event['start'] = datetime.datetime.strptime(
                     "{0} {1}".format(event['raw']['Date'],event['start']),
                     '%m/%d/%Y %H:%M')
-                    
+
             event['duration'] = "00:{0}:00".format(event['duration'])
 
             event['description'] = event['description'].replace('\n','\r\n')
@@ -2354,11 +2358,11 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
     def lanyrd(self, schedule, show):
-        # http://lanyrd.com 
+        # http://lanyrd.com
 
         field_maps = [
             ('id','id'),
@@ -2391,16 +2395,16 @@ class add_eps(process.process):
                 #[u'speakers', u'title', u'event_id', u'start_time', u'space', u'topics', u'times', u'abstract', u'web_url', u'end_time', u'id', u'day']
 
         # pprint(events[-2])
-  
+
         # events = [e for e in events if e['location'] is not None]
         # events = [e for e in events if e['start'] is not None]
-        # events = [e for e in events 
+        # events = [e for e in events
         #        if e['location'] not in ['Hackers Lounge',] ]
-        # events = [e for e in events 
+        # events = [e for e in events
         #         if e['conf_key'] not in ['sdktrw','sdktrx'] ]
 
 
-        for event in events: 
+        for event in events:
 
             if "Lunch" in event['name']:
                 event['location']="Main Room"
@@ -2411,20 +2415,20 @@ class add_eps(process.process):
 
             rooms.add(event['location'].lower())
 
-            event['twitter_id'] = " ".join( 
+            event['twitter_id'] = " ".join(
                     a['twitter'] for a in event['authors']
                     if a['twitter'] is not None)
             while len(event['twitter_id'])>50: # 135:
-                event['twitter_id'] = " ".join( 
+                event['twitter_id'] = " ".join(
                         event['twitter_id'].split()[:-1])
 
             # clobber author object with names.
-            event['authors'] = ", ".join( 
+            event['authors'] = ", ".join(
                     a['name'] for a in event['authors'])
 
             """
-            if event['name'] == "Panel: State of OSS .NET": 
-                event['twitter_id'] = "@richcampbell @carlfranklin" 
+            if event['name'] == "Panel: State of OSS .NET":
+                event['twitter_id'] = "@richcampbell @carlfranklin"
                 event['authors'] = "Richard Campbell and Carl Franklin"
             """
 
@@ -2433,8 +2437,8 @@ class add_eps(process.process):
             event['end'] = datetime.datetime.strptime(
                     event['end'],'%Y-%m-%d %H:%M:%S')
             delta = event['end'] - event['start']
-            minutes = delta.seconds/60 
-            event['duration'] = "00:%s:00" % ( minutes) 
+            minutes = delta.seconds/60
+            event['duration'] = "00:%s:00" % ( minutes)
 
             event['description'] = strip_tags(event['description'])
 
@@ -2456,7 +2460,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
     def symposion2(self, schedule, show):
         # pycon.us 2013
@@ -2491,12 +2495,12 @@ class add_eps(process.process):
             raw = event['raw']
             if self.options.verbose: pprint(raw)
             if self.options.verbose: print("event", event)
-            
+
             event['start'] = datetime.datetime.strptime(
                     event['start'],'%Y-%m-%dT%H:%M:%S')
 
             event['authors'] = ", ".join(event['authors'])
-            
+
             if event['emails'] == ['redacted']:
                 event['emails'] = ''
             else:
@@ -2532,7 +2536,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
         # If we need short names?
         rooms = {
@@ -2580,7 +2584,7 @@ class add_eps(process.process):
 
         self.symposion2(schedule,show)
 
-        return 
+        return
 
     def pydata_2013(self,show):
         print("pydata_2013")
@@ -2610,9 +2614,9 @@ class add_eps(process.process):
                 'conf_url':"",
                 'tags':'',
                 }
-             
 
-            seconds=(e['end'] - e['start']).seconds 
+
+            seconds=(e['end'] - e['start']).seconds
             hms = seconds//3600, (seconds%3600)//60, seconds%60
             duration = "%02d:%02d:%02d" % hms
             e['duration'] =  duration
@@ -2639,7 +2643,7 @@ class add_eps(process.process):
             # pprint( e )
             events.append(e)
             pk +=1
-        
+
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
 
@@ -2647,10 +2651,10 @@ class add_eps(process.process):
 
     def pyconca2013(self,schedule,show):
 
-        # remvoe the schedule wrapper that protects json 
+        # remvoe the schedule wrapper that protects json
         # from evil list constructors.
         schedule = schedule['schedule']
-        
+
         # move Pleanary events into the location where the equipment is
         for event in schedule:
 
@@ -2725,14 +2729,14 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
 
-        for event in events: 
+        for event in events:
 
             event['conf_key'] = str(event['conf_key'])
 
             if event['location'] == 'all-rooms':
                 event['location'] = 'MSC 2300 B'
 
-            event['start'] = datetime.datetime.strptime( 
+            event['start'] = datetime.datetime.strptime(
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] = "00:%s:00" % ( event['duration'], )
@@ -2755,7 +2759,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
     def erlang_chi_2014(self,schedule,show):
 
@@ -2781,19 +2785,19 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
 
-        for event in events: 
+        for event in events:
 
             event['authors'] = event['authors']['name']
             event['emails'] = event['emails']['email']
 
-            event['start'] = datetime.datetime.strptime( 
+            event['start'] = datetime.datetime.strptime(
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
-            event['end'] = datetime.datetime.strptime( 
+            event['end'] = datetime.datetime.strptime(
                    event['end'], '%Y-%m-%dT%H:%M:%S' )
 
             delta = event['end'] - event['start']
-            minutes = delta.seconds/60 
-            event['duration'] = "00:%s:00" % ( minutes) 
+            minutes = delta.seconds/60
+            event['duration'] = "00:%s:00" % ( minutes)
 
             # event['conf_url'] = "http://www.chicagoerlang.com/{}.html".format(event['conf_key'])
 
@@ -2802,7 +2806,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
     def citycode15(self,schedule,show):
 
@@ -2825,20 +2829,20 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
 
-        for event in events: 
+        for event in events:
 
             event['authors'] = event['authors'][0]['name']
             event['emails'] = event['emails'][0]['email']
             event['twitter_id'] = event['twitter_id'][0]['twitter_id']
 
-            event['start'] = datetime.datetime.strptime( 
+            event['start'] = datetime.datetime.strptime(
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
-            event['end'] = datetime.datetime.strptime( 
+            event['end'] = datetime.datetime.strptime(
                    event['end'], '%Y-%m-%dT%H:%M:%S' )
 
             delta = event['end'] - event['start']
-            minutes = delta.seconds/60 
-            event['duration'] = "00:%s:00" % ( minutes) 
+            minutes = delta.seconds/60
+            event['duration'] = "00:%s:00" % ( minutes)
 
             event['released'] =  event['released'] == "yes"
 
@@ -2850,7 +2854,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
     def prodconf14(self,schedule,show):
@@ -2861,14 +2865,14 @@ class add_eps(process.process):
         ('speaker','authors'),
         ('description','description'),
         ('start','start'),
-        ('end','end'), 
+        ('end','end'),
        ]
 
       events = self.generic_events(schedule, field_maps)
 
       pk = 1
-      for event in events: 
-        if self.options.verbose: 
+      for event in events:
+        if self.options.verbose:
             print("event:")
             pprint(event)
 
@@ -2882,18 +2886,18 @@ class add_eps(process.process):
             event['authors'] = event['authors']['name']
 
         event['emails'] = ''
-        event['released'] = False 
-        event['license'] = False 
-        event['conf_url'] = '' 
-        event['tags'] = '' 
+        event['released'] = False
+        event['license'] = False
+        event['conf_url'] = ''
+        event['tags'] = ''
 
-        event['start'] = datetime.datetime.strptime( 
+        event['start'] = datetime.datetime.strptime(
                event['start'], '%Y-%m-%dT%H:%M:%S' )
-        event['end'] = datetime.datetime.strptime( 
+        event['end'] = datetime.datetime.strptime(
                event['end'], '%Y-%m-%dT%H:%M:%S' )
         delta = event['end'] - event['start']
-        minutes = delta.seconds/60 
-        event['duration'] = "00:%s:00" % ( minutes) 
+        minutes = delta.seconds/60
+        event['duration'] = "00:%s:00" % ( minutes)
 
 
       rooms = self.get_rooms(events)
@@ -2901,11 +2905,11 @@ class add_eps(process.process):
 
       self.add_eps(events, show)
 
-      return 
+      return
 
     def nodevember14(self,schedule,show):
 
-      # remove rows where id='empty' 
+      # remove rows where id='empty'
       schedule = [s for s in schedule if s['id'] != 'empty']
 
       field_maps = [
@@ -2926,14 +2930,14 @@ class add_eps(process.process):
 
       events = self.generic_events(schedule, field_maps)
 
-      for event in events: 
-        if self.options.verbose: 
+      for event in events:
+        if self.options.verbose:
             print("event:")
             pprint(event)
 
         if event['location'] in ["Room 1","Room 2","Room 3","Room 4"]:
             # room 1 is really room 100, 2 200...
-            event['location'] = event['location'] + "00" 
+            event['location'] = event['location'] + "00"
 
         speakers = [event['authors']]
         event['authors'] = ', '.join(
@@ -2941,15 +2945,15 @@ class add_eps(process.process):
         event['emails'] =  ', '.join(
                 [s['email'] for s in speakers])
 
-        event['tags'] = '' 
+        event['tags'] = ''
 
-        event['start'] = datetime.datetime.strptime( 
+        event['start'] = datetime.datetime.strptime(
                event['start'], '%Y-%m-%dT%H:%M:%S' )
-        event['end'] = datetime.datetime.strptime( 
+        event['end'] = datetime.datetime.strptime(
                event['end'], '%Y-%m-%dT%H:%M:%S' )
         delta = event['end'] - event['start']
-        minutes = delta.seconds/60 
-        event['duration'] = "00:%s:00" % ( minutes) 
+        minutes = delta.seconds/60
+        event['duration'] = "00:%s:00" % ( minutes)
 
         event['conf_url'] = event['conf_url'].replace(".org.com", ".org")
 
@@ -2959,7 +2963,7 @@ class add_eps(process.process):
 
       self.add_eps(events, show)
 
-      return 
+      return
 
     def osdc2015(self, schedule, show):
 
@@ -3001,7 +3005,7 @@ class add_eps(process.process):
             if event['conf_key']==23:
                 # name": "Crash-safe Replication with MariaDB...
                 event['location'] = 'Riviera'
-            
+
             if event['conf_key']==20:
                 # name": "SubPos...
                 event['location'] = 'Derwent 1'
@@ -3015,10 +3019,10 @@ class add_eps(process.process):
                 event['location'] = 'Derwent 1'
             """
 
-            event['start'] = datetime.datetime.strptime( 
+            event['start'] = datetime.datetime.strptime(
                 event['start'], '%Y-%m-%dT%H:%M:%S' )
 
-            event['duration'] = "00:{}:00".format(event['duration']) 
+            event['duration'] = "00:{}:00".format(event['duration'])
 
             event['authors']=', '.join(event['authors'])
             event['emails']=', '.join(event['emails'])
@@ -3029,7 +3033,7 @@ class add_eps(process.process):
         self.add_rooms(rooms,show)
         self.add_eps(events, show)
 
-        return 
+        return
 
     def nodevember15(self,schedule,show):
 
@@ -3039,7 +3043,7 @@ class add_eps(process.process):
       x=1
       for day in schedule:
           date = day["date"]  #: "November 13, 2015",
-          for s in day['slots']: 
+          for s in day['slots']:
               if "speaker" in s:
 
                   if s['room'] == "Ezel 301":
@@ -3055,7 +3059,7 @@ class add_eps(process.process):
                   s1.append(s)
 
       # import code; code.interact(local=locals())
-      
+
       field_maps = [
               ('room','location'),
               ('title','name'),
@@ -3072,22 +3076,22 @@ class add_eps(process.process):
               ('','conf_url'),
        ]
 
-      # remove rows where id='empty' 
+      # remove rows where id='empty'
       # schedule = [s for s in schedule if s['id'] != 'empty']
 
       events = self.generic_events(s1, field_maps)
 
-      for event in events: 
-        if self.options.verbose: 
+      for event in events:
+        if self.options.verbose:
             print("event:")
             pprint(event)
 
         # event['start'] = dateutil.parser.parse( event['start'] )
         event['start'] = parse( event['start'] )
-        # datetime.datetime.strptime( 
+        # datetime.datetime.strptime(
         #       event['start'], '%B %d, %Y %I:%M %p' )
 
-        
+
         event['duration'] = "00:{:02}:00".format(event['duration'])
 
         event['conf_url'] = event['conf_url'].replace(".org.com", ".org")
@@ -3099,7 +3103,7 @@ class add_eps(process.process):
 
       self.add_eps(events, show)
 
-      return 
+      return
 
     def nodevember16(self,schedule,show):
 
@@ -3116,7 +3120,7 @@ class add_eps(process.process):
       s1 = []
       for day in schedule:
           date = day["date"]  #: "November 20, 2016"
-          for s in day['slots']: 
+          for s in day['slots']:
               if s['keynote'] or s['talk']:
                   s['start'] = parse("{} {}".format( date, s['time'] ))
                   s['duration'] = "00:{}:00".format(s['duration'])
@@ -3127,7 +3131,7 @@ class add_eps(process.process):
                   except KeyError as e:
                       print(e)
                   s1.append(s)
-      
+
       field_maps = [
               ('room','location'),
               ('title','name'),
@@ -3156,7 +3160,7 @@ class add_eps(process.process):
     def djbp10(self, schedule, show):
 
         room = 'Liberty Hall'
-        
+
         # make list of talks from dict of talks
         # where video=true
         talks=[]
@@ -3180,20 +3184,20 @@ class add_eps(process.process):
         rooms = [room]
         self.add_rooms(rooms,show)
 
-        for event in events: 
+        for event in events:
             event['location'] = room
 
             event['authors'] = ', '.join([
                 a['name'] for a in event['authors'] ])
 
-            event['start'] = datetime.datetime.strptime( 
+            event['start'] = datetime.datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S-05:00' )
 
-            event['duration'] = "00:%s:00" % ( event['duration'] ) 
+            event['duration'] = "00:%s:00" % ( event['duration'] )
 
             try:
                 event['twitter_id'] = ', '.join([
-                       [ "@"+s['link'].split('/')[-1] for s in t['social'] 
+                       [ "@"+s['link'].split('/')[-1] for s in t['social']
                        if s['title']=="twitter"][0]
                        for t in event['twitter_id'] ])
             except (IndexError,KeyError) as e:
@@ -3201,7 +3205,7 @@ class add_eps(process.process):
 
             if event['description'] is None:
                 event['description'] = ""
-            
+
 
             event['emails'] = ""
             event['license'] = ""
@@ -3213,7 +3217,7 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
-        return 
+        return
 
 
     def pygotham2015(self,schedule,show):
@@ -3260,10 +3264,10 @@ class add_eps(process.process):
             #     event['start'] = datetime.datetime(2015,8,16,9,0,0)
             # else:
 
-            event['start'] = datetime.datetime.strptime( 
+            event['start'] = datetime.datetime.strptime(
                 event['start'], '%Y-%m-%dT%H:%M:%S' )
 
-            event['duration'] = "00:{}:00".format(event['duration']) 
+            event['duration'] = "00:{}:00".format(event['duration'])
 
             event['tags'] = ''
 
@@ -3327,11 +3331,11 @@ class add_eps(process.process):
 
         for event in events:
 
-            event['start'] = datetime.datetime.strptime( 
-                event['raw']['date'] + 'T' + event['start'], 
+            event['start'] = datetime.datetime.strptime(
+                event['raw']['date'] + 'T' + event['start'],
                 '%d/%m/%YT%H:%M:%S' )
 
-            event['duration'] = "00:{}:00".format(event['duration']) 
+            event['duration'] = "00:{}:00".format(event['duration'])
 
             if event['license'] == 'CC':
                 event['license'] = 'CC BY-SA'
@@ -3389,11 +3393,11 @@ class add_eps(process.process):
 
             event['conf_url']="https://cfp.linuxwochen.at/de/LWW16/public/events/{}".format(event['conf_key'])
 
-            event['start'] = datetime.datetime.strptime( 
-                event['start'], 
+            event['start'] = datetime.datetime.strptime(
+                event['start'],
                 '%Y-%m-%dT%H:%M:%S+02:00' )
 
-            event['duration'] = "{}:00".format(event['duration']) 
+            event['duration'] = "{}:00".format(event['duration'])
 
 
             event['authors']=', '.join([
@@ -3442,23 +3446,23 @@ class add_eps(process.process):
 
             event['conf_key']=str(event['conf_key'])
 
-            event['start'] = datetime.datetime.strptime( 
-                event['start'], 
+            event['start'] = datetime.datetime.strptime(
+                event['start'],
                 '%Y-%m-%d %H:%M:%S' )
 
-            event['duration'] = "{}:00".format(event['duration']) 
+            event['duration'] = "{}:00".format(event['duration'])
 
 
             event['authors']=', '.join(
                 [ d[list(d.keys())[0]]['name'] for d in event['authors']])
-            
+
             event['twitter_id']=', '.join(
                 [ d[list(d.keys())[0]]['twitter_id'] for d in event['twitter_id']])
 
             event['emails']=', '.join(
                 [ d[list(d.keys())[0]]['email'] for d in event['emails']])
-            
-            
+
+
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
@@ -3491,15 +3495,15 @@ class add_eps(process.process):
 
             event['conf_key']=str(event['conf_key'])
 
-            event['start'] = datetime.datetime.strptime( 
+            event['start'] = datetime.datetime.strptime(
                 event['start'], '%d/%m/%Y %H:%M:%S' )
 
-            event['duration'] = "{}:00".format(event['duration']) 
+            event['duration'] = "{}:00".format(event['duration'])
 
             event['authors']=', '.join( event['authors'] )
 
             event['emails']=', '.join( event['emails'] )
-            
+
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
@@ -3562,7 +3566,7 @@ class add_eps(process.process):
                 delta = end - start
                 minutes = delta.seconds/60 # - 5 for talk slot that includes break
 
-                event['duration'] = "00:%s:00" % ( minutes) 
+                event['duration'] = "00:%s:00" % ( minutes)
 
                 l = component.get('location')
                 event['location'] = str(l)
@@ -3578,14 +3582,14 @@ class add_eps(process.process):
                     event['authors']=''
                     event['emails']=''
 
-                event['twitter_id']='' 
+                event['twitter_id']=''
                 event['description'] = str(component.get('description'))
-                event['tags']='' 
+                event['tags']=''
 
-                event['released']=True 
-                event['license']='CC-BY' 
+                event['released']=True
+                event['license']='CC-BY'
 
-                event['raw']='' 
+                event['raw']=''
 
                 print( event )
                 events.append(event)
@@ -3600,7 +3604,7 @@ class add_eps(process.process):
 
 
 #################################################3
-# main entry point 
+# main entry point
 
     def one_show(self, show):
 
@@ -3662,7 +3666,7 @@ class add_eps(process.process):
             'chipy_may_2013': "http://chipy.org/api/meetings/",
             }[self.options.show]
             """
- 
+
         client = show.client
         url = show.schedule_url
         if self.options.verbose: print(url)
@@ -3675,7 +3679,7 @@ class add_eps(process.process):
             session = requests.session()
 
             # auth stuff goes here, kinda.
-            
+
             auth = pw.addeps.get(self.options.client, None)
 
             if auth is not None:
@@ -3688,18 +3692,18 @@ class add_eps(process.process):
                 # in case it does't get passed in the headers
                 # result = requests.get(auth['login_page'])
                 # soup = BeautifulSoup(x.text)
-                # token = soup.find('input', 
+                # token = soup.find('input',
                 #        dict(name='csrfmiddlewaretoken'))['value']
 
 
                 # setup the values needed to log in:
                 login_data = auth['login_data']
-                login_data['csrfmiddlewaretoken'] = token 
+                login_data['csrfmiddlewaretoken'] = token
 
                 if self.options.verbose: print("login_data", login_data)
 
-                ret = session.post(auth['login_page'], 
-                        data=login_data, 
+                ret = session.post(auth['login_page'],
+                        data=login_data,
                         headers={'Referer':auth['login_page']})
 
                 if self.options.verbose: print("login ret:", ret)
@@ -3755,10 +3759,10 @@ class add_eps(process.process):
 
         # save for later
         # filename="schedule/%s_%s.json" % ( client.slug, show.slug )
-        # file(filename,'w').write(j) 
+        # file(filename,'w').write(j)
         # j=file(filename).read()
 
-        if self.options.verbose: pprint(schedule) 
+        if self.options.verbose: pprint(schedule)
 
         # if self.options.verbose: print j[:40]
         if self.options.keys: return self.dump_keys(schedule)
@@ -3772,28 +3776,28 @@ class add_eps(process.process):
 
         if ext =='.ics':
             return self.ics(schedule,show)
-    
+
         if self.options.client =='kiwipycon':
             return self.nzpug(schedule,show)
-    
+
         if self.options.show =='depy_2016':
             return self.amberapp(schedule,show)
-    
+
         if self.options.show =='linuxwochen_wien_2016':
             return self.linuxwochen(schedule,show)
-	   
+
         if self.options.show =='osdc2015':
             return self.osdc2015(schedule,show)
-	   
+
         if self.options.show =='djbp10':
             return self.djbp10(schedule,show)
 
         if self.options.show =='nodevember16':
             return self.nodevember16(schedule,show)
-	   
+
         if self.options.show =='nodevember15':
             return self.nodevember15(schedule,show)
-	   
+
         if self.options.show =='nodevember14':
             return self.nodevember14(schedule,show)
 
@@ -3896,7 +3900,7 @@ class add_eps(process.process):
             return self.flourish(schedule,show)
 
         if self.options.show == 'pyconde2011':
-            # pycon.de 2011 
+            # pycon.de 2011
             return self.pyohio(schedule,show)
             # return self.pyconde2011(schedule,show)
 
@@ -3937,7 +3941,7 @@ class add_eps(process.process):
             return self.pyohio(schedule,show)
 
         if j.startswith('[{"') and 'talk_day_time' in schedule[0]:
-            # pyGotham 
+            # pyGotham
             return self.pygotham(schedule,show)
 
         if url.endswith('/program/2012/json'):
@@ -3970,24 +3974,24 @@ class add_eps(process.process):
             v_keys=('id',
                 'location','sequence',
                 'name','slug', 'authors','emails', 'description',
-                'start','duration', 
+                'start','duration',
                 'released', 'license', 'tags',
                 'conf_key', 'conf_url',
                 'host_url', 'public_url',
-                )    
+                )
             print([k for k in v_keys if k in s_keys])
             print([k for k in v_keys if k not in s_keys])
 
             return self.ddu(schedule,show)
 
     def add_more_options(self, parser):
-        parser.add_option('--schedule', 
+        parser.add_option('--schedule',
           help='URI of schedule data - gets stored in new show record' )
-        parser.add_option('-u', '--update', action="store_true", 
+        parser.add_option('-u', '--update', action="store_true",
           help='update when diff, else print' )
-        parser.add_option('-k', '--keys', action="store_true", 
+        parser.add_option('-k', '--keys', action="store_true",
           help='dump keys of input stream' )
-        parser.add_option('--reslug', action="store_true", 
+        parser.add_option('--reslug', action="store_true",
           help='regenerate slugs' )
 
     def work(self):
@@ -4005,7 +4009,7 @@ class add_eps(process.process):
           show.name = self.options.show.capitalize()
           show.schedule_url = self.options.schedule
           show.save()
-        
+
         if self.options.whack:
             # DRAGONS!
             # clear out previous runs for this show

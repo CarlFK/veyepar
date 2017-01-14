@@ -31,18 +31,18 @@ class process():
   Provides basic options and itarators.
   Only operates on episodes in ready_state,
   or all if ready_state is None.
-  if read_sate is not None and .processing() returns True, 
+  if read_sate is not None and .processing() returns True,
       bump the episode's state:
       state=ready_state+1
   """
 
-  extra_options={} 
+  extra_options={}
 
   # set stop to True to stop processing at the end of episode
   # will not abort a process, like an encode, upload or anything like that.
-  # it just exits these loops: 
+  # it just exits these loops:
   #    for e in es: (process episodes) and do while not Done: (poll)
-  stop = False 
+  stop = False
 
   ready_state=None
 
@@ -97,7 +97,7 @@ class process():
       script_pathname = os.path.join(self.work_dir, episode.slug+".sh")
       sh = open(script_pathname,'a')
 
-      for cmd in cmds: 
+      for cmd in cmds:
           if type(cmd)==list:
               print(cmd)
               log_text = ' '.join(cmd)
@@ -106,8 +106,8 @@ class process():
               cmd=cmd.split()
 
           try:
-            # Not sure what python v3 wants. str I guess. 
-            # .write(b'a') and .writeline(b'a') - Errpr must be str, not b 
+            # Not sure what python v3 wants. str I guess.
+            # .write(b'a') and .writeline(b'a') - Errpr must be str, not b
             sh.writelines(log_text)
             # sh.writelines([t.encode('utf-8','ignore') for t in log_text])
           except Exception as e:
@@ -137,9 +137,9 @@ class process():
         if it does, try to upload it to cdn
         (rax_uploader will skip if same file exists).
         """
-        print("checking:", src) 
+        print("checking:", src)
 
-        if dst is None: dst = src 
+        if dst is None: dst = src
 
         src = os.path.join(self.show_dir,src)
         dst = os.path.join("veyepar",show.client.slug,show.slug,dst)
@@ -155,11 +155,11 @@ class process():
             u.bucket_id = show.client.bucket_id
             u.bucket = show.client.bucket_id
 
-            u.pathname = src 
-            u.key_id = dst 
+            u.pathname = src
+            u.key_id = dst
 
             ret = u.upload()
-            print(u.new_url) 
+            print(u.new_url)
             ret = u.new_url
 
         else:
@@ -228,7 +228,7 @@ class process():
 
   def process_ep(self, episode):
       print(("stubby process_ep: #{} state:{} {}".format( episode.id, episode.state, episode.name ) ))
-      return 
+      return
 
   def process_eps(self, episodes):
 
@@ -257,21 +257,21 @@ class process():
           ret = None
       else:
         # ready_state:
-        # None means "don't care", 
-        # ready == X means ready to do X, 
+        # None means "don't care",
+        # ready == X means ready to do X,
         # force is dangerous and will likely mess tings up.
         if self.ready_state is None \
            or ep.state==self.ready_state \
            or self.options.force:
 
             self.set_dirs(ep.show)
-            self.episode_dir=os.path.join( 
+            self.episode_dir=os.path.join(
                 self.show_dir, 'dv', ep.location.slug )
 
             if self.options.verbose: print(ep.name)
-     
+
             if self.options.lag:
-                if sleepytime: 
+                if sleepytime:
                     # don't lag on the first one that needs processing,
                     # we only want to lag between the fence posts.
                     print("lagging....", self.options.lag)
@@ -291,8 +291,8 @@ class process():
                 ret = self.process_ep(ep)
                 if self.options.verbose: print("process_ep:", ret)
 
-                # .process is long running (maybe, like encode or post) 
-                # so refresh episode in case its .stop was set 
+                # .process is long running (maybe, like encode or post)
+                # so refresh episode in case its .stop was set
                 # (would be set in some other process, like the UI)
 
                 try:
@@ -304,13 +304,13 @@ class process():
 
                 if ret:
                     # if the process doesn't fail,
-                    # and it was part of the normal process, 
-                    # don't bump if the process was forced, 
+                    # and it was part of the normal process,
+                    # don't bump if the process was forced,
                     # even if it would have been had it not been forced.
                     # if you force, you know better than the process,
                     # so the process is going to let you bump.
-                    # huh?!  
-                    # so..  ummm... 
+                    # huh?!
+                    # so..  ummm...
                     # 1. you can't bump None
                     # 2. don't bump when in test mode
                     # 3. if it wasn't forced:, bump.
@@ -325,9 +325,9 @@ class process():
                 if not self.options.test:
                     self.log_out(ep)
 
-            if ep.stop: 
+            if ep.stop:
                 if self.options.verbose: print(".STOP set on the episode.")
-                # send message to .process_eps which bubbles up to .poll 
+                # send message to .process_eps which bubbles up to .poll
                 self.stop = True
                 # re-set the stop flag.
                 ep.stop = False
@@ -344,7 +344,7 @@ class process():
 
   def one_show(self, show):
     """
- 
+
     """
     self.set_dirs(show)
 
@@ -365,10 +365,10 @@ class process():
         find and process episodes
         """
         episodes = Episode.objects
-        if self.options.client: 
+        if self.options.client:
             clients = Client.objects.filter(slug=self.options.client)
             episodes = episodes.filter(show__client__in=clients)
-        if self.options.show: 
+        if self.options.show:
             shows = Show.objects.filter(slug=self.options.show)
             episodes = episodes.filter(show__in=shows)
         if self.options.day:
@@ -417,7 +417,7 @@ class process():
             ret = self.work()
             if self.stop:
                 done=True
-            else: 
+            else:
                 if self.options.verbose: print("sleeping....")
                 time.sleep(int(self.options.poll))
         return ret
@@ -427,21 +427,21 @@ class process():
     """
     list clients and shows.
     """
-    clients=Client.objects.annotate( 
+    clients=Client.objects.annotate(
             max_date=Max('show__episode__start')) \
             .filter(active=True) \
             .order_by('max_date')
 
-    if self.options.client: 
+    if self.options.client:
             clients = clients.filter(slug=self.options.client)
-       
+
     for client in clients:
         print("\nName: %s  Slug: %s" %( client.name, client.slug ))
         shows=Show.objects.filter(client=client)\
                 .annotate( max_date=Max('episode__start'))\
                 .order_by('max_date')
 
-        # if self.options.show: 
+        # if self.options.show:
         #    shows = shows.filter(slug=self.options.show)
 
         for show in shows:
@@ -456,7 +456,7 @@ class process():
 
             if self.options.verbose:
                 for ep in Episode.objects.filter(show=show):
-                    print("\t\t id: %s state: %s %s" % ( 
+                    print("\t\t id: %s state: %s %s" % (
                         ep.id, ep.state, ep ))
     return
 
@@ -499,30 +499,33 @@ class process():
     """
 
     config = configparser.RawConfigParser()
-    files=config.read(['veyepar.cfg',
-                os.path.expanduser('~/veyepar.cfg')])
+    files=config.read([
+        '/etc/veyepar/veyepar.cfg',
+        os.path.expanduser('~/veyepar.cfg'),
+        'veyepar.cfg',
+        ])
 
     if files:
         d=dict(config.items('global'))
         d['whack']=False # don't want this somehow getting set in .config - too dangerous.
         parser.set_defaults(**d)
-        if 'verbose' in d: 
+        if 'verbose' in d:
             print("using config file(s):", files)
             print(d)
 
 
-    parser.add_option('-m', '--media-dir', 
+    parser.add_option('-m', '--media-dir',
         help="media files dir", )
-    parser.add_option('--tmp-dir', 
+    parser.add_option('--tmp-dir',
         help="temp files dir (should be local)", )
     parser.add_option('-c', '--client' )
     parser.add_option('-s', '--show' )
     parser.add_option('-d', '--day' )
     parser.add_option('-r', '--room',
               help="Location")
-    parser.add_option('--dv-format', 
+    parser.add_option('--dv-format',
               help='pal, pal_wide, ntsc, ntsc_wide' )
-    parser.add_option('--upload-formats', 
+    parser.add_option('--upload-formats',
               help='ogg, ogv, mp4, flv, dv' )
     parser.add_option('-l', '--list', action="store_true" )
     parser.add_option('-v', '--verbose', action="store_true" )
@@ -561,12 +564,12 @@ class process():
 
     if "pal" in self.options.dv_format:
         self.fps=25.0
-        self.bpf=144000 
+        self.bpf=144000
 
     if self.options.ready_state:
         self.ready_state = self.options.ready_state
 
-    return 
+    return
 
 
 
