@@ -1060,7 +1060,7 @@ class add_eps(process.process):
                 ('abstract','description'),
                 ('authors','authors'),
                 ('contact','emails'),
-                ('twitter_username','twitter_id'),
+                ('twitter_id','twitter_id'),
                 ('start','start'),
                 ('duration','duration'),
                 ('released','released'),

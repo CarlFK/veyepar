@@ -15,17 +15,17 @@ pip install google-api-python-client
 
 2. Get a client ID (defines who is running this code)
 https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount
-Warning: Keep your client secret private. If someone obtains your client secret, they could use it to consume your quota, incur charges against your Google APIs Console project, and request access to user data. 
+Warning: Keep your client secret private. If someone obtains your client secret, they could use it to consume your quota, incur charges against your Google APIs Console project, and request access to user data.
 
-3. To define what youtube account will be uploaded to, 
+3. To define what youtube account will be uploaded to,
    the first time you run this it will prompt for a key:
     Go to the following link in your browser:
     https://accounts.google.com/o/oauth2/auth?...
-    Enter verification code: 
+    Enter verification code:
 A token gets saved in oauth.json and will be used for all subsiquent runs.
 
-4. if you don't give it a --pathname, it tries to upload itself, 
-which errors with: 
+4. if you don't give it a --pathname, it tries to upload itself,
+which errors with:
     ResumableUploadError ... "reason": "badContent", "message": "Media type 'text/x-python' is not supported.
 
 """
@@ -61,14 +61,14 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run_flow
 
-# The following import is wrapped in try/except so that 
+# The following import is wrapped in try/except so that
 # this code will run without any additional files.
 try:
     # read credentials from a file
-    from pw import yt 
+    from pw import yt
 except ImportError:
     # you can fill in your credentials here for dev
-    # but better to put in pw.py 
+    # but better to put in pw.py
     yt={
             "test":{ 'filename': "oauth.json" }
             }
@@ -109,7 +109,7 @@ VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
 def get_authenticated_service(user_key):
 
-  args = namedtuple('flags', [ 
+  args = namedtuple('flags', [
             'noauth_local_webserver',
             'logging_level'
             ] )
@@ -117,19 +117,19 @@ def get_authenticated_service(user_key):
   args.noauth_local_webserver = True
   args.logging_level='ERROR'
 
-  auth = yt[user_key] ## from dict of credentials 
+  auth = yt[user_key] ## from dict of credentials
   filename =auth['filename']
 
   # how and where tokens are stored
   storage = Storage(filename)
 
-  # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html 
+  # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html
 
   credentials = storage.get()
 
   if credentials is None or credentials.invalid:
 
-      flow = flow_from_clientsecrets( CLIENT_SECRETS_FILE, 
+      flow = flow_from_clientsecrets( CLIENT_SECRETS_FILE,
               scope=YOUTUBE_READ_WRITE_SCOPE,)
 
       # do the "allow access" step, save token.
@@ -168,7 +168,7 @@ def initialize_upload(youtube, filename, metadata):
     # practice, but if you're using Python older than 2.6 or if you're
     # running on App Engine, you should set the chunksize to something like
     # 1024 * 1024 (1 megabyte).
-    media_body=MediaFileUpload(filename, 
+    media_body=MediaFileUpload(filename,
         # chunksize=5 * 1024 * 1024, resumable=True)
         # chunksize=5000 * 1024, resumable=True)
         # chunksize=-1, resumable=True)
@@ -252,7 +252,7 @@ def clean_description(description):
 
     """
 "The property value has a maximum length of 5000 bytes and may contain all valid UTF-8 characters except < and >."
-https://developers.google.com/youtube/v3/docs/videos#properties  
+https://developers.google.com/youtube/v3/docs/videos#properties
     """
 
     # replace <- and -> with arrows, < > with pointy things.
@@ -339,7 +339,7 @@ class Uploader():
 
         print(("deleted {}".format(video_url)))
 
-        # videos_delete_response is '' 
+        # videos_delete_response is ''
         return videos_delete_response
 
 
@@ -354,7 +354,7 @@ class Uploader():
         self.meta['description'] = clean_description(
                 self.meta['description'])
 
-        status, response = initialize_upload(youtube, 
+        status, response = initialize_upload(youtube,
                 self.pathname, self.meta)
 
         self.response = response
@@ -385,8 +385,8 @@ def make_parser():
     parser.add_argument('--pathname', '-f', default=test_file,
                         help='file to upload.')
 
-    parser.add_argument('--debug_mode', '-d', default=False, 
-            action='store_true', 
+    parser.add_argument('--debug_mode', '-d', default=False,
+            action='store_true',
             help='whether to drop to prompt after upload. default: False')
 
     return parser
@@ -395,7 +395,7 @@ def make_parser():
 def test_upload(args):
 
     u = Uploader()
-   
+
     u.meta = {
       'description': "test description",
       'title': "test title",
@@ -412,7 +412,7 @@ def test_upload(args):
 
     """
     import requests
-    url = "http://5cda49ca88af98bf1f1e-b4c3b47b38bb1b572e0805ecabeeb59c.r76.cf2.rackcdn.com/10_05_52.ogv" 
+    url = "http://5cda49ca88af98bf1f1e-b4c3b47b38bb1b572e0805ecabeeb59c.r76.cf2.rackcdn.com/10_05_52.ogv"
     r=requests.get(url,stream=True)
     u.pathname = r.raw
     """
@@ -426,7 +426,7 @@ def test_upload(args):
         print(u.ret_text)
 
 def test_set_pub(args,video_url):
-    
+
     u = Uploader()
     u.user=args.user
     u.set_permission(video_url)
@@ -435,7 +435,7 @@ def test_set_pub(args,video_url):
 
 
 def test_set_unlisted(args,video_url):
-    
+
     u = Uploader()
     u.user=args.user
     u.set_permission(video_url, privacyStatus='unlisted')
@@ -444,7 +444,7 @@ def test_set_unlisted(args,video_url):
 
 
 def test_delete(args,video_url):
-    
+
     u = Uploader()
     u.user=args.user
     u.delete_video(video_url)
@@ -479,8 +479,11 @@ if __name__ == '__main__':
     parser = make_parser()
     args = parser.parse_args()
 
-    # url = test_upload(args)
-    # test_set_pub(args,url)
-    test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
-    # test_delete(args,url)
+    url = test_upload(args)
 
+    # url = "http://youtu.be/BCG7fbaBjJ4"
+
+    # test_set_pub(args,url)
+    # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
+    test_set_unlisted(args, url)
+    # test_delete(args,url)

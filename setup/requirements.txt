@@ -31,7 +31,7 @@ markdown
 django-filter
 
 # git+https://github.com/CarlFK/google-api-python-client.git#egg=googleapiclient
-google-api-python-client 
+google-api-python-client
 oauth2client
 # httplib2
 
@@ -39,7 +39,7 @@ psycopg2
 numpy
 
 # for util/dirmon.py
-git+https://github.com/maliubiao/python_inotify.git 
+git+https://github.com/maliubiao/python_inotify.git
 
 six
 python-keystoneclient
@@ -62,3 +62,5 @@ python-swiftclient
 PyRSS2Gen
 
 icalendar
+
+pymediainfo
