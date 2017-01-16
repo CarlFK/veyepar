@@ -23,8 +23,8 @@ class SyncRax(process):
         return dst in self.names
 
     def mk_audio_png(self, src, png_name):
-        """ 
-        make audio png from source, 
+        """
+        make audio png from source,
         src can be http:// or file://
         dst is the local fs.
         """
@@ -39,7 +39,7 @@ class SyncRax(process):
 
     def rf_web(self, show, rf):
         """
-        make a low bitrate version of the raw file 
+        make a low bitrate version of the raw file
         for previewing over the web
         """
 
@@ -67,10 +67,10 @@ class SyncRax(process):
                 p=subprocess.Popen(cmd)
                 p.wait()
                 retcode=p.returncode
-                
+
                 cmd = ['mv', tmp, out]
                 self.run_cmd(cmd)
-            
+
             if self.options.rsync:
                 if not self.cdn_exists(show,low):
                     # raw file (huge!!!)
@@ -94,7 +94,7 @@ class SyncRax(process):
             print("rf.filesize:{}".format(rf.filesize))
             self.file2cdn(show,png_tail)
 
-   
+
     def raw_files(self, show):
         print("getting raw files...")
         rfs = Raw_File.objects.filter(show=show,)
@@ -116,7 +116,7 @@ class SyncRax(process):
             cls = Cut_List.objects.filter(episode__in=eps)
             rfs = rfs.filter(cut_list__in=cls).distinct()
             """
-            rfs = rfs.exclude(filename__in=self.args)
+            rfs = rfs.filter(filename__in=self.args)
 
 
         for rf in rfs:
@@ -145,7 +145,7 @@ class SyncRax(process):
             if os.path.exists(src_name):
 
                 if not os.path.exists(png_name):
-                    # self.mk_audio_png(ep.public_url, png_name) 
+                    # self.mk_audio_png(ep.public_url, png_name)
                     self.mk_audio_png(src_name, png_name)
 
                 if self.options.rsync:
@@ -215,7 +215,7 @@ class SyncRax(process):
 
             # if ep.state>1:
             #    return
-            
+
 
     def show_assets(self,show):
         foot_img = show.client.credits
@@ -231,7 +231,7 @@ class SyncRax(process):
          conn = u.auth()
 
          # print("cf.get_all_containers", cf.get_all_containers())
-         
+
          print(bucket_id)
          container = conn.get_container(bucket_id)
          objects = container[1]
@@ -270,26 +270,26 @@ class SyncRax(process):
                     client=client, slug=self.options.show)
         else:
             show = Show.objects.get(slug=self.options.show)
- 
+
         self.one_show(show)
 
         return
 
     def add_more_options(self, parser):
-        parser.add_option('--assets', action="store_true", 
+        parser.add_option('--assets', action="store_true",
            help="synd asset files.")
-        parser.add_option('--raw', action="store_true", 
+        parser.add_option('--raw', action="store_true",
            help="process raw files.")
-        parser.add_option('--low', action="store_true", 
+        parser.add_option('--low', action="store_true",
            help="make low quality files.")
-        parser.add_option('--audio-viz', action="store_true", 
+        parser.add_option('--audio-viz', action="store_true",
            help="make audio visualization files.")
         parser.add_option('--cooked', action="store_true",
            help="process cooked files.")
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
 
-if __name__=='__main__': 
+if __name__=='__main__':
     p=SyncRax()
     p.main()
 
