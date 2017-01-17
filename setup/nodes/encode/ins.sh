@@ -14,6 +14,11 @@ sudo apt-get --assume-yes install \
     gir1.2-gst-plugins-base-1.0 gstreamer1.0-plugins-good \
     python-numpy
 
+# new stuff!!!
+pip install pyocr
+sudo apt install tesseract-ocr-eng tesseract-ocr
+
+
 
 # sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
 
@@ -41,7 +46,7 @@ tmux new -s enc1
 sudo vim /etc/resolv.conf
 nameserver 8.8.8.8
 
-wget --no-check-certificate -N http://github.com/CarlFK/veyepar/raw/master/INSTALL.sh ; chmod u+x INSTALL.sh ; ./INSTALL.sh 
+wget --no-check-certificate -N http://github.com/CarlFK/veyepar/raw/master/INSTALL.sh ; chmod u+x INSTALL.sh ; ./INSTALL.sh
 
 pip install psycopg2
 sudo apt-get install sshfs

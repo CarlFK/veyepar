@@ -20,29 +20,8 @@ pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
 # if pdfimages doesn't work out, use convert
 # convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
 
-
-# https://bitbucket.org/3togo/python-tesseract/downloads
-
-# wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.4ubuntu0_amd64.deb
-# wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.2ubuntu5_amd64.deb
-wget https://bitbucket.org/3togo/python-tesseract/downloads/python-tesseract_0.9-0.5ubuntu3_vivid_amd64.deb
-
-sudo gdebi python-tesseract_0.9-...
-
-sudo apt-get install python-opencv
-
-# serious hack cuz this didn't work: 
-  TESSDATA_PREFIX=/usr/share/tesseract-ocr
-ln -s /usr/share/tesseract-ocr/tessdata/ 
-
-cd $(python -c "from distutils.sysconfig import get_python_lib; print( get_python_lib())")
-ln -s /usr/lib/python2.7/dist-packages/cv2.so
-cd -
-
-pip install pillow
-
-pip install  numpy
-
+pip install pyocr
+sudo apt install tesseract-ocr-eng tesseract-ocr
 """
 
 import os
@@ -50,8 +29,7 @@ import subprocess
 
 import re
 
-# import cv2.cv as cv
-# import tesseract
+import pyocr
 
 from process import process
 
@@ -89,16 +67,13 @@ class add_img(process):
         To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
         """
  
-        # return ''
-
-        image=cv.LoadImage(imgname, cv.CV_LOAD_IMAGE_GRAYSCALE)
-
-        api = tesseract.TessBaseAPI()
-        api.Init(".","eng",tesseract.OEM_DEFAULT)
-        api.SetPageSegMode(tesseract.PSM_AUTO)
-        tesseract.SetCvImage(image,api)
-        text=api.GetUTF8Text()
-        conf=api.MeanTextConf()
+        tools = pyocr.get_available_tools()
+        tool = tools[0]
+        text = tool.image_to_string(
+            Image.open(imgname),
+            lang='eng',
+            builder=pyocr.builders.TextBuilder(),
+        )
 
         print(text)
 
@@ -119,7 +94,7 @@ class add_img(process):
             if val in ['','2014',]:
                 # blacklisted values
                 return
-            if val.lower().encode('utf-8','ignore') in text:
+            if val.lower() in text:
                 print("found", attrib, val)
                 ret=True
             else:
@@ -134,7 +109,7 @@ class add_img(process):
 
         return founds
 
-    def slice_dice(self,img_page, src_name):
+    def slice_dice(self, img_page, src_name, show, eps):
 
         # ocr 
         text = self.ocr_img(src_name)
@@ -161,13 +136,13 @@ class add_img(process):
         """
 
         if first_page_of_set:
-            start = 1100 # 728 # 820 # 995
-            end = 1705 # 1071 # 1370 # 1547
+            start = 1000 #1100 # 728 # 820 # 995
+            end = 1528 # 1705 # 1071 # 1370 # 1547
             bands= 3
             suffix='a'
         else:
-            start = 802 # 400 # 577
-            end = 1318 # 960 # 1127
+            start = 730 # 802 # 400 # 577
+            end = 1255 # 1318 # 960 # 1127
             bands= 4
             suffix='b'
 
@@ -179,6 +154,7 @@ class add_img(process):
        
         im = Image.open(src_name)
         w, h = im.size
+        src_base = os.path.basename(src_name)
         for i in range(bands):
 
             box = im.crop(
@@ -252,7 +228,7 @@ class add_img(process):
                 filename=png_base,)
 
         if not self.options.dumb:
-            self.slice_dice(img_page,src_name)
+            self.slice_dice(img_page, src_name, show, eps)
 
     def one_show(self, show):
 
