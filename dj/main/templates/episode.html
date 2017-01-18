@@ -77,18 +77,18 @@
 {% endif %}
 
 {% if episode.public_url %}
-   {% for ext in exts %} 
+   {% for ext in exts %}
      <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio">
    <br/>
     {% endfor %}
 {% endif %}
 
 <a href="{% url "raw_list" episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
-   {% for ext in exts %} 
+   {% for ext in exts %}
    <a href="{% url "raw_list" episode.id %}{{episode.slug}}-{{ext}}.m3u?ext={{ext}}">raw-{{ext}}-playlist</a>
     {% endfor %}
 
-<a href="{% url "public_play_list" %}{{episode.slug}}.m3u?id={{episode.id}}">encoded-files-playlist</a> 
+<a href="{% url "public_play_list" %}{{episode.slug}}.m3u?id={{episode.id}}">encoded-files-playlist</a>
 
 {% if episode.host_url %} <a href="{{episode.host_url}}">host</a>{%endif%}
 {% if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
@@ -97,7 +97,7 @@
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br/>
 
-{% for ext in exts %} 
+{% for ext in exts %}
    <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}">{{ext}}</a>
 {% endfor %}
 
@@ -109,7 +109,7 @@
 <br/>
 <a href="{% url "episode_logs" episode.id %}">logs</a><br/>
 
-Admin: 
+Admin:
 <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
 <a href="{% url "admin:main_cut_list_changelist" %}?episode__id__exact={{episode.id}}">cut list</a>
 <a href="{% url "admin:main_raw_file_changelist" %}?location__id__exact={{episode.location.id}}&amp;start__year={{episode.start|date:"Y"}}&amp;start__month={{episode.start|date:"m"}}&amp;start__day={{episode.start|date:"d"}}">raw files day</a>
@@ -155,7 +155,7 @@ Admin:
 {% endif %}
 {% endfor %}
  </div> <!-- class="viewer" -->
-</div> <! -- id="sheets" --> 
+</div> <! -- id="sheets" -->
 
  <script>
 $(".viewer").zoomer();
@@ -180,12 +180,12 @@ $(".viewer").zoomer();
 
   {{cl.raw_file.filename}}
   {{ clrfform.apply }}{{ clrfform.apply.label_tag }}
-  {{ cl.get_start_wall|date:"H:i:s" }} - {{ cl.get_end_wall|date:"H:i:s" }}  
+  {{ cl.get_start_wall|date:"H:i:s" }} - {{ cl.get_end_wall|date:"H:i:s" }}
   ( {{ cl.duration_hms }} )
 
   <u><b>S:</b> {{cl.raw_file.start|date:"H:i:s"}} - <b>E:</b> {{cl.raw_file.end|date:"H:i:s"}} <b>D:</b> {{cl.raw_file.duration}} </u>
-          {% if clrfform.start.value %} (<b>Start:</b> {{ clrfform.start.value }}){% endif %} 
-  {% if clrfform.end.value %} (<b>End:</b> {{ clrfform.end.value }}){% endif %} 
+          {% if clrfform.start.value %} (<b>Start:</b> {{ clrfform.start.value }}){% endif %}
+  {% if clrfform.end.value %} (<b>End:</b> {{ clrfform.end.value }}){% endif %}
 
   <input type="checkbox" id="cl-{{forloop.counter0}}" class="cl-showmore"> <label class="cl-summary" for="cl-{{forloop.counter0}}">show more...</label>
 
@@ -205,8 +205,8 @@ $(".viewer").zoomer();
           {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
           currentTime={{cl.start}}
           >
-          {% for ext in exts %} 
-              <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{ext}" type="video/{ext}">
+          {% for ext in exts %}
+          <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
           {% endfor %}
        </video>
       </td>
@@ -237,10 +237,10 @@ $(".viewer").zoomer();
                 <td>Duration</td>
                 <td>{{cl.raw_file.duration}}</td>
                 <td>
-                    <input type="button" value="-5s" id="back5-{{cl.id}}"> 
-                    <input type="button" value="-1s" id="back1-{{cl.id}}"> 
-                    <input type="button" value="+5s" id="fwd5-{{cl.id}}"> 
-                    <input type="button" value="end-5s" id="end5-{{cl.id}}"> 
+                    <input type="button" value="-5s" id="back5-{{cl.id}}">
+                    <input type="button" value="-1s" id="back1-{{cl.id}}">
+                    <input type="button" value="+5s" id="fwd5-{{cl.id}}">
+                    <input type="button" value="end-5s" id="end5-{{cl.id}}">
                 </td>
             </tr>
 
@@ -264,7 +264,7 @@ $(".viewer").zoomer();
 
             <tr>
                 <td>
-   {% for ext in exts %} 
+   {% for ext in exts %}
    <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" target={{ext}}>{{ext}}</a><br/>
    <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}">{{ext}}.m3u</a>
                 {% endfor %}
@@ -272,7 +272,7 @@ $(".viewer").zoomer();
   <td>
                 <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.dv">dv.m3u</a>
                 {#<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png">png</a> #}
-      
+
                 <td>
                     {{ clrfform.split.label_tag }}{{ clrfform.split }}
                     {{ clrfform.sequence.label_tag }}: {{ clrfform.sequence }}
@@ -294,7 +294,7 @@ $(".viewer").zoomer();
   {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
 
-  <img id="audio_image_{{cl.id}}" alt="audio viz" 
+  <img id="audio_image_{{cl.id}}" alt="audio viz"
     src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
 
   {% with forloop.counter0 as x %}
@@ -330,17 +330,17 @@ $(".viewer").zoomer();
             vid{{x}}[0].currentTime = startbox{{x}}.val();
        });
 
-    // back 5 seconds 
+    // back 5 seconds
     $( "#back5-{{cl.id}}" ).click(function() {
             vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-5;
        });
 
-    // back 1 second 
+    // back 1 second
     $( "#back1-{{cl.id}}" ).click(function() {
             vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-1;
        });
 
-    // fwd 5 seconds 
+    // fwd 5 seconds
     $( "#fwd5-{{cl.id}}" ).click(function() {
             vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')+5;
        });
@@ -393,5 +393,5 @@ $(".viewer").zoomer();
   <p>({{chap.0.1}})  {{chap.2.comment}}</p>
   {%endif%}
 {%endfor%}
- 
+
 {% endblock %}
