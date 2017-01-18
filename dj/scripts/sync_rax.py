@@ -63,7 +63,17 @@ class SyncRax(process):
 
                 tmp = "{out}.tmp".format(out=out)
 
-                cmd = ["melt", rf, "meta.attr.titles=1", "meta.attr.titles.markup=#timecode#", "-attach", "data_show", "dynamic=1", "-consumer", "avformat:"+tmp, "vb="+vb, "progress=1", "threads=6"]
+                cmd = ["melt", rf,
+                        "meta.attr.titles=1",
+                        "meta.attr.titles.markup=#timecode#",
+                        "-attach", "data_show", "dynamic=1",
+                    "-consumer", "avformat:"+tmp,
+                        "vb="+vb, "progress=1",
+                        "acodec=aac", "vcodec=libx264", "ab=50k",
+                        "preset=ultrafast", "progress=1",
+                        "movflags=+faststart", ]
+                # , "threads=6"]
+                        # "properties=x264-medium",
                 p=subprocess.Popen(cmd)
                 p.wait()
                 retcode=p.returncode
