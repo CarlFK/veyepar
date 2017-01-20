@@ -78,7 +78,7 @@ class enc(process):
             title = title.upper()
             authors = authors.upper()
 
-        if False and episode.show.slug != 'pygotham_2015' and  len(title) > 80: # crazy long titles need all the lines  
+        if False and episode.show.slug != 'pygotham_2015' and  len(title) > 80: # crazy long titles need all the lines
             title2 = ''
         elif ": " in title: # the space keeps 9:00 from breaking
             pos = title.index(":") + 1
@@ -99,7 +99,7 @@ class enc(process):
         elif ";" in title:
             pos = title.index(";") + 1
             title, title2 = title[:pos], title[pos:].strip()
-        elif "? " in title:   # ?(space) to not break on 'can you?' 
+        elif "? " in title:   # ?(space) to not break on 'can you?'
             pos = title.index("?") + 1
             title, title2 = title[:pos], title[pos:].strip()
         elif ". " in title:
@@ -158,7 +158,7 @@ class enc(process):
     def svg2png(self, svg_name, png_name, episode):
         """
         Make a title slide png file.
-        melt uses librsvg which doesn't support flow, 
+        melt uses librsvg which doesn't support flow,
         wich is needed for long titles, so render it to a .png using inkscape
         """
 
@@ -228,7 +228,7 @@ class enc(process):
         png_name = os.path.join( "..",
             "titles", '{}.png'.format(episode.slug))
 
-        abs_path = os.path.join( self.show_dir, "tmp", png_name ) 
+        abs_path = os.path.join( self.show_dir, "tmp", png_name )
 
         title_img = self.svg2png(cooked_svg_name, abs_path, episode)
 
@@ -241,8 +241,8 @@ class enc(process):
     def get_params(self, episode, rfs, cls):
         """
         assemble a dict of params to send to mk_mlt
-        mlt template, title screen image, 
-        filter parameters (currently just audio) 
+        mlt template, title screen image,
+        filter parameters (currently just audio)
         and cutlist+raw filenames
         """
         def get_title(episode):
@@ -281,15 +281,15 @@ class enc(process):
                 # if rf.filename.startswith('\\'):
                 #     rawpathname = rf.filename
                 # else:
-                raw_pathname = os.path.join( "../dv", 
+                raw_pathname = os.path.join( "../dv",
                         rf.location.slug, rf.filename)
                     # self.episode_dir, rf.filename)
 
                 # check for missing input file
                 # typically due to incorrect fs mount
-                abs_path =  os.path.join( 
+                abs_path =  os.path.join(
                         self.show_dir, "tmp", raw_pathname)
-                
+
                 if not os.path.exists(abs_path):
                     print(( 'raw_pathname not found: "{}"'.format(
                         abs_path)))
@@ -299,7 +299,7 @@ class enc(process):
 
                 # trim start/end based on episode start/end
                 if rf.start < ep.start < rf.end:
-                    # if the ep start falls durring this clip, 
+                    # if the ep start falls durring this clip,
                     # trim it
                     d = ep.start - rf.start
                     clip['in']="00:00:{}".format(d.total_seconds())
@@ -310,7 +310,7 @@ class enc(process):
                 #    import code; code.interact(local=locals())
 
                 if rf.start < ep.end < rf.end:
-                    # if the ep end falls durring this clip, 
+                    # if the ep end falls durring this clip,
                     d = ep.end - rf.start
                     clip['out']="00:00:{}".format(d.total_seconds())
                 else:
@@ -334,7 +334,7 @@ class enc(process):
             def hms_to_clock(hms):
                 """
                 Converts what media players show h:m:s
-                to the mlt time format h:m:s.s 
+                to the mlt time format h:m:s.s
                 for more on this:
                 http://mltframework.blogspot.com/2012/04/time-properties.html
                 """
@@ -355,7 +355,7 @@ class enc(process):
 
                 cut['id'] = cl.id
 
-                rawpathname = os.path.join( "../dv", 
+                rawpathname = os.path.join( "../dv",
                         cl.raw_file.location.slug, cl.raw_file.filename)
                     # self.episode_dir, cl.raw_file.filename)
                 # print(rawpathname)
@@ -423,8 +423,8 @@ class enc(process):
                 }
 
                # cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 acodec=libvorbis ab=128k ar=44100 vcodec=libvpx minrate=0 b=600k aspect=@4/3 maxrate=1800k g=120 qmax=42 qmin=10"% (mlt_pathname,out_pathname,)]
-                cmds = [
-                    "melt -profile %(dv_format)s %(mlt)s force_aspect_ratio=@64/45 -consumer avformat:%(out)s progress=1 threads=0 ab=256k vb=2000k quality=good deadline=good deinterlace=1 deinterlace_method=yadif" % parms]
+                # cmds = ["melt -profile %(dv_format)s %(mlt)s force_aspect_ratio=@64/45 -consumer avformat:%(out)s progress=1 threads=0 ab=256k vb=2000k quality=good deadline=good deinterlace=1 deinterlace_method=yadif" % parms]
+                cmds = ["melt -verbose -profile {dv_format} {mlt} -consumer avformat:{out} progress=1 threads=4 acodec=libvorbis ab=256k vb=2000k quality=good cpu-used=0 vcodec=libvpx".format( **parms ) ]
 
             if ext == 'flv':
                 cmds = [
@@ -576,11 +576,11 @@ class enc(process):
                 exclude(trash=True).distinct()
 
             # get a .mlt file for this episode (mlt_pathname)
-            # look for custom/slug.mlt and just use it, 
+            # look for custom/slug.mlt and just use it,
             # else build one from client.template_mlt
-            
+
             mlt_pathname = os.path.join(
-                    self.show_dir, "custom", 
+                    self.show_dir, "custom",
                     "{}.mlt".format(episode.slug))
 
             if os.path.exists(mlt_pathname):
@@ -589,8 +589,8 @@ class enc(process):
             else:
 
                 template_mlt = episode.show.client.template_mlt
-                
-                mlt_pathname = os.path.join(self.show_dir, 
+
+                mlt_pathname = os.path.join(self.show_dir,
                         "mlt", "%s.mlt" % episode.slug)
 
                 params = self.get_params(episode, rfs, cls )
@@ -656,7 +656,7 @@ class enc(process):
                           help='copy .dv to temp files')
         parser.add_option('--rm-temp',
                           help='remove large temp files')
-        parser.add_option('--threads', 
+        parser.add_option('--threads',
                           help='thread parameter passed to encoder')
 
     def add_more_option_defaults(self, parser):

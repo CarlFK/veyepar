@@ -3,6 +3,7 @@
 # abstract class for processing episodes
 
 import optparse
+from pprint import pprint
 import configparser
 import os,sys,subprocess,socket
 import datetime,time
@@ -555,12 +556,16 @@ class process():
     self.add_more_options(parser)
 
     self.options, self.args = parser.parse_args()
+
     # this needs to be done better:
     self.options.upload_formats = self.options.upload_formats.split()
+
     self.get_options()
 
     if self.options.verbose:
-        print(self.options, self.args)
+        # import code; code.interact(local=locals())
+        pprint(self.options.__dict__)
+        pprint(self.args)
 
     if "pal" in self.options.dv_format:
         self.fps=25.0

@@ -32,8 +32,16 @@ class tweet(process):
         return list(data['results'].values())[0]['shorturl']
 
     def mk_tweet(self, prefix, twitter_ids, video_name, authors, video_url):
-        message = ' '.join([prefix, twitter_ids, 
-            video_name, '-', authors, video_url])
+
+        #lca2017 My Talk Title - @CarlFK http://youtu.be/123456
+
+        if twitter_ids:
+            message = ' '.join([prefix, video_name, '-',
+                twitter_ids, video_url ])
+        else:
+            message = ' '.join([prefix, video_name, '-',
+                authors, video_url ])
+
         if len(message) > 140:
             message = ' '.join([prefix, twitter_ids, video_name, video_url])
         if len(message) > 140:
@@ -46,7 +54,7 @@ class tweet(process):
 
     def tweet_tweet(self, user, tweet):
         if self.options.test:
-            print('test mode:') 
+            print('test mode:')
             print('user:', user)
             print(tweet)
             ret=False
@@ -54,9 +62,9 @@ class tweet(process):
             print('tweeting:', tweet)
             # print user,password
             t = pw.twit[user]
-            api = twitter.Api(consumer_key=t['consumer_key'], 
+            api = twitter.Api(consumer_key=t['consumer_key'],
                      consumer_secret=t['consumer_secret'],
-                     access_token_key=t['access_key'], 
+                     access_token_key=t['access_key'],
                      access_token_secret=t['access_secret'] )
             if self.options.verbose: print(api.VerifyCredentials())
             status = api.PostUpdate(tweet)
@@ -74,7 +82,7 @@ class tweet(process):
         show = ep.show
         client = show.client
 
-        # use the username for the client 
+        # use the username for the client
         user =  client.tweet_id
 
         url = ep.public_url if ep.public_url \
@@ -96,7 +104,7 @@ class tweet(process):
             twitter_ids = ' '.join(twitter_ids)
 
 
-        tweet = self.mk_tweet(prefix, 
+        tweet = self.mk_tweet(prefix,
                 twitter_ids, ep.name, ep.authors, url)
 
         ret=self.tweet_tweet(user, tweet)
