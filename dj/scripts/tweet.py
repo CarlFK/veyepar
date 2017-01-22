@@ -34,6 +34,8 @@ class tweet(process):
     def mk_tweet(self, prefix, twitter_ids, video_name, authors, video_url):
 
         #lca2017 My Talk Title - @CarlFK http://youtu.be/123456
+        if self.options.verbose:
+            print(prefix, twitter_ids, video_name, authors, video_url)
 
         if twitter_ids:
             message = ' '.join([prefix, video_name, '-',

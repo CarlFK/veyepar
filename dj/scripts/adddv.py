@@ -5,7 +5,7 @@
 
 import  os
 import datetime
-from fnmatch import fnmatch 
+from fnmatch import fnmatch
 
 from process import process
 
@@ -30,13 +30,13 @@ class add_dv(process):
                     print(e)
                     continue
 
-            print(click, end=' ') 
+            print(click, end=' ')
 
             mark, created = Mark.objects.get_or_create(
                 show=show, location=location,
                 click=click)
-            
-            if created: 
+
+            if created:
                 print("(new)")
                 mark.save()
             else:
@@ -55,7 +55,7 @@ class add_dv(process):
 
             fullpathname = os.path.join(
                    self.show_dir, "dv", location.slug, pathname )
-            st = os.stat(fullpathname)    
+            st = os.stat(fullpathname)
             filesize=st.st_size
 
             if filesize == 0:
@@ -66,8 +66,8 @@ class add_dv(process):
                 rf, created = Raw_File.objects.get_or_create(
                     show=show, location=location,
                     filename=pathname,)
-                
-                if created: 
+
+                if created:
                    print("(new)")
                    rf.sequence=seq
                    rf.filesize=filesize
@@ -83,39 +83,59 @@ class add_dv(process):
             Raw_File.objects.filter(show=show).delete()
             Mark.objects.filter(show=show).delete()
 
-        ep_dir=os.path.join(self.show_dir,'dv',location.slug)
-        if self.options.verbose:  print("episode dir:", ep_dir)
+        loc_dir=os.path.join(self.show_dir,'dv',location.slug)
+        if self.options.verbose:  print("loc dir:", loc_dir)
         seq=0
-        for dirpath, dirnames, filenames in os.walk(ep_dir,followlinks=True):
-            d=dirpath[len(ep_dir)+1:]
-            if self.options.verbose: 
-                print("checking...", dirpath, d, dirnames, filenames) 
+        # os.walk returns a list of branches and leaves
+        # branches are the dirs,
+        #   leaves are the files at the end of each branch
+        # the branch includes the root (which we don't want in the db)
+        for dirpath, dirnames, filenames in os.walk(loc_dir,followlinks=True):
+            # dirpath is the whole path from /
+            # we want to strip off .../client/show/dv/loc
+            # and only store what is under loc/
+            stuby=dirpath[len(loc_dir)+1:]
+            if self.options.verbose:
+                print("checking...", dirpath, stuby, filenames)
 
-            if self.options.subs:
-                # subs holds a bit of the dirs we want,
-                # like graphics,video,Camera,GFX
-                if not self.options.subs in dirpath:
-                    continue
+            for filename in filenames:
+                if self.options.verbose:
+                    print("filename: {}".format(filename))
 
-            for f in filenames:
-                if self.args and any(fnmatch(f,mask) for mask in self.args):
-                    # only add files listed on the command line
-                    continue
+                basename, extension = os.path.splitext(filename)
 
-                basename, extension = os.path.splitext(f)
-
+                # cut list file from voctomix
                 if extension == ".log":
-                    self.mark_file(os.path.join(d,f),show,location)
+                    self.mark_file(
+                            os.path.join(stuby,filename),show,location)
+                    continue
 
+                # skip Low Quality version made by sync-rax
                 if basename in filenames:
+                    # foo.ts makes foo.ts.mp4.
+                    # strip the .mp4, see if foo.ts in [foo.ts]
+                    # the mp4 is the lq from sync-rax, so don't add it.
                     if os.path.splitext(basename)[1] in VIDEO_EXTENSIONS:
+                        # I am not sure how we got here if it wasn't an lq
+                        # so I am not sure why we are checking this
+                        # but tweed says:
                         # This must be a preview mp4 for web editing
+                        if self.options.verbose:
+                            print("skipping low quality")
                         continue
+
+                pathname=os.path.join(dirpath,filename)
+                if self.options.include and not fnmatch(
+                        pathname,self.options.include):
+                    # only add files that match --include
+                    if self.options.verbose:
+                        print("skipping (not in --include)")
+                    continue
 
                 if extension in VIDEO_EXTENSIONS:
                     seq+=1
-                    # print("doing",f)
-                    self.one_file(os.path.join(d,f),show,location,seq)
+                    self.one_file(
+                            os.path.join(stuby,filename),show,location,seq)
 
     def one_show(self, show):
       if self.options.whack:
@@ -138,10 +158,10 @@ class add_dv(process):
         return
 
     def add_more_options(self, parser):
-        parser.add_option('--subs', 
-           help="only include path that include string.")
+        parser.add_option('--include',
+           help="only include this glob.")
 
-if __name__=='__main__': 
+if __name__=='__main__':
     p=add_dv()
     p.main()
 
