@@ -82,7 +82,7 @@ class SyncRax(process):
                 self.run_cmd(cmd)
 
             if self.options.rsync:
-                if not self.cdn_exists(show,low):
+                if not self.cdn_exists(show,low) or self.options.replace:
                     # raw file (huge!!!)
                     ### self.file2cdn(show,base)
                     self.file2cdn(show,low)
@@ -96,13 +96,21 @@ class SyncRax(process):
         src = os.path.join(self.show_dir,rf_tail)
         dst = os.path.join(self.show_dir,png_tail)
 
-        if not os.path.exists(dst) or self.options.force:
+        if not os.path.exists(dst) or self.options.replace:
             ret = self.mk_audio_png(src,dst)
 
         if self.options.rsync and (
-                not self.cdn_exists(show,png_tail) or self.options.force):
+                not self.cdn_exists(show,png_tail) or self.options.replace):
             print("rf.filesize:{}".format(rf.filesize))
             self.file2cdn(show,png_tail)
+
+
+    def raw_file(self, show, rf):
+        if self.options.verbose: print(rf)
+        if self.options.low:
+            self.rf_web(show, rf)
+        if self.options.audio_viz:
+            self.rf_audio_png(show, rf)
 
 
     def raw_files(self, show):
@@ -116,31 +124,47 @@ class SyncRax(process):
             loc = Location.objects.get(slug=self.options.room)
             rfs = rfs.filter(location = loc)
 
+        if self.options.include:
+            rfs = rfs.filter(filename=self.options.include)
+
         # rfs = rfs.exclude(id=12212)
         # rfs = rfs.exclude(filesize__lt=800000)
         # rfs = rfs.exclude(filename="2016-07-30/12_55_51.ts")
 
         if self.args:
-            """
             eps = Episode.objects.filter(id__in=self.args)
             cls = Cut_List.objects.filter(episode__in=eps)
             rfs = rfs.filter(cut_list__in=cls).distinct()
-            """
-            rfs = rfs.filter(filename__in=self.args)
 
+        rfs = rfs.order_by()
 
+        # try to do the more important ones first
+        # skip before 8am and after 6pm
+        # it would be nice to target ones that are being worked on
+        # but that's too hard.
         for rf in rfs:
-            if self.options.verbose: print(rf)
-            if self.options.low:
-                self.rf_web(show, rf)
-            if self.options.audio_viz:
-                self.rf_audio_png(show, rf)
+
+            if rf.start.hour < 8:
+                # too early, must be tests
+                continue
+            if rf.start.hour > 18:
+                # too late, mixer was left on after talks stopped
+                # or it is an evening event, oh well too bad.
+                continue
+
+            self.raw_file(show,rf)
+
+
+        # now do them all of them to be sure.
+        # does't cost much to check and see they are done.
+        for rf in rfs:
+            self.raw_file(show,rf)
 
     def sync_final(self,show,ep):
         for ext in self.options.upload_formats:
             base = os.path.join( ext, "{}.{}".format(ep.slug, ext) )
-            # if not self.cdn_exists(show,base):
-            self.file2cdn(show,base)
+            if not self.cdn_exists(show,base) or self.options.replace:
+                self.file2cdn(show,base)
 
     def sync_final_audio_png(self,show,ep):
 
@@ -175,8 +199,8 @@ class SyncRax(process):
 
     def sync_title_png(self,show,ep):
         base = os.path.join("titles", ep.slug + ".png" )
-        if not self.cdn_exists(show,base):
-            self.file2cdn(show,base)
+        if not self.cdn_exists(show, base) or self.options.replace:
+            self.file2cdn(show, base)
 
     def mlt(self,show,ep):
         # put whatever is found into target/mlt
@@ -287,7 +311,7 @@ class SyncRax(process):
 
     def add_more_options(self, parser):
         parser.add_option('--assets', action="store_true",
-           help="synd asset files.")
+           help="sync asset files (mlt, svg, png (not raw or lq raw)).")
         parser.add_option('--raw', action="store_true",
            help="process raw files.")
         parser.add_option('--low', action="store_true",
@@ -298,6 +322,13 @@ class SyncRax(process):
            help="process cooked files.")
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
+
+        parser.add_option('--include',
+                help="only include this filename. (What is stored in raw_file.filnema: yyyy-mm-dd/hh_mm_ss.ts)")
+
+        parser.add_option('--replace', action="store_true",
+            help="Upload again, step on existing file.")
+
 
 if __name__=='__main__':
     p=SyncRax()

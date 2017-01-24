@@ -13,8 +13,8 @@
 <td> <a href="{% url "admin:main_show_change" show.id %}">show admin</a> </td>
 <td> <a href="{% url "admin:main_episode_changelist" %}?{{admin_params}}">episodes admin</a> </td>
 <td> <a href="{% url "admin:main_image_file_changelist" %}?{{admin_params}}">image_file admin</a> </td>
-<td> 
-    <a href="{% url "public_play_list" %}?{{query_params}}">play_list</a> 
+<td>
+    <a href="{% url "public_play_list" %}?{{query_params}}">play_list</a>
 </td>
 <td>  </td>
 
@@ -65,6 +65,7 @@ Episode Count: {{episodes.count}}
         <td style="white-space:normal"><a href="E/{{episode.id}}/#id_comment" title="{{episode.comment}}">{{episode.comment|length|default:""}}</a></td>
         <td>{{episode.released|yesno:"Y,N"}}</td>
         <td>{{episode.image_file_set.count|default:""}}</td>
+        # cuts
         <td>{{episode.cut_list_set.count|default:""}}</td>
         <td>
             {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
