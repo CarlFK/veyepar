@@ -12,7 +12,7 @@ sys.path.insert(0, '..' )
 from django.conf import settings
 
 import django
-django.setup() 
+django.setup()
 
 import socket
 
@@ -22,7 +22,7 @@ fnames=[]
 test_filename = 'tests.txt'
 if os.path.exists(test_filename):
     call_list = open(test_filename).read().split('\n')
-else: 
+else:
     call_list = []
 
 def callme_maybe(f):
@@ -61,7 +61,7 @@ class Run_Tests(object):
           p.wait()
           ret = dict( returncode=p.returncode)
 
-        if ret['returncode']: 
+        if ret['returncode']:
             ret['command'] = cmd
             print("command returned", ret)
             print("cmd:", cmd)
@@ -94,7 +94,7 @@ class Run_Tests(object):
 
  # @callme_maybe
  def make_dirs(self):
-  # create dirs for video files 
+  # create dirs for video files
   import mkdirs
   p=mkdirs.mkdirs()
   p.main()
@@ -103,19 +103,19 @@ class Run_Tests(object):
   self.show_dir = p.show_dir
   self.show=Show.objects.get(slug=p.options.show)
   self.options = p.options
-  self.sh_pathname = os.path.join( 
+  self.sh_pathname = os.path.join(
           self.show_dir, 'tmp', "%s.sh" % (self.slug) )
   return
 
 
  @callme_maybe
  def make_source_dvs(self):
-   """ 
+   """
  ` Make a set of .dv files.
    Similar to what dvswitch creates (dir/filename date/time.dv)
    This takes the place of using dvswitch to record an event.
 
-   be sure the 2010-05-21 date 
+   be sure the 2010-05-21 date
    matches start_date in make_sample_data above.
    """
    # get melt version to stick into video
@@ -129,7 +129,7 @@ class Run_Tests(object):
 
    # MELT_PARMS="-attach lines width=80 num=1 -attach lines width=2 num=10"
    text_file="source.txt"
-   
+
    for i in range(5):
        # each file is 3 seconds long
 
@@ -137,7 +137,7 @@ class Run_Tests(object):
 
        out_file="00_00_%02i.dv" % (i*3)
        frames = 90
-       parms={'input_file':text_file, 
+       parms={'input_file':text_file,
            'output_file':os.path.join(dv_dir,out_file),
            # 'format':self.options.dv_format,
            'format':"dv_ntsc_wide",
@@ -147,7 +147,7 @@ class Run_Tests(object):
            parms['audio-track'] = "-producer noise"
            parms['bgcolour'] = "red"
        else:
-           parms['audio-track'] = "static/goforward.wav" 
+           parms['audio-track'] = "static/goforward.wav"
            parms['bgcolour'] = "blue"
 
        print(parms)
@@ -163,7 +163,7 @@ class Run_Tests(object):
        tf = open(text_file,'w')
        tf.write('\n'.join(text))
        tf.close()
-       
+
 
        cmd = "melt \
 -profile %(format)s \
@@ -177,12 +177,12 @@ pix_fmt=yuv411p" % parms
        self.run_cmd(cmd.split())
 
    return
- 
+
 
  @callme_maybe
  def make_source_footer(self):
-   """ 
- ` make a footer.png 
+   """
+ ` make a footer.png
    via a convoluted process, which has a side effect of more testing
    the process:
    create 1 line source.txt: ABCDEFG
@@ -193,8 +193,8 @@ pix_fmt=yuv411p" % parms
    tmp_dir = os.path.join(self.show_dir, 'tmp')
    assets_dir = os.path.join(self.show_dir, 'assets')
    text_file = os.path.join(tmp_dir, "source.txt")
-   out_file = os.path.join(tmp_dir,"footer.mp4") 
-   parms={'input_file':text_file, 
+   out_file = os.path.join(tmp_dir,"footer.mp4")
+   parms={'input_file':text_file,
            'out_file':out_file,
            'text_file':text_file,
            'assets_dir':assets_dir,
@@ -210,7 +210,7 @@ pix_fmt=yuv411p" % parms
    tf = open(text_file,'w')
    tf.write('\n'.join(text))
    tf.close()
-   
+
    # create dv file from text and generated noise
    cmd = "melt \
  -profile %(format)s \
@@ -235,8 +235,8 @@ pix_fmt=yuv411p" % parms
    self.run_cmd(cmd.split())
 
    # "00000001.png"
-   return 
- 
+   return
+
  @callme_maybe
  def add_dv(self):
   # add the dv files to the db
@@ -284,16 +284,29 @@ pix_fmt=yuv411p" % parms
   # cut.save()
   return
 
+ @callme_maybe
+ def sync_rax_raw(self):
+  # gens low quality and audio viz
+  print("sync_rax_lq...")
+  import sync_rax
+  p=sync_rax.SyncRax()
+  p.set_options(
+          verbose=False,
+      raw=True, low=True, audio_viz=True, replace=True, rsync=False
+      )
+  p.main()
+  return
+
 
  @callme_maybe
  def encode(self):
-  # encode the test episode 
-  # create a title, use clips 2,3,4 as source, maybe a credits trailer 
+  # encode the test episode
+  # create a title, use clips 2,3,4 as source, maybe a credits trailer
   import enc
   p=enc.enc()
   p.set_options(
-    upload_formats=self.upload_formats, 
-    # rm_temp=False, 
+    upload_formats=self.upload_formats,
+    # rm_temp=False,
     debug_log=False)
   p.main()
   self.episode = p.episode
@@ -310,7 +323,7 @@ pix_fmt=yuv411p" % parms
 
  @callme_maybe
  def play_vid(self):
-    # show the user what was made 
+    # show the user what was made
     # todo: (speed up, we don't have all day)
     import play_vids
     p=play_vids.play_vids()
@@ -326,7 +339,7 @@ pix_fmt=yuv411p" % parms
       debug_log=True,
       )
   p.main()
- 
+
   # post.py does: self.last_url = post_url.text
   # self.run_cmd(["firefox",p.last_url])
   return p.las
@@ -373,7 +386,7 @@ pix_fmt=yuv411p" % parms
       )
   p.private=True
   p.main()
- 
+
   # post.py does: self.last_url = post_url.text
   # print p.last_url
   # self.run_cmd(["firefox",p.last_url])
@@ -448,13 +461,13 @@ pix_fmt=yuv411p" % parms
   test_file = os.path.join(tmp_dir, "00000002.ppm" )
   gocr_outs = self.run_cmd(['gocr', test_file], True )
   text = gocr_outs['sout']
-  
+
   # not sure what is tacking on the \n, but it is there, so it is here.
   acceptables = ["ABCDEFG\n","_BCDEFG\n"]
   print("acceptables:", acceptables)
 
   print("ocr results:", text)
-  
+
   result = (text in acceptables)
 
   return result
@@ -508,7 +521,7 @@ pix_fmt=yuv411p" % parms
           result = ( text == ['GO', 'FORWARD', 'TEN', 'METERS'] )
 
           return result
-  
+
  @callme_maybe
  def size_test(self):
      sizes = {
@@ -542,7 +555,7 @@ pix_fmt=yuv411p" % parms
 def main():
     result={}
 
-    t=Run_Tests() 
+    t=Run_Tests()
     t.upload_formats=["webm",]
     # t.upload_formats=["webm", "mp4",]
     # t.upload_formats=["flac",]
@@ -557,6 +570,7 @@ def main():
     t.add_dv()
     # t.make_thumbs() ## this jackes up gstreamer1.0 things, like mk_audio
     t.make_cut_list()
+    t.sync_rax_raw()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     t.encode()
@@ -573,8 +587,8 @@ def main():
     # result['audio'] = t.sphinx_test() # sphinx no longer packaged :(
     result['sizes'] = t.size_test()
 
-    print() 
-    print('test results', end=' ') 
+    print()
+    print('test results', end=' ')
     pprint.pprint(result)
 
     if not os.path.exists(test_filename):
