@@ -315,8 +315,6 @@ pix_fmt=yuv411p" % parms
   p.main()
   return
 
-
-
  @callme_maybe
  def ck_errors(self):
   # check for encoding errors
@@ -561,8 +559,8 @@ def main():
     result={}
 
     t=Run_Tests()
-    t.upload_formats=["webm",]
-    # t.upload_formats=["webm", "mp4",]
+    # t.upload_formats=["webm",]
+    t.upload_formats=["webm", "mp4",]
     # t.upload_formats=["flac",]
     t.title = "Let's make a Test"
     t.slug = "Lets_make_a_Test"

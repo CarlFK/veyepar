@@ -17,12 +17,12 @@ from functools import reduce
 def time2s(time):
     """ given 's.s' or 'h:m:s.s' returns s.s """
     if time:
-        sec = reduce(lambda x, i: x*60 + i,  
-            list(map(float, time.split(':'))))  
+        sec = reduce(lambda x, i: x*60 + i,
+            list(map(float, time.split(':'))))
     else:
         sec = 0.0
-        
-    return sec 
+
+    return sec
 
 
 class Client(models.Model):
@@ -32,7 +32,7 @@ class Client(models.Model):
     name = models.CharField(max_length=135)
     slug = models.CharField(max_length=135, blank=True, null=False,
             help_text="dir name to store input files", )
-    contacts = models.CharField(max_length=300, blank=True, 
+    contacts = models.CharField(max_length=300, blank=True,
         help_text='emails of people putting on the event.')
 
     description = models.TextField(blank=True)
@@ -42,18 +42,18 @@ class Client(models.Model):
     category_key = models.CharField(max_length=30, blank=True, null=True,
             help_text = "Category for Richard")
 
-    # video encoding 
+    # video encoding
     template_mlt = models.CharField(max_length=60, null=True,
         default="template.mlt",
         help_text='template to make cutlist mlt from.')
     title_svg = models.CharField(max_length=60, null=True,
         default="title.svg",
         help_text='template for event/title/authors title slide.')
-    preroll = models.CharField(max_length=335, blank=True, 
+    preroll = models.CharField(max_length=335, blank=True,
         help_text="name of video to prepend (not implemented)")
     postroll = models.CharField(max_length=335, blank=True,
         help_text="name of video to postpend (not implemented)")
-    credits = models.CharField(max_length=30, blank=True, 
+    credits = models.CharField(max_length=30, blank=True,
             default="ndv-169.png",
         help_text='added to end, store in assets dir')
 
@@ -87,7 +87,7 @@ class Location(models.Model):
         help_text="Turn off to hide from UI.")
     default = models.BooleanField(default=True,
         help_text="Adds this loc to new Clients.")
-    name = models.CharField(max_length=135, 
+    name = models.CharField(max_length=135,
         default=socket.gethostname(),
         help_text="room name")
     slug = models.CharField(max_length=135, blank=True, null=False,
@@ -111,10 +111,10 @@ class Location(models.Model):
     class Meta:
         ordering = ["sequence"]
 
-ANN_STATES=((1,'preview'),(2,'review'),(3,'approved')) 
+ANN_STATES=((1,'preview'),(2,'review'),(3,'approved'))
 class Show(models.Model):
     client = models.ForeignKey(Client)
-    locations = models.ManyToManyField(Location, 
+    locations = models.ManyToManyField(Location,
             limit_choices_to={'active': True},
             blank=True)
     sequence = models.IntegerField(default=1)
@@ -176,13 +176,14 @@ class Raw_File(models.Model):
     def basename(self):
         # strip the extension
         # good for making 1-2-3/foo.png from 1-2-3/foo.dv
+        raise "homey don't play that no more."
         return os.path.splitext(self.filename)[0]
 
     def base_url(self):
         """ Returns the url for the file, minus the MEDIA_URL and extension """
-        return "%s/%s/dv/%s/%s" % (self.show.client.slug, 
-                                    self.show.slug, 
-                                    self.location.slug, 
+        return "%s/%s/dv/%s/%s" % (self.show.client.slug,
+                                    self.show.slug,
+                                    self.location.slug,
                                     self.filename)
 
     def get_start_seconds(self):
@@ -195,7 +196,7 @@ class Raw_File(models.Model):
         # return durration in seconds (float)
         delta = self.end - self.start
         seconds = delta.days*24*60*60 + delta.seconds
-        return seconds 
+        return seconds
 
     def get_minutes(self):
         # return durration in minutes (float)
@@ -218,7 +219,7 @@ class Mark(models.Model):
         help_text='When Cut was Clicked.')
     class Meta:
         ordering = ["click"]
- 
+
 class Quality(models.Model):
     level = models.IntegerField()
     name = models.CharField(max_length=35)
@@ -234,7 +235,7 @@ STATES=[
  (4, 'post'), # push to yourube and archive.org
  (5, 'richard'), # push urls and description to PyVideo.org
  (6, 'review 1'), # staff check to see if they exist on yourube/archive
- (7, 'email'), # send private url to presenter, ask for feedback, 
+ (7, 'email'), # send private url to presenter, ask for feedback,
  (8, 'review 2'), # wait for presenter to say good, or timeout
  (9, 'make public'), # flip private to public
  (10, 'tweet'), # tell world
@@ -251,7 +252,7 @@ class Episode(models.Model):
     state = models.IntegerField(null=True, blank=True,
         choices=STATES, default=STATES[1][0],
         help_text="" )
-    locked = models.DateTimeField(null=True, blank=True, 
+    locked = models.DateTimeField(null=True, blank=True,
         help_text="clear this to unlock")
     locked_by = models.CharField(max_length=35, blank=True,
 	    help_text="user/process that locked." )
@@ -263,7 +264,7 @@ class Episode(models.Model):
         help_text="length in hh:mm:ss")
     end = models.DateTimeField(blank=True, null=False,
         help_text="(calculated if start and duration are set.)")
-    name = models.CharField(max_length=170, 
+    name = models.CharField(max_length=170,
         help_text="Talk title (synced from primary source)")
     slug = models.CharField(max_length=170, blank=True, null=False,
         help_text="file name friendly version of name")
@@ -279,11 +280,11 @@ class Episode(models.Model):
         help_text="Data provided by API")
 
     authors = models.TextField(null=True,blank=True,)
-    emails = models.TextField(null=True,blank=True, 
+    emails = models.TextField(null=True,blank=True,
         help_text="email(s) of the presenter(s)")
     twitter_id = models.CharField(max_length=135, blank=True, null=True,
         help_text="Data provided by API")
-    # reviewers = models.TextField(null=True,blank=True, 
+    # reviewers = models.TextField(null=True,blank=True,
     #    help_text="email(s) of the reviewers(s)")
 
     language = models.CharField(max_length=20, blank=True, null=True,
@@ -309,7 +310,7 @@ class Episode(models.Model):
     hidden = models.NullBooleanField(null=True,blank=True,
         help_text='hidden (does not show up on public episode list')
 
-    thumbnail = models.CharField(max_length=135,blank=True, 
+    thumbnail = models.CharField(max_length=135,blank=True,
         help_text="filename.png" )
     host_url = models.CharField(max_length=235, null=True,blank=True,
         help_text = "URL of page video is hosted")
@@ -336,7 +337,7 @@ class Episode(models.Model):
 
     formfield_overrides = {
             models.TextField: {
-                'widget': forms.Textarea({'cols': 80, 'rows': 2}), 
+                'widget': forms.Textarea({'cols': 80, 'rows': 2}),
             }}
 
 
@@ -346,7 +347,7 @@ class Episode(models.Model):
 
     def __str__(self):
         return self.name
- 
+
     def cuts_time(self):
         # get total time in seoonds of video based on selected cuts.
         # or None if there are no clips.
@@ -381,22 +382,22 @@ class Episode(models.Model):
     def get_authors(self):
         authors = self.authors.split(',') if self.authors else []
         return authors
-        
+
 
     class Meta:
         ordering = ["sequence"]
         # unique_together = [("show", "slug")]
-  
+
 
 class Cut_List(models.Model):
     """
-    note: this sould be Cut_list_ITEM 
+    note: this sould be Cut_list_ITEM
     because it is not the whole list, just one entry.
     """
     raw_file = models.ForeignKey(Raw_File)
     episode = models.ForeignKey(Episode)
     sequence = models.IntegerField(default=1)
-    start = models.CharField(max_length=11, blank=True, 
+    start = models.CharField(max_length=11, blank=True,
         help_text='offset from start in HH:MM:SS.ss')
     end = models.CharField(max_length=11, blank=True,
         help_text='offset from start in HH:MM:SS.ss')
@@ -433,13 +434,13 @@ class Cut_List(models.Model):
 
 
     def duration(self):
-        # calc size of clip in secconds 
+        # calc size of clip in secconds
         # may be size of raw, but take into account trimming start/end
         def to_sec(time, default=0):
             # convert h:m:s to s
             if time:
-                sec = reduce(lambda x, i: x*60 + i, 
-                    list(map(float, time.split(':')))) 
+                sec = reduce(lambda x, i: x*60 + i,
+                    list(map(float, time.split(':'))))
             else:
                 sec=default
             return sec

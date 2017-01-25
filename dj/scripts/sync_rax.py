@@ -48,7 +48,7 @@ class SyncRax(process):
             base = os.path.join( "dv", rf.location.slug, rf.filename )
             if self.options.verbose: print(base)
 
-            rf = os.path.join(self.show_dir, base)
+            rfpathname = os.path.join(self.show_dir, base)
             low = "{base}.{ext}".format(base=base, ext=ext)
             out = os.path.join(self.show_dir, low)
 
@@ -63,7 +63,7 @@ class SyncRax(process):
 
                 tmp = "{out}.tmp".format(out=out)
 
-                cmd = ["melt", rf,
+                cmd = ["melt", rfpathname,
                         "meta.attr.titles=1",
                         "meta.attr.titles.markup=#timecode#",
                         "-attach", "data_show", "dynamic=1",
@@ -106,7 +106,7 @@ class SyncRax(process):
 
 
     def raw_file(self, show, rf):
-        if self.options.verbose: print(rf)
+        if self.options.verbose: print("rf:",rf)
         if self.options.low:
             self.rf_web(show, rf)
         if self.options.audio_viz:
@@ -114,7 +114,9 @@ class SyncRax(process):
 
 
     def raw_files(self, show):
-        print("getting raw files...")
+
+        if self.options.verbose: print("getting raw files...")
+
         rfs = Raw_File.objects.filter(show=show,)
 
         if self.options.day:
@@ -136,9 +138,11 @@ class SyncRax(process):
             cls = Cut_List.objects.filter(episode__in=eps)
             rfs = rfs.filter(cut_list__in=cls).distinct()
 
-        rfs = rfs.order_by()
+
 
         # try to do the more important ones first
+        # rfs = rfs.order_by()
+        # ok can't figure out good SQL stuff, so ... hammer time.
         # skip before 8am and after 6pm
         # it would be nice to target ones that are being worked on
         # but that's too hard.
@@ -154,11 +158,10 @@ class SyncRax(process):
 
             self.raw_file(show,rf)
 
-
         # now do them all of them to be sure.
         # does't cost much to check and see they are done.
         for rf in rfs:
-            self.raw_file(show,rf)
+            self.raw_file(show, rf)
 
     def sync_final(self,show,ep):
         for ext in self.options.upload_formats:
@@ -178,7 +181,7 @@ class SyncRax(process):
 
             if os.path.exists(src_name):
 
-                if not os.path.exists(png_name):
+                if not os.path.exists(png_name) or self.options.replace:
                     # self.mk_audio_png(ep.public_url, png_name)
                     self.mk_audio_png(src_name, png_name)
 
@@ -186,6 +189,7 @@ class SyncRax(process):
                     self.file2cdn(show, png_tail)
 
             else:
+
                 if self.options.verbose:
                     print("src not found: {src_name}".format(
                         src_name=src_name))
@@ -252,9 +256,10 @@ class SyncRax(process):
 
 
     def show_assets(self,show):
-        foot_img = show.client.credits
-        base = os.path.join("assets", foot_img )
-        self.file2cdn(show,base)
+        if self.options.rsync:
+            foot_img = show.client.credits
+            base = os.path.join("assets", foot_img )
+            self.file2cdn(show,base)
 
     def init_rax(self, show):
          user = show.client.rax_id
