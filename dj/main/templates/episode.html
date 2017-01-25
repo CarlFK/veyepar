@@ -271,7 +271,7 @@ $(".viewer").zoomer();
   </td>
   <td>
                 <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.dv">dv.m3u</a>
-                {#<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png">png</a> #}
+                {#<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png">png</a> #}
 
                 <td>
                     {{ clrfform.split.label_tag }}{{ clrfform.split }}

@@ -36,7 +36,7 @@
         </td>
         <td>
           {% for ext in exts %}
-          {%if episode.state %}<img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.png"></a>{% endif %}
+          {%if episode.state %}<img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.png"></a>{% endif %}
         {% endfor %}
         </td>
 

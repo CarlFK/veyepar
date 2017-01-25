@@ -5,28 +5,28 @@
 <table>
 
 <tr>
-    <td> 
-        <video 
+    <td>
+        <video
             width=600
-      controls 
-      poster = "{{MEDIA_URL}}{{raw_file.filename}}.png" 
+      controls
+      poster = "{{MEDIA_URL}}{{raw_file.filename}}.png"
       preload="none"
         >
-          {% for ext in exts %} 
-            <source src="{{MEDIA_URL}}{{raw_file.base_url}}.{{ext}}" 
+          {% for ext in exts %}
+            <source src="{{MEDIA_URL}}{{raw_file.base_url}}.{{ext}}"
                     type="video/{{ext}}">
           {% endfor %}
-        
+
         </video>
     </td>
 
     <td> <table>
-    <tr><td> <a href="{% url "admin:main_raw_file_change" raw_file.id %}">admin</a> </td></tr> 
+    <tr><td> <a href="{% url "admin:main_raw_file_change" raw_file.id %}">admin</a> </td></tr>
 
     <tr><td colspan="2"> <a href="{{MEDIA_URL}}{{raw_file.base_url}}.wav.png">
     {{raw_file.filename}}.wav.png</a></td></tr>
 
-          {% for ext in exts %} 
+          {% for ext in exts %}
           <tr><td colspan="2"> <a href="{{MEDIA_URL}}{{raw_file.base_url}}.{{ext}}">
                       {{raw_file.filename}}.{{ext}}</a></td></tr>
           {% endfor %}
@@ -54,10 +54,10 @@
       </tr>
 {% endfor %}
         </table> </td>
-    </tr> 
+    </tr>
 </table>
-{# <img src="{{MEDIA_URL}}/{{raw_file.base_url}}_audio.png"/> #}
-<img src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png">
+{# <img src="{{MEDIA_URL}}{{raw_file.base_url}}_audio.png"/> #}
+<img src ="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png">
 
 {% endblock %}
 

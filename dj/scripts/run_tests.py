@@ -285,20 +285,6 @@ pix_fmt=yuv411p" % parms
   return
 
  @callme_maybe
- def sync_rax_raw(self):
-  # gens low quality and audio viz
-  print("sync_rax_lq...")
-  import sync_rax
-  p=sync_rax.SyncRax()
-  p.set_options(
-          verbose=False,
-      raw=True, low=True, audio_viz=True, replace=True, rsync=False
-      )
-  p.main()
-  return
-
-
- @callme_maybe
  def encode(self):
   # encode the test episode
   # create a title, use clips 2,3,4 as source, maybe a credits trailer
@@ -311,6 +297,25 @@ pix_fmt=yuv411p" % parms
   p.main()
   self.episode = p.episode
   return
+
+ @callme_maybe
+ def sync_rax(self):
+  # gens low quality and audio viz
+  print("sync_rax_lq...")
+  import sync_rax
+  p=sync_rax.SyncRax()
+  p.set_options(
+          verbose=False,
+      assets=True,
+      raw=True, low=True,
+      cooked=True,
+      audio_viz=True,
+      replace=True, rsync=False
+      )
+  p.main()
+  return
+
+
 
  @callme_maybe
  def ck_errors(self):
@@ -570,7 +575,7 @@ def main():
     t.add_dv()
     # t.make_thumbs() ## this jackes up gstreamer1.0 things, like mk_audio
     t.make_cut_list()
-    t.sync_rax_raw()
+    t.sync_rax()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     t.encode()

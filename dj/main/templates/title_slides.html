@@ -13,11 +13,11 @@
     <br/>
 title: {{episode.name}}<br/>
 authors: {{episode.authors}}<br/>
-    <a href="E/{{episode.id}}/">{{episode.id}} </a> 
-    <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png">{{episode.slug}}.png</a><br/>
+    <a href="E/{{episode.id}}/">{{episode.id}} </a>
+    <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png">{{episode.slug}}.png</a><br/>
     <a href="{{episode.conf_url}}">{{episode.conf_url}}</a><br/>
     {# <img src="http://veyepar.nextdayvideo.com/static/temp/titles/{{episode.slug}}.png" width="720" border="5" style="border-color: gray" ><br/> #}
-    <img src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png" width="720" border="5" style="border-color: gray" ><br/> 
+    <img src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png" width="720" border="5" style="border-color: gray" ><br/>
     {# <img src="http://veyepar.{{client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png" width="720" border="5" style="border-color: gray" > #}
     <br/>
 
