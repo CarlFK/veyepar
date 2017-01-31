@@ -65,7 +65,6 @@ Episode Count: {{episodes.count}}
         <td style="white-space:normal"><a href="E/{{episode.id}}/#id_comment" title="{{episode.comment}}">{{episode.comment|length|default:""}}</a></td>
         <td>{{episode.released|yesno:"Y,N"}}</td>
         <td>{{episode.image_file_set.count|default:""}}</td>
-        # cuts
         <td>{{episode.cut_list_set.count|default:""}}</td>
         <td>
             {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
