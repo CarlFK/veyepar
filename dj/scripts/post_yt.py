@@ -10,6 +10,7 @@ import ia_uploader
 
 import os
 import pprint
+import re
 
 import pw
 
@@ -35,17 +36,20 @@ class post(process):
 
         show = ep.show
         client = show.client
+        tags = "{} {}".format(show.tags, client.tags)
 
         descriptions = [ep.authors,
                 ep.public_url, ep.conf_url,
                 ep.description,
                 show.description, client.description,
-                show.tags, client.tags]
+                tags]
 
         # remove blanks
         descriptions = [d for d in descriptions if d]
         # combine wiht CRs between each item
-        description = "\n".join(descriptions)
+        description = "\n\n".join(descriptions)
+        # remove extra blank lines
+        description = re.sub( r'\n{2,}', r'\n\n', description)
         # description = "<br/>\n".join(description.split('\n'))
 
         return description

@@ -18,7 +18,7 @@ class email_title(email_ab):
 
     subject_template = '[{{ep.show.name}}] Video metadata for "{{ep.name}}"'
 
-    body_body = """Your talk is scheduled for {{ep.start|date:"l"}} {{ep.start}} in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.
+    body_body = """Your talk is scheduled for {{ep.start|date:"l"}} {{ep.start}} (that is in {{ep.start|timeuntil}}) in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.
 
 Projectors will be HDMI only running at 720p (which is 16:9). Please bring any adaptors you need. If you have any special requests or have forgotten your adapter, please contact us ASAP and we will try to accommodate you.
 
@@ -38,7 +38,7 @@ http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.sh
 {% else %}Description:
   {% if ep.description%}
 === begin ===
-    {{description}}
+{{description}}
 === end description ===
   {% else %}
     (is blank.)
@@ -64,7 +64,8 @@ If everything looks good, you don't need to do anything. Good luck with your tal
         # rax upload fixed?
         image_url = True
 
-        description = post.construct_description(ep)
+        p = post()
+        description = p.construct_description(ep)
 
         return {'description': description,
                 'image_url':image_url}
