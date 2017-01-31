@@ -31,7 +31,7 @@ class post(process):
 
     def construct_description(self, ep):
         # collect strings from various sources
-        # build a wad of text to use as public facing description 
+        # build a wad of text to use as public facing description
 
         show = ep.show
         client = show.client
@@ -39,8 +39,8 @@ class post(process):
         descriptions = [ep.authors,
                 ep.public_url, ep.conf_url,
                 ep.description,
-                ]
-                # show.description, client.description]
+                show.description, client.description,
+                show.tags, client.tags]
 
         # remove blanks
         descriptions = [d for d in descriptions if d]
@@ -48,11 +48,11 @@ class post(process):
         description = "\n".join(descriptions)
         # description = "<br/>\n".join(description.split('\n'))
 
-        return description 
+        return description
 
     def get_tags(self,ep):
 
-        tags = [ ep.show.client.slug, ep.show.slug, ] 
+        tags = [ ep.show.client.slug, ep.show.slug, ]
 
         # for more_tags in [ ep.show.client.tags, ep.tags, ep.authors ]:
         for more_tags in [ ep.show.client.tags, ep.authors ]:
@@ -131,7 +131,7 @@ class post(process):
         return meta
 
     def mk_key(self, ep, f):
-        # make a key for rackspace cdn object key value store 
+        # make a key for rackspace cdn object key value store
         #  <category-slug>/<video-id>_<title-of-video>.mp4
         # if we have that data handy.
         # otherwise client/show/slug
@@ -190,7 +190,7 @@ class post(process):
 
                 # save new youtube url
                 ep.host_url = uploader.new_url
-                # the thumb url 
+                # the thumb url
                 ep.thumbnail = uploader.thumbnail
 
                 # for test framework
@@ -231,7 +231,7 @@ class post(process):
                 ia_success = False
 
             elif ep.archive_mp4_url and not self.options.replace:
-                # um.. what about other formats?  
+                # um.. what about other formats?
                 # kinda buggy here.
                 # but only relevant when things are messed up
                 # and looking for problemss.
@@ -247,7 +247,7 @@ class post(process):
                     if self.options.verbose: print(uploader.new_url)
                     # this is pretty gross.
                     # store the archive url
-                    # it should really just be: archive_url 
+                    # it should really just be: archive_url
                     if f['ext'] == "mp4":
                         ep.archive_mp4_url = uploader.new_url
                     elif f['ext'] == "ogv":
@@ -273,7 +273,7 @@ class post(process):
         # upload to rackspace cdn too.. yuck.
         # this should be in post_rax.py, but
         # but I don't want 2 processes uploading at the same time.
-        # bcause bandwidth?  or something.  
+        # bcause bandwidth?  or something.
         # Not sure what the problem is really.
 
         if self.options.verbose: print("do_rax...")
@@ -306,9 +306,9 @@ class post(process):
                 # actually upload
                 # uploader.debug_mode=True
                 success = uploader.upload()
-                
+
                 # possible errors:
-                # invalid container - halt, it will likely be invalid for all 
+                # invalid container - halt, it will likely be invalid for all
                 # transmission - retry
                 # bad name, mark as error and continue to next
 
@@ -391,7 +391,7 @@ class post(process):
 
         # collect data needed for uploading
         files = self.get_files(ep)
-        if self.options.verbose: 
+        if self.options.verbose:
             print("[files]:", end=' ')
             pprint.pprint(files)
 
@@ -415,7 +415,7 @@ class post(process):
         # else: vimeo_success = self.do_vimeo(ep,files,meta)
 
         return True
-                # youtube_success 
+                # youtube_success
                 # and archive_success \
                 # and rax_success
 

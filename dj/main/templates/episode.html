@@ -91,6 +91,7 @@
 <a href="{% url "public_play_list" %}{{episode.slug}}.m3u?id={{episode.id}}">encoded-files-playlist</a>
 
 {% if episode.host_url %} <a href="{{episode.host_url}}">host</a>{%endif%}
+{% if episode.archive_mp4_url %} <a href="{{episode.archive_mp4_url}}">archive</a>{%endif%}
 {% if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
 {% if episode.twitter_url%}<a href="{{episode.twitter_url}}">tweet</a>{%endif%}
 
