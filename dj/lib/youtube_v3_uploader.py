@@ -191,11 +191,11 @@ def resumable_upload(insert_request):
     try:
       status, response = insert_request.next_chunk()
       if response is None:
-        print(status.progress())
-        continue
+          print("status.progress: {}".format(status.progress()))
+          continue
 
       if 'id' in response:
-        print("Video id '%s' was successfully uploaded." % response['id'])
+        print("Successful upload, Video id '%s'" % response['id'])
       else:
         exit("The upload failed with an unexpected response: %s" % response)
 
@@ -385,6 +385,9 @@ def make_parser():
     parser.add_argument('--pathname', '-f', default=test_file,
                         help='file to upload.')
 
+    parser.add_argument('--delete',
+                        help='existing youtube vid to delete.')
+
     parser.add_argument('--debug_mode', '-d', default=False,
             action='store_true',
             help='whether to drop to prompt after upload. default: False')
@@ -443,7 +446,7 @@ def test_set_unlisted(args,video_url):
     return
 
 
-def test_delete(args,video_url):
+def test_delete(args, video_url):
 
     u = Uploader()
     u.user=args.user
@@ -474,16 +477,22 @@ raise HttpError(resp, content, uri=self.uri)
 apiclient.errors.HttpError: <HttpError 410 when requesting https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&alt=json&part=snippet%2Cstatus returned "Backend Error">
 """
 
-if __name__ == '__main__':
+def main():
 
     parser = make_parser()
     args = parser.parse_args()
 
-    url = test_upload(args)
+    if args.delete:
+        # url = "http://youtu.be/C3U5G5uxgz4"
+        url = args.delete
+        test_delete(args,url)
 
-    # url = "http://youtu.be/BCG7fbaBjJ4"
+    url = test_upload(args)
 
     # test_set_pub(args,url)
     # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
-    test_set_unlisted(args, url)
-    # test_delete(args,url)
+    # test_set_unlisted(args, url)
+
+if __name__ == '__main__':
+    main()
+
