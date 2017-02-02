@@ -7,10 +7,10 @@ gets start/end times of raw files
 Gets start from one of:
 metadata via gst.discover()
 the file name (assumes yy_mm_dd/hh_mm_ss.dv format)
-the file system time stamp, 
+the file system time stamp,
 the first frame of the dv
 
-duration (in seconds) based on file size / BBF*FPS 
+duration (in seconds) based on file size / BBF*FPS
 gst.discover()
 last frame
 
@@ -27,11 +27,11 @@ import exiftool
 from pymediainfo import MediaInfo
 
 from gi.repository import Gst
- 
+
 from gi.repository import GObject
 GObject.threads_init()
 Gst.init(None)
-  
+
 from gi.repository import GstPbutils
 
 
@@ -41,14 +41,14 @@ def get_start( pathname, time_source ):
     get the start of this clip
     dv.filename generally looks like this: 2012-01-14/10:01:34.dv
     parse the dir and filename strings.
-    or use the filesystem_create 
+    or use the filesystem_create
     """
-    
+
     # 3 ways of getting the datetime this file started
 
     def fs_time(pathname):
         # get timestamp from filesystem
-        st = os.stat(pathname)    
+        st = os.stat(pathname)
         ts_start=datetime.datetime.fromtimestamp( st.st_mtime )
         return ts_start
 
@@ -60,9 +60,9 @@ def get_start( pathname, time_source ):
         # remove extention
         filename = os.path.splitext(pathname)[0]
 
-        # dvswitch appends -n in the event of filename colisions. 
-        # for start, dupe time is fine, so drop the -n for parsing 
-        if filename[-2]=='-': filename = filename[:-2] 
+        # dvswitch appends -n in the event of filename colisions.
+        # for start, dupe time is fine, so drop the -n for parsing
+        if filename[-2]=='-': filename = filename[:-2]
 
         # for now, the last dir is the date, and the file is time:
         filename='/'.join(filename.split('/')[-2:])
@@ -104,7 +104,7 @@ def get_start( pathname, time_source ):
         with exiftool.ExifTool() as et:
             metadata = et.get_metadata(pathname)
         dt = metadata['H264:DateTimeOriginal']
-        
+
         start=datetime.datetime.strptime(dt,'%Y:%m:%d %H:%M:%S+00:00')
         # print(start)
         return start
@@ -150,7 +150,7 @@ def get_start( pathname, time_source ):
          # 1672828_DMOICT Open Camps CR7 8AM-12PM 16 JULY 16.mov
 
         year = "2016"
-        month = 'JULY' 
+        month = 'JULY'
         day = pathname.split(month)[0].split()[-1]
 
         media_info = MediaInfo.parse(pathname)
@@ -173,9 +173,9 @@ def get_start( pathname, time_source ):
         dt_parts = start_date_o.groupdict()
         print("date_parts:", dt_parts)
 
-        
-        cmd = ['mediainfo', 
-                '--Inform=Video;%TimeCode_FirstFrame%', 
+
+        cmd = ['mediainfo',
+                '--Inform=Video;%TimeCode_FirstFrame%',
                 pathname ]
         p = subprocess.Popen(
                 cmd,
@@ -226,7 +226,7 @@ def get_start( pathname, time_source ):
 
     # get_start() starts here..
 
-    # wacky python case statement 
+    # wacky python case statement
     start = {'fn':parse_name,
              'fs':fs_time,
              'frame':frame_time,
@@ -243,7 +243,7 @@ def get_duration(pathname):
         # calc duration from size
 
         # get timestamp from filesystem
-        st = os.stat(pathname)    
+        st = os.stat(pathname)
         filesize=st.st_size
 
         frames = filesize/120000
@@ -261,18 +261,18 @@ def get_duration(pathname):
         #except :
         #    seconds=None
 
-        return seconds 
+        return seconds
 
     if os.path.splitext(pathname)[1]==".dv":
         seconds = fs_size(pathname)
-    elif os.path.splitext(pathname)[1]==".ts":
-        seconds = 60 * 30
+    # elif os.path.splitext(pathname)[1]==".ts":
+    #    seconds = 60 * 30
     else:
         seconds = gst_discover_duration(pathname)
 
     return seconds
 
-    # return start, seconds 
+    # return start, seconds
 
 def test(pathname,ts="all"):
     print(pathname, ts)
@@ -280,7 +280,7 @@ def test(pathname,ts="all"):
     if ts == "all":
         for ts in [ 'fn', 'fs', 'frame', 'gst', 'un', 'auto', ]:
             try:
-                print("Start (using {ts}):".format(ts=ts), 
+                print("Start (using {ts}):".format(ts=ts),
                         get_start(pathname, ts) )
             except (ValueError,AttributeError) as e:
                 print(e)
@@ -291,15 +291,15 @@ def test(pathname,ts="all"):
 
     print("Duration (using {}):".format(ts), get_duration(pathname))
 
-    return 
+    return
 
 
 def add_more_options(parser):
     parser.add_option('--filename')
-    parser.add_option('--time_source', 
+    parser.add_option('--time_source',
        help="one of fn, fs, frame, gst\n" \
          "(file name, file system, dv frame, gst lib, auto)")
-    parser.add_option('--ext', 
+    parser.add_option('--ext',
        help="only hit this ext")
 
     parser.set_defaults(time_source="auto")
@@ -327,7 +327,7 @@ def main():
     # test(d + "12_14_09.ts", 'auto')
     # test("/home/carl/temp/1672828_DMOICT.mov", 'all')
 
-if __name__=='__main__': 
+if __name__=='__main__':
     main()
 
 
