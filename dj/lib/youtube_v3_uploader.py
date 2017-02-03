@@ -287,7 +287,9 @@ class Uploader():
                 'id':video_id,
                 'status': {
                     'privacyStatus': privacyStatus,
+                    'embeddable': True,
                     'license': 'creativeCommon',
+                    'publicStatsViewable': True,
                 },
             },
         ).execute()
@@ -412,13 +414,6 @@ def test_upload(args):
     u.user = args.user
     u.debug_mode = args.debug_mode
     u.pathname = args.pathname
-
-    """
-    import requests
-    url = "http://5cda49ca88af98bf1f1e-b4c3b47b38bb1b572e0805ecabeeb59c.r76.cf2.rackcdn.com/10_05_52.ogv"
-    r=requests.get(url,stream=True)
-    u.pathname = r.raw
-    """
 
     ret = u.upload()
     if ret:
