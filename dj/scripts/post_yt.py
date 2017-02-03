@@ -36,13 +36,15 @@ class post(process):
 
         show = ep.show
         client = show.client
-        tags = "{} {}".format(show.tags, client.tags)
 
+        # (show tags seperate the talk from the event text)
         descriptions = [ep.authors,
                 ep.public_url, ep.conf_url,
                 ep.description,
+                show.tags,
                 show.description, client.description,
-                tags]
+                client.tags,
+                ]
 
         # remove blanks
         descriptions = [d for d in descriptions if d]
