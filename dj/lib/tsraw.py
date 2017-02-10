@@ -12,10 +12,11 @@ the first frame of the dv
 
 duration (in seconds) based on file size / BBF*FPS
 gst.discover()
-last frame
+last frame ?
 
 """
 
+import argparse
 import datetime
 import pprint
 import os
@@ -23,15 +24,17 @@ import re
 import subprocess
 
 import exiftool
-# from MediaInfoDLL3 import MediaInfo
 from pymediainfo import MediaInfo
 
+import gi
+gi.require_version('Gst', '1.0')
 from gi.repository import Gst
 
 from gi.repository import GObject
 GObject.threads_init()
 Gst.init(None)
 
+gi.require_version('GstPbutils', '1.0')
 from gi.repository import GstPbutils
 
 
@@ -116,6 +119,8 @@ def get_start( pathname, time_source ):
     def gst_discover_start(pathname):
         # get start time using gstreamer to read the media file header
         # print("gst_discover_start")
+
+        print(pathname)
 
         """
      If you add an 'audioparse' element (or 'rawaudioparse' in >= 1.9/git
@@ -274,7 +279,7 @@ def get_duration(pathname):
 
     # return start, seconds
 
-def test(pathname,ts="all"):
+def test(pathname, ts="all"):
     print(pathname, ts)
 
     if ts == "all":
@@ -293,18 +298,30 @@ def test(pathname,ts="all"):
 
     return
 
+def make_parser():
 
-def add_more_options(parser):
-    parser.add_option('--filename')
-    parser.add_option('--time_source',
+    parser = argparse.ArgumentParser(description="""
+    prints the start time and durration of a media file.
+    """)
+    parser.add_argument('filenames', nargs='+')
+    parser.add_argument('--time-source',
        help="one of fn, fs, frame, gst\n" \
-         "(file name, file system, dv frame, gst lib, auto)")
-    parser.add_option('--ext',
-       help="only hit this ext")
+         "(file name, file system, dv frame, gst lib, auto)",
+         default="all")
 
-    parser.set_defaults(time_source="auto")
+    # parser.add_argument('--ext',
+    #   help="only hit this ext")
+
+    return parser
+
 
 def main():
+
+    parser = make_parser()
+    args = parser.parse_args()
+
+    for filename in args.filenames:
+        test(filename, args.time_source)
 
     """
     filenames = [
@@ -319,13 +336,14 @@ def main():
         test(filename)
     """
     # test("/home/carl/temp/segment-0.ts")
-    d = u"/home/carl/mnt/rad/Videos/veyepar/big_apple_py/pygotham_2016/dv/Room_CR7/2016-07-16/"
+    # d = u"/home/carl/mnt/rad/Videos/veyepar/big_apple_py/pygotham_2016/dv/Room_CR7/2016-07-16/"
 
-    d = "/home/carl/temp/"
-    test(d + "1672828_DMOICT Open Camps CR7 8AM-12PM 16 JULY 16.mov", "all")
+    # d = "/home/carl/temp/"
+    # test(d + "1672828_DMOICT Open Camps CR7 8AM-12PM 16 JULY 16.mov", "all")
 
     # test(d + "12_14_09.ts", 'auto')
     # test("/home/carl/temp/1672828_DMOICT.mov", 'all')
+
 
 if __name__=='__main__':
     main()

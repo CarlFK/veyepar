@@ -6,10 +6,10 @@ sets start/end times of dv files
 
 Gets start from one of:
 the file name (assumes yy_mm_dd/hh_mm_ss.dv format)
-the file system time stamp, 
+the file system time stamp,
 the first frame of the dv
 
-duration (in seconds) based on file size / BBF*FPS 
+duration (in seconds) based on file size / BBF*FPS
 last frame
 
 """
@@ -63,7 +63,7 @@ class ts_rf(process):
     def one_loc(self, show, location):
         print(show,location)
         for rf in Raw_File.objects.filter(show=show, location=location):
-            if self.options.verbose: 
+            if self.options.verbose:
                 print(1, rf.filename)
                 print(1, self.args)
 
@@ -87,7 +87,7 @@ class ts_rf(process):
                     continue
 
             # offset = self.options.offset_seconds
-            
+
             if not rf.start or self.options.force:
                 # self.one_rf(rf, offset )
                 self.one_rf(rf )
@@ -102,7 +102,7 @@ class ts_rf(process):
                     client=client, slug=self.options.show)
         else:
             show = Show.objects.get(slug=self.options.show)
- 
+
         self.one_show(show)
 
         return
@@ -113,13 +113,12 @@ class ts_rf(process):
         # parser.add_option('--offset_seconds', type="float",
         #    help="adjust time to deal with clock wrong.")
 
-        parser.add_option('--time_source', 
+        parser.add_option('--time_source',
            help="one of fn, fs, frame, gst, un, auto\n" \
              "(file name, file system, dv frame, gst lib, UN files, auto)")
-
-        parser.add_option('--ext', 
+        parser.add_option('--ext',
            help="only hit this ext")
-        parser.add_option('--subs', 
+        parser.add_option('--subs',
            help="string to use for subs stuff that makes me cry.")
 
     def add_more_option_defaults(self, parser):
@@ -128,7 +127,7 @@ class ts_rf(process):
         parser.set_defaults(time_source="auto")
 
 
-if __name__=='__main__': 
+if __name__=='__main__':
     p=ts_rf()
     p.main()
 
