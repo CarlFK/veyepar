@@ -284,8 +284,8 @@ class Episode(models.Model):
         help_text="email(s) of the presenter(s)")
     twitter_id = models.CharField(max_length=135, blank=True, null=True,
         help_text="Data provided by API")
-    # reviewers = models.TextField(null=True,blank=True,
-    #    help_text="email(s) of the reviewers(s)")
+    reviewers = models.TextField(blank=True,
+        help_text="email(s) of the reviewers(s)")
 
     language = models.CharField(max_length=20, blank=True, null=True,
         help_text="Spoken languge (German, English...)")
