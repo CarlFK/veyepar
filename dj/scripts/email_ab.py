@@ -17,7 +17,7 @@ class email_ab(process):
     def mk_body( self, ep, context):
 
         body_template = \
-                self.body_header + self.body_body + self.body_footer 
+                self.body_header + self.body_body + self.body_footer
 
         if not ep.emails:
             body_alert = """
@@ -29,6 +29,7 @@ Please review and forward it on to the presenter.
 In case it isn't clear what this item is about, here is some context:
     name: {{ep.name}}
     authors: {{ep.authors}}
+    reviewers: {{ep.reviewers}}
     released: {{ep.released}}
     conf_url: {{ep.conf_url}}
     conf_key: {{ep.conf_key}}
@@ -39,7 +40,7 @@ What follows is what was intended to be sent to the presenter:
 """
             body_template = body_alert + body_template\
 
-        body = Template( 
+        body = Template(
                 body_template
                 ).render(Context(context, autoescape=False))
 
@@ -51,6 +52,8 @@ What follows is what was intended to be sent to the presenter:
 Hi,
 
 This is Veyepar, the automated video processing system.
+{% if ep.reviewers %}
+note to {{ep.reviewers}}: You get to be in on this because presenters have plenty to do preparing for their talk, so please help out and look things over for them.  thanks! {% endif %}
 
 """
     body_body = "stub testing:{{ep.description}}"
@@ -63,7 +66,7 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
 """
     py_name = "email_ab.py"
 
-   
+
     def more_context(self, ep):
         # hook to specify more context
         # like png url
@@ -77,40 +80,40 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
 
         if self.options.verbose: print(emails)
 
-        if emails: 
+        if emails:
             tos = [e.strip() for e in emails.split(',')]
 
             subject = Template(self.subject_template).render(
                     Context({'ep':ep}, autoescape=False))
 
-            context = { 'ep':ep, 
-                    'py_name':self.py_name, 
+            context = { 'ep':ep,
+                    'py_name':self.py_name,
                     # 'MEDIA_URL':settings.MEDIA_URL,
                     }
             more_context = self.more_context(ep)
             for k in more_context:
                 context[k] = more_context[k]
-            
+
             body = self.mk_body(ep, context)
 
-            # sender = 'Carl Karsten <carl@nextdayvideo.com>'
             sender = settings.EMAIL_SENDER
-            ccs = [e.strip() for e in settings.EMAIL_CC.split(',')]
+            ccs = [cc.strip() for cc in settings.EMAIL_CC.split(',')]
+            ccs.extend([cc.strip() for cc in ep.reviewers.split(',')])
             # make a list of addresses:
             # [a for a if a] is to get rid of the empty CC.
             # set to get rid of dupes
             # .strip() do remove the spaces from the front of things.
-            reply_tos = set([a.strip() for a in 
+            reply_tos = set([a.strip() for a in
                     [sender,] \
                     + ep.show.client.contacts.split(',') \
                     + ccs \
                        if a] )
-            # headers={Reply-To... needs to be a string of comma seperated 
+            # headers={Reply-To... needs to be a string of comma seperated
             print(reply_tos)
             reply_to = ','.join( reply_tos )
             headers = {
                      'Reply-To': reply_to,
-                        }    
+                        }
 
             if self.options.test:
                 print("tos:", tos)
@@ -124,8 +127,8 @@ Reference: http://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
             else:
 
                 email = EmailMessage(
-                        subject, body, sender, tos, 
-                        headers=headers, cc=ccs ) 
+                        subject, body, sender, tos,
+                        headers=headers, cc=ccs )
                 connection = get_connection()
                 ret = connection.send_messages([email])
                 print("subject:", subject)

@@ -78,7 +78,7 @@ class SyncRax(process):
                 # , "threads=6"]
                         # "properties=x264-medium",
 
-                cmd = ["ffmpeg", "-i", rf,
+                xcmd = ["ffmpeg", "-i", rf,
                     "-vf", "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf: text='%{pts\:hms}': fontcolor=black@0.8: fontsize=48: x=7: y=500",
                     "-codec:v", "libx264", "-b:v", vb,
                     "-codec:a", "aac", "-strict", "-2", "-b:a", ab,
