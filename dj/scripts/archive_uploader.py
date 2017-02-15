@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# archive_uploader.py 
+# archive_uploader.py
 # archive.org specific code
 
 import argparse
@@ -29,7 +29,7 @@ Test buckets that have been created for checking this script:
 
 try:
     # ProgressFile is a subclass of the Python open class
-    # as data is read, it prints a visible progress bar 
+    # as data is read, it prints a visible progress bar
     from progressfile import ProgressFile
 except ImportError:
     # If ProgressFile is not available, default to Python's open
@@ -37,7 +37,7 @@ except ImportError:
 
 try:
     # read credentials from a file
-    from pw import archive 
+    from pw import archive
 except ImportError:
     # you can fill in your credentials here
     # but better to put in pw.py so that they don't leak
@@ -45,16 +45,16 @@ except ImportError:
             "test":{
                 'access': "abc",
                 "secret": "123"
-                }   
-            }   
+                }
+            }
 
 
 def auth(upload_user):
     """ get a service connection to archive.org
     """
-    auth = archive[upload_user] ## from dict of credentials 
-    connection = boto.connect_s3( auth['access'], auth['secret'], 
-            host='s3.us.archive.org', is_secure=False, 
+    auth = archive[upload_user] ## from dict of credentials
+    connection = boto.connect_s3( auth['access'], auth['secret'],
+            host='s3.us.archive.org', is_secure=False,
             calling_format=boto.s3.connection.OrdinaryCallingFormat())
 
     return connection
@@ -77,8 +77,11 @@ def make_bucket(conn, bucket_id, meta={}):
         # you can change these
         # this is visible on the web page under 'Keywords: '
         'x-archive-meta-subject': meta.get('subject', 'testing'),
+
         # this is visible on the web page as the license
-        'x-archive-meta-licenseurl': meta.get('licenseurl', 'http://creativecommons.org/licenses/by/4.0/'),
+        'x-archive-meta-licenseurl': meta.get(
+            'licenseurl', 'http://creativecommons.org/licenses/by/4.0/'),
+
         # this is visible on the web page as the description
         'x-archive-meta-description': meta.get('description', 'testing uploader script'),
         # this is not visible, it's in the _meta.xml. maybe it should be date?
@@ -112,6 +115,7 @@ class Uploader(object):
         headers={}
         if self.test:
             headers['x-archive-meta-collection'] = 'test_collection'
+
         bucket = service.get_bucket(self.bucket_id, headers=headers)
         key = boto.s3.key.Key(bucket)
         key.key = self.key_id
@@ -170,7 +174,7 @@ def make_parser():
     parser.add_argument('--user', '-u', default='test',
                         help='archive user. default: test')
 
-    parser.add_argument('--filename', '-f', 
+    parser.add_argument('--filename', '-f',
             default=os.path.abspath(__file__),
                         help='archive user. default: this .py file')
 

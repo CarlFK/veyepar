@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# archive_uploader.py 
-# archive.org specific code
+# ia_uploader.py
+# internet archive.org specific code
 
 import optparse
 import os
@@ -29,7 +29,7 @@ Test buckets that have been created for checking this script:
 
 try:
     # read credentials from a file
-    from pw import archive 
+    from pw import archive
 except ImportError:
     # you can fill in your credentials here
     # but better to put in pw.py so that they don't leak
@@ -37,8 +37,8 @@ except ImportError:
             "test":{
                 'access': "abc",
                 "secret": "123"
-                }   
-            }   
+                }
+            }
 
 def translitr(s):
     for f,t in [
@@ -88,8 +88,8 @@ class Uploader(object):
             # this is visible on the web page under 'Keywords: '
             'subject':self.meta['tags'],
             # this is visible on the web page as the license
-            # 'licenseurl', 'http://creativecommons.org/licenses/by/4.0/',
-            'licenseurl': "http://creativecommons.org/licenses/by/3.0/",
+            'licenseurl', self.meta.get('licenseurl',
+                'http://creativecommons.org/licenses/by/4.0/'),
             # this is visible on the web page as the description
             'description':translitr(self.meta['description']),
             'publicdate':self.meta['start'].isoformat(),
@@ -105,7 +105,7 @@ class Uploader(object):
 
         print("Uploading file to Archive.org...")
 
-        auth = archive[self.user] ## from dict of credentials 
+        auth = archive[self.user] ## from dict of credentials
         md = self.get_metadata()
 
         item = ia.get_item(self.slug)
@@ -120,13 +120,13 @@ class Uploader(object):
 
             if self.debug_mode:
                 import code; code.interact(local=locals())
-                
+
             # https://archive.org/details/lca2016-Internet_Archive_Universal_Access_Open_APIs
             self.new_url = "https://archive.org/details/{}".format(self.slug)
             print(( "ia: {}".format(self.new_url)))
             ret = True
 
-        except HTTPError as e: 
+        except HTTPError as e:
 
             print(( "ia_uploader.py", e ))
 
@@ -143,25 +143,25 @@ def parse_args(argv):
 
     parser = optparse.OptionParser()
 
-    parser.add_option('--user', '-u', 
+    parser.add_option('--user', '-u',
             default='test',
             help='archive user. default: test')
 
-    parser.add_option('--filename', '-f', 
+    parser.add_option('--filename', '-f',
             default=os.path.abspath(__file__),
             help='archive user. default: this .py file')
 
-    parser.add_option('--debug', '-d', 
+    parser.add_option('--debug', '-d',
             default=False, action='store_true',
             help='whether to drop to prompt after upload. default: False')
 
     parser.add_option("-v", "--verbose", action="store_true",
-           default=False, 
+           default=False,
            help="Be more verbose during uploads")
 
-    parser.add_option('--test', '-t', 
+    parser.add_option('--test', '-t',
             action='store_true',
-            default=True, 
+            default=True,
             help='whether to delete after 30 days. default: True')
 
     options, args = parser.parse_args(argv)

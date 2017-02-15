@@ -122,7 +122,8 @@ class post(process):
         meta['language'] = ep.language
         meta['language'] = "eng"
 
-        meta['license'] = 'creativeCommon'
+        # meta['license'] = 'creativeCommon'
+        meta['license'] = ep.license
 
         # meta['rating'] = self.options.rating
 
@@ -211,6 +212,7 @@ class post(process):
         return youtube_success
 
     def do_ia(self, ep, files, meta):
+
         # upload to archive.org too.
         # this should be in post_ia.py, but
         # but I don't want 2 processes uploading at the same time.
@@ -219,6 +221,13 @@ class post(process):
         uploader = ia_uploader.Uploader()
 
         uploader.user = ep.show.client.archive_id
+
+        # transform veyepar meta to ia meta
+
+        if ep.license.upper().startswith('CC'):
+            x=ep.license[3:8].lower()
+            ver='4.0'
+            meta['licenseurl'] = 'http://creativecommons.org/licenses/{x}/{ver}/'.format(x=x,ver=ver)
 
         for f in files:
 
