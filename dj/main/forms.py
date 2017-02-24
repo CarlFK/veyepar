@@ -10,10 +10,11 @@ class Who(forms.Form):
     locked_by = forms.CharField(max_length=32, required=True,
             label="Please enter your name")
 
-# class Episode_Form(forms.ModelForm):
-#    exclude=[]
-#    class Meta:
-#        model = Episode
+class Location_Form(forms.ModelForm):
+    class Meta:
+        model = Location
+        exclude = ['active',]
+
 
 class Episode_Form_Preshow(forms.ModelForm):
     authors = forms.CharField(max_length=255, required=False)
@@ -35,11 +36,11 @@ class Episode_Form_Preshow(forms.ModelForm):
                   'authors',
                   'emails',
                   'released',
-                  'description', 
+                  'description',
                   'summary',
                   'tags',
-                  'twitter_id', 
-                  'language', 
+                  'twitter_id',
+                  'language',
                   )
 
 class Episode_Form_small(forms.ModelForm):
@@ -81,12 +82,12 @@ class Add_CutList_to_Ep(forms.Form):
 class AddImageToEp(forms.Form):
     image_id = forms.IntegerField(widget=forms.HiddenInput())
     episode_ids  = forms.CharField(max_length=35, required=False,)
- 
+
 class AddEpisodeToRaw(forms.ModelForm):
     class Meta:
         model = Episode
-        fields = ('name', 
-                'duration', 
+        fields = ('name',
+                'duration',
                # 'comment',
                 )
     raw_id = forms.IntegerField(widget=forms.HiddenInput())

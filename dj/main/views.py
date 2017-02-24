@@ -41,7 +41,10 @@ from main.models import \
         State, Image_File,Log ,Mark
 
 from main.models import STATES, ANN_STATES
-from main.forms import Episode_Form_small, Episode_Form_Preshow, clrfForm, Add_CutList_to_Ep, Who, AddImageToEp
+from main.forms import \
+        Episode_Form_small, Episode_Form_Preshow, \
+        Location_Form, \
+        clrfForm, Add_CutList_to_Ep, Who, AddImageToEp
 
 from accounts.forms import LoginForm
 
@@ -823,31 +826,6 @@ def meet_ical(request,location_id):
         },
          )
 
-def former(request, Model, parents, inits={}):
-
-    class xForm(ModelForm):
-        exclude=[]
-        class Meta:
-            model=Model
-
-    if True or request.user.is_authenticated():
-        if request.method == 'POST':
-            form=xForm(request.POST)
-            if form.is_valid():
-                form.save()
-            else:
-                # print form.errors
-                pass
-        else:
-            # add parents to inits
-            inits.update(parents)
-            form=xForm(initial=inits)
-    else:
-        form=None
-
-    objects=Model.objects.filter(**parents).order_by('sequence')
-    return form,objects
-
 def clients(request):
     # list of clients and a blank to enter a new one
 
@@ -936,8 +914,24 @@ def client(request,client_slug=None):
         )
 
 def locations(request):
-    location_form, locations = former(
-        request, Location, {},{'sequence':1})
+
+    if request.user.is_authenticated():
+
+        if request.method == 'POST':
+            location_form=Location_Form(request.POST)
+
+            if location_form.is_valid():
+                location_form.save()
+            else:
+                # print form.errors
+                pass
+        else:
+            location_form=Location_Form(initial={'sequence':1})
+    else:
+        location_form=None
+
+    locations=Location.objects.order_by('sequence')
+
     return render(request, 'locations.html',
         {
           'locations':locations,
