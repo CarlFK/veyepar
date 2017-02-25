@@ -4,7 +4,7 @@
 {% block content %}
 
 Client: <a href="{% url "client" client.slug %}">{{ client.name }}</a></br>
-Contacts: {{client.contacts}}</br>
+{% if user.is_authenticated %}Contacts: {{client.contacts}}{% endif %}</br>
 </br>
 Show: <a href="{% url "episode_list" client.slug show.slug %}">{{ show.name }}</a> - <a href="{{show.conf_url}}">{{show.conf_url}}</a>
 </br>
