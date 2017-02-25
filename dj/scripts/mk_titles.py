@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # creates svg titles for all the episodes
-# used to preview the title slides, 
+# used to preview the title slides,
 # enc.py will re-run the same code.
 
 import os
@@ -19,10 +19,9 @@ class mk_title(enc):
 
         title_img=self.mk_title(episode)
 
-        print("syncing {}".format(episode.slug))
         if self.options.rsync:
-            print("syncing {}".format(episode.slug))
-            if self.options.verbose: 
+
+            if self.options.verbose:
                 print("syncing {}".format(episode.slug))
 
             self.file2cdn(episode.show, "titles/%s.png" % (episode.slug))
@@ -31,10 +30,10 @@ class mk_title(enc):
             if self.options.assets:
                 self.file2cdn(episode.show, "tmp/%s.mlt" % (episode.slug))
                 self.file2cdn(episode.show, "tmp/%s.sh" % (episode.slug))
-                self.file2cdn(episode.show, 
+                self.file2cdn(episode.show,
                         "titles/%s.svg" % (episode.slug))
 
-            return 
+            return
 
         if self.options.display:
             png_name = "{}/titles/{}.png".format(
