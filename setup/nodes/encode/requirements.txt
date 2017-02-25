@@ -1,0 +1,9 @@
+django
+djangorestframework
+django-extensions
+python-swiftclient
+psycopg2
+git+https://github.com/smarnach/pyexiftool.git
+pymediainfo
+numpy
+pypng
