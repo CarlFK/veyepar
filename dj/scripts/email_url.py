@@ -32,9 +32,9 @@ Re-tweet it, blog it, whatever it.  No point in making videos if no one watches 
     {% endif %}
     """
 
-    py_name = "email_url.py"
 
-    def more_context(self, ep):
+    def context(self, ep):
+        ctx = super(email_url, self).context(ep)
 
         # dig around for URLs that might be relevant
         urls = filter( None,
@@ -42,7 +42,10 @@ Re-tweet it, blog it, whatever it.  No point in making videos if no one watches 
                     ep.host_url,
                     ep.archive_ogv_url] )
 
-        return {'urls':urls}
+        ctx['urls'] = urls
+        ctx['py_name'] = "email_url.py"
+
+        return ctx
 
 
 if __name__ == '__main__':

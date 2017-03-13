@@ -88,7 +88,7 @@ class Uploader(object):
             # this is visible on the web page under 'Keywords: '
             'subject':self.meta['tags'],
             # this is visible on the web page as the license
-            'licenseurl', self.meta.get('licenseurl',
+            'licenseurl': self.meta.get('licenseurl',
                 'http://creativecommons.org/licenses/by/4.0/'),
             # this is visible on the web page as the description
             'description':translitr(self.meta['description']),

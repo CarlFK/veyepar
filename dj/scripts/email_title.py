@@ -49,10 +49,12 @@ Problems with the text should be fixed in the event database that drives {{ep.co
 If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
 
 """
-    py_name = "email_title.py"
 
-    def more_context(self, ep):
+    def context(self, ep):
 
+        ctx = super(email_title, self).context(ep)
+
+        # find some urls to tell someone about
         # If there is a Richard (pyvideo) url, use that;
         if ep.public_url is None:
             image_url = True
@@ -61,15 +63,18 @@ If everything looks good, you don't need to do anything. Good luck with your tal
             image_url = True
         else:
             image_url = False
+
         # rax upload fixed?
         image_url = True
 
         p = post()
         description = p.construct_description(ep)
 
-        return {'description': description,
-                'image_url':image_url}
+        ctx['description'] = description
+        ctx['image_url'] = image_url
+        ctx['py_name'] = "email_title.py"
 
+        return ctx
 
 if __name__ == '__main__':
     p=email_title()

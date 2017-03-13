@@ -38,8 +38,11 @@ class tweet(process):
             print(prefix, twitter_ids, video_name, authors, video_url)
 
         if twitter_ids:
-            message = ' '.join([prefix, video_name, '-',
-                twitter_ids, video_url ])
+            message = ' '.join([
+                prefix,
+                twitter_ids,
+                video_name,
+                video_url ])
         else:
             message = ' '.join([prefix, video_name, '-',
                 authors, video_url ])
