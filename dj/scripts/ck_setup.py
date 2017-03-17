@@ -35,19 +35,19 @@ class bcolors:
 
 def p_print(text):
     print(text)
-    return 
+    return
 
 def p_okg(text):
     print((bcolors.OKGREEN + text +bcolors.ENDC))
-    return 
+    return
 
 def p_warn(text):
     print((bcolors.WARNING + text +bcolors.ENDC))
-    return 
+    return
 
 def p_fail(text):
     print((bcolors.FAIL + text +bcolors.ENDC))
-    return 
+    return
 
 class ck_setup(process):
 
@@ -59,7 +59,7 @@ class ck_setup(process):
             client_id_field=None,
             cred_keys=[]):
 
-        try: 
+        try:
             creds = getattr(pw, service)
         except AttributeError as e:
             # 'module' object has no attribute 'foo'
@@ -87,7 +87,7 @@ class ck_setup(process):
 
         secrets = creds[key]
         # try not to display secret values
-        print(('names of secrets in pw.py {}:{}'.format( 
+        print(('names of secrets in pw.py {}:{}'.format(
             key, list(secrets.keys()) )))
         print(('checking for existance of {}'.format(cred_keys)))
         for cred_key in cred_keys:
@@ -96,7 +96,7 @@ class ck_setup(process):
 
         return secrets
 
-    
+
     def ck_client(self):
         try:
             client_slug = self.options.client
@@ -111,7 +111,7 @@ class ck_setup(process):
             p_fail("client slug not found in db.")
             raise e
 
-        return 
+        return
 
     def ck_show(self):
         try:
@@ -132,7 +132,7 @@ class ck_setup(process):
             p_fail( "show slug not found in db." )
             raise e
 
-        return 
+        return
 
     def ck_dir(self):
         if os.path.exists(self.show_dir):
@@ -148,7 +148,7 @@ class ck_setup(process):
         print(('client.title_svg: {}'.format(title_svg)))
         title_svg = os.path.join(
                 os.path.split(os.path.abspath(__file__))[0],
-                "bling", 
+                "bling",
                 title_svg)
         p_okg(title_svg)
         if not os.path.exists(title_svg):
@@ -161,7 +161,7 @@ class ck_setup(process):
             'title',
             'title2',
             'tag1',
-            'presenternames',  
+            'presenternames',
             'authors',
             'presentertitle',
             'twitter_id',
@@ -203,12 +203,12 @@ class ck_setup(process):
 
         credits_img =  os.path.join(
                 self.show_dir,
-                "assets", 
+                "assets",
                  credits_img)
 
         if not os.path.exists(credits_img):
             p_fail("credits_img not found: {}".format(credits_img))
- 
+
         p_okg("credits: {}".format(self.client.credits))
 
     def ck_email(self):
@@ -221,7 +221,7 @@ class ck_setup(process):
             p_okg("sender: {}".format(settings.EMAIL_SENDER))
             # some of these are needed:
             """
-            EMAIL_USE_TLS 
+            EMAIL_USE_TLS
             EMAIL_HOST
             EMAIL_PORT
             EMAIL_HOST_USER
@@ -235,7 +235,7 @@ class ck_setup(process):
         category_key = self.client.category_key
         if category_key:
             p_print("client.category_key: {}".format(category_key))
-        else: 
+        else:
             p_warn("client.category_key not set.")
             return False
 
@@ -245,7 +245,7 @@ class ck_setup(process):
         """
         print(endpoint)
 
-        try: 
+        try:
             category = steve.richardapi.get_category(endpoint, category_key)
             print("category: {}".format(category) )
         except steve.richardapi.DoesNotExist:
@@ -253,7 +253,7 @@ class ck_setup(process):
 
 
         category_slug = slugify(category_key)
-        try: 
+        try:
             category = steve.richardapi.get_category(
                     endpoint, category_slug)
             print("category: {}".format(category) )
@@ -269,7 +269,7 @@ class ck_setup(process):
             p_okg('client.category_key:"{}" found.'.format(category_key))
         else:
             p_fail('client.category_key:"{}" NOT found.'.format(category_key))
-        return 
+        return
 
     def ck_cdn(self, secrets):
         if self.client.rax_id:
@@ -277,7 +277,7 @@ class ck_setup(process):
             p_okg("client.rax_id: {}".format(rax_id))
         else:
             p_warn("client.rax_id not set.")
-            return 
+            return
 
         if self.client.bucket_id:
             bucket_id = self.client.bucket_id
@@ -316,7 +316,7 @@ class ck_setup(process):
             p_okg("client.archive_id: {}".format(archive_id))
         else:
             p_warn("client.archive_id not set.")
-            return 
+            return
 
         print("archive auth...")
         service = archive_uploader.auth(archive_id)
@@ -366,7 +366,7 @@ class ck_setup(process):
             p_okg("show.schedule_url: {}".format(schedule_url))
         else:
             p_warn("no show.schedule_url")
-            return 
+            return
 
         if schedule_url.startswith('file'):
             url = schedule_url[7:]
@@ -414,7 +414,9 @@ class ck_setup(process):
                 self.ck_richard(secrets)
             """
 
-            secrets = self.ck_pw("swift","rax_id",['api_key', 'user'])
+
+            secrets = self.ck_pw("swift","rax_id",
+                    ['key', 'authurl', 'user'])
             if secrets:
                 self.ck_cdn(secrets)
 
@@ -429,12 +431,12 @@ class ck_setup(process):
 
         except Exception as e:
             print("tests stopped at")
-            print(e.message) 
+            print(e.message)
             print(e.__class__, e)
             # import code; code.interact(local=locals())
             # raise e
 
-        return 
+        return
 
 if __name__ == '__main__':
     p=ck_setup()
