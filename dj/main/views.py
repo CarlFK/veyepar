@@ -2118,24 +2118,25 @@ def mk_cuts(episode,
             # unless it starts at the exact time
             # handles start time entered after the fact.
             # and if it is the only clip...
-            started = True
+            # (doesn't apply to vocto/cuts)
+            # started = True
+            pass
+
         cl,created = Cut_List.objects.get_or_create(
             episode=episode,
             raw_file=rf)
         if created:
             cl.sequence=seq
             # If there is only one segment, use it.
+            # (this no longer applies to vocto/cuts
             # else:
             # if the talk has started,
             # and there isn't something wrong with the raw
             # (like it is a dupe, or lunch)
             # and the segment is in the time slot
-            if rfs.count() == 1:
-                apply = True
-            else:
-                apply = started \
-                    and not rf.trash \
-                    and (rf.start < episode.end)
+            apply = started \
+                and not rf.trash \
+                and (rf.start < episode.end)
             cl.apply = apply
 
             # if there are mark clicks,
@@ -2164,8 +2165,9 @@ def mk_cuts(episode,
                 print("cl,created: {},{}".format(cl,created))
                 if created:
                     cl.sequence=seq
-                    cl.apply = mark.click < episode.end
+                    cl.apply = episode.start <= mark.click < episode.end
                             # datetime.timedelta(minutes=end_slop))
+                    started = cl.apply
 
             cl.save()
 
