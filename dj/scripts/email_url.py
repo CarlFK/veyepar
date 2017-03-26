@@ -14,7 +14,7 @@ class email_url(email_ab):
 
     subject_template = "[{{ep.show.name}}] Video up: {{ep.name}}"
     body_body = """
-The video of your talk is posted:
+The video is posted:
     {% for url in urls %} {{url}}
     {% endfor %}
     {% if ep.state == 7 %}

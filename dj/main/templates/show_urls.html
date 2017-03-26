@@ -1,5 +1,8 @@
 {{client.name}}<br>
 {{show.name}}<br>
-{% for episode in episodes %} {{forloop.counter}}. {{ episode.name }} ({{episode.authors}}) {{episode.host_url}}<br>
+{% for episode in episodes %} {{forloop.counter}}. {{ episode.name }} ({{episode.authors}}) {{episode.host_url}} {{episode.get_minutes}} min.<br>
+{% endfor %}
+
+{% for episode in episodes %}  {{forloop.counter}}. {{episode.host_url}} {{episode.get_minutes}} min.<br>
 {% endfor %}
 
