@@ -98,6 +98,7 @@ What follows is what was intended to be sent to the presenter:
             sender = settings.EMAIL_SENDER
             ccs = [cc.strip() for cc in settings.EMAIL_CC.split(',')]
             ccs.extend([cc.strip() for cc in ep.reviewers.split(',')])
+            ccs =  list(set([a.strip() for a in ccs if a]))
             # make a list of addresses:
             # [a for a if a] is to get rid of the empty CC.
             # set to get rid of dupes
@@ -108,8 +109,10 @@ What follows is what was intended to be sent to the presenter:
                     + ccs \
                        if a] )
             # headers={Reply-To... needs to be a string of comma seperated
-            print(reply_tos)
+            print(1, reply_tos)
             reply_to = ','.join( reply_tos )
+            print(2, reply_to)
+            print(3, ccs)
             headers = {
                      'Reply-To': reply_to,
                      'X-veyepar': ep.show.slug,
