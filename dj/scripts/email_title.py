@@ -31,7 +31,7 @@ Please review the following meta data about your talk so that everything is corr
 Title: {{ep.name}}
 {% if image_url %}
 The video will start with the following image:
-http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
+https://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 {% endif %}
 {% if ep.public_url%}The main page for the video will be here:
 {{ep.public_url}}
