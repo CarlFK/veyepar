@@ -31,30 +31,43 @@ class tweet(process):
         print(data)
         return list(data['results'].values())[0]['shorturl']
 
-    def mk_tweet(self, prefix, twitter_ids, video_name, authors, video_url):
+    def mk_tweet(self,
+            prefix, twitter_ids, video_name, authors, video_url, suffix):
+
+        def j(*args):
+            print('j:',args)
+            # remove empty args
+            args = [arg.strip() for arg in args[0] if arg]
+            s = ' '.join(args)
+            return s
 
         #lca2017 My Talk Title - @CarlFK http://youtu.be/123456
         if self.options.verbose:
-            print(prefix, twitter_ids, video_name, authors, video_url)
+            print(prefix, twitter_ids,
+                    video_name, authors, video_url, suffix)
 
         if twitter_ids:
-            message = ' '.join([
+            message = j([
                 prefix,
                 twitter_ids,
                 video_name,
-                video_url ])
+                video_url,
+                suffix])
         else:
-            message = ' '.join([prefix, video_name, '-',
-                authors, video_url ])
+            message = j([prefix, video_name, '-',
+                authors, video_url, suffix ])
 
         if len(message) > 140:
-            message = ' '.join([prefix, twitter_ids, video_name, video_url])
+            message = j([
+                prefix, twitter_ids, video_name, video_url, suffix])
         if len(message) > 140:
             short_url = self.shorten(video_url)
-            message = ' '.join([prefix, twitter_ids, video_name, short_url])
+            message = j([
+                prefix, twitter_ids, video_name, short_url, suffix ])
         if len(message) > 140:
             video_name = video_name[:140 - len(message) - 3] + '...'
-            message = ' '.join([prefix, twitter_ids, video_name, short_url])
+            message = j([
+                prefix, twitter_ids, video_name, short_url, suffix])
         return message
 
     def tweet_tweet(self, user, tweet):
@@ -93,7 +106,12 @@ class tweet(process):
         url = ep.public_url if ep.public_url \
                 else ep.host_url
 
-        prefix = show.client.tweet_prefix
+        if  show.client.tweet_prefix.startswith('@'):
+            prefix = None
+            suffix = show.client.tweet_prefix
+        else:
+            prefix = show.client.tweet_prefix
+            suffix = ''
 
         # remove commas
         if ep.twitter_id is None \
@@ -109,8 +127,10 @@ class tweet(process):
             twitter_ids = ' '.join(twitter_ids)
 
 
-        tweet = self.mk_tweet(prefix,
-                twitter_ids, ep.name, ep.authors, url)
+        tweet = self.mk_tweet(
+                prefix,
+                twitter_ids, ep.name, ep.authors, url,
+                suffix)
 
         ret=self.tweet_tweet(user, tweet)
         if ret:
