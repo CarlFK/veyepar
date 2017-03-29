@@ -10,8 +10,6 @@ from django.template import Context, Template
 from process import process
 from django.conf import settings
 
-import random
-
 class email_ab(process):
 
     subject_template = "stub testing:{{ep.name}}"
@@ -50,7 +48,10 @@ Reference: https://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
         context = self.context(ep)
 
         body_template = \
-                self.body_header + self.body_body + self.body_footer
+                self.options.note + \
+                self.body_header + \
+                self.body_body + \
+                self.body_footer
 
         if not ep.emails:
             body_alert = """
@@ -110,10 +111,7 @@ What follows is what was intended to be sent to the presenter:
                     + ccs \
                        if a] )
             # headers={Reply-To... needs to be a string of comma seperated
-            print(1, reply_tos)
             reply_to = ','.join( reply_tos )
-            print(2, reply_to)
-            print(3, ccs)
             headers = {
                      'Reply-To': reply_to,
                      'X-veyepar': ep.show.slug,
@@ -144,6 +142,11 @@ What follows is what was intended to be sent to the presenter:
             ret = False
 
         return ret
+
+    def add_more_options(self, parser):
+        parser.add_option('--note',
+            default="",
+            help="Prepend a note above the Hi.")
 
 if __name__ == '__main__':
     p=email_ab()
