@@ -362,11 +362,10 @@ class Episode(models.Model):
 
         return ret
 
-
     def get_minutes(self):
         # delta = self.end - self.start
         # minutes = delta.days*60*24 + delta.seconds/60.0
-        minutes = self.cuts_time/60
+        minutes = self.cuts_time()/60
         return int(minutes)
 
     def add_email(self, email):
@@ -383,6 +382,10 @@ class Episode(models.Model):
     def get_authors(self):
         authors = self.authors.split(',') if self.authors else []
         return authors
+
+    def approve_url(self):
+        url = "https://veyepar.nextdayvideo.com/main/approve/{id}/{slug}/{edit_key}/".format(id=self.id, slug=self.slug, edit_key=self.edit_key)
+        return url
 
 
     class Meta:
