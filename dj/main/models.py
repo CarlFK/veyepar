@@ -217,8 +217,11 @@ class Mark(models.Model):
     show = models.ForeignKey(Show)
     click = models.DateTimeField(
         help_text='When Cut was Clicked.')
+
     class Meta:
         ordering = ["click"]
+    def __str__(self):
+        return self.click.__str__()
 
 class Quality(models.Model):
     level = models.IntegerField()
@@ -265,7 +268,7 @@ class Episode(models.Model):
     end = models.DateTimeField(blank=True, null=False,
         help_text="(calculated if start and duration are set.)")
     name = models.CharField(max_length=170,
-        help_text="Talk title (synced from primary source)")
+        help_text="Video Title (shows in video search results)")
     slug = models.CharField(max_length=170, blank=True, null=False,
         help_text="file name friendly version of name")
     priority = models.IntegerField(null=True,blank=True,

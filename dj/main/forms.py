@@ -1,9 +1,8 @@
-
 # forms.py
 
 from django import forms
+
 from main.models import Episode, Location
-# from django.contrib.admin import widgets
 
 
 class Who(forms.Form):
@@ -53,6 +52,20 @@ class Episode_Form_small(forms.ModelForm):
                   'normalise', 'channelcopy',
                   'thumbnail', 'description', 'comment')
 
+class Episode_Form_Mini(forms.ModelForm):
+    emails = forms.CharField(max_length=255, required=False)
+    class Meta:
+        model = Episode
+        fields = ('name',
+                  'emails',
+                  'description',
+                  'comment',
+                  'start','end',
+                  )
+        widgets = {
+        	'meails': forms.Textarea(attrs={'cols': 80, 'rows': 2}),
+        }
+
 class clrfForm(forms.Form):
     clid = forms.IntegerField(widget=forms.HiddenInput())
     trash = forms.BooleanField(label="Trash",required=False)
@@ -91,5 +104,11 @@ class AddEpisodeToRaw(forms.ModelForm):
                # 'comment',
                 )
     raw_id = forms.IntegerField(widget=forms.HiddenInput())
+
+
+class MarkPicker(forms.Form):
+    apply = forms.BooleanField(label="Apply",required=False)
+    click = forms.CharField(max_length=19,label="Start",required=False,
+      widget=forms.TextInput(attrs={'size':'15'}))
 
 

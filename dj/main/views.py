@@ -14,7 +14,7 @@ from django.forms import ModelForm
 from django.forms.formsets import formset_factory
 
 from django.db.models import Q
-from django.db.models import Count,Max
+from django.db.models import Count, Max
 from django.db.models.functions import Trunc
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -38,13 +38,15 @@ import urllib.parse
 
 from main.models import \
         Client, Show, Location, Episode, Cut_List, Raw_File,\
-        State, Image_File,Log ,Mark
+        State, Image_File,Log, Mark
 
 from main.models import STATES, ANN_STATES
 from main.forms import \
         Episode_Form_small, Episode_Form_Preshow, \
         Location_Form, \
-        clrfForm, Add_CutList_to_Ep, Who, AddImageToEp
+        clrfForm, Add_CutList_to_Ep, Who, AddImageToEp, \
+        Episode_Form_Mini, MarkPicker
+
 
 from accounts.forms import LoginForm
 
@@ -1588,6 +1590,7 @@ def episode_list(request, state=None):
     states = State.objects.all()
 
     episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
+
     if "show" in request.GET:
         episodes = episodes.filter( show__slug=request.GET['show'] )
 
@@ -1968,6 +1971,100 @@ def scheduled_episodes(rf):
         location=rf.location)
 
     return eps
+
+
+def mk_episode(request,show_id):
+    """
+    raw files... gonna make a video out of air.
+    """
+
+    def find_start_end(markpicker_formset):
+        # find the first and last [x]Apply marks
+
+        found_start,applied = False,False
+
+        for mark in markpicker_formset:
+            click=datetime.datetime.strptime(
+                      mark.cleaned_data['click'],'%Y-%m-%d %H:%M:%S')
+            apply=mark.cleaned_data['apply']
+
+            if not found_start and apply:
+                # found first [x]Apply, use it, stop looking.
+                start=click
+                found_start=True
+
+            if applied:
+                # if the previous mark was applied,
+                # maybe this is the end.
+                end=click
+            # save current apply for next iteration
+            applied = apply
+
+        return start,end
+
+
+    show=get_object_or_404(Show,id=show_id)
+    # client = show.client
+
+
+    MarkPicker_FormSet = formset_factory(MarkPicker, extra=0)
+
+    if request.user.is_authenticated():
+
+        if request.method == 'POST':
+
+            episode_form=Episode_Form_Mini(request.POST)
+            markpicker_formset = MarkPicker_FormSet(request.POST)
+
+            if episode_form.is_valid() \
+              and markpicker_formset.is_valid():
+
+                start,end = find_start_end(markpicker_formset)
+
+                print(start,end)
+
+                episode = episode_form.save(commit=False)
+
+                episode.show = show
+                locations=show.locations.filter(
+                        active=True).order_by('sequence')
+                episode.location = locations[0]
+                episode.start = start
+                episode.end = end
+                episode.save()
+                mk_cuts(episode)
+
+            else:
+                print(episode_form.errors)
+                print(markpicker_formset.errors)
+
+        else:
+            # new form
+            init = {
+                'name':'t1',
+                }
+            episode_form = Episode_Form_Mini(init)
+
+            marks = Mark.objects.filter(show=show).order_by('click')
+            init = [ {
+                'apply':False,
+                'click':mark.click.strftime('%Y-%m-%d %H:%M:%S'),
+                } for mark in marks]
+            # guess ... 2nd to last should be it.
+            init[-2]['apply']=True
+            markpicker_formset = MarkPicker_FormSet(initial=init)
+
+    else:
+        episode_form = None
+        markpicker_formset = None
+
+    return render(request, 'mk_episode.html',
+            {
+                'episode_form':episode_form,
+                'markpicker_formset':markpicker_formset,
+            },
+         )
+
 
 
 def orphan_dv(request,show_id):

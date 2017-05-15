@@ -1,0 +1,16 @@
+{# raw_set.html #}
+{% extends "base.html" %}
+{% block content %}
+<hr></br>
+<form action="" method="POST">{% csrf_token %}
+<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
+<table>
+    {{episode_form.as_table}}
+    {{ markpicker_formset.management_form }}
+    {% for mark in markpicker_formset %}
+        <tr><td>{{mark.apply}}</td><td>{{mark.click}}</td><tr>
+    {% endfor %}
+</table>
+<input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
+</br><hr>
+{% endblock %}
