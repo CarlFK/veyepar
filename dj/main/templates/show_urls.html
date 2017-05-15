@@ -2,7 +2,12 @@
 {{show.name}}<br>
 {% for episode in episodes %} {{forloop.counter}}. {{ episode.name }} ({{episode.authors}}) {{episode.host_url}} {{episode.get_minutes}} min.<br>
 {% endfor %}
-
+<hr>
 {% for episode in episodes %}  {{forloop.counter}}. {{episode.host_url}} {{episode.get_minutes}} min.<br>
 {% endfor %}
 
+<hr>
+{% if user.is_authenticated %}
+{% for episode in episodes %}  {{forloop.counter}}. {{episode.host_url}} {{episode.get_minutes}} min. {{episode.approve_url}}<br>
+{% endfor %}
+{% endif %}
