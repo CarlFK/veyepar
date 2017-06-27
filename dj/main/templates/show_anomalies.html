@@ -55,8 +55,10 @@
         <a href="{% url "admin:main_mark_changelist" %}?show__id__exact={{show.id}}">mark admin</a>
         <a href="{% url "admin:main_location_changelist" %}?show__id__exact={{show.id}}">location admin</a>
     </td>
-    <td> </td>
-    <td> 
+    <td>
+        <a href="{% url "mk_episode" show.id %}">mk_episode</a>
+    </td>
+    <td>
         <a href="{% url "veyepar_cfg" %}">veyepar.cfg</a>
     </td>
 </tr>
