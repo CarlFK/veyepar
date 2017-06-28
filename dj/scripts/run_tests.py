@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from datetime import datetime
-import pprint
+from pprint import pprint
 
 # copied from process.py
 import os, sys, subprocess
@@ -109,11 +109,11 @@ class Run_Tests(object):
 
 
  @callme_maybe
- def make_source_dvs(self):
+ def make_source_raw(self):
    """
- ` Make a set of .dv files.
-   Similar to what dvswitch creates (dir/filename date/time.dv)
-   This takes the place of using dvswitch to record an event.
+ ` Make a set of source files.
+   Similar to what voctomix/dvswitch creates (dir/filename date/time.dv)
+   This takes the place of using an app to record an event.
 
    be sure the 2010-05-21 date
    matches start_date in make_sample_data above.
@@ -133,14 +133,14 @@ class Run_Tests(object):
    for i in range(5):
        # each file is 3 seconds long
 
-       # encode the text file into .dv
+       # encode the text file into a video file
 
-       out_file="00_00_%02i.dv" % (i*3)
+       out_file="00_00_%02i.mp4" % (i*3)
        frames = 90
        parms={'input_file':text_file,
            'output_file':os.path.join(dv_dir,out_file),
-           # 'format':self.options.dv_format,
-           'format':"dv_ntsc_wide",
+           'format':self.options.dv_format,
+           # 'format':"dv_ntsc_wide",
            'video_frames':frames,
            'audio_frames':frames}
        if i%2:
@@ -178,6 +178,15 @@ pix_fmt=yuv411p" % parms
 
    return
 
+
+ @callme_maybe
+ def make_marks_file(self):
+   """
+   Make the file of cut click timestamps
+   """
+   pathname = self.show_dir + '/dv/test_loc/cut-list.log'
+   open(pathname,'w').write(
+   "2010-05-21/00_00_04\n2010-05-21/00_00_10\n")
 
  @callme_maybe
  def make_source_footer(self):
@@ -238,14 +247,19 @@ pix_fmt=yuv411p" % parms
    return
 
  @callme_maybe
- def add_dv(self):
+ def add_raw(self):
   # add the dv files to the db
   import adddv
+  print("add_raw starting...")
   p=adddv.add_dv()
+  p.set_options(
+    verbose=False)
   p.main()
 
   import tsdv
   p=tsdv.ts_rf()
+  p.set_options(
+    time_source="fn")
   p.main()
 
   return
@@ -275,6 +289,10 @@ pix_fmt=yuv411p" % parms
   p=assocdv.ass_dv()
   p.main()
   print(p.cuts)
+  count=p.cuts.count()
+  selected=p.cuts.filter(apply=True).count()
+  ret={'count':count, 'selected':selected}
+  pprint(ret)
   cut=p.cuts[1]
   # cut=cuts[1]
   print(cut)
@@ -282,7 +300,8 @@ pix_fmt=yuv411p" % parms
   # cut.end="0:0:10"
   # cut.apply=False
   # cut.save()
-  return
+
+  return ret
 
  @callme_maybe
  def encode(self):
@@ -568,11 +587,12 @@ def main():
     t.make_test_user()
     t.setup_test_data()
     t.make_dirs() # don't skip this, it sets self.show_dir and stuff
-    t.make_source_dvs()
+    t.make_source_raw()
+    t.make_marks_file()
     t.make_source_footer()
-    t.add_dv()
+    t.add_raw()
     # t.make_thumbs() ## this jackes up gstreamer1.0 things, like mk_audio
-    t.make_cut_list()
+    result['cuts'] = t.make_cut_list()
     t.sync_rax()
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
@@ -592,7 +612,7 @@ def main():
 
     print()
     print('test results', end=' ')
-    pprint.pprint(result)
+    pprint(result)
 
     if not os.path.exists(test_filename):
         print('\n'.join(fnames))

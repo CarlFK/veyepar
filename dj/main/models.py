@@ -213,15 +213,16 @@ class Raw_File(models.Model):
         ordering = ["start", "location", "filename"]
 
 class Mark(models.Model):
-    location = models.ForeignKey(Location)
     show = models.ForeignKey(Show)
+    location = models.ForeignKey(Location)
     click = models.DateTimeField(
         help_text='When Cut was Clicked.')
 
     class Meta:
         ordering = ["click"]
+
     def __str__(self):
-        return self.click.__str__()
+        return self.click.isoformat()
 
 class Quality(models.Model):
     level = models.IntegerField()

@@ -2184,9 +2184,6 @@ def mk_cuts(episode,
     location=episode.location
     # print("loc offset", location.hours_offset)
     if location.hours_offset is not None:
-        # only adjust PyOhio day 1.
-        # fix this some day.
-        # if episode.start.date() == datetime.date(2016, 7, 30):
         start += datetime.timedelta( hours = location.hours_offset )
         end += datetime.timedelta( hours = location.hours_offset )
 
@@ -2222,6 +2219,7 @@ def mk_cuts(episode,
         cl,created = Cut_List.objects.get_or_create(
             episode=episode,
             raw_file=rf)
+
         if created:
             cl.sequence=seq
             # If there is only one segment, use it.

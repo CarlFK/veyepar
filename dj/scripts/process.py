@@ -233,6 +233,8 @@ class process():
 
   def process_eps(self, episodes):
 
+    # if self.options.verbose: print("process_ep: enter")
+
     def foo(e):
      # shard over ...umm.. a bunch of tmux sessions I think.
      s = os.environ.get('STY')
@@ -365,6 +367,7 @@ class process():
         """
         find and process episodes
         """
+        # if self.options.verbose: print("work: enter")
         episodes = Episode.objects
         if self.options.client:
             clients = Client.objects.filter(slug=self.options.client)

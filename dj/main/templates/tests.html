@@ -13,17 +13,17 @@
 <ul>
 {% for client in clients %}
   <li><a href="{% url "admin:main_client_change" client.id%}">{{client.name}}</a> </li>
-  <ul> 
+  <ul>
   {% for show in client.show_set.all %}
     <li><a href="{% url "admin:main_show_change" show.id %}">{{show.id}}</a>
     <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug %}">{{show.name}}</a> </li>
 
 
-    <ul> 
+    <ul>
     {% for episode in show.episode_set.all %}
       <li><a href="{% url "episode" episode.id%}">{{episode.name}}</a>
           - <a href="{% url "admin:main_location_change" episode.location.id%}">{{episode.location.name}}</a>
-      <ul> 
+      <ul>
       {% for cut_list in episode.cut_list_set.all %}
         <li><a href="{% url "admin:main_cut_list_change" cut_list.id%}">{{cut_list.id}}</a>
             - <a href="{% url "admin:main_raw_file_change" cut_list.raw_file.id%}">{{cut_list.raw_file.filename}}</a>
@@ -39,7 +39,7 @@
 {% endfor %}
 </ul>
 <h3>Shows:</h3>
-  <ul> 
+  <ul>
   {% for show in shows %}
     <li><a href="{% url "admin:main_show_change" show.id%}">{{show.name}}</a>
      - <a href="{% url "admin:main_client_change" show.client.id%}">{{show.client.name}}</a>
@@ -47,14 +47,16 @@
   {% endfor %}
   </ul>
 <h3>Locations:</h3>
-<ul> 
+<ul>
 {% for location in locations %}
   <li> <a href="{% url "admin:main_location_change" location.id%}">{{location.name}}</a>
-    <ul> 
+    <ul>
   {% for raw_file in location.raw_file_set.all %}
-    <li><a href="{% url "admin:main_raw_file_change" raw_file.id%}">{{raw_file.filename}}</a>
-    - <a href="{% url "admin:main_show_change" raw_file.show.id%}">{{raw_file.show.name}}</a>
-    </li>
+    <li>rf<a href="{% url "admin:main_raw_file_change" raw_file.id%}">{{raw_file.filename}}</a></li>
+  {% endfor %}
+  <li></li>
+  {% for mark in location.mark_set.all %}
+    <li> m <a href="{% url "admin:main_mark_change" mark.id%}">{{mark.click|date:"Y-m-d H:i:s"}}</a> </li>
   {% endfor %}
     </ul>
   {% endfor %}
