@@ -16,11 +16,22 @@ class email_title(email_ab):
 
     ready_state = None
 
-    subject_template = '[{{ep.show.name}}] Video *missing* metadata for "{{ep.name}}"'
+    subject_template = '[{{ep.show.name}}] how to enter: *missing* metadata for "{{ep.name}}"'
 
     body_body = """Dear PyOhio presenter,
 
-This is Carl the video guy using Veyepar his video processing robot to bother you.  Hi!
+It's me and my robot again!
+
+There are now twiter and rewviewer fields in your PyOhio Speaker profile page.  Please enter it there, even if you have already emailed it to me.
+
+https://pyohio.org/speaker/edit/
+
+Sorry for the noise, the changes just hit production a few min ago.
+
+Also, I need 3 bonus rewviewers for the Opening and two Lighting Talk videos. Lighting talks will have some extra work:   Once they are over, email me a list of Names and Talk titles (I suggest getting your hands on the signup sheet before someone throws it out.)   Let me know if you are up for this and you get extra thanks.
+
+For those of you that missed the first blurt, keep reading.  The rest of you can stop now.   Thanks!
+
 
 I need two more datas from you: twitter handle and reviewer email address.
 
@@ -37,7 +48,8 @@ If they do, then your video will be released to the public sooner than waiting f
 
 They will also be given the pre-show email that you will get showing the title slide, one more set of eyes who should have some idea what your talk is about and may catch problems earlier than later.
 
-You can fwd this message and here is more description  https://github.com/CarlFK/veyepar/wiki/Reviewer
+You can fwd this message and here is more description
+https://github.com/CarlFK/veyepar/wiki/Reviewer
 
 Sorry for the extra spam this year, next year will be different ;)
 

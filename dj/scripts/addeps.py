@@ -333,6 +333,7 @@ class add_eps(process.process):
                 'name', 'authors',
                 'emails',
                 'twitter_id',
+                'reviewers',
                 'description',
                 'start','duration',
                 'released',
@@ -2463,7 +2464,7 @@ class add_eps(process.process):
         return
 
     def symposion2(self, schedule, show):
-        # pycon.us 2013
+        # pycon.us 2013 - 17
 
         rooms = self.get_rooms(schedule, "room", )
         if self.options.verbose: print(rooms)
@@ -2484,7 +2485,9 @@ class add_eps(process.process):
             ('kind','tags'),
             ('conf_key','conf_key'),
             ('conf_url','conf_url'),
-            ('video_url','host_url'),
+            # ('video_url','host_url'),
+            ('twitters','twitter_id'),
+            ('reviewers','reviewers'),
            ]
 
         events = self.generic_events(schedule, field_maps)
@@ -2506,7 +2509,17 @@ class add_eps(process.process):
             else:
                 event['emails'] = ", ".join(event['emails'])
 
-            event['twitter_id'] = ''
+            if event['twitter_id'] is None:
+                event['twitter_id'] = ""
+            else:
+                twitters=[]
+                for twitter_id in event['twitter_id']:
+                    if twitter_id:
+                        # make sure it starts with an @
+                        if not twitter_id.startswith('@'):
+                                    twitter_id = '@' + twitter_id
+                        twitters.append(twitter_id)
+                event['twitter_id'] = ' '.join(twitters)
 
             # if event['duration'] is None: event['duration']=5
 
@@ -2679,28 +2692,29 @@ class add_eps(process.process):
                 event['room']="Cartoon 1"
 
             if event['conf_url'] is None:
-                event['conf_url'] = 'http://pyohio.org/schedule/'
+                event['conf_url'] = 'https://pyohio.org/schedule/'
 
             # if event['license'] == '':
             #    event['license'] = 'CC BY-SA 2.5 CA'
 
             if event['authors'] is None:
-                if "Catherine Devlin" in event['name']:
-                    event['authors'] = ["Catherine Devlin"]
-                else:
-                    event['authors'] = []
-            elif "&" in event['authors'][0]:
-                event['authors']=event['authors'][0].split(' & ')
+            #     if "Catherine Devlin" in event['name']:
+            #         event['authors'] = ["Catherine Devlin"]
+            #     else:
+                     event['authors'] = []
+                     event['released'] = False
+
+            # elif "&" in event['authors'][0]:
+            #     event['authors']=event['authors'][0].split(' & ')
 
             if ('contact' not in event) or \
                     (event['contact'] is None):
-                event['contact'] = []
+               event['contact'] = []
 
 
-            if event['name'].startswith('**Opening Remarks:**'):
-                event['name'] = "Panel Discussion: So You Wanna Run a Tech Conference."
-                event['authors'] = "Catherine Devlin, Eric Floehr, Brian Costlow, Raymond Chandler, Jason Green, Jason Myers".split(", ")
-
+            # if event['name'].startswith('**Opening Remarks:**'):
+            #    event['name'] = "Panel Discussion: So You Wanna Run a Tech Conference."
+            #    event['authors'] = "Catherine Devlin, Eric Floehr, Brian Costlow, Raymond Chandler, Jason Green, Jason Myers".split(", ")
 
 
         return self.symposion2(schedule,show)
@@ -3820,7 +3834,7 @@ class add_eps(process.process):
         if self.options.show in ['pyconza2015', 'pyconza2016']:
             return self.summit_penta(schedule,show)
 
-        if self.options.show =='debconf15':
+        if self.options.show =='debconf17':
             return self.summit_penta(schedule,show)
 
         if self.options.show =='bosc_2014':
@@ -3848,7 +3862,8 @@ class add_eps(process.process):
             return self.lanyrd(schedule,show)
 
         if self.options.show in [
-                'pyohio_2016','pyohio_2015',"pycon_2014_warmup"]:
+                'pyohio_2016','pyohio_2015',"pycon_2014_warmup",
+                'pyohio_2017',]:
             return self.pyohio2013(schedule,show)
 
         if self.options.show =='pygotham_2016':
