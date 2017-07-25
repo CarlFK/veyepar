@@ -367,9 +367,15 @@ class Episode(models.Model):
         return ret
 
     def get_minutes(self):
-        # delta = self.end - self.start
-        # minutes = delta.days*60*24 + delta.seconds/60.0
-        minutes = self.cuts_time()/60
+        ct = self.cuts_time()
+        if ct is None:
+            # if there are no cuts, use scheduled time
+            delta = self.end - self.start
+            minutes = delta.days*60*24 + delta.seconds/60.0
+        else:
+            # use amount of video time
+            minutes = self.cuts_time()/60
+
         return int(minutes)
 
     def add_email(self, email):
