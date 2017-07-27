@@ -36,7 +36,7 @@ class LocationAdmin(admin.ModelAdmin):
 admin.site.register(Location, LocationAdmin)
 
 class Raw_FileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'filename', ) #'show', 'location', 'start', 'duration', 'end', ) 
+    list_display = ('id', 'filename', ) #'show', 'location', 'start', 'duration', 'end', )
     list_editable = ('filename', )
     # list_display_links = ('filename',)
     list_filter = ('location',"start", "show")
@@ -49,7 +49,7 @@ class MarkAdmin(admin.ModelAdmin):
 admin.site.register(Mark, MarkAdmin)
 
 class Image_FileAdmin(admin.ModelAdmin):
-    list_display = ('filename', 'show', 'location', ) 
+    list_display = ('filename', 'show', 'location', )
     list_display_links = ('filename',)
     list_filter = ('location','show', )
     search_fields = ['filename', 'text']
@@ -65,46 +65,49 @@ class EpisodeAdmin(admin.ModelAdmin):
 
     """
     def state_bumper(self,obj):
-        return '<input type="submit" value="+" class=pb>' 
+        return '<input type="submit" value="+" class=pb>'
     state_bumper.allow_tags = True
     state_bumper.short_description = 'bump'
     """
 
     list_display = ('id',
-            # 'conf_key', 
-            # 'conf_url', 
+            # 'conf_key',
+            # 'conf_url',
             'state',
-            'name', 
-            # 'authors',
-            # 'emails',
+            'name',
+            'authors',
+            'emails',
+            'reviewers',
             # 'archive_mp4_url',
             # 'host_url',
-            # 'locked_by', 
-            'start', 
-            'duration', 
-            # 'end', 
+            # 'locked_by',
+            # 'start',
+            # 'duration',
+            # 'end',
             # 'location',
 )
     list_editable = (
             'state',
             'name',
+            'reviewers',
+            # 'archive_mp4_url',
             # 'host_url',
             #'rax_mp4_url',
             # 'authors',
             # 'emails',
-            # 'conf_key', 
-            # 'conf_url', 
-            # 'sequence', 
-            'start', 
-            'duration', 
-            # 'end', 
+            # 'conf_key',
+            # 'conf_url',
+            # 'sequence',
+            # 'start',
+            # 'duration',
+            # 'end',
             )
 
-       
-	# 'sequence', 'name', 'state', 'state_bumper', 
-    #     'location', 
+
+	# 'sequence', 'name', 'state', 'state_bumper',
+    #     'location',
     #     'locked','locked_by',
-    #     'show', 
+    #     'show',
     #     'start','end',)
     # list_display = ( 'sequence', 'name', 'state', 'state_bumper', 'duration' )
     list_display_links = ('id',)
@@ -121,10 +124,10 @@ class EpisodeAdmin(admin.ModelAdmin):
 
     formfield_overrides = {
             models.TextField: {
-                'widget': forms.Textarea({'cols': 80, 'rows': 2}), 
+                'widget': forms.Textarea({'cols': 80, 'rows': 2}),
             }}
 
-    actions = [ 
+    actions = [
             'set_stopped', 'clear_locked', 're_slug',
             'bump_state', 'smack_state',
             'encode_state'] \

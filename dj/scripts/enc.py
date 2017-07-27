@@ -120,7 +120,6 @@ class enc(process):
             tags = []
             tag1 = ''
 
-        """
         # split authors over two objects
         # breaking on comma, not space.
         if ',' in authors:
@@ -129,8 +128,6 @@ class enc(process):
             authors = authors[0].strip()
         else:
             author2 = ''
-        """
-        author2 = ''
 
         date = episode.start.strftime("%B %-d, %Y")
 
@@ -195,7 +192,6 @@ class enc(process):
         if self.options.verbose: print("custom:", custom_svg_name)
         abs_path =  os.path.join( self.show_dir, "tmp", custom_svg_name )
         if os.path.exists(abs_path):
-            # cooked_svg_name = custom_svg_name
             cooked_svg_name = abs_path
         else:
             svg_name = episode.show.client.title_svg

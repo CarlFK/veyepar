@@ -20,18 +20,18 @@ class email_title(email_ab):
 
     body_body = """Your talk is scheduled for {{ep.start|date:"l"}} {{ep.start}} (that is in {{ep.start|timeuntil}}) in the room called {{ep.location.name}} and you have been allotted {{ep.get_minutes}} minutes. The event organizers will give you instructions on how to check in before your talk.
 
-Projectors will be HDMI only running at 720p (which is 16:9). Please bring any adaptors you need. If you have any special requests or have forgotten your adapter, please contact us ASAP and we will try to accommodate you.
+Projector hookup will be 720p HDMI (which is 16:9). Please bring any adaptors you need. If you have any special requests or have forgotten your adapter, please contact us ASAP and we will try to accommodate you.
 
 {% if ep.released %}Permission has been given to record your talk and post it online.  Once it is up, you will get another e-mail with a URL that is not public until someone approves it.  Once it's approved it will be made public and tweeted {{ep.show.client.tweet_prefix}}.
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% else %} "None" means it may get recorded and processed, but it will not be made public.
-"False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
+Released: "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
 Please review the following meta data about your talk so that everything is correct when the video goes live.
 
 Title: {{ep.name}}
 {% if image_url %}
 The video will start with the following image:
-https://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
+http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.show.client.slug}}/{{ep.show.slug}}/titles/{{ep.slug}}.png
 {% endif %}
 {% if ep.public_url%}The main page for the video will be here:
 {{ep.public_url}}
