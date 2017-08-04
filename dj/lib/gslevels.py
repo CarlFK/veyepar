@@ -22,28 +22,33 @@ Gst.init(None)
 class AudioPreviewer:
 
     count = 0
-    interval = 1.0  ## buffer size in seconds 
+    interval = 1.0  ## buffer size in seconds
     verbose = False
-    uri = None
+    # uri = None
     location = None
 
     def mk_pipe(self):
 
         # self.pipeline = Gst.parse_launch( "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink name=faked" )
         # self.pipeline = Gst.parse_launch( "filesrc name=filesrc ! qtdemux ! audioconvert ! level name=wavelevel ! fakesink")
-            # "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
-        self.pipeline = Gst.parse_launch( 
-            "uridecodebin name=decode ! audioconvert ! level name=wavelevel ! fakesink"
+        # "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
+        # "uridecodebin3 name=decode ! audioconvert ! level name=wavelevel ! fakesink"
+        self.pipeline = Gst.parse_launch(
+            "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
             )
 
-        self.uri = self.location 
+        """
+        # removed so I can use decodebin3
+        # because: https://bugzilla.gnome.org/show_bug.cgi?id=770498
+        self.uri = self.location
         if self.uri.startswith('/'):
             self.uri = "file://" + self.uri
         decode = self.pipeline.get_by_name("decode")
         decode.set_property( 'uri', self.uri )
+        """
 
-        # filesrc = self.pipeline.get_by_name("filesrc")
-        # filesrc.set_property( 'location', self.location )
+        filesrc = self.pipeline.get_by_name("filesrc")
+        filesrc.set_property( 'location', self.location )
 
         wavelevel = self.pipeline.get_by_name( 'wavelevel' )
         wavelevel.set_property( 'interval', int(self.interval * Gst.SECOND))
@@ -75,7 +80,7 @@ class AudioPreviewer:
             print(( "verbose: _messageCb called with bus:{} message:{}".format(bus, message)))
             print(( "type:", t ))
             # import code; code.interact(local=locals())
-        
+
         if t == Gst.MessageType.ELEMENT \
               and message.has_name("level"):
 
@@ -121,7 +126,7 @@ class AudioPreviewer:
 # https://github.com/drj11/pypng
 
 import png
-import numpy 
+import numpy
 import urllib.parse
 
 class Make_png(AudioPreviewer):
@@ -145,26 +150,26 @@ class Make_png(AudioPreviewer):
 
         tick = 2 if self.count % 600 == 599 else 0
         if self.channels == 2:
-            # left rms 
+            # left rms
             # map 0 to -40 to 0 to height
-            l = int(max(levs['rms'][0],self.threashold) 
+            l = int(max(levs['rms'][0],self.threashold)
                     * (self.height-1)/self.threashold)
             for y in range(l,self.height-tick):
                 self.grid[y,self.count] = 127
 
             # left peak
-            l = int(max(levs['peak'][0],self.threashold) 
+            l = int(max(levs['peak'][0],self.threashold)
                     * (self.height-1)/self.threashold)
             self.grid[l,self.count] = 255
 
             # right rms
             # map 0 to -70 to height to height * 2
-            l = int(max(levs['rms'][1],self.threashold) 
+            l = int(max(levs['rms'][1],self.threashold)
                     * (self.height-1)/-self.threashold + 2 * self.height)
             for y in range(self.height+tick,l):
                 self.grid[y,self.count] = 127
 
-            l = int(max(levs['peak'][1],self.threashold) 
+            l = int(max(levs['peak'][1],self.threashold)
                     * (self.height+1)/-self.threashold + 2 * self.height-2)
             self.grid[l,self.count] = 255
 
@@ -175,13 +180,13 @@ class Make_png(AudioPreviewer):
             for channel in range(self.channels):
 
                 # map 0 to -40 to 0 to height
-                l = int(max(levs['rms'][channel],self.threashold) 
+                l = int(max(levs['rms'][channel],self.threashold)
                         * (self.height-1)/self.threashold)
                 for y in range(l,self.height-tick):
                     self.grid[y+channel*self.height,self.count] = 127
 
                 # left peak
-                l = int(max(levs['peak'][channel],self.threashold) 
+                l = int(max(levs['peak'][channel],self.threashold)
                         * (self.height-1)/self.threashold)
                 self.grid[l+channel*self.height,self.count] = 255
 
@@ -202,8 +207,8 @@ def lvlpng(filename, png_name=None):
     """
     given:
       uri - input uri
-      png_name - output path and filename 
-       (defaults to input.wav.png, 
+      png_name - output path and filename
+       (defaults to input.wav.png,
          munged if input is http)
     """
 
@@ -221,7 +226,7 @@ def lvlpng(filename, png_name=None):
         """
         o = urlparse.urlparse(uri)
         if o.scheme=="file":
-            pathname = o.path 
+            pathname = o.path
         else:
             # drops output in local dir
             # use png_name parameter to make it go somewhere else
@@ -267,7 +272,7 @@ def cklevels(filename):
     p.mk_pipe()
     p.start()
 
-    return 
+    return
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -288,9 +293,9 @@ def parse_args():
     parser.add_option('--height', type=int, default=50,
             help="height of image in pixels", )
 
-    parser.add_option('--indir', 
+    parser.add_option('--indir',
             help="input dir", )
-    parser.add_option('--outdir', 
+    parser.add_option('--outdir',
             help="output dir", )
 
     options, args = parser.parse_args()
@@ -311,16 +316,16 @@ def main():
     "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Collins_Auditorium/2015-11-14/Saturday Morning Camera/SC1ATK103.mov",
     "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Collins_Auditorium/2015-11-14/Saturday Morning GFX/Clip1ATK653.mov",
     ]
-    
+
     for filename in filenames:
         if options.test:
             cklevels(filename)
         else:
             lvlpng(filename)
 
-    return 
+    return
     """
-    
+
     if options.indir:
         many(options.indir, options.outdir)
     else:
