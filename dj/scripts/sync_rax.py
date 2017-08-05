@@ -37,6 +37,44 @@ class SyncRax(process):
 
         return ret
 
+    def mk_low(self, rfpathname, out):
+
+            # symaphore? so a 2nd process doesn't do this file too
+            # cmd = ['touch', out]
+            # self.run_cmd(cmd)
+
+            # tmp = "{out}.tmp".format(out=out)
+
+            vb = "100k"
+            ab = "75k"
+
+            cmd = ["melt", rfpathname,
+                    "meta.attr.titles=1",
+                    "meta.attr.titles.markup=#timecode#",
+                    "-attach", "data_show", "dynamic=1",
+                  "-consumer", "avformat:"+out,
+                    "progress=1",
+                    "vcodec=libx264", "vb="+vb,
+                    "acodec=aac", "ab="+ab,
+                    "strict=-2",
+                    "preset=ultrafast",
+                    "movflags=+faststart", ]
+            # , "threads=6"]
+                    # "properties=x264-medium",
+
+            xcmd = ["ffmpeg", "-i", rfpathname,
+                "-vf", "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf: text='%{pts\:hms}': fontcolor=black@0.8: fontsize=48: x=7: y=500",
+                "-codec:v", "libx264", "-b:v", vb,
+                "-codec:a", "aac", "-strict", "-2", "-b:a", ab,
+                "-preset", "ultrafast", "-f", "mp4", "-y", out]
+
+            p=subprocess.Popen(cmd)
+            p.wait()
+            retcode=p.returncode
+
+            # cmd = ['mv', tmp, out]
+            # self.run_cmd(cmd)
+
     def rf_web(self, show, rf):
         """
         make a low bitrate version of the raw file
@@ -55,41 +93,8 @@ class SyncRax(process):
             # look for low on local file system
             vb = "50k"
             # vb = "20k" # for SA
-            if not os.path.exists(out):
-
-                # symaphore? so a 2nd process doesn't do this file too
-                cmd = ['touch', out]
-                self.run_cmd(cmd)
-
-                tmp = "{out}.tmp".format(out=out)
-
-                vb = "100k"
-                ab = "75k"
-
-                cmd = ["melt", rfpathname,
-                        "meta.attr.titles=1",
-                        "meta.attr.titles.markup=#timecode#",
-                        "-attach", "data_show", "dynamic=1",
-                    "-consumer", "avformat:"+tmp,
-                        "vb="+vb, "progress=1",
-                        "acodec=aac", "vcodec=libx264", "ab=50k",
-                        "preset=ultrafast", "progress=1",
-                        "movflags=+faststart", ]
-                # , "threads=6"]
-                        # "properties=x264-medium",
-
-                xcmd = ["ffmpeg", "-i", rf,
-                    "-vf", "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf: text='%{pts\:hms}': fontcolor=black@0.8: fontsize=48: x=7: y=500",
-                    "-codec:v", "libx264", "-b:v", vb,
-                    "-codec:a", "aac", "-strict", "-2", "-b:a", ab,
-                    "-preset", "ultrafast", "-f", "mp4", "-y", tmp]
-
-                p=subprocess.Popen(cmd)
-                p.wait()
-                retcode=p.returncode
-
-                cmd = ['mv', tmp, out]
-                self.run_cmd(cmd)
+            if not os.path.exists(out) or self.options.force:
+                self.mk_low(rfpathname, out)
 
             if self.options.rsync:
                 if not self.cdn_exists(show,low) or self.options.replace:
@@ -116,7 +121,16 @@ class SyncRax(process):
 
 
     def raw_file(self, show, rf):
-        if self.options.verbose: print("rf:",rf)
+
+        base = os.path.join( "dv", rf.location.slug, rf.filename )
+        if self.options.verbose: print("rf: {}".format(base))
+        src_name = os.path.join(self.show_dir, base)
+
+        if not os.path.exists(src_name):
+            print("src not found: {src_name}".format(
+                src_name=src_name))
+            raise IOError
+
         if self.options.low:
             self.rf_web(show, rf)
         if self.options.audio_viz:
@@ -148,14 +162,14 @@ class SyncRax(process):
             cls = Cut_List.objects.filter(episode__in=eps)
             rfs = rfs.filter(cut_list__in=cls).distinct()
 
-
-
+        """
         # try to do the more important ones first
         # rfs = rfs.order_by()
         # ok can't figure out good SQL stuff, so ... hammer time.
         # skip before 8am and after 6pm
         # it would be nice to target ones that are being worked on
         # but that's too hard.
+
         for rf in rfs:
 
             if rf.start.hour < 8:
@@ -167,6 +181,7 @@ class SyncRax(process):
                 continue
 
             self.raw_file(show,rf)
+        """
 
         # now do them all of them to be sure.
         # does't cost much to check and see they are done.
