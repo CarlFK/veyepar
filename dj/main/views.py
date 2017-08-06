@@ -2343,6 +2343,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
                 cl.sequence=form.cleaned_data['sequence']
                 cl.start=form.cleaned_data['start']
+                oend = cl.end # used for splitting
                 cl.end=form.cleaned_data['end']
                 cl.apply=form.cleaned_data['apply']
                 cl.comment=form.cleaned_data['cl_comment']
@@ -2351,7 +2352,10 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                 if form.cleaned_data['split']:
                     # copy the current cut list.
                     # this gives 2 pointers to the same Raw File
+                    # keep the original .end and move the new end to the start.
                     cl.id=None
+                    cl.start = cl.end
+                    cl.end = oend
                     cl.sequence+=1
                     cl.save(force_insert=True)
 
