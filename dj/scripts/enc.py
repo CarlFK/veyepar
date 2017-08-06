@@ -436,7 +436,7 @@ class enc(process):
                         (mlt_pathname, out_pathname)]
 
             if ext == 'mp4':
-                # High Quality Master 720x480 NTSC
+                # High Quality
 
                 parms = {
                     'dv_format': self.options.dv_format,
