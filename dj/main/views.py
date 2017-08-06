@@ -2135,7 +2135,11 @@ def episode_chaps(request, episode_id):
             h,m,s = (total_time//3600,
                     (total_time%3600)//60,
                     total_time%60)
-            start_chap = "%s:%02i:%02i" % (h,m,s)
+            if episode.cuts_time() < 3600:
+                # start_chap = "%s:%02i:%02i" % (h,m,s)
+                start_chap = "{m:02d}:{s:02d}".format(h=h,m=m,s=s)
+            else:
+                start_chap = "{h}:{m:02d}:{s:02d}".format(h=h,m=m,s=s)
 
             yt ="{yt}?t={h}h{m}m{s}s".format(
                     yt=episode.host_url,h=h,m=m,s=s)
