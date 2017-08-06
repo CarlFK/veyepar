@@ -1,26 +1,23 @@
 
-config management
-do this better: veyepar/setup/nodes/encode/push_confs.sh
-anisebel?
-
-
 veyepar:
 
-  talk setup checklist- 
+  Add [x]Location.active to show_stats
+
+  talk setup checklist-
      confirm talk title
-     ask presenter how they prounounce their name 
+     ask presenter how they prounounce their name
      ask audiance for a remote monitor (for IRC)
 
   move state data def from models.py to initial_data.json fixture.
-     use state table, not a constant 
+     use state table, not a constant
 
-  episode.html save.. 
+  episode.html save..
      UI to show user it got saved.
         "saved" page, 1 sec redirect back to episode?
         js to say "saved" that goes away in 5 seconds?
         js to say "saved/dirty" if there are outstanding edits?
      When an Edit is saved, move to next_episode
-     
+
 
   next/prev (match recording sheet: same room/day)
 
@@ -28,8 +25,8 @@ veyepar:
 
   error handling:
       encode and uploads nead attention
-      log error, continue with next episode. 
-      encode errors:   
+      log error, continue with next episode.
+      encode errors:
         inkscape svg/png fail
         input files missing
         encoder fail
@@ -38,7 +35,7 @@ veyepar:
     option to disable reading config (tests should not read config)
     give test script its own cfg
 
-  upload category - 
+  upload category -
      needs default, currently hardcoded to "Education"
 
   youtube:
@@ -46,32 +43,32 @@ veyepar:
      use testing server for testing
      https://developers.google.com/youtube/2.0/developers_guide_protocol_testing
      don't re-upload the same video (causes duplicate video error)
-     # invalid tags cause fail and loop forever - fix this. 
+     # invalid tags cause fail and loop forever - fix this.
          (fixed by not setting tags)
-     
-  state - need something to handle Canceled talks, breaks, etc.  
-    disposition?  
+
+  state - need something to handle Canceled talks, breaks, etc.
+    disposition?
     priority?
 
   state - mk_titles, email_titles ?
-     (currently are done outside of the formal workflow steps, so hard to fix one and re-do)   
+     (currently are done outside of the formal workflow steps, so hard to fix one and re-do)
   state - really needs something new. like a bunch of "completed" flags.
 
-  flag - do not overwrite when syncing with conf db - 
+  flag - do not overwrite when syncing with conf db -
     this is to handle when I know better than the conference data.
 
   tweet hashtag - client or show or both?
   pyvideo.org category - client or show or both?
   (are these two the same thing?)
 
-      richard: 
+      richard:
         reference back to veyepar page (hidden to public)
         reference to conference site page (for slides)
-      
+
    move show.schedule_url to client.
-    
-   Stop - make it work again - 
-     I think it is a buffering problem - 
+
+   Stop - make it work again -
+     I think it is a buffering problem -
      the code needs to poll the db, not look at the local cashed value
 
    zip title svg and images
@@ -79,15 +76,15 @@ veyepar:
       meh, just include all the images in the svg.
 
 encoding:
-  remove global -dv-format setting 
+  remove global -dv-format setting
   encode shorter talks first so they can get started uploading sooner.
   soften jump cuts - If end+start is not back to back, fade to black and back up.
-  
-slugify talk titles- 
+
+slugify talk titles-
   truncate on word boundary when over X chars.
 
 model:
-  
+
   episode:
 
   child table of destination hosts (youtube, archive.org, mirror...)
@@ -97,46 +94,46 @@ model:
     text: irc logs, transcript, tweets
     md5sum of file, and or that other thing that rackspace cdn uses
     datetime encoded
-    
+
     grandchild of uploaded to urls?
     datetime uploaded
-    track when deleted?  
+    track when deleted?
 
   Once uploaded to a file sharing host,  (archive, rax, mirror...)
     use a cloud process to read from it and write to youtube so
     that the video file only goes across local connection once.
 
-option to pick transport: popen(rsync...) or rax_uploader 
+option to pick transport: popen(rsync...) or rax_uploader
 
-manage cloud storage:  
+manage cloud storage:
   png/svg for preview
   ogv/webm for remote editing
-  audio_image for remote diagnostics 
+  audio_image for remote diagnostics
   final encode for archive
 
 process to check if a file is avalible for public viewing:
   (neither of these is a real problem, so low priority)
   youtube - "still processing, check again later."
   rsync or such, conjob or human processes that veyepar doesn't know about
-    
+
 
   change duration from "hh:mm:ss" to float(sec)
-  
+
   BucketID / Richard Category
     Sometimes this is per client, sometimes per show.
     thought: one field in each, if Show else look to client.
 
-wallpaper 
+wallpaper
   logos:
-    NextDayVideo, 
+    NextDayVideo,
     Linux, DVswitch, Python, Django, MLT
 
 
 recording sheets:
   hostname:____
-  add date/time to "Replace batteries" 
-  add start-end time to header 
-    (to help know how long the day is, 
+  add date/time to "Replace batteries"
+  add start-end time to header
+    (to help know how long the day is,
       and help keep track of what the last sheet is.)
 
 for unit tests:
@@ -144,14 +141,14 @@ for unit tests:
     sphinx2-bin fell out of the ubuntu repos due to not being maintained.
     state of the art is not a requirement
     it just needs to recognize a simple phrase, like
-       "go forward 10 meters"   
-    which gets encoded and demuxed back out 
+       "go forward 10 meters"
+    which gets encoded and demuxed back out
     to make sure the encoder didn't muck it up.
-    
+
 
 Transcriptions
     Need a place to host transcriptions
-    mix transcriptions with video for sub titling 
+    mix transcriptions with video for sub titling
     aurora .. um..  that's all I got.
 
 OCR - http://software-carpentry.org
