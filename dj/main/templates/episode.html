@@ -77,11 +77,13 @@
 {% endif %}
 
 {% if episode.public_url %}
-   {% for ext in exts %}
-     <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio">
-   <br/>
-    {% endfor %}
 {% endif %}
+   {% for ext in exts %}
+
+   <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio" onerror="this.style.display='none'" />
+   <br/>
+
+    {% endfor %}
 
 <a href="{% url "raw_list" episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
    {% for ext in exts %}
@@ -295,7 +297,7 @@ $(".viewer").zoomer();
   {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
 
-  <img id="audio_image_{{cl.id}}" alt="audio viz"
+  <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'
     src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
 
   {% with forloop.counter0 as x %}
