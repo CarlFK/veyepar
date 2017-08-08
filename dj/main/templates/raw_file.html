@@ -6,7 +6,7 @@
 
 <tr>
     <td>
-        <video
+        <video id="rawfile{{ raw_file.id }}"
             width=600
       controls
       poster = "{{MEDIA_URL}}{{raw_file.filename}}.png"
@@ -56,8 +56,34 @@
         </table> </td>
     </tr>
 </table>
-{# <img src="{{MEDIA_URL}}{{raw_file.base_url}}_audio.png"/> #}
-<img src ="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png">
+  <img id="audio_image_{{raw_file.id}}" alt="audio viz"
+    src ="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png"
+    onerror="this.style.display='none'" />
+
+  {% with 1 as x %}
+    <script>
+
+    var elementLeft{{x}} = $('#audio_image_{{raw_file.id}}').offset().left;
+    var imageX{{x}} = 0;
+    var vid{{x}} = $( "#rawfile{{raw_file.id}}" );
+    var startbox{{x}} = $( "#{{clrfform.start.auto_id}}" );
+    var endbox{{x}} = $( "#{{clrfform.end.auto_id}}" );
+
+    $( "#audio_image_{{raw_file.id}}" ).mousemove(function( event ) {
+        imageX{{x}} = (event.pageX - elementLeft{{x}});
+       });
+
+    $( "#audio_image_{{raw_file.id}}" ).click(function() {
+        // seems I can't change .currentTime before something...
+        // as long as the user hits play once, all is well.
+        // saving/restoring state is too much hassle.
+        // vid{{x}}[0].play();
+        vid{{x}}[0].currentTime = imageX{{x}};
+        // vid{{x}}[0].pause();
+       });
+
+  {% endwith %}
+    </script>
 
 {% endblock %}
 
