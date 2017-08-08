@@ -490,7 +490,7 @@ def emailer(show_id, ):
 def show_urls(request,show_id):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show).order_by('start')
+    episodes=eps_filters(request.GET).filter(show=show).order_by('start')
 
     return render(request, "show_urls.html",
         {
@@ -509,11 +509,7 @@ def schedule(request, show_id, show_slug, template_name):
 
     show=get_object_or_404(Show,id=show_id)
     locations=show.locations.filter(active=True).order_by('sequence')
-    episodes=Episode.objects.filter(show=show)
-
-    if "released" in request.GET:
-        episodes = episodes.filter(released=request.GET['released'])
-
+    episodes=eps_filters(request.GET).filter(show=show).order_by('start')
 
     # order_by to override Meta: ordering = ["sequence"]
     # which will get included in the field list and break the .distinct().
@@ -569,21 +565,11 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
     if episode_id:
         episodes=Episode.objects.filter(id=episode_id)
     else:
-        episodes=Episode.objects \
+        episodes=eps_filters(request.GET).filter(show=show) \
                 .annotate(start_date=Trunc('start', 'day')) \
                 .filter(show=show, location__active=True ) \
                 .order_by('start_date', 'location__sequence','start')
                 # ).order_by('location__sequence','start')
-
-    if "day" in request.GET:
-        episodes = episodes.filter( start__day=request.GET['day'] )
-    if "date" in request.GET:
-        episodes = episodes.filter( start__startswith=request.GET['date'] )
-    if "state" in request.GET:
-        episodes = episodes.filter( state=request.GET['state'] )
-
-    if "room" in request.GET:
-        episodes = episodes.filter( location__slug=request.GET['room'] )
 
     base  = os.path.dirname(__file__)
     rfxmlfile  = os.path.join(base,'templates', rfxml+".rfxml")
@@ -678,26 +664,23 @@ def raw_play_list(request, episode_id):
 
 def eps_filters(rGET):
 
-    episodes = Episode.objects.all()
+    param_maps=[
+            ('id', 'id'),
+            ('state', 'state'),
+            ('show__slug', 'show'),
+            ('show__client__slug', 'client'),
+            ('location__slug', 'location'),
+            ('start__day', 'day'),
+            ('start__startswith', 'date'),
+            ('released', 'released'),
+            ]
 
-    if "id" in rGET:
-        episodes = episodes.filter( id=rGET['id'] )
+    filters = {}
+    for spec,vkey in param_maps:
+        if vkey in rGET:
+            filters[spec] = rGET[vkey]
 
-    if "client" in rGET:
-        episodes = episodes.filter(
-                show__client__slug=rGET['client'] )
-
-    if "show" in rGET:
-        episodes = episodes.filter( show__slug=rGET['show'] )
-
-    if "location" in rGET:
-        episodes = episodes.filter( location__slug=rGET['location'] )
-
-    if "date" in rGET:
-        episodes = episodes.filter( start__startswith=rGET['date'] )
-
-    if "state" in rGET:
-        episodes = episodes.filter( state=rGET['state'] )
+    episodes = Episode.objects.filter(**filters)
 
     return episodes
 
@@ -707,28 +690,6 @@ def public_play_list(request):
 
     # build up the filter:
     episodes = eps_filters(request.GET)
-
-    """
-    if "id" in request.GET:
-        episodes = episodes.filter( id=request.GET['id'] )
-
-    if "client" in request.GET:
-        episodes = episodes.filter(
-                show__client__slug=request.GET['client'] )
-
-    if "show" in request.GET:
-        episodes = episodes.filter( show__slug=request.GET['show'] )
-
-    if "location" in request.GET:
-        episodes = episodes.filter( location__slug=request.GET['location'] )
-
-    if "date" in request.GET:
-        episodes = episodes.filter( start__startswith=request.GET['date'] )
-
-    if "state" in request.GET:
-        episodes = episodes.filter( state=request.GET['state'] )
-
-    """
 
     response = HttpResponse(content_type='audio/mpegurl')
     # response['Content-Disposition'] = 'attachment; filename=playlist.m3u'
@@ -789,7 +750,8 @@ def enc_play_list(request,episode_id):
 def play_list(request,show_id,location_slug=None):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show,state=3).order_by('sequence')
+
+    episodes=eps_filters(request.GET).filter(show=show,state=3).order_by('sequence')
     if location_slug:
         episodes = episodes.filter(location__slug=location_slug)
 
@@ -1403,15 +1365,7 @@ def final_file_audio(request):
 
     show = Show.objects.get(id=request.GET['show_id'])
     client=show.client
-    episodes=Episode.objects.filter(show=show,).order_by('start')
-
-    state = request.GET.get('state')
-    if state is not None:
-        episodes=episodes.filter(state=state)
-
-    epid = request.GET.get('epid')
-    if epid is not None:
-        episodes=episodes.filter(id=epid)
+    episodes=eps_filters(request.GET).filter(show=show).order_by('start')
 
     return render(request, 'final_file_audio.html',
         {
@@ -1589,10 +1543,7 @@ def episode_list(request, state=None):
 
     states = State.objects.all()
 
-    episodes=Episode.objects.filter(state=state, show__active=True).order_by('start')
-
-    if "show" in request.GET:
-        episodes = episodes.filter( show__slug=request.GET['show'] )
+    episodes=eps_filters(request.GET).filter(show=show, show__active=True).order_by('start')
 
     return render(request, 'episode_list.html',
             { 'episodes':episodes,
