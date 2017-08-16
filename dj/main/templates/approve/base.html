@@ -35,7 +35,7 @@
 {% if user.is_authenticated %}
 <hr>
 <a href="{% url "admin:main_episode_change" episode.id %}">admin</a> <br>
-<a href="e/{{episode.id}}/">{{ episode.name }}</a> <br>
+<a href="{% url "episode" episode.id %}">{{ episode.name }}</a> <br>
 {% endif %}
 
 
