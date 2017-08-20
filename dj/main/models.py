@@ -88,7 +88,6 @@ class Location(models.Model):
     default = models.BooleanField(default=True,
         help_text="Adds this loc to new Clients.")
     name = models.CharField(max_length=135,
-        default=socket.gethostname(),
         help_text="room name")
     slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="dir name to store input files")
