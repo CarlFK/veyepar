@@ -88,7 +88,6 @@ class Location(models.Model):
     default = models.BooleanField(default=True,
         help_text="Adds this loc to new Clients.")
     name = models.CharField(max_length=135,
-        default=socket.gethostname(),
         help_text="room name")
     slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="dir name to store input files")
@@ -248,6 +247,11 @@ STATES=[
  ]
 
 
+def generate_edit_key():
+    """ Generate a random key """
+    return str(random.randint(10000000,99999999))
+
+
 class Episode(models.Model):
     show = models.ForeignKey(Show)
     location = models.ForeignKey(Location, null=True)
@@ -295,9 +299,9 @@ class Episode(models.Model):
         help_text="Spoken languge (German, English...)")
 
     edit_key = models.CharField(max_length=32,
-            blank=True,
-            null=True,
-            default = str(random.randint(10000000,99999999)),
+        blank=True,
+        null=True,
+        default=generate_edit_key,
         help_text="key to allow unauthenticated users to edit this item.")
 
     summary = models.TextField(blank=True, help_text="short", null=True)
