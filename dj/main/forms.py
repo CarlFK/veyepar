@@ -14,6 +14,10 @@ class Location_Form(forms.ModelForm):
         model = Location
         exclude = ['active',]
 
+class Location_Active_Form(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = ['active',]
 
 class Episode_Form_Preshow(forms.ModelForm):
     authors = forms.CharField(max_length=255, required=False)
