@@ -43,7 +43,7 @@ from main.models import \
 from main.models import STATES, ANN_STATES
 from main.forms import \
         Episode_Form_small, Episode_Form_Preshow, \
-        Location_Form, \
+        Location_Form, Location_Active_Form, \
         clrfForm, Add_CutList_to_Ep, Who, AddImageToEp, \
         Episode_Form_Mini, MarkPicker
 
@@ -1015,9 +1015,32 @@ def show_stats(request, show_id, ):
 
     show=get_object_or_404(Show,id=show_id)
     client=show.client
-    episodes=Episode.objects.filter(show=show,location__active=True)
-    raw_files=Raw_File.objects.filter(show=show,location__active=True)
+
+    episodes=Episode.objects.filter(
+            show=show,location__active=True).order_by('start')
+    if episodes:
+        show_start = episodes[0].start.date
+    else:
+        show_start = None
+
+    raw_files=Raw_File.objects.filter(
+            show=show,location__active=True,start__ge=show_start)
+
     locations=show.locations.filter(active=True).order_by('sequence')
+
+    ### collection of stuff ###
+
+    Location_Active_FormFormSet = formset_factory(
+            Location_Active_Form, extra=0)
+
+    if request.user.is_authenticated() and \
+            request.method == 'POST':
+        loctaion_formset = Location_Active_FormFormSet(request.POST)
+    else:
+        # init = [{'location_id':location.id,} for location in locations]
+        location_formset = Location_Active_FormFormSet(initial=locations)
+
+    ### end of collection of stuff ###
 
     # needs better organazation.  refactor please.
     empty_stat = {
@@ -1911,6 +1934,21 @@ def mini_conf(request):
              )
 
 
+def show_list(request):
+
+    shows=Show.objects.all()\
+            .annotate( max_date=Max('episode__start'))\
+            .exclude(max_date=None)\
+            .exclude(max_date__lt=datetime.datetime(2016,4,12))\
+            .order_by('-max_date')
+
+    return render(request, 'show_list.html',
+        {
+          'shows':shows,
+        },
+             )
+
+
 def scheduled_episodes(rf):
     # find episodes that overlap the file
 
@@ -1924,7 +1962,8 @@ def scheduled_episodes(rf):
 
 def mk_episode(request,show_id):
     """
-    raw files... gonna make a video out of air.
+    raw files... gonna make a video out of raw_files.
+    no schedule, so look at the cuts.
     """
 
     def find_start_end(markpicker_formset):
@@ -2000,7 +2039,9 @@ def mk_episode(request,show_id):
                 'click':mark.click.strftime('%Y-%m-%d %H:%M:%S'),
                 } for mark in marks]
             # guess ... 2nd to last should be it.
-            init[-2]['apply']=True
+            # unless there aren't that many cuts
+            if init:
+                init[max(len(init)-2,0)]['apply']=True
             markpicker_formset = MarkPicker_FormSet(initial=init)
 
     else:

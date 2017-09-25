@@ -98,6 +98,9 @@ urlpatterns = [
     url(r'mini_conf/$', mini_conf,
         name='mini_conf'),
 
+    url(r'show_list/$', show_list,
+        name='show_list'),
+
     url(r'raw_file_audio/$', raw_file_audio, name='raw_file_audio'),
     url(r'final_file_audio/$', final_file_audio, name='final_file_audio'),
 

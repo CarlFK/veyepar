@@ -1,0 +1,19 @@
+{# show_list.html #}
+{% extends "base.html" %}
+
+{% block content %}
+
+<table>
+{% for show in shows%}
+<tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+    <td><a href="{% url "admin:main_show_change" show.id%}">{{show.id}}</a></td>
+    <td>{{ show.max_date|date:"Y-m-d" }}</td>
+    <td><a href="{% url "client" show.client.slug%}">{{ show.client.name }}</a></td>
+    <td><a href="{% url "episode_list" show.client.slug show.slug%}">{{ show.name }}</a></td>
+    <td>{{ show.description}}</td>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}
