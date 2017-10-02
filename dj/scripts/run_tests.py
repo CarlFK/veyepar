@@ -430,7 +430,6 @@ pix_fmt=yuv411p" % parms
 
  @callme_maybe
  def email_url(self):
-  # add the test to pyvideo.org:9000 test instance
   import email_url
   p=email_url.email_url()
   ret = p.main()
