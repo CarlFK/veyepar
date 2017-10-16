@@ -911,8 +911,15 @@ def show_anomalies(request, show_id, ):
     if "active" in request.GET:
         episodes = episodes.filter(location__active=True)
 
-    max_title_len = max( len(ep.name) for ep in episodes )
-    max_authors_len = max( len(ep.authors) for ep in episodes if ep.authors is not None)
+    """
+    max_title_len = max(
+            len(ep.name) for ep in episodes,
+            default=0 )
+
+    max_authors_len = max(
+            len(ep.authors) for ep in episodes if ep.authors is not None,
+            default=0 )
+    """
 
     max_name_ep = None
     max_authors_ep = None
