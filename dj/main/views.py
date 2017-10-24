@@ -1031,7 +1031,8 @@ def show_stats(request, show_id, ):
         show_start = None
 
     raw_files=Raw_File.objects.filter(
-            show=show,location__active=True,start__ge=show_start)
+            show=show,location__active=True)
+    # ,start__ge=show_start)
 
     locations=show.locations.filter(active=True).order_by('sequence')
 

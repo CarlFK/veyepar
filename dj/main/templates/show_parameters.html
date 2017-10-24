@@ -15,34 +15,38 @@ Rooms:
 </br>
 </br>
 
-Youtube account:  {{client.youtube_id}}</br>
-Youtube playlist ID: <a href="https://www.youtube.com/playlist?list={{show.youtube_playlist_id}}">{{show.youtube_playlist_id}}</a></br>
-Archive.org account:  {{client.archive_id}}</br>
+Youtube account:  {{client.youtube_id|default:"(none)"}}</br>
+Youtube playlist ID: <a href="https://www.youtube.com/playlist?list={{show.youtube_playlist_id}}">{{show.youtube_playlist_id|default:"(none)"}}</a></br>
+Archive.org account:  {{client.archive_id|default:"(none)"}}</br>
 </br>
 
-Twitter account:  {{client.tweet_id}}</br>
-Tweet prefix: {{client.tweet_prefix}}</br>
+Twitter account:  {{client.tweet_id|default:"(none)"}}</br>
+Tweet prefix: {{client.tweet_prefix|default:"(none)"}}</br>
 </br>
 
-Schedule API endpoint: <a href="{{show.schedule_url}}">{{show.schedule_url}}</a> </br>
-Item Count: {{episodes.count}} <br>
+Schedule API endpoint: <a href="{{show.schedule_url}}">{{show.schedule_url|default:"(none)"}}</a> </br>
+Item Count: {{episodes.count|default:"(none)"}} <br>
 <br>
 
-Title slide: {{client.title_svg}}
+Title slide: {{client.title_svg|default:"(none)"}}
 <a href="{% url 'title_slides' show.id %}">title slides</a>
 </br>
 
-Credits: {{client.credits}}
+Credits: {{client.credits|default:"(none)"}}
 </br>
 </br>
-Description: </br>
-{{show.description}}
-{{client.description}}
+Host metadata:
 </br>
-{{show.tags}}
-{{client.tags}}
+Tags:
+{{show.tags|default:"(none show)"}}
+{{client.tags|default:"(none client)"}}
 </br>
 </br>
-
+Description of event appened to each talk's description</br>
+{{show.description|default:"(none show)"}}
+</br>
+{{client.description|default:"(none client)"}}
+</br>
+</br>
 {% endblock %}
 
