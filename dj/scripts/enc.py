@@ -89,10 +89,21 @@ class enc(process):
         elif " -- " in title:
             # error if there is more than 1.
             title, title2 = title.split(' -- ')
-        elif " (" in title:
+        elif ", " in title:
+            pos = title.index(", ")
+            # +1 include the comma, + 2 skip space after it
+            title, title2 = title[:pos+1], title[pos + 2:]
+        elif (" (" in title) and (title.index(" (") > 10):
             pos = title.index(" (")
             # +1 skip space in " ("
             title, title2 = title[:pos], title[pos + 1:]
+        elif (") " in title):
+            pos = title.index(") ")
+            # +1 include the ), + 2 skip space in ") "
+            title, title2 = title[:pos+1], title[pos+ 2:]
+        elif " # " in title:
+            pos = title.index(" # ")
+            title, title2 = title[:pos], title[pos+1:].strip()
         elif " using " in title:
             pos = title.index(" using ")
             title, title2 = title[:pos], title[pos + 1:]

@@ -200,7 +200,7 @@ class add_eps(process.process):
         v_keys=('id',
             'location','sequence',
             'name','slug',
-            'authors','emails', 'twitter_id',
+            'authors', 'emails', 'twitter_id', 'reviewers',
             'start','duration',
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
@@ -1048,6 +1048,7 @@ class add_eps(process.process):
 'Games and FOSS Session',
 'Open Knowledge Session',
 'Kernel Session',
+'housekeeping',
                 )
 
         # Remove types of itmes that aren't for video
@@ -1067,6 +1068,7 @@ class add_eps(process.process):
                 ('authors','authors'),
                 ('contact','emails'),
                 ('twitter_id','twitter_id'),
+                ('reviewers','reviewers'),
                 ('start','start'),
                 ('duration','duration'),
                 ('released','released'),
@@ -1107,6 +1109,9 @@ class add_eps(process.process):
 
             if event['description'] is None:
                 event['description'] =  ''
+
+            if event['reviewers'] is None:
+                event['reviewers'] =  ''
 
         rooms = self.get_rooms(events,'location')
         self.add_rooms(rooms,show)
