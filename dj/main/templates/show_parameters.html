@@ -32,7 +32,8 @@ Title slide: {{client.title_svg|default:"(none)"}}
 <a href="{% url 'title_slides' show.id %}">title slides</a>
 </br>
 
-Credits: {{client.credits|default:"(none)"}}
+Credits: {{client.credits|default:"(none)(bad!)"}}
+Credits: http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/{{client.credits}}
 </br>
 </br>
 Host metadata:
