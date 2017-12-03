@@ -27,15 +27,12 @@ class add_transcript(process):
 
             timestamp, text = l[:11], l[12:]
             timestamp = date + ' ' + timestamp
-            print(timestamp)
             timestamp = datetime.datetime.strptime(timestamp[:-3], '%m%d%Y %H:%M:%S' )
-            print(timestamp)
-            print(text)
             ret.append( {'timestamp':timestamp, 'text':text} )
 
         return ret
 
-    def find_eps(self, transcript , eps):
+    def find_eps(self, transcript, eps):
         # return a list of eps that likely belong to transcript
 
         tstart = transcript[0]['timestamp']
@@ -44,87 +41,20 @@ class add_transcript(process):
         founds=set()
         for ep in eps:
             if tstart <= ep.end and tend >= ep.start:
+                print("file start/end: {} / {}".format(tstart,tend))
+                print("ep start/end: {} / {}".format(ep.start,ep.end))
                 founds.add(ep)
+                s=0
+                for l in transcript:
+                    # print(l['timestamp'])
+                    if s==0 and l['timestamp']>=ep.start:
+                        print("start line: {}".format(l))
+                        s=1
+                    elif s==1 and l['timestamp']<=ep.end:
+                        print("end line: {}".format(l))
+                        s=2
 
         return founds
-
-    def slice_dice(self, img_page, src_name, show, eps):
-
-        # and connect the img object to episodes
-        # imgname = self.ass_one( img, text, locs, eps )
-
-        # words to look for in set header:
-        words = ["Kit Number",  "Cam Op", "Audio op",
-        "Pre Day check",
-        "Replace Batteries in mics",
-        "Post production", "Scanned",
-        "System date and time"]
-        hit_count=0
-        for word in words:
-            if word.lower() in text.lower():
-                hit_count +=1
-                # print word, hit_count
-        first_page_of_set = hit_count >= 3
-
-        """
-        first_page_of_set = src_base in [
-                "pygoth-{:03d}.ppm".format(i-1) for i in [
-                    1, 4, 7, 9, 12, 14, 17, 20, ]]
-        """
-
-        if first_page_of_set:
-            start = 1000 #1100 # 728 # 820 # 995
-            end = 1528 # 1705 # 1071 # 1370 # 1547
-            bands= 3
-            suffix='a'
-        else:
-            start = 730 # 802 # 400 # 577
-            end = 1255 # 1318 # 960 # 1127
-            bands= 4
-            suffix='b'
-
-        page = 3450 # 2338 # 3216
-
-        head = float(start)/float(page)
-        band = float(end-start)/float(page)
-        fudge = 0.02
-
-        im = Image.open(src_name)
-        w, h = im.size
-        src_base = os.path.basename(src_name)
-        for i in range(bands):
-
-            box = im.crop(
-                (0, int(h * (head + band * i )),
-                 w, int(h * (head + band * (i+1) + fudge) ))
-                        )
-
-            png_name = '{}-{}{}.png'.format(
-                    os.path.splitext(src_base)[0], i, suffix)
-            print(png_name)
-            box.save( os.path.join( self.show_dir, "img", png_name ))
-
-            # upload it
-            if self.options.rsync:
-                self.file2cdn(show, os.path.join( "img", png_name ))
-
-            # put the png name is in the db
-            img_band,created = Image_File.objects.get_or_create(
-                    show=show,
-                    filename=png_name,)
-
-            # ocr and connect the img object to episodes
-            text = self.ocr_img(
-                    os.path.join( self.show_dir, "img", png_name ))
-            img_band.text = text
-            img_band.save()
-
-            # self.ass_one( img_band, text, locs, eps )
-            founds = self.find_eps(text, eps )
-            for found in founds:
-                img_band.episodes.add(found)
-                img_page.episodes.add(found)
-
 
     def one_file(self, transcript_filename, show, locs, eps):
 
@@ -141,11 +71,13 @@ class add_transcript(process):
 
         if not self.options.dumb:
 
-            transcript = self.parse_transcript_file(
-                    os.path.join( self.show_dir, "transcripts", transcript_filename ))
+            transcript = self.parse_transcript_file( os.path.join(
+                        self.show_dir, "transcripts", transcript_filename ))
 
             founds = self.find_eps(transcript, eps )
+
             for found in founds:
+                print("found: {}".format(found))
                 img_page.episodes.add(found)
 
 
@@ -182,8 +114,8 @@ class add_transcript(process):
 
                   if self.options.base and \
                           not f.startswith(self.options.base):
-                        # doesn't match the 'filter'
-                        continue
+                      # doesn't match the 'filter'
+                      continue
 
                   self.one_file(os.path.join(d,f),show,locs,eps)
 
