@@ -3554,6 +3554,8 @@ class add_eps(process.process):
 
             event['emails']=', '.join( event['emails'] )
 
+            event['reviewers']=''
+
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)

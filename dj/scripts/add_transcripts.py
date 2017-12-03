@@ -22,7 +22,9 @@ class add_transcript(process):
 
         ret = []
 
-        for l in open(filename, encoding='iso-8859-1').read().split('/n'):
+        for l in open(filename, encoding='iso-8859-1').read().splitlines():
+            if not l: continue
+
             timestamp, text = l[:11], l[12:]
             timestamp = date + ' ' + timestamp
             print(timestamp)
