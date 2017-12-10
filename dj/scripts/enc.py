@@ -209,7 +209,7 @@ class enc(process):
             print(svg_name)
             template = os.path.join(
                 os.path.split(os.path.abspath(__file__))[0],
-                "bling",
+                "assets", "titles",
                 svg_name)
 
             raw_svg = open(template).read()

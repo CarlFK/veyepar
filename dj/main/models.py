@@ -42,7 +42,7 @@ class Client(models.Model):
     category_key = models.CharField(max_length=30, blank=True, null=True,
             help_text = "Category for Richard")
 
-    # video encoding
+    # video encoding assets
     template_mlt = models.CharField(max_length=60, null=True,
         default="template.mlt",
         help_text='template to make cutlist mlt from.')

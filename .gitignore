@@ -7,6 +7,8 @@ local_settings.py
 vp.db
 vp.json
 main.sql
+assets
+bling
 temp
 *.pyc
 *.swp

@@ -148,7 +148,7 @@ class ck_setup(process):
         print(('client.title_svg: {}'.format(title_svg)))
         title_svg = os.path.join(
                 os.path.split(os.path.abspath(__file__))[0],
-                "bling",
+                "assets", "titles",
                 title_svg)
         p_okg(title_svg)
         if not os.path.exists(title_svg):
@@ -189,6 +189,7 @@ class ck_setup(process):
 
         mlt = os.path.join(
                 os.path.split(os.path.abspath(__file__))[0],
+                "assets",
                 mlt)
         p_okg(mlt)
         if not os.path.exists(mlt):

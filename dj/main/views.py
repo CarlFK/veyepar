@@ -183,20 +183,33 @@ def start_here(request):
          'who':who,},
        )
 
-def barf_var(request, client_slug, show_slug):
+def asset_names(request, client_slug, show_slug):
 
     client=get_object_or_404(Client, slug=client_slug)
     show=get_object_or_404(Show,
             client__slug=client_slug,slug=show_slug)
 
-    field=request.GET['field']
-    if field not in ['title_svg']:
-        raise HttpResponseForbidden()
+    # field=request.GET['field']
+    # if field not in ['title_svg']:
+    #    raise HttpResponseForbidden()
 
-    value = getattr(client, field)
+    d={}
+    for key in [
+            'title_svg',
+            'template_mlt',
+            'preroll',
+            'postroll',
+            'credits']:
 
-    response = HttpResponse(value, content_type="text/plain")
-    response['Content-Disposition'] = 'inline;'
+        value = getattr(client, key)
+        if True or value:
+            d[key]=value
+
+    # response = HttpResponse(value, content_type="text/plain")
+    # response['Content-Disposition'] = 'inline;'
+
+    response = HttpResponse(content_type="application/json")
+    json.dump(d, response, indent=2)
 
     return response
 
@@ -315,7 +328,7 @@ def ep_json(request, ep_id):
     }
 
     response = HttpResponse(content_type="application/json")
-    json.dump(d,response, indent=2)
+    json.dump(d, response, indent=2)
     return response
 
 def pyvid_jsons(request):

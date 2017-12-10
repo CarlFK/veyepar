@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-if grep ^DATABASES ../local_settings.py; then
+if grep ^DATABASES ../dj/local_settings.py; then
 
 python mk_public.py --unlock $*
 python tweet.py $*
