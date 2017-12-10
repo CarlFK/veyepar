@@ -17,7 +17,8 @@ from django.db.models import Q
 from django.db.models import Count, Max
 from django.db.models.functions import Trunc
 
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import (HttpResponse, HttpResponseRedirect,
+        Http404, HttpResponseForbidden)
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.mail import get_connection, EmailMessage
@@ -181,6 +182,23 @@ def start_here(request):
          'episode':episode,
          'who':who,},
        )
+
+def barf_var(request, client_slug, show_slug):
+
+    client=get_object_or_404(Client, slug=client_slug)
+    show=get_object_or_404(Show,
+            client__slug=client_slug,slug=show_slug)
+
+    field=request.GET['field']
+    if field not in ['title_svg']:
+        raise HttpResponseForbidden()
+
+    value = getattr(client, field)
+
+    response = HttpResponse(value, content_type="text/plain")
+    response['Content-Disposition'] = 'inline;'
+
+    return response
 
 def veyepar_cfg(request):
 
@@ -654,9 +672,13 @@ def raw_play_list(request, episode_id):
 
         if "ext" in request.GET:
             # this assumes the ext being removed is "dv" (2 chars)
+            # this doesn't work this way any more.
+            # the new ext is added to the existing one.
             pathname = os.path.join(head,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )[:-2]+request.GET['ext']
         else:
             pathname = os.path.join(head,client.slug,show.slug,'dv',cut.raw_file.location.slug, cut.raw_file.filename )
+
+        # pathname = pathname + " :start-time=0{}".format(cut.start)
 
         writer.writerow([pathname])
 
