@@ -267,7 +267,8 @@ class enc(process):
 
         def get_foot(episode):
             credits_img = episode.show.client.credits
-            credits_pathname = os.path.join("..", "assets", credits_img )
+            credits_pathname = os.path.join("..",
+                    "assets", "credits", credits_img )
             return credits_pathname
 
         def get_clips(rfs, ep):

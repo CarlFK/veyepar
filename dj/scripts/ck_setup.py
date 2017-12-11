@@ -15,7 +15,6 @@ import pw
 
 import swift_uploader
 import archive_uploader
-import steve.richardapi
 
 import os
 import pprint
@@ -147,7 +146,8 @@ class ck_setup(process):
         title_svg = self.client.title_svg
         print(('client.title_svg: {}'.format(title_svg)))
         title_svg = os.path.join(
-                os.path.split(os.path.abspath(__file__))[0],
+                self.show_dir,
+                # os.path.split(os.path.abspath(__file__))[0],
                 "assets", "titles",
                 title_svg)
         p_okg(title_svg)
@@ -188,9 +188,9 @@ class ck_setup(process):
             p_fail("client.template_mlt not set.")
 
         mlt = os.path.join(
-                os.path.split(os.path.abspath(__file__))[0],
-                "assets",
-                mlt)
+                self.show_dir,
+                # os.path.split(os.path.abspath(__file__))[0],
+                "assets", "mlt", mlt)
         p_okg(mlt)
         if not os.path.exists(mlt):
             p_fail("mlt not found.")
@@ -204,8 +204,7 @@ class ck_setup(process):
 
         credits_img =  os.path.join(
                 self.show_dir,
-                "assets",
-                 credits_img)
+                "assets", "credits", credits_img)
 
         if not os.path.exists(credits_img):
             p_fail("credits_img not found: {}".format(credits_img))
