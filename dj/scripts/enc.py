@@ -402,6 +402,26 @@ class enc(process):
                     else:
                         cut['video_delay']='0.0'
 
+                cut['tstart']={
+                        'timestamp': cl.get_start_wall(),
+                        'text': None}
+                for c in cl.comment.split('\n'):
+                    if c.startswith('TS'):
+                        kv=c.split('=',1)[1].strip().split(' ',1)
+                        cut['tstart']={
+                            'timestamp':kv[0],
+                            'text': kv[1] if len(kv)>1 else None }
+
+                cut['tend']={
+                        'timestamp': cl.get_end_wall(),
+                        'text': None}
+                for c in cl.comment.split('\n'):
+                    if c.startswith('TE'):
+                        kv=c.split('=',1)[1].strip().split(' ',1)
+                        cut['tend']={
+                            'timestamp':kv[0],
+                            'text': kv[1] if len(kv)>1 else None }
+
                 cuts.append(cut)
 
             return cuts
@@ -596,7 +616,8 @@ class enc(process):
                 ret = True
             else:
 
-                template_mlt = episode.show.client.template_mlt
+                template_mlt =  os.path.join(self.show_dir,
+                        "assets", "mlt", episode.show.client.template_mlt )
 
                 mlt_pathname = os.path.join(self.show_dir,
                         "mlt", "%s.mlt" % episode.slug)

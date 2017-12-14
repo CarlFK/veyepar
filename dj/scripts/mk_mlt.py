@@ -1,4 +1,4 @@
-# mk_mlt.py 
+# mk_mlt.py
 # Makes a .mlt file
 # uses template.mlt which was created using ShotCut GUI NLE
 
@@ -32,7 +32,7 @@ def mk_mlt(template, output, params):
             # print(attrib_name, value)
             node.set(attrib_name, value)
 
-    # parse the template 
+    # parse the template
     tree=xml.etree.ElementTree.parse(template)
 
     # grab nodes we are going to store values into
@@ -45,9 +45,9 @@ def mk_mlt(template, output, params):
         'tl_vid2', 'ti_vid2', # Time Line and Item
         'audio_fade_in', 'audio_fade_out',
         'pic_in_pic', 'opacity',
-        'channelcopy', 
-        'mono', 
-        'normalize', 
+        'channelcopy',
+        'mono',
+        'normalize',
         'title_fade','foot_fade',
         ]:
 
@@ -72,7 +72,7 @@ def mk_mlt(template, output, params):
         mlt.remove(producer_node)
 
     # <playlist id="playlist0">
-    # <entry producer="tl_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" /> 
+    # <entry producer="tl_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" />
     time_line = tree.find("./playlist[@id='playlist0']")
     for te in time_line.findall("./entry[@sample]"):
         # print("te",te)
@@ -160,6 +160,8 @@ def mk_mlt(template, output, params):
 
         total_length += cut['length']
         print( total_length )
+        print("transcription: {} - {}".format(
+            cut['tstart'], cut['tend']))
 
     # ti is left over from the above loop
     ti.insert(0,nodes['audio_fade_out'])
@@ -188,7 +190,7 @@ def mk_mlt(template, output, params):
 
 """
 pl = tree[1]['main bin']
-for pi in pl.findall("entry[@sample]"): 
+for pi in pl.findall("entry[@sample]"):
     print( pi.tag, pi.get('producer') )
     tree[0].remove(pi)
 
@@ -212,17 +214,17 @@ def test():
                 'channelcopy':'01',
                 'normalize':'-12.0',
                 'video_delay':'0.0',
-                },], 
+                },],
         }
 
     mk_mlt("template.mlt", "test.mlt",  params)
-    return 
+    return
 
     params = {
         'title_img': '/home/carl/Videos/veyepar/test_client/test_show/titles/Lets_make_a_Test.png',
         'foot_img': 'bling/ndv-169.png',
         'clips':[],
-        'cuts':[], 
+        'cuts':[],
         }
 
     for i in range(5):
@@ -234,7 +236,7 @@ def test():
                 'out':None,
                 }
 
-        if i==0: 
+        if i==0:
             clip['in']=1
 
         params['clips'].append(clip)
