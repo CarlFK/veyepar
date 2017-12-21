@@ -727,7 +727,8 @@ class enc(process):
                 self.show_dir,
                 "transcripts", "{}.srt".format(episode.slug) )
 
-            subs = self.mk_subs( params['transcriptions'], sub_pathname)
+            if params['transcriptions']:
+                subs = self.mk_subs( params['transcriptions'], sub_pathname)
 
 # do the final encoding:
 # using melt

@@ -402,7 +402,7 @@ def test_upload(args):
     u = Uploader()
 
     u.meta = {
-      'title': "<test title",
+      'title': "test title",
       'description': "<test description",
       'category': 22, # 22 is maybe "Education",
       'tags': ['test', 'tests', ],
