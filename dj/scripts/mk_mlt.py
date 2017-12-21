@@ -159,9 +159,11 @@ def mk_mlt(template, output, params):
         mlt.insert(i,ti)
 
         total_length += cut['length']
-        print( total_length )
-        print("transcription: {} - {}".format(
-            cut['tstart'], cut['tend']))
+        # print( total_length )
+
+
+        # print("transcription: {} - {}".format(
+        #    cut['tstart'], cut['tend']))
 
     # ti is left over from the above loop
     ti.insert(0,nodes['audio_fade_out'])

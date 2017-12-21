@@ -3,14 +3,17 @@
 """
 assembles raw cuts into final, titles, tweaks audio, encodes to format for upload.
 """
+import datetime
 import os
+from pprint import pprint
 import sys
 import subprocess
 import xml.etree.ElementTree
 
+import pycaption
+
 from mk_mlt import mk_mlt
 
-import pprint
 from process import process
 from django.db import connection
 
@@ -206,7 +209,7 @@ class enc(process):
             cooked_svg_name = abs_path
         else:
             svg_name = episode.show.client.title_svg
-            print(svg_name)
+            # print(svg_name)
             template = os.path.join(
                 os.path.split(os.path.abspath(__file__))[0],
                 "assets", "titles",
@@ -257,8 +260,8 @@ class enc(process):
             # else make one from the tempalte
             custom_png_name = os.path.join(
                 self.show_dir, "custom", "titles", episode.slug + ".png")
-            print("custom:", custom_png_name)
             if os.path.exists(custom_png_name):
+                print("found custom:", custom_png_name)
                 title_img = custom_png_name
             else:
                 title_img = self.mk_title(episode)
@@ -324,7 +327,7 @@ class enc(process):
                 else:
                     clip['out']=None
 
-                pprint.pprint(clip)
+                # pprint.pprint(clip)
 
                 clips.append(clip)
 
@@ -402,37 +405,117 @@ class enc(process):
                     else:
                         cut['video_delay']='0.0'
 
-                cut['tstart']={
-                        'timestamp': cl.get_start_wall(),
-                        'text': None}
-                for c in cl.comment.split('\n'):
-                    if c.startswith('TS'):
-                        kv=c.split('=',1)[1].strip().split(' ',1)
-                        cut['tstart']={
-                            'timestamp':kv[0],
-                            'text': kv[1] if len(kv)>1 else None }
-
-                cut['tend']={
-                        'timestamp': cl.get_end_wall(),
-                        'text': None}
-                for c in cl.comment.split('\n'):
-                    if c.startswith('TE'):
-                        kv=c.split('=',1)[1].strip().split(' ',1)
-                        cut['tend']={
-                            'timestamp':kv[0],
-                            'text': kv[1] if len(kv)>1 else None }
-
                 cuts.append(cut)
 
             return cuts
+
+        def get_transcriptions(cls):
+            """
+            loop over the cuts because that is where the data is now.
+            """
+
+            transcriptions = []
+            video_time = 0
+
+            for cl in cls:
+
+                for c in cl.comment.split('\n'):
+
+                    if c.startswith('TS'):
+                        kv=c.split('=',1)[1].strip().split(' ',1)
+                        transcription = {}
+                        transcription['start']={
+                            'timestamp':kv[0],
+                            'text': kv[1] if len(kv)>1 else None,
+                            'wallclock': cl.get_start_wall(),
+                            'video_time': video_time,
+                            }
+
+                    if c.startswith('TE'):
+                        kv=c.split('=',1)[1].strip().split(' ',1)
+                        transcription['end']={
+                            'timestamp':kv[0],
+                            'text': kv[1] if len(kv)>1 else None,
+                            'wallclock': cl.get_end_wall(),
+                            }
+
+                        transcriptions.append(transcription)
+                        transcription = None
+
+                video_time += cl.duration()
+                # print("vt: {}".format(video_time))
+
+            return transcriptions
 
         params = {}
         params['title_img'] = get_title(episode)
         params['foot_img'] = get_foot(episode)
         params['clips'] = get_clips(rfs, episode)
         params['cuts'] = get_cuts(cls)
+        params['transcriptions'] = get_transcriptions(cls)
 
         return params
+
+    def mk_subs(self, transcriptions, sub_pathname ):
+
+        """
+        Create a subtitle file for this video.
+        It is currently a huge hack, but it works good enough.
+
+        transcriptions:  list of start/end 'pointers' into the source
+        sub_pathname: full path to output file
+        """
+
+        transcript_filename = '12022017 NBPY SCC.scc'
+        # dt = transcript_filename[:8]
+
+        transcript_pathname = os.path.join( self.show_dir,
+              "assets", "transcripts", transcript_filename )
+
+        # transcript_start = datetime.datetime.strptime(
+        #     dt + " 10:06:56", '%m%d%Y %H:%M:%S' ) - \
+        #            datetime.timedelta(0, 2, 158933)
+
+        caps = open(transcript_pathname, encoding='iso-8859-1').read()
+
+        transcript = pycaption.SCCReader().read(caps)
+        language = transcript.get_languages()[0] # ['en-US']
+        captions = transcript.get_captions(language)
+
+        out_captions = pycaption.CaptionList()
+
+        for transcription in transcriptions:
+
+            state = 0
+            for c in captions:
+
+                if c.format_start() == \
+                        transcription['start']['timestamp']:
+                    state=1
+                    offset = c.start - transcription['start']['video_time'] * 1000000
+                    c.nodes[0].content=transcription['start']['text']
+
+                if state==1:
+
+                    if c.format_start() == \
+                            transcription['end']['timestamp']:
+                        c.nodes[0].content=\
+                                transcription['end']['text']
+                        state = 0
+
+                    c.start -= offset
+                    c.end -= offset
+                    out_captions.append(c)
+
+        transcript.set_captions(language, out_captions)
+
+        # writer = pycaption.DFXPWriter()
+        writer = pycaption.SRTWriter()
+
+        open(sub_pathname, 'wt').write(writer.write(transcript))
+
+        return
+
 
     def enc_all(self, mlt_pathname, episode):
 
@@ -624,8 +707,8 @@ class enc(process):
 
                 params = self.get_params(episode, rfs, cls )
 
-                pprint.pprint(params)
-                print((2, mlt_pathname))
+                # pprint.pprint(params)
+                # print((2, mlt_pathname))
                 ret = mk_mlt( template_mlt, mlt_pathname, params )
 
             if not ret:
@@ -634,6 +717,17 @@ class enc(process):
                 episode.comment += "\nenc.py  mlt = self.mkmlt_1 failed.\n"
                 episode.save()
                 return False
+
+# WOP: create transcription file
+
+# head 12022017\ North\ Bay\ Day\ 1.txt
+# 10:06:56:00 >> Hi, everyone!  Welcome to
+
+            sub_pathname = os.path.join(
+                self.show_dir,
+                "transcripts", "{}.srt".format(episode.slug) )
+
+            subs = self.mk_subs( params['transcriptions'], sub_pathname)
 
 # do the final encoding:
 # using melt
