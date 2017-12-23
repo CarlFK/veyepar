@@ -16,6 +16,8 @@ from main.models import Client, Show, Location, Episode, Cut_List
 class add_transcript(process):
 
     def parse_transcript_file(self, filename):
+        # parse the human readable format.
+
         print(filename)
 
         date = filename.split(' ',1)[0][-8:]
@@ -93,11 +95,12 @@ class add_transcript(process):
                 img_page.episodes.add(found)
 
 
-    def process_ep(self, episode):
+    def v1()
 
         # transcript_filename = '12022017 North Bay Day 1.txt'
         # transcript = self.parse_transcript_file( os.path.join( self.show_dir, "transcripts", transcript_filename ))
 
+    def v2()
         transcript_filename = '12022017 NBPY SCC.scc'
         transcript_pathname = os.path.join( self.show_dir,
               "assets", "transcripts", transcript_filename )
@@ -165,6 +168,9 @@ class add_transcript(process):
             # df='%Y-%m-%d %H:%M:%S'
             df="%H:%M:%S"
             print( "{} - {}".format ( s.strftime(df), e.strftime(df) ) )
+
+    def process_ep(self, episode):
+        return v3(episode)
 
     def xone_show(self, show):
 

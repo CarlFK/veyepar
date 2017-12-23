@@ -718,16 +718,13 @@ class enc(process):
                 episode.save()
                 return False
 
-# WOP: create transcription file
-
-# head 12022017\ North\ Bay\ Day\ 1.txt
-# 10:06:56:00 >> Hi, everyone!  Welcome to
-
-            sub_pathname = os.path.join(
-                self.show_dir,
-                "transcripts", "{}.srt".format(episode.slug) )
-
             if params['transcriptions']:
+                # create the slug.srt file for this video
+
+                sub_pathname = os.path.join(
+                    self.show_dir,
+                    "transcripts", "{}.srt".format(episode.slug) )
+
                 subs = self.mk_subs( params['transcriptions'], sub_pathname)
 
 # do the final encoding:
