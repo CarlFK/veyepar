@@ -12,8 +12,50 @@ from process import process
 
 from main.models import Client, Show, Location, Episode, Cut_List
 
+def get_transcriptions(cls):
+
+    """
+    loop over the cuts because that is where the data is now.
+    """
+
+    transcriptions = []
+    video_time = 0
+
+    for cl in cls:
+
+        for c in cl.comment.split('\n'):
+
+            if c.startswith('TS'):
+                kv=c.split('=',1)[1].strip().split(' ',1)
+                transcription = {}
+                transcription['start']={
+                    'timestamp':kv[0],
+                    'text': kv[1] if len(kv)>1 else None,
+                    'wallclock': cl.get_start_wall(),
+                    'video_time': video_time,
+                    }
+
+            if c.startswith('TE'):
+                kv=c.split('=',1)[1].strip().split(' ',1)
+                transcription['end']={
+                    'timestamp':kv[0],
+                    'text': kv[1] if len(kv)>1 else None,
+                    'wallclock': cl.get_end_wall(),
+                    }
+
+                transcriptions.append(transcription)
+                transcription = None
+
+        video_time += cl.duration()
+        # print("vt: {}".format(video_time))
+
+    return transcriptions
+
 
 class add_transcript(process):
+
+    ready_state=None
+    # jr333
 
     def parse_transcript_file(self, filename):
         # parse the human readable format.
@@ -95,12 +137,12 @@ class add_transcript(process):
                 img_page.episodes.add(found)
 
 
-    def v1()
+    def v1():
 
-        # transcript_filename = '12022017 North Bay Day 1.txt'
-        # transcript = self.parse_transcript_file( os.path.join( self.show_dir, "transcripts", transcript_filename ))
+        transcript_filename = '12022017 North Bay Day 1.txt'
+        transcript = self.parse_transcript_file( os.path.join( self.show_dir, "transcripts", transcript_filename ))
 
-    def v2()
+    def v2():
         transcript_filename = '12022017 NBPY SCC.scc'
         transcript_pathname = os.path.join( self.show_dir,
               "assets", "transcripts", transcript_filename )
@@ -144,7 +186,6 @@ class add_transcript(process):
 
                 print( {start
 
-                # print("import sys; sys.exit()"); import code; code.interact(local=locals())
 
 
 
@@ -169,8 +210,169 @@ class add_transcript(process):
             df="%H:%M:%S"
             print( "{} - {}".format ( s.strftime(df), e.strftime(df) ) )
 
+    def v3(self, episode):
+
+        ## Get transcription data
+        transcript_filename = '12022017 NBPY SCC.scc'
+        transcript_pathname = os.path.join( self.show_dir,
+              "assets", "transcripts", transcript_filename )
+        caps = open(transcript_pathname, encoding='iso-8859-1').read()
+
+        transcript = pycaption.SCCReader().read( caps )
+        language = transcript.get_languages()[0] # ['en-US']
+        captions = transcript.get_captions( language )
+
+        ## Get markes for this video
+        cls = Cut_List.objects.filter(
+            episode=episode, apply=True).order_by('sequence')
+        transcriptions = get_transcriptions(cls)
+
+        for transcription in transcriptions:
+            pprint(transcription)
+
+            state = 0
+            for c in captions:
+
+                if c.format_start() == \
+                        transcription['start']['timestamp']:
+
+                    state=1
+                    offset = c.start - transcription['start']['video_time'] * 1000000
+                    wc = transcription['start']['wallclock']
+                    # walltime that transcription file started.
+                    epoch = wc - datetime.timedelta(microseconds = c.start )
+
+                    print( "c: {c}\nc.start: {start}\nwall_clock: {wallclock}".format(
+                        c=c, start=c.start, wallclock=wc ) )
+                    print("epoch: {}".format( epoch ))
+
+                    print("import sys; sys.exit()"); import code; code.interact(local=locals())
+
+                if state==1:
+
+                    if c.format_start() == \
+                            transcription['end']['timestamp']:
+                        c.nodes[0].content=\
+                                transcription['end']['text']
+                        state = 0
+
+                    c.start -= offset
+                    c.end -= offset
+
+
+    def v4(self, episode):
+
+        epoch = datetime.datetime(2017, 12, 2, 10, 6, 36, 841067)
+        # 2017-12-02 10:06:36.841067
+
+        ## Get transcription data
+        transcript_filename = '12022017 NBPY SCC.scc'
+        transcript_pathname = os.path.join( self.show_dir,
+              "assets", "transcripts", transcript_filename )
+        caps = open(transcript_pathname, encoding='iso-8859-1').read()
+
+        transcript = pycaption.SCCReader().read( caps )
+        language = transcript.get_languages()[0] # ['en-US']
+        captions = transcript.get_captions( language )
+
+        cls = Cut_List.objects.filter(
+            episode=episode, apply=True).order_by('sequence')
+        # transcriptions = get_transcriptions(cls)
+        for cl in cls:
+            print( cl.get_start_wall() )
+
+            cl_start = ( cl.get_start_wall() - epoch
+                    ).total_seconds() * 1000000
+            cl_end = ( cl.get_end_wall() - epoch
+                    ).total_seconds() * 1000000
+
+            state = 0
+            for c in captions:
+
+                # look for start
+                if state == 0:
+                    if c.start > cl_start - 4000000:
+                        print( "start: {}".format(cl.start))
+                        state = 1
+
+                # print a bunch of start
+                if state == 1:
+                    print("{} {}".format(c.format_start(), c.get_text() ))
+
+                    if c.start > cl_start + 4000000:
+                        print()
+                        state = 2
+
+                # look for end
+                if state == 2:
+                    if c.start > cl_end - 4000000:
+                        print( "end: {}".format(cl.end))
+                        state = 3
+
+                # print a bunch of end
+                if state == 3:
+                    print("{} {}".format(c.format_start(), c.get_text() ))
+
+                    if c.start > cl_end + 4000000:
+                        print()
+                        state = 4
+
+        # print("import sys; sys.exit()"); import code; code.interact(local=locals())
+
+
+    def v6(self, episode):
+
+        def show_near( x, wall ):
+
+            from_epoch = ( wall - epoch
+                    ).total_seconds() * 1000000
+
+            state = 0
+            for c in captions:
+
+                if state == 0:
+                    if c.start > from_epoch - 9000000:
+                        print( "{}: {}".format(x, wall))
+                        state = 1
+
+                if state == 1:
+                    print("{} {}".format(c.format_start(), c.get_text() ))
+
+                    if c.start > from_epoch + 26000000:
+                        print()
+                        return
+
+
+
+        epoch = datetime.datetime(2017, 12, 2, 10, 6, 36, 841067)
+        # 2017-12-02 10:06:36.841067
+
+        ## Get transcription data
+        transcript_filename = '12022017 NBPY SCC.scc'
+        transcript_pathname = os.path.join( self.show_dir,
+              "assets", "transcripts", transcript_filename )
+        caps = open(transcript_pathname, encoding='iso-8859-1').read()
+
+        transcript = pycaption.SCCReader().read( caps )
+        language = transcript.get_languages()[0] # ['en-US']
+        captions = transcript.get_captions( language )
+
+        cls = Cut_List.objects.filter(
+            episode=episode, apply=True).order_by('sequence')
+        show_near( "start", cls.first().get_start_wall() )
+        show_near( "end", cls.last().get_end_wall() )
+
+
+    def v7(self, episode):
+        """
+        ffmpeg -i k.mp4 -i k.srt -c copy -c:s mov_text outfile.mp4
+        """
+
+
+
     def process_ep(self, episode):
-        return v3(episode)
+        # return self.v3(episode)
+        return self.v6(episode)
 
     def xone_show(self, show):
 
