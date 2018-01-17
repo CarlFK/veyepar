@@ -136,7 +136,8 @@ class enc(process):
 
         # split authors over two objects
         # breaking on comma, not space.
-        if ',' in authors:
+        # not this time.
+        if False and ',' in authors:
             authors = authors.split(', ')
             author2 = ', '.join(authors[1:])
             authors = authors[0].strip()
@@ -153,7 +154,7 @@ class enc(process):
             'show': episode.show.name,
             'title': title,
             'title2': title2,
-            'tag1': tag1,
+            'track': tag1,
             'authors': authors,
             'author2': author2,
             'presentertitle': "",
@@ -211,9 +212,9 @@ class enc(process):
             svg_name = episode.show.client.title_svg
             # print(svg_name)
             template = os.path.join(
-                os.path.split(os.path.abspath(__file__))[0],
-                "assets", "titles",
-                svg_name)
+                    self.show_dir,
+                    "assets", "titles",
+                    svg_name)
 
             raw_svg = open(template).read()
 
