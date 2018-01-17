@@ -147,7 +147,6 @@ class ck_setup(process):
         print(('client.title_svg: {}'.format(title_svg)))
         title_svg = os.path.join(
                 self.show_dir,
-                # os.path.split(os.path.abspath(__file__))[0],
                 "assets", "titles",
                 title_svg)
         p_okg(title_svg)
@@ -160,7 +159,7 @@ class ck_setup(process):
             'show',
             'title',
             'title2',
-            'tag1',
+            'track',
             'presenternames',
             'authors',
             'presentertitle',
