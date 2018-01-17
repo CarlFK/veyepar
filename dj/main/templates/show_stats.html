@@ -39,7 +39,7 @@
             <td>
 {# Room header cells #}
                 <span><b>
-                        <a href="{% url "admin:main_location_change" item.loc.id%}">{{ item.loc.name }}</a>
+                        <a href="{% url "admin:main_location_change" item.loc.id%}">{{ item.loc.name|truncatechars:12 }}</a>
                 </b></span>
                 {{item.loc.slug}}
 
@@ -49,7 +49,7 @@
                    <span class="left">files:{{item.files}}</span><span class="right">{{item.gig|floatformat:0}} g</span><br/>
                    {% if item.alarm >= 0 %} <span class="left">{{item.alarm}}%</span><span class="right">{{item.variance|floatformat:0}} g</span> {% endif %}
                  {% endif %}
- 
+
 </td>
             {% endfor %}
          </tr>
@@ -59,7 +59,7 @@
           <tr><td><b>{{item.date|date:"D d"}}</b><br/>
 <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" %}"> {{item.count}} </a>
 
- {% for s in item.states %} 
+ {% for s in item.states %}
 <span class="{% if forloop.counter0 == 1 or forloop.counter0 == 3 %}human{% else %}process{% endif %}">
                    {% if s %}
                    <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug start_day=item.date|date:"d" state=forloop.counter0 %}" style="display: inline-block; padding-right: 1px; padding-left: 1px;">{{s}}</a>
@@ -78,15 +78,15 @@
 {# the room day cells - detail #}
           {% for item,loc in row %}
 
-             <td style="background-color:#{{item.alarm_color}};">  
+             <td style="background-color:#{{item.alarm_color}};">
                {% if item.count %}
 
                      <a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug location_slug=item.loc.slug start_day=item.date|date:"d" %}" style="display:inline-block">{{item.count}}</a>
 
-                     {{item.start|date:"H:i"}} - {{item.end|date:"H:i"}} = 
+                     {{item.start|date:"H:i"}} - {{item.end|date:"H:i"}} =
                      {{item.hours}} h
                  <br/>
-                 {% for s in item.states %} 
+                 {% for s in item.states %}
 
 <span class="{% if forloop.counter0 == 1 or forloop.counter0 == 3 %}human{% else %}process{% endif %}">
                    {% if s %}
@@ -97,7 +97,7 @@
 
                  <span class="left">expected raw:</span><span class="right">{{item.talk_gig}} g</span><br/>
                  {% if item.files %}
-                 <span class="left">[  ]<a style="display: inline-block;" href="{% url "rf_set" loc.loc.slug %}?start_date={{item.date|date:"Y-m-d"}}">{{item.files}}</a> 
+                 <span class="left">[  ]<a style="display: inline-block;" href="{% url "rf_set" loc.loc.slug %}?start_date={{item.date|date:"Y-m-d"}}">{{item.files}}</a>
                      {{item.raw.start|date:"H:i" }} -
                      {{item.raw.end|date:"H:i" }}
                  </span>
@@ -107,14 +107,14 @@
                  <span class="left">{{item.times_display}}</span>
                  <span class="right">{{item.variance|floatformat:0}} g</span><br>
 
-                 <!-- 
+                 <!--
                  <span class="left">{{item.ep.times_display}}</span>
                  <span class="left">{{item.raw.times_display}}</span>
                  --!>
 
                  <span class="left">
                    <a style="display: inline-block;" href="{% url "raw_file_audio" %}?show_id={{show.id}}&location_slug={{loc.loc.slug}}&start_date={{item.date|date:"Y-m-d"}}">audio</a>
-                     <a style="display: inline-block;" href="{% url "public_play_list" %}playlist.m3u?client={{client.slug}}&show={{show.slug}}&location_slug={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encs</a> 
+                     <a style="display: inline-block;" href="{% url "public_play_list" %}playlist.m3u?client={{client.slug}}&show={{show.slug}}&location_slug={{loc.loc.slug}}&date={{item.date|date:"Y-m-d"}}">encs</a>
                  </span>
 
                {% endif %}
