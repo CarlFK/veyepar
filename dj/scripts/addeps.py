@@ -409,12 +409,20 @@ class add_eps(process.process):
                 for f in fields:
                     # veyepar, remote
                     a1,a2 = getattr(episode,f), row[f]
+
+                    if f=="emails":
+                        # don't always have rights to get email
+                        if not a2:
+                            continue
+
                     if f=="description":
                         a1 = a1.replace('\r','')
                         a2 = a2.replace('\r','')
+
                     if (a1 or a2) and (a1 != a2):
                         diff=True
                         diff_fields.append((f,a1,a2))
+
                 # report if different
                 if diff:
                     print('veyepar #id name: #%s %s' % (
@@ -518,6 +526,7 @@ class add_eps(process.process):
             if ep.conf_key not in conf_keys:
                 print("#{id} name:{name}\n"
                   "ep.conf_key:{conf_key} conf_url: {conf_url}\n".format(
+                           id=ep.id,
                            state=ep.state,
                            conf_key=ep.conf_key,
                            conf_url=ep.conf_url,
@@ -1033,6 +1042,7 @@ class add_eps(process.process):
         schedule = schedule['schedule']
 
         video_types = (
+'plenary',
 'Keynote',
 'Lightning Talks and Conference Closing',
 'Lightning Talks',
@@ -1059,6 +1069,11 @@ class add_eps(process.process):
         # schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
         # remove enteries that don't have authors
         # schedule = [s for s in schedule if "authors" in s]
+
+        schedule = [s for s in schedule if s['name'] != 'Slot' ]
+        for s in schedule:
+            if s['name'] == 'Slot':
+                pprint( s )
 
 
         field_maps = [
@@ -3797,12 +3812,15 @@ class add_eps(process.process):
 
         else:
             # lets hope it is json, like everything should be.
-            j = response.text
-            print( j[:30].__repr__() )
+
 
             if url.startswith('file'):
-                schedule = json.loads(f.read())
+                j = f.read()
+                schedule = json.loads(j)
+                # schedule = json.loads(f.read())
             else:
+                j = response.text
+                print( j[:30].__repr__() )
                 schedule = response.json()
 
             # if it is a python prety printed list:
