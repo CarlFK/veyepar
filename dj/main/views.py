@@ -30,7 +30,7 @@ import os
 import csv
 from copy import deepcopy
 
-from io import BytesIO
+from io import BytesIO, StringIO
 import json
 from pprint import pprint
 import operator
@@ -365,7 +365,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     fields=['id',
             'state',
             'location',
-            'get_location_name',
+            'location_slug',
             'sequence',
             'name', 'slug', 'authors', 'description',
             'start', 'duration',
@@ -378,13 +378,59 @@ def eps_xfer(request,client_slug=None,show_slug=None):
     if request.user.is_authenticated():
         fields.extend(['emails', 'edit_key','conf_meta'])
 
-    response = HttpResponse(content_type="application/json")
+    if "fields" in request.GET:
+        fields_whitelist = request.GET['fields'].split(',')
+        print(fields_whitelist)
+        fields = [f for f in fields if f in fields_whitelist]
+
+    """
     serializers.serialize("json", eps,
             fields=fields, use_natural_foreign_keys=True,
             stream=response)
 
+    response = HttpResponse(content_type="application/json")
+    MySerializer().serialize( eps,
+            fields, use_natural_foreign_keys=True,
+            stream=response)
+    """
+
+    gold_list = ['location', 'location_slug']
+
+    ds=[]
+    for ep in eps:
+
+        d = {}
+        for f in fields:
+            if f == 'location':
+                d[f] = ep.location.name
+            elif f == 'location_slug':
+                d[f] = ep.location.name =  ep.location.slug
+            else:
+                d[f]=getattr(ep,f)
+
+        ds.append(d)
+
+    response = HttpResponse(content_type="application/json")
+    json.dump( ds, response, cls=serializers.json.DjangoJSONEncoder )
+
     return response
 
+
+class MySerializer(serializers.json.Serializer):
+    def serialize(self, queryset, list_of_attributes, **options):
+        self.options = options
+        self.stream = options.get("stream", StringIO())
+        self.start_serialization()
+        for obj in queryset:
+            self.start_object(obj)
+            for field in list_of_attributes:
+                self.handle_field(obj, field)
+            self.end_object(obj)
+        self.end_serialization()
+        return self.getvalue()
+
+    def handle_field(self, obj, field):
+        self._current[field] = getattr(obj, field)
 
 def eps_lanynard(request,client_slug=None,show_slug=None):
     """

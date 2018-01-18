@@ -5,7 +5,7 @@ from pprint import pprint
 import requests
 
 auth = {
-            'login_page':'https://lca2017.linux.org.au/account/login/',
+        'login_page':'https://login.linux.conf.au/idp/profile/SAML2/Redirect/SSO?execution=e2s1',
             'login_data':{
                 'username':'carlfk',
                 'password':'xxxx',

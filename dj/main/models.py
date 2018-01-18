@@ -397,6 +397,12 @@ class Episode(models.Model):
         authors = self.authors.split(',') if self.authors else []
         return authors
 
+    @property
+    def location_slug(self):
+        location_slug=self.location.slug
+        print(location_slug)
+        return location_slug
+
     def approve_url(self):
         url = "https://veyepar.nextdayvideo.com/main/approve/{id}/{slug}/{edit_key}/".format(id=self.id, slug=self.slug, edit_key=self.edit_key)
         return url

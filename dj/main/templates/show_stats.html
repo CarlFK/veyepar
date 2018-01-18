@@ -39,7 +39,7 @@
             <td>
 {# Room header cells #}
                 <span><b>
-                        <a href="{% url "admin:main_location_change" item.loc.id%}">{{ item.loc.name|truncatechars:12 }}</a>
+                        <a href="{% url "admin:main_location_change" item.loc.id%}">{{ item.loc.name|truncatechars:18 }}</a>
                 </b></span>
                 {{item.loc.slug}}
 
