@@ -1049,6 +1049,7 @@ class add_eps(process.process):
 'Conference Closing',
 'talk',
 'tutorial',
+'miniconf',
 'Conference Opening',
 'Linux Australia Annual General Meeting',
 'Free Software Law & Policy Miniconf Session',
@@ -1088,7 +1089,8 @@ class add_eps(process.process):
                 ('duration','duration'),
                 ('released','released'),
                 ('license','license'),
-                ('tags','tags'),
+                # ('tags','tags'),
+                ('track','tags'),
                 ('conf_key','conf_key'),
                 ('conf_url','conf_url'),
                 ]
@@ -1127,6 +1129,11 @@ class add_eps(process.process):
 
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
+
+            if event['conf_key'] == 131 :
+                # "name": "Marc Merlin: Getting conned into writing IoTuz/ESP32 drivers and example code (while being held prisoner in a share house in Hobart, Tasmania)"
+                print('truncating {} to :168'.format( event['name'] ))
+                event['name'] = event['name'][:168]
 
         rooms = self.get_rooms(events,'location')
         self.add_rooms(rooms,show)

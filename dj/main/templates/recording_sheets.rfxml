@@ -69,6 +69,7 @@
 						<expr>"Sound levels: [   ] L-house   [   ] R-cam " </expr>
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
+						<height>12</height>
 						<width>'243.0 pt'</width>
 						<x>'13.0 pt'</x>
 						<y>'23.0 pt'</y>
@@ -77,12 +78,13 @@
 						<expr>"[  ] System date and time."</expr>
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
+						<height>12</height>
 						<width>'243.0 pt'</width>
 						<x>'13.0 pt'</x>
 						<y>'7.0 pt'</y>
 					</String>
 					<String>
-						<expr>"DVswitch op:"</expr>
+						<expr>"Director:"</expr>
 						<FontName>'Helvetica'</FontName>
 						<FontSize>14</FontSize>
 						<Height>15</Height>
@@ -158,12 +160,13 @@
 						<ScalePercent>(100.0, 90.0)</ScalePercent>
 						<width>'90.0 pt'</width>
 						<x>'6.0 pt'</x>
-						<y>'55.0 pt'</y>
+						<y>'59 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] Replace Batteries in mics"</expr>
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
+						<height>12</height>
 						<width>'243.0 pt'</width>
 						<x>'13.0 pt'</x>
 						<y>'39.0 pt'</y>
@@ -197,6 +200,16 @@
 						<width>'108.0 pt'</width>
 						<x>'415.0 pt'</x>
 						<y>'47.0 pt'</y>
+					</String>
+					<String>
+						<expr>"[  ] Test call to 101"</expr>
+						<fontname>'Helvetica'</fontname>
+						<FontSize>13</FontSize>
+						<height>'12.0 pt'</height>
+						<width>'113.0 pt'</width>
+						<x>'126 pt'</x>
+						<y>'55.0 pt'</y>
+						<y_def>0.0</y_def>
 					</String>
 				</Objects>
 			</GroupHeader>

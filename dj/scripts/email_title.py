@@ -23,9 +23,10 @@ class email_title(email_ab):
 Projector hookup will be 720p HDMI (which is 16:9). Please bring any adaptors you need. If you have any special requests or have forgotten your adapter, please contact us ASAP and we will try to accommodate you.
 
 {% if ep.released %}Permission has been given to record your talk and post it online.  Once it is up, you will get another e-mail with a URL that is not public until someone approves it.  Once it's approved it will be made public and tweeted {{ep.show.client.tweet_prefix}}.
-{% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% else %} "None" means it may get recorded and processed, but it will not be made public.
 Released: "False" means you have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  {% endif %}
+{% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
+
 Please review the following meta data about your talk so that everything is correct when the video goes live.
 
 Title: {{ep.name}}

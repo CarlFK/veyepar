@@ -88,7 +88,13 @@ class enc(process):
             title, title2 = title[:pos], title[pos:].strip()
         elif " - " in title:
             # error if there is more than 1.
-            title, title2 = title.split(' - ')
+            # title, title2 = title.split(' - ')
+            t1, t2 = title.split(' - ')
+            if t1[-1].isdigit() and t2[0].isdigit():
+                title2=''
+            else:
+                 title, title2 = t1, t2
+
         elif " -- " in title:
             # error if there is more than 1.
             title, title2 = title.split(' -- ')
@@ -107,7 +113,7 @@ class enc(process):
         elif " # " in title:
             pos = title.index(" # ")
             title, title2 = title[:pos], title[pos+1:].strip()
-        elif " using " in title:
+        elif False and " using " in title:
             pos = title.index(" using ")
             title, title2 = title[:pos], title[pos + 1:]
         elif ";" in title:
@@ -116,8 +122,8 @@ class enc(process):
         elif "? " in title:   # ?(space) to not break on 'can you?'
             pos = title.index("?") + 1
             title, title2 = title[:pos], title[pos:].strip()
-        elif ". " in title:
-            pos = title.index(". ") + 1
+        elif ".  " in title:
+            pos = title.index(".  ") + 1
             title, title2 = title[:pos], title[pos:].strip()
         else:
             title2 = ""

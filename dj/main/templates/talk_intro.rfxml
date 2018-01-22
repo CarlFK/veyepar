@@ -117,7 +117,8 @@
 				<height>'14 pt'</height>
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
-				<y>'118.0 pt'</y>
+				<y>'92.0 pt'</y>
+				<y_def>0.0</y_def>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -157,7 +158,7 @@
 				<height>'14 pt'</height>
 				<width>'170.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'233.2 pt'</y>
+				<y>'233.0 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -167,7 +168,7 @@
 				<height>'14 pt'</height>
 				<width>'470.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'206.2 pt'</y>
+				<y>'205 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -177,7 +178,7 @@
 				<height>'14 pt'</height>
 				<width>'470.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'220.2 pt'</y>
+				<y>'219 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -188,7 +189,7 @@
 				<height>'14 pt'</height>
 				<width>'470.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'151.2 pt'</y>
+				<y>'107 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -198,7 +199,7 @@
 				<height>'14 pt'</height>
 				<width>'210.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'173.2 pt'</y>
+				<y>'177 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
@@ -208,7 +209,7 @@
 				<height>'14 pt'</height>
 				<width>'490.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'137.2 pt'</y>
+				<y>'79 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_start.strftime("%I:%M %p").strip('0').lower()</expr>
@@ -297,23 +298,23 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"Introduce the presenter(s) and the talk"</expr>
+				<expr>"[  ] Introduce the presenter(s) and the talk"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
-				<y>'80.0 pt'</y>
+				<y>'51 pt'</y>
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"Point at the Video Director, when they point back begin the introduction. (Video starts now.)"</expr>
+				<expr>"[  ] Point at the Video Director, when they point back begin the introduction. (Video starts now.)"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
-				<y>'94.0 pt'</y>
+				<y>'65 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -354,13 +355,53 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] laptop sound?  Plug in, play sound.'</expr>
+				<expr>'[  ] Laptop sound?  Plug in, play sound.'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
 				<width>'470.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'190.2 pt'</y>
+				<y>'191 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
+				<expr>'[  ] Ask speaker about how they would like to be introduced.'</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>12</FontSize>
+				<height>'14 pt'</height>
+				<width>'470.0 pt'</width>
+				<x>'10.7 pt'</x>
+				<y>'163 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
+				<expr>'[  ] Verify speakers name.'</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>12</FontSize>
+				<height>'14 pt'</height>
+				<width>'470.0 pt'</width>
+				<x>'10.7 pt'</x>
+				<y>'149 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
+				<expr>'[  ] Ask speaker if they would like questions.'</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>12</FontSize>
+				<height>'14 pt'</height>
+				<width>'470.0 pt'</width>
+				<x>'10.7 pt'</x>
+				<y>'135 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
+				<expr>'[  ] Check what timing notificaton speakers want.'</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>12</FontSize>
+				<height>'14 pt'</height>
+				<width>'470.0 pt'</width>
+				<x>'10.7 pt'</x>
+				<y>'121 pt'</y>
 			</String>
 		</Objects>
 	</Detail>

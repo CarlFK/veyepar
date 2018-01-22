@@ -274,7 +274,7 @@ class Episode(models.Model):
         help_text="(calculated if start and duration are set.)")
     name = models.CharField(max_length=170,
         help_text="Video Title (shows in video search results)")
-    slug = models.CharField(max_length=170, blank=True, null=False,
+    slug = models.CharField(max_length=135, blank=True, null=False,
         help_text="file name friendly version of name")
     priority = models.IntegerField(null=True,blank=True,
         help_text="lower may not get recorded")

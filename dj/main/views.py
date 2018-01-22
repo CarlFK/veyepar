@@ -388,10 +388,6 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             fields=fields, use_natural_foreign_keys=True,
             stream=response)
 
-    response = HttpResponse(content_type="application/json")
-    MySerializer().serialize( eps,
-            fields, use_natural_foreign_keys=True,
-            stream=response)
     """
 
     gold_list = ['location', 'location_slug']
@@ -415,22 +411,6 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
     return response
 
-
-class MySerializer(serializers.json.Serializer):
-    def serialize(self, queryset, list_of_attributes, **options):
-        self.options = options
-        self.stream = options.get("stream", StringIO())
-        self.start_serialization()
-        for obj in queryset:
-            self.start_object(obj)
-            for field in list_of_attributes:
-                self.handle_field(obj, field)
-            self.end_object(obj)
-        self.end_serialization()
-        return self.getvalue()
-
-    def handle_field(self, obj, field):
-        self._current[field] = getattr(obj, field)
 
 def eps_lanynard(request,client_slug=None,show_slug=None):
     """
@@ -1007,13 +987,14 @@ def show_anomalies(request, show_id, ):
     max_name_len = 0
     max_authors_len = 0
     for ep in episodes:
-        if len(ep.name) > max_name_len:
-            max_name_len = len(ep.name)
-            max_name_ep = ep
-        if ep.authors is not None and \
-                len(ep.authors) > max_authors_len:
-            max_authors_len = len(ep.authors)
-            max_authors_ep = ep
+        if ep.released:
+            if len(ep.name) > max_name_len:
+                max_name_len = len(ep.name)
+                max_name_ep = ep
+            if ep.authors is not None and \
+                    len(ep.authors) > max_authors_len:
+                max_authors_len = len(ep.authors)
+                max_authors_ep = ep
 
     dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
     dup_eps = Episode.objects.filter(slug__in=[item['slug'] for item in dupes], show=show)
@@ -2283,6 +2264,14 @@ def mk_cuts(episode,
             location=episode.location).order_by('start')
 
     print(rfs)
+
+    if not rfs:
+        return []
+
+    if rfs.last().end <= end:
+        # if the end of the talk is after tha end of the last raw
+        # seems we are missing the last file, so bail
+        return []
 
     seq=100
     started=False ## magic to figure out when talk really started
