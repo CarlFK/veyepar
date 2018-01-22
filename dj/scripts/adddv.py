@@ -20,7 +20,12 @@ class add_dv(process):
         fullpathname = os.path.join(
                 self.show_dir, "dv", location.slug, pathname )
 
-        for line in open(fullpathname).read().split('\n'):
+        with open(fullpathname) as f:
+            cutlist = f.read().strip()
+        if not cutlist:
+            return
+
+        for line in cutlist.split('\n'):
             if line:
                 try:
                     click = datetime.datetime.strptime(
