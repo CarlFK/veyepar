@@ -1110,6 +1110,7 @@ class add_eps(process.process):
 
             event['duration'] =   "0:{}:0".format(event['duration'])
 
+
             # print(event['authors'])
             if event['authors'] is None:
                 event['authors'] =  ''
@@ -1123,12 +1124,18 @@ class add_eps(process.process):
 
             if event['conf_url'] is None:
                 event['conf_url'] =  ''
+            else:
+                event['conf_url'] =   event['conf_url'].replace(
+                        'https://rego.linux.conf.au', 'http://lca2018.linux.org.au')
 
             if event['description'] is None:
                 event['description'] =  ''
 
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
+
+            if event['twitter_id'] is None:
+                event['twitter_id'] =  ''
 
             if event['conf_key'] == 131 :
                 # "name": "Marc Merlin: Getting conned into writing IoTuz/ESP32 drivers and example code (while being held prisoner in a share house in Hobart, Tasmania)"
@@ -3751,6 +3758,7 @@ class add_eps(process.process):
         else:
 
             session = requests.session()
+            headers = {}
 
             # auth stuff goes here, kinda.
 
@@ -3759,28 +3767,36 @@ class add_eps(process.process):
             if auth is not None:
                 if self.options.verbose: print(auth)
 
-                # get the csrf token out of login page
-                session.get(auth['login_page'])
-                token = session.cookies['csrftoken']
+                headers = auth.get('headers', {})
 
-                # in case it does't get passed in the headers
-                # result = requests.get(auth['login_page'])
-                # soup = BeautifulSoup(x.text)
-                # token = soup.find('input',
-                #        dict(name='csrfmiddlewaretoken'))['value']
+                if 'login_page' in auth:
+
+                    # get the csrf token out of login page
+                    session.get(auth['login_page'])
+                    token = session.cookies['csrftoken']
 
 
-                # setup the values needed to log in:
-                login_data = auth['login_data']
-                login_data['csrfmiddlewaretoken'] = token
+                    # in case it does't get passed in the headers
+                    # result = requests.get(auth['login_page'])
+                    # soup = BeautifulSoup(x.text)
+                    # token = soup.find('input',
+                    #        dict(name='csrfmiddlewaretoken'))['value']
 
-                if self.options.verbose: print("login_data", login_data)
 
-                ret = session.post(auth['login_page'],
-                        data=login_data,
-                        headers={'Referer':auth['login_page']})
+                    # setup the values needed to log in:
+                    login_data = auth['login_data']
+                    login_data['csrfmiddlewaretoken'] = token
 
-                if self.options.verbose: print("login ret:", ret)
+                    if self.options.verbose: print("login_data", login_data)
+
+                    headers['Referer']=auth['login_page']
+
+                    ret = session.post(auth['login_page'],
+                            data=login_data,
+                            headers=headers)
+
+                    if self.options.verbose: print("login ret:", ret)
+
 
             if self.options.show in ['chicagowebconf2012"',
                                         "cusec2013" , ]:
@@ -3795,7 +3811,11 @@ class add_eps(process.process):
             else:
                 payload = None
 
-            response = session.get(url, params=payload, verify=False)
+            pprint(headers)
+            # return
+
+            response = session.get(url, params=payload, verify=False,
+                    headers=headers)
 
         parsed = urllib.parse.urlparse(url)
         ext = os.path.splitext(parsed.path)[1]
