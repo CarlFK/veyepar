@@ -129,6 +129,9 @@ class SyncRax(process):
         if not os.path.exists(src_name):
             print("src not found: {src_name}".format(
                 src_name=src_name))
+            if self.options.delete_unknown:
+                rf.delete()
+                return
             raise IOError
 
         if self.options.low:
@@ -352,6 +355,9 @@ class SyncRax(process):
            help="process cooked files.")
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
+        parser.add_option('--delete-unknown', action='store_true',
+            help="Delete any file records from the database, if we can't "
+                 "find them on disk.")
 
         parser.add_option('--include',
                 help="only include this filename. (What is stored in raw_file.filnema: yyyy-mm-dd/hh_mm_ss.ts)")
