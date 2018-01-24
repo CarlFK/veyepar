@@ -48,6 +48,11 @@ class ts_rf(process):
         else:
             seconds = tsraw.get_duration(pathname)
         """
+        if not os.path.exists(pathname):
+            print('missing file: {}'.format(pathname))
+            if self.options.delete_unknown:
+                rf.delete()
+            return
         seconds = tsraw.get_duration(pathname)
 
         print(( pathname, start, seconds ))
@@ -120,6 +125,9 @@ class ts_rf(process):
            help="only hit this ext")
         parser.add_option('--subs',
            help="string to use for subs stuff that makes me cry.")
+        parser.add_option('--delete-unknown', action='store_true',
+            help="Delete any file records from the database, if we can't "
+                 "find them on disk.")
 
     def add_more_option_defaults(self, parser):
         # parser.set_defaults(offset_hours=0)
