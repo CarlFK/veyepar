@@ -83,12 +83,17 @@ class SyncRax(process):
 
         for ext in self.options.upload_formats:
 
-            base = os.path.join( "dv", rf.location.slug, rf.filename )
-            if self.options.verbose: print(base)
+            base = os.path.join("dv", rf.location.slug, rf.filename)
+            web_base = os.path.join("web", rf.location.slug, rf.filename)
+            if self.options.verbose:
+                print('{} -> {}'.format(base, web_base))
 
             rfpathname = os.path.join(self.show_dir, base)
-            low = "{base}.{ext}".format(base=base, ext=ext)
+            cdn_low = "{base}.{ext}".format(base=base, ext=ext)
+            low = "{web_base}.{ext}".format(base=web_base, ext=ext)
             out = os.path.join(self.show_dir, low)
+
+            os.makedirs(os.path.dirname(out), exist_ok=True)
 
             # look for low on local file system
             vb = "50k"
@@ -97,10 +102,10 @@ class SyncRax(process):
                 self.mk_low(rfpathname, out)
 
             if self.options.rsync:
-                if not self.cdn_exists(show,low) or self.options.replace:
+                if not self.cdn_exists(show, cdn_low) or self.options.replace:
                     # raw file (huge!!!)
-                    ### self.file2cdn(show,base)
-                    self.file2cdn(show,low)
+                    ### self.file2cdn(show, base)
+                    self.file2cdn(show,low, cdn_low)
 
 
     def rf_audio_png(self, show, rf):
