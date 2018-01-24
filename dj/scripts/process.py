@@ -19,7 +19,7 @@ sys.path.insert(0, '..' )
 sys.path.insert(0, '../lib' )
 
 from django.db.models import Max
-from django.db import DatabaseError, connection
+from django.db import DatabaseError, connection, transaction
 
 import django
 
@@ -250,10 +250,18 @@ class process():
         ret = None
         sleepytime = False
         for e in episodes:
-            if foo(e):
+            if not foo(e):
+                continue
 
-                # next line requires the db to make sure the lock field is fresh
-                ep = Episode.objects.get(pk=e.id)
+            with transaction.atomic():
+                # require the db to make sure the lock field is fresh
+                try:
+                    ep = Episode.objects.select_for_update(skip_locked=True) \
+                        .get(pk=e.id)
+                except Episode.DoesNotExist:
+                    print('#%s: "%s" is locked at a DB level' % (e.id, e.name))
+                    continue
+
                 if self.options.unlock:
                     ep.locked = None
                 if ep.locked and not self.options.force:
