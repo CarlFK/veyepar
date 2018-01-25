@@ -310,53 +310,53 @@ class process():
                     # Don't log or lock when testing
                     self.log_in(ep)
 
-                ret = self.process_ep(ep)
+            ret = self.process_ep(ep)
+            if self.options.verbose:
+                print("process_ep:", ret)
+
+            # .process is long running (maybe, like encode or post)
+            # so refresh episode in case its .stop was set
+            # (would be set in some other process, like the UI)
+
+            try:
+                ep = Episode.objects.get(pk=e.id)
+            except DatabaseError as err:
+                connection.connection.close()
+                connection.connection = None
+                ep = Episode.objects.get(pk=e.id)
+
+            if ret:
+                # if the process doesn't fail,
+                # and it was part of the normal process,
+                # don't bump if the process was forced,
+                # even if it would have been had it not been forced.
+                # if you force, you know better than the process,
+                # so the process is going to let you bump.
+                # huh?!
+                # so..  ummm...
+                # 1. you can't bump None
+                # 2. don't bump when in test mode
+                # 3. if it wasn't forced:, bump.
+                if self.ready_state is not None \
+                        and not self.options.test \
+                        and not self.options.force:
+                    # bump state
+                    ep.state += 1
+            self.end = datetime.datetime.now()
+            ep.save()
+
+            if not self.options.test:
+                self.log_out(ep)
+
+            if ep.stop:
                 if self.options.verbose:
-                    print("process_ep:", ret)
-
-                # .process is long running (maybe, like encode or post)
-                # so refresh episode in case its .stop was set
-                # (would be set in some other process, like the UI)
-
-                try:
-                    ep = Episode.objects.get(pk=e.id)
-                except DatabaseError as err:
-                    connection.connection.close()
-                    connection.connection = None
-                    ep = Episode.objects.get(pk=e.id)
-
-                if ret:
-                    # if the process doesn't fail,
-                    # and it was part of the normal process,
-                    # don't bump if the process was forced,
-                    # even if it would have been had it not been forced.
-                    # if you force, you know better than the process,
-                    # so the process is going to let you bump.
-                    # huh?!
-                    # so..  ummm...
-                    # 1. you can't bump None
-                    # 2. don't bump when in test mode
-                    # 3. if it wasn't forced:, bump.
-                    if self.ready_state is not None \
-                            and not self.options.test \
-                            and not self.options.force:
-                        # bump state
-                        ep.state += 1
-                self.end = datetime.datetime.now()
+                    print(".STOP set on the episode.")
+                # send message to .process_eps which bubbles up to .poll
+                self.stop = True
+                # re-set the stop flag.
+                ep.stop = False
                 ep.save()
-
-                if not self.options.test:
-                    self.log_out(ep)
-
-                if ep.stop:
-                    if self.options.verbose:
-                        print(".STOP set on the episode.")
-                    # send message to .process_eps which bubbles up to .poll
-                    self.stop = True
-                    # re-set the stop flag.
-                    ep.stop = False
-                    ep.save()
-                    break
+                break
 
         return ret
 
