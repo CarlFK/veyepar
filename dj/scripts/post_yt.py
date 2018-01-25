@@ -234,9 +234,14 @@ class post(process):
             uploader.pathname = f['pathname']
             uploader.verbose = self.options.verbose
 
-            uploader.slug = "{show}-{slug}".format(
+            slug = "{show}-{slug}".format(
                     show=ep.show.slug,
                     slug=ep.slug)[:100]
+
+            # IA requires this: ^[a-zA-Z0-9][a-zA-Z0-9_.-]{4,100}$
+            slug = re.sub(r'[^a-zA-Z0-9_.-]', '', slug)
+
+            uploader.slug = slug
 
             uploader.meta = meta
 
