@@ -233,130 +233,138 @@ class process():
               episode.id, episode.state, episode.name))
         return
 
+    def ep_in_shard(self, episode):
+        """shard over ...umm.. a bunch of tmux sessions I think"""
+        s = os.environ.get('STY')
+        if s:
+            s = s.split('-')
+            if len(s) == 3:
+                s = s[-1]
+                if s.isdigit():
+                    return episode.id % 11 == int(s)
+        return True
+
+    def ep_is_available(self, episode):
+        """Is episode something we want to act on? Return boolean.
+
+        Will take a lock on the episode.
+        """
+        e_id = episode.id
+
+        if not self.ep_in_shard(episode):
+            return False
+
+        with transaction.atomic():
+            # require the db to make sure the lock field is fresh
+            try:
+                ep = Episode.objects.select_for_update(skip_locked=True) \
+                    .get(pk=e_id)
+            except Episode.DoesNotExist:
+                print('#%s: "%s" is locked at a DB level'
+                      % (e_id, episode.name))
+                return False
+
+            # ready_state:
+            # None means "don't care",
+            # ready == X means ready to do X,
+            # force is dangerous and will likely mess tings up.
+            if self.ready_state is not None \
+               and ep.state != self.ready_state \
+               and not self.options.force:
+                if self.options.verbose:
+                    print('#%s: "%s" is in state %s, ready is %s'
+                          % (e_id, ep.name, ep.state, self.ready_state))
+                return False
+
+            if self.options.unlock:
+                ep.locked = None
+            if ep.locked and not self.options.force:
+                if self.options.verbose:
+                    print('#%s: "%s" locked on %s by %s'
+                          % (e_id, ep.name, ep.locked, ep.locked_by))
+                return False
+
+            if not self.options.test and not self.options.skip:
+                # Don't log or lock when testing
+                self.log_in(ep)
+
+        return True
+
     def process_eps(self, episodes):
         # if self.options.verbose: print("process_ep: enter")
 
-        def foo(e):
-            # shard over ...umm.. a bunch of tmux sessions I think.
-            s = os.environ.get('STY')
-            if s:
-                s = s.split('-')
-                if len(s) == 3:
-                    s = s[-1]
-                    if s.isdigit():
-                        return e.id % 11 == int(s)
-            return True
-
         ret = None
-        sleepytime = False
         for e in episodes:
-            if not foo(e):
+            if not self.ep_is_available(e):
                 continue
 
-            with transaction.atomic():
-                # require the db to make sure the lock field is fresh
-                try:
-                    ep = Episode.objects.select_for_update(skip_locked=True) \
-                        .get(pk=e.id)
-                except Episode.DoesNotExist:
-                    print('#%s: "%s" is locked at a DB level' % (e.id, e.name))
-                    continue
+            # It may have been a while since whe retrieved it
+            # And we've just taken a lock in a separate transaction
+            e.refresh_from_db()
 
-                if self.options.unlock:
-                    ep.locked = None
-                if ep.locked and not self.options.force:
-                    if self.options.verbose:
-                        print('#%s: "%s" locked on %s by %s'
-                              % (ep.id, ep.name, ep.locked, ep.locked_by))
-                    ret = None
-                    continue
+            self.set_dirs(e.show)
+            self.episode_dir = os.path.join(
+                self.show_dir, 'dv', e.location.slug)
 
-                # ready_state:
-                # None means "don't care",
-                # ready == X means ready to do X,
-                # force is dangerous and will likely mess tings up.
-                if self.ready_state is not None \
-                   and ep.state != self.ready_state \
-                   and not self.options.force:
-                    if self.options.verbose:
-                        print('#%s: "%s" is in state %s, ready is %s' % (
-                            ep.id, ep.name, ep.state, self.ready_state))
-                    continue
+            if self.options.verbose:
+                print(e.name)
 
-                self.set_dirs(ep.show)
-                self.episode_dir = os.path.join(
-                    self.show_dir, 'dv', ep.location.slug)
+            if not self.options.quiet:
+                print(self.__class__.__name__, e.id, e.name)
 
-                if self.options.verbose:
-                    print(ep.name)
-
-                if self.options.lag:
-                    if sleepytime:
-                        # don't lag on the first one that needs processing,
-                        # we only want to lag between the fence posts.
-                        print("lagging....", self.options.lag)
-                        time.sleep(self.options.lag)
-                    else:
-                        sleepytime = True
-
-                if not self.options.quiet:
-                    print(self.__class__.__name__, ep.id, ep.name)
-
-                if self.options.skip:
-                    ret = True
-                    continue
-
-                if not self.options.test:
-                    # Don't log or lock when testing
-                    self.log_in(ep)
-
-                ret = self.process_ep(ep)
+            if not self.options.skip:
+                ret = self.process_ep(e)
                 if self.options.verbose:
                     print("process_ep:", ret)
 
-                # .process is long running (maybe, like encode or post)
-                # so refresh episode in case its .stop was set
-                # (would be set in some other process, like the UI)
+            # .process is long running (maybe, like encode or post)
+            # so refresh episode in case its .stop was set
+            # (would be set in some other process, like the UI)
 
-                try:
-                    ep = Episode.objects.get(pk=e.id)
-                except DatabaseError as err:
-                    connection.connection.close()
-                    connection.connection = None
-                    ep = Episode.objects.get(pk=e.id)
+            try:
+                e_id = e.id
+                e = Episode.objects.get(pk=e_id)
+            except DatabaseError as err:
+                connection.connection.close()
+                connection.connection = None
+                e = Episode.objects.get(pk=e_id)
 
-                if ret:
-                    # if the process doesn't fail,
-                    # and it was part of the normal process,
-                    # don't bump if the process was forced,
-                    # even if it would have been had it not been forced.
-                    # if you force, you know better than the process,
-                    # so the process is going to let you bump.
-                    # huh?!
-                    # so..  ummm...
-                    # 1. you can't bump None
-                    # 2. don't bump when in test mode
-                    # 3. if it wasn't forced:, bump.
-                    if self.ready_state is not None \
-                            and not self.options.test \
-                            and not self.options.force:
-                        # bump state
-                        ep.state += 1
-                self.end = datetime.datetime.now()
-                ep.save()
+            if ret:
+                # if the process doesn't fail,
+                # and it was part of the normal process,
+                # don't bump if the process was forced,
+                # even if it would have been had it not been forced.
+                # if you force, you know better than the process,
+                # so the process is going to let you bump.
+                # huh?!
+                # so..  ummm...
+                # 1. you can't bump None
+                # 2. don't bump when in test mode
+                # 3. if it wasn't forced:, bump.
+                if self.ready_state is not None \
+                        and not self.options.test \
+                        and not self.options.force:
+                    # bump state
+                    e.state += 1
+            self.end = datetime.datetime.now()
+            e.save()
 
-                if not self.options.test:
-                    self.log_out(ep)
+            if not self.options.test:
+                self.log_out(e)
 
-                if ep.stop:
-                    if self.options.verbose:
-                        print(".STOP set on the episode.")
-                    # send message to .process_eps which bubbles up to .poll
-                    self.stop = True
-                    # re-set the stop flag.
-                    ep.stop = False
-                    ep.save()
-                    break
+            if e.stop:
+                if self.options.verbose:
+                    print(".STOP set on the episode.")
+                # send message to .process_eps which bubbles up to .poll
+                self.stop = True
+                # re-set the stop flag.
+                e.stop = False
+                e.save()
+                break
+
+            if self.options.lag:
+                print("lagging....", self.options.lag)
+                time.sleep(self.options.lag)
 
         return ret
 
