@@ -59,6 +59,11 @@ class mkdirs(process):
                 self.show_dir, "assets", "credits", credits_img )
         self.run_cmd( ["cp", credits_src, credits_pathname] )
 
+        # bling/title.svg
+        # Videos/veyepar/koya_law/training/assets/titles/
+
+        # src/veyepar/dj/scripts/assets/mlt/template.mlt
+        # Videos/veyepar/koya_law/training/assets/mlt
 
         if self.options.raw_slugs:
             # I wonder what this is for?
