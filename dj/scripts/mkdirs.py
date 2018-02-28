@@ -35,26 +35,33 @@ class mkdirs(process):
         self.set_dirs(show)
         dirs = "dv assets tmp titles webm mp4 mlt custom/titles img"
         for d in dirs.split():
-            full_dir = os.path.join(self.show_dir,d)
+            full_dir = os.path.join(self.show_dir, d)
             ret = self.mkdir(full_dir)
 
-        # copy the footer image 
+        dirs = "credits  mlt  titles"
+        for d in dirs.split():
+            full_dir = os.path.join(self.show_dir, "assets", d)
+            ret = self.mkdir(full_dir)
+
+        # copy the footer image
         # not sure where this should happen *shrug*
-        # It's really just for the default, 
+        # It's really just for the default,
         # If there is a non default, it will live under show_dir/assets/.
+        # /home/carl/src/veyepar/dj/scripts/assets/credits/ndv/ndv-169.png
 
         credits_img = client.credits
         credits_src = os.path.join(
             os.path.split(os.path.abspath(__file__))[0],
-            "bling",
+            "assets/credits/ndv",
             credits_img)
         # copy into show/assetts
         credits_pathname = os.path.join(
-                self.show_dir, "assets", credits_img )
-
+                self.show_dir, "assets", "credits", credits_img )
         self.run_cmd( ["cp", credits_src, credits_pathname] )
 
+
         if self.options.raw_slugs:
+            # I wonder what this is for?
 
             # get episodes for this show
             eps = Episode.objects.filter(show=show)
@@ -79,7 +86,7 @@ class mkdirs(process):
       parser.add_option('--raw-slugs', action="store_true",
                           help="Make a dir for each talk's raw files")
 
-if __name__=='__main__': 
+if __name__=='__main__':
     p=mkdirs()
     p.main()
 

@@ -291,7 +291,7 @@ class SyncRax(process):
     def show_assets(self,show):
         if self.options.rsync:
             foot_img = show.client.credits
-            base = os.path.join("assets", foot_img )
+            base = os.path.join("assets", "credits", foot_img )
             self.file2cdn(show,base)
 
     def init_rax(self, show):
