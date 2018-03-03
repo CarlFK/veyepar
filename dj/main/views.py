@@ -2381,6 +2381,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     cuts = Cut_List.objects.filter(
             episode=episode).order_by('sequence','raw_file__start','start')
 
+    print(cuts)
+
     # If this episode is still being edited, create or add cuts
     # if episode.state==1:
     # This didn't work, put back the "only if empty"

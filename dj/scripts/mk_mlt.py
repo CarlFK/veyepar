@@ -48,6 +48,7 @@ def mk_mlt(template, output, params):
         'channelcopy',
         'mono',
         'normalize',
+        'volume',
         'title_fade','foot_fade',
         ]:
 
@@ -85,6 +86,7 @@ def mk_mlt(template, output, params):
     nodes['ti_vid2'].remove(nodes['channelcopy'])
     nodes['ti_vid2'].remove(nodes['mono'])
     nodes['ti_vid2'].remove(nodes['normalize'])
+    nodes['ti_vid2'].remove(nodes['volume'])
 
     # add each clip to the playlist
     for i,clip in enumerate(params['clips']):
@@ -143,9 +145,12 @@ def mk_mlt(template, output, params):
             ti.insert(0,channelcopy)
 
         if cut['normalize']!='0':
-            normalize = copy.deepcopy( nodes['normalize'] )
-            set_text(normalize,'program' , cut['normalize'])
-            ti.insert(0,normalize)
+            # normalize = copy.deepcopy( nodes['normalize'] )
+            # set_text(normalize,'program' , cut['normalize'])
+            # ti.insert(0,normalize)
+            volume = copy.deepcopy( nodes['volume'] )
+            set_text(volume,'gain' , cut['normalize'])
+            ti.insert(0,volume)
 
         if nodes['pic_in_pic'] is not None:
             # for Node 15

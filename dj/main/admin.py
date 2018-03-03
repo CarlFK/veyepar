@@ -45,7 +45,9 @@ class Raw_FileAdmin(admin.ModelAdmin):
 admin.site.register(Raw_File, Raw_FileAdmin)
 
 class MarkAdmin(admin.ModelAdmin):
-    list_display = ('click',)
+    list_filter = ('location',"click", )
+    date_hierarchy = 'click'
+    list_display = ('location', 'click',)
 admin.site.register(Mark, MarkAdmin)
 
 class Image_FileAdmin(admin.ModelAdmin):
