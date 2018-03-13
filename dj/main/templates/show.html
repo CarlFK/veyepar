@@ -47,7 +47,7 @@ Episode Count: {{episodes.count}}
       <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
         <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
 
-        <td><a href="
+        <td style="white-space:normal"><a href="
         {%if location_slug %}
          {% url "episode_list" client.slug show.slug %}
         {% else %}
