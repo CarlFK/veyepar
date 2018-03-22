@@ -1745,7 +1745,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
                     'show':show.id,
                     'location':episode.location.id,
                     'sequence':sequence,
-                    'start':episode.end + datetime.timedelta(minutes=5),
+                    'start':episode.end + datetime.timedelta(minutes=0),
                     'duration':episode.duration,
                     'state':1,
                     }
@@ -2533,6 +2533,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
     return render(request, 'episode.html',
         {'episode':episode,
+        'cuts_time_min': int(episode.cuts_time()/60),
+        'cuts_time_hour': episode.cuts_time()/3600,
         'email_eps': email_eps,
         'offset':offset,
         'chaps':chaps,
