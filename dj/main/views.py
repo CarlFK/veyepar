@@ -2531,10 +2531,18 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         same_dates = same_dates and \
             talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
 
+    cuts_time = episode.cuts_time()
+    if cuts_time is not None:
+        cuts_time_min = int(episode.cuts_time()/60)
+        cuts_time_hour = episode.cuts_time()/3600
+    else:
+        cuts_time_min = None
+        cuts_time_hour = None
+
     return render(request, 'episode.html',
         {'episode':episode,
-        'cuts_time_min': int(episode.cuts_time()/60),
-        'cuts_time_hour': episode.cuts_time()/3600,
+        'cuts_time_min': cuts_time_min,
+        'cuts_time_hour': cuts_time_hour,
         'email_eps': email_eps,
         'offset':offset,
         'chaps':chaps,
