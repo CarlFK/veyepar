@@ -4,7 +4,7 @@
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
-    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_00.dv</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_00.mp4</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
@@ -18,7 +18,7 @@
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
-    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.mp4</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
@@ -32,7 +32,7 @@
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
-    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_06.dv</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_06.mp4</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
@@ -46,7 +46,7 @@
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
-    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_09.dv</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_09.mp4</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
@@ -60,7 +60,7 @@
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
-    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_12.dv</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_12.mp4</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
@@ -89,7 +89,7 @@
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:09:59.993</property>
     <property name="eof">pause</property>
-    <property name="resource">bling/ndv-169.png</property>
+    <property name="resource">../credits/ndv/ndv-169.png</property>
     <property name="ttl">1</property>
     <property name="aspect_ratio">1</property>
     <property name="progressive">1</property>
@@ -124,7 +124,7 @@
     <property name="mlt_type">producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
-    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.mp4</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
@@ -150,7 +150,7 @@
     <property name="mlt_type">mlt_producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
-    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_06.dv</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_06.mp4</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
@@ -187,7 +187,7 @@
     <property name="mlt_type">producer</property>
     <property name="length">00:00:03.036</property>
     <property name="eof">pause</property>
-    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_09.dv</property>
+    <property name="resource">/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_09.mp4</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
@@ -245,7 +245,7 @@
     <property name="mlt_type">producer</property>
     <property name="length">00:09:59.993</property>
     <property name="eof">pause</property>
-    <property name="resource">bling/ndv-169.png</property>
+    <property name="resource">../credits/ndv/ndv-169.png</property>
     <property name="ttl">1</property>
     <property name="aspect_ratio">1</property>
     <property name="progressive">1</property>
