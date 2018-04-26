@@ -7,6 +7,7 @@
 import os
 import subprocess
 
+from pprint import pprint
 from process import process
 from main.models import Client, Show, Location, Episode, \
   Raw_File, Cut_List
@@ -90,7 +91,7 @@ class SyncRax(process):
 
             rfpathname = os.path.join(self.show_dir, base)
             cdn_low = "{base}.{ext}".format(base=base, ext=ext)
-            low = "{web_base}.{ext}".format(base=web_base, ext=ext)
+            low = "{web_base}.{ext}".format(web_base=web_base, ext=ext)
             out = os.path.join(self.show_dir, low)
 
             os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -289,10 +290,16 @@ class SyncRax(process):
 
 
     def show_assets(self,show):
-        if self.options.rsync:
-            foot_img = show.client.credits
-            base = os.path.join("assets", "credits", foot_img )
-            self.file2cdn(show,base)
+        # walk the assets dir looking for random files ;/
+        loc_dir=os.path.join(self.show_dir, 'assets')
+        for dirpath, dirnames, filenames in os.walk(loc_dir,followlinks=True):
+            stuby=dirpath[len(self.show_dir)+1:]
+            for filename in filenames:
+                base = os.path.join(stuby,filename)
+
+                if self.options.rsync:
+                    self.file2cdn(show,base)
+
 
     def init_rax(self, show):
          user = show.client.rax_id

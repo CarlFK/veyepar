@@ -28,8 +28,8 @@ Schedule API endpoint: <a href="{{show.schedule_url}}">{{show.schedule_url|defau
 Item Count: {{episodes.count|default:"(none)"}} <br>
 <br>
 
-Title slide: {{client.title_svg|default:"(none)"}}
-<a href="{% url 'title_slides' show.id %}">title slides</a>
+Title slide: <a href='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}'>{{client.title_svg|default:"(none)"}}</a>
+<a href="{% url 'title_slides' show.id %}">rendered title slides</a>
 </br>
 
 Credits: {{client.credits|default:"(none)(bad!)"}}
