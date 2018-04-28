@@ -66,7 +66,7 @@
 						<y>'73.0 pt'</y>
 					</String>
 					<String>
-						<expr>"Sound levels: [   ] L-house   [   ] R-cam " </expr>
+						<expr>"Sound levels: [   ] L-PA   [   ] R-cam mic" </expr>
 						<fontname>'Helvetica'</fontname>
 						<FontSize>13</FontSize>
 						<height>12</height>
@@ -200,16 +200,6 @@
 						<width>'108.0 pt'</width>
 						<x>'415.0 pt'</x>
 						<y>'47.0 pt'</y>
-					</String>
-					<String>
-						<expr>"[  ] Test call to 101"</expr>
-						<fontname>'Helvetica'</fontname>
-						<FontSize>13</FontSize>
-						<height>'12.0 pt'</height>
-						<width>'113.0 pt'</width>
-						<x>'126 pt'</x>
-						<y>'55.0 pt'</y>
-						<y_def>0.0</y_def>
 					</String>
 				</Objects>
 			</GroupHeader>
@@ -547,48 +537,6 @@
 				<width>'113.0 pt'</width>
 				<x>'3.0 pt'</x>
 				<y>'115.0 pt'</y>
-			</String>
-			<String>
-				<expr>"(  ) didn't work"</expr>
-				<fontname>'Helvetica'</fontname>
-				<FontSize>13</FontSize>
-				<width>'120.0 pt'</width>
-				<x>'455.0 pt'</x>
-				<y>'57.3 pt'</y>
-			</String>
-			<String>
-				<expr>"(  ) just worked"</expr>
-				<fontname>'Helvetica'</fontname>
-				<FontSize>13</FontSize>
-				<width>'120.0 pt'</width>
-				<x>'455.0 pt'</x>
-				<y>'85.3 pt'</y>
-			</String>
-			<String>
-				<expr>"(  ) had to fiddle"</expr>
-				<fontname>'Helvetica'</fontname>
-				<FontSize>13</FontSize>
-				<width>'120.0 pt'</width>
-				<x>'455.0 pt'</x>
-				<y>'71.3 pt'</y>
-			</String>
-			<String>
-				<expr>"(O)ther__________"</expr>
-				<fontcolor>(.60, .60, .60)</fontcolor>
-				<fontname>'Helvetica'</fontname>
-				<FontSize>13</FontSize>
-				<width>'95.0 pt'</width>
-				<x>'455.0 pt'</x>
-				<y>'44.3 pt'</y>
-			</String>
-			<String>
-				<expr>"Projector hookup:"</expr>
-				<FontColor>(.5, .5, .5)</FontColor>
-				<FontName>'Helvetica-Bold'</FontName>
-				<FontSize>10</FontSize>
-				<width>'100.0 pt'</width>
-				<x>'440.0 pt'</x>
-				<y>'101.0 pt'</y>
 			</String>
 		</Objects>
 	</Detail>
