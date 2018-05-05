@@ -85,6 +85,13 @@ from icalendar import vDatetime
 
 from django.utils.timezone import localtime
 
+# for goog spreassheet api
+# https://developers.google.com/resources/api-libraries/documentation/sheets/v4/python/latest/
+from apiclient.discovery import build
+from httplib2 import Http
+# from oauth2client import file, client, tools
+import oauth2client # import file, client, tools
+
 # for google calandar:
 import pw
 # import lxml.etree
@@ -94,7 +101,6 @@ import process
 from main.models import Client, Show, Location, Episode, Raw_File
 
 def goog(show,url):
-    # read from goog spreadsheet api
 
         loc,created = Location.objects.get_or_create(
                 sequence = 1,
@@ -157,6 +163,45 @@ def goog(show,url):
                   episode.save()
 
         return
+
+def googsheet(spreadsheetId):
+    # read from goog spreadsheet api
+
+    # Setup the Sheets API
+    SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
+    store = oauth2client.file.Storage('credentials.json')
+    creds = store.get()
+    if not creds or creds.invalid:
+        flow = oauth2client.client.flow_from_clientsecrets('client_secret.json', SCOPES)
+        creds = oauth2client.tools.run_flow(flow, store)
+    service = build('sheets', 'v4', http=creds.authorize(Http()))
+
+    # Call the Sheets API
+    # SPREADSHEET_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'
+    # RANGE_NAME = 'Class Data!A2:E'
+
+    # SPREADSHEET_ID = '1ZS6VFOLV8kaa_VSwrf0tt5wIbaEtXlKhahOtxdR3RAM'
+    RANGE_NAME = 'veyepar'
+
+    result = service.spreadsheets().values().get(
+            spreadsheetId=spreadsheetId,
+            range=RANGE_NAME).execute()
+    values = result.get('values', [])
+    if not values:
+        print('No data found.')
+        import code; code.interact(local=locals())
+
+    else:
+        keys=values[0]
+        print("keys: {}".format(keys))
+        rows=[]
+        for row in values[1:]:
+            rowd = dict(zip(keys, row))
+            rows.append(rowd)
+
+        pprint(rows[0])
+
+    return rows
 
 
 
@@ -363,6 +408,7 @@ class add_eps(process.process):
                     # this means the uniquie ID is not unique,
                     # and there is a dube in the veyepar db.
                     # import pdb; pdb.set_trace()
+                    print("fuond dupe!")
                     import code; code.interact(local=locals())
                     # then continue on.
 
@@ -1716,8 +1762,6 @@ class add_eps(process.process):
         # rooms = list(rooms)
         # ['Janson', 'K.1.105', 'Ferrer', 'H.1301', 'H.1302']
 
-        # import code
-        # code.interact(local=locals())
 
         # return
 
@@ -3592,6 +3636,41 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
+    def koya(self,schedule,show):
+        key=0
+        start=datetime.datetime(2018,4,21,9,30,0)
+        events = []
+        for s in schedule:
+            print(s)
+
+            event = {
+                'location': 'Room 1',
+                'name': s['title'],
+                'authors': 'Devi Koya',
+                'start': start,
+                'duration': '15:00',
+                'conf_key':key,
+                'conf_url':'',
+                'emails':'',
+                'twitter_id':'',
+                'reviewers':'',
+                'description':'',
+                'tags':'',
+                'released':True,
+                'license':'',
+                }
+
+            events.append(event)
+            key+=1
+            start+=datetime.timedelta(minutes=10)
+            if start==datetime.datetime(2018,4,21,12,0,0):
+                start+=datetime.timedelta(hours=1)
+
+
+        self.add_eps(events, show)
+
+
+
     def ics(self,schedule,show):
 
         # pull in data fro Troy's goog sheet
@@ -3682,6 +3761,59 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
+    def teardown18(self,show):
+
+        schedule = googsheet(
+                '1ZS6VFOLV8kaa_VSwrf0tt5wIbaEtXlKhahOtxdR3RAM')
+        # ['presenter', 'email', 'city', 'title', 'description', 'bio', 'notes', 'duration', 'start', 'room', 'released', 'conf_key', 'reviewer']
+        schedule = [ s for s in schedule if s['start']]
+
+        field_maps = [
+                ('room','location'),
+                ('title','name'),
+                ('presenter','authors'),
+                ('email','emails'),
+                ('description','description'),
+                # ('abstract','description'),
+                ('','twitter_id'),
+                ('start','start'),
+                ('duration','duration'),
+                ('released','released'),
+                # ('','license'),
+                # ('tags','tags'),
+                ('conf_key','conf_key'),
+                # ('conf_url','conf_url'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events:
+            if self.options.verbose: pprint(event)
+
+            event['start'] = datetime.datetime.strptime(
+                event['start'], '%m/%d/%Y %H:%M' )
+
+            # Talk (60 minutes)
+            # re_notice = re.compile("Yo, Something Happened! \((?P<qty>\d+)\)")
+            # times = re.match( re_alert, alert ).groupdict()
+            re_duration = re.compile(r"(Talk|Workshop) \((?P<qty>[\d\-]+) (?P<unit>(hours|minutes))\)")
+            try:
+                duration = re.match( re_duration, event['duration'] ).groupdict()
+            except:
+                print(event['duration'])
+                print(re_duration)
+
+            pprint(duration)
+            if duration['unit'] == 'minutes':
+                event['duration'] = "{}:00".format(duration['qty'])
+            else:
+                continue
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
 
 
 #################################################3
@@ -3751,6 +3883,9 @@ class add_eps(process.process):
         client = show.client
         url = show.schedule_url
         if self.options.verbose: print(url)
+
+        if self.options.client =='croud_supply':
+            return self.teardown18(show)
 
         if url.startswith('file'):
             f = open(url[7:])
@@ -3873,6 +4008,9 @@ class add_eps(process.process):
 
         if ext =='.ics':
             return self.ics(schedule,show)
+
+        if self.options.client =='koya_law':
+            return self.koya(schedule,show)
 
         if self.options.client =='kiwipycon':
             return self.nzpug(schedule,show)
