@@ -5,7 +5,6 @@
 
 Client: <a href="{% url "client" client.slug %}">{{ client.name }}</a></br>
 {% if user.is_authenticated %}Contacts: {{client.contacts}}{% endif %}</br>
-</br>
 Show: <a href="{% url "episode_list" client.slug show.slug %}">{{ show.name }}</a> - <a href="{{show.conf_url}}">{{show.conf_url}}</a>
 </br>
 
@@ -24,7 +23,7 @@ Twitter account:  {{client.tweet_id|default:"(none)"}}</br>
 Tweet prefix: {{client.tweet_prefix|default:"(none)"}}</br>
 </br>
 
-Schedule API endpoint: <a href="{{show.schedule_url}}">{{show.schedule_url|default:"(none)"}}</a> </br>
+Schedule data: <a href="{{show.schedule_url}}">{{show.schedule_url|default:"(none)"}}</a> </br>
 Item Count: {{episodes.count|default:"(none)"}} <br>
 <br>
 
@@ -32,18 +31,17 @@ Title slide: <a href='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.s
 <a href="{% url 'title_slides' show.id %}">rendered title slides</a>
 </br>
 
-Credits: {{client.credits|default:"(none)(bad!)"}}
 Credits: <a href='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/credits/{{client.credits}}'>{{client.credits}}</a>
 </br>
 </br>
 Host metadata:
 </br>
 Tags:
-{{show.tags|default:"(none show)"}}
-{{client.tags|default:"(none client)"}}
+{{show.tags}} - {{client.tags}}
 </br>
 </br>
-Description of event appened to each talk's description</br>
+Description of event appened to each talk's description:</br>
+</br>
 {{show.description|default:"(none show)"}}
 </br>
 {{client.description|default:"(none client)"}}
