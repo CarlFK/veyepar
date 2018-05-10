@@ -196,6 +196,7 @@ def googsheet(spreadsheetId):
         print("keys: {}".format(keys))
         rows=[]
         for row in values[1:]:
+            row.append(None)
             rowd = dict(zip(keys, row))
             rows.append(rowd)
 
@@ -3766,23 +3767,29 @@ class add_eps(process.process):
         schedule = googsheet(
                 '1ZS6VFOLV8kaa_VSwrf0tt5wIbaEtXlKhahOtxdR3RAM')
         # ['presenter', 'email', 'city', 'title', 'description', 'bio', 'notes', 'duration', 'start', 'room', 'released', 'conf_key', 'reviewer']
-        schedule = [ s for s in schedule if s['start']]
+        # ['presenter', 'email', 'title ', 'description', 'Format', 'Day', 'Time START', 'Time END', 'DUR. (h)', 'Room / Location', 'Format (REQUESTED)', 'Speaker Handle(s)', 'released', 'conf_key', 'reviewer']
+
+        schedule = [ s for s in schedule
+                if 'conf_key' in s and s['conf_key']]
+        schedule = [ s for s in schedule if s['Time START']]
 
         field_maps = [
-                ('room','location'),
+                ('Room / Location','location'),
                 ('title','name'),
                 ('presenter','authors'),
                 ('email','emails'),
                 ('description','description'),
                 # ('abstract','description'),
-                ('','twitter_id'),
-                ('start','start'),
-                ('duration','duration'),
+                ('Speaker Handle(s)','twitter_id'),
+                ('{Day} {Time START}','start'),
+                ('DUR. (h)','duration'),
                 ('released','released'),
                 # ('','license'),
                 # ('tags','tags'),
                 ('conf_key','conf_key'),
-                # ('conf_url','conf_url'),
+                ('reviewer','reviewers'),
+                ('','conf_url'),
+                ('','tags'),
             ]
 
         events = self.generic_events(schedule, field_maps)
@@ -3790,12 +3797,16 @@ class add_eps(process.process):
         for event in events:
             if self.options.verbose: pprint(event)
 
+            day,start = event['start'].split(' ',1)
+            day = {'FRI': 11,
+                    'SAT': 12,
+                    'SUN': 13}[day]
+            dt = '5/{day}/2018 {start}'.format(day=day,start=start)
             event['start'] = datetime.datetime.strptime(
-                event['start'], '%m/%d/%Y %H:%M' )
+                dt, '%m/%d/%Y %I:%M %p' )
 
+            """
             # Talk (60 minutes)
-            # re_notice = re.compile("Yo, Something Happened! \((?P<qty>\d+)\)")
-            # times = re.match( re_alert, alert ).groupdict()
             re_duration = re.compile(r"(Talk|Workshop) \((?P<qty>[\d\-]+) (?P<unit>(hours|minutes))\)")
             try:
                 duration = re.match( re_duration, event['duration'] ).groupdict()
@@ -3808,6 +3819,18 @@ class add_eps(process.process):
                 event['duration'] = "{}:00".format(duration['qty'])
             else:
                 continue
+            """
+            event['duration'] = "{}:00".format(event['duration'].strip())
+
+            if not event['twitter_id'].startswith('@'):
+                event['twitter_id']=''
+
+            if event['reviewers'] is None:
+                event['reviewers']=''
+
+            event['released'] = event['released'].lower() == 'yes'
+
+            event['license'] = 'CC BY-SA'
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
