@@ -53,16 +53,17 @@ Reference: https://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
                 self.body_body + \
                 self.body_footer
 
-        if not ep.emails:
+        if self.options.spc or not ep.emails:
             body_alert = """
 Hello show organizer(s)!
 
-This item does not have an email address, so it is getting sent to you.
+This item gets your attention.
 Please review and forward it on to the presenter.
 
 In case it isn't clear what this item is about, here is some context:
     name: {{ep.name}}
     authors: {{ep.authors}}
+    emails: {{ep.emails}}
     reviewers: {{ep.reviewers}}
     released: {{ep.released}}
     conf_url: {{ep.conf_url}}
@@ -70,7 +71,7 @@ In case it isn't clear what this item is about, here is some context:
     room: {{ep.location}}
     start: {{ep.start}}
 
-What follows is what was intended to be sent to the presenter:
+What follows is what was intended to be sent to the presenter and reviewer.
 """
             body_template = body_alert + body_template\
 
@@ -83,9 +84,13 @@ What follows is what was intended to be sent to the presenter:
 
     def process_ep(self, ep):
 
-        # if there is no email, use the client's.
-        # like for lightning talks.
-        emails = ep.emails or ep.show.client.contacts
+        if self.options.spc:
+            # single point of contact gets them all
+            emails = self.options.spc
+        else:
+            # if there is no email, use the client's.
+            # like for lightning talks.
+            emails = ep.emails or ep.show.client.contacts
 
         if self.options.verbose: print(emails)
 
@@ -144,6 +149,10 @@ What follows is what was intended to be sent to the presenter:
         return ret
 
     def add_more_options(self, parser):
+        parser.add_option('--spc',
+            default="",
+            help="Single Point of Contact.")
+
         parser.add_option('--note',
             default="",
             help="Prepend a note above the Hi.")
