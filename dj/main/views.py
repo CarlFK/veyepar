@@ -2271,7 +2271,8 @@ def mk_cuts(episode,
     if rfs.last().end <= end:
         # if the end of the talk is after tha end of the last raw
         # seems we are missing the last file, so bail
-        return []
+        print((rfs.last().end, end))
+        # return []
 
     seq=100
     started=False ## magic to figure out when talk really started
