@@ -200,7 +200,7 @@ def googsheet(spreadsheetId):
             rowd = dict(zip(keys, row))
             rows.append(rowd)
 
-        pprint(rows[0])
+        # pprint(rows[0])
 
     return rows
 
@@ -3637,16 +3637,27 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
-    def koya(self,schedule,show):
+    def koya(self, schedule, show):
+        # open .docx in OO, File/SaveAs foo.txt
         key=0
-        start=datetime.datetime(2018,4,21,9,30,0)
+        start=datetime.datetime(2018,7,8,9,0,0)
         events = []
         for s in schedule:
             print(s)
 
+            name = s.strip()
+            # name = s['\ufefftitle'],
+
+            if len(name)==0:
+                # skip blank lines
+                # pass
+                continue
+
+            # print("{} - {}".format(len(name), name.__repr__()))
+
             event = {
                 'location': 'Room 1',
-                'name': s['title'],
+                'name': name,
                 'authors': 'Devi Koya',
                 'start': start,
                 'duration': '15:00',
@@ -3664,9 +3675,9 @@ class add_eps(process.process):
             events.append(event)
             key+=1
             start+=datetime.timedelta(minutes=10)
-            if start==datetime.datetime(2018,4,21,12,0,0):
-                start+=datetime.timedelta(hours=1)
-
+            # lunch break
+            # if start==datetime.datetime(2018,4,21,12,0,0):
+            #    start+=datetime.timedelta(hours=1)
 
         self.add_eps(events, show)
 
@@ -3995,6 +4006,9 @@ class add_eps(process.process):
             schedule=Calendar.from_ical(response.content)
             # schedule=Calendar.from_ical(f.read())
 
+        elif ext=='.txt':
+            schedule = f
+
         else:
             # lets hope it is json, like everything should be.
 
@@ -4033,7 +4047,7 @@ class add_eps(process.process):
             return self.ics(schedule,show)
 
         if self.options.client =='koya_law':
-            return self.koya(schedule,show)
+            return self.koya(schedule, show)
 
         if self.options.client =='kiwipycon':
             return self.nzpug(schedule,show)
