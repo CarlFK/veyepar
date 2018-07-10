@@ -133,7 +133,7 @@
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'15.0 pt'</y>
+						<y>'19.5 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] Review - done"</expr>
@@ -141,7 +141,7 @@
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'2.0 pt'</y>
+						<y>'4.0 pt'</y>
 					</String>
 					<String>
 						<expr>"Post production:"</expr>
@@ -153,14 +153,14 @@
 						<y>'49.0 pt'</y>
 					</String>
 					<String>
-						<expr>"Pre Day check:"</expr>
+						<expr>"Pre-Day check:"</expr>
 						<fontname>'Helvetica-Bold'</fontname>
 						<FontSize>12</FontSize>
 						<height>'14.0 pt'</height>
 						<ScalePercent>(100.0, 90.0)</ScalePercent>
 						<width>'90.0 pt'</width>
 						<x>'6.0 pt'</x>
-						<y>'59 pt'</y>
+						<y>'55 pt'</y>
 					</String>
 					<String>
 						<expr>"[  ] Replace Batteries in mics"</expr>
@@ -177,7 +177,7 @@
 						<FontSize>13</FontSize>
 						<width>'118.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'31.0 pt'</y>
+						<y>'35.0 pt'</y>
 					</String>
 					<Rectangle>
 						<height>'31.0 pt'</height>
@@ -199,7 +199,7 @@
 						<FontSize>13</FontSize>
 						<width>'108.0 pt'</width>
 						<x>'415.0 pt'</x>
-						<y>'47.0 pt'</y>
+						<y>'52.0 pt'</y>
 					</String>
 				</Objects>
 			</GroupHeader>
@@ -225,7 +225,7 @@
 				<hanchor>'right'</hanchor>
 				<width>'145.0 pt'</width>
 				<x>'537.0 pt'</x>
-				<y>'15.0 pt'</y>
+				<y>'18.0 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -272,7 +272,7 @@
 				<height>'15.0 pt'</height>
 				<width>'106.0 pt'</width>
 				<x>'432.0 pt'</x>
-				<y>'0.0 pt'</y>
+				<y>'5.0 pt'</y>
 			</String>
 			<String>
 				<expr>"[  ] Notes on back"</expr>
@@ -358,7 +358,7 @@
 				<vAnchor>'bottom'</vAnchor>
 				<width>'345.0 pt'</width>
 				<x>'126.8 pt'</x>
-				<y>'25.0 pt'</y>
+				<y>'12.0 pt'</y>
 			</Memo>
 			<String>
 				<expr>self.episode_start.strftime("%H:%M")</expr>
