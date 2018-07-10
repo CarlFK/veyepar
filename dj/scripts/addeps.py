@@ -784,6 +784,7 @@ class add_eps(process.process):
 
       return rooms
 
+
     def get_rooms(self, schedule, key='location'):
       rooms=set()
       for row in schedule:
@@ -1672,6 +1673,85 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
         return
+
+
+    def pyconau18(self, schedule, show):
+        # https://2018.pycon-au.org/schedule/avdata.json
+
+        field_maps = [
+                ('room','location'),
+                ('name','name'),
+                ('abstract','description'),
+                ('authors','authors'),
+                ('','emails'),
+                ('twitter_id','twitter_id'),
+                ('reviewers','reviewers'),
+                ('start','start'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('track','tags'),
+                ('conf_key','conf_key'),
+                ('conf_url','conf_url'),
+                ]
+
+        events = self.generic_events(schedule["schedule"], field_maps)
+
+        for event in events:
+            if self.options.verbose: pprint(event['raw'])
+            if self.options.verbose: pprint(event)
+
+            if "Plenary Hall" in event['location']:
+                event['location'] = "Plenary Hall"
+
+            event['name'] =  re.sub( r'[\n\r]', ':)', event['name'] )
+
+            event['start'] = datetime.datetime.strptime(
+                    event['start'], '%Y-%m-%dT%H:%M:%S' )
+
+            event['duration'] =   "0:{}:0".format(event['duration'])
+
+
+            # print(event['authors'])
+            if event['authors'] is None:
+                event['authors'] =  ''
+            else:
+                event['authors'] =  ', '.join( event['authors'] )
+
+            if event['emails'] == ["redacted",]:
+                event['emails'] =  ""
+            else:
+                event['emails'] =  ', '.join( event['emails'] )
+
+            if event['conf_url'] is None:
+                event['conf_url'] =  ''
+            else:
+                event['conf_url'] =   event['conf_url'].replace(
+                        'https://rego.linux.conf.au', 'http://lca2018.linux.org.au')
+
+            if event['description'] is None:
+                event['description'] =  ''
+
+            if event['reviewers'] is None:
+                event['reviewers'] =  ''
+
+            if event['twitter_id'] is None:
+                event['twitter_id'] =  ''
+
+            if event['conf_key'] == 131 :
+                # "name": "Marc Merlin: Getting conned into writing IoTuz/ESP32 drivers and example code (while being held prisoner in a share house in Hobart, Tasmania)"
+                print('truncating {} to :168'.format( event['name'] ))
+                event['name'] = event['name'][:168]
+
+        rooms = self.get_rooms(events,'location')
+        self.add_rooms(rooms,show)
+        self.add_eps(events, show)
+
+        return
+
+
+
+
 
     def fos_events( self, schedule ):
         # fosdem 14 penta
@@ -4048,6 +4128,9 @@ class add_eps(process.process):
 
         if self.options.client =='koya_law':
             return self.koya(schedule, show)
+
+        if self.options.show =='pyconau_2018':
+            return self.pyconau18(schedule, show)
 
         if self.options.client =='kiwipycon':
             return self.nzpug(schedule,show)
