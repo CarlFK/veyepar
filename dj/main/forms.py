@@ -1,8 +1,10 @@
 # forms.py
 
+import re
+
 from django import forms
 
-from main.models import Episode, Location
+from main.models import Episode, Location, Mark
 
 
 class Who(forms.Form):
@@ -69,6 +71,82 @@ class Episode_Form_Mini(forms.ModelForm):
         widgets = {
         	'meails': forms.Textarea(attrs={'cols': 80, 'rows': 2}),
         }
+
+
+class Episode_Reschedule_Form(forms.ModelForm):
+
+    def clean_start_time(self):
+        # t is time in "hh mm ss"
+        label = 'start'
+        t = self.cleaned_data['start_time']
+        basedate = self.instance.start
+        # print("1 {}".format(t))
+        if t:
+            try:
+                h,m,s = [int(s) for s in re.split('[ _:]', t)]
+                dt = basedate.replace(hour=h, minute=m, second=s)
+            except Exception as e:
+                raise forms.ValidationError(
+                        # django doesn't seem to like this, yet.
+			'{label} data bad!: {t} - e:{e}',
+			code='invalid',
+			params={
+                             'label':label,
+                             't': t,
+                             'e':e.message,
+                             },
+			)
+
+            marks = Mark.objects.filter(click=dt)
+            if not marks:
+                raise forms.ValidationError(
+                        's datetime not found in marks: {dt}',
+                        code='invalid',
+                        params={'dt': dt},
+                        )
+        else:
+            dt = None
+        return dt
+
+    def clean_end_time(self):
+        t = self.cleaned_data['end_time']
+        if t:
+            try:
+                h,m,s = [int(s) for s in t.split()]
+                dt = self.instance.end.replace(hour=h, minute=m, second=s)
+            except Exception as e:
+                raise forms.ValidationError(
+			 '{label} data bad!: {t} - e:{e}',
+			 code='invalid',
+			 params={
+                             'label':'start',
+                             't': t,
+                             'e':e,
+                             },
+			 )
+
+            marks = Mark.objects.filter(click=dt)
+            if not marks:
+                raise forms.ValidationError(
+                        'e datetime not found in marks: {dt}',
+                           code='invalid',
+                            params={'dt': dt},
+                                )
+        else:
+            dt = None
+        return dt
+
+    start_time = forms.CharField(max_length=8,
+            required=False,
+            widget=forms.TextInput(attrs={'size':'8'}),
+            )
+            # to_python=ck_start)
+
+    end_time = forms.CharField(max_length=8,
+            required=False,
+            widget=forms.TextInput(attrs={'size':'8'}),
+            )
+
 
 class clrfForm(forms.Form):
     clid = forms.IntegerField(widget=forms.HiddenInput())

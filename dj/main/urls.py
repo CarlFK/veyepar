@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'C/(?P<client_slug>[-\w]+)/$', client, name='client'),
     url(r'^C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/$',
          episodes, name='episode_list'),
+    url(r'reschedule/(?P<show_id>\d+)/$',
+         episodes_reschedule, name='episodes_reschedule'),
     url(r'raw_file/(?P<raw_file_id>\w+)/$', raw_file, name='raw_file'),
 
     url(r'train/(?P<episode_id>\w+)/(?P<episode_slug>[-\w]+)/(?P<edit_key>\w+)/$', train, name='train'),
@@ -27,17 +29,16 @@ urlpatterns = [
     url(r'state/(?P<state>\w+)/$', episode_list, name='episode_list'),
     url(r'script/(?P<script>\w+)/$', episodes_script, name='episodes_script'),
 
-
-    # url(r'^client/(?P<client_slug>[\w\-]+)/(?P<show_slug>[\w\-]+)/$', episodes, name='episode_list'),
-
     url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/L/(?P<location_slug>[\w\-]+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/D/(?P<start_day>\w+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
     url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
+
     url(r'E/(?P<episode_id>\d+)/$', episode, name='episode'),
     url(r'E/(?P<episode_id>\d+)/claim_lock/$', claim_episode_lock),
+
     url(r'meeting_announcement/(?P<show_id>\w+)/$',
         meet_ann,
         name='meet_ann'),
@@ -46,6 +47,10 @@ urlpatterns = [
     url(r'show_pipeline/(?P<show_id>\w+)/$', show_pipeline, name='show_pipeline'),
     url(r'show_parameters/(?P<show_id>\w+)/$', show_parameters, name="show_parameters"),
     url(r'processes/(?P<show_id>\w+)/$', processes, name='processes'),
+
+    url(r'episode_assets/(?P<episode_id>\w+)/',
+        episode_assets, name='episode_assets'),
+
     url(r'show_anomalies/(?P<show_id>\w+)/$',
         show_anomalies, name='show_anomalies'),
 
@@ -132,9 +137,6 @@ urlpatterns = [
 
     url(r'title_slides/(?P<show_id>\w+)/',
         title_slides, name='title_slides'),
-
-    url(r'episode_assets/(?P<episode_id>\w+)/',
-        episode_assets, name='episode_assets'),
 
     url(r'tests', tests, name='tests'),
 

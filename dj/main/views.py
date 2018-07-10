@@ -1,3 +1,5 @@
+# main/view.py
+
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
@@ -12,6 +14,7 @@ from django.conf import settings
 from django import forms
 from django.forms import ModelForm
 from django.forms.formsets import formset_factory
+from django.forms import modelformset_factory
 
 from django.db.models import Q
 from django.db.models import Count, Max
@@ -23,27 +26,28 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.mail import get_connection, EmailMessage
 
-# from django.utils import simplejson
-
-import datetime
-import os
 import csv
-from copy import deepcopy
-
-from io import BytesIO, StringIO
+import datetime
 import json
-from pprint import pprint
 import operator
-
+import os
+import re
 import urllib.parse
+
+from copy import deepcopy
+from io import BytesIO, StringIO
+from pprint import pprint
+
 
 from main.models import \
         Client, Show, Location, Episode, Cut_List, Raw_File,\
         State, Image_File,Log, Mark
 
 from main.models import STATES, ANN_STATES
+
 from main.forms import \
         Episode_Form_small, Episode_Form_Preshow, \
+        Episode_Reschedule_Form, \
         Location_Form, Location_Active_Form, \
         clrfForm, Add_CutList_to_Ep, Who, AddImageToEp, \
         Episode_Form_Mini, MarkPicker
@@ -1796,7 +1800,6 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     if state is not None:
         query_params['state'] = state
 
-    # return render(request, 'show.html',
     return render( request, 'show.html',
         {'client':client,'show':show,
           'locations':locations,
@@ -1809,6 +1812,56 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         },
         )
         #  )
+
+
+def episodes_reschedule(request, show_id=None):
+    # for when the recording sheets have the only real schedule times.
+
+    show=get_object_or_404(Show,id=show_id)
+    episodes=eps_filters(request.GET).filter(
+            show=show, state=1).order_by('sequence')
+
+    EpisodeReschedule_FormSet = modelformset_factory(
+            Episode,
+            form=Episode_Reschedule_Form,
+            extra=0,
+            fields=[])
+
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            episodereschedule_formset = EpisodeReschedule_FormSet(
+                    request.POST)
+            if episodereschedule_formset.is_valid():
+
+                for ep in episodereschedule_formset.forms:
+
+                    dt = ep.cleaned_data['start_time']
+                    if dt:
+                        ep.instance.start = dt
+
+                    dt = ep.cleaned_data['end_time']
+                    if dt:
+                        ep.instance.end=dt
+
+                    ep.instance.duration = None
+
+                    ep.save()
+
+        else:
+            episodereschedule_formset = EpisodeReschedule_FormSet(
+                    queryset=episodes)
+
+    else:
+        episodereschedule_formset = EpisodeReschedule_FormSet(
+                queryset=episodes)
+
+
+    return render( request, 'episodes_reschedule.html',
+        {
+          'episodereschedule_formset': episodereschedule_formset,
+        },
+        )
+
 
 
 def train(request,episode_id, episode_slug, edit_key):

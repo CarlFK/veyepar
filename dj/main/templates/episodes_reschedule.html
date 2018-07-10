@@ -1,0 +1,24 @@
+{# episodes_reschedule.html #}
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="POST">{% csrf_token %}
+{{ episodereschedule_formset.management_form }}
+<table>
+  {% for f in episodereschedule_formset %}
+  <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+      {{ f.non_field_errors }}
+      {{ f.id }}
+      <td>{{ f.start_time.errors }}{{ f.start_time }}</td>
+      <td>{{ f.end_time.errors }}{{ f.end_time }}</td>
+      {# <td>{{ f.instance.start }}</td> #}
+      {# <td>{{ f.instance.location }}</td> #}
+      <td style="white-space:normal"><a href="E/{{f.instance.id}}/{# % if episode.state == 1 %}#ep-sm{% endif % #}">{{ f.instance.name }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+<input type="submit" value="Save" />
+</form>
+
+{% endblock %}
