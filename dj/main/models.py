@@ -108,7 +108,7 @@ class Location(models.Model):
         return "%s" % ( self.name )
 
     class Meta:
-        ordering = ["sequence"]
+        ordering = ["name"]
 
 ANN_STATES=((1,'preview'),(2,'review'),(3,'approved'))
 class Show(models.Model):
@@ -345,7 +345,7 @@ class Episode(models.Model):
 
     formfield_overrides = {
             models.TextField: {
-                'widget': forms.Textarea({'cols': 80, 'rows': 2}),
+                'widget': forms.Textarea({'cols': 30, 'rows': 2}),
             }}
 
 
