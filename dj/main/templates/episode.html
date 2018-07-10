@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block content %}
+Name: <b>{{episode.name}}</b></br/>
 
 --client <a href="{% url "client" client.slug %}">{{ client.slug }}</a>
 --show <a href="{% url "episode_list" client.slug show.slug%}">{{ show.slug }}</a> --room {{episode.location.slug}} {{episode.id}} --force
@@ -27,10 +28,12 @@
 {% else %}
   Next: (none, at end of list)
 {% endif %}
+</br>
 
+<input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show more...</label>
+<div class="ep-detail">
 <table>
 <tbody>
-<tr><td>Name</td><td><b>{{episode.name}}</b></td></tr>
 <tr><td>Author(s):</td><td>{{episode.authors}} </td></tr>
 <tr><td>Location</td><td><a href="{% url "admin:main_location_change" location.id%}">{{episode.location}}</a></td><td>{{episode.location.channelcopy}}</td>
 </tr>
@@ -71,6 +74,7 @@
 
 {% if episode.edit_key and user.is_authenticated %}
    <a href="{% url "guest_episode_review" show_slug=episode.show.slug episode_slug=episode.slug edit_key=episode.edit_key %}">Simple UI</a>
+
    <a href="{% url "train" episode.id episode.slug episode.edit_key %}">train</a>
    <a href="{% url "approve_episode" episode.id episode.slug episode.edit_key %}">approve</a>
    <br/>
@@ -123,7 +127,6 @@ Admin:
 <a href="{% url "admin:main_image_file_changelist" %}?episodes__id__exact={{episode.id}}">image_files</a>
 
 {%if episode.host %}
-<input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show player...</label>
     {%if episode.state == 4 %}
     {# embed player here #}
     {% endif %}
@@ -138,9 +141,6 @@ Admin:
 
 <form method="POST">{% csrf_token %}
 
-<input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show more...</label>
-
-<div class="ep-detail">
 <table border=1 >
 <tbody>
 {{ episode_form }}
@@ -178,7 +178,6 @@ $(".viewer").zoomer();
 
 
 {{ clrfformset.management_form }}
-
 
 {% for cl,chap,clrfform in clrffs %}
 
@@ -275,7 +274,6 @@ $(".viewer").zoomer();
    <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}">{{ext}}.m3u</a>
                 {% endfor %}
   </td>
-  <td>
                 <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.dv">dv.m3u</a>
                 {#<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png">png</a> #}
 
@@ -391,6 +389,7 @@ $(".viewer").zoomer();
 </tbody>
 </table>
 
+{{ episode_form.state }}
 <input type="submit" value="Save">
 </form>
 
