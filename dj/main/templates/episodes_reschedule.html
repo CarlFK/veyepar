@@ -6,11 +6,12 @@
 <form method="POST">{% csrf_token %}
 {{ episodereschedule_formset.management_form }}
 <table>
+    <tr><th>ID</th><th>conf</th><th>Start</th><th>End</th></tr>
   {% for f in episodereschedule_formset %}
-  <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
-      {{ f.non_field_errors }}
-      {{ f.id }}
-      <td>{{ f.start_time.errors }}{{ f.start_time }}</td>
+  <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}> {{ f.non_field_errors }}
+      <td><a href="{% url "admin:main_episode_change" f.instance.id %}">{{ f.instance.id }}</a></td>
+      <td><a href="{{ f.instance.conf_url }}">{{ f.instance.conf_key }}</a></td>
+      <td>{{ f.id }}{{ f.start_time.errors }}{{ f.start_time }}</td>
       <td>{{ f.end_time.errors }}{{ f.end_time }}</td>
       {# <td>{{ f.instance.start }}</td> #}
       {# <td>{{ f.instance.location }}</td> #}

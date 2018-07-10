@@ -55,7 +55,7 @@ Episode Count: {{episodes.count}}
         {% endif %}
          ">{{episode.location}}</a></td>
 
- <td> <a href="/databrowse/main/episode/fields/start/{{episode.start|date:"Y-m-d H:i:s"}}"> {{episode.start|date:"D d H:i"}} </a> </td>
+        <td> <a href="{% url "admin:main_location_change" location.id %}">{{episode.start|date:"D d H:i"}} </a></td>
  <td>{{episode.end|date:"H:i"}}</td>
         <td>{{episode.duration}}</td>
         <td>{{episode.state}}{{episode.locked|yesno:"*, "}}</td>

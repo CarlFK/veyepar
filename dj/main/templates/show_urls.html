@@ -6,8 +6,21 @@
 {% for episode in episodes %}  {{forloop.counter}}. {{episode.host_url}} {{episode.get_minutes}} min.<br>
 {% endfor %}
 
-<hr>
 {% if user.is_authenticated %}
+
+<hr>
 {% for episode in episodes %}  {{forloop.counter}}. {{episode.host_url}} {{episode.get_minutes}} min. {{episode.approve_url}}<br>
 {% endfor %}
+
+<hr>
+{% for episode in episodes %}  {{forloop.counter}}. {{episode.get_minutes}} min. {{episode.authors}} {{episode.approve_url}}<br>
+{% endfor %}
+
+
 {% endif %}
+
+<hr>
+{% for episode in episodes %} {{forloop.counter}}, {{episode.name}}, {{episode.slug}}.mp4, {{episode.get_minutes}}<br>
+{% endfor %}
+
+
