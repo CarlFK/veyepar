@@ -85,9 +85,11 @@ urlpatterns = [
     url(r'M/pyvid_json.urls$',
         pyvid_jsons,
         name='pyvid_jsons'),
-    url(r'veyepar.cfg$',
+
+    url(r'veyepar.cfg/(?P<show_id>\d+)$',
         veyepar_cfg,
         name='veyepar_cfg'),
+
     url(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/asset_names.json',
         asset_names,
         name='asset_names'),

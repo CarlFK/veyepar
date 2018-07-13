@@ -217,7 +217,7 @@ def asset_names(request, client_slug, show_slug):
 
     return response
 
-def veyepar_cfg(request):
+def veyepar_cfg(request, show_id):
 
     cfg_lines = ["[global]"]
 
@@ -225,13 +225,15 @@ def veyepar_cfg(request):
             .order_by('-max_date')
     # filter(max_date__ge=now)\
 
+    shows=Show.objects.filter(id=show_id)
+
     for show in shows:
         print(show)
-        if show.max_date is None:
-            continue
+        # if show.max_date is None:
+        #    continue
         # print( show.max_date,  datetime.datetime.now())#  datetime.timedelta(days=1):
-        if show.max_date < datetime.datetime.now(): # - datetime.timedelta(days=1):
-            break
+        # if show.max_date < datetime.datetime.now(): # - datetime.timedelta(days=1):
+        #   break
 
         cfg_lines.append("")
 
