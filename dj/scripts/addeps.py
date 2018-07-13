@@ -530,7 +530,7 @@ class add_eps(process.process):
 
             if self.options.update and diff:
                 if episode is None:
-                    print("adding conf_key: %(conf_key)s, name:%(name)s" % row)
+                    print("adding conf_key: %(conf_key)s, name: %(name)s" % row)
                     # I am not sure why some fields are here in .create
                     # and the rest are in setattr( episode, f, row[f] )
                     # name is here so .save() will create a slug
@@ -1089,6 +1089,8 @@ class add_eps(process.process):
     def symposium2(self, schedule, show):
         schedule = schedule['schedule']
 
+        plenary_room = "Cartoon 1"
+
         video_types = (
 'plenary',
 'Keynote',
@@ -1111,7 +1113,7 @@ class add_eps(process.process):
                 )
 
         # Remove types of itmes that aren't for video
-        schedule = [s for s in schedule if s['kind'] in video_types ]
+        # schedule = [s for s in schedule if s['kind'] in video_types ]
 
         # remove empty slots
         # bad_keys = (80, 82, 91, 100, 102, 103)
@@ -1148,8 +1150,8 @@ class add_eps(process.process):
         for event in events:
             if self.options.verbose: pprint(event['raw'])
 
-            if "Plenary Hall" in event['location']:
-                event['location'] = "Plenary Hall"
+            if plenary_room in event['location']:
+                event['location'] = plenary_room
 
             event['name'] =  re.sub( r'[\n\r]', ':)', event['name'] )
 
@@ -1500,6 +1502,8 @@ class add_eps(process.process):
     def unfold_origami_unicorn(self, schedule):
         # dig out the data from
         # {'phpcode_2':{label: "Duration", content: "45"}
+        # [{v['label']:v['content'] for v in s.items()} for s in schedule]
+        # [{v['label']:v['content'] for v in s.values()} for s in schedule]
 
         ret_rows = []
         for s in schedule:
@@ -4043,6 +4047,11 @@ class add_eps(process.process):
                     ret = session.post(auth['login_page'],
                             data=login_data,
                             headers=headers)
+
+                    if "sessionid" in session.cookies:
+                        print("login successful")
+                    else:
+                        print('"sessionid" not in session.cookies')
 
                     if self.options.verbose: print("login ret:", ret)
 
