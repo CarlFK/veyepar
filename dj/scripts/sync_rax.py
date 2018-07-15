@@ -46,14 +46,15 @@ class SyncRax(process):
 
             # tmp = "{out}.tmp".format(out=out)
 
-            vb = "100k"
-            ab = "75k"
+            # vb = "100k"
+            # ab = "75k"
+            vb, ab = "200k", "200k"
 
             cmd = ["melt", rfpathname,
                     "meta.attr.titles=1",
                     "meta.attr.titles.markup=#timecode#",
                     "-attach", "data_show", "dynamic=1",
-                  "-consumer", "avformat:"+out,
+                    "-consumer", "avformat:"+out,
                     "progress=1",
                     "vcodec=libx264", "vb="+vb,
                     "acodec=aac", "ab="+ab,
@@ -62,12 +63,13 @@ class SyncRax(process):
                     "movflags=+faststart", ]
             # , "threads=6"]
                     # "properties=x264-medium",
-
+            """
             xcmd = ["ffmpeg", "-i", rfpathname,
                 "-vf", "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf: text='%{pts\:hms}': fontcolor=black@0.8: fontsize=48: x=7: y=500",
                 "-codec:v", "libx264", "-b:v", vb,
                 "-codec:a", "aac", "-strict", "-2", "-b:a", ab,
                 "-preset", "ultrafast", "-f", "mp4", "-y", out]
+            """
 
             p=subprocess.Popen(cmd)
             p.wait()
