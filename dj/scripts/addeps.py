@@ -40,6 +40,13 @@ give me "Yes" and then let the presenters know.
 End and Duration:  give me what you have in your database
 
 I can fix my consumer easier than I can get someone else's website updated.
+
+See also:
+    https://github.com/pinax/symposion
+    https://github.com/chrisjrn/symposion
+
+    https://github.com/pyohio/pyohio-website
+
 """
 
 def mk_fieldlist():
@@ -1086,7 +1093,7 @@ class add_eps(process.process):
         self.add_eps(events, show)
         return
 
-    def symposium2(self, schedule, show):
+    def symposion_chrisjrn(self, schedule, show):
         schedule = schedule['schedule']
 
         plenary_room = "Cartoon 1"
@@ -1112,6 +1119,12 @@ class add_eps(process.process):
 'housekeeping',
                 )
 
+        not_video_kinds = (
+'break',
+'other',
+'nothing',
+                )
+
         # Remove types of itmes that aren't for video
         # schedule = [s for s in schedule if s['kind'] in video_types ]
 
@@ -1120,6 +1133,10 @@ class add_eps(process.process):
         # schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
         # remove enteries that don't have authors
         # schedule = [s for s in schedule if "authors" in s]
+
+        # Remove kinds of itmes that aren't for video
+        schedule = [s for s in schedule
+                if s['kind'] not in not_video_kinds ]
 
         schedule = [s for s in schedule if s['name'] != 'Slot' ]
         for s in schedule:
@@ -4285,10 +4302,13 @@ class add_eps(process.process):
 
         if j.startswith('{"schedule": [{"') or \
                 j.startswith('{\n  "schedule": [\n    {\n      '):
-            # print("symposium2")
+            # symposion_chrisjrn
+            print("symposion_chrisjrn")
             # {"schedule": [{"tags": "", "co
             # lca 2017
-            return self.symposium2(schedule,show)
+            # NBPY
+            # PyOhio 2018
+            return self.symposion_chrisjrn(schedule,show)
 
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
