@@ -1260,7 +1260,10 @@ def show_stats(request, show_id, ):
 
         stat['hours']=int( stat['minutes']/60.0 + .9)
 
-        stat['talk_gig']=int(stat['minutes']*13/60)
+        # files with content are about 10gig per 30 min
+        # so 20g per hour, or .33g per min
+        # but .3 was too much for PyOhio'18, .27 was better
+        stat['talk_gig']=int(stat['minutes']*.27)
         stat['gig']=stat['bytes']/(1024**3)
 
         stat['variance'] = stat['talk_gig'] - stat['gig']
