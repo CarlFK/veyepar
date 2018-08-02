@@ -1,12 +1,13 @@
 django<2
 djangorestframework
 django-extensions
-python-swiftclient
+# python-swiftclient
 psycopg2
 git+https://github.com/smarnach/pyexiftool.git
 pymediainfo
 numpy
 pypng
-google-api-python-client
+# google-api-python-client
 boto
-internetarchive
+# internetarchive
+pycaption
