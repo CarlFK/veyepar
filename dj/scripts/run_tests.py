@@ -96,7 +96,7 @@ class Run_Tests(object):
  def make_dirs(self):
   # create dirs for video files
   import mk_dirs
-  p=mkdirs.mkdirs()
+  p=mk_dirs.mkdirs()
   p.main()
 
   # hack to save some of these values for other tests
