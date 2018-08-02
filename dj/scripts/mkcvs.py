@@ -22,7 +22,7 @@ class csv(process):
 
   def blip_meta(self, video_id):
         """@brief Return information about the video
-        
+
         @param video_id blip.tv item ID
         @return xml of all the metadata.
         """
@@ -39,7 +39,7 @@ class csv(process):
      g=item.findall('{http://blip.tv/dtd/blip/1.0}showpage')[0]
      showpage=g.text
      return showpage
- 
+
   def get_embed(self, blip_xml):
      tree = xml.etree.ElementTree.fromstring(blip_xml)
      chan=tree.findall('channel')[0]
@@ -48,7 +48,7 @@ class csv(process):
      embed=g.text
      embed=embed.strip(' \n')
      return embed
-  
+
   def get_media(self, blip_xml, role="Source"):
      tree = xml.etree.ElementTree.fromstring(blip_xml)
      chan=tree.findall('channel')[0]
@@ -93,16 +93,17 @@ class csv(process):
     html_pathname = os.path.join( self.show_dir, "txt", basename+".html" )
     # blip_pathname = os.path.join( self.show_dir, "txt", basename+"_blip.xml" )
 
-    if self.options.verbose: 
-        print("filenames:") 
-        for n in ( json_pathname, csv_pathname, txt_pathname, 
+    if self.options.verbose:
+        print("filenames:")
+        for n in ( json_pathname, csv_pathname, txt_pathname,
                 wget_pathname, html_pathname, ):
             print(n)
 
 # fields to export:
     fields="id conf_key conf_url state name slug primary host_url public_url source archive_mp4_url".split()
+    fields="id start name authors emails twitter_id reviewers released license ".split()
 
-# setup csv 
+# setup csv
     csv = DictWriter(open(csv_pathname, "w"),fields)
     # write out field names
     csv.writerow(dict(list(zip(fields,fields))))
@@ -126,15 +127,15 @@ class csv(process):
 
     # write out episode data
     for ep in episodes:
-        if not ep.rax_mp4_url: 
-            # skip episodes that have not been uploaded yet.
-            continue
+        # if not ep.rax_mp4_url:
+        #    # skip episodes that have not been uploaded yet.
+        #    continue
 
         # fields includes output fields that are derived below
         # so fill them with None for now.
         row = dict([(f,getattr(ep,f,None)) for f in fields])
         if self.options.verbose: print(row)
-        
+
         # blip_cli=blip_uploader.Blip_CLI()
         # blip_cli.debug = self.options.verbose
 
@@ -160,16 +161,16 @@ class csv(process):
         # if self.options.verbose: print pprint.pprint(oggs)
         # row['source']=oggs[0]
 
-        row['name'] = row['name'].encode('utf-8')
-        
+        # row['name'] = row['name'].encode('utf-8')
+
 
         if self.options.verbose: print(row)
-        json_data.append(row)
+        # json_data.append(row)
         csv.writerow(row)
         # txt.write("%s %s\n" % (row['blip'],row['name']))
         # html.write('<a href="%(blip)s">%(name)s</a>\n%(blip)s\n'%row)
         # wget.writelines(["%s\n" % c['url'] for c in blip_meta['contents']])
-        wget.writelines( ep.rax_mp4_url + "\n" )
+        # wget.writelines( ep.rax_mp4_url + "\n" )
 
         sh.writelines("wget -N '%s' -O %s.mp4\n" % (
             ep.rax_mp4_url, ep.slug) )
@@ -180,14 +181,14 @@ class csv(process):
             ep.archive_mp4_url, ) )
         curl.writelines("echo Passed.\n")
 
-        if self.options.verbose: 
+        if self.options.verbose:
             json.dump(json_data,open(json_pathname, "w"),indent=2)
         else:
             json.dump(json_data,open(json_pathname, "w"))
         pprint.pprint(json_data)
 
   def add_more_options(self, parser):
-        parser.add_option('-f', '--basename', 
+        parser.add_option('-f', '--basename',
             help='base of output filename' )
 
 if __name__ == '__main__':

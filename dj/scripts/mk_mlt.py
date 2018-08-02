@@ -36,13 +36,14 @@ def mk_mlt(template, output, params):
     tree=xml.etree.ElementTree.parse(template)
 
     # grab nodes we are going to store values into
-    nodes={}
-    for id in [
+    # pl - play list
+    # ti - timeline item
+    node_names=[
+        'pl_vid0', 'pi_vid0', # Play List and Item
+        'tl_vid2', 'ti_vid2', # Time Line and Item
         'pi_title_img', 'ti_title',
         'pi_foot_img',  'ti_foot',
         # 'spacer',
-        'pl_vid0', 'pi_vid0', # Play List and Item
-        'tl_vid2', 'ti_vid2', # Time Line and Item
         'audio_fade_in', 'audio_fade_out',
         'pic_in_pic', 'opacity',
         'channelcopy',
@@ -50,8 +51,10 @@ def mk_mlt(template, output, params):
         'normalize',
         'volume',
         'title_fade','foot_fade',
-        ]:
+        ]
 
+    nodes={}
+    for id in node_names:
         node = tree.find(".//*[@id='{}']".format(id))
         # print(id,node)
         nodes[id] = node
@@ -86,9 +89,10 @@ def mk_mlt(template, output, params):
     nodes['ti_vid2'].remove(nodes['channelcopy'])
     nodes['ti_vid2'].remove(nodes['mono'])
     nodes['ti_vid2'].remove(nodes['normalize'])
-    nodes['ti_vid2'].remove(nodes['volume'])
+    # nodes['ti_vid2'].remove(nodes['volume'])
 
     # add each clip to the playlist
+    # pprint(params['clips'])
     for i,clip in enumerate(params['clips']):
 
         node_id = "pi_vid{}".format(clip['id'])
@@ -132,7 +136,7 @@ def mk_mlt(template, output, params):
         set_text(ti,'resource',cut['filename'])
         set_text(ti,'video_delay',cut['video_delay'])
 
-        # apply the filters to te cuts
+        # apply the filters to the cuts
 
         if cut['channelcopy']=='00':
             pass
@@ -145,12 +149,13 @@ def mk_mlt(template, output, params):
             ti.insert(0,channelcopy)
 
         if cut['normalize']!='0':
+            pass
             # normalize = copy.deepcopy( nodes['normalize'] )
             # set_text(normalize,'program' , cut['normalize'])
             # ti.insert(0,normalize)
-            volume = copy.deepcopy( nodes['volume'] )
-            set_text(volume,'gain' , cut['normalize'])
-            ti.insert(0,volume)
+            # volume = copy.deepcopy( nodes['volume'] )
+            # set_text(volume,'gain' , cut['normalize'])
+            # ti.insert(0,volume)
 
         if nodes['pic_in_pic'] is not None:
             # for Node 15
@@ -158,8 +163,15 @@ def mk_mlt(template, output, params):
             ti.insert(0,nodes['opacity'])
 
         if i==0:
-            # apply audio fade in/out to first/last cut
+            # apply audio fade in to first cut
+            # ti.insert(0,nodes['audio_fade_in'])
+
             ti.insert(0,nodes['audio_fade_in'])
+
+            set_attrib( nodes['audio_fade_in'], "in", cut['in'])
+            out=float(cut['in'].split(':')[-1])+2
+            out="0:{}".format(out)
+            set_attrib( nodes['audio_fade_in'], "out", out)
 
         mlt.insert(i,ti)
 
@@ -170,7 +182,14 @@ def mk_mlt(template, output, params):
         # print("transcription: {} - {}".format(
         #    cut['tstart'], cut['tend']))
 
-    # ti is left over from the above loop
+    # ti and cut is left over from the above loop
+    # put the 1.5 fadeout at the end
+    # assume m:ss.s (will error if there is H:m:s)
+    m,s = cut['out'].split(':')
+    n=int(m)*60 + float(s)-1.5
+    n="{}:{}".format(int(n/60), n%60)
+    set_attrib( nodes['audio_fade_out'], "in", n)
+    set_attrib( nodes['audio_fade_out'], "out", cut['out'])
     ti.insert(0,nodes['audio_fade_out'])
 
     # set title screen image
@@ -182,16 +201,25 @@ def mk_mlt(template, output, params):
     set_text(nodes['ti_foot'],'resource',params['foot_img'])
 
     # set the lenght of the spacer so it puts the footer image to end-5sec
+    # title_img, spacer, foot_img
     # Duration: 27mn 53s
     # nodes['ti_foot'].set("in",str(total_length))
     # nodes['spacer'].set("length","00:27:46.00")
-    nodes['spacer'].set("length","0:{}.0".format(total_length-8.0))
+    nodes['spacer'].set("length","0:{}.0".format(total_length-6.0))
+    # nodes['spacer'].set("length","0:{}.0".format(total_length-1.0))
 
-    # put the 1.5 fadeout at the end
-    nodes['audio_fade_out'].set("in","0:{}.0".format(total_length-1.5))
+    # remove nodes we don't want
+    # makes the code cleaner to pretend we are going to use them
+    # and then remove them here.
+    # import code; code.interact(local=locals())
+    for node_name in node_names:
+        if nodes[node_name] is not None:
+            p = nodes[node_name].find("property[@name='disable']")
+            if p is not None and p.text=='1':
+                print(node_name)
+                del nodes[node_name]
 
     tree.write(output)
-    # import code; code.interact(local=locals())
 
     return True
 

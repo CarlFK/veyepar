@@ -83,13 +83,17 @@ class enc(process):
 
         if False and episode.show.slug != 'pygotham_2015' and  len(title) > 80: # crazy long titles need all the lines
             title2 = ''
+
+        elif episode.id in [13741, ]: # black list - don't touch this.
+            title2 = ''
+
         elif ": " in title: # the space keeps 9:00 from breaking
             pos = title.index(":") + 1
             title, title2 = title[:pos], title[pos:].strip()
         elif " - " in title:
             # error if there is more than 1.
             # title, title2 = title.split(' - ')
-            t1, t2 = title.split(' - ')
+            t1, t2 = title.split(' - ',1)
             if t1[-1].isdigit() and t2[0].isdigit():
                 title2=''
             else:
@@ -143,10 +147,14 @@ class enc(process):
         # split authors over two objects
         # breaking on comma, not space.
         # not this time.
-        if False and ',' in authors:
-            authors = authors.split(', ')
+        if '; ' in authors:
+            authors = authors.split('; ')
             author2 = ', '.join(authors[1:])
             authors = authors[0].strip()
+        elif ', ' in authors:
+            pos = authors.index(", ")
+            # +1 include the comma, + 2 skip space after it
+            authors, author2 = authors[:pos], authors[pos+2:].strip()
         else:
             author2 = ''
 
@@ -714,9 +722,21 @@ class enc(process):
 
                 params = self.get_params(episode, rfs, cls )
 
-                # pprint.pprint(params)
+                if self.options.verbose:
+                    pprint(params)
                 # print((2, mlt_pathname))
+
                 ret = mk_mlt( template_mlt, mlt_pathname, params )
+
+                if params['transcriptions']:
+                    # create the slug.srt file for this video
+
+                    sub_pathname = os.path.join(
+                        self.show_dir,
+                        "transcripts", "{}.srt".format(episode.slug) )
+
+                    subs = self.mk_subs(
+                            params['transcriptions'], sub_pathname)
 
             if not ret:
 
@@ -725,16 +745,9 @@ class enc(process):
                 episode.save()
                 return False
 
-            if params['transcriptions']:
-                # create the slug.srt file for this video
-
-                sub_pathname = os.path.join(
-                    self.show_dir,
-                    "transcripts", "{}.srt".format(episode.slug) )
-
-                subs = self.mk_subs( params['transcriptions'], sub_pathname)
 
 # do the final encoding:
+
 # using melt
             ret = self.enc_all(mlt_pathname, episode)
 

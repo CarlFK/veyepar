@@ -162,6 +162,7 @@ class ck_setup(process):
             'track',
             'presenternames',
             'authors',
+            'author2',
             'presentertitle',
             'twitter_id',
             'date',

@@ -107,6 +107,28 @@ import process
 
 from main.models import Client, Show, Location, Episode, Raw_File
 
+
+def fix_twitter_id(twitter_ids):
+
+    if twitter_ids is None:
+        return ''
+
+    ret = []
+    for tid in re.split('[ ,]',twitter_ids):
+        tid = tid.strip()
+        # print('1 {}'.format(tid))
+        if tid:
+            if tid.startswith('#'):
+                # leave this alone
+                pass
+            elif not tid.startswith('@'):
+                # print('2 {}.'.format(tid))
+                tid = "@" + tid
+            ret.append(tid)
+
+    ret = ' '.join(ret)
+    return ret
+
 def goog(show,url):
 
         loc,created = Location.objects.get_or_create(
@@ -1177,7 +1199,6 @@ class add_eps(process.process):
 
             event['duration'] =   "0:{}:0".format(event['duration'])
 
-
             # print(event['authors'])
             if event['authors'] is None:
                 event['authors'] =  ''
@@ -1191,9 +1212,6 @@ class add_eps(process.process):
 
             if event['conf_url'] is None:
                 event['conf_url'] =  ''
-            else:
-                event['conf_url'] =   event['conf_url'].replace(
-                        'https://rego.linux.conf.au', 'http://lca2018.linux.org.au')
 
             if event['description'] is None:
                 event['description'] =  ''
@@ -1201,13 +1219,8 @@ class add_eps(process.process):
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
 
-            if event['twitter_id'] is None:
-                event['twitter_id'] =  ''
+            event['twitter_id'] = fix_twitter_id(event['twitter_id'])
 
-            if event['conf_key'] == 131 :
-                # "name": "Marc Merlin: Getting conned into writing IoTuz/ESP32 drivers and example code (while being held prisoner in a share house in Hobart, Tasmania)"
-                print('truncating {} to :168'.format( event['name'] ))
-                event['name'] = event['name'][:168]
 
         rooms = self.get_rooms(events,'location')
         self.add_rooms(rooms,show)

@@ -406,7 +406,7 @@ def test_upload(args):
       'description': "<test description",
       'category': 22, # 22 is maybe "Education",
       'tags': ['test', 'tests', ],
-      'privacyStatus':'private',
+      'privacyStatus':'unlisted', # 'private',
       # 'latlon': (37.0,-122.0),
       'license':'creativeCommon',
     }
@@ -480,11 +480,12 @@ def main():
     if args.delete:
         # url = "http://youtu.be/C3U5G5uxgz4"
         url = args.delete
-        test_delete(args,url)
+        test_delete(args, url)
+    else:
+        url = test_upload(args)
 
-    url = test_upload(args)
-
-    # test_set_pub(args,url)
+    # test_set_pub(args, 'http://youtu.be/tB3YtzAxFLo')
+    # test_set_pub(args, url)
     # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
     # test_set_unlisted(args, url)
 

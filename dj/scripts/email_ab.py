@@ -19,7 +19,7 @@ Hi,
 
 This is Veyepar, the automated video processing system.
 {% if ep.reviewers %}
-Note to {{ep.reviewers}}: You get to be in on this because presenters have plenty to do and we don't want to burn them out, so please help out and look things over for them.  What is expected of a reviewer:  Hurry up and watch the video.  https://github.com/CarlFK/veyepar/wiki/Reviewer Thanks!
+Note to {{ep.reviewers}}: You get to be in on this because presenters have plenty to do and we don't want to burn them out, so please help out and look things over for them.  What is expected of a reviewer:  https://github.com/CarlFK/veyepar/wiki/Reviewer Thanks!
 {% endif %}
 
 """

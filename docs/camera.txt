@@ -1,3 +1,33 @@
+Panasonic AG-HMC150P
+https://pro-av.panasonic.net/manual/pdf/AG-HMC150P(VQT1V33-3)_E.pdf
+
+some things I am interested in:
+- Are there any audio settings I might care about in the menu system?
+- 720p out the hdmi port
+- save/load the config from an SD card.
+- no auto focus
+- image gain
+- white balance (I hold the back of the recording sheets (white paper)
+in front of the camera)
+- setting clock from an external time source plugged into ???
+    (I don't need this for PyOhio, but I would like to know how to do it.
+       The dvx 100 had this, I'm guessing these do too.)
+
+
+Here is the one thing I do have:
+
+Audio:
+p 48
+CH1 line
+CH2 INT
+Input 1/2 (phantom power) Off
+Audio control knobs to 8
+Input 1/2 (level, near XLR) Line
+PA output into camera input 1
+
+
+
+Panasonic DVX-100
 ftp://ftp.panasonic.com/pub/Panasonic/Drivers/PBTS/manuals/OM_AG-DVX100A.pdf
 
 GAIN switch - pg 11 button (17)
@@ -6,10 +36,10 @@ GAIN switch - pg 11 button (17)
 White balance - pg 12 button (19)
   point at white, hit button on front of camera below focus rings
 
-Turn off auto focus - pg 12 - (22) FOCUS switch, middle posision. 
+Turn off auto focus - pg 12 - (22) FOCUS switch, middle posision.
 
 Turn off image stabalazation - pg 17
-  OIS This button is used to set camera shake compensation to ON or OFF. 
+  OIS This button is used to set camera shake compensation to ON or OFF.
   When the compensation is ON, (shaky hand icon) appears on the LCD monitor
     (works well if hand held, screws up smooth pans when on a tripd)
 

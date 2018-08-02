@@ -36,10 +36,14 @@ class LocationAdmin(admin.ModelAdmin):
 admin.site.register(Location, LocationAdmin)
 
 class Raw_FileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'filename', ) #'show', 'location', 'start', 'duration', 'end', )
+    list_display = ('id',
+            'filename',
+    #'show', 'location',
+            'start', 'duration', 'end',
+            )
     list_editable = ('filename', )
     # list_display_links = ('filename',)
-    list_filter = ('location',"start", "show")
+    # list_filter = ('location',"start", "show")
     search_fields = ['filename']
     date_hierarchy = 'start'
 admin.site.register(Raw_File, Raw_FileAdmin)
@@ -72,37 +76,38 @@ class EpisodeAdmin(admin.ModelAdmin):
     state_bumper.short_description = 'bump'
     """
 
-    list_display = ('id',
+    list_display = (
+            # 'id',
             # 'conf_key',
             # 'conf_url',
             # 'state',
             'name',
             'start',
-            'duration',
             'end',
-            'authors',
+            'duration',
+            # 'authors',
             # 'emails',
             # 'reviewers',
-            # 'archive_mp4_url',
+            # 'twitter_id',
             # 'host_url',
             # 'locked_by',
             # 'location',
+            # 'released',
 )
     list_editable = (
             # 'state',
-            'name',
-            # 'reviewers',
-            # 'archive_mp4_url',
-            # 'host_url',
-            #'rax_mp4_url',
+            # 'name',
             # 'authors',
+            # 'released',
             # 'emails',
+            # 'reviewers',
+            # 'twitter_id',
             # 'conf_key',
             # 'conf_url',
             # 'sequence',
             'start',
+            'end',
             'duration',
-            # 'end',
             )
 
 
@@ -112,21 +117,20 @@ class EpisodeAdmin(admin.ModelAdmin):
     #     'show',
     #     'start','end',)
     # list_display = ( 'sequence', 'name', 'state', 'state_bumper', 'duration' )
-    list_display_links = ('id',)
+    list_display_links = ('name',)
     ordering = ('start', )
     date_hierarchy = 'start'
             # 'locked','locked_by', )
     # list_editable = ('state','duration')
-    admin_order_field = ('sequence', 'name',)
-    list_filter = ('state','location','locked','locked_by', 'show', 'released')
+    admin_order_field = ('start', 'name',)
+    xlist_filter = ('state','location','locked','locked_by', 'show', 'released')
     search_fields = ['name', 'conf_key']
     prepopulated_fields = {"slug": ("name",)}
     save_on_top=True
 
-
     formfield_overrides = {
             models.TextField: {
-                'widget': forms.Textarea({'cols': 80, 'rows': 2}),
+                'widget': forms.Textarea({'cols': 30, 'rows': 2}),
             }}
 
     actions = [

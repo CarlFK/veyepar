@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 
 lab=$1
-dev=sdc1
+dev=sdd1
 mp=/media/carl/$lab
 
 # pumount /dev/$dev
