@@ -95,7 +95,7 @@ class Run_Tests(object):
  # @callme_maybe
  def make_dirs(self):
   # create dirs for video files
-  import mkdirs
+  import mk_dirs
   p=mkdirs.mkdirs()
   p.main()
 
