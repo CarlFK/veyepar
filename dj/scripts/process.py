@@ -142,7 +142,7 @@ class process():
         if it does, try to upload it to cdn
         (rax_uploader will skip if same file exists).
         """
-        print("checking:", src)
+        print("checking:", src, end='')
 
         if dst is None:
             dst = src
@@ -164,6 +164,7 @@ class process():
             u.pathname = src
             u.key_id = dst
 
+            print(" uploading....")
             ret = u.upload()
             print(u.new_url)
             ret = u.new_url
