@@ -2411,7 +2411,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     if request.user.is_authenticated():
         if not episode.emails and episode.authors:
 
-            # mine emails
+            # mine emails from other events
             email_eps = []
             for author in episode.authors.split(','):
                 email_eps.extend( Episode.objects.filter(
@@ -2437,22 +2437,21 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     except Episode.DoesNotExist:
         next_episode = None
 
-    cuts = Cut_List.objects.filter(
+    cls = Cut_List.objects.filter(
             episode=episode).order_by('sequence','raw_file__start','start')
 
-    print(cuts)
+    rfs = Raw_File.objects.filter(cut_list__in=cls).distinct()
 
     # If this episode is still being edited, create or add cuts
     # if episode.state==1:
     # This didn't work, put back the "only if empty"
-    if not cuts:
-        cuts = mk_cuts(episode, start_slop=5)
+    if not cls:
+        cls = mk_cuts(episode, start_slop=5)
 
-    if cuts:
-        offset = abs( cuts[0].raw_file.start - episode.start )
+    if cls:
+        offset = abs( cls[0].raw_file.start - episode.start )
     else:
         offset = None
-
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.method == 'POST' and \
@@ -2508,7 +2507,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
             # get current data and load into forms
 
-            cuts = Cut_List.objects.filter(
+            cls = Cut_List.objects.filter(
                 episode=episode).order_by(
                         'sequence', 'raw_file__trash','raw_file__start')
 
@@ -2518,7 +2517,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                 'start':cut.start, 'end':cut.end,
                 'apply':cut.apply,
                 'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
-                 } for cut in cuts]
+                 } for cut in cls]
             clrfformset = clrfFormSet(initial=init)
 
         else:
@@ -2538,13 +2537,13 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                 'start':cut.start, 'end':cut.end,
                 'apply':cut.apply,
                 'cl_comment':cut.comment, 'rf_comment':cut.raw_file.comment,
-        } for cut in cuts]
+        } for cut in cls]
         clrfformset = clrfFormSet(initial=init)
 
     # start times of chapters (included cuts)
     start_chap = (0,"00:00") # frame, timestamp
     chaps,frame_total = [],0
-    for cut in cuts:
+    for cut in cls:
 
         if cut.apply:
             frame_total+=int(cut.duration())
@@ -2569,7 +2568,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     # default to next Raw_File
     rf_filename = ''
     seq = 10 ## 10 gives it room for shuffling
-    if cuts:
+    if cls:
         ## use cut left over from somewhere above.  should work.
         seq = cut.sequence + 10
         next_rf = next(cut.raw_file)
@@ -2580,13 +2579,13 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
             initial = {'sequence':seq,
                     'rf_filename':rf_filename, })
 
-# If all the dates are the same, don't bother displaying them
+    # If all the dates are the same, don't bother displaying them
     if episode.start is None or episode.end is None:
       same_dates = False
     else:
       talkdate = episode.start.date()
       same_dates = talkdate==episode.end.date()
-      for cut in cuts:
+      for cut in cls:
         same_dates = same_dates and \
             talkdate==cut.raw_file.start.date()==cut.raw_file.end.date()
 
@@ -2597,6 +2596,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     else:
         cuts_time_min = None
         cuts_time_hour = None
+
+    clrffs = list(zip(cls,chaps,clrfformset.forms))
 
     return render(request, 'episode.html',
         {'episode':episode,
@@ -2610,7 +2611,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         'next_episode':next_episode,
         'same_dates':same_dates,
         'episode_form':episode_form,
-        'clrffs':list(zip(cuts,chaps,clrfformset.forms)),
+        'rfs':rfs,
+        'clrffs':clrffs,
         'clrfformset':clrfformset,
         'add_cutlist_to_ep':add_cutlist_to_ep,
         'exts':settings.UPLOAD_FORMATS,

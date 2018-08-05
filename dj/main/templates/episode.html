@@ -176,7 +176,6 @@ $(".viewer").zoomer();
 {% endfor %}
 {% endcomment %}
 
-
 {{ clrfformset.management_form }}
 
 {% for cl,chap,clrfform in clrffs %}
@@ -398,5 +397,12 @@ $(".viewer").zoomer();
   <p>({{chap.0.1}})  {{chap.2.comment}}</p>
   {%endif%}
 {%endfor%}
+
+{% for rf in rfs %}
+
+  <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'
+    src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/dv/{{rf.location.slug}}/{{rf.filename}}.wav.png">
+
+{% endfor %}
 
 {% endblock %}
