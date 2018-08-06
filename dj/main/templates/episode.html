@@ -30,7 +30,10 @@ Name: <b>{{episode.name}}</b><br>
 {% endif %}
 <br>
 
+<form method="post">{% csrf_token %}
+
 <input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show more...</label>
+
 <div class="ep-detail">
 <table>
 <tbody>
@@ -123,7 +126,6 @@ Admin:
 <a href="{% url "admin:main_mark_changelist" %}?location__id__exact={{episode.location.id}}&amp;click__year={{episode.start|date:"Y"}}&amp;click__month={{episode.start|date:"m"}}&amp;click__day={{episode.start|date:"d"}}">marks day</a>
 <a href="{% url "admin:main_mark_changelist" %}?location__id__exact={{episode.location.id}}&amp;click={{episode.start|date:"Y-m-d"}}">marks day</a>
 
-# ?click__gte=2018-02-28+00%3A00%3A00&click__lt=2018-03-01+00%3A00%3A00&location__id__exact=107
 <a href="{% url "admin:main_image_file_changelist" %}?episodes__id__exact={{episode.id}}">image_files</a>
 
 {%if episode.host %}
@@ -139,18 +141,17 @@ Admin:
 {% endfor %}
 </table>
 
-<form method="POST">{% csrf_token %}
-
 <table>
 <tbody>
 {{ episode_form }}
 </tbody>
 </table>
 
+
 <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
 
-<div id="sheets">
 {% if episode.image_file_set.all %}
+<div id="sheets">
  <div class="viewer" style="height: 200px; width: 800px;" >
 {% for img in episode.image_file_set.all %}
 {% if episode.show.slug == "pyohio_2015" %}
@@ -160,7 +161,7 @@ Admin:
 {% endif %}
 {% endfor %}
  </div> <!-- class="viewer" -->
-</div> <! -- id="sheets" -->
+</div> <!-- id="sheets" -->
 
  <script>
 $(".viewer").zoomer();
@@ -174,6 +175,8 @@ $(".viewer").zoomer();
 </a>
 {% endfor %}
 {% endcomment %}
+
+</div> <!-- ep-detail -->
 
 {{ clrfformset.management_form }}
 
@@ -389,7 +392,6 @@ $(".viewer").zoomer();
 </tbody>
 </table>
 
-{{ episode_form.state }}
 <input type="submit" value="Save">
 </form>
 

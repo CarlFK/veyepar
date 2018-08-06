@@ -12,8 +12,8 @@
 <script src="{{STATIC_URL}}js/login_form.js"></script>
 <script src="{{STATIC_URL}}js/fnitize.js"></script>
 
-<link rel="vcs-git" href="https://github.com/CarlFK/veyepar.git" title="Veyepar git repository" />
-<link rel="vcs-git" href="git@github.com:CarlFK/veyepar.git" title="Veyepar git repository" />
+<link rel="vcs-git" href="https://github.com/CarlFK/veyepar.git" title="Veyepar git repository">
+<link rel="vcs-git" href="git@github.com:CarlFK/veyepar.git" title="Veyepar git repository">
 
 {% block head %}<title>Veyepar: Video eyeball produce and review.</title>{% endblock %}
 
@@ -28,8 +28,8 @@
 {% include "accounts/login_form.html" %}
 {% endblock %}
 
-<div>
 {% if user.is_authenticated %}
+<div>
   {% if user.is_staff %}
   <table class="shortcuts">
     <tbody>
@@ -47,8 +47,8 @@
     </tbody>
   </table>
   {% endif %}
-{% endif %}
 </div>
+{% endif %}
 
 {% block content %}
 {% endblock %}
