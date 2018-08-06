@@ -400,7 +400,7 @@ $(".viewer").zoomer();
 
 {% for rf in rfs %}
 
-  <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'
+  <img id="audio_image_{{rf.id}}" alt="audio viz" onerror="this.style.display='none'"
     src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/dv/{{rf.location.slug}}/{{rf.filename}}.wav.png">
 
 {% endfor %}
