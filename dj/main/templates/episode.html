@@ -34,7 +34,7 @@ Name: <b>{{episode.name}}</b><br>
 <div class="ep-detail">
 <table>
 <tbody>
-    <tr><td>Author(s):</td><td>{{episode.authors}} </td><td></td></tr>
+    <tr><td>Author(s):</td><td>{{episode.authors}} </td><td></td><td></td></tr>
 <tr><td>Location</td><td><a href="{% url "admin:main_location_change" location.id%}">{{episode.location}}</a></td><td>{{episode.location.channelcopy}}</td>
 </tr>
 <tr><td>Date</td><td><a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug %}?client={{client.slug}}&amp;show={{show.slug}}&amp;location_slug={{episode.location.slug}}&amp;date={{episode.start|date:"Y-m-d"}}">
@@ -272,7 +272,9 @@ $(".viewer").zoomer();
    <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}">{{ext}}.m3u</a>
                 {% endfor %}
   </td>
-                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.dv">dv.m3u</a>
+  <td>
+                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">dv.m3u</a>
+  </td>
                 {#<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png">png</a> #}
 
                 <td>

@@ -6,27 +6,27 @@
 <head>
 <meta charset="utf-8" />
 
-<script type="text/javascript" src="{{STATIC_URL}}admin/js/urlify.js"></script>
-<script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
-<script type="text/javascript" src="{{STATIC_URL}}js/login_form.js"></script>
-<script type="text/javascript" src="{{STATIC_URL}}js/fnitize.js"></script>
+<script src="{{STATIC_URL}}admin/js/urlify.js"></script>
+<script src="{{STATIC_URL}}js/jquery.js"></script>
+<script src="{{STATIC_URL}}js/login_form.js"></script>
+<script src="{{STATIC_URL}}js/fnitize.js"></script>
 
 
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/base.css">
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/login_form.css"> 
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/login_form.css">
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/main.css">
 
 </head>
 <body>
 
   <table width=100%>
-    <thead> <tr>   
+    <thead> <tr>
     <td></td>
     {% for location in locations %}
       <td>{{ location.name }}</td>
     {% endfor %}
-    </tr></thead> 
-    
+    </tr></thead>
+
     {% for day in days %}
       <tr class=row1><td> {{day.0|date:"D d"}} </td></tr>
       <tr><td><hr></td></tr>
