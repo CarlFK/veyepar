@@ -28,13 +28,13 @@ Name: <b>{{episode.name}}</b><br>
 {% else %}
   Next: (none, at end of list)
 {% endif %}
-</br>
+<br>
 
 <input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show more...</label>
 <div class="ep-detail">
 <table>
 <tbody>
-<tr><td>Author(s):</td><td>{{episode.authors}} </td></tr>
+    <tr><td>Author(s):</td><td>{{episode.authors}} </td><td></td></tr>
 <tr><td>Location</td><td><a href="{% url "admin:main_location_change" location.id%}">{{episode.location}}</a></td><td>{{episode.location.channelcopy}}</td>
 </tr>
 <tr><td>Date</td><td><a href="{% url "episode_list" client_slug=client.slug show_slug=show.slug %}?client={{client.slug}}&amp;show={{show.slug}}&amp;location_slug={{episode.location.slug}}&amp;date={{episode.start|date:"Y-m-d"}}">
@@ -141,12 +141,11 @@ Admin:
 
 <form method="POST">{% csrf_token %}
 
-<table border=1 >
+<table>
 <tbody>
 {{ episode_form }}
 </tbody>
 </table>
-</div>
 
 <input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
 
@@ -206,8 +205,8 @@ $(".viewer").zoomer();
           controls
           preload="metadata"
           width=400
+          {% if cl.start %}currentTime={{cl.start}}{% endif %}
           {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
-          currentTime={{cl.start}}
           >
           {% for ext in exts %}
           <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
@@ -297,7 +296,7 @@ $(".viewer").zoomer();
   {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
 
-  <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'
+  <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'"
     src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
 
   {% with forloop.counter0 as x %}
@@ -382,7 +381,7 @@ $(".viewer").zoomer();
 {% endfor %}
 
 
-<table border=1>
+<table>
 <tbody>
  {{ add_cutlist_to_ep }}
 </tbody>
@@ -401,7 +400,7 @@ $(".viewer").zoomer();
 <br>
 {% for rf in rfs %}
   <img id="audio_image_{{rf.id}}" alt="audio viz" onerror="this.style.display='none'"
-                                                  src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/dv/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>
+   src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/dv/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>
 {% endfor %}
 
 {% endblock %}
