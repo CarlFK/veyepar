@@ -403,8 +403,11 @@ $(".viewer").zoomer();
 
 <br>
 {% for rf in rfs %}
-  <img id="audio_image_{{rf.id}}" alt="audio viz" onerror="this.style.display='none'"
-   src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/dv/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>
+  <div id="audio_image_{{rf.id}}">
+      {{rf.filename}}<br>
+    <img alt="audio viz" onerror="this.style.display='none'"
+     src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/dv/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>
+  </div>
 {% endfor %}
 
 {% endblock %}

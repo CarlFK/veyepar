@@ -40,43 +40,63 @@ class SyncRax(process):
 
     def mk_low(self, rfpathname, out):
 
-            # symaphore? so a 2nd process doesn't do this file too
-            # cmd = ['touch', out]
-            # self.run_cmd(cmd)
+        """
+        Just audio:
+        for f in *.ts; do time gst-launch-1.0 -e filesrc location=$f ! tsdemux ! mpegaudioparse ! filesink location=$f.mp2; done
+        """
 
-            # tmp = "{out}.tmp".format(out=out)
 
-            # vb = "100k"
-            # ab = "75k"
-            vb, ab = "200k", "200k"
+        # symaphore? so a 2nd process doesn't do this file too
+        # cmd = ['touch', out]
+        # self.run_cmd(cmd)
 
-            cmd = ["melt", rfpathname,
-                    "meta.attr.titles=1",
-                    "meta.attr.titles.markup=#timecode#",
-                    "-attach", "data_show", "dynamic=1",
-                    "-consumer", "avformat:"+out,
-                    "progress=1",
-                    "vcodec=libx264", "vb="+vb,
-                    "acodec=aac", "ab="+ab,
-                    "strict=-2",
-                    "preset=ultrafast",
-                    "movflags=+faststart", ]
-            # , "threads=6"]
-                    # "properties=x264-medium",
-            """
-            xcmd = ["ffmpeg", "-i", rfpathname,
-                "-vf", "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf: text='%{pts\:hms}': fontcolor=black@0.8: fontsize=48: x=7: y=500",
-                "-codec:v", "libx264", "-b:v", vb,
-                "-codec:a", "aac", "-strict", "-2", "-b:a", ab,
-                "-preset", "ultrafast", "-f", "mp4", "-y", out]
-            """
+        # tmp = "{out}.tmp".format(out=out)
 
-            p=subprocess.Popen(cmd)
-            p.wait()
-            retcode=p.returncode
+        # vb = "100k"
+        # ab = "75k"
+        vb, ab = "200k", "256k"
 
-            # cmd = ['mv', tmp, out]
-            # self.run_cmd(cmd)
+        cmd = [
+                'gst-launch-1.0', '-e',
+                'filesrc', 'location=13_05_53.ts', '!',
+                'decodebin', 'name=decode', '!',
+                'x264enc', '!',
+                'queue', '!',
+                'mp4mux', 'name=mp4mux', '!',
+                'filesink', 'location=', '13_05_53.ts.x.mp4',
+                'decode.', '!',
+                'audioconvert', '!',
+                'lamemp3enc', 'bitrate=128', '!',
+                'queue', '!',
+                'mp4mux.']
+
+        cmd = ["melt", rfpathname,
+                "meta.attr.titles=1",
+                "meta.attr.titles.markup=#timecode#",
+                "-attach", "data_show", "dynamic=1",
+                "-consumer", "avformat:"+out,
+                "progress=1",
+                "vcodec=libx264", "vb="+vb,
+                "acodec=aac", "ab="+ab,
+                "strict=-2",
+                "preset=ultrafast",
+                "movflags=+faststart", ]
+        # , "threads=6"]
+                # "properties=x264-medium",
+        """
+        xcmd = ["ffmpeg", "-i", rfpathname,
+            "-vf", "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf: text='%{pts\:hms}': fontcolor=black@0.8: fontsize=48: x=7: y=500",
+            "-codec:v", "libx264", "-b:v", vb,
+            "-codec:a", "aac", "-strict", "-2", "-b:a", ab,
+            "-preset", "ultrafast", "-f", "mp4", "-y", out]
+        """
+
+        p=subprocess.Popen(cmd)
+        p.wait()
+        retcode=p.returncode
+
+        # cmd = ['mv', tmp, out]
+        # self.run_cmd(cmd)
 
     def rf_web(self, show, rf):
         """
@@ -99,14 +119,12 @@ class SyncRax(process):
             os.makedirs(os.path.dirname(out), exist_ok=True)
 
             # look for low on local file system
-            vb = "50k"
-            # vb = "20k" # for SA
-            if not os.path.exists(out) or self.options.force:
+            if not os.path.exists(out) or self.options.replace:
                 self.mk_low(rfpathname, out)
 
             if self.options.rsync:
                 if not self.cdn_exists(show, cdn_low) or self.options.replace:
-                    # raw file (huge!!!)
+                    # raw file (huge!!! 5gig each)
                     ### self.file2cdn(show, base)
                     self.file2cdn(show,low, cdn_low)
 
