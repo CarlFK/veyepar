@@ -23,13 +23,33 @@ class SyncRax(process):
 
         return dst in self.names
 
+    def mk_audio(self, src, aac_name):
+        """
+        make audio from source,
+        src can be http:// or file://
+        dst is the local fs.
+        for f in *.ts; do time gst-launch-1.0 -e filesrc location=$f ! tsdemux ! mpegaudioparse ! filesink location=$f.mp2; done
+        """
+        cmd = ['gst-launch-1.0', '-e',
+                'filesrc', 'location={}'.format(src), '!',
+                'tsdemux', '!', 'mpegaudioparse', '!',
+                'filesink', 'location={}'.format(aac_name)]
+
+        p=subprocess.Popen(cmd)
+        p.wait()
+        retcode=p.returncode
+
+        return retcode
+
+
     def mk_audio_png(self, src, png_name):
         """
         make audio png from source,
         src can be http:// or file://
         dst is the local fs.
         """
-        p = gslevels.Make_png()
+        # p = gslevels.Make_png()
+        p = gslevels.Make_mlt_fix_1()
         p.location = src
         p.verbose = self.options.verbose
         p.setup()
@@ -39,11 +59,6 @@ class SyncRax(process):
         return ret
 
     def mk_low(self, rfpathname, out):
-
-        """
-        Just audio:
-        for f in *.ts; do time gst-launch-1.0 -e filesrc location=$f ! tsdemux ! mpegaudioparse ! filesink location=$f.mp2; done
-        """
 
 
         # symaphore? so a 2nd process doesn't do this file too
@@ -129,6 +144,23 @@ class SyncRax(process):
                     self.file2cdn(show,low, cdn_low)
 
 
+    def rf_audio(self, show, rf):
+
+        rf_tail = os.path.join( "dv", rf.location.slug, rf.filename )
+        aac_tail = "{rf_tail}.aac".format(rf_tail=rf_tail)
+
+        src = os.path.join(self.show_dir,rf_tail)
+        dst = os.path.join(self.show_dir,aac_tail)
+
+        if not os.path.exists(dst) or self.options.replace:
+            ret = self.mk_audio(src,dst)
+
+        if self.options.rsync and (
+                not self.cdn_exists(show,aac_tail) or self.options.replace):
+            print("uploading audio: {}".format(aac_tail))
+            self.file2cdn(show,aac_tail)
+
+
     def rf_audio_png(self, show, rf):
 
         rf_tail = os.path.join( "dv", rf.location.slug, rf.filename )
@@ -142,7 +174,6 @@ class SyncRax(process):
 
         if self.options.rsync and (
                 not self.cdn_exists(show,png_tail) or self.options.replace):
-            print("rf.filesize:{}".format(rf.filesize))
             self.file2cdn(show,png_tail)
 
 
@@ -162,6 +193,8 @@ class SyncRax(process):
 
         if self.options.low:
             self.rf_web(show, rf)
+        if self.options.audio:
+            self.rf_audio(show, rf)
         if self.options.audio_viz:
             self.rf_audio_png(show, rf)
 
@@ -381,6 +414,8 @@ class SyncRax(process):
            help="process raw files.")
         parser.add_option('--low', action="store_true",
            help="make low quality files.")
+        parser.add_option('--audio', action="store_true",
+           help="make audio only files.")
         parser.add_option('--audio-viz', action="store_true",
            help="make audio visualization files.")
         parser.add_option('--cooked', action="store_true",

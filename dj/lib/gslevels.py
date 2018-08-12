@@ -19,6 +19,8 @@ gi.require_version('Gst', '1.0')
 from gi.repository import Gst, GLib
 Gst.init(None)
 
+from mk_mlt import set_text, set_attrib
+
 class AudioPreviewer:
 
     count = 0
@@ -148,6 +150,7 @@ class Make_png(AudioPreviewer):
         for type in ("rms","peak","decay"):
             levs[type] = [min(lev,0) for lev in levs[type]]
 
+        # tick mark every minute (I think)
         tick = 2 if self.count % 600 == 599 else 0
         if self.channels == 2:
             # left rms
@@ -203,6 +206,154 @@ class Make_png(AudioPreviewer):
         return True
 
 
+import xml.etree.ElementTree
+import copy
+
+class Make_mlt_fix_1(AudioPreviewer):
+
+    height = 50
+    # don't care about anything under -40 (pretty quiet)
+    threashold = -70
+    channels = 2
+    grid = None
+
+    tree = None
+    nodes = {}
+
+    def setup(self):
+        self.grid = numpy.zeros((self.height*self.channels,36000), dtype=numpy.uint8)
+        self.mk_pipe()
+
+        tree = xml.etree.ElementTree.parse('one_ts.mlt')
+
+        node_names=[
+                'producer0',  # 1 segment
+                'channelcopy', # channel copy
+                'playlist0', # list of segments
+                'pi', # playlist item
+                ]
+        nodes={}
+        for id in node_names:
+            node = tree.find(".//*[@id='{}']".format(id))
+            # print(id,node)
+            # assert id is not None
+            nodes[id] = node
+
+        # remove all placeholder nodes
+        mlt = tree.find('.')
+
+        play_list = tree.find("./playlist[@id='playlist0']")
+        for pe in play_list.findall("./entry[@producer]"):
+            producer = pe.get('producer')
+            producer_node = tree.find("./producer[@id='{}']".format(producer))
+            # print( producer )
+            play_list.remove(pe)
+            mlt.remove(producer_node)
+
+        self.tree = tree
+        self.nodes = nodes
+
+
+    def process(self, levs):
+
+        # (rms,peek),bad
+        out = [ [[None,None],None], [[None,None],None] ]
+
+        # 0 out positive levels (above 0 is cliping, don't care how much)
+        for type in ("rms","peak","decay"):
+            levs[type] = [min(lev,0) for lev in levs[type]]
+
+        # tick mark every minute (I think)
+        tick = 2 if self.count % 600 == 599 else 0
+        # left rms
+        # map 0 to -40 to 0 to height
+        l = int(max(levs['rms'][0],self.threashold)
+                * (self.height-1)/self.threashold)
+
+        bad1 = l > 40 # 45 was pretty good, but looks like it missed some
+        bad = levs['rms'][0] < -55
+        if bad1 != bad: print(l,levs['rms'][0])
+
+        color = 127 if bad else 192
+
+        for y in range(l,self.height-tick):
+            self.grid[y,self.count] = color
+        out[0][0][0]=levs['rms'][0]
+
+        # left peak
+        l = int(max(levs['peak'][0],self.threashold)
+                * (self.height-1)/self.threashold)
+        self.grid[l,self.count] = 255
+        out[0][0][1]=levs['peak'][0]
+        out[0][1]='bad' if bad else ''
+
+        # right rms
+        # map 0 to -70 to height to height * 2
+        l = int(max(levs['rms'][1],self.threashold)
+                * (self.height-1)/-self.threashold + 2 * self.height)
+        for y in range(self.height+tick,l):
+            self.grid[y,self.count] = color
+        out[1][0][0]=l
+
+        l = int(max(levs['peak'][1],self.threashold)
+                * (self.height+1)/-self.threashold + 2 * self.height-2)
+        self.grid[l,self.count] = 255
+
+        out[1][0][1]=l
+        out[1][1]='bad' if bad else ''
+
+        self.grid[self.height,self.count] = 0
+
+        print(out)
+
+        # add a clip to the mlt tree
+
+        playlist = self.tree.find("./playlist[@id='playlist0']")
+        node_id = "ti_{}".format(self.count)
+
+        tl = copy.deepcopy( self.nodes['pi'] )
+        tl.set("producer", node_id)
+        set_attrib(tl, "in", self.count)
+        set_attrib(tl, "out", self.count+1)
+        playlist.insert(self.count,tl)
+
+        ti = copy.deepcopy( self.nodes['producer0'] )
+        ti.set("id", node_id)
+        set_attrib(ti, "in")
+        set_attrib(ti, "out")
+        set_text(ti,'length')
+        set_text(ti,'resource',self.location)
+
+        # apply the filters to the cut
+
+        channelcopy = copy.deepcopy( self.nodes['channelcopy'] )
+        if bad:
+            set_text(channelcopy,'from' , '1')
+            set_text(channelcopy,'to' , '0')
+        else:
+            set_text(channelcopy,'from' , '0')
+            set_text(channelcopy,'to' , '1')
+
+        ti.insert(0,channelcopy)
+
+        mlt = self.tree.find('.')
+        mlt.insert(1,ti)
+
+        self.count += 1
+
+
+    def mk_png(self, png_name):
+        if self.count:
+            png.from_array(
+                    [row[:self.count] for row in self.grid], 'L').save(png_name)
+        else:
+            # no audio data, make a 1x1 png
+            png.from_array([(0,0)], 'L').save(png_name)
+
+        return True
+
+
+
 def lvlpng(filename, png_name=None):
     """
     given:
@@ -212,7 +363,8 @@ def lvlpng(filename, png_name=None):
          munged if input is http)
     """
 
-    p=Make_png()
+    # p=Make_png()
+    p=Make_mlt_fix_1()
     p.interval = options.interval
     p.height = options.height
     p.verbose = options.verbose
@@ -220,6 +372,7 @@ def lvlpng(filename, png_name=None):
     p.location = filename
     p.setup()
     p.start()
+    p.tree.write('test.mlt')
 
     if png_name is None:
         pathname = filename

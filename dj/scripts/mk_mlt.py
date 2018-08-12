@@ -9,28 +9,28 @@ import copy
 import pprint
 
 
+def set_text(node, prop_name, value=None):
+    # print(node, prop_name, value)
+    p = node.find("property[@name='{}']".format(prop_name))
+    if value is None:
+        node.remove(p)
+    else:
+        if type(value)==int:
+            value = "0:{}.0".format(value)
+        elif type(value)==float:
+            value = "0:{}".format(value)
+        p.text = value
+
+def set_attrib(node, attrib_name, value=None):
+    if value is None:
+        del node.attrib[attrib_name]
+    else:
+        if type(value)==int:
+            value = "0:{}.0".format(value)
+        # print(attrib_name, value)
+        node.set(attrib_name, value)
+
 def mk_mlt(template, output, params):
-
-    def set_text(node,prop_name,value=None):
-        # print(node,prop_name,value)
-        p = node.find("property[@name='{}']".format(prop_name))
-        if value is None:
-            node.remove(p)
-        else:
-            if type(value)==int:
-                value = "0:{}.0".format(value)
-            elif type(value)==float:
-                value = "0:{}".format(value)
-            p.text = value
-
-    def set_attrib(node, attrib_name, value=None):
-        if value is None:
-            del node.attrib[attrib_name]
-        else:
-            if type(value)==int:
-                value = "0:{}.0".format(value)
-            # print(attrib_name, value)
-            node.set(attrib_name, value)
 
     # parse the template
     tree=xml.etree.ElementTree.parse(template)
