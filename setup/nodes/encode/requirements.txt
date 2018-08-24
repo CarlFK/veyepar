@@ -1,7 +1,7 @@
 django<2
 djangorestframework
 django-extensions
-# python-swiftclient
+python-swiftclient
 psycopg2
 git+https://github.com/smarnach/pyexiftool.git
 pymediainfo
