@@ -100,8 +100,9 @@ from httplib2 import Http
 import oauth2client # import file, client, tools
 
 # for google calandar:
-import pw
 # import lxml.etree
+
+import pw
 
 import process
 
@@ -193,28 +194,37 @@ def goog(show,url):
 
         return
 
-def googsheet(spreadsheetId):
-    # read from goog spreadsheet api
+def googsheet(spreadsheetId, range_name='A1:ZZ99999'):
+    # read from goog spreadsheet
+
+    """
+    range is any
+https://developers.google.com/resources/api-libraries/documentation/sheets/v4/python/latest/sheets_v4.spreadsheets.values.html#get
+
+    you can define a named range in the spreadsheet name, like "veyepar"
+    (this is a good idea.)
+
+    whatever the range is:
+    top row of that range will be dictionary keys
+    remaining rows will be data.
+    """
 
     # Setup the Sheets API
     SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
     store = oauth2client.file.Storage('credentials.json')
     creds = store.get()
     if not creds or creds.invalid:
-        flow = oauth2client.client.flow_from_clientsecrets('client_secret.json', SCOPES)
+        flow = oauth2client.client.flow_from_clientsecrets(
+                'client_secret.json', SCOPES)
         creds = oauth2client.tools.run_flow(flow, store)
     service = build('sheets', 'v4', http=creds.authorize(Http()))
 
-    # Call the Sheets API
-    # SPREADSHEET_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'
-    # RANGE_NAME = 'Class Data!A2:E'
-
-    # SPREADSHEET_ID = '1ZS6VFOLV8kaa_VSwrf0tt5wIbaEtXlKhahOtxdR3RAM'
-    RANGE_NAME = 'veyepar'
+    # import code; code.interact(local=locals())
 
     result = service.spreadsheets().values().get(
             spreadsheetId=spreadsheetId,
-            range=RANGE_NAME).execute()
+            range=range_name).execute()
+
     values = result.get('values', [])
     if not values:
         print('No data found.')
@@ -228,8 +238,6 @@ def googsheet(spreadsheetId):
             row.append(None)
             rowd = dict(zip(keys, row))
             rows.append(rowd)
-
-        # pprint(rows[0])
 
     return rows
 
@@ -1712,13 +1720,22 @@ class add_eps(process.process):
     def pyconau18(self, schedule, show):
         # https://2018.pycon-au.org/schedule/avdata.json
 
+        # emails from super secrete spreadsheet
+        presenters = googsheet(
+                '1p8BRlUn9sxiAYpZjickb5V_VORbLmMvTOtus233RgIg',
+                'veyepar')
+
+        # key on conf id
+        presenters = { p['ID']: p for p in presenters }
+        # import code; code.interact(local=locals())
+
         field_maps = [
                 ('room','location'),
                 ('name','name'),
                 ('abstract','description'),
                 ('authors','authors'),
                 ('','emails'),
-                ('twitter_id','twitter_id'),
+                ('twitter_ids','twitter_id'),
                 ('reviewers','reviewers'),
                 ('start','start'),
                 ('duration','duration'),
@@ -1752,6 +1769,12 @@ class add_eps(process.process):
             else:
                 event['authors'] =  ', '.join( event['authors'] )
 
+            event['license'] =  'CC-BY'
+
+            conf_key =  event['conf_key']
+            if conf_key in presenters:
+                event['emails'] =  (presenters[conf_key]['Email'],)
+
             if event['emails'] == ["redacted",]:
                 event['emails'] =  ""
             else:
@@ -1769,8 +1792,8 @@ class add_eps(process.process):
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
 
-            if event['twitter_id'] is None:
-                event['twitter_id'] =  ''
+            event['twitter_id'] = fix_twitter_id(
+                    ', '.join(event['twitter_id']))
 
             if event['conf_key'] == 131 :
                 # "name": "Marc Merlin: Getting conned into writing IoTuz/ESP32 drivers and example code (while being held prisoner in a share house in Hobart, Tasmania)"
