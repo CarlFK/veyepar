@@ -58,8 +58,6 @@ def mk_fieldlist():
 
     print("""printf '{}\\n'|xclip -selection clipboard""".format('\\t'.join(fields)))
 
-
-
 # FireFox plugin to view .json data:
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
 
@@ -67,10 +65,12 @@ import datetime
 import csv
 import html.parser
 import os
-from pprint import pprint
+import pytz
 import re
 import requests
 import urllib.parse
+
+from pprint import pprint
 from difflib import Differ
 
 from dateutil.parser import parse
@@ -101,6 +101,7 @@ import oauth2client # import file, client, tools
 
 # for google calandar:
 # import lxml.etree
+from lxml import html
 
 import pw
 
@@ -1991,6 +1992,7 @@ class add_eps(process.process):
                     event['authors'] = ', '.join(persons)
                     event['emails'] = ','.join(contacts)
                     event['twitter_id'] = ' '.join(twitters)
+                    event['reviewers'] = ''
 
                     # (10:59:23 PM) vorlon: CarlFK: I'm pretty sure we never set that field.
                     # event['released'] = row.find('released').text == "True"
@@ -3820,9 +3822,9 @@ class add_eps(process.process):
 
 
 
-    def ics(self,schedule,show):
+    def dnf(self,schedule,show):
 
-        # pull in data fro Troy's goog sheet
+        # pull in data from Troy's goog sheet
         talks={}
         for d in [1,2]:
             fn = "schedules/dnf16d{}.csv".format(d)
@@ -3861,8 +3863,7 @@ class add_eps(process.process):
                 start = s.from_ical(s) - datetime.timedelta(hours=7)
                 print(s,start)
                 # event['start'] = localtime(start) #.replace(tzinfo=None)
-                # print("import sys;sys.exit()")
-                # import code; code.interact(local=locals())
+                print("import sys;sys.exit()"); import code; code.interact(local=locals())
                 try:
                     event['start'] = start.replace(tzinfo=None)
                 except TypeError:
@@ -3909,6 +3910,111 @@ class add_eps(process.process):
         self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
+
+
+    def ical(self,schedule,show):
+
+        events=[]
+        for component in schedule.walk():
+            if component.name == "VEVENT":
+                pprint(component)
+
+                event={}
+
+                event['name'] = str(component.get('summary'))
+
+                s = component.get('dtstart')
+                start = s.from_ical(s)
+                event['start'] = start
+
+                e = component.get('dtend')
+                end = e.from_ical(e)
+                event['end'] = end
+
+                delta = end - start
+                minutes = int(delta.seconds/60) # - 5 for talk slot that includes break
+                event['duration'] = "00:%s:00" % ( minutes)
+
+                l = component.get('location')
+                event['location'] = str(l)
+
+                k =  component.get('URL')
+                event['conf_url'] = str(k)
+
+                pprint( event )
+                events.append(event)
+
+        return events
+
+
+    def osem(self,schedule,show):
+
+        def one_page(url):
+	    # resp =  requests.get('https://postgresconf.org/conferences/SouthAfrica2018/program/proposals/face-recognition-and-postgres', verify=False)
+            resp =  requests.get(url, verify=False)
+            doc = html.document_fromstring(resp.text)
+            el = doc.get_element_by_id('proposal-info')
+            data = dict(zip(
+            (e.text.strip() for e in el[::2]),
+            (e.text.strip() for e in el[1::2])
+            ))
+            data['meta title'] = doc.xpath('//meta[@property="og:title"]')[0].get('content')
+            data['meta description'] = doc.xpath('//meta[@property="og:description"]')[0].get('content')
+            desc = doc.xpath('.//div[contains(@class, "page-header")]//div[contains(@class, "row")]//small')
+            data['html description'] = desc[0].text.strip() if desc else ''
+
+            data['html user'] = doc.xpath('.//a[contains(@href,"user")]')[0].text
+
+            pprint(data)
+
+            # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
+            return data
+
+
+        events = self.ical(schedule,show)
+
+        for event in events:
+
+            event['conf_key'] = event['conf_url'].split('/')[-1]
+            page = one_page( event['conf_url'] )
+
+            event['name']= page['meta title']
+            event['authors']= page['html user']
+
+            event['location']= page['Room:']
+            event['description'] = page['html description']
+
+
+            event['start']=event['start'].replace(tzinfo=pytz.timezone("Africa/Johannesburg"))
+            event['end']=event['end'].replace(tzinfo=pytz.timezone("Africa/Johannesburg"))
+
+            event['start']=event['start'].replace(tzinfo=None)
+            event['end']=event['end'].replace(tzinfo=None)
+            event['start']=event['start'] + datetime.timedelta(hours=2)
+            event['end']=event['end'] + datetime.timedelta(hours=2)
+
+            event['emails']=''
+            event['reviewers']=''
+
+            event['twitter_id']=''
+            event['tags']=''
+
+            event['released']=True
+            event['license']='CC-BY'
+
+            event['raw']=''
+
+            pprint(event)
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
+        return
+
 
     def teardown18(self,show):
 
@@ -4144,7 +4250,7 @@ class add_eps(process.process):
             schedule=xml.etree.ElementTree.XML(
                     response.content)
 
-        elif ext=='.ics':
+        elif ext=='.ics' or url.endswith('ical'):
             schedule=Calendar.from_ical(response.content)
             # schedule=Calendar.from_ical(f.read())
 
@@ -4191,6 +4297,9 @@ class add_eps(process.process):
         if self.options.client =='koya_law':
             return self.koya(schedule, show)
 
+        if self.options.client =='pgza':
+            return self.osem(schedule,show)
+
         if self.options.show =='pyconau_2018':
             return self.pyconau18(schedule, show)
 
@@ -4234,7 +4343,7 @@ class add_eps(process.process):
         if self.options.show =='pytexas2014':
             return self.pytexas2014(schedule,show)
 
-        if self.options.show in ['pyconza2015', 'pyconza2016']:
+        if self.options.show in ['pyconza2015', 'pyconza2016', 'pyconza2018']:
             return self.summit_penta(schedule,show)
 
         if self.options.show =='debconf17':
