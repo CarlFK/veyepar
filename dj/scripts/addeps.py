@@ -3917,7 +3917,7 @@ class add_eps(process.process):
         events=[]
         for component in schedule.walk():
             if component.name == "VEVENT":
-                pprint(component)
+                # pprint(component)
 
                 event={}
 
@@ -3941,7 +3941,7 @@ class add_eps(process.process):
                 k =  component.get('URL')
                 event['conf_url'] = str(k)
 
-                pprint( event )
+                # pprint( event )
                 events.append(event)
 
         return events
@@ -3955,9 +3955,9 @@ class add_eps(process.process):
             doc = html.document_fromstring(resp.text)
             el = doc.get_element_by_id('proposal-info')
             data = dict(zip(
-            (e.text.strip() for e in el[::2]),
-            (e.text.strip() for e in el[1::2])
-            ))
+                (e.text.strip() for e in el[::2]),
+                (e.text.strip() for e in el[1::2])
+                ))
             data['meta title'] = doc.xpath('//meta[@property="og:title"]')[0].get('content')
             data['meta description'] = doc.xpath('//meta[@property="og:description"]')[0].get('content')
             desc = doc.xpath('.//div[contains(@class, "page-header")]//div[contains(@class, "row")]//small')
@@ -3965,11 +3965,20 @@ class add_eps(process.process):
 
             data['html user'] = doc.xpath('.//a[contains(@href,"user")]')[0].text
 
-            pprint(data)
-
-            # print("import sys;sys.exit()"); import code; code.interact(local=locals())
-
+            # pprint(data)
             return data
+
+
+        def add_csv(events, csv_name):
+
+            f=open(csv_name)
+            rows = csv.DictReader(f)
+            # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+            for row in rows:
+                event = [e for e in events if e['conf_key'] == row['Event ID']][0]
+                event['emails'] = row['Email']
+
+            return events
 
 
         events = self.ical(schedule,show)
@@ -4005,7 +4014,9 @@ class add_eps(process.process):
 
             event['raw']=''
 
-            pprint(event)
+            # pprint(event)
+
+        events = add_csv(events, "schedules/pgconf_events.csv")
 
         rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
