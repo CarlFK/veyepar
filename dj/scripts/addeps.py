@@ -4142,11 +4142,11 @@ class add_eps(process.process):
 
             event['released'] = event['released'].lower() == 'yes'
 
-            event['authors'] = " ".join(
+            event['authors'] = ", ".join(
                     a['name'] for a in event['authors']
                     if a['name'] is not None)
 
-            event['emails'] = " ".join(
+            event['emails'] = ", ".join(
                     a['email'] for a in event['emails']
                     if a['email'] is not None)
 
