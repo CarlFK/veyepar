@@ -4092,6 +4092,75 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
+    def lcza(self, schedule, show):
+
+        schedule = [ s for s in schedule if s['speakers'] is not None]
+
+        field_maps = [
+                ('room','location'),
+                ('title','name'),
+                ('speakers','authors'),
+                ('speakers','emails'),
+                ('speakers','twitter_id'),
+                ('reviewers','reviewers'),
+                ('start','start'),
+                ('end','end'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('language',''),
+                ('tags','tags'),
+                ('conf_key','conf_key'),
+                ('conf_url','conf_url'),
+                ('summary','summary'),
+                ('description','description'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events:
+            if self.options.verbose: pprint(event)
+
+            # "start": "2018-10-08 09:20",
+            event['start'] = datetime.datetime.strptime(
+                    event['start'],'%Y-%m-%d %H:%M')
+            event['end'] = datetime.datetime.strptime(
+                    event['end'],'%Y-%m-%d %H:%M')
+
+            event['duration'] = "{}:00".format(event['duration'])
+
+            event['released'] = event['released'].lower() == 'yes'
+
+            event['authors'] = " ".join(
+                    a['name'] for a in event['authors']
+                    if a['name'] is not None)
+
+            event['emails'] = " ".join(
+                    a['email'] for a in event['emails']
+                    if a['email'] is not None)
+
+            event['twitter_id'] = " ".join(
+                    a['twitter_id'] for a in event['twitter_id']
+                    if a['twitter_id'] is not None)
+            while len(event['twitter_id'])>50: # 135:
+                event['twitter_id'] = " ".join(
+                        event['twitter_id'].split()[:-1])
+
+            if event['description'] is None:
+                event['description'] = ''
+
+            if event['summary'] is not None:
+                event['description'] += event['summary']
+
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
+
+
 
 #################################################3
 # main entry point
@@ -4290,6 +4359,10 @@ class add_eps(process.process):
         if url.endswith('programme/schedule/json'):
             # Zookeepr
             return self.zoo(schedule,show)
+
+        if url.endswith('/schedule_json.php'):
+            # LinuxConf ZA 2018
+            return self.lcza(schedule,show)
 
         if ext =='.ics':
             return self.ics(schedule,show)
