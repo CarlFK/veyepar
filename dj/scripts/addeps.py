@@ -68,10 +68,12 @@ import os
 import pytz
 import re
 import requests
+
 import urllib.parse
 
 from pprint import pprint
 from difflib import Differ
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from dateutil.parser import parse
 # import dateutil
@@ -3948,6 +3950,8 @@ class add_eps(process.process):
 
 
     def osem(self,schedule,show):
+
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
         def one_page(url):
 	    # resp =  requests.get('https://postgresconf.org/conferences/SouthAfrica2018/program/proposals/face-recognition-and-postgres', verify=False)
