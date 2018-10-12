@@ -146,22 +146,20 @@ class enc(process):
 
         # split authors over two objects
         # breaking on comma, not space.
-        # not this time.
-        if '; ' in authors:
-            authors = authors.split('; ')
-            author2 = ', '.join(authors[1:])
-            authors = authors[0].strip()
-        elif ', ' in authors:
+        if ', ' in authors:
             pos = authors.index(", ")
             # +1 include the comma, + 2 skip space after it
-            authors, author2 = authors[:pos], authors[pos+2:].strip()
+            author1, author2 = authors[:pos], authors[pos+2:].strip()
         else:
+            author1 = authors
             author2 = ''
 
-        date = episode.start.strftime("%B %-d, %Y")
 
-        # DebConf style
+        # World date format
         # date = episode.start.strftime("%Y-%m-%-d")
+
+        # US dumb format
+        date = episode.start.strftime("%B %-d, %Y")
 
         texts = {
             'client': episode.show.client.name,
@@ -170,6 +168,7 @@ class enc(process):
             'title2': title2,
             'track': tag1,
             'authors': authors,
+            'author1': author1,
             'author2': author2,
             'presentertitle': "",
             'twitter_id': episode.twitter_id,
