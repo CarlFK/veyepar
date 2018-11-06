@@ -321,34 +321,58 @@ class add_transcript(process):
 
 
     def v6(self, episode):
+        # last one used for nbpy 17
+        # now using it for nbpy 18
 
         def show_near( x, wall ):
+            # x: "start" or "end"
+            # wall: cut datetime
 
-            from_epoch = ( wall - epoch
-                    ).total_seconds() * 1000000
+            if True or self.options.verbose:
+                print("show_near( x={}, wall={}".format (x, wall))
+
+            start_fudge, end_fudge = 290, 26
+
+            # epoch = datetime.datetime(2017, 12, 2, 10, 6, 36, 841067)
+            # 2017-12-02 10:06:36.841067
+            epoch = datetime.datetime(2018, 11, 3, 10, 8, 52)
+
+            from_epoch = (wall - epoch).total_seconds() * 1000000
+            print( "from_epoch:", from_epoch )
+
+            #print("looking for: '01:19:56.825 --> 01:19:58.827\nPLEASE WELCOME, LORENA MESA.\n4796825366.666667\ns:13:34:33 is \n")
 
             state = 0
             for c in captions:
+                if self.options.verbose:
+                    print(c)
+                    print(c.start)
 
                 if state == 0:
-                    if c.start > from_epoch - 9000000:
+                    if c.start > from_epoch - start_fudge * 1000000:
                         print( "{}: {}".format(x, wall))
                         state = 1
 
                 if state == 1:
-                    print("{} {}".format(c.format_start(), c.get_text() ))
 
-                    if c.start > from_epoch + 26000000:
+                    # 00:10:36.669 636669366.6666665
+                    # 2039-01-06 06:44:58.666667
+                    # 122330633.33333349 >> HI, EVERYONE. THANK YOU SO
+
+                    print(
+                        c.format_start(), c.start,
+                        epoch + datetime.timedelta(seconds=c.start/1000000),
+                        int((from_epoch - c.start)/1000000),
+                        c.get_text()
+                        )
+
+                    if c.start > from_epoch + end_fudge * 1000000:
                         print()
                         return
 
-
-
-        epoch = datetime.datetime(2017, 12, 2, 10, 6, 36, 841067)
-        # 2017-12-02 10:06:36.841067
-
         ## Get transcription data
-        transcript_filename = '12022017 NBPY SCC.scc'
+        # transcript_filename = '12022017 NBPY SCC.scc'
+        transcript_filename = 'NBPYTHONDAYONE.scc'
         transcript_pathname = os.path.join( self.show_dir,
               "assets", "transcripts", transcript_filename )
         caps = open(transcript_pathname, encoding='iso-8859-1').read()
@@ -359,6 +383,7 @@ class add_transcript(process):
 
         cls = Cut_List.objects.filter(
             episode=episode, apply=True).order_by('sequence')
+
         show_near( "start", cls.first().get_start_wall() )
         show_near( "end", cls.last().get_end_wall() )
 
@@ -367,8 +392,6 @@ class add_transcript(process):
         """
         ffmpeg -i k.mp4 -i k.srt -c copy -c:s mov_text outfile.mp4
         """
-
-
 
     def process_ep(self, episode):
         # return self.v3(episode)
@@ -416,16 +439,6 @@ class add_transcript(process):
                       print("Test mode, only doing one.")
                       return
 
-    def xwork(self):
-        """
-        find and process show
-        """
-        if self.options.client and self.options.show:
-            client = Client.objects.get(slug=self.options.client)
-            show = Show.objects.get(client=client, slug=self.options.show)
-            self.one_show(show)
-
-        return
 
     def add_more_options(self, parser):
         parser.add_option('--rsync', action="store_true",

@@ -1129,7 +1129,7 @@ class add_eps(process.process):
     def symposion_chrisjrn(self, schedule, show):
         schedule = schedule['schedule']
 
-        plenary_room = "Cartoon 1"
+        plenary_room = "Mystic Theatre"
 
         video_types = (
 'plenary',
@@ -1199,6 +1199,9 @@ class add_eps(process.process):
 
         for event in events:
             if self.options.verbose: pprint(event['raw'])
+
+            if event['raw']["kind"] in ["talk", "Not Talk"] and not event['location']:
+                event['location'] = plenary_room
 
             if plenary_room in event['location']:
                 event['location'] = plenary_room
@@ -2001,7 +2004,7 @@ class add_eps(process.process):
                     event['released'] = True
 
                     # event['license'] = row.find('license').text
-                    event['license'] = ""
+                    event['license'] = "CC BY"
 
                     description = row.find('description').text
                     # if description is None: description = ''

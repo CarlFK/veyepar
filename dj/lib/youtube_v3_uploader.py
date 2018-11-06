@@ -39,17 +39,18 @@ which errors with:
 # https://developers.google.com/api-client-library/python/guide/aaa_oauth
 
 import argparse
-from collections import namedtuple
 
 import http.client
 import httplib2
 import os
+import pprint
 import random
 import sys
 import time
 
-import pprint
+import progressbar as pb
 
+from collections import namedtuple
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
@@ -172,7 +173,9 @@ def initialize_upload(youtube, filename, metadata):
         # chunksize=5 * 1024 * 1024, resumable=True)
         # chunksize=5000 * 1024, resumable=True)
         # chunksize=-1, resumable=True)
-        chunksize=500 * 1024 * 1024, resumable=True)
+        chunksize=10* 1024 * 1024, resumable=True)
+        # chunksize=500 * 1024, resumable=True)
+        # chunksize=500 * 1024 * 1024, resumable=True)
   )
 
   status, response = resumable_upload(insert_request)
@@ -185,13 +188,18 @@ def resumable_upload(insert_request):
   response = None
   error = None
   retry = 0
+
+  widgets = ['Test: ', pb.Percentage(), ' ', pb.Bar(marker='0',left='[',right=']'), ' ', pb.ETA(), ' ', pb.FileTransferSpeed()] #see docs for other options
+  pbar = pb.ProgressBar(widgets=widgets, maxval=1)
+  pbar.start()
+
   print("Uploading file to YouTube...")
   while response is None:
 
     try:
       status, response = insert_request.next_chunk()
       if response is None:
-          print("status.progress: {}".format(status.progress()))
+          pbar.update(status.progress())
           continue
 
       if 'id' in response:
@@ -233,6 +241,8 @@ def resumable_upload(insert_request):
       sleep_seconds = random.random() * max_sleep
       print("Sleeping %f seconds and then retrying..." % sleep_seconds)
       time.sleep(sleep_seconds)
+
+  pbar.finish()
 
   return status, response
 

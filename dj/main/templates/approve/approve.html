@@ -6,14 +6,15 @@
 <form action="" method="POST">
     {% csrf_token %}
     <p><b>
-        To approve the release of this video to the public, 
+        Please <a href="https://github.com/CarlFK/veyepar/wiki/Reviewer">review</a><br>
+        Then if you feel the video is ready for the public,<br>
         {{who}}
-        (or inits, or something so I have a clue who did this) 
-        and click 
+        (or inits, or something so I have a clue who did this)<br>
+        and click
         <input type="submit" value="Approve" />
-        now.
+        which queues it up to be made public and tweeted.
     </b></p>
 
-</form> 
+</form>
 
 {% endblock %}
