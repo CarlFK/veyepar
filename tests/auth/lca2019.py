@@ -1,20 +1,20 @@
-# lca2018.py
+# lca2019.py
 
+import os
 from pprint import pprint
-
 import requests
 
-
 auth = {
-        'x_login_page':'https://login.linux.conf.au/idp/profile/SAML2/Redirect/SSO?execution=e2s1',
+        'symp_login_page':'https://login.linux.conf.au/idp/profile/SAML2/Redirect/SSO?execution=e2s1',
         'login_page':'https://login.linux.conf.au/manage/private/login',
             'login_data':{
                 'username':'carlfk',
-                'password':'xxxx',
+                'password':os.getenv('pw'),
                 'next':'/' }}
 
 schedule_endpoint="http://lca2019.linux.org.au/schedule/conference.json"
 
+pprint(auth)
 session = requests.session()
 session.get(auth['login_page'])
 # token = session.cookies['csrftoken']
