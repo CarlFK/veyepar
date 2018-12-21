@@ -85,12 +85,6 @@ Name: <b>{{episode.name}}</b><br>
 
 {% if episode.public_url %}
 {% endif %}
-   {% for ext in exts %}
-
-   <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio" onerror="this.style.display='none'" />
-   <br>
-
-    {% endfor %}
 
 <a href="{% url "raw_list" episode.id %}{{episode.slug}}.m3u">raw-playlist</a>
    {% for ext in exts %}
@@ -104,12 +98,49 @@ Name: <b>{{episode.name}}</b><br>
 {% if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
 {% if episode.twitter_url%}<a href="{{episode.twitter_url}}">tweet</a>{%endif%}
 
+    {% for ext in exts %}
+       <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}">{{ext}}</a>
+    {% endfor %}
+
+
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br>
 
-{% for ext in exts %}
-   <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}">{{ext}}</a>
-{% endfor %}
+      <video id="final"
+          controls
+          preload="metadata"
+          width=400
+          {% if foo.start %}currentTime={{foo.start}}{% endif %}
+          >
+          {% for ext in exts %}
+            <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}" type="video/{{ext}}">
+          {% endfor %}
+       </video>
+
+   {% for ext in exts %}
+
+   <div id="audio_image_{{ext}}">
+     <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio" onerror="this.style.display='none'" />
+   </div>
+   <br>
+
+    <script>
+
+    var elementLeft = $('#audio_image_{{ext}}').offset().left;
+    var imageX = 0;
+    var vid = $( "#final" );
+
+    $( "#audio_image_{{ext}}" ).mousemove(function( event ) {
+        imageX = (event.pageX - elementLeft);
+       });
+
+    $( "#audio_image_{{ext}}" ).click(function() {
+        vid[0].currentTime = imageX;
+       });
+
+    </script>
+
+    {% endfor %}
 
 <a href="{% url "episode_assets" episode.id %}{{episode.slug}}.sh">assets</a>
 
@@ -212,7 +243,7 @@ $(".viewer").zoomer();
           {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
           >
           {% for ext in exts %}
-          <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
+          <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/web/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
           {% endfor %}
        </video>
       </td>
