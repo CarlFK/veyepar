@@ -265,8 +265,11 @@ $(".viewer").zoomer();
                     <input type="button" value="&gt;" id="start{{cl.id}}">
                     {{ clrfform.start }}
                     <input type="button" id="grab-start-{{cl.id}}" value="grab">
-                    {{chap.0}}
-                    {{chap.3.0 | date:"H:i:s"}}
+                </td>
+                <td>
+                    {# frames? {{chap.0}} #}
+                    seconds: {{cl.get_start_seconds}}<br>
+                    Wall: {{chap.3.0 | date:"H:i:s"}}
                 </td>
             </tr>
 
@@ -277,7 +280,7 @@ $(".viewer").zoomer();
                     <input type="button" value="-5s" id="back5-{{cl.id}}">
                     <input type="button" value="-1s" id="back1-{{cl.id}}">
                     <input type="button" value="+5s" id="fwd5-{{cl.id}}">
-                    <input type="button" value="end-5s" id="end5-{{cl.id}}">
+                    {# <input type="button" value="end-5s" id="end5-{{cl.id}}"> #}
                 </td>
             </tr>
 
@@ -288,8 +291,11 @@ $(".viewer").zoomer();
                     <input type="button" value="&gt;" id="end{{cl.id}}">
                     {{ clrfform.end }}
                     <input type="button" id="grab-end-{{cl.id}}" value="grab">
-                    {{chap.1}}
-                    {{chap.3.1 | date:"H:i:s"}}
+                </td>
+                <td>
+                    {# frames? {{chap.1}} #}
+                    seconds: {{cl.get_end_seconds}}<br>
+                    Wall: {{chap.3.1 | date:"H:i:s"}}
                 </td>
             </tr>
 
