@@ -245,7 +245,6 @@ https://developers.google.com/resources/api-libraries/documentation/sheets/v4/py
     return rows
 
 
-
 class add_eps(process.process):
 
     # helpers
@@ -1220,6 +1219,8 @@ class add_eps(process.process):
                 event['authors'] =  ', '.join( event['authors'] )
 
             if event['emails'] == ["redacted",]:
+                print('emails redacted!')
+                return
                 event['emails'] =  ""
             else:
                 event['emails'] =  ', '.join( event['emails'] )
@@ -4177,9 +4178,6 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
-
-
-
 #################################################3
 # main entry point
 
@@ -4318,7 +4316,9 @@ class add_eps(process.process):
             pprint(headers)
             # return
 
-            response = session.get(url, params=payload, verify=False,
+
+            for x in 1,2:
+                response = session.get(url, params=payload, verify=False,
                     headers=headers)
 
         parsed = urllib.parse.urlparse(url)
@@ -4544,6 +4544,7 @@ class add_eps(process.process):
             # lca 2017
             # NBPY
             # PyOhio 2018
+            # lca 2019
             return self.symposion_chrisjrn(schedule,show)
 
         if j.startswith('{"files": {'):
