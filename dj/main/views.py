@@ -18,7 +18,8 @@ from django.forms import modelformset_factory
 
 from django.db.models import Q
 from django.db.models import Count, Max
-from django.db.models.functions import Trunc
+from django.db.models.functions import Length, Trunc
+
 
 from django.http import (HttpResponse, HttpResponseRedirect,
         Http404, HttpResponseForbidden)
@@ -978,56 +979,23 @@ def show_anomalies(request, show_id, ):
     if "active" in request.GET:
         episodes = episodes.filter(location__active=True)
 
-    """
-    max_title_len = max(
-            len(ep.name) for ep in episodes,
-            default=0 )
+    max_names=Episode.objects.filter(show=show,
+            released=True).order_by(Length('name').desc())[:5]
 
-    max_authors_len = max(
-            len(ep.authors) for ep in episodes if ep.authors is not None,
-            default=0 )
-    """
-
-    max_name_ep = None
-    max_authors_ep = None
-    max_name_len = 0
-    max_authors_len = 0
-    for ep in episodes:
-        if ep.released:
-            if len(ep.name) > max_name_len:
-                max_name_len = len(ep.name)
-                max_name_ep = ep
-            if ep.authors is not None and \
-                    len(ep.authors) > max_authors_len:
-                max_authors_len = len(ep.authors)
-                max_authors_ep = ep
+    max_authors=Episode.objects.filter(show=show,
+            released=True).order_by(Length('authors').desc())[:5]
 
     dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
     dup_eps = Episode.objects.filter(slug__in=[item['slug'] for item in dupes], show=show)
-
-    # if someone starts a video file when the talk starts, that is clean.
-    # if they miss the start by so much that some needs to be removed
-    #   (thus start=2 min into the start of the file) that is dirty
-    episodes=Episode.objects.filter(show=show,state__gt=1)
-    clean,dirty = 0,0
-    for ep in episodes:
-        found=False
-        cuts = Cut_List.objects.filter(episode=ep)
-        for cut in cuts:
-            found = found or cut.start or cut.end
-        if found: dirty += 1
-        else: clean += 1
-
 
     return render(request, 'show_anomalies.html',
         {
           'client':client,
           'show':show,
           'locations':locations,
+          'max_names':max_names,
+          'max_authors':max_authors,
           'dup_eps':dup_eps,
-          'clean':clean, 'dirty':dirty,
-          'max_name_ep':max_name_ep,
-          'max_authors_ep':max_authors_ep,
           'now':datetime.datetime.now(),
         },
      )

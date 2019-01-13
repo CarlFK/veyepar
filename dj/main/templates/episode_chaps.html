@@ -45,7 +45,7 @@
 
 {% for chap in chaps %}
   {% if chap.0 %}
-     ({{chap.0}}) {{chap.1.comment}}<br/>
+     ({{chap.0}}) {{chap.1.comment|linebreaksbr}}<br/>
   {%endif%}
 {%endfor%}
 

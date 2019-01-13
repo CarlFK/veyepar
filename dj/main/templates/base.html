@@ -37,6 +37,7 @@
       <td> <a href="/admin/">admin</a> </td>
       <td> <a href="/main/">main</a> </td>
       <td> <a href="/main/clients/">Clients</a> </td>
+      <td> <a href="{{request.get_full_path}}">reload</a></td>
       {% if request.META.HTTP_HOST == "localhost:8080" %}
         <td><a href="http://veyepar.nextdayvideo.com{{request.get_full_path}}">prod</a> </td>
       {% else %}

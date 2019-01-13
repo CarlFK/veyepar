@@ -113,15 +113,18 @@
 </table>
   <hr>
 
-<h1>Long strings</h1>
-  max name: #{{max_name_ep.id}} <a href="E/{{max_name_ep.id}}/">{{ max_name_ep.name }}</a><br/>
-  <hr>
-  max authors: # {{max_authors_ep.id}} <a href="E/{{max_authors_ep.id}}/">{{ max_authors_ep.authors }}</a>
+Longest strings:<br>
+Titles:<br>
+{% for max_name_ep in max_names %}
+  <a href="E/{{max_name_ep.id}}/">{{ max_name_ep.name }}</a> <br/>
+  <a href="{{max_name_ep.conf_url}}">{{ max_name_ep.conf_url }}</a> <br/>
+{% endfor %}
+<br>
+Presenters:<br>
+{% for max_authors_ep in max_authors %}
+  <a href="E/{{max_authors_ep.id}}/">{{ max_authors_ep.authors }}</a> <br/>
+  <a href="{{max_authors_ep.conf_url}}">{{ max_authors_ep.conf_url }}</a> <br/>
+{% endfor %}
 
-  <hr>
-
-  <h1>Accuracy</h1>cuts that were on the mark, or needed trimming.  </p>
-  clean {{clean}}<br>
-  dirty {{dirty}}<br>
 
 {% endblock %}
