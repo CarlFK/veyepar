@@ -70,6 +70,7 @@ class tweet(process):
                 prefix, twitter_ids, video_name, short_url, suffix])
         return message
 
+
     def tweet_tweet(self, user, tweet):
         if self.options.test:
             print('test mode:')
@@ -88,7 +89,7 @@ class tweet(process):
             status = api.PostUpdate(tweet)
             d=status.AsDict()
             self.last_tweet = d
-            self.last_tweet_url = "http://twitter.com/#!/NextDayVideo/status/{}".format(d["id"], )
+            self.last_tweet_url = "http://twitter.com/NextDayVideo/status/{}".format(d["id"], )
             print(self.last_tweet_url)
             # pprint.pprint(d)
 
@@ -96,12 +97,30 @@ class tweet(process):
 
         return ret
 
+    def retweet(self, user, status_id):
+        print('retweenting:', status_id)
+        t = pw.twit[user]
+        api = twitter.Api(consumer_key=t['consumer_key'],
+                 consumer_secret=t['consumer_secret'],
+                 access_token_key=t['access_key'],
+                 access_token_secret=t['access_secret'] )
+        # if self.options.verbose: print(api.VerifyCredentials())
+
+        status = api.PostRetweet(status_id)
+
+        d=status.AsDict()
+        pprint.pprint(d)
+
+        return
+
+
+    def ck_rate_limit(self):
+        # https://python-twitter.readthedocs.io/en/latest/twitter.html?highlight=PostUpdate#
+        InitializeRateLimit
+
     def process_ep(self, ep):
         show = ep.show
         client = show.client
-
-        # use the username for the client
-        user =  client.tweet_id
 
         url = ep.public_url if ep.public_url \
                 else ep.host_url
@@ -132,10 +151,22 @@ class tweet(process):
                 twitter_ids, ep.name, ep.authors, url,
                 suffix)
 
-        ret=self.tweet_tweet(user, tweet)
+        # keys to twitter account creds
+        users = client.tweet_id.split(',')
+        users = [u.strip() for u in users]
+
+        # tweet primary tweet
+        ret=self.tweet_tweet(users[0], tweet)
+
         if ret:
             ep.twitter_url = self.last_tweet_url
             ep.save()
+
+            # retweet more:
+            for user in users[1:]:
+                d = self.last_tweet
+                status_id = d['id']
+                self.retweet(user, status_id)
 
         return ret
 
@@ -151,4 +182,75 @@ class tweet(process):
 if __name__ == '__main__':
     p=tweet()
     p.main()
+
+    """
+    user='test'
+    status_id='1084321813675401216'
+    p.retweet(user, status_id)
+    """
+    """
+{'created_at': 'Mon Jan 14 02:27:18 +0000 2019',
+ 'hashtags': [],
+ 'id': 1084638052922716160,
+ 'id_str': '1084638052922716160',
+ 'lang': 'en',
+ 'retweet_count': 1,
+ 'retweeted': True,
+ 'retweeted_status': {'created_at': 'Mon Jan 14 02:27:17 +0000 2019',
+                      'hashtags': [],
+                      'id': 1084638051396014082,
+                      'id_str': '1084638051396014082',
+                      'lang': 'en',
+                      'retweet_count': 1,
+                      'retweeted': True,
+                      'source': '<a '
+                                'href="http://code.google.com/p/python-twitter/" '
+                                'rel="nofollow">pt2</a>',
+                      'text': "test @cfkarsten Let's make a Test (take 3!)",
+                      'urls': [],
+                      'user': {'created_at': 'Sun Oct 17 10:56:30 +0000 2010',
+                               'default_profile': True,
+                               'default_profile_image': True,
+                               'followers_count': 1,
+                               'id': 203869946,
+                               'lang': 'en',
+                               'name': 'test',
+                               'profile_background_color': 'C0DEED',
+                               'profile_background_image_url': 'http://abs.twimg.com/images/themes/theme1/bg.png',
+                               'profile_image_url': 'http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png',
+                               'profile_link_color': '1DA1F2',
+                               'profile_sidebar_fill_color': 'DDEEF6',
+                               'profile_text_color': '333333',
+                               'screen_name': 'veyepar_test',
+                               'statuses_count': 197},
+                      'user_mentions': [{'id': 50915517,
+                                         'name': 'Carl F. Karsten',
+                                         'screen_name': 'cfkarsten'}]},
+ 'source': '<a href="http://code.google.com/p/python-twitter/" '
+           'rel="nofollow">pt2</a>',
+ 'text': "RT @veyepar_test: test @cfkarsten Let's make a Test (take 3!)",
+ 'urls': [],
+ 'user': {'created_at': 'Sun Oct 17 10:56:30 +0000 2010',
+          'default_profile': True,
+          'default_profile_image': True,
+          'followers_count': 1,
+          'id': 203869946,
+          'lang': 'en',
+          'name': 'test',
+          'profile_background_color': 'C0DEED',
+          'profile_background_image_url': 'http://abs.twimg.com/images/themes/theme1/bg.png',
+          'profile_image_url': 'http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png',
+          'profile_link_color': '1DA1F2',
+          'profile_sidebar_fill_color': 'DDEEF6',
+          'profile_text_color': '333333',
+          'screen_name': 'veyepar_test',
+          'statuses_count': 197},
+ 'user_mentions': [{'id': 203869946,
+                    'name': 'test',
+                    'screen_name': 'veyepar_test'},
+                   {'id': 50915517,
+                    'name': 'Carl F. Karsten',
+                    'screen_name': 'cfkarsten'}]}
+"""
+
 
