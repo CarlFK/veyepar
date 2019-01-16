@@ -7,7 +7,8 @@
 import os
 import subprocess
 
-from enc import enc
+# from enc import enc
+from lca2019_enc import enc
 
 from main.models import Client, Show, Location, Episode, Raw_File, Cut_List
 
