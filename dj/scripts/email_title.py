@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-# email_url.py
-# emails the video URL to the presenters
+# email_title.py
+# emails the preseter: title slide URL and some other details
 
 from django.core.mail import get_connection, EmailMessage
 
