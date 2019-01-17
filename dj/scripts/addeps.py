@@ -120,17 +120,15 @@ def fix_twitter_id(twitter_ids):
     ret = []
     for tid in re.split('[ ,]',twitter_ids):
         tid = tid.strip()
-        # print('1 {}'.format(tid))
-        if tid:
-            if tid.startswith('#'):
-                # leave this alone
-                pass
-            elif not tid.startswith('@'):
-                # print('2 {}.'.format(tid))
-                tid = "@" + tid
-            ret.append(tid)
+        if tid.startswith('#'):
+            # leave this alone
+            pass
+        elif tid and not tid.startswith('@'):
+            # print('2 {}.'.format(tid))
+            tid = "@" + tid
+        ret.append(tid)
 
-    ret = ' '.join(ret)
+    ret = ', '.join(ret)
     return ret
 
 def goog(show,url):
@@ -1212,7 +1210,17 @@ class add_eps(process.process):
 
             event['duration'] =   "0:{}:0".format(event['duration'])
 
-            # print(event['authors'])
+            event['emails'] =  ', '.join(
+                    a['contact'] for a in event['authors'] )
+            event['twitter_id'] =   fix_twitter_id(','.join(
+                    a['twitter'] for a in event['authors'] ) )
+            event['picture_url'] =  ', '.join(
+                    a['picture_url'] for a in event['authors'] )
+            event['authors'] =  ', '.join(
+                    a['name'] for a in event['authors'] )
+
+
+            """
             if event['authors'] is None:
                 event['authors'] =  ''
             else:
@@ -1224,6 +1232,8 @@ class add_eps(process.process):
                 event['emails'] =  ""
             else:
                 event['emails'] =  ', '.join( event['emails'] )
+            event['twitter_id'] = fix_twitter_id(event['twitter_id'])
+            """
 
             if event['conf_url'] is None:
                 event['conf_url'] =  ''
@@ -1234,7 +1244,6 @@ class add_eps(process.process):
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
 
-            event['twitter_id'] = fix_twitter_id(event['twitter_id'])
 
 
         rooms = self.get_rooms(events,'location')
@@ -4538,7 +4547,6 @@ class add_eps(process.process):
 
         if j.startswith('{"schedule": [{"') or \
                 j.startswith('{\n  "schedule": [\n    {\n      '):
-            # symposion_chrisjrn
             print("symposion_chrisjrn")
             # {"schedule": [{"tags": "", "co
             # lca 2017
