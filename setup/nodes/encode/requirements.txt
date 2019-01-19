@@ -7,7 +7,11 @@ git+https://github.com/smarnach/pyexiftool.git
 pymediainfo
 numpy
 pypng
-# google-api-python-client
+
+google-api-python-client
+oauth2client
+
 boto
-# internetarchive
+internetarchive
 pycaption
+progressbar
