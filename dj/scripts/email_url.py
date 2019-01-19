@@ -14,20 +14,20 @@ class email_url(email_ab):
 
     subject_template = "[{{ep.show.name}}] Video up: {{ep.name}}"
     body_body = """
-The video is posted:
+Your video has been uploaded but it has not been made public:
     {% for url in urls %} {{url}}
     {% endfor %}
-Look at it, make sure the title is spelled right and the audio sounds reasonable.
-If you are satisfied, tweet it, blog it, whatever it.  No point in making videos if no one watches them.
+It will be made public once the video is approved.  To do this yourself, please check for the following:
+    - The title is spelled correctly
+    - The start and end cuts at the correct time
+    - The audio sounds reasonable
 
-To approve it click the Approve button at
+If you're satisfied, click the 'Approve' button at
    {{ep.approve_url}}
 
-As soon as you or someone approves your video, it will be tweeted on @NextDayVideo{% if ep.show.client.tweet_prefix %} tagged {{ep.show.client.tweet_prefix}}{% endif %}.  It will also be sent to the event organizers in hopes that they add it to the event website.
-    {% if ep.twitter_url %}
-It has been tweeted: {{ ep.twitter_url }}
-Re-tweet it, blog it, whatever it.  No point in making videos if no one watches them.
-    {% endif %}
+Then feel free to tweet it, blog it, and share it with your networks.
+
+As soon as either you or the AV team approves your video, it will be tweeted on @NextDayVideo{% if ep.show.client.tweet_prefix %} tagged {{ep.show.client.tweet_prefix}}{% endif %}.  It will also be sent to the event organizers to add to the event website.
     """
 
 
