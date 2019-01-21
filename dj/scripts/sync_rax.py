@@ -163,11 +163,11 @@ class SyncRax(process):
 
     def rf_audio_png(self, show, rf):
 
-        rf_tail = os.path.join( "dv", rf.location.slug, rf.filename )
-        png_tail = "{rf_tail}.wav.png".format(rf_tail=rf_tail)
+        rf_tail = os.path.join("dv", rf.location.slug, rf.filename)
+        png_tail = os.path.join("web", rf.location.slug, rf.filename + ".wav.png")
 
-        src = os.path.join(self.show_dir,rf_tail)
-        dst = os.path.join(self.show_dir,png_tail)
+        src = os.path.join(self.show_dir, rf_tail)
+        dst = os.path.join(self.show_dir, png_tail)
 
         if not os.path.exists(dst) or self.options.replace:
             ret = self.mk_audio_png(src,dst)
