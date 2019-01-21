@@ -272,7 +272,8 @@ class Make_mlt_fix_1(AudioPreviewer):
 
         bad1 = l > 40 # 45 was pretty good, but looks like it missed some
         bad = levs['rms'][0] < -55
-        if bad1 != bad: print(l,levs['rms'][0])
+        if self.verbose:
+            if bad1 != bad: print(l, levs['rms'][0])
 
         color = 127 if bad else 192
 
@@ -304,7 +305,9 @@ class Make_mlt_fix_1(AudioPreviewer):
 
         self.grid[self.height,self.count] = 0
 
-        print(out)
+        if self.verbose:
+            print(out)
+
 
         # add a clip to the mlt tree
 

@@ -942,8 +942,9 @@ def client(request,client_slug=None):
     return render(request, 'client.html',
         {'client':client,
         'show_form':form,
-        'shows':shows},
-        )
+        'shows':shows,
+        'now':datetime.datetime.now(),
+        })
 
 def locations(request):
 
