@@ -117,7 +117,7 @@
 				<height>'14 pt'</height>
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
-				<y>'92.0 pt'</y>
+				<y>'79.0 pt'</y>
 				<y_def>0.0</y_def>
 			</String>
 			<String>
@@ -162,7 +162,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Presenter Sound Check (Wave at the camera and say "Hello Video Crew!")'</expr>
+				<expr>'[  ] (av) Presenter Sound Check (Wave at the camera and say "Hello Video Crew!")'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -172,7 +172,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Presenter laptop hooked to Projector'</expr>
+				<expr>'[  ] (av) Presenter laptop hooked to Projector.'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -183,11 +183,11 @@
 			<String>
 				<Align>'left'</Align>
 				<comment>'(Green Green on switchbox)'</comment>
-				<expr>"[  ] Both Projector and confidence monitor switched to Presenter's laptop"</expr>
+				<expr>"[  ] (av) Presenter's laptop display showing on Projector, voctomix and confidence monitor."</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
-				<width>'470.0 pt'</width>
+				<width>'490.0 pt'</width>
 				<x>'10.7 pt'</x>
 				<y>'107 pt'</y>
 			</String>
@@ -209,7 +209,7 @@
 				<height>'14 pt'</height>
 				<width>'490.0 pt'</width>
 				<x>'10.7 pt'</x>
-				<y>'79 pt'</y>
+				<y>'92 pt'</y>
 			</String>
 			<String>
 				<expr>self.episode_start.strftime("%I:%M %p").strip('0').lower()</expr>
@@ -355,7 +355,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Laptop sound?  Plug in, play sound.'</expr>
+				<expr>'[  ] (av) Ask the presenter "Will there be laptop sound?"  If so, plug, test sound.'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -365,7 +365,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Ask speaker about how they would like to be introduced.'</expr>
+				<expr>'[  ] Ask presenter how they would like to be introduced.'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -375,7 +375,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Verify speakers name.'</expr>
+				<expr>'[  ] Verify presenters name is what is on the schedule.'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -385,7 +385,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Ask speaker if they would like questions.'</expr>
+				<expr>'[  ] Ask the presenter how many minutes they alloted for questions: _________ Minutes.'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -395,7 +395,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Check what timing notificaton speakers want.'</expr>
+				<expr>'[  ] Tell the presenter they will be notfed at:  ____ :  ___ .'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
