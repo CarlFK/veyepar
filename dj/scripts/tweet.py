@@ -84,7 +84,8 @@ class tweet(process):
             api = twitter.Api(consumer_key=t['consumer_key'],
                      consumer_secret=t['consumer_secret'],
                      access_token_key=t['access_key'],
-                     access_token_secret=t['access_secret'] )
+                     access_token_secret=t['access_secret'],
+                     sleep_on_rate_limit=True)
             if self.options.verbose: print(api.VerifyCredentials())
             status = api.PostUpdate(tweet)
             d=status.AsDict()
@@ -103,7 +104,8 @@ class tweet(process):
         api = twitter.Api(consumer_key=t['consumer_key'],
                  consumer_secret=t['consumer_secret'],
                  access_token_key=t['access_key'],
-                 access_token_secret=t['access_secret'] )
+                 access_token_secret=t['access_secret'],
+                 sleep_on_rate_limit=True)
         # if self.options.verbose: print(api.VerifyCredentials())
 
         status = api.PostRetweet(status_id)
