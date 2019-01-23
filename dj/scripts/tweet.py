@@ -91,8 +91,44 @@ class tweet(process):
             d=status.AsDict()
             self.last_tweet = d
             self.last_tweet_url = "http://twitter.com/NextDayVideo/status/{}".format(d["id"], )
+            # print("x-rate-limit-remaining: {}".format(d['x-rate-limit-remaining']))
             print(self.last_tweet_url)
-            # pprint.pprint(d)
+            pprint.pprint(d)
+            """
+{'created_at': 'Wed Jan 23 04:54:06 +0000 2019',
+ 'hashtags': [{'text': 'lca2019'}],
+ 'id': 1087936488493457409,
+ 'id_str': '1087936488493457409',
+ 'lang': 'en',
+ 'source': '<a href="http://www.nextdayvideo.com" rel="nofollow">Veyepar '
+           'AV</a>',
+ 'text': '#lca2019 Creating Ubuntu and Debian container base images, the old '
+         'and  simple way - Hamish Coleman https://t.co/mkEZHhnffH',
+ 'urls': [{'expanded_url': 'http://youtu.be/OLFH4Ov6bJQ',
+           'url': 'https://t.co/mkEZHhnffH'}],
+ 'user': {'created_at': 'Fri Nov 19 21:28:11 +0000 2010',
+          'description': 'Conference/Event AV & video recording.  Record '
+                         'today, watch online tomorrow.',
+          'favourites_count': 1,
+          'followers_count': 564,
+          'friends_count': 2,
+          'geo_enabled': True,
+          'id': 217558518,
+          'lang': 'en',
+          'listed_count': 31,
+          'location': 'Australia & United States',
+          'name': 'Next Day Video',
+          'profile_background_color': '000000',
+          'profile_background_image_url': 'http://abs.twimg.com/images/themes/theme14/bg.gif',
+          'profile_image_url': 'http://pbs.twimg.com/profile_images/1175824604/Screenshot-4_normal.png',
+          'profile_link_color': 'FA743E',
+          'profile_sidebar_fill_color': '000000',
+          'profile_text_color': '000000',
+          'screen_name': 'nextdayvideo',
+          'statuses_count': 2910,
+          'url': 'http://t.co/zibfPzbNyS'},
+ 'user_mentions': []}
+"""
 
             ret=True
 
