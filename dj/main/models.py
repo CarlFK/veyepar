@@ -243,7 +243,8 @@ STATES=[
  (9, 'make public'), # flip private to public
  (10, 'tweet'), # tell world
  (11, 'to-miror'),
- (12, 'done')
+ (12, 'conf'),
+ (13, 'done')
  ]
 
 
