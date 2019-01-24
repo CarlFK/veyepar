@@ -10,7 +10,7 @@ http://gscan2pdf.sourceforge.net
 
 /home/carl/temp/ajschi_2016-11-17.pdf
 
-scan paper to pdf:  
+scan paper to pdf:
   snap scan on mac, Automatic resolution, Auto color detection
 
 drop pdf in ~/Videos/veyepar/client/show/img/
@@ -45,7 +45,7 @@ end: 1421
 
 these were some dimenions I played around with
 box1 = (
-    0, 1066, 
+    0, 1066,
     3386, 2000
 )
 box2 = (
@@ -66,7 +66,7 @@ class add_img(process):
         """
         To use a non-standard language pack named foo.traineddata, set the TESSDATA_PREFIX environment variable so the file can be found at TESSDATA_PREFIX/tessdata/foo.traineddata and give Tesseract the argument -l foo.
         """
- 
+
         tools = pyocr.get_available_tools()
         tool = tools[0]
         text = tool.image_to_string(
@@ -104,27 +104,27 @@ class add_img(process):
         founds=set()
         for ep in eps:
             for attr in ["id", "name", "authors"]:
-                if is_in( ep, attr, text ): 
+                if is_in( ep, attr, text ):
                     founds.add(ep)
 
         return founds
 
     def slice_dice(self, img_page, src_name, show, eps):
 
-        # ocr 
+        # ocr
         text = self.ocr_img(src_name)
         # and connect the img object to episodes
         # imgname = self.ass_one( img, text, locs, eps )
 
         # words to look for in set header:
-        words = ["Kit Number",  "Cam Op", "Audio op",  
+        words = ["Kit Number",  "Cam Op", "Audio op",
         "Pre Day check",
         "Replace Batteries in mics",
         "Post production", "Scanned",
-        "System date and time"] 
+        "System date and time"]
         hit_count=0
         for word in words:
-            if word.lower() in text.lower(): 
+            if word.lower() in text.lower():
                 hit_count +=1
                 # print word, hit_count
         first_page_of_set = hit_count >= 3
@@ -136,13 +136,13 @@ class add_img(process):
         """
 
         if first_page_of_set:
-            start = 1000 #1100 # 728 # 820 # 995
-            end = 1528 # 1705 # 1071 # 1370 # 1547
+            start = 982 # 1000 #1100 # 728 # 820 # 995
+            end = 1526 # 1528 # 1705 # 1071 # 1370 # 1547
             bands= 3
             suffix='a'
         else:
-            start = 730 # 802 # 400 # 577
-            end = 1255 # 1318 # 960 # 1127
+            start = 584 #730 # 802 # 400 # 577
+            end =  1126 #1255 # 1318 # 960 # 1127
             bands= 4
             suffix='b'
 
@@ -150,15 +150,15 @@ class add_img(process):
 
         head = float(start)/float(page)
         band = float(end-start)/float(page)
-        fudge = 0.02 
-       
+        fudge = 0.025 # I'm not really sure what the unit is)
+
         im = Image.open(src_name)
         w, h = im.size
         src_base = os.path.basename(src_name)
         for i in range(bands):
 
             box = im.crop(
-                (0, int(h * (head + band * i )),
+                (0, int(h * (head + band * i - fudge )),
                  w, int(h * (head + band * (i+1) + fudge) ))
                         )
 
@@ -173,11 +173,11 @@ class add_img(process):
 
             # put the png name is in the db
             img_band,created = Image_File.objects.get_or_create(
-                    show=show, 
+                    show=show,
                     filename=png_name,)
 
             # ocr and connect the img object to episodes
-            text = self.ocr_img( 
+            text = self.ocr_img(
                     os.path.join( self.show_dir, "img", png_name ))
             img_band.text = text
             img_band.save()
@@ -224,7 +224,7 @@ class add_img(process):
 
         # make sure the png name is in the db
         img_page,created = Image_File.objects.get_or_create(
-                show=show, 
+                show=show,
                 filename=png_base,)
 
         if not self.options.dumb:
@@ -249,21 +249,21 @@ class add_img(process):
 
       self.set_dirs(show)
       ep_dir=os.path.join(self.show_dir,'img')
-      if self.options.verbose: 
+      if self.options.verbose:
           print("ep_dir:", ep_dir)
 
       for dirpath, dirnames, filenames in os.walk(ep_dir,followlinks=True):
           d=dirpath[len(ep_dir)+1:]
-          if self.options.verbose: 
-              print("checking...", dirpath, d, dirnames, filenames) 
+          if self.options.verbose:
+              print("checking...", dirpath, d, dirnames, filenames)
           for f in filenames:
-              if os.path.splitext(f)[1] in [ 
+              if os.path.splitext(f)[1] in [
                       ".ppm", ".pbm", ".jpg" ]:
-                  print(f)
+                  print(f, end='')
 
                   if self.options.base and \
                           not f.startswith(self.options.base):
-                        # doesn't match the 'filter'
+                        print(" doesn't match the 'filter'.")
                         continue
 
                   self.one_page(os.path.join(d,f),show,locs,eps)
@@ -287,13 +287,13 @@ class add_img(process):
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
 
-        parser.add_option('--base', 
+        parser.add_option('--base',
             help="source filename base.")
 
         parser.add_option('--dumb', action="store_true",
             help="just add to show, no ocr, no guessing.")
 
-if __name__=='__main__': 
+if __name__=='__main__':
     p=add_img()
     p.main()
 
