@@ -111,7 +111,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"[  ] Special Anouncement:"</expr>
+				<expr>"[  ] Make any special announcements (eg. Audience defrag, events later in the day)"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
