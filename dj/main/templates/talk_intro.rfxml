@@ -152,7 +152,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"[  ] Mic on Presenter"</expr>
+				<expr>"[  ] Ensure presenter has microphone and completed sound check (if not, poke AV team)"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -162,17 +162,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] (av) Presenter Sound Check (Wave at the camera and say "Hello Video Crew!")'</expr>
-				<fontname>'Helvetica'</fontname>
-				<FontSize>12</FontSize>
-				<height>'14 pt'</height>
-				<width>'470.0 pt'</width>
-				<x>'10.7 pt'</x>
-				<y>'205 pt'</y>
-			</String>
-			<String>
-				<Align>'left'</Align>
-				<expr>'[  ] (av) Presenter laptop hooked to Projector.'</expr>
+				<expr>"[  ] Check that HDMI is plugged into the presenter laptop"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -183,7 +173,7 @@
 			<String>
 				<Align>'left'</Align>
 				<comment>'(Green Green on switchbox)'</comment>
-				<expr>"[  ] (av) Presenter's laptop display showing on Projector, voctomix and confidence monitor."</expr>
+				<expr>"[  ] Ensure presenter's display appears on the projector(s), voctomix, and confidence monitors"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -193,7 +183,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"[  ] Water bottle for Presenter"</expr>
+				<expr>"[  ] Have a water bottle for ready for the presenter"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -203,7 +193,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"[  ] Un-Mute Mic on Presenter(s) and make sure they are ready."</expr>
+				<expr>"[  ] When the presenter is ready, un-mute the microphone"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -298,6 +288,16 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
+				<expr>"[  ] Signal to AV that you are ready, wait for them to signal back that they are also ready (recording starts)"</expr>
+				<fontname>'Helvetica'</fontname>
+				<FontSize>12</FontSize>
+				<height>'14 pt'</height>
+				<Width>'520.0 pt'</Width>
+				<x>'10.7 pt'</x>
+				<y>'65 pt'</y>
+			</String>
+			<String>
+				<Align>'left'</Align>
 				<expr>"[  ] Introduce the presenter(s) and the talk"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
@@ -305,16 +305,6 @@
 				<Width>'520.0 pt'</Width>
 				<x>'10.7 pt'</x>
 				<y>'51 pt'</y>
-			</String>
-			<String>
-				<Align>'left'</Align>
-				<expr>"[  ] Point at the Video Director, when they point back begin the introduction. (Video starts now.)"</expr>
-				<fontname>'Helvetica'</fontname>
-				<FontSize>12</FontSize>
-				<height>'14 pt'</height>
-				<Width>'520.0 pt'</Width>
-				<x>'10.7 pt'</x>
-				<y>'65 pt'</y>
 			</String>
 			<String>
 				<align>'right'</align>
@@ -355,7 +345,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] (av) Ask the presenter "Will there be laptop sound?"  If so, plug, test sound.'</expr>
+				<expr>'[  ] Ask the presenter "Will there be laptop sound?"  If so, ask AV to plug in and test sound'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -365,7 +355,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Ask presenter how they would like to be introduced.'</expr>
+				<expr>'[  ] Ask the presenter how they would like to be introduced and how to pronounce their name'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -375,27 +365,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>'[  ] Verify presenters name is what is on the schedule.'</expr>
-				<fontname>'Helvetica'</fontname>
-				<FontSize>12</FontSize>
-				<height>'14 pt'</height>
-				<width>'470.0 pt'</width>
-				<x>'10.7 pt'</x>
-				<y>'149 pt'</y>
-			</String>
-			<String>
-				<Align>'left'</Align>
-				<expr>'[  ] Ask the presenter how many minutes they alloted for questions: _________ Minutes.'</expr>
-				<fontname>'Helvetica'</fontname>
-				<FontSize>12</FontSize>
-				<height>'14 pt'</height>
-				<width>'470.0 pt'</width>
-				<x>'10.7 pt'</x>
-				<y>'135 pt'</y>
-			</String>
-			<String>
-				<Align>'left'</Align>
-				<expr>'[  ] Tell the presenter they will be notfed at:  ____ :  ___ .'</expr>
+				<expr>'[  ] Ask the presenter if they would like time warnings, and if so, when they would like them'</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
