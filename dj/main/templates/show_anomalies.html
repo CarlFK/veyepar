@@ -10,11 +10,15 @@
 
 <table class="shortcuts">
 <tr>
-    <td><a href="{% url "overlapping_episodes" show.id %}">overlapping_episodes</a></td>
-<td><a href="{% url "overlapping_files" show.id %}">overlapping_fles</a></td>
-<td><a href="{% url "orphan_dv" show.id %}">orphan_dv</a></td>
-<td><a href="{% url "orphan_img" show.id %}">orphan_img</a></td>
-</tr>
+    <td>
+        <a href="{% url "overlapping_episodes" show.id %}">overlapping_episodes</a>
+        <a href="{% url "overlapping_files" show.id %}">overlapping_fles</a>
+        <a href="{% url "orphan_dv" show.id %}">orphan_dv</a>
+        <a href="{% url "orphan_img" show.id %}">orphan_img</a>
+    </td>
+    <td>
+        <a href="{% url "episode_list" client.slug show.slug%}?slugoh">slug oh!</a>
+    </tr>
 
 <tr>
 <td>

@@ -56,6 +56,8 @@ from main.forms import \
 
 from accounts.forms import LoginForm
 
+from .unique_slugify import fnify
+
 
 def main(request):
     return render(request, 'main.html')
@@ -630,8 +632,8 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
         episodes=Episode.objects.filter(id=episode_id)
     else:
         episodes=eps_filters(request.GET).filter(show=show) \
+                .filter(location__active=True ) \
                 .annotate(start_date=Trunc('start', 'day')) \
-                .filter(show=show, location__active=True ) \
                 .order_by('start_date', 'location__sequence','start')
                 # ).order_by('location__sequence','start')
 
@@ -749,6 +751,10 @@ def eps_filters(rGET):
             filters[spec] = rGET[vkey]
 
     episodes = Episode.objects.filter(**filters)
+
+    if "slugoh" in rGET:
+        e_ids=[ e.id for e in episodes if e.slug != fnify(e.name) ]
+        episodes = Episode.objects.filter(id__in=e_ids)
 
     return episodes
 
@@ -1645,7 +1651,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
         state = request.GET.get('state')
 
     locations=show.locations.filter(active=True).order_by('sequence')
-    episodes=Episode.objects.filter(show=show)
+    episodes=eps_filters(request.GET).filter(show=show).order_by('start')
 
     admin_params="show__id__exact=%s" % show.id
 
@@ -1902,6 +1908,7 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
                     },
                      )
 
+
 def overlapping_files(request,show_id):
 
     show=get_object_or_404(Show,id=show_id)
@@ -1982,6 +1989,25 @@ def overlapping_episodes(request,show_id):
           'episodes':elist,
         },
              )
+
+def slugoh(request, show_id):
+    """
+    page where of slug <> slug(title)
+    """
+
+    show_id = request.GET.get('show_id')
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+
+    episodes=eps_filters(request.GET).filter(show=show) \
+            .order_by('start_date', 'location__sequence','start')
+
+
+
+
+
+
+
 
 def mini_conf(request):
 
