@@ -445,7 +445,7 @@ class post(process):
             help="Upload again, step on existing URL.")
 
         parser.add_option('--release-all', action="store_true",
-            help="ignore the released setting.")
+            help="ignore the released setting (assuming this is enabled.)")
 
 if __name__ == '__main__':
     p=post()
