@@ -753,7 +753,8 @@ def eps_filters(rGET):
     episodes = Episode.objects.filter(**filters)
 
     if "slugoh" in rGET:
-        e_ids=[ e.id for e in episodes if e.slug != fnify(e.name) ]
+        e_ids=[ e.id for e in episodes
+                if e.slug.lower() != fnify(e.name).lower() ]
         episodes = Episode.objects.filter(id__in=e_ids)
 
     return episodes
@@ -1528,6 +1529,26 @@ def title_slides(request, show_id, ):
           },
          )
 
+def slugoh(request, show_id=None):
+
+    """
+    page where of slug <> slug(title)
+    """
+    show=get_object_or_404(Show,id=show_id)
+    client=show.client
+    episodes=eps_filters(request.GET).filter(show=show).order_by('start')
+
+    return render(request, 'episodes_slugoh.html',
+        {
+          'client':client,
+          'show':show,
+          'episodes':episodes,
+        },
+         )
+
+
+
+
 def episodes_script(request, script=None):
 
     kwargs = {
@@ -1989,24 +2010,6 @@ def overlapping_episodes(request,show_id):
           'episodes':elist,
         },
              )
-
-def slugoh(request, show_id):
-    """
-    page where of slug <> slug(title)
-    """
-
-    show_id = request.GET.get('show_id')
-    show=get_object_or_404(Show,id=show_id)
-    client=show.client
-
-    episodes=eps_filters(request.GET).filter(show=show) \
-            .order_by('start_date', 'location__sequence','start')
-
-
-
-
-
-
 
 
 def mini_conf(request):

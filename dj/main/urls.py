@@ -126,6 +126,9 @@ urlpatterns = [
     url(r'orphan_img/(?P<show_id>\w+)/$', orphan_img,
         name='orphan_img'),
 
+    url(r'slugoh/(?P<show_id>\w+)/$', slugoh,
+        name='slugoh'),
+
     url(r'episode_logs/(?P<episode_id>\d+)/$',
         episode_logs, name='episode_logs'),
     url(r'episode_chaps/(?P<episode_id>\d+)/$',

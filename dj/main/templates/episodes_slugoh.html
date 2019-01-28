@@ -1,0 +1,44 @@
+{# show.html #}
+{% extends "base.html" %}
+
+{% block head %}
+  <title>veyepar - Show: {{client.name}} {{show.name}} </title>
+{% endblock %}
+
+{% block content %}
+
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>conf</th>
+        <th>start</th>
+        <th>state</th>
+        <th>episode.name<br>
+            episode.slug</th>
+        <th>released</th>
+        <th>yt<br>mp4</th>
+      </tr>
+    </thead>
+
+    {% for episode in episodes %}
+      <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+        <td><a href="/admin/main/episode/{{episode.id}}/">{{episode.id}}</a></td>
+        <td><a href="{{episode.conf_url}}">{{episode.conf_key}}</a></td>
+ <td>{{episode.start|date:"D d H:i"}}</td>
+ <td>{{episode.state}}{{episode.locked|yesno:"*, "}}</td>
+ <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}<br>
+    {{episode.slug}}</a>
+        </td>
+        <td>{{episode.released}}</td>
+        <td>
+            {%if episode.host_url %}<a href="{{episode.host_url}}">Y</a>{% endif %}
+            {%if episode.public_url %}<a href="{{episode.public_url}}">R</a>{% endif %}
+        </td>
+
+      </tr>
+    {% endfor %}
+  </table>
+
+
+{% endblock %}
