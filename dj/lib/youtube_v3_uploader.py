@@ -9,9 +9,7 @@ README
 
 To run this standalone:
 
-1.
-pip install git+https://github.com/CarlFK/google-api-python-client.git#egg=googleapiclient
-pip install google-api-python-client
+1. pip install google-api-python-client
 
 2. Get a client ID (defines who is running this code)
 https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount
