@@ -100,11 +100,12 @@ class Run_Tests(object):
   p.main()
 
   # hack to save some of these values for other tests
-  self.show_dir = p.show_dir
   self.show=Show.objects.get(slug=p.options.show)
   self.options = p.options
-  self.sh_pathname = os.path.join(
-          self.show_dir, 'tmp', "%s.sh" % (self.slug) )
+  self.show_dir = p.show_dir
+  self.tmp_dir = os.path.join(self.show_dir, 'tmp')
+  self.sh_pathname = os.path.join(self.tmp_dir, "{}.sh".format(self.slug))
+
   return
 
 
@@ -128,7 +129,7 @@ class Run_Tests(object):
    if not os.path.exists(dv_dir): os.makedirs(dv_dir)
 
    # MELT_PARMS="-attach lines width=80 num=1 -attach lines width=2 num=10"
-   text_file="source.txt"
+   text_file=os.path.join(self.tmp_dir, "source.txt")
 
    for i in range(5):
        # each file is 3 seconds long
@@ -199,10 +200,9 @@ pix_fmt=yuv411p" % parms
    convert that frame to footer.png
    """
 
-   tmp_dir = os.path.join(self.show_dir, 'tmp')
    assets_dir = os.path.join(self.show_dir, 'assets')
-   text_file = os.path.join(tmp_dir, "source.txt")
-   out_file = os.path.join(tmp_dir,"footer.mp4")
+   text_file = os.path.join(self.tmp_dir, "source.txt")
+   out_file = os.path.join(self.tmp_dir,"footer.mp4")
    parms={'input_file':text_file,
            'out_file':out_file,
            'text_file':text_file,
@@ -460,26 +460,24 @@ pix_fmt=yuv411p" % parms
  def ocr_test(self):
   # ocr an output file, check for ABCDEFG
 
-  tmp_dir = os.path.join("/tmp/veyepar_test/")
-  if not os.path.exists(tmp_dir): os.makedirs(tmp_dir)
   ext = self.upload_formats[0]
 
   filename = os.path.join(
           self.show_dir, ext, "%s.%s" % (self.episode.slug,ext) )
   parms = {
-          "tmp_dir":tmp_dir,
+          "tmp_dir":self.tmp_dir,
           'filename':filename,
           }
   cmd = "mplayer \
     -ss 9 \
     -vf framestep=20 \
     -ao null \
-    -vo pnm:outdir=%(tmp_dir)s \
+    -vo pnm:outdir=%(self.tmp_dir)s \
     %(filename)s" % parms
   print(cmd)
   self.run_cmd(cmd.split())
 
-  test_file = os.path.join(tmp_dir, "00000002.ppm" )
+  test_file = os.path.join(self.tmp_dir, "00000002.ppm" )
   gocr_outs = self.run_cmd(['gocr', test_file], True )
   text = gocr_outs['sout']
 
@@ -502,11 +500,9 @@ pix_fmt=yuv411p" % parms
   ext = self.upload_formats[0]
   filename = os.path.join(self.show_dir, ext, "%s.%s" % (self.episode.slug,ext) )
 
-  tmp_dir = os.path.join("/tmp/veyepar_test/")
-  if not os.path.exists(tmp_dir): os.makedirs(tmp_dir)
-  wav_file = os.path.join(tmp_dir,'test.wav')
-  raw_file = os.path.join(tmp_dir,'test.16k')
-  ctl_file = os.path.join(tmp_dir,'test.ctl')
+  wav_file = os.path.join(self.tmp_dir,'test.wav')
+  raw_file = os.path.join(self.tmp_dir,'test.16k')
+  ctl_file = os.path.join(self.tmp_dir,'test.ctl')
 
   parms = {
           'filename':filename,
@@ -524,7 +520,7 @@ pix_fmt=yuv411p" % parms
   parms = {
           'HMM':'/usr/share/sphinx2/model/hmm/6k',
           'TURT':'/usr/share/sphinx2/model/lm/turtle',
-          'TASK':tmp_dir,
+          'TASK':self.tmp_dir,
           "ctl_file":ctl_file,
           }
 
