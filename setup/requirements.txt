@@ -5,7 +5,7 @@ django-debug-toolbar
 git+https://github.com/bear/python-twitter.git
 feedparser
 
-steve
+# steve
 python-dateutil
 
 # progressbar
@@ -35,7 +35,7 @@ google-api-python-client
 oauth2client
 # httplib2
 
-psycopg2
+psycopg2-binary
 numpy
 
 # for util/dirmon.py

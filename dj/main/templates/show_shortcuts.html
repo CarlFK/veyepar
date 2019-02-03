@@ -4,7 +4,7 @@
 <a href="{% url "show_pipeline" show.id %}" title="{{show.name}} pipeline">pipeline</a>
 </td>
 <td><a href="{% url "pdfs" 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf">recording_sheets.pdf</a>
-  <a href="{% url "pdfs" 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf?day={{now|date:"d"}}">today's</a>{{now|date:"d"}}
+  <a href="{% url "pdfs" 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf?day={{now|date:"d"}}">today's</a>
 <a href="{% url "pdfs" 'recording_sheets' show.id %}{{show.slug}}_recording_sheets.pdf?day={{now|date:"d"|add:"1"}}">t+1</a>
 <a href = "{% url "episodes_reschedule" show.id %}">Reschedule</a>
 </td>

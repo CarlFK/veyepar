@@ -2,7 +2,7 @@ django<2
 djangorestframework
 django-extensions
 python-swiftclient
-psycopg2
+psycopg2-binary
 git+https://github.com/smarnach/pyexiftool.git
 pymediainfo
 numpy
@@ -15,3 +15,6 @@ boto
 internetarchive
 pycaption
 progressbar
+
+# for ansible box that does most of the things
+python-twitter
