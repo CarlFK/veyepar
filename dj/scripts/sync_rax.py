@@ -293,6 +293,7 @@ class SyncRax(process):
         if not self.cdn_exists(show, base) or self.options.replace:
             self.file2cdn(show, base)
 
+
     def mlt(self,show,ep):
         # put whatever is found into target/mlt
         # kinda wonky, but not sure how to handle this yet.
@@ -343,8 +344,26 @@ class SyncRax(process):
 
 
     def show_assets(self,show):
-        # walk the assets dir looking for random files ;/
+
         loc_dir=os.path.join(self.show_dir, 'assets')
+
+        if True:
+            # create title png file
+            svg_name = os.path.join(
+                    loc_dir,"titles", show.client.title_svg)
+            png_name = svg_name + ".png"
+            if os.path.exists(png_name):
+                os.remove(png_name)
+            cmd = ["inkscape", svg_name,
+                   "--export-png", png_name,
+                   ]
+            ret = self.run_cmd(cmd)
+            ret = os.path.exists(png_name)
+            if not ret:
+                print("error?!")
+                return
+
+        # walk the assets dir looking for random files ;/
         for dirpath, dirnames, filenames in os.walk(loc_dir,followlinks=True):
             stuby=dirpath[len(self.show_dir)+1:]
             for filename in filenames:

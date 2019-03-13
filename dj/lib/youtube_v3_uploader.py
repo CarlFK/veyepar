@@ -12,6 +12,7 @@ To run this standalone:
 1. pip install google-api-python-client
 
 2. Get a client ID (defines who is running this code)
+https://salsa.debian.org/debconf-video-team/youtube#authentication
 https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount
 Warning: Keep your client secret private. If someone obtains your client secret, they could use it to consume your quota, incur charges against your Google APIs Console project, and request access to user data.
 
@@ -60,19 +61,6 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run_flow
 
-# The following import is wrapped in try/except so that
-# this code will run without any additional files.
-try:
-    # read credentials from a file
-    from pw import yt
-except ImportError:
-    # you can fill in your credentials here for dev
-    # but better to put in pw.py
-    yt={
-            "test":{ 'filename': "oauth.json" }
-            }
-
-
 CLIENT_SECRETS_FILE = "client_secrets.json"
 
 YOUTUBE_API_SERVICE_NAME = "youtube"
@@ -106,7 +94,7 @@ RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
-def get_authenticated_service(user_key):
+def get_authenticated_service(oauth_file):
 
   args = namedtuple('flags', [
             'noauth_local_webserver',
@@ -116,11 +104,8 @@ def get_authenticated_service(user_key):
   args.noauth_local_webserver = True
   args.logging_level='ERROR'
 
-  auth = yt[user_key] ## from dict of credentials
-  filename =auth['filename']
-
   # how and where tokens are stored
-  storage = Storage(filename)
+  storage = Storage(oauth_file)
 
   # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html
 
@@ -274,7 +259,7 @@ https://developers.google.com/youtube/v3/docs/videos#properties
 class Uploader():
 
     # input attributes:
-    user = 'test'
+    oauth_file = 'oauth.json'
     pathname = ''
     meta = {}
     old_url = ''
@@ -286,7 +271,7 @@ class Uploader():
 
     def set_permission(self, video_url, privacyStatus='public'):
 
-        youtube = get_authenticated_service(user_key=self.user)
+        youtube = get_authenticated_service(oauth_file=self.oauth_file)
         video_id = get_id_from_url(video_url)
 
         videos_update_response = youtube.videos().update(
@@ -320,7 +305,7 @@ class Uploader():
         return True
 
     def add_to_playlist(self, video_url, playlist_id):
-        youtube = get_authenticated_service(user_key=self.user)
+        youtube = get_authenticated_service(oauth_file=self.oauth_file)
         video_id = get_id_from_url(video_url)
         youtube.playlistItems().insert(
             part='snippet',
@@ -336,11 +321,40 @@ class Uploader():
         ).execute()
         return True
 
+    def playlist_item_delete(self, video_id, playlist_id):
+        # https://developers.google.com/youtube/v3/docs/playlistItems/delete
+        """
+  response = client.playlistItems().delete(
+    **kwargs
+  ).execute()
+
+  return print_response(response)
+
+playlist_items_delete(client,
+    id='REPLACE_ME',
+    onBehalfOfContentOwner='')
+"""
+        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube.playlistItems().insert(
+            part='snippet',
+            body={
+                'snippet': {
+                    'playlistId': playlist_id,
+                    'resourceId': {
+                        'kind': 'youtube#video',
+                        'videoId': video_id,
+                    },
+                },
+            }
+        ).execute()
+        return True
+
+
     def delete_video(self, video_url):
         # https://developers.google.com/youtube/v3/docs/videos/delete
         # https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/youtube_v3.videos.html
 
-        youtube = get_authenticated_service(user_key=self.user)
+        youtube = get_authenticated_service(oauth_file=self.oauth_file)
         video_id = get_id_from_url(video_url)
 
         videos_delete_response = youtube.videos().delete(
@@ -355,7 +369,7 @@ class Uploader():
 
     def upload(self):
 
-        youtube = get_authenticated_service(user_key=self.user)
+        youtube = get_authenticated_service(oauth_file=self.oauth_file)
 
         if self.debug:
             print(self.pathname)
@@ -380,8 +394,8 @@ def make_parser():
     Find a video file and upload it to youtube.
     """)
 
-    parser.add_argument('--user', '-u', default='test',
-            help="key into pw['yt'][key]: secrets. default: test")
+    parser.add_argument('--oauth-file', '-o', default='oauth.json',
+            help="auth token file. default: oauth.json")
 
     # find the test file
     ext = "mp4"
@@ -419,7 +433,7 @@ def test_upload(args):
       'license':'creativeCommon',
     }
 
-    u.user = args.user
+    u.oauth_file = args.oauth_file
     u.debug_mode = args.debug_mode
     u.pathname = args.pathname
 
@@ -434,7 +448,7 @@ def test_upload(args):
 def test_set_pub(args,video_url):
 
     u = Uploader()
-    u.user=args.user
+    u.oauth_file=args.oauth_file
     u.set_permission(video_url)
 
     return
@@ -443,7 +457,7 @@ def test_set_pub(args,video_url):
 def test_set_unlisted(args,video_url):
 
     u = Uploader()
-    u.user=args.user
+    u.oauth_file=args.oauth_file
     u.set_permission(video_url, privacyStatus='unlisted')
 
     return
@@ -452,7 +466,7 @@ def test_set_unlisted(args,video_url):
 def test_delete(args, video_url):
 
     u = Uploader()
-    u.user=args.user
+    u.oauth_file=args.oauth_file
     u.delete_video(video_url)
 
     return

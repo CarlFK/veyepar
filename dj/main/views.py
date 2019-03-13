@@ -1521,6 +1521,7 @@ def title_slides(request, show_id, ):
             'start',
             )
 
+
     return render(request, 'title_slides.html',
             {
           'client':client,
@@ -2643,4 +2644,15 @@ def claim_episode_lock(request, episode_id):
             kwargs={
                 'client_slug': episode.show.client.slug,
                 'show_slug': episode.show.slug}))
+
+def title_templates(request):
+
+    clients = Client.objects.filter(~Q(title_svg=None), active=True,)
+
+    return render(request, 'title_templates.html',
+        {'clients':clients,
+        },
+        )
+
+
 

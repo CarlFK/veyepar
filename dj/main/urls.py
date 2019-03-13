@@ -143,6 +143,8 @@ urlpatterns = [
     url(r'title_slides/(?P<show_id>\w+)/',
         title_slides, name='title_slides'),
 
+    url(r'util/title_templates/', title_templates, name="title_templates" ),
+
     url(r'tests', tests, name='tests'),
 
 ]

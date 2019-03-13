@@ -27,7 +27,9 @@ Schedule data: <a href="{{show.schedule_url}}">{{show.schedule_url|default:"(non
 Item Count: {{episodes.count|default:"(none)"}} <br>
 <br>
 
-Title slide: <a href='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}'>{{client.title_svg|default:"(none)"}}</a>
+Title slide:
+<a href='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}'>{{client.title_svg|default:"(none)"}}</a>
+<a href='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png'>png</a>
 <a href="{% url 'title_slides' show.id %}">rendered title slides</a>
 </br>
 

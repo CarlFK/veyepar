@@ -165,7 +165,8 @@ class post(process):
 
         uploader = youtube_v3_uploader.Uploader()
 
-        uploader.user = ep.show.client.youtube_id
+        uploader.oauth_file = \
+                pw.yt[ep.show.client.youtube_id]['filename']
         uploader.pathname = files[0]['pathname']
         uploader.meta = meta
         uploader.private = private
