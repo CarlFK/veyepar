@@ -757,6 +757,11 @@ def eps_filters(rGET):
                 if e.slug.lower() != fnify(e.name).lower() ]
         episodes = Episode.objects.filter(id__in=e_ids)
 
+    if "titleoh" in rGET:
+        e_ids=[ e.id for e in episodes
+                if e.name != e.titlecase ]
+        episodes = Episode.objects.filter(id__in=e_ids)
+
     return episodes
 
 

@@ -12,6 +12,7 @@ import random
 from django import forms
 
 from .unique_slugify import unique_slugify
+from .titlecase import titlecase
 from functools import reduce
 
 def time2s(time):
@@ -397,6 +398,10 @@ class Episode(models.Model):
     def get_authors(self):
         authors = self.authors.split(',') if self.authors else []
         return authors
+
+    @property
+    def titlecase(self):
+        return titlecase(self.name)
 
     @property
     def location_slug(self):
