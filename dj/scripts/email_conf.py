@@ -10,7 +10,7 @@ from email_ab import email_ab
 
 class email_conf(email_ab):
 
-    ready_state = 12
+    ready_state = 11
 
     subject_template = "[{{ep.show.name}}] Video public: {{ep.name}}"
     body_body = """

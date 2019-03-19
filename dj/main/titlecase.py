@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
+# from __future__ import print_function
+
+# https://github.com/chrisdrackett/django-typogrify/blob/master/typogrify/titlecase.py
+# https://daringfireball.net/2008/05/title_case
 
 import re
 import sys

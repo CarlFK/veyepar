@@ -134,6 +134,17 @@ class enc(process):
             title1 = episode.name
             title2 = ""
 
+        # replace last space wiht nbs to prevent orphan words.
+        try:
+            i = title1.rindex(' ')
+            title1 =  title1[:i] + chr(160) + title1[i+1:]
+        except ValueError: pass
+
+        try:
+            i = title2.rindex(' ')
+            title2 =  title2[:i] + chr(160) + title2[i+1:]
+        except ValueError: pass
+
         if episode.license:
             license = "cc/{}.svg".format(episode.license.lower())
         else:

@@ -46,6 +46,10 @@ See also:
     https://github.com/chrisjrn/symposion
 
     https://github.com/pyohio/pyohio-website
+    https://strptime.com/
+
+columns
+['conf_key', 'start', 'duration', 'title', 'authors', 'twitter_id', 'emails', 'reviewer', 'released', 'conf_url', 'license']
 
 """
 
@@ -61,7 +65,7 @@ def mk_fieldlist():
 # FireFox plugin to view .json data:
 # https://addons.mozilla.org/en-US/firefox/addon/10869/
 
-import datetime
+from datetime import datetime, timedelta
 import csv
 import html.parser
 import os
@@ -83,6 +87,8 @@ from django.template.defaultfilters import slugify
 import operator
 
 import xml.etree.ElementTree
+
+from bs4 import BeautifulSoup
 
 import json
 
@@ -163,8 +169,8 @@ def goog(show,url):
             goo_end = event.when[0].end_time
 
             print(goo_start)
-            start = datetime.datetime.strptime(goo_start,'%Y-%m-%dT%H:%M:%S.000-05:00')
-            end = datetime.datetime.strptime(goo_end,'%Y-%m-%dT%H:%M:%S.000-05:00')
+            start = datetime.strptime(goo_start,'%Y-%m-%dT%H:%M:%S.000-05:00')
+            end = datetime.strptime(goo_end,'%Y-%m-%dT%H:%M:%S.000-05:00')
 
 
             minutes = delta.seconds/60 # - 5 for talk slot that includes break
@@ -686,12 +692,12 @@ class add_eps(process.process):
         duration="00:%s:00" % ( minutes)
         return start_dt, duration
 
-          # start=datetime.datetime.strptime(row['Start'], '%Y-%m-%d %H:%M:%S' )
-          # start=datetime.datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
+          # start=datetime.strptime(row['Start'], '%Y-%m-%d %H:%M:%S' )
+          # start=datetime.strptime(row['Start'],'%m/%d/%y %I:%M %p')
 
           # pycon dates:
           # [ 2010, 9, 7, 15, 0 ]
-          # start = datetime.datetime(*row['start'])
+          # start = datetime(*row['start'])
 
           # minutes = row['duration']
 
@@ -735,7 +741,7 @@ class add_eps(process.process):
 
             # fields that don't flow thought json that nice.
             if not event['conf_key']: event['conf_key'] = "pk{}".format(pk)
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     row['start'], '%Y-%m-%dT%H:%M:%S' )
 
             events.append(event)
@@ -771,7 +777,7 @@ class add_eps(process.process):
 
             event['name'] = row['Title']
             event['location'] = row['Room Name']
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     row['Start'], '%Y-%m-%d %H:%M:%S' )
             event['duration'] = row['Duration']
             event['authors'] = row.get('Presenters','')
@@ -853,7 +859,7 @@ class add_eps(process.process):
             #        row['room_name'], row['room'] )
             event['location'] = row['room']
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     row['start_iso'], '%Y-%m-%dT%H:%M:%S' )
 
             # if "Poster" in row["tags"]:
@@ -930,7 +936,7 @@ class add_eps(process.process):
 
             # x = html_parser.unescape('&pound;682m')
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
 
             seconds=(int(event['duration'] )) * 60
@@ -981,10 +987,10 @@ class add_eps(process.process):
             for k1,k2 in field_map:
                 event[k1] = row[k2]
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%m/%d/%Y %H:%M:%S' )
 
-            event['end'] = datetime.datetime.strptime(
+            event['end'] = datetime.strptime(
                     event['end'], '%m/%d/%Y %H:%M:%S' )
 
             delta = event['end'] - event['start']
@@ -1019,7 +1025,7 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
         for event in events:
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
 
             event['authors'] =  event['authors'][0]['name']
@@ -1056,7 +1062,7 @@ class add_eps(process.process):
         events = self.generic_events(schedule, field_maps)
         for event in events:
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
 
             seconds=(event['duration'] -10) * 60
@@ -1081,7 +1087,7 @@ class add_eps(process.process):
             event['name'] = src_event['title']
             event['location'] = schedule['rooms'][src_event['room']]['name']
 
-            event['start'] = datetime.datetime(*src_event['start'])
+            event['start'] = datetime(*src_event['start'])
 
             seconds=src_event['duration'] * 60
             hms = seconds//3600, (seconds%3600)//60, seconds%60
@@ -1205,7 +1211,7 @@ class add_eps(process.process):
 
             event['name'] =  re.sub( r'[\n\r]', ':)', event['name'] )
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] =   "0:{}:0".format(event['duration'])
@@ -1273,7 +1279,7 @@ class add_eps(process.process):
         events = self.symp_events(schedule)
         for e in events:
             print(e)
-            end  = datetime.datetime.strptime(
+            end  = datetime.strptime(
                     e['raw']['end_iso'], '%Y-%m-%dT%H:%M:%S' )
             td = end - e['start']
 
@@ -1327,7 +1333,7 @@ class add_eps(process.process):
             # print (event['location'], event['start'])
             event['conf_key'] = hash(str(event['location']) + event['start'])
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             # seconds=int(event['duration']) * 60
@@ -1354,7 +1360,7 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
         for event in events:
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%d %H:%M:%S' )
             event['duration'] = event['duration'] + ":00"
 
@@ -1423,9 +1429,9 @@ class add_eps(process.process):
             event['name'] = row[1]
             event['location'] = row[2]
             dt_format='%a, %Y-%m-%d %H:%M'
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     row[3], dt_format)
-            end = datetime.datetime.strptime(
+            end = datetime.strptime(
                     row[4], dt_format)
 
             seconds=(end - event['start']).seconds
@@ -1484,7 +1490,7 @@ class add_eps(process.process):
 
             event['name'] = html_parser.unescape(strip_tags( event['name'] ))
 
-            event['start'] = datetime.datetime.fromtimestamp(
+            event['start'] = datetime.fromtimestamp(
                 int(event['start'])) + datetime.timedelta(hours=14)
 
             event['duration'] = "00:%s:00" % ( event['duration'], )
@@ -1643,7 +1649,7 @@ class add_eps(process.process):
 
             event['location'] = where['name']
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['authors'] =  ', '.join(
@@ -1773,7 +1779,7 @@ class add_eps(process.process):
 
             event['name'] =  re.sub( r'[\n\r]', ':)', event['name'] )
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] =   "0:{}:0".format(event['duration'])
@@ -1860,7 +1866,7 @@ class add_eps(process.process):
                     event['location'] = row.find('room').text
 
                     dt_format='%Y-%m-%d %H:%M'
-                    event['start'] = datetime.datetime.strptime(
+                    event['start'] = datetime.strptime(
                             "%s %s" % ( start_date,row.find('start').text),
                             dt_format)
 
@@ -1936,7 +1942,7 @@ class add_eps(process.process):
 
         # no recording in Java room saturday k4201
         events = [ event for event in events if not (
-            event['start'].date() != datetime.datetime(2014,2,1) and \
+            event['start'].date() != datetime(2014,2,1) and \
                     event['location'] == 'K4201') ]
 
         self.add_eps(events, show)
@@ -1972,7 +1978,7 @@ class add_eps(process.process):
                     event['location'] = row.find('room').text
 
                     dt_format='%Y-%m-%d %H:%M'
-                    event['start'] = datetime.datetime.strptime(
+                    event['start'] = datetime.strptime(
                             "%s %s" % ( start_date,row.find('start').text),
                             dt_format)
 
@@ -2241,7 +2247,7 @@ class add_eps(process.process):
               raw['speaker_first_name'] +' ' + raw['speaker_last_name']
             event['emails'] = raw['user']['email']
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'],'%Y-%m-%dT%H:%M:%S-05:00')
 
             event['duration'] = "00:%s:00" % ( event['duration'] )
@@ -2292,10 +2298,10 @@ class add_eps(process.process):
                 + event['conf_key'][11:13] \
                 + event['conf_key'][14:16]
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'],'%Y-%m-%d %H:%M:%S')
 
-            event['end'] = datetime.datetime.strptime(
+            event['end'] = datetime.strptime(
                     event['end'],'%Y-%m-%d %H:%M:%S')
             delta = event['end'] - event['start']
             minutes = delta.seconds/60
@@ -2355,11 +2361,11 @@ class add_eps(process.process):
 
         for event in events:
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     "{0} {1}".format(event['raw']['date'],event['start']),
                     '%d/%m/%Y %H:%M')
 
-            event['end'] = datetime.datetime.strptime(
+            event['end'] = datetime.strptime(
                     "{0} {1}".format(event['raw']['date'],event['end']),
                     '%d/%m/%Y %H:%M')
 
@@ -2402,10 +2408,10 @@ class add_eps(process.process):
             event['conf_key'] = str(i)
 
             dt_format='%Y-%m-%d %H:%M'
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], dt_format)
 
-            end = datetime.datetime.strptime(
+            end = datetime.strptime(
                     event['end'], dt_format)
             seconds=(end - event['start']).seconds
             hms = seconds//3600, (seconds%3600)//60, seconds%60
@@ -2462,7 +2468,7 @@ class add_eps(process.process):
             event['conf_key'] = str(i)
 
             dt_format='%Y-%m-%d %H:%M'
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event_date + ' ' + event['start'], dt_format)
 
             event['authors'] = \
@@ -2518,7 +2524,7 @@ class add_eps(process.process):
             event['conf_key'] = str(i)
             # event['authors'] = ', '.join(event['authors'].split(' & '))
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                   event['start'], '%Y/%m/%d %H:%M:%S')
             print(event['start'])
 
@@ -2585,7 +2591,7 @@ class add_eps(process.process):
                         event['name'].split(' - ')
                 event['authors'] = ', '.join(event['authors'].split(' & '))
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     "{0} {1}".format(event['raw']['Date'],event['start']),
                     '%m/%d/%Y %H:%M')
 
@@ -2671,9 +2677,9 @@ class add_eps(process.process):
                 event['authors'] = "Richard Campbell and Carl Franklin"
             """
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'],'%Y-%m-%d %H:%M:%S')
-            event['end'] = datetime.datetime.strptime(
+            event['end'] = datetime.strptime(
                     event['end'],'%Y-%m-%d %H:%M:%S')
             delta = event['end'] - event['start']
             minutes = delta.seconds/60
@@ -2736,7 +2742,7 @@ class add_eps(process.process):
             if self.options.verbose: pprint(raw)
             if self.options.verbose: print("event", event)
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'],'%Y-%m-%dT%H:%M:%S')
 
             event['authors'] = ", ".join(event['authors'])
@@ -2840,7 +2846,7 @@ class add_eps(process.process):
                 # don't care about end, use duration=5
                 start,end = poster['time'].split('-')
                 h,m = start.split(':')
-                s['start'] = datetime.datetime(2013, 0o3, 17, int(h), int(m)).isoformat()
+                s['start'] = datetime(2013, 0o3, 17, int(h), int(m)).isoformat()
 
         self.symposion2(schedule,show)
 
@@ -3014,7 +3020,7 @@ class add_eps(process.process):
             if event['location'] == 'all-rooms':
                 event['location'] = 'MSC 2300 B'
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] = "00:%s:00" % ( event['duration'], )
@@ -3068,9 +3074,9 @@ class add_eps(process.process):
             event['authors'] = event['authors']['name']
             event['emails'] = event['emails']['email']
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
-            event['end'] = datetime.datetime.strptime(
+            event['end'] = datetime.strptime(
                    event['end'], '%Y-%m-%dT%H:%M:%S' )
 
             delta = event['end'] - event['start']
@@ -3113,9 +3119,9 @@ class add_eps(process.process):
             event['emails'] = event['emails'][0]['email']
             event['twitter_id'] = event['twitter_id'][0]['twitter_id']
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                    event['start'], '%Y-%m-%dT%H:%M:%S' )
-            event['end'] = datetime.datetime.strptime(
+            event['end'] = datetime.strptime(
                    event['end'], '%Y-%m-%dT%H:%M:%S' )
 
             delta = event['end'] - event['start']
@@ -3169,9 +3175,9 @@ class add_eps(process.process):
         event['conf_url'] = ''
         event['tags'] = ''
 
-        event['start'] = datetime.datetime.strptime(
+        event['start'] = datetime.strptime(
                event['start'], '%Y-%m-%dT%H:%M:%S' )
-        event['end'] = datetime.datetime.strptime(
+        event['end'] = datetime.strptime(
                event['end'], '%Y-%m-%dT%H:%M:%S' )
         delta = event['end'] - event['start']
         minutes = delta.seconds/60
@@ -3225,9 +3231,9 @@ class add_eps(process.process):
 
         event['tags'] = ''
 
-        event['start'] = datetime.datetime.strptime(
+        event['start'] = datetime.strptime(
                event['start'], '%Y-%m-%dT%H:%M:%S' )
-        event['end'] = datetime.datetime.strptime(
+        event['end'] = datetime.strptime(
                event['end'], '%Y-%m-%dT%H:%M:%S' )
         delta = event['end'] - event['start']
         minutes = delta.seconds/60
@@ -3297,7 +3303,7 @@ class add_eps(process.process):
                 event['location'] = 'Derwent 1'
             """
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                 event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] = "00:{}:00".format(event['duration'])
@@ -3366,7 +3372,7 @@ class add_eps(process.process):
 
         # event['start'] = dateutil.parser.parse( event['start'] )
         event['start'] = parse( event['start'] )
-        # datetime.datetime.strptime(
+        # datetime.strptime(
         #       event['start'], '%B %d, %Y %I:%M %p' )
 
 
@@ -3468,7 +3474,7 @@ class add_eps(process.process):
             event['authors'] = ', '.join([
                 a['name'] for a in event['authors'] ])
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S-05:00' )
 
             event['duration'] = "00:%s:00" % ( event['duration'] )
@@ -3536,13 +3542,13 @@ class add_eps(process.process):
             #    event['location'] = 'Room 701'
 
             # if event['start'] is None:
-            #    event['start'] = datetime.datetime.now()
+            #    event['start'] = datetime.now()
 
             # if event['name'] == "Keynote (JM)":
-            #     event['start'] = datetime.datetime(2015,8,16,9,0,0)
+            #     event['start'] = datetime(2015,8,16,9,0,0)
             # else:
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                 event['start'], '%Y-%m-%dT%H:%M:%S' )
 
             event['duration'] = "00:{}:00".format(event['duration'])
@@ -3609,7 +3615,7 @@ class add_eps(process.process):
 
         for event in events:
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                 event['raw']['date'] + 'T' + event['start'],
                 '%d/%m/%YT%H:%M:%S' )
 
@@ -3671,7 +3677,7 @@ class add_eps(process.process):
 
             event['conf_url']="https://cfp.linuxwochen.at/de/LWW16/public/events/{}".format(event['conf_key'])
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                 event['start'],
                 '%Y-%m-%dT%H:%M:%S+02:00' )
 
@@ -3724,7 +3730,7 @@ class add_eps(process.process):
 
             event['conf_key']=str(event['conf_key'])
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                 event['start'],
                 '%Y-%m-%d %H:%M:%S' )
 
@@ -3773,7 +3779,7 @@ class add_eps(process.process):
 
             event['conf_key']=str(event['conf_key'])
 
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                 event['start'], '%d/%m/%Y %H:%M:%S' )
 
             event['duration'] = "{}:00".format(event['duration'])
@@ -3794,7 +3800,7 @@ class add_eps(process.process):
     def koya(self, schedule, show):
         # open .docx in OO, File/SaveAs foo.txt
         key=0
-        start=datetime.datetime(2018,7,8,9,0,0)
+        start=datetime(2018,7,8,9,0,0)
         events = []
         for s in schedule:
             print(s)
@@ -3830,7 +3836,7 @@ class add_eps(process.process):
             key+=1
             start+=datetime.timedelta(minutes=10)
             # lunch break
-            # if start==datetime.datetime(2018,4,21,12,0,0):
+            # if start==datetime(2018,4,21,12,0,0):
             #    start+=datetime.timedelta(hours=1)
 
         self.add_eps(events, show)
@@ -4084,7 +4090,7 @@ class add_eps(process.process):
                     'SAT': 12,
                     'SUN': 13}[day]
             dt = '5/{day}/2018 {start}'.format(day=day,start=start)
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                 dt, '%m/%d/%Y %I:%M %p' )
 
             """
@@ -4120,6 +4126,156 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
+    def emwc(self, show, response):
+
+
+        fields = ['conf_key', 'start', 'duration', 'name', 'authors', 'twitter_id', 'emails', 'reviewer', 'released', 'conf_url', 'license']
+
+        parsed = urllib.parse.urlparse(response.url)
+        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+        www = "{scheme}://{netloc}".format(
+                scheme = parsed.scheme,
+                netloc = parsed.netloc,
+                )
+
+        emails = {
+                'Comunity': '',
+                'to be announced': '',
+                }
+        for line in open( os.path.join( self.show_dir,
+            "meta", "emails.txt")).read().split('\n'):
+            name = ' '.join(line.split()[:-1])
+            emails[name] = line
+
+        i=1
+        talks = []
+
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        # node = soup.find(id="Program")
+        # t1 = node.find_next('table')
+
+        sched_head_re = re.compile("Conference Day [12].*")
+        for node in soup.find_all(string = sched_head_re):
+            _, start_date = node.split(' - ')
+            start_date = start_date.strip()
+            t = node.find_previous('table')
+            trs = t.find_all('tr')
+            for tr in trs:
+                tds = tr.find_all('td')
+                if len(tds) == 1:
+                    continue
+                lis = tds[2].find_all('li')
+                # if there is a list of talks:
+                if lis:
+                    start_time, end = tds[0].text.split(' - ')
+                    # ['9:00 AM', '10:30 AM\n']
+                    start_dt = start_date + 'T' + start_time
+                    # 'Wednesday, April 3, 2019'
+                    start = datetime.strptime(start_dt,
+                            '%A, %B %d, %YT%I:%M %p')
+                    for li in lis:
+                        url = ""
+                        if li.text == 'TBD':
+                            continue
+                        elif li.text == 'Lightning Talks':
+                            title = li.text
+                            authors = "Comunity"
+                        elif li.find(string="Panel"):
+                            title = "Panel: State of the MediaWiki Ecosystem"
+                            authors = "Daren Welsh"
+                        elif li.next == 'Moderator: ':
+                            # import pdb; pdb.set_trace()
+                            break
+                        else:
+                            ahrefs = li.find_all('a')
+                            if len(ahrefs) == 2:
+                                url = www + ahrefs[0].get('href')
+                                # session = requests.session()
+                                # response = session.get(show.schedule)
+                            try:
+                                title, authors = li.text.split(' - ')
+                            except:
+                                print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
+
+
+                        time_re = re.compile(
+                                "(?P<authors>.*) \((?P<mins>\d+) (?P<units>minutes|hour)\)")
+                        match = time_re.match(authors)
+                        if match:
+                            mins = int(time_re.match(authors).group('mins'))
+                            authors = time_re.match(authors).group('authors')
+                        else:
+                            mins = 30
+                        duration = "00:{}:00".format(mins)
+
+                        email = emails[authors]
+
+                        talk = {
+                                'conf_key': i,
+                                'location': 'Genesys',
+                                'start': start,
+                                'duration': duration,
+                                'name': title,
+                                'authors': authors,
+                                'twitter_id': '',
+                                'emails': email,
+                                'reviewers': '',
+                                'released': None,
+                                'conf_url': url,
+                                'license': 'CC-BY-NA',
+                                'description': '',
+                                'tags': '',
+                                }
+
+                        talks.append(talk)
+                        # if authors == 'Clément Flipo':
+                        #    print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
+                        i += 1
+                        start += timedelta(minutes = mins)
+
+
+        talk = {
+            'conf_key': 100,
+            'location': 'Genesys',
+            'start': datetime(2019,4,4,9,00,00),
+            'duration': "1:00:00",
+            'name': "Keynote: Wikidata and Beyond",
+            'authors': "Denny Vrandečić",
+            'twitter_id': '',
+            'emails': '',
+            'reviewers': '',
+            'released': None,
+            'conf_url':
+                www + '/wiki/EMWCon_Spring_2019/Wikidata_and_Beyond',
+            'license': 'CC-BY-NA',
+            'description': '',
+            'tags': '',
+            }
+        talk['email'] = emails[talk['authors']]
+        talks.append(talk)
+
+
+        with open(self.show_dir+"/sched.csv",'w') as f:
+            dw = csv.DictWriter(f, fields)
+            for talk in talks:
+                d = {}
+                for k in talk:
+                    if k in fields:
+                        d[k] = talk[k]
+                # d = { (k,v) for k,v in talk if k in fields }
+                dw.writerow(d)
+
+        rooms = self.get_rooms(talks)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(talks, show)
+
+
+
+
     def lcza(self, schedule, show):
 
         schedule = [ s for s in schedule if s['speakers'] is not None]
@@ -4150,9 +4306,9 @@ class add_eps(process.process):
             if self.options.verbose: pprint(event)
 
             # "start": "2018-10-08 09:20",
-            event['start'] = datetime.datetime.strptime(
+            event['start'] = datetime.strptime(
                     event['start'],'%Y-%m-%d %H:%M')
-            event['end'] = datetime.datetime.strptime(
+            event['end'] = datetime.strptime(
                     event['end'],'%Y-%m-%d %H:%M')
 
             event['duration'] = "{}:00".format(event['duration'])
@@ -4252,6 +4408,7 @@ class add_eps(process.process):
             """
 
         client = show.client
+        self.set_dirs(show)
         url = show.schedule_url
         if self.options.verbose: print(url)
 
@@ -4325,10 +4482,13 @@ class add_eps(process.process):
             pprint(headers)
             # return
 
-
-            for x in 1,2:
+            for x in 1, : #,2:
                 response = session.get(url, params=payload, verify=False,
                     headers=headers)
+
+            if self.options.client =='emwc':
+                return self.emwc(show, response)
+
 
         parsed = urllib.parse.urlparse(url)
         ext = os.path.splitext(parsed.path)[1]
@@ -4355,7 +4515,6 @@ class add_eps(process.process):
 
         else:
             # lets hope it is json, like everything should be.
-
 
             if url.startswith('file'):
                 j = f.read()
@@ -4393,6 +4552,9 @@ class add_eps(process.process):
 
         if ext =='.ics':
             return self.ics(schedule,show)
+
+        if self.options.client =='emwc':
+            return self.emwc(schedule, show)
 
         if self.options.client =='koya_law':
             return self.koya(schedule, show)

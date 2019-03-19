@@ -988,15 +988,12 @@ def show_anomalies(request, show_id, ):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
 
-    episodes=Episode.objects.filter(show=show,)
+    episodes=Episode.objects.filter(show=show,).exclude(released=False)
     if "active" in request.GET:
         episodes = episodes.filter(location__active=True)
 
-    max_names=Episode.objects.filter(show=show,
-            released=True).order_by(Length('name').desc())[:5]
-
-    max_authors=Episode.objects.filter(show=show,
-            released=True).order_by(Length('authors').desc())[:5]
+    max_names = episodes.order_by(Length('name').desc())[:5]
+    max_authors = episodes.order_by(Length('authors').desc())[:5]
 
     dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
     dup_eps = Episode.objects.filter(slug__in=[item['slug'] for item in dupes], show=show)
