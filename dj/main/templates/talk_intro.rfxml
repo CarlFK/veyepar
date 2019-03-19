@@ -164,7 +164,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"[  ] Check that HDMI is plugged into the presenter laptop"</expr>
+				<expr>"[  ] Check that HDMI is plugged into the presenter's laptop"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -175,7 +175,7 @@
 			<String>
 				<Align>'left'</Align>
 				<comment>'(Green Green on switchbox)'</comment>
-				<expr>"[  ] Ensure presenter's display appears on the projector(s), voctomix, and confidence monitors"</expr>
+				<expr>"[  ] Ensure presenter's display appears on the projector and confidence monitors"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
@@ -290,7 +290,7 @@
 			</String>
 			<String>
 				<Align>'left'</Align>
-				<expr>"[  ] Signal to AV that you are ready, wait for them to signal back that they are also ready (recording starts)"</expr>
+				<expr>"[  ] Hit the Big Red Button. (On = recording starts)"</expr>
 				<fontname>'Helvetica'</fontname>
 				<FontSize>12</FontSize>
 				<height>'14 pt'</height>
