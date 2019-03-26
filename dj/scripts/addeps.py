@@ -104,8 +104,9 @@ from django.utils.timezone import localtime
 # https://developers.google.com/resources/api-libraries/documentation/sheets/v4/python/latest/
 from apiclient.discovery import build
 from httplib2 import Http
-# from oauth2client import file, client, tools
+
 import oauth2client # import file, client, tools
+from oauth2client.file import Storage
 
 # for google calandar:
 # import lxml.etree
@@ -137,7 +138,7 @@ def fix_twitter_id(twitter_ids):
     ret = ', '.join(ret)
     return ret
 
-def goog(show,url):
+def goog_cal(show, url):
 
         loc,created = Location.objects.get_or_create(
                 sequence = 1,
@@ -201,8 +202,9 @@ def goog(show,url):
 
         return
 
-def googsheet(spreadsheetId, range_name='A1:ZZ99999'):
+def goog_sheet(spreadsheetId, range_name='A1:ZZ99999'):
     # read from goog spreadsheet
+    # return dict of rows
 
     """
     range is any
@@ -4093,21 +4095,6 @@ class add_eps(process.process):
             event['start'] = datetime.strptime(
                 dt, '%m/%d/%Y %I:%M %p' )
 
-            """
-            # Talk (60 minutes)
-            re_duration = re.compile(r"(Talk|Workshop) \((?P<qty>[\d\-]+) (?P<unit>(hours|minutes))\)")
-            try:
-                duration = re.match( re_duration, event['duration'] ).groupdict()
-            except:
-                print(event['duration'])
-                print(re_duration)
-
-            pprint(duration)
-            if duration['unit'] == 'minutes':
-                event['duration'] = "{}:00".format(duration['qty'])
-            else:
-                continue
-            """
             event['duration'] = "{}:00".format(event['duration'].strip())
 
             if not event['twitter_id'].startswith('@'):
@@ -4126,10 +4113,11 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
-    def emwc(self, show, response):
+    def emwc_wiki(self, show, response):
 
 
         fields = ['conf_key', 'start', 'duration', 'name', 'authors', 'twitter_id', 'emails', 'reviewer', 'released', 'conf_url', 'license']
+        # twitter_id
 
         parsed = urllib.parse.urlparse(response.url)
         # print("import sys;sys.exit()"); import code; code.interact(local=locals())
@@ -4138,10 +4126,7 @@ class add_eps(process.process):
                 netloc = parsed.netloc,
                 )
 
-        emails = {
-                'Comunity': '',
-                'to be announced': '',
-                }
+        emails = {}
         for line in open( os.path.join( self.show_dir,
             "meta", "emails.txt")).read().split('\n'):
             name = ' '.join(line.split()[:-1])
@@ -4180,10 +4165,12 @@ class add_eps(process.process):
                             continue
                         elif li.text == 'Lightning Talks':
                             title = li.text
-                            authors = "Comunity"
+                            authors = "Community"
+                            url = www + "/wiki/EMWCon_Spring_2019/Lightning_Talks"
                         elif li.find(string="Panel"):
                             title = "Panel: State of the MediaWiki Ecosystem"
                             authors = "Daren Welsh"
+                            url = www + "/wiki/EMWCon_Spring_2019/State_of_the_MediaWiki_Ecosystem"
                         elif li.next == 'Moderator: ':
                             # import pdb; pdb.set_trace()
                             break
@@ -4210,7 +4197,15 @@ class add_eps(process.process):
                             mins = 30
                         duration = "00:{}:00".format(mins)
 
-                        email = emails[authors]
+                        # split on "," and "and" (and eat spaces)
+                        # but dont eat the and in Hilderbrand
+                        authors = re.split(r',\s*|\s+and\s+', authors)
+
+                        for a in authors:
+                            print(a)
+
+                        email = ', '.join(emails[a] for a in authors)
+                        authors = ', '.join(authors)
 
                         talk = {
                                 'conf_key': i,
@@ -4229,9 +4224,11 @@ class add_eps(process.process):
                                 'tags': '',
                                 }
 
+                        if authors.startswith('Martina'):
+                            talk['conf_key'] = 102
+                            i -= 1
+
                         talks.append(talk)
-                        # if authors == 'Clément Flipo':
-                        #    print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
                         i += 1
                         start += timedelta(minutes = mins)
@@ -4254,9 +4251,10 @@ class add_eps(process.process):
             'description': '',
             'tags': '',
             }
-        talk['email'] = emails[talk['authors']]
+        talk['emails'] = emails[talk['authors']]
         talks.append(talk)
 
+        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
         with open(self.show_dir+"/sched.csv",'w') as f:
             dw = csv.DictWriter(f, fields)
@@ -4268,11 +4266,55 @@ class add_eps(process.process):
                 # d = { (k,v) for k,v in talk if k in fields }
                 dw.writerow(d)
 
-        rooms = self.get_rooms(talks)
+        # rooms = self.get_rooms(talks)
+        # self.add_rooms(rooms,show)
+
+        # self.add_eps(talks, show)
+
+        return talks
+
+
+    def emwc_sheet(self, show, response):
+
+        schedule = self.emwc_wiki(show, response)
+
+        rows = goog_sheet(
+                '1KtjAaDfURqVnkgq_vGOSromC-2DduBrbUTfNfZ1acds')
+        sheet = {}
+        for row in rows:
+            sheet[int(row['conf_key'])] = row
+
+        # events = [ event for event in events if event['conf_key'] != '2']
+
+        # for event in events:
+        for event in schedule:
+            if self.options.verbose: pprint(event)
+            if event['conf_key'] == 2: continue
+
+            row = sheet[event['conf_key']]
+            if self.options.verbose: pprint(row)
+
+            event['location'] = 'Genesys'
+
+            # event['name'] = event['title']
+
+            # event['start'] = datetime.strptime(
+            #        event['start'],'%Y-%m-%d %H:%M:%S')
+
+            event['reviewers'] = row['reviewer']
+
+            event['released'] = row['released'].lower() == 'yes'
+
+            event['description'] = ''
+            event['tags'] = ''
+
+            event['authors'] = ', '.join(
+                    re.split(r',\s*|\s+and\s+|\n', event['authors']))
+
+        rooms = self.get_rooms(schedule)
         self.add_rooms(rooms,show)
 
-        self.add_eps(talks, show)
-
+        self.add_eps(schedule, show)
 
 
 
@@ -4487,8 +4529,11 @@ class add_eps(process.process):
                     headers=headers)
 
             if self.options.client =='emwc':
-                return self.emwc(show, response)
+                # return self.emwc_wiki(show, response)
+                return self.emwc_sheet(show, response)
 
+            elif self.options.client =='kicon_2019':
+                return self.kicon(show, response)
 
         parsed = urllib.parse.urlparse(url)
         ext = os.path.splitext(parsed.path)[1]
