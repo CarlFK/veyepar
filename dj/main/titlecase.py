@@ -34,7 +34,9 @@ def titlecase(text):
     words = re.split('\s', text)
     line = []
     for word in words:
-        if INLINE_PERIOD.search(word) or UC_ELSEWHERE.match(word):
+        if word.startswith('#') or \
+                INLINE_PERIOD.search(word) or \
+                UC_ELSEWHERE.match(word):
             line.append(word)
             continue
         if SMALL_WORDS.match(word):

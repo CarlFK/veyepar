@@ -505,13 +505,14 @@ class add_eps(process.process):
                     if f=="emails":
                         # don't always have rights to get email
                         if not a2:
+                            # don't blank out what might be there
                             continue
 
                     if f=="description":
                         a1 = a1.replace('\r','')
                         a2 = a2.replace('\r','')
 
-                    if (a1 or a2) and (a1 != a2):
+                    if ((a1 or a2) and (a1 != a2)) or (a1 is None and a2 == False):
                         diff=True
                         diff_fields.append((f,a1,a2))
 
@@ -608,6 +609,7 @@ class add_eps(process.process):
 
                 # save whatever data was passed
                 # episode.conf_meta=json.dumps(row['raw'])
+                # episode.released = None
 
                 episode.save()
 
@@ -4113,7 +4115,7 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
-    def emwc_wiki(self, show, response):
+    def emwc_wiki(self, show, response, session):
 
 
         fields = ['conf_key', 'start', 'duration', 'name', 'authors', 'twitter_id', 'emails', 'reviewer', 'released', 'conf_url', 'license']
@@ -4160,24 +4162,24 @@ class add_eps(process.process):
                     start = datetime.strptime(start_dt,
                             '%A, %B %d, %YT%I:%M %p')
                     for li in lis:
-                        url = ""
+                        conf_url = None
                         if li.text == 'TBD':
                             continue
                         elif li.text == 'Lightning Talks':
                             title = li.text
                             authors = "Community"
-                            url = www + "/wiki/EMWCon_Spring_2019/Lightning_Talks"
+                            conf_url = www + "/wiki/EMWCon_Spring_2019/Lightning_Talks"
                         elif li.find(string="Panel"):
                             title = "Panel: State of the MediaWiki Ecosystem"
                             authors = "Daren Welsh"
-                            url = www + "/wiki/EMWCon_Spring_2019/State_of_the_MediaWiki_Ecosystem"
+                            conf_url = www + "/wiki/EMWCon_Spring_2019/State_of_the_MediaWiki_Ecosystem"
                         elif li.next == 'Moderator: ':
                             # import pdb; pdb.set_trace()
                             break
                         else:
                             ahrefs = li.find_all('a')
                             if len(ahrefs) == 2:
-                                url = www + ahrefs[0].get('href')
+                                conf_url = www + ahrefs[0].get('href')
                                 # session = requests.session()
                                 # response = session.get(show.schedule)
                             try:
@@ -4188,11 +4190,16 @@ class add_eps(process.process):
 
 
                         time_re = re.compile(
-                                "(?P<authors>.*) \((?P<mins>\d+) (?P<units>minutes|hour)\)")
+                                "(?P<authors>.*) \((?P<amt>\d+) (?P<unit>minutes|hour)\)")
                         match = time_re.match(authors)
                         if match:
-                            mins = int(time_re.match(authors).group('mins'))
-                            authors = time_re.match(authors).group('authors')
+                            d = time_re.match(authors).groupdict()
+                            authors = d['authors']
+                            amt = int(d['amt'])
+                            if d['unit'] == 'hour':
+                                mins = amt * 60
+                            else:
+                                mins = amt
                         else:
                             mins = 30
                         duration = "00:{}:00".format(mins)
@@ -4200,9 +4207,6 @@ class add_eps(process.process):
                         # split on "," and "and" (and eat spaces)
                         # but dont eat the and in Hilderbrand
                         authors = re.split(r',\s*|\s+and\s+', authors)
-
-                        for a in authors:
-                            print(a)
 
                         email = ', '.join(emails[a] for a in authors)
                         authors = ', '.join(authors)
@@ -4218,7 +4222,7 @@ class add_eps(process.process):
                                 'emails': email,
                                 'reviewers': '',
                                 'released': None,
-                                'conf_url': url,
+                                'conf_url': conf_url,
                                 'license': 'CC-BY-NA',
                                 'description': '',
                                 'tags': '',
@@ -4266,6 +4270,20 @@ class add_eps(process.process):
                 # d = { (k,v) for k,v in talk if k in fields }
                 dw.writerow(d)
 
+                if talk['conf_url'] is not None:
+                    try:
+                        response = session.get(talk['conf_url'])
+                        talk_page = BeautifulSoup(response.content, "html.parser")
+                        node = talk_page.find('table')
+                        node = node.find_next('p')
+                        talk['description'] = node.text.strip()
+                        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+                    except AttributeError: #TypeError:
+                        pass
+                        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+                    print(talk['description'])
+
+
         # rooms = self.get_rooms(talks)
         # self.add_rooms(rooms,show)
 
@@ -4274,25 +4292,31 @@ class add_eps(process.process):
         return talks
 
 
-    def emwc_sheet(self, show, response):
+    def emwc_sheet(self, show, response, session):
 
-        schedule = self.emwc_wiki(show, response)
+        events = self.emwc_wiki(show, response, session)
 
         rows = goog_sheet(
                 '1KtjAaDfURqVnkgq_vGOSromC-2DduBrbUTfNfZ1acds')
+
         sheet = {}
         for row in rows:
-            sheet[int(row['conf_key'])] = row
+            sheet[row['title']] = row
 
-        # events = [ event for event in events if event['conf_key'] != '2']
+        # events = [ event for event in events if event['conf_key'] == 6]
 
-        # for event in events:
-        for event in schedule:
+        for event in events:
             if self.options.verbose: pprint(event)
             if event['conf_key'] == 2: continue
 
-            row = sheet[event['conf_key']]
+            row = sheet[event['name']]
             if self.options.verbose: pprint(row)
+            if event['name'] != row['title']:
+                pprint("{name} != {title}".format( **event, **row ))
+            if event['conf_key'] == 6:
+                # pprint((event, row))
+                # import pdb; pdb.set_trace()
+                pass
 
             event['location'] = 'Genesys'
 
@@ -4303,19 +4327,21 @@ class add_eps(process.process):
 
             event['reviewers'] = row['reviewer']
 
-            event['released'] = row['released'].lower() == 'yes'
+            # import pdb; pdb.set_trace()
+            if row['released'] == '':
+                event['released'] = None
+            else:
+                event['released'] = row['released'].lower() == 'yes'
 
-            event['description'] = ''
             event['tags'] = ''
 
             event['authors'] = ', '.join(
                     re.split(r',\s*|\s+and\s+|\n', event['authors']))
 
-        rooms = self.get_rooms(schedule)
+        rooms = self.get_rooms(events)
         self.add_rooms(rooms,show)
 
-        self.add_eps(schedule, show)
-
+        self.add_eps(events, show)
 
 
     def lcza(self, schedule, show):
@@ -4530,7 +4556,7 @@ class add_eps(process.process):
 
             if self.options.client =='emwc':
                 # return self.emwc_wiki(show, response)
-                return self.emwc_sheet(show, response)
+                return self.emwc_sheet(show, response, session)
 
             elif self.options.client =='kicon_2019':
                 return self.kicon(show, response)

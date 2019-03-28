@@ -30,32 +30,6 @@ class post(process):
 
     ready_state = 4
 
-    def construct_description(self, ep):
-        # collect strings from various sources
-        # build a wad of text to use as public facing description
-
-        show = ep.show
-        client = show.client
-
-        # (show tags seperate the talk from the event text)
-        descriptions = [ep.authors,
-                ep.public_url, ep.conf_url,
-                ep.description,
-                show.tags,
-                show.description, client.description,
-                client.tags,
-                ]
-
-        # remove blanks
-        descriptions = [d for d in descriptions if d]
-        # combine wiht CRs between each item
-        description = "\n\n".join(descriptions)
-        # remove extra blank lines
-        description = re.sub( r'\n{2,}', r'\n\n', description)
-        # description = "<br/>\n".join(description.split('\n'))
-
-        return description
-
     def get_tags(self,ep):
 
         tags = [ ep.show.client.slug, ep.show.slug, ]
@@ -115,7 +89,7 @@ class post(process):
         meta = {}
         meta['title'] = ep.name
         meta['authors'] = ep.authors.split(',')
-        meta['description'] = self.construct_description(ep)
+        meta['description'] = ep.composed_description
         meta['tags'] = self.get_tags(ep)
 
         meta['start'] = ep.start

@@ -7,6 +7,7 @@ import os
 import socket
 import datetime
 import random
+import re
 
 # from django.forms import Textarea
 from django import forms
@@ -350,6 +351,9 @@ class Episode(models.Model):
                 'widget': forms.Textarea({'cols': 30, 'rows': 2}),
             }}
 
+    class Meta:
+        ordering = ["sequence"]
+        # unique_together = [("show", "slug")]
 
     @models.permalink
     def get_absolute_url(self):
@@ -413,10 +417,34 @@ class Episode(models.Model):
         url = "https://veyepar.nextdayvideo.com/main/approve/{id}/{slug}/{edit_key}/".format(id=self.id, slug=self.slug, edit_key=self.edit_key)
         return url
 
+    def composed_description(self):
+        # build a wad of text to use as public facing description
 
-    class Meta:
-        ordering = ["sequence"]
-        # unique_together = [("show", "slug")]
+        show = self.show
+        client = show.client
+
+        # (show tags seperate the talk from the event text)
+        descriptions = [self.authors,
+                self.public_url,
+                self.conf_url,
+                self.description,
+                show.tags,
+                show.description, client.description,
+                client.tags,
+                "{} at {}".format(
+                    self.start.strftime("%c"),
+                    self.location.name),
+                ]
+
+        # remove blanks
+        descriptions = [d for d in descriptions if d]
+        # combine wiht CRs between each item
+        description = "\n\n".join(descriptions)
+        # remove extra blank lines
+        description = re.sub( r'\n{2,}', r'\n\n', description)
+        # description = "<br/>\n".join(description.split('\n'))
+
+        return description
 
 
 class Cut_List(models.Model):
