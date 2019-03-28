@@ -73,7 +73,8 @@ import pytz
 import re
 import requests
 
-import urllib.parse
+import urllib
+from urllib.parse import urlparse, parse_qs
 
 from pprint import pprint
 from difflib import Differ
@@ -2008,7 +2009,7 @@ class add_eps(process.process):
 
                         twit = p.get('twitter')
                         if twit not in [ None, ]:
-                            twitter_id = urllib.parse.urlparse(twit).path[1:]
+                            twitter_id = urlparse(twit).path[1:]
                             # make sure it starts with an @
                             if not twitter_id.startswith('@'):
                                 twitter_id = '@' + twitter_id
@@ -4121,7 +4122,7 @@ class add_eps(process.process):
         fields = ['conf_key', 'start', 'duration', 'name', 'authors', 'twitter_id', 'emails', 'reviewer', 'released', 'conf_url', 'license']
         # twitter_id
 
-        parsed = urllib.parse.urlparse(response.url)
+        parsed = urlparse(response.url)
         # print("import sys;sys.exit()"); import code; code.interact(local=locals())
         www = "{scheme}://{netloc}".format(
                 scheme = parsed.scheme,
@@ -4271,23 +4272,24 @@ class add_eps(process.process):
                 dw.writerow(d)
 
                 if talk['conf_url'] is not None:
-                    try:
-                        response = session.get(talk['conf_url'])
-                        talk_page = BeautifulSoup(response.content, "html.parser")
-                        node = talk_page.find('table')
-                        node = node.find_next('p')
-                        talk['description'] = node.text.strip()
-                        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
-                    except AttributeError: #TypeError:
-                        pass
-                        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
-                    print(talk['description'])
-
-
-        # rooms = self.get_rooms(talks)
-        # self.add_rooms(rooms,show)
-
-        # self.add_eps(talks, show)
+                    url = www + "/w/api.php"
+                    parsed = urlparse(talk['conf_url'])
+                    page = urllib.parse.unquote(
+                            parsed.path[6:]),  # strip /wiki/
+                    params = {
+                            'action': "parse",
+                            'page': page,
+                            'format': "json",
+                            'prop': 'wikitext',
+                        }
+                    response = session.get(url=url, params=params)
+                    j = response.json()
+                    # pprint(j)
+                    wiki_re = re.compile(r"{{.*}}(?P<desc>.*)", flags=re.DOTALL)
+                    wiki_match = wiki_re.match(j['parse']['wikitext']['*'])
+                    d = wiki_match.groupdict()
+                    talk['description'] = d['desc'].strip()
+                    # print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
         return talks
 
@@ -4561,7 +4563,7 @@ class add_eps(process.process):
             elif self.options.client =='kicon_2019':
                 return self.kicon(show, response)
 
-        parsed = urllib.parse.urlparse(url)
+        parsed = urlparse(url)
         ext = os.path.splitext(parsed.path)[1]
         if ext=='.csv':
             # schedule = list(csv.reader(f))

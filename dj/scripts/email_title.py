@@ -43,7 +43,7 @@ http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.sh
     (is blank.)
   {% endif %}
 {% endif %}
-Released:
+Released: "{{ep.released|yesno:"Yes,No,None"}}" means:
 Yes: Permission has been given to record your talk and post it online.  Once it is up, you will get another e-mail with a URL that is not public until someone approves it.  Once it's approved it will be made public and tweeted {{ep.show.client.tweet_prefix}} {{ep.twitter_id}}.
 No: You have requested for the video not to be released. However the a video may be made anyway and available for review in case you change your mind.  If you need to be absolutly sure, at the event you can ask to have the camera tuned off.
 None: Permission to publish a video of this talk is unknown.  This means it may get recorded and processed, but it will not be made public and we will send another email asking for permission.  Please reply to this email stating your preference.
