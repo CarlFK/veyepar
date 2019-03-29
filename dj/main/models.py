@@ -423,6 +423,8 @@ class Episode(models.Model):
         show = self.show
         client = show.client
 
+        footer = "Produced by NDV: https://youtube.com/channel/UCQ7dFBzZGlBvtU2hCecsBBg?sub_confirmation=1"
+
         # (show tags seperate the talk from the event text)
         descriptions = [self.authors,
                 self.public_url,
@@ -430,6 +432,7 @@ class Episode(models.Model):
                 self.description,
                 show.tags,
                 show.description, client.description,
+                footer,
                 client.tags,
                 "{} at {}".format(
                     self.start.strftime("%c"),
