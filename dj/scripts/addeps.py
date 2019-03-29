@@ -113,6 +113,8 @@ from oauth2client.file import Storage
 # import lxml.etree
 from lxml import html
 
+import mwparserfromhell
+
 import pw
 
 import process
@@ -419,6 +421,8 @@ class add_eps(process.process):
         # add a "lock" to prevent updates to a record.
         # need to figure out what to do with colisions.
 
+        # extra fields: not required.
+
         # only these fields in the dict are used, the rest are ignored.
         fields=(
                 # 'state',
@@ -432,6 +436,7 @@ class add_eps(process.process):
                 'license',
                 'conf_url', 'tags',
                 # 'host_url',  # for pycon.ca youtube URLs
+                'comment',
                 )
 
         if self.options.test:
@@ -707,7 +712,7 @@ class add_eps(process.process):
           # minutes = row['duration']
 
           # adjust for time zone:
-	  # start += datetime.timedelta(hours=-7,minutes=0)
+          # start += datetime.timedelta(hours=-7,minutes=0)
 
 
     def str2bool(self, tf):
@@ -3978,7 +3983,7 @@ class add_eps(process.process):
         requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
         def one_page(url):
-	    # resp =  requests.get('https://postgresconf.org/conferences/SouthAfrica2018/program/proposals/face-recognition-and-postgres', verify=False)
+            # resp =  requests.get('https://postgresconf.org/conferences/SouthAfrica2018/program/proposals/face-recognition-and-postgres', verify=False)
             resp =  requests.get(url, verify=False)
             doc = html.document_fromstring(resp.text)
             el = doc.get_element_by_id('proposal-info')
@@ -4118,6 +4123,7 @@ class add_eps(process.process):
 
     def emwc_wiki(self, show, response, session):
 
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
         fields = ['conf_key', 'start', 'duration', 'name', 'authors', 'twitter_id', 'emails', 'reviewer', 'released', 'conf_url', 'license']
         # twitter_id
@@ -4271,25 +4277,61 @@ class add_eps(process.process):
                 # d = { (k,v) for k,v in talk if k in fields }
                 dw.writerow(d)
 
+                talk['comment'] = None
                 if talk['conf_url'] is not None:
                     url = www + "/w/api.php"
                     parsed = urlparse(talk['conf_url'])
                     page = urllib.parse.unquote(
                             parsed.path[6:]),  # strip /wiki/
                     params = {
+                            # 'action': "render",
                             'action': "parse",
                             'page': page,
                             'format': "json",
                             'prop': 'wikitext',
                         }
+                    # from mwparserfromhell docs
+                    data = {
+                            "action": "query",
+                            "prop": "revisions",
+                            "rvprop": "content",
+                            "rvslots": "main",
+                            "rvlimit": 1,
+                            "titles": title,
+                            "format": "json",
+                            "formatversion": "2"}
                     response = session.get(url=url, params=params)
                     j = response.json()
                     # pprint(j)
                     wiki_re = re.compile(r"{{.*}}(?P<desc>.*)", flags=re.DOTALL)
                     wiki_match = wiki_re.match(j['parse']['wikitext']['*'])
                     d = wiki_match.groupdict()
-                    talk['description'] = d['desc'].strip()
-                    # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+                    desc = d['desc'].strip()
+
+                    if desc:
+
+                        wikicode = mwparserfromhell.parse(desc)
+                        desc_text = wikicode.strip_code()
+
+                        links = ""
+                        for link in wikicode.filter_external_links():
+                            links += "{title} {url}\n".format(
+                                    title=link.title, url=link.url)
+
+                        description = "{}\n\nTEXT:{}\n\n{}\n".format(
+                                desc,
+                                desc_text,
+                                links)
+
+                        comment = "{}\n\n{}\n".format(
+                                desc_text,
+                                links)
+
+                        talk['description'] = desc
+                        talk['comment'] = comment
+                        # if talk['conf_key'] == 7:
+                        # if '[' in talk['description']:
+                        # if 'http' in desc: print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
         return talks
 
@@ -4411,6 +4453,67 @@ class add_eps(process.process):
         self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
+
+
+    def pyvideo(self, schedule, show):
+
+        # schedule = [ s for s in schedule if s['speaker']['name'] is not None]
+        schedule = [ s for s in schedule
+                if s['room']['name'] == "Special Event Center" ]
+
+        field_maps = [
+                ('room','location'),
+                ('name','name'),
+                ('speaker','authors'),
+                ('speaker','emails'),
+                ('speaker','twitter_id'),
+                ('','reviewers'),
+                ('start','start'),
+                ('end','end'),
+                ('duration','duration'),
+                ('released','released'),
+                ('license','license'),
+                ('language',''),
+                ('id','conf_key'),
+                ('url','conf_url'),
+                ('summary','summary'),
+                ('description','description'),
+                ('','tags'),
+            ]
+
+
+        events = self.generic_events(schedule, field_maps)
+
+        for event in events:
+            if self.options.verbose: pprint(event)
+
+            event['location'] = event['location']['name']
+
+            # "start": '2019-04-13T08:00:00Z'
+            event['start'] = datetime.strptime(
+                    event['start'],'%Y-%m-%dT%H:%M:%SZ')
+            event['end'] = datetime.strptime(
+                    event['end'],'%Y-%m-%dT%H:%M:%SZ')
+
+            event['duration'] = "{}:00".format(event['duration'])
+
+            event['authors'] = event['authors']['name']
+            if event['authors'] is None:
+                event['authors'] = "None."
+
+            event['emails'] = "" # event['author']['']
+            event['twitter_id'] = ""
+
+            if event['summary'] is not None:
+                event['description'] += event['summary']
+
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
 
 
 #################################################3
@@ -4625,6 +4728,9 @@ class add_eps(process.process):
 
         if ext =='.ics':
             return self.ics(schedule,show)
+
+        if self.options.client =='pytexas':
+            return self.pyvideo(schedule, show)
 
         if self.options.client =='emwc':
             return self.emwc(schedule, show)
