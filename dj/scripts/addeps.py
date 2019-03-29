@@ -4313,22 +4313,27 @@ class add_eps(process.process):
                         wikicode = mwparserfromhell.parse(desc)
                         desc_text = wikicode.strip_code()
 
-                        links = ""
+                        links1 = ""
                         for link in wikicode.filter_external_links():
-                            links += "{title} {url}\n".format(
-                                    title=link.title, url=link.url)
+                            links1 += "{title} {url}\n".format(title=link.title, url=link.url)
 
-                        description = "{}\n\nTEXT:{}\n\n{}\n".format(
-                                desc,
-                                desc_text,
-                                links)
+                        links2 = ""
+                        for link in wikicode.filter_wikilinks():
+                            url="{}/{}".format(www, link.title.strip_code())
+                            try:
+                                text = link.text.strip_code()
+                            except AttributeError:
+                                text = link.title.strip_code()
+                            url="{}/{}".format(www, link.title.strip_code())
+                            links2 += "{text} {url}\n".format(text=text, url=url)
 
-                        comment = "{}\n\n{}\n".format(
-                                desc_text,
-                                links)
+                        comment = "{}\n\nTEXT:{}\n\n{}\n{}".format(desc, desc_text, links1, links2)
 
                         talk['description'] = desc
-                        talk['comment'] = comment
+                        if desc.strip() == comment.strip():
+                            talk['comment'] = ''
+                        else:
+                            talk['comment'] = comment
                         # if talk['conf_key'] == 7:
                         # if '[' in talk['description']:
                         # if 'http' in desc: print("import sys;sys.exit()"); import code; code.interact(local=locals())
