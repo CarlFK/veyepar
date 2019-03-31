@@ -223,6 +223,7 @@ def asset_names(request, client_slug, show_slug):
 def veyepar_cfg(request, show_id):
 
     cfg_lines = ["[global]"]
+    yml_lines = ['',]
 
     shows=Show.objects.annotate( max_date=Max('episode__start'))\
             .order_by('-max_date')
@@ -246,11 +247,17 @@ def veyepar_cfg(request, show_id):
         cfg_lines.append("{active}show={show}".format(
             active=active,show=show.slug))
 
+        yml_lines.append("org: {client}".format(
+            client=show.client.slug))
+        yml_lines.append("show: {show}".format(
+            show=show.slug))
+
         locations=show.locations.filter(active=True).order_by('sequence')
         for loc in locations:
             cfg_lines.append("room={slug}".format(slug=loc.slug))
+            yml_lines.append("room_name: {slug}".format(slug=loc.slug))
 
-    cfg = '\n'.join(cfg_lines)
+    cfg = '\n'.join(cfg_lines + yml_lines)
 
     response = HttpResponse(cfg, content_type="text/plain")
     response['Content-Disposition'] = 'inline; filename=veyepar.cfg'
