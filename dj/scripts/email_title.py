@@ -24,9 +24,7 @@ Length: {{ep.get_minutes}}  minutes
 Location: {{ep.location.name}}
 Released: {{ep.released|yesno:"Yes,No,None"}}
 Conference page: {{ep.conf_url}}
-
 Projector hookup: HDMI 720p 16:9
-Please bring any adapters you need. If you have any special requests or have forgotten your adapter, please contact us ASAP and we will try to accommodate you.
 
 The video will be posted with the following:
 
@@ -40,13 +38,12 @@ http://veyepar.{{ep.show.client.bucket_id}}.cdn.nextdayvideo.com/veyepar/{{ep.sh
 === begin ===
 {{ep.composed_description}}
 === end description ===
-  {% else %}
-    (is blank.)
+  {% else %} (is blank.)
   {% endif %}
 {% endif %}
 Released: "{{ep.released|yesno:"Yes,No,None"}}" means:
 Yes: Permission has been given to record your talk and post it online.  Once it is up, you will get another e-mail with a URL that is not public until someone approves it.  Once it's approved it will be made public and tweeted {{ep.show.client.tweet_prefix}} {{ep.twitter_id}}.
-No: You have requested for the video not to be released. This request will be honored.  However the a video may be produced and available for review in case you change your mind.  If you need to be absolutly sure, at the event you can ask to have the camera turned off.
+No: You have requested for the video not to be released. This request will be honored.  However the a video may be produced and available for review in case you change your mind.  If you need to be absolutely sure, at the event you can ask to have the camera turned off.
 None: Permission to publish a video of this talk is unknown.  This means it may get recorded and processed, but it will not be made public and we will send another email asking for permission.  Please reply to this email stating your preference.
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 
