@@ -89,7 +89,7 @@ class post(process):
         meta = {}
         meta['title'] = ep.name
         meta['authors'] = ep.authors.split(',')
-        meta['description'] = ep.composed_description
+        meta['description'] = ep.composed_description()
         meta['tags'] = self.get_tags(ep)
 
         meta['start'] = ep.start
@@ -379,7 +379,7 @@ class post(process):
 
     def process_ep(self, ep):
 
-        if not ep.released: # and not self.options.release_all:
+        if not ep.released and ep.released is not None: # and not self.options.release_all:
             # --release will force the upload, overrides ep.released
             if self.options.verbose: print("not released:", ep.released)
             return False
