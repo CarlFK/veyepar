@@ -10,7 +10,7 @@ import pprint
 
 
 def set_text(node, prop_name, value=None):
-    # print(node, prop_name, value)
+    print(node, prop_name, value)
     p = node.find("property[@name='{}']".format(prop_name))
     if value is None:
         node.remove(p)
@@ -149,12 +149,12 @@ def mk_mlt(template, output, params):
             ti.insert(0,channelcopy)
 
         if cut['normalize']!='0':
-            pass
-            # normalize = copy.deepcopy( nodes['normalize'] )
+            normalize = copy.deepcopy( nodes['normalize'] )
             # set_text(normalize,'program' , cut['normalize'])
-            # ti.insert(0,normalize)
+            set_text(normalize, 'target_loudness' , cut['normalize'])
+            ti.insert(0,normalize)
             # volume = copy.deepcopy( nodes['volume'] )
-            # set_text(volume,'gain' , cut['normalize'])
+            # set_text(volume, 'gain' , cut['normalize'])
             # ti.insert(0,volume)
 
         if nodes['pic_in_pic'] is not None:

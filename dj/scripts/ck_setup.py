@@ -158,7 +158,7 @@ class ck_setup(process):
         keys = [ 'client',
             'show',
             'title',
-            'title2',
+            'title1', 'title2',
             'track',
             'presenternames',
             'authors',

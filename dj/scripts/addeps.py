@@ -436,7 +436,7 @@ class add_eps(process.process):
                 'license',
                 'conf_url', 'tags',
                 # 'host_url',  # for pycon.ca youtube URLs
-                'comment',
+                # 'comment',
                 )
 
         if self.options.test:
@@ -598,7 +598,7 @@ class add_eps(process.process):
                     seq+=1
 
                 else:
-                    print(("updating conf_key: {conf_key}, name:{name}").format(**row))
+                    print(("updating conf_key: {conf_key}, name:{name}\n").format(**row))
 
                 location=Location.objects.get(
                         name__iexact=row['location'])
@@ -4158,6 +4158,7 @@ class add_eps(process.process):
             for tr in trs:
                 tds = tr.find_all('td')
                 if len(tds) == 1:
+                    print(tds)
                     continue
                 lis = tds[2].find_all('li')
                 # if there is a list of talks:
@@ -4170,28 +4171,32 @@ class add_eps(process.process):
                             '%A, %B %d, %YT%I:%M %p')
                     for li in lis:
                         conf_url = None
-                        if li.text == 'TBD':
+                        print(li)
+                        if 'Introductions' in li.text:
                             continue
                         elif li.text == 'Lightning Talks':
                             title = li.text
                             authors = "Community"
                             conf_url = www + "/wiki/EMWCon_Spring_2019/Lightning_Talks"
                         elif li.find(string="Panel"):
-                            title = "Panel: State of the MediaWiki Ecosystem"
-                            authors = "Daren Welsh"
-                            conf_url = www + "/wiki/EMWCon_Spring_2019/State_of_the_MediaWiki_Ecosystem"
+                            node = li.find('a')
+                            conf_url = www + ahrefs[0].get('href')
+                            title = "Panel: {}".format(node.text)
+                            node = node.find_next('li')
+                            authors = node.text[11:]
+                            print("import sys;sys.exit()"); import code; code.interact(local=locals())
                         elif li.next == 'Moderator: ':
                             # import pdb; pdb.set_trace()
                             break
                         else:
                             ahrefs = li.find_all('a')
-                            if len(ahrefs) == 2:
+                            if len(ahrefs) >= 1:
                                 conf_url = www + ahrefs[0].get('href')
-                                # session = requests.session()
-                                # response = session.get(show.schedule)
                             try:
                                 title, authors = li.text.split(' - ')
                             except:
+                                pprint(li)
+                                continue
                                 print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
 
@@ -4268,6 +4273,7 @@ class add_eps(process.process):
         # print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
         with open(self.show_dir+"/sched.csv",'w') as f:
+
             dw = csv.DictWriter(f, fields)
             for talk in talks:
                 d = {}
@@ -4277,8 +4283,14 @@ class add_eps(process.process):
                 # d = { (k,v) for k,v in talk if k in fields }
                 dw.writerow(d)
 
+                # get description from page
                 talk['comment'] = None
                 if talk['conf_url'] is not None:
+                    print( talk['name'] )
+                    print( talk['conf_url'] )
+                    if talk['conf_url'] == "https://www.mediawiki.org/wiki/EMWCon_Spring_2019/Thoughts_on_MediaWiki%27s_Role_in_Enterprise_Knowledge_Management":
+                        continue
+
                     url = www + "/w/api.php"
                     parsed = urlparse(talk['conf_url'])
                     page = urllib.parse.unquote(
@@ -4350,18 +4362,23 @@ class add_eps(process.process):
 
         sheet = {}
         for row in rows:
+            pprint(row)
             sheet[row['title']] = row
 
         # events = [ event for event in events if event['conf_key'] == 6]
 
         for event in events:
             if self.options.verbose: pprint(event)
-            if event['conf_key'] == 2: continue
+            # if event['conf_key'] == 2: continue
 
-            row = sheet[event['name']]
+            try:
+                row = sheet[event['name']]
+            except:
+                print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
             if self.options.verbose: pprint(row)
-            if event['name'] != row['title']:
-                pprint("{name} != {title}".format( **event, **row ))
+            # if event['name'] != row['title']:
+            #    pprint("{name} != {title}".format( **event, **row ))
             if event['conf_key'] == 6:
                 # pprint((event, row))
                 # import pdb; pdb.set_trace()
@@ -4506,8 +4523,9 @@ class add_eps(process.process):
             if event['authors'] is None:
                 event['authors'] = "None."
 
-            event['emails'] = "" # event['author']['']
-            event['twitter_id'] = ""
+            event['emails'] = event['emails']['email']
+            event['twitter_id'] = fix_twitter_id(
+                    event['twitter_id']['twitter_id'])
 
             if event['summary'] is not None:
                 event['description'] += event['summary']
@@ -4642,6 +4660,9 @@ class add_eps(process.process):
                         print('"sessionid" not in session.cookies')
 
                     if self.options.verbose: print("login ret:", ret)
+
+                if 'api-key' in auth:
+                    url += "?" + auth['api-key']
 
 
             if self.options.show in ['chicagowebconf2012"',
