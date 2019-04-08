@@ -2,9 +2,9 @@
 
 # mk_public.py - flip state on hosts from private to public
 # private = not listed, can be seen if you know the url
-#     the presenters have been emaild the URL, 
+#     the presenters have been emaild the URL,
 #     they are encouraged to advertise it.
-# public = advertised, it is ready for the world to view.  
+# public = advertised, it is ready for the world to view.
 #     It will be tweeted at @NextDayVideo
 
 """
@@ -40,8 +40,8 @@ class mk_public(process):
 
         v_id = get_video_id(ep.public_url)
 
-        video_data = get_video(api_url=endpoint, 
-                auth_token=host['api_key'], 
+        video_data = get_video(api_url=endpoint,
+                auth_token=host['api_key'],
                 video_id=v_id)
 
         if video_data['state'] == STATE_LIVE:
@@ -49,10 +49,10 @@ class mk_public(process):
         else:
             video_data['state'] = 1
 
-        try: 
-            update_video(endpoint, 
-                    auth_token=host['api_key'], 
-                    video_id=v_id, 
+        try:
+            update_video(endpoint,
+                    auth_token=host['api_key'],
+                    video_id=v_id,
                     video_data=video_data)
         except Http4xxException as exc:
             print(exc)
@@ -68,7 +68,8 @@ class mk_public(process):
     def up_youtube(self, ep):
 
         uploader = youtube_v3_uploader.Uploader()
-        uploader.user = ep.show.client.youtube_id
+        uploader.oauth_file = \
+                pw.yt[ep.show.client.youtube_id]['filename']
         playlist_id = ep.show.youtube_playlist_id
         if self.options.verbose: print("Setting Youtube to public...")
         try:
@@ -87,7 +88,7 @@ class mk_public(process):
     def process_ep(self, ep):
         # set youtube to public
         # set richard state to live
- 
+
         if ep.released:
 
             ret = True  # if something breaks, this will turn false
@@ -102,8 +103,8 @@ class mk_public(process):
                 if self.options.verbose: print("Youtube public.")
         else:
 
-            ret = False # Nope. Not until it is both approved and Released. 
-        
+            ret = False # Nope. Not until it is both approved and Released.
+
 
         return ret
 

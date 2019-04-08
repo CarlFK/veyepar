@@ -172,7 +172,7 @@ def resumable_upload(insert_request):
   error = None
   retry = 0
 
-  widgets = ['Test: ', pb.Percentage(), ' ', pb.Bar(marker='0',left='[',right=']'), ' ', pb.ETA(), ' ', pb.FileTransferSpeed()] #see docs for other options
+  widgets = ['Uploading: ', pb.Percentage(), ' ', pb.Bar(marker='0',left='[',right=']'), ' ', pb.ETA(), ' ', pb.FileTransferSpeed()] #see docs for other options
   pbar = pb.ProgressBar(widgets=widgets, maxval=1)
   pbar.start()
 
