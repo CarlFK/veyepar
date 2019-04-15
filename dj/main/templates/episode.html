@@ -94,6 +94,7 @@ Name: <b>{{episode.name}}</b><br>
 <a href="{% url "public_play_list" %}{{episode.slug}}.m3u?id={{episode.id}}">encoded-files-playlist</a>
 
 {% if episode.host_url %} <a href="{{episode.host_url}}">host</a>{%endif%}
+
 {% if episode.archive_mp4_url %} <a href="{{episode.archive_mp4_url}}">archive</a>{%endif%}
 {% if episode.public_url%}<a href="{{episode.public_url}}">public</a>{%endif%}
 {% if episode.twitter_url%}<a href="{{episode.twitter_url}}">tweet</a>{%endif%}
@@ -277,9 +278,11 @@ $(".viewer").zoomer();
                 <td>Duration</td>
                 <td>{{cl.raw_file.duration}}</td>
                 <td>
+                    <input type="button" value="-60" id="back60-{{cl.id}}">
                     <input type="button" value="-5s" id="back5-{{cl.id}}">
                     <input type="button" value="-1s" id="back1-{{cl.id}}">
                     <input type="button" value="+5s" id="fwd5-{{cl.id}}">
+                    <input type="button" value="+30s" id="fwd30-{{cl.id}}">
                     {# <input type="button" value="end-5s" id="end5-{{cl.id}}"> #}
                 </td>
             </tr>
@@ -374,6 +377,12 @@ $(".viewer").zoomer();
             vid{{x}}[0].currentTime = startbox{{x}}.val();
        });
 
+    // back 60 seconds
+    $( "#back60-{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-60;
+       });
+
+
     // back 5 seconds
     $( "#back5-{{cl.id}}" ).click(function() {
             vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')-5;
@@ -387,6 +396,11 @@ $(".viewer").zoomer();
     // fwd 5 seconds
     $( "#fwd5-{{cl.id}}" ).click(function() {
             vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')+5;
+       });
+
+    // fwd 30 seconds
+    $( "#fwd30-{{cl.id}}" ).click(function() {
+            vid{{x}}[0].currentTime = vid{{x}}.prop('currentTime')+30;
        });
 
     // move to 5 sec before the end
