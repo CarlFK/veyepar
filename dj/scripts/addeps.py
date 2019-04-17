@@ -4481,7 +4481,10 @@ class add_eps(process.process):
 
         # schedule = [ s for s in schedule if s['speaker']['name'] is not None]
         schedule = [ s for s in schedule
-                if s['room']['name'] == "Special Event Center" ]
+                if s['room'] is not None and
+                    s['name'] not in ['Break',] and
+                    s['room']['name'] == "Special Event Center"
+                    ]
 
         field_maps = [
                 ('room','location'),

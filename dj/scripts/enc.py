@@ -423,14 +423,15 @@ class enc(process):
                 if cl.episode.normalise:
                     cut['normalize'] = cl.episode.normalise
                 else:
-                    cut['normalize']='-12.0'
+                    # cut['normalize']='-12.0'
+                    cut['normalize']='0'
 
                 if cl.episode.comment.startswith('delay'):
                     delay = cl.episode.comment.split('\n')[0].split('=')[1].strip()
                     cut['video_delay']=delay
                 else:
-                    if cl.episode.show.slug == "pygotham_2016":
-                        cut['video_delay']='1.0'
+                    if cl.episode.show.slug == "pytx19":
+                        cut['video_delay']='0.8'
                     else:
                         cut['video_delay']='0.0'
 

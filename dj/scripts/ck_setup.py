@@ -151,7 +151,7 @@ class ck_setup(process):
                 title_svg)
         p_okg(title_svg)
         if not os.path.exists(title_svg):
-            p_fail("title_svg not found.")
+            p_fail("{title_svg} not found.")
 
         raw_svg=open(title_svg).read()
         tree=xml.etree.ElementTree.XMLID(raw_svg)

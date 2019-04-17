@@ -232,7 +232,7 @@ $(".viewer").zoomer();
   <div class="cl-detail">
       {{clrfform.clid}}
 
-      ~/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}} :start-time=0{{cl.start}}
+      vlc ~/Videos/veyepar/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}} :start-time=0{{cl.get_start_seconds}}
       <table>
       <tr>
       <td>
