@@ -2628,9 +2628,15 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
          )
 
 def episode_logs(request, episode_id):
-    print(episode_id)
+
     episode = get_object_or_404(Episode, id=episode_id)
-    logs = episode.log_set.order_by('start')
+
+    # logs = episode.log_set.order_by('start')
+    logs = Log.objects.filter(episode=episode).order_by('start')
+    if "state" in request.GET:
+        state = get_object_or_404(State, slug=request.GET['state'])
+        logs = logs.filter(state=state)
+
     return render(request, 'episode_logs.html',
         {'episode':episode,
          'logs':logs,
