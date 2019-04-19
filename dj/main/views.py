@@ -2637,6 +2637,9 @@ def episode_logs(request, episode_id):
         state = get_object_or_404(State, slug=request.GET['state'])
         logs = logs.filter(state=state)
 
+    if "result" in request.GET:
+        logs = logs.filter(result=request.GET['result'])
+
     return render(request, 'episode_logs.html',
         {'episode':episode,
          'logs':logs,
