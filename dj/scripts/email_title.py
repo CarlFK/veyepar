@@ -24,7 +24,8 @@ Length: {{ep.get_minutes}}  minutes
 Location: {{ep.location.name}}
 Released: {{ep.released|yesno:"Yes,No,None"}}
 Conference page: {{ep.conf_url}}
-Projector hookup: HDMI 720p 16:9
+Projector hookup: HDMI 720p
+Slide aspect: 16:9 aka wide screen
 
 The video will be posted with the following:
 
@@ -47,8 +48,11 @@ No: You have requested for the video not to be released. This request will be ho
 None: Permission to publish a video of this talk is unknown.  This means it may get recorded and processed, but it will not be made public and we will send another email asking for permission.  Please reply to this email stating your preference.
 {% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
 {% if not ep.reviewers %}
-If you would like someone to double check your video, (mostly for technical defects, see https://github.com/CarlFK/veyepar/wiki/Reviewer) forward this message to them, have them forward it to the conference organizers with the phrase: "I'll review this video."  They will then get CCed when the video is ready for review.
+If you would like someone to double check your video, (mostly for technical defects, see https://github.com/CarlFK/veyepar/wiki/Reviewer) hit reply, add a name and email to the top, hit send.  They will then get CCed when your video is ready for review.
 {% endif %}
+
+NB: If you need to point at something on the screen, use your mouse pointer.  Laser pointers will not be picked up on the video at all.
+
 If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
 
 """
