@@ -4371,7 +4371,10 @@ class add_eps(process.process):
         fields = ['conf_key', 'start', 'duration', 'name', 'authors', 'twitter_id', 'emails', 'reviewer', 'released', 'conf_url', 'license']
         # twitter_id
 
-        parsed = urlparse(response.url)
+        url = response.url
+    def latch_2019(self, soup):
+        url = "file:///home/carl/Videos/veyepar/fossi/latch_2019/schedule/Latchup.html#schedule"
+        parsed = urlparse(url)
         node = soup.find('a', href='#'+parsed.fragment) #schedule
         rows = []
         conf_key = 0
@@ -4406,7 +4409,14 @@ class add_eps(process.process):
             else:
 
                 fragment = node.get('href')
-                node = soup.find('a', href=fragment) #lname
+                nam = fragment[1:]
+                node = soup.find('a', attrs={'name':nam})
+                desc_node = node.find_next('p')
+                description = desc_node.text
+
+            row['author'] = presenter
+            row['description'] = description
+
                 print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
         # node = soup.find(id="Program")
@@ -5375,7 +5385,19 @@ class add_eps(process.process):
         self.show = show
         self.one_show(show)
 
-if __name__ == '__main__':
+def testit():
+    fn = "/home/carl/Videos/veyepar/fossi/latch_2019/schedule/Latchup.html"
+    # session = requests.session()
+    # response = session.get(url)
+    with open(fn) as f:
+        content = f.read()
+    soup = BeautifulSoup(content, "html.parser")
     p=add_eps()
-    p.main()
+    return p.latch_2019(soup)
+
+if __name__ == '__main__':
+    testit()
+
+    # p=add_eps()
+    # p.main()
 
