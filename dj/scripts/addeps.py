@@ -67,6 +67,7 @@ def mk_fieldlist():
 
 from datetime import datetime, timedelta
 import csv
+import functools
 import html.parser
 import os
 import pytz
@@ -415,7 +416,7 @@ class add_eps(process.process):
         # location - room name as stored in Location model.
         #   considering changing it to the ID of the location record.
         #
-        # raw - the row from the input file before any transormations.
+        # raw - the row from the input before any transormations.
 
         # TODO:
         # add a "lock" to prevent updates to a record.
@@ -443,6 +444,7 @@ class add_eps(process.process):
             print("test mode, not adding to db")
             return
 
+        diff_ids=[]
         seq=0
         for row in schedule:
             if self.options.verbose: pprint( row )
@@ -524,6 +526,8 @@ class add_eps(process.process):
 
                 # report if different
                 if diff:
+                    diff_ids.append(episode.id)
+
                     print('veyepar #id name: #%s %s' % (
                             episode.id, episode.name))
                     host= "veyepar.nextdayvideo.com"
@@ -618,6 +622,11 @@ class add_eps(process.process):
                 # episode.released = None
 
                 episode.save()
+
+        for i in diff_ids:
+            print(i, end=' ')
+        print()
+
 
         print("checking for removed talks...")
         conf_keys = [str(row['conf_key']) for row in schedule]
@@ -4353,6 +4362,334 @@ class add_eps(process.process):
         return talks
 
 
+    def latch_2019(self, show, response, session):
+
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        fields = ['conf_key', 'start', 'duration', 'name', 'authors', 'twitter_id', 'emails', 'reviewer', 'released', 'conf_url', 'license']
+        # twitter_id
+
+        parsed = urlparse(response.url)
+        node = soup.find('a', href='#'+parsed.fragment) #schedule
+        rows = []
+        conf_key = 0
+        node = node.find_next('h6') # Saturday
+        start_date = 'May 4, 2019'
+        t = node.find_next('table')
+        trs = t.find_all('tr')
+        for tr in trs:
+            # print(tr)
+            tds = tr.find_all('td')
+            # print(tds[1].text)
+            if not tds[1].text:
+                # no (p/q) numbers so not a talk
+                continue
+
+            conf_key += 1
+            row = { 'conf_key': conf_key,
+                    'name': tds[2].text,
+                    }
+
+            start_time = tds[0].text
+            start_dt = start_date + 'T' + start_time
+            row['start'] = datetime.strptime(start_dt,
+                    '%B %d, %YT%I:%M')
+            row['duration'] = functools.reduce( lambda x, y: x+y, [ int(t) for t in tds[1].text.strip('()').split('/') ])
+
+            node = tds[2].find('a')
+            if node is None:
+                presenter = ''
+                description = ''
+                released = False
+            else:
+
+                fragment = node.get('href')
+                node = soup.find('a', href=fragment) #lname
+                print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
+        # node = soup.find(id="Program")
+        # t1 = node.find_next('table')
+
+        sched_head_re = re.compile("Conference Day [12].*")
+        for node in soup.find_all(string = sched_head_re):
+            _, start_date = node.split(' - ')
+            start_date = start_date.strip()
+            t = node.find_previous('table')
+            trs = t.find_all('tr')
+            for tr in trs:
+                tds = tr.find_all('td')
+                if len(tds) == 1:
+                    print(tds)
+                    continue
+                lis = tds[2].find_all('li')
+                # if there is a list of talks:
+                if lis:
+                    start_time, end = tds[0].text.split(' - ')
+                    # ['9:00 AM', '10:30 AM\n']
+                    start_dt = start_date + 'T' + start_time
+                    # 'Wednesday, April 3, 2019'
+                    start = datetime.strptime(start_dt,
+                            '%A, %B %d, %YT%I:%M %p')
+                    for li in lis:
+                        conf_url = None
+                        print(li)
+                        if 'Introductions' in li.text:
+                            continue
+                        elif li.text == 'Lightning Talks':
+                            title = li.text
+                            authors = "Community"
+                            conf_url = www + "/wiki/EMWCon_Spring_2019/Lightning_Talks"
+                        elif li.find(string="Panel"):
+                            node = li.find('a')
+                            conf_url = www + ahrefs[0].get('href')
+                            title = "Panel: {}".format(node.text)
+                            node = node.find_next('li')
+                            authors = node.text[11:]
+                            print("import sys;sys.exit()"); import code; code.interact(local=locals())
+                        elif li.next == 'Moderator: ':
+                            # import pdb; pdb.set_trace()
+                            break
+                        else:
+                            ahrefs = li.find_all('a')
+                            if len(ahrefs) >= 1:
+                                conf_url = www + ahrefs[0].get('href')
+                            try:
+                                title, authors = li.text.split(' - ')
+                            except:
+                                pprint(li)
+                                continue
+                                print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
+
+
+                        time_re = re.compile(
+                                "(?P<authors>.*) \((?P<amt>\d+) (?P<unit>minutes|hour)\)")
+                        match = time_re.match(authors)
+                        if match:
+                            d = time_re.match(authors).groupdict()
+                            authors = d['authors']
+                            amt = int(d['amt'])
+                            if d['unit'] == 'hour':
+                                mins = amt * 60
+                            else:
+                                mins = amt
+                        else:
+                            mins = 30
+                        duration = "00:{}:00".format(mins)
+
+                        # split on "," and "and" (and eat spaces)
+                        # but dont eat the and in Hilderbrand
+                        authors = re.split(r',\s*|\s+and\s+', authors)
+
+                        email = ', '.join(emails[a] for a in authors)
+                        authors = ', '.join(authors)
+
+                        talk = {
+                                'conf_key': i,
+                                'location': 'Genesys',
+                                'start': start,
+                                'duration': duration,
+                                'name': title,
+                                'authors': authors,
+                                'twitter_id': '',
+                                'emails': email,
+                                'reviewers': '',
+                                'released': None,
+                                'conf_url': conf_url,
+                                'license': 'CC-BY-NA',
+                                'description': '',
+                                'tags': '',
+                                }
+
+                        if authors.startswith('Martina'):
+                            talk['conf_key'] = 102
+                            i -= 1
+
+                        talks.append(talk)
+
+                        i += 1
+                        start += timedelta(minutes = mins)
+
+
+        talk = {
+            'conf_key': 100,
+            'location': 'Genesys',
+            'start': datetime(2019,4,4,9,00,00),
+            'duration': "1:00:00",
+            'name': "Keynote: Wikidata and Beyond",
+            'authors': "Denny Vrandečić",
+            'twitter_id': '',
+            'emails': '',
+            'reviewers': '',
+            'released': None,
+            'conf_url':
+                www + '/wiki/EMWCon_Spring_2019/Wikidata_and_Beyond',
+            'license': 'CC-BY-NA',
+            'description': '',
+            'tags': '',
+            }
+        talk['emails'] = emails[talk['authors']]
+        talks.append(talk)
+
+        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
+        with open(self.show_dir+"/sched.csv",'w') as f:
+
+            dw = csv.DictWriter(f, fields)
+            for talk in talks:
+                d = {}
+                for k in talk:
+                    if k in fields:
+                        d[k] = talk[k]
+                # d = { (k,v) for k,v in talk if k in fields }
+                dw.writerow(d)
+
+                # get description from page
+                talk['comment'] = None
+                if talk['conf_url'] is not None:
+                    print( talk['name'] )
+                    print( talk['conf_url'] )
+                    if talk['conf_url'] == "https://www.mediawiki.org/wiki/EMWCon_Spring_2019/Thoughts_on_MediaWiki%27s_Role_in_Enterprise_Knowledge_Management":
+                        continue
+
+                    url = www + "/w/api.php"
+                    parsed = urlparse(talk['conf_url'])
+                    page = urllib.parse.unquote(
+                            parsed.path[6:]),  # strip /wiki/
+                    params = {
+                            # 'action': "render",
+                            'action': "parse",
+                            'page': page,
+                            'format': "json",
+                            'prop': 'wikitext',
+                        }
+                    # from mwparserfromhell docs
+                    data = {
+                            "action": "query",
+                            "prop": "revisions",
+                            "rvprop": "content",
+                            "rvslots": "main",
+                            "rvlimit": 1,
+                            "titles": title,
+                            "format": "json",
+                            "formatversion": "2"}
+                    response = session.get(url=url, params=params)
+                    j = response.json()
+                    # pprint(j)
+                    wiki_re = re.compile(r"{{.*}}(?P<desc>.*)", flags=re.DOTALL)
+                    wiki_match = wiki_re.match(j['parse']['wikitext']['*'])
+                    d = wiki_match.groupdict()
+                    desc = d['desc'].strip()
+
+                    if desc:
+
+                        wikicode = mwparserfromhell.parse(desc)
+                        desc_text = wikicode.strip_code()
+
+                        links1 = ""
+                        for link in wikicode.filter_external_links():
+                            links1 += "{title} {url}\n".format(title=link.title, url=link.url)
+
+                        links2 = ""
+                        for link in wikicode.filter_wikilinks():
+                            url="{}/{}".format(www, link.title.strip_code())
+                            try:
+                                text = link.text.strip_code()
+                            except AttributeError:
+                                text = link.title.strip_code()
+                            url="{}/{}".format(www, link.title.strip_code())
+                            links2 += "{text} {url}\n".format(text=text, url=url)
+
+                        comment = "{}\n\nTEXT:{}\n\n{}\n{}".format(desc, desc_text, links1, links2)
+
+                        talk['description'] = desc
+                        if desc.strip() == comment.strip():
+                            talk['comment'] = ''
+                        else:
+                            talk['comment'] = comment
+                        # if talk['conf_key'] == 7:
+                        # if '[' in talk['description']:
+                        # if 'http' in desc: print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
+        return talks
+
+
+
+    def kicon(self, show):
+
+        rows = goog_sheet( show.schedule_url,
+                range_name='Slides!A1:ZZ99999',
+                )
+
+        if self.options.keys: return self.dump_keys(rows)
+
+        field_maps = [
+            ('Time','start'),
+            # ('In-depth Explanation','description'),
+            ('Email','emails'),
+            ('Name','authors'),
+            ('Abstract','description'),
+            ('Talk Title','name'),
+            ('Talk Length','duration'),
+            ('Room','location'),
+            ('Day',''),
+            ]
+
+
+        events = self.generic_events(rows, field_maps)
+
+        # events = [ event for event in events if event['conf_key'] == 6]
+
+        i=1
+        for event in events:
+            if self.options.verbose: pprint(event)
+
+            day = event['raw']['Day']
+            date = {
+                    "Fri": "2019-04-26",
+                    "Sat": "2019-04-27"
+                    }[day]
+
+            event['start'] = datetime.strptime(
+                    date + ' ' + event['start'],
+                    '%Y-%m-%d %H:%M')
+            event['conf_key'] = i
+            i+=1
+
+            try:
+                duration = int(event['duration'][3:5])
+            except TypeError:
+                duration = 15
+            except ValueError:
+                duration = 45
+            event['duration'] = "00:{}:00".format(duration)
+
+            event['twitter_id'] = ""
+            event['reviewers'] = ""
+            event['license'] = "CC-BY-NA"
+            event['conf_url'] = "https://kicad-kicon.com/talks/"
+            event['tags'] = ""
+            event['released'] = True
+
+
+            print(event['name'])
+            if event['description'] is None:
+                event['description'] = ''
+            if 'Bio' in event['raw']:
+                bio = event['raw']['Bio']
+                if bio is not None:
+                    event['description'] += "\n\n" + event['raw']['Bio']
+
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
+
     def emwc_sheet(self, show, response, session):
 
         events = self.emwc_wiki(show, response, session)
@@ -4614,6 +4951,9 @@ class add_eps(process.process):
         if self.options.client =='croud_supply':
             return self.teardown18(show)
 
+        elif self.options.show =='kicon_2019':
+            return self.kicon(show)
+
         if url.startswith('file'):
             f = open(url[7:])
             # j = f.read()
@@ -4694,6 +5034,9 @@ class add_eps(process.process):
 
             elif self.options.client =='kicon_2019':
                 return self.kicon(show, response)
+
+            elif self.options.show =='latch_2019':
+                return self.latch_2019(show, response, session)
 
         parsed = urlparse(url)
         ext = os.path.splitext(parsed.path)[1]

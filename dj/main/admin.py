@@ -85,6 +85,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             'start',
             'end',
             'duration',
+            'comment',
             # 'authors',
             # 'emails',
             # 'reviewers',

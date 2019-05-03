@@ -3,6 +3,8 @@ veyepar:
 
   Add [x]Location.active to show_stats
 
+  http://blog.marketingv2.com/bid/293392/How-to-Make-a-Tweet-This-Link-to-Pre-Fill-a-Twitter-Status
+
   talk setup checklist-
      confirm talk title
      ask presenter how they prounounce their name

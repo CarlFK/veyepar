@@ -172,7 +172,7 @@ class enc(process):
         # date = episode.start.strftime("%Y-%m-%-d")
 
         # US dumb format
-        date = episode.start.strftime("%B %-d, %Y")
+        date = episode.start.strftime("%B %-dth, %Y")
 
         texts = {
             'client': episode.show.client.name,
@@ -432,6 +432,8 @@ class enc(process):
                 else:
                     if cl.episode.show.slug == "pytx19":
                         cut['video_delay']='0.8'
+                    elif cl.episode.show.slug == "kicon_2019":
+                        cut['video_delay']='0.000'
                     else:
                         cut['video_delay']='0.0'
 

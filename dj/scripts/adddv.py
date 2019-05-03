@@ -139,8 +139,8 @@ class add_dv(process):
 
                 if extension in VIDEO_EXTENSIONS:
                     seq+=1
-                    # self.one_file(
-                    #         os.path.join(stuby,filename),show,location,seq)
+                    self.one_file(
+                        os.path.join(stuby,filename),show,location,seq)
 
     def one_show(self, show):
       if self.options.whack:

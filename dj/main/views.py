@@ -2454,7 +2454,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     # if episode.state==1:
     # This didn't work, put back the "only if empty"
     if not cls:
-        cls = mk_cuts(episode, start_slop=5)
+        cls = mk_cuts(episode, start_slop=15)
 
     if cls:
         offset = abs( cls[0].raw_file.start - episode.start )

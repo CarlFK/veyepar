@@ -33,9 +33,8 @@ which errors with:
 # https://developers.google.com/youtube/v3/code_samples/python
 # https://github.com/youtube/api-samples/tree/master/python
 
-# https://github.com/google/oauth2client
-
 # https://developers.google.com/api-client-library/python/guide/aaa_oauth
+# https://github.com/google/oauth2client
 
 import argparse
 
@@ -92,7 +91,7 @@ RETRIABLE_EXCEPTIONS = (
 # codes is raised.
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
-VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
+# VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
 def get_authenticated_service(oauth_file):
 
@@ -461,6 +460,16 @@ def test_set_unlisted(args,video_url):
     u.set_permission(video_url, privacyStatus='unlisted')
 
     return
+
+
+def test_set_no_comments(args,video_url):
+
+    u = Uploader()
+    u.oauth_file=args.oauth_file
+    u.set_permission(video_url, privacyStatus='unlisted')
+
+    return
+
 
 
 def test_delete(args, video_url):

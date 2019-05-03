@@ -586,6 +586,8 @@ class process():
         self.add_more_options(parser)
 
         self.options, self.args = parser.parse_args()
+        # strip # from #123
+        self.args = [a.strip('#') for a in self.args]
 
         # this needs to be done better:
         self.options.upload_formats = self.options.upload_formats.split()
