@@ -81,6 +81,10 @@ class enc(process):
             title = title.upper()
             authors = authors.upper()
 
+        # non breaking hyphen
+        # it's wider?!!!
+        # title = title.replace('-','—')
+
         if False and episode.show.slug != 'pygotham_2015' and  len(title) > 80: # crazy long titles need all the lines
             title2 = ''
 
@@ -145,6 +149,8 @@ class enc(process):
             title2 =  title2[:i] + chr(160) + title2[i+1:]
         except ValueError: pass
 
+
+
         if episode.license:
             license = "cc/{}.svg".format(episode.license.lower())
         else:
@@ -157,16 +163,13 @@ class enc(process):
             tags = []
             tag1 = ''
 
-        # split authors over two objects
-        # breaking on comma, not space.
-        if ', ' in authors:
-            pos = authors.index(", ")
-            # +1 include the comma, + 2 skip space after it
-            author1, author2 = authors[:pos], authors[pos+2:].strip()
-        else:
-            author1 = authors
-            author2 = ''
-
+        # split authors over three objects
+        # parse into list
+        # strip the spaces
+        # padd to 3 items
+        l = [a.strip() for a in authors.split(',')]
+        l += [''] * (3-len(l))
+        author1, author2, author3 = l
 
         # World date format
         # date = episode.start.strftime("%Y-%m-%-d")
@@ -184,6 +187,7 @@ class enc(process):
             'authors': authors,
             'author1': author1,
             'author2': author2,
+            'author3': author3,
             'presentertitle': "",
             'twitter_id': episode.twitter_id,
             'date': date,

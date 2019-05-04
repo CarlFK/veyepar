@@ -4421,8 +4421,8 @@ class add_eps(process.process):
                 else:
 
                     l = tds[2].text.split(' by ')
-                    title = l[0]
-                    authors = l[1]
+                    title = l[0].strip()
+                    authors = l[1].strip()
                     authors = re.split(r',\s*|\s+and\s+', authors)
 
                     authors = ', '.join(authors)
