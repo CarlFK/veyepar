@@ -4372,256 +4372,99 @@ class add_eps(process.process):
         # twitter_id
 
         url = response.url
-    def latch_2019(self, soup):
-        url = "file:///home/carl/Videos/veyepar/fossi/latch_2019/schedule/Latchup.html#schedule"
+
         parsed = urlparse(url)
-        node = soup.find('a', href='#'+parsed.fragment) #schedule
-        rows = []
+        node = soup.find(
+                'a',
+                href='#'+parsed.fragment,
+                attrs={'name':parsed.fragment},
+                    ) #schedule
+        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+        talks = []
         conf_key = 0
-        node = node.find_next('h6') # Saturday
+        # <p class="card-text">
+        node = node.find_next('p', attrs={'class': "card-text"})
+
+        # node = node.find_next('h6') # Saturday
         start_date = 'May 4, 2019'
-        t = node.find_next('table')
-        trs = t.find_all('tr')
-        for tr in trs:
-            # print(tr)
-            tds = tr.find_all('td')
-            # print(tds[1].text)
-            if not tds[1].text:
-                # no (p/q) numbers so not a talk
-                continue
-
-            conf_key += 1
-            row = { 'conf_key': conf_key,
-                    'name': tds[2].text,
-                    }
-
-            start_time = tds[0].text
-            start_dt = start_date + 'T' + start_time
-            row['start'] = datetime.strptime(start_dt,
-                    '%B %d, %YT%I:%M')
-            row['duration'] = functools.reduce( lambda x, y: x+y, [ int(t) for t in tds[1].text.strip('()').split('/') ])
-
-            node = tds[2].find('a')
-            if node is None:
-                presenter = ''
-                description = ''
-                released = False
-            else:
-
-                fragment = node.get('href')
-                nam = fragment[1:]
-                node = soup.find('a', attrs={'name':nam})
-                desc_node = node.find_next('p')
-                description = desc_node.text
-
-            row['author'] = presenter
-            row['description'] = description
-
-                print("import sys;sys.exit()"); import code; code.interact(local=locals())
-
-        # node = soup.find(id="Program")
-        # t1 = node.find_next('table')
-
-        sched_head_re = re.compile("Conference Day [12].*")
-        for node in soup.find_all(string = sched_head_re):
-            _, start_date = node.split(' - ')
-            start_date = start_date.strip()
-            t = node.find_previous('table')
+        # t = node.find_next('table')
+        for day_offset, t in enumerate( node.find_all('table') ):
             trs = t.find_all('tr')
             for tr in trs:
+                # print(tr)
                 tds = tr.find_all('td')
-                if len(tds) == 1:
-                    print(tds)
+                # print(tds[1].text)
+                if not tds[1].text:
+                    # no (p/q) numbers so not a talk
                     continue
-                lis = tds[2].find_all('li')
-                # if there is a list of talks:
-                if lis:
-                    start_time, end = tds[0].text.split(' - ')
-                    # ['9:00 AM', '10:30 AM\n']
-                    start_dt = start_date + 'T' + start_time
-                    # 'Wednesday, April 3, 2019'
-                    start = datetime.strptime(start_dt,
-                            '%A, %B %d, %YT%I:%M %p')
-                    for li in lis:
-                        conf_url = None
-                        print(li)
-                        if 'Introductions' in li.text:
-                            continue
-                        elif li.text == 'Lightning Talks':
-                            title = li.text
-                            authors = "Community"
-                            conf_url = www + "/wiki/EMWCon_Spring_2019/Lightning_Talks"
-                        elif li.find(string="Panel"):
-                            node = li.find('a')
-                            conf_url = www + ahrefs[0].get('href')
-                            title = "Panel: {}".format(node.text)
-                            node = node.find_next('li')
-                            authors = node.text[11:]
-                            print("import sys;sys.exit()"); import code; code.interact(local=locals())
-                        elif li.next == 'Moderator: ':
-                            # import pdb; pdb.set_trace()
-                            break
-                        else:
-                            ahrefs = li.find_all('a')
-                            if len(ahrefs) >= 1:
-                                conf_url = www + ahrefs[0].get('href')
-                            try:
-                                title, authors = li.text.split(' - ')
-                            except:
-                                pprint(li)
-                                continue
-                                print("import sys;sys.exit()"); import code; code.interact(local=locals())
+                if tds[2].text in ['Break', 'Lunch']:
+                    continue
 
+                start_time = tds[0].text
+                start_dt = start_date + 'T' + start_time
+                start = datetime.strptime(start_dt,
+                        '%B %d, %YT%H:%M') + \
+                                timedelta(days = day_offset)
 
+                duration = functools.reduce(
+                        lambda x, y: x+y,
+                        [ int(t) for t in
+                            tds[1].text.strip('()').split('/') ],
+                        )
 
-                        time_re = re.compile(
-                                "(?P<authors>.*) \((?P<amt>\d+) (?P<unit>minutes|hour)\)")
-                        match = time_re.match(authors)
-                        if match:
-                            d = time_re.match(authors).groupdict()
-                            authors = d['authors']
-                            amt = int(d['amt'])
-                            if d['unit'] == 'hour':
-                                mins = amt * 60
-                            else:
-                                mins = amt
-                        else:
-                            mins = 30
-                        duration = "00:{}:00".format(mins)
+                node = tds[2].find('a')
+                if node is None:
+                    title = tds[2].text
+                    authors = ''
+                    description = ''
+                    released = False
+                else:
 
-                        # split on "," and "and" (and eat spaces)
-                        # but dont eat the and in Hilderbrand
-                        authors = re.split(r',\s*|\s+and\s+', authors)
+                    l = tds[2].text.split(' by ')
+                    title = l[0]
+                    authors = l[1]
+                    authors = re.split(r',\s*|\s+and\s+', authors)
 
-                        email = ', '.join(emails[a] for a in authors)
-                        authors = ', '.join(authors)
+                    authors = ', '.join(authors)
 
-                        talk = {
-                                'conf_key': i,
-                                'location': 'Genesys',
-                                'start': start,
-                                'duration': duration,
-                                'name': title,
-                                'authors': authors,
-                                'twitter_id': '',
-                                'emails': email,
-                                'reviewers': '',
-                                'released': None,
-                                'conf_url': conf_url,
-                                'license': 'CC-BY-NA',
-                                'description': '',
-                                'tags': '',
-                                }
+                    fragment = node.get('href')
+                    nam = fragment[1:]
+                    node = soup.find('a', attrs={'name':nam})
+                    desc_node = node.find_next('p')
+                    description = ""
+                    while desc_node.name == 'p':
+                        description += desc_node.text
+                        desc_node = desc_node.next.next.next
 
-                        if authors.startswith('Martina'):
-                            talk['conf_key'] = 102
-                            i -= 1
+                email = ''
+                conf_url = ''
 
-                        talks.append(talk)
-
-                        i += 1
-                        start += timedelta(minutes = mins)
-
-
-        talk = {
-            'conf_key': 100,
-            'location': 'Genesys',
-            'start': datetime(2019,4,4,9,00,00),
-            'duration': "1:00:00",
-            'name': "Keynote: Wikidata and Beyond",
-            'authors': "Denny Vrandečić",
-            'twitter_id': '',
-            'emails': '',
-            'reviewers': '',
-            'released': None,
-            'conf_url':
-                www + '/wiki/EMWCon_Spring_2019/Wikidata_and_Beyond',
-            'license': 'CC-BY-NA',
-            'description': '',
-            'tags': '',
-            }
-        talk['emails'] = emails[talk['authors']]
-        talks.append(talk)
-
-        # print("import sys;sys.exit()"); import code; code.interact(local=locals())
-
-        with open(self.show_dir+"/sched.csv",'w') as f:
-
-            dw = csv.DictWriter(f, fields)
-            for talk in talks:
-                d = {}
-                for k in talk:
-                    if k in fields:
-                        d[k] = talk[k]
-                # d = { (k,v) for k,v in talk if k in fields }
-                dw.writerow(d)
-
-                # get description from page
-                talk['comment'] = None
-                if talk['conf_url'] is not None:
-                    print( talk['name'] )
-                    print( talk['conf_url'] )
-                    if talk['conf_url'] == "https://www.mediawiki.org/wiki/EMWCon_Spring_2019/Thoughts_on_MediaWiki%27s_Role_in_Enterprise_Knowledge_Management":
-                        continue
-
-                    url = www + "/w/api.php"
-                    parsed = urlparse(talk['conf_url'])
-                    page = urllib.parse.unquote(
-                            parsed.path[6:]),  # strip /wiki/
-                    params = {
-                            # 'action': "render",
-                            'action': "parse",
-                            'page': page,
-                            'format': "json",
-                            'prop': 'wikitext',
+                talk = {
+                        'conf_key': conf_key,
+                        'location': 'revolution',
+                        'start': start,
+                        'duration': "0:{}:0".format(duration),
+                        'name': title,
+                        'authors': authors,
+                        'twitter_id': '',
+                        'emails': email,
+                        'reviewers': '',
+                        'released': True,
+                        'conf_url': conf_url,
+                        'license': 'CC-BY',
+                        'description': description,
+                        'tags': '',
                         }
-                    # from mwparserfromhell docs
-                    data = {
-                            "action": "query",
-                            "prop": "revisions",
-                            "rvprop": "content",
-                            "rvslots": "main",
-                            "rvlimit": 1,
-                            "titles": title,
-                            "format": "json",
-                            "formatversion": "2"}
-                    response = session.get(url=url, params=params)
-                    j = response.json()
-                    # pprint(j)
-                    wiki_re = re.compile(r"{{.*}}(?P<desc>.*)", flags=re.DOTALL)
-                    wiki_match = wiki_re.match(j['parse']['wikitext']['*'])
-                    d = wiki_match.groupdict()
-                    desc = d['desc'].strip()
 
-                    if desc:
+                talks.append(talk)
 
-                        wikicode = mwparserfromhell.parse(desc)
-                        desc_text = wikicode.strip_code()
+                conf_key += 1
 
-                        links1 = ""
-                        for link in wikicode.filter_external_links():
-                            links1 += "{title} {url}\n".format(title=link.title, url=link.url)
+        rooms = self.get_rooms(talks)
+        self.add_rooms(rooms,show)
 
-                        links2 = ""
-                        for link in wikicode.filter_wikilinks():
-                            url="{}/{}".format(www, link.title.strip_code())
-                            try:
-                                text = link.text.strip_code()
-                            except AttributeError:
-                                text = link.title.strip_code()
-                            url="{}/{}".format(www, link.title.strip_code())
-                            links2 += "{text} {url}\n".format(text=text, url=url)
+        self.add_eps(talks, show)
 
-                        comment = "{}\n\nTEXT:{}\n\n{}\n{}".format(desc, desc_text, links1, links2)
-
-                        talk['description'] = desc
-                        if desc.strip() == comment.strip():
-                            talk['comment'] = ''
-                        else:
-                            talk['comment'] = comment
-                        # if talk['conf_key'] == 7:
-                        # if '[' in talk['description']:
-                        # if 'http' in desc: print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
         return talks
 
@@ -5396,8 +5239,8 @@ def testit():
     return p.latch_2019(soup)
 
 if __name__ == '__main__':
-    testit()
 
-    # p=add_eps()
-    # p.main()
+    # testit()
+    p=add_eps()
+    p.main()
 
