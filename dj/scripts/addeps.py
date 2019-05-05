@@ -4364,6 +4364,11 @@ class add_eps(process.process):
 
     def latch_2019(self, show, response, session):
 
+        proposals = {}
+        rows = goog_sheet( "1wOJzXyVx1uHxvImFSEOtV31AZpepMdTSPBhPA0vNeVY")
+        for proposal in rows:
+            proposals[proposal['Your name(s)']] = proposal
+
         requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
         soup = BeautifulSoup(response.content, "html.parser")
@@ -4418,12 +4423,20 @@ class add_eps(process.process):
                     authors = ''
                     description = ''
                     released = False
+                    emails = []
                 else:
 
                     l = tds[2].text.split(' by ')
                     title = l[0].strip()
                     authors = l[1].strip()
                     authors = re.split(r',\s*|\s+and\s+', authors)
+
+                    # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+                    emails = []
+                    for author in authors:
+                        if author in proposals:
+                            emails.append(proposals[author]['Email address'])
+                    print(emails)
 
                     authors = ', '.join(authors)
 
@@ -4436,18 +4449,18 @@ class add_eps(process.process):
                         description += desc_node.text
                         desc_node = desc_node.next.next.next
 
-                email = ''
+                emails = ', '.join(emails)
                 conf_url = ''
 
                 talk = {
                         'conf_key': conf_key,
-                        'location': 'revolution',
+                        'location': 'Revolution Hall',
                         'start': start,
                         'duration': "0:{}:0".format(duration),
                         'name': title,
                         'authors': authors,
                         'twitter_id': '',
-                        'emails': email,
+                        'emails': emails,
                         'reviewers': '',
                         'released': True,
                         'conf_url': conf_url,
@@ -4459,6 +4472,8 @@ class add_eps(process.process):
                 talks.append(talk)
 
                 conf_key += 1
+
+
 
         rooms = self.get_rooms(talks)
         self.add_rooms(rooms,show)
