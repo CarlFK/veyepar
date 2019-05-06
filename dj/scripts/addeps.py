@@ -4431,7 +4431,6 @@ class add_eps(process.process):
                     authors = l[1].strip()
                     authors = re.split(r',\s*|\s+and\s+', authors)
 
-                    # print("import sys;sys.exit()"); import code; code.interact(local=locals())
                     emails = []
                     for author in authors:
                         if author in proposals:
@@ -4439,6 +4438,9 @@ class add_eps(process.process):
                     print(emails)
 
                     authors = ', '.join(authors)
+
+                    released = proposals[ authors][ 'Are you okay with your talk being recorded and made available online under a CC-BY license afterwards?'] == "Yes"
+                    # print("import sys;sys.exit()"); import code; code.interact(local=locals())
 
                     fragment = node.get('href')
                     nam = fragment[1:]
@@ -4452,6 +4454,7 @@ class add_eps(process.process):
                 emails = ', '.join(emails)
                 conf_url = ''
 
+
                 talk = {
                         'conf_key': conf_key,
                         'location': 'Revolution Hall',
@@ -4462,7 +4465,7 @@ class add_eps(process.process):
                         'twitter_id': '',
                         'emails': emails,
                         'reviewers': '',
-                        'released': True,
+                        'released': released,
                         'conf_url': conf_url,
                         'license': 'CC-BY',
                         'description': description,

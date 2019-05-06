@@ -1898,25 +1898,28 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
 
     if episode.edit_key == edit_key:
         if episode.state == 8: # review_2 -  TODO use state.slug?
-            if request.method == 'POST':
-                who = Who(request.POST)
-                if who.is_valid():
-                    episode.locked_by = who.cleaned_data['locked_by']
-                    state = State.objects.get(sequence=episode.state)
-                    log=Log(episode=episode,
-                        state=state,
-                        ready = datetime.datetime.now(),
-                        start = datetime.datetime.now(),
-                        end = datetime.datetime.now(),
-                        result = episode.locked_by )
-                    log.save()
-                    episode.state += 1
-                    episode.save()
-                    template = 'approved'
+            if episode.released:
+                if request.method == 'POST':
+                    who = Who(request.POST)
+                    if who.is_valid():
+                        episode.locked_by = who.cleaned_data['locked_by']
+                        state = State.objects.get(sequence=episode.state)
+                        log=Log(episode=episode,
+                            state=state,
+                            ready = datetime.datetime.now(),
+                            start = datetime.datetime.now(),
+                            end = datetime.datetime.now(),
+                            result = episode.locked_by )
+                        log.save()
+                        episode.state += 1
+                        episode.save()
+                        template = 'approved'
 
+                else:
+                    who = Who()
+                    template = "approve"
             else:
-                who = Who()
-                template = "approve"
+                template = "not_released"
 
         elif episode.state == 1: # edit -  TODO use state.slug?
                 # give the reviewer the Approve button
