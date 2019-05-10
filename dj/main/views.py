@@ -380,8 +380,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
     fields=['id',
             'state',
-            'location',
-            'location_slug',
+            'location', 'location_slug',
             'sequence',
             'name', 'slug', 'authors', 'description',
             'start', 'duration',
@@ -420,7 +419,14 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             else:
                 d[f]=getattr(ep,f)
 
+        # archive_mp4_url is really the url of the page
+        # make a mp4 url too
+        d['archive_url'] = d['archive_mp4_url']
+        if d['archive_url']:
+            d['archive_mp4_url'] += "/{slug}.mp4".format(slug=ep.slug)
+
         ds.append(d)
+
 
     response = HttpResponse(content_type="application/json")
     json.dump( ds, response, cls=serializers.json.DjangoJSONEncoder )
