@@ -87,7 +87,9 @@ class post(process):
     def collect_metadata(self, ep):
 
         meta = {}
-        meta['title'] = ep.name
+        # meta['title'] = ep.name
+        meta['title'] = '"{title}" - {authors} ({show})'.format(
+                title=ep.name, authors=ep.authors, show=ep.show.name)
         meta['authors'] = ep.authors.split(',')
         meta['description'] = ep.composed_description()
         meta['tags'] = self.get_tags(ep)
@@ -136,6 +138,9 @@ class post(process):
     def do_yt(self,ep,files,private,meta):
 
         youtube_success = False
+
+        # https://developers.google.com/youtube/v3/docs/videos#resource
+        assert len(meta['title'])<=100, "len(name) > maximum length of 100"
 
         uploader = youtube_v3_uploader.Uploader()
 
