@@ -603,8 +603,8 @@ class enc(process):
                     "threads=%(threads)s "\
                     "progressive=1 "\
                     "strict=-2 "\
-                    "properties=x264-high "\
-                    "ab=256k "\
+                    "properties=YouTube "\
+                    "vb=256k "\
                     % parms
 
                 cmd = cmd.split()
