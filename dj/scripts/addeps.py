@@ -35,7 +35,7 @@ fields is just fine.  They will be ignored, or maybe I will use them in
 a future version.
 
 For fields yuou don't have, plug in a value.  If you don't have 'released'
-give me "Yes" and then let the presenters know.
+give me "Yes" and then let the presenters know they don't have a choice.
 
 End and Duration:  give me what you have in your database
 
@@ -1139,8 +1139,9 @@ class add_eps(process.process):
         return
 
     def pyohio(self, schedule, show):
-        # print "consumer PyOhio"
-        rooms = self.get_rooms(schedule,'room')
+        print("consumer PyOhio")
+        pprint(schedule)
+        rooms = self.get_rooms(schedule, 'room')
         rooms = [r for r in rooms if r != 'Plenary' ]
         self.add_rooms(rooms,show)
 
@@ -1178,6 +1179,7 @@ class add_eps(process.process):
 'break',
 'other',
 'nothing',
+'off-site',
                 )
 
         # Remove types of itmes that aren't for video
@@ -1235,14 +1237,20 @@ class add_eps(process.process):
 
             event['duration'] =   "0:{}:0".format(event['duration'])
 
-            event['emails'] =  ', '.join(
-                    a['contact'] for a in event['authors'] )
-            event['twitter_id'] =   fix_twitter_id(','.join(
-                    a['twitter'] for a in event['authors'] ) )
-            event['picture_url'] =  ', '.join(
-                    a['picture_url'] for a in event['authors'] )
-            event['authors'] =  ', '.join(
-                    a['name'] for a in event['authors'] )
+            event['emails'] =  ', '.join( event['emails'] )
+            # event['emails'] =  ', '.join(
+            #        a['contact'] for a in event['authors'] )
+
+            event['twitter_id'] = fix_twitter_id(event['twitter_id'])
+            # event['twitter_id'] =   fix_twitter_id(','.join(
+            #        a['twitter'] for a in event['authors'] ) )
+
+            # event['picture_url'] =  ', '.join(
+            #        a['picture_url'] for a in event['authors'] )
+
+            event['authors'] =  ', '.join( event['authors'] )
+            # event['authors'] =  ', '.join(
+            #        a['name'] for a in event['authors'] )
 
 
             """
@@ -5063,6 +5071,10 @@ class add_eps(process.process):
             return self.pyohio2013(schedule,show)
 
         if self.options.show in [
+                'xpyohio_2019', ]:
+            return self.pyohio(schedule['schedule'], show)
+
+        if self.options.show in [
             'pycon_au_2017']:
             schedule = schedule['schedule']
             return self.pyohio2013(schedule,show)
@@ -5137,7 +5149,7 @@ class add_eps(process.process):
             # NBPY
             # PyOhio 2018
             # lca 2019
-            return self.symposion_chrisjrn(schedule,show)
+            return self.symposion_chrisjrn(schedule, show)
 
         if j.startswith('{"files": {'):
             # doug pycon, used by py.au
