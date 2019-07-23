@@ -87,9 +87,12 @@ class post(process):
     def collect_metadata(self, ep):
 
         meta = {}
-        # meta['title'] = ep.name
         meta['title'] = '"{title}" - {authors} ({show})'.format(
                 title=ep.name, authors=ep.authors, show=ep.show.name)
+
+        if len(meta['title']) > 100:
+            meta['title'] = ep.name
+
         meta['authors'] = ep.authors.split(',')
         meta['description'] = ep.composed_description()
         meta['tags'] = self.get_tags(ep)

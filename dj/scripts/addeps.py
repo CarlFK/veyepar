@@ -131,13 +131,14 @@ def fix_twitter_id(twitter_ids):
     ret = []
     for tid in re.split('[ ,]',twitter_ids):
         tid = tid.strip()
-        if tid.startswith('#'):
-            # leave this alone
-            pass
-        elif tid and not tid.startswith('@'):
-            # print('2 {}.'.format(tid))
-            tid = "@" + tid
-        ret.append(tid)
+        if tid:
+            if tid.startswith('#'):
+                # leave this alone
+                pass
+            elif tid and not tid.startswith('@'):
+                # print('2 {}.'.format(tid))
+                tid = "@" + tid
+            ret.append(tid)
 
     ret = ', '.join(ret)
     return ret
@@ -1152,7 +1153,8 @@ class add_eps(process.process):
     def symposion_chrisjrn(self, schedule, show):
         schedule = schedule['schedule']
 
-        plenary_room = "Mystic Theatre"
+        # plenary_room = "Mystic Theatre"
+        plenary_room = "Cartoon 1"
 
         video_types = (
 'plenary',
@@ -1280,7 +1282,7 @@ class add_eps(process.process):
 
 
         rooms = self.get_rooms(events,'location')
-        self.add_rooms(rooms,show)
+        self.add_rooms(rooms, show)
         self.add_eps(events, show)
 
         return
@@ -1770,12 +1772,15 @@ class add_eps(process.process):
         # https://2018.pycon-au.org/schedule/avdata.json
 
         # emails from super secrete spreadsheet
-        presenters = googsheet(
-                '1p8BRlUn9sxiAYpZjickb5V_VORbLmMvTOtus233RgIg',
-                'veyepar')
+        # presenters = goog_sheet(
+        #        '1p8BRlUn9sxiAYpZjickb5V_VORbLmMvTOtus233RgIg',
+        #        'veyepar')
+        presenters = goog_sheet(
+                '1jVJ__7GeaNhQMJ7u1GDyykR1KfQLv1d-ltiTHRkYSOU'
+                )
 
         # key on conf id
-        presenters = { p['ID']: p for p in presenters }
+        presenters = { p['conf_key']: p for p in presenters }
         # import code; code.interact(local=locals())
 
         field_maps = [

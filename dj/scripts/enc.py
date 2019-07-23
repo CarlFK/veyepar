@@ -597,15 +597,28 @@ class enc(process):
                     'test': '',
                 }
 
-                cmd = "melt -verbose -progress "\
-                    "-profile %(dv_format)s %(mlt)s "\
-                    "-consumer avformat:%(out)s "\
-                    "threads=%(threads)s "\
-                    "progressive=1 "\
-                    "strict=-2 "\
-                    "properties=YouTube "\
-                    "vb=256k "\
-                    % parms
+                cmd = """
+melt -verbose -progress
+-profile atsc_720p_30
+field_order=progressive
+{mlt}
+-profile atsc_720p_30
+field_order=progressive
+-consumer avformat:{out}
+threads={threads}
+movflags="+faststart"
+acodec="aac"
+ab="256k"
+ar="48000"
+channels="2"
+vcodec="libx264"
+width="1280"
+height="720"
+colorspace=709
+frame_rate_num="30000"
+frame_rate_den="1001"
+progressive=1
+""".format(**parms)
 
                 cmd = cmd.split()
                 # 2 pass causes no video track, so dumping this.

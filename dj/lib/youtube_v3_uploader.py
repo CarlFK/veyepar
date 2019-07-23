@@ -417,6 +417,32 @@ def make_parser():
 
     return parser
 
+def my_upload(args):
+
+    u = Uploader()
+
+    u.meta = {
+      'title': "Party Tent",
+      'description': "Late night getting setup for the party.",
+      'category': 22, # 22 is maybe "Education",
+      'tags': ['goodtimes', ],
+      'privacyStatus':'unlisted', # 'private',
+      # 'latlon': (37.0,-122.0),
+      'license':'creativeCommon',
+    }
+
+    u.oauth_file = args.oauth_file
+    u.debug_mode = args.debug_mode
+    u.pathname = args.pathname
+
+    ret = u.upload()
+    if ret:
+        print(u.new_url)
+        print(u.thumbnail)
+        return u.new_url
+    else:
+        print(u.ret_text)
+
 
 def test_upload(args):
 
@@ -513,10 +539,11 @@ def main():
         url = args.delete
         test_delete(args, url)
     else:
-        url = test_upload(args)
+        # url = my_upload(args)
+        # url = test_upload(args)
+        test_set_pub(args, "http://youtu.be/IdSelnHIxWY")
 
     # test_set_pub(args, 'http://youtu.be/tB3YtzAxFLo')
-    # test_set_pub(args, url)
     # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
     # test_set_unlisted(args, url)
 
