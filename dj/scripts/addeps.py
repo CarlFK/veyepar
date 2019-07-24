@@ -1827,7 +1827,7 @@ class add_eps(process.process):
 
             conf_key =  event['conf_key']
             if conf_key in presenters:
-                event['emails'] =  (presenters[conf_key]['Email'],)
+                event['emails'] =  (presenters[conf_key]['email'],)
 
             if event['emails'] == ["redacted",]:
                 event['emails'] =  ""
@@ -4997,7 +4997,8 @@ class add_eps(process.process):
         if self.options.client =='pgza':
             return self.osem(schedule,show)
 
-        if self.options.show =='pyconau_2018':
+        if self.options.show in [
+                'pyconau_2018', 'pyconau_2019']:
             return self.pyconau18(schedule, show)
 
         if self.options.client =='kiwipycon':
