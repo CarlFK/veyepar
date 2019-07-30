@@ -127,7 +127,6 @@ class SyncRax(process):
                 print('{} -> {}'.format(base, web_base))
 
             rfpathname = os.path.join(self.show_dir, base)
-            cdn_low = "{base}.{ext}".format(base=base, ext=ext)
             low = "{web_base}.{ext}".format(web_base=web_base, ext=ext)
             out = os.path.join(self.show_dir, low)
 
@@ -138,10 +137,11 @@ class SyncRax(process):
                 self.mk_low(rfpathname, out)
 
             if self.options.rsync:
-                if not self.cdn_exists(show, cdn_low) or self.options.replace:
-                    # raw file (huge!!! 5gig each)
+                if not self.cdn_exists(show, low) or self.options.replace:
+                    self.file2cdn(show, low)
+                    # raw file (huge!!! way over 5 gig each)
                     ### self.file2cdn(show, base)
-                    self.file2cdn(show,low, cdn_low)
+
 
 
     def rf_audio(self, show, rf):

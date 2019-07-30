@@ -1206,7 +1206,8 @@ class add_eps(process.process):
         field_maps = [
                 ('room','location'),
                 ('name','name'),
-                ('abstract','description'),
+                ('abstract','abstract'),
+                ('description','description'),
                 ('authors','authors'),
                 ('contact','emails'),
                 ('twitter_id','twitter_id'),
@@ -1275,6 +1276,10 @@ class add_eps(process.process):
 
             if event['description'] is None:
                 event['description'] =  ''
+
+            if event['abstract'] is not None:
+                event['description'] = "{}\n\n{}".format(
+                        event['abstract'], event['description']).strip()
 
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
@@ -1827,7 +1832,12 @@ class add_eps(process.process):
 
             conf_key =  event['conf_key']
             if conf_key in presenters:
-                event['emails'] =  (presenters[conf_key]['email'],)
+                event['emails'] = (presenters[conf_key]['email'],)
+                event['twitter_id'] = fix_twitter_id(
+                        presenters[conf_key]['twitter'])
+            else:
+                event['emails'] = ''
+                event['twitter_id'] = ''
 
             if event['emails'] == ["redacted",]:
                 event['emails'] =  ""
@@ -1846,8 +1856,6 @@ class add_eps(process.process):
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
 
-            event['twitter_id'] = fix_twitter_id(
-                    ', '.join(event['twitter_id']))
 
             if event['conf_key'] == 131 :
                 # "name": "Marc Merlin: Getting conned into writing IoTuz/ESP32 drivers and example code (while being held prisoner in a share house in Hobart, Tasmania)"

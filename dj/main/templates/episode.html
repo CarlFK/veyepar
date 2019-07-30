@@ -241,7 +241,7 @@ $(".viewer").zoomer();
           {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
           >
           {% for ext in exts %}
-          <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
+          <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/web/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
           {% endfor %}
        </video>
       </td>
@@ -308,7 +308,7 @@ $(".viewer").zoomer();
             <tr>
                 <td>
    {% for ext in exts %}
-   <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" target={{ext}}>{{ext}}</a><br>
+   <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/web/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" target={{ext}}>{{ext}}</a><br>
    <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}">{{ext}}.m3u</a>
                 {% endfor %}
   </td>
@@ -339,7 +339,7 @@ $(".viewer").zoomer();
   {% endif %}
 
   <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'"
-    src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/dv/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
+    src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/web/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
 
   {% with forloop.counter0 as x %}
 
@@ -454,7 +454,7 @@ $(".viewer").zoomer();
   <div id="audio_image_{{rf.id}}">
       {{rf.filename}}<br>
     <img alt="audio viz" onerror="this.style.display='none'"
-     src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/dv/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>
+     src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/web/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>
   </div>
 {% endfor %}
 
