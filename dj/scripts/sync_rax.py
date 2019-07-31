@@ -374,7 +374,7 @@ class SyncRax(process):
 
 
     def init_rax(self, show):
-         user = show.client.rax_id
+
          bucket_id = show.client.bucket_id
 
          u = rax_uploader.Uploader()
