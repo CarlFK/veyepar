@@ -281,7 +281,6 @@ class Uploader():
                 'status': {
                     'privacyStatus': privacyStatus,
                     'embeddable': True,
-                    'license': 'youtube',
                     'publicStatsViewable': True,
                 },
             },
@@ -290,8 +289,8 @@ class Uploader():
         """
         >>> videos_update_response
         {u'status': {u'publicStatsViewable': False, u'privacyStatus':
-        u'public', u'uploadStatus': u'processed', u'license': u'youtube',
-        u'embeddable': False}, u'kind': u'youtube#video', u'etag':
+        u'public', u'uploadStatus': u'processed', u'embeddable': False},
+        u'kind': u'youtube#video', u'etag':
         u'"fpJ9onbY0Rl_LqYLG6rOCJ9h9N8/yzjxcIfiMnHpq7I5wbMY44afabU"', u'id':
         u'cUvNths_5RA'}
         """
