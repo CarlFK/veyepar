@@ -1774,7 +1774,9 @@ class add_eps(process.process):
 
 
     def pyconau18(self, schedule, show):
-        # https://2018.pycon-au.org/schedule/avdata.json
+        # Also used for pyconau 2019
+        # 2018: https://2018.pycon-au.org/schedule/avdata.json
+        # 2019: https://2019.pycon-au.org/schedule/avdata.json
 
         # emails from super secrete spreadsheet
         # presenters = goog_sheet(
@@ -1828,8 +1830,6 @@ class add_eps(process.process):
             else:
                 event['authors'] =  ', '.join( event['authors'] )
 
-            event['license'] =  'CC-BY'
-
             conf_key =  event['conf_key']
             if conf_key in presenters:
                 event['emails'] = (presenters[conf_key]['email'],)
@@ -1846,9 +1846,6 @@ class add_eps(process.process):
 
             if event['conf_url'] is None:
                 event['conf_url'] =  ''
-            else:
-                event['conf_url'] =   event['conf_url'].replace(
-                        'https://rego.linux.conf.au', 'http://lca2018.linux.org.au')
 
             if event['description'] is None:
                 event['description'] =  ''
@@ -1856,11 +1853,8 @@ class add_eps(process.process):
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
 
-
-            if event['conf_key'] == 131 :
-                # "name": "Marc Merlin: Getting conned into writing IoTuz/ESP32 drivers and example code (while being held prisoner in a share house in Hobart, Tasmania)"
-                print('truncating {} to :168'.format( event['name'] ))
-                event['name'] = event['name'][:168]
+            # Truncate really long titles
+            event['name'] = event['name'][:168]
 
         rooms = self.get_rooms(events,'location')
         self.add_rooms(rooms,show)
