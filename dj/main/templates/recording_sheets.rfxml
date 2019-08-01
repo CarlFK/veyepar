@@ -456,7 +456,7 @@
 			</String>
 			<String>
 				<expr>"HH_MM_SS"</expr>
-				<fontcolor>(.77, .77, .77)</fontcolor>
+				<fontcolor>(.89, .89, .89)</fontcolor>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>18</FontSize>
 				<height>'16.0 pt'</height>
@@ -476,7 +476,7 @@
 			</String>
 			<String>
 				<expr>"HH_MM_SS"</expr>
-				<fontcolor>(.77, .77, .77)</fontcolor>
+				<fontcolor>(.89, .89, .89)</fontcolor>
 				<FontName>'Helvetica-Bold'</FontName>
 				<FontSize>18</FontSize>
 				<height>'16.0 pt'</height>
