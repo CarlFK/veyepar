@@ -187,6 +187,18 @@ class Raw_File(models.Model):
                                     self.location.slug,
                                     self.filename)
 
+    @property
+    def get_adjusted_start(self):
+        return self.start + datetime.timedelta(
+            hours = 0 if self.location.hours_offset is None
+                else self.location.hours_offset )
+
+    @property
+    def get_adjusted_end(self):
+        return self.end + datetime.timedelta(
+            hours = 0 if self.location.hours_offset is None
+                else self.location.hours_offset )
+
     def get_start_seconds(self):
         return time2s( self.start )
 

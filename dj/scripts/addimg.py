@@ -22,6 +22,8 @@ pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
 
 pip install pyocr
 sudo apt install tesseract-ocr-eng tesseract-ocr
+
+python addimg.py --rsync
 """
 
 import os
@@ -39,6 +41,11 @@ from PIL import Image
 
 
 """
+pyohio 2019
+size = 2592 x 3450,
+
+
+something else:
 page: 2544x3296
 start 880
 end: 1421
@@ -136,13 +143,13 @@ class add_img(process):
         """
 
         if first_page_of_set:
-            start = 982 # 1000 #1100 # 728 # 820 # 995
-            end = 1526 # 1528 # 1705 # 1071 # 1370 # 1547
+            start = 1014 # 982 # 1000 #1100 # 728 # 820 # 995
+            end = 1560 # 1526 # 1528 # 1705 # 1071 # 1370 # 1547
             bands= 3
             suffix='a'
         else:
-            start = 584 #730 # 802 # 400 # 577
-            end =  1126 #1255 # 1318 # 960 # 1127
+            start = 622 # 584 #730 # 802 # 400 # 577
+            end =  1169 # 1126 # 1255 # 1318 # 960 # 1127
             bands= 4
             suffix='b'
 

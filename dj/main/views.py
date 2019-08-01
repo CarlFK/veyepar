@@ -1091,7 +1091,6 @@ def show_stats(request, show_id, ):
 
     raw_files=Raw_File.objects.filter(
             show=show,location__active=True)
-    # ,start__ge=show_start)
 
     locations=show.locations.filter(active=True).order_by('sequence')
 
@@ -1133,8 +1132,10 @@ def show_stats(request, show_id, ):
 
     for rf in raw_files:
         if rf.start is not None:
-            dt = rf.start.date()
-            if dt not in dates: dates.append(dt)
+            dt = rf.get_adjusted_start.date()
+            if dt not in dates:
+                print(rf.id, rf.location, dt)
+                dates.append(dt)
 
     for ep in episodes:
         dt = ep.start.date()
@@ -1214,18 +1215,20 @@ def show_stats(request, show_id, ):
 
 
     def add_rf_to_stat(rf,stat):
-        set_times( stat['raw']['times'], rf.start, rf.end)
+        start, end = rf.get_adjusted_start, rf.get_adjusted_end
+        set_times( stat['raw']['times'], start, end)
+
         stat['files'] += 1
         stat['bytes'] += rf.filesize
 
-        stat['raw']['start']=rf.start if stat['raw']['start'] is None else min(stat['raw']['start'],rf.start)
-        stat['raw']['end']=rf.end if stat['raw']['end'] is None else max(stat['raw']['end'],rf.end)
+        stat['raw']['start']=start if stat['raw']['start'] is None else min(stat['raw']['start'],start)
+        stat['raw']['end']=end if stat['raw']['end'] is None else max(stat['raw']['end'],end)
         return
 
     # gather raw_file stats
     for rf in raw_files:
         if rf.start is not None:
-            dt = rf.start.date()
+            dt = rf.get_adjusted_start.date()
             loc = rf.location.id
 
             add_rf_to_stat(rf,show_stat)
@@ -1629,12 +1632,12 @@ def episode_assets(request, episode_id):
     if rfs:
 
         for rf in rfs:
-            assets.append( "{} {}/dv/{}/{}.{}".format(wget, show_url,
+            assets.append( "{} {}/web/{}/{}.{}".format(wget, show_url,
                 rf.location.slug, rf.filename, lq_ext ) )
 
         # make symlinks from epected filename to smaller webm
         show_path = urllib.parse.urlparse(show_url)
-        first_dir = '"{}{}/dv/{}/{}"'.format( show_path.netloc, show_path.path,
+        first_dir = '"{}{}/web/{}/{}"'.format( show_path.netloc, show_path.path,
                 rf.location.slug,
                 os.path.split(rf.filename)[0])
 
@@ -2320,11 +2323,12 @@ def mk_cuts(episode,
     start = episode.start - datetime.timedelta(minutes=start_slop)
     end = episode.end + datetime.timedelta(minutes=end_slop)
 
+    # maybe adjust the episode's times due to location offset
     location=episode.location
     # print("loc offset", location.hours_offset)
     if location.hours_offset is not None:
-        start += datetime.timedelta( hours = location.hours_offset )
-        end += datetime.timedelta( hours = location.hours_offset )
+        start -= datetime.timedelta( hours = location.hours_offset )
+        end -= datetime.timedelta( hours = location.hours_offset )
 
     print("start:",start, start.__repr__())
     print("end:",end, end.__repr__())
@@ -2463,7 +2467,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     # if episode.state==1:
     # This didn't work, put back the "only if empty"
     if not cls:
-        cls = mk_cuts(episode, start_slop=15)
+        cls = mk_cuts(episode, start_slop=5)
 
     if cls:
         offset = abs( cls[0].raw_file.start - episode.start )
