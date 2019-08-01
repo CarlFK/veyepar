@@ -1831,7 +1831,8 @@ class add_eps(process.process):
                 event['authors'] =  ', '.join( event['authors'] )
 
             # https://2019.pycon-au.org/news/video-licencing-changes/
-            event['license'] =  'CC BY-NC-SA 4.0'
+            if event.get('license') is None:
+                event['license'] = ''
 
             conf_key =  event['conf_key']
             if conf_key in presenters:
