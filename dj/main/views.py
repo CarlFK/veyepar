@@ -1630,6 +1630,11 @@ def episode_assets(request, episode_id):
 
     rfs = Raw_File.objects.filter(cut_list__in=cuts).distinct()
     if rfs:
+        for rf in rfs:
+            assets.append( "{} {}/web/{}/{}.{}".format(wget, show_url,
+                rf.location.slug, rf.filename, lq_ext ) )
+
+        # make symlinks from epected dir and filenames to smaller proxyies
 
         # link dv web
         show_path = urllib.parse.urlparse(show_url)
@@ -1637,11 +1642,8 @@ def episode_assets(request, episode_id):
         assets.append( "cd " + show_dir )
         assets.append( "ln -s web dv" )
 
-        for rf in rfs:
-            assets.append( "{} {}/web/{}/{}.{}".format(wget, show_url,
-                rf.location.slug, rf.filename, lq_ext ) )
+        # Lets hope all the raw files are in the same dir
 
-        # make symlinks from epected filename to smaller webm
         first_dir = '"web/{}/{}"'.format(
                 rf.location.slug,
                 os.path.split(rf.filename)[0])
