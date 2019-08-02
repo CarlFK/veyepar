@@ -1813,6 +1813,9 @@ class add_eps(process.process):
             if self.options.verbose: pprint(event['raw'])
             if self.options.verbose: pprint(event)
 
+            if event['raw']['type'] in [ "track", ]:
+                continue
+
             if "Plenary Hall" in event['location']:
                 event['location'] = "Plenary Hall"
 
@@ -1852,6 +1855,8 @@ class add_eps(process.process):
 
             if event['reviewers'] is None:
                 event['reviewers'] =  ''
+
+            event['license'] = "youtube"
 
             # Truncate really long titles
             event['name'] = event['name'][:168]
@@ -5000,7 +5005,7 @@ class add_eps(process.process):
             return self.osem(schedule,show)
 
         if self.options.show in [
-                'pyconau_2018', 'pyconau_2019']:
+                'pyconau_2018', 'pyconau2019']:
             return self.pyconau18(schedule, show)
 
         if self.options.client =='kiwipycon':
