@@ -1621,7 +1621,7 @@ def episode_assets(request, episode_id):
     # assets.append( "{} {}/tmp/{}.sh".format(wget,show_url,slug) )
     assets.append( "{} {}/titles/{}.png".format(wget,show_url,slug) )
     assets.append( "{} {}/titles/{}.svg".format(wget,show_url,slug) )
-    assets.append( "{} {}/assets/{}".format(wget,show_url, client.credits) )
+    assets.append( "{} {}/assets/credits/{}".format(wget,show_url, client.credits) )
 
     # add the raw files
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence', 'raw_file__start')
@@ -1631,13 +1631,18 @@ def episode_assets(request, episode_id):
     rfs = Raw_File.objects.filter(cut_list__in=cuts).distinct()
     if rfs:
 
+        # link dv web
+        show_path = urllib.parse.urlparse(show_url)
+        show_dir = '"{}{}"'.format( show_path.netloc, show_path.path)
+        assets.append( "cd " + show_dir )
+        assets.append( "ln -s web dv" )
+
         for rf in rfs:
             assets.append( "{} {}/web/{}/{}.{}".format(wget, show_url,
                 rf.location.slug, rf.filename, lq_ext ) )
 
         # make symlinks from epected filename to smaller webm
-        show_path = urllib.parse.urlparse(show_url)
-        first_dir = '"{}{}/web/{}/{}"'.format( show_path.netloc, show_path.path,
+        first_dir = '"web/{}/{}"'.format(
                 rf.location.slug,
                 os.path.split(rf.filename)[0])
 
