@@ -143,7 +143,7 @@ Name: <b>{{episode.name}}</b><br>
 
     {% endfor %}
 
-<a href="{% url "episode_assets" episode.id %}{{episode.slug}}.sh">assets</a>
+<a href="{% url "episode_assets" episode.id episode.slug "sh" %}">assets</a>
 
 <a href="{% url "pdf" 'release_agreements' show.id episode.id %}{{episode.slug}}.pdf">release.pdf</a>
 
