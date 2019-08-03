@@ -1596,13 +1596,28 @@ def episodes_script(request, script=None):
     return response
 
 
-def episode_assets(request, episode_id):
+def episode_assets(request, episode_id, slug, mode="sh"):
     """
     returns a list of URLs of the assets (in preview form)
     and the .mlt and .sh
+
+    mode:
+      json - dump the list of dicts (for debugging, or maybe .js?)
+      sh - shell script that uses wget and ln
+      py - python program that uses requests and zipfile
+      zip - long running process that creates the zip server side
+
+    To support this, make a list of everything needed,
+    then iterate over it pulling out what is needed for the 3 types.
     """
 
-    assets=[]
+    assets=[] # list of dicts to be assembled later
+    """
+    json: json for debugging
+    sh: text for script
+    url: url of srurce
+    dst: dir/name it needs to land in
+    """
 
     episode=get_object_or_404(Episode,id=episode_id)
     slug = episode.slug
@@ -1617,11 +1632,22 @@ def episode_assets(request, episode_id):
     wget="wget -N --force-directories"
     # assets.append( "wget -N --force-directories -i http://" + request.META['HTTP_HOST'] + request.get_full_path() )
 
-    assets.append( "{} {}/mlt/{}.mlt".format(wget,show_url,slug) )
-    # assets.append( "{} {}/tmp/{}.sh".format(wget,show_url,slug) )
-    assets.append( "{} {}/titles/{}.png".format(wget,show_url,slug) )
-    assets.append( "{} {}/titles/{}.svg".format(wget,show_url,slug) )
-    assets.append( "{} {}/assets/credits/{}".format(wget,show_url, client.credits) )
+    assets.append( { 'cmd': wget,
+            'url': "{}/mlt/{}.mlt".format(show_url,slug),
+            'dst': "mlt/{}.mlt".format(slug), } )
+
+    assets.append( { 'cmd': wget,
+            'url': "{}/titles/{}.png".format(show_url,slug),
+            'dst': "titles/{}.png".format(slug),} )
+
+    assets.append( { 'cmd': wget,
+            'url': "{}/titles/{}.svg".format(show_url,slug),
+            'dst': "titles/{}.svg".format(slug), } )
+
+    assets.append( { 'cmd': wget,
+            'url': "{}/assets/credits/{}".format(show_url,client.credits),
+            'dst': "assets/credits/{}".format(client.credits), } )
+
 
     # add the raw files
     cuts = Cut_List.objects.filter(episode=episode).order_by('sequence', 'raw_file__start')
@@ -1631,16 +1657,20 @@ def episode_assets(request, episode_id):
     rfs = Raw_File.objects.filter(cut_list__in=cuts).distinct()
     if rfs:
         for rf in rfs:
-            assets.append( "{} {}/web/{}/{}.{}".format(wget, show_url,
-                rf.location.slug, rf.filename, lq_ext ) )
+            assets.append( { 'cmd': wget,
+                    'url': "{}/web/{}/{}.{}".format(show_url,
+                        rf.location.slug, rf.filename, lq_ext ),
+                    'dst': "dv/{}/{}".format(
+                        rf.location.slug, rf.filename ), } )
+
 
         # make symlinks from epected dir and filenames to smaller proxyies
 
         # link dv web
         show_path = urllib.parse.urlparse(show_url)
         show_dir = '"{}{}"'.format( show_path.netloc, show_path.path)
-        assets.append( "cd " + show_dir )
-        assets.append( "ln -s web dv" )
+        assets.append({ 'cmd': "cd " + show_dir, })
+        assets.append({ 'cmd': "ln -s web dv", })
 
         # Lets hope all the raw files are in the same dir
 
@@ -1648,17 +1678,77 @@ def episode_assets(request, episode_id):
                 rf.location.slug,
                 os.path.split(rf.filename)[0])
 
-        assets.append("cd " + first_dir)
+        assets.append({ 'cmd': "cd " + first_dir, })
         for rf in rfs:
             rf_filename = os.path.split(rf.filename)[1]
-            assets.append( "ln -s {rf_filename}.{lq_ext} {rf_filename}".format(rf_filename=rf_filename, lq_ext=lq_ext) )
+            assets.append({ 'cmd': "ln -s {rf_filename}.{lq_ext} {rf_filename}".format(rf_filename=rf_filename, lq_ext=lq_ext), })
 
-    response = HttpResponse('\n'.join(assets), content_type="text/plain")
-    response['Content-Disposition'] = \
-            'inline; filename={}.sh'.format(slug)
+
+    # We have a list of asset dicts, now make a return thing
+
+    if mode == 'json':
+        # just send the raw data
+        response = HttpResponse(content_type="application/json")
+        json.dump(assets, response, indent=2)
+
+    elif mode == 'sh':
+        # make .sh
+        sh = ''
+        for asset in assets:
+            sh += asset['cmd']
+            if 'url' in asset: sh += asset['url']
+            sh += '\n'
+        response = HttpResponse(sh, content_type="text/plain")
+        response['Content-Disposition'] = \
+                'inline; filename={}.sh'.format(slug)
+
+    elif mode == 'py':
+        # make .py
+        py = """
+import tempfile
+import zipfile
+
+import requests
+
+def get(url):
+
+    print("getting: {{}}".format(url))
+
+    r = requests.get(url)
+    fd = tempfile.NamedTemporaryFile()
+    fd.writelines(r.iter_content(chunk_size=4096))
+    fd.flush()
+
+    return fd
+
+def zip(zf, fd, dst):
+
+    print("zipping {{}}".format(dst))
+
+    zf.write(fd.name, dst)
+
+with zipfile.ZipFile('{}.zip', 'w') as zf:
+
+""".format(slug)
+
+        for asset in assets:
+            if 'url' in asset:
+                py += "    fd = get('{}')\n".format(asset['url'])
+                py += "    zip(zf, fd, '{}/{}')\n\n".format(
+                        slug,
+                        asset['dst'])
+
+
+        response = HttpResponse(py, content_type="text/plain")
+        response['Content-Disposition'] = \
+                'inline; filename={}.py'.format(slug)
+
+    elif mode == 'zip':
+        # make a zip using the .py code
+        # hurry before the browser times out!
+        pass
 
     return response
-
 
 
 def episode_list(request, state=None):
