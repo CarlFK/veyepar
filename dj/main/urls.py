@@ -48,7 +48,7 @@ urlpatterns = [
     url(r'show_parameters/(?P<show_id>\w+)/$', show_parameters, name="show_parameters"),
     url(r'processes/(?P<show_id>\w+)/$', processes, name='processes'),
 
-    url(r'episode_assets/(?P<episode_id>\w+)/',
+    url(r'episode_assets/(?P<episode_id>\w+)/(?P<slug>\w+)\.(?P<mode>\w+)',
         episode_assets, name='episode_assets'),
 
     url(r'show_anomalies/(?P<show_id>\w+)/$',
