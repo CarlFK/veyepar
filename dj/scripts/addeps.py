@@ -1790,6 +1790,12 @@ class add_eps(process.process):
         presenters = { p['conf_key']: p for p in presenters }
         # import code; code.interact(local=locals())
 
+        # get the schedule out of the schedule
+        schedule = schedule["schedule"]
+
+        # remove "track" items
+        schedule = [s for s in schedule if s['type'] not in [ "track", ] ]
+
         field_maps = [
                 ('room','location'),
                 ('name','name'),
@@ -1807,14 +1813,12 @@ class add_eps(process.process):
                 ('conf_url','conf_url'),
                 ]
 
-        events = self.generic_events(schedule["schedule"], field_maps)
+        events = self.generic_events(schedule, field_maps)
 
         for event in events:
             if self.options.verbose: pprint(event['raw'])
             if self.options.verbose: pprint(event)
 
-            if event['raw']['type'] in [ "track", ]:
-                continue
 
             if "Plenary Hall" in event['location']:
                 event['location'] = "Plenary Hall"
