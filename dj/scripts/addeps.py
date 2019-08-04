@@ -256,6 +256,17 @@ https://developers.google.com/resources/api-libraries/documentation/sheets/v4/py
     return rows
 
 
+def csv_sheet(filename):
+    # read from csv (likely exported from a spreadsheet)
+    # first row are field names
+    # return dict of rows
+
+    with open(filename, newline='') as csvfile:
+        rows = list(csv.DictReader(csvfile))
+
+    return rows
+
+
 class add_eps(process.process):
 
     # helpers
@@ -1782,9 +1793,17 @@ class add_eps(process.process):
         # presenters = goog_sheet(
         #        '1p8BRlUn9sxiAYpZjickb5V_VORbLmMvTOtus233RgIg',
         #        'veyepar')
-        presenters = goog_sheet(
-                '1jVJ__7GeaNhQMJ7u1GDyykR1KfQLv1d-ltiTHRkYSOU'
-                )
+        try:
+            presenters = goog_sheet(
+                    '1jVJ__7GeaNhQMJ7u1GDyykR1KfQLv1d-ltiTHRkYSOU'
+                    )
+        except Exception as e:
+            print("error with goog_sheet: {}".format(e))
+            print("trying csv_sheet..")
+            filename = os.path.join(
+                    self.show_dir, "schedule",
+                    "PyCon AU 2019 - speaker contact emails - by conf_key.csv" )
+            presenters = csv_sheet( filename )
 
         # key on conf id
         presenters = { p['conf_key']: p for p in presenters }
