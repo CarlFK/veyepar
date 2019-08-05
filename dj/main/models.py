@@ -556,6 +556,7 @@ class Log(models.Model):
     end = models.DateTimeField(null=True, blank=True)
     user = models.CharField(max_length=50)
     result = models.CharField(max_length=250)
+
     def duration(self):
         if self.start and self.end:
             dur = self.end - self.start

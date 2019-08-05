@@ -284,5 +284,6 @@ admin.site.register(State, StateAdmin)
 class LogAdmin(admin.ModelAdmin):
     list_display=['episode', 'state', 'start', 'end', 'duration']
     list_display_links = ('episode',)
+    list_filter = ('state', 'episode__show','episode__location')
 admin.site.register(Log, LogAdmin)
 
