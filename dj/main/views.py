@@ -1695,9 +1695,7 @@ def episode_assets(request, episode_id, slug, mode="sh"):
         # make .sh
         sh = ''
         for asset in assets:
-            sh += asset['cmd']
-            if 'url' in asset: sh += asset['url']
-            sh += '\n'
+            sh += "{cmd} {url}\n".format( cmd=asset['cmd'], url=asset.get('url',''))
         response = HttpResponse(sh, content_type="text/plain")
         response['Content-Disposition'] = \
                 'inline; filename={}.sh'.format(slug)
