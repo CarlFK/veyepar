@@ -98,7 +98,7 @@ class AudioPreviewer:
                 self.process(levs)
 
             except ValueError as e:
-                print(e)
+                print("Error: {}".format(e))
 
         elif t == Gst.MessageType.ERROR:
             gerror, dbg_msg = message.parse_error()
@@ -366,8 +366,8 @@ def lvlpng(filename, png_name=None):
          munged if input is http)
     """
 
-    # p=Make_png()
-    p=Make_mlt_fix_1()
+    p=Make_png()
+    # p=Make_mlt_fix_1()
     p.interval = options.interval
     p.height = options.height
     p.verbose = options.verbose

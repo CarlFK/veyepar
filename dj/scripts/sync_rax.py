@@ -48,8 +48,8 @@ class SyncRax(process):
         src can be http:// or file://
         dst is the local fs.
         """
-        # p = gslevels.Make_png()
-        p = gslevels.Make_mlt_fix_1()
+        p = gslevels.Make_png()
+        # p = gslevels.Make_mlt_fix_1()
         p.location = src
         p.verbose = self.options.verbose
         p.setup()
@@ -122,7 +122,8 @@ class SyncRax(process):
         for ext in self.options.upload_formats:
 
             base = os.path.join("dv", rf.location.slug, rf.filename)
-            web_base = os.path.join("web", rf.location.slug, rf.filename)
+            web_base = os.path.join("web", "raw",
+                    rf.location.slug, rf.filename)
             if self.options.verbose:
                 print('{} -> {}'.format(base, web_base))
 
@@ -164,7 +165,8 @@ class SyncRax(process):
     def rf_audio_png(self, show, rf):
 
         rf_tail = os.path.join("dv", rf.location.slug, rf.filename)
-        png_tail = os.path.join("web", rf.location.slug, rf.filename + ".wav.png")
+        png_tail = os.path.join("web", "raw",
+                rf.location.slug, rf.filename + ".wav.png")
 
         src = os.path.join(self.show_dir, rf_tail)
         dst = os.path.join(self.show_dir, png_tail)
@@ -261,7 +263,8 @@ class SyncRax(process):
         for ext in self.options.upload_formats:
 
             src_tail = os.path.join(ext, ep.slug + ".{}".format(ext) )
-            png_tail = "{src_tail}.wav.png".format(src_tail=src_tail)
+            png_tail = os.path.join("web", "cooked",
+                    "{src_tail}.wav.png".format(src_tail=src_tail))
 
             src_name = os.path.join(self.show_dir, src_tail)
             png_name = os.path.join(self.show_dir, png_tail)
@@ -321,7 +324,7 @@ class SyncRax(process):
         if self.args:
             eps = eps.filter(id__in=self.args)
 
-        # eps = eps.filter(state=3)
+        # eps = eps.filter(state=8)
 
         for ep in eps:
             print(ep)
@@ -331,7 +334,8 @@ class SyncRax(process):
                 self.mlt(show,ep)
 
             if self.options.rsync:
-                self.sync_final(show, ep)
+                # self.sync_final(show, ep)
+                pass
 
             if self.options.audio_viz:
                 self.sync_final_audio_png(show,ep)
