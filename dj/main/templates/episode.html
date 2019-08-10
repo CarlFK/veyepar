@@ -241,6 +241,7 @@ $(".viewer").zoomer();
           {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
           >
           {% for ext in exts %}
+          <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/web/raw/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
           <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/web/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
           {% endfor %}
        </video>
