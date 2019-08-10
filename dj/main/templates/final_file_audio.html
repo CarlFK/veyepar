@@ -7,7 +7,7 @@
 <a href="{% url "episode" episode.id %}">
     <h3>{{episode.name}} - {{episode.state}}</h3>
     {% for ext in exts %}
-        <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio"><br/>
+        <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/web/cooked/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="cooked audio"><br/>
     <br/>
     {% endfor %}
 
