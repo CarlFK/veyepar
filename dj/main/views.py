@@ -1658,30 +1658,31 @@ def episode_assets(request, episode_id, slug, mode="sh"):
     if rfs:
         for rf in rfs:
             assets.append( { 'cmd': wget,
-                    'url': "{}/web/{}/{}.{}".format(show_url,
+                    'url': "{}/web/raw/{}/{}.{}".format(show_url,
                         rf.location.slug, rf.filename, lq_ext ),
                     'dst': "dv/{}/{}".format(
                         rf.location.slug, rf.filename ), } )
 
 
-        # make symlinks from epected dir and filenames to smaller proxyies
+        # make dir and links from filenames to smaller proxyies
 
-        # link dv web
         show_path = urllib.parse.urlparse(show_url)
         show_dir = '"{}{}"'.format( show_path.netloc, show_path.path)
         assets.append({ 'cmd': "cd " + show_dir, })
-        assets.append({ 'cmd': "ln -s web dv", })
 
-        # Lets hope all the raw files are in the same dir
+        # make the proxy dir(s)
+        for dir in [ "dv/{}/{}".format(
+                rf.location.slug, os.path.split(rf.filename)[0])
+                for rf in rfs]:
+            assets.append({ 'cmd': "mkdir -p {}".format(dir), })
 
-        first_dir = '"web/{}/{}"'.format(
-                rf.location.slug,
-                os.path.split(rf.filename)[0])
-
-        assets.append({ 'cmd': "cd " + first_dir, })
+        # make the links
         for rf in rfs:
-            rf_filename = os.path.split(rf.filename)[1]
-            assets.append({ 'cmd': "ln -s {rf_filename}.{lq_ext} {rf_filename}".format(rf_filename=rf_filename, lq_ext=lq_ext), })
+            tail = "{}/{}".format(rf.location.slug, rf.filename)
+            pathname1 = "../../../web/raw/{}.{}".format(tail, lq_ext)
+            pathname2 = "dv/{}".format(tail)
+            assets.append({ 'cmd': "ln -s {} {}".format(
+                pathname1, pathname2), })
 
 
     # We have a list of asset dicts, now make a return thing
