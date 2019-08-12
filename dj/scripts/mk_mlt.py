@@ -3,10 +3,11 @@
 # uses template.mlt which was created using ShotCut GUI NLE
 
 
-import xml.etree.ElementTree
 import copy
+import os
+import xml.etree.ElementTree
 
-import pprint
+from pprint import pprint
 
 
 def set_text(node, prop_name, value=None):
@@ -31,6 +32,8 @@ def set_attrib(node, attrib_name, value=None):
         node.set(attrib_name, value)
 
 def parse_mlt(mlt_file):
+
+    print(mlt_file)
 
     tree = xml.etree.ElementTree.parse(mlt_file)
     return tree
@@ -60,7 +63,7 @@ def trim_tree(tree, playlist_id):
     for twig in branch.findall("./entry[@sample]"):
         producer = twig.get('producer')
         producer_node = tree.find("./producer[@id='{}']".format(producer))
-        # print( producer )
+        print( producer )
         branch.remove(twig)
         mlt.remove(producer_node)
 
@@ -110,6 +113,8 @@ def mk_mlt(template, output, params):
     play_list = tree.find("./playlist[@id='main bin']")
     # pprint(params['clips'])
     for i,clip in enumerate(params['clips']):
+
+        pprint(clip)
 
         node_id = "pi_vid{}".format(clip['id'])
         # print("node_id",node_id)
@@ -310,6 +315,66 @@ def test():
 
     mk_mlt("template.mlt", "test.mlt",  params)
 
+    return
+
+
+def add_slides( base_dir, src_file, slide_dir, dst_file ):
+
+    tree = parse_mlt(os.path.join(base_dir,src_file))
+
+    node_names=[
+        'tl_png',
+        'ti_png',
+        "spacer",
+        ]
+    nodes = grab_nodes(tree, node_names)
+    print(nodes)
+
+    # remove all placeholder (sample=) nodes
+    tree = trim_tree(tree, 'main_bin')
+    tree = trim_tree(tree, 'playlist2')
+
+    # add real stuff to the tree
+    mlt = tree.find('.')
+
+    # add each png to the timeline
+    slide_dir = os.path.join(base_dir,slide_dir)
+    slides = os.listdir( slide_dir )
+    slides.sort()
+
+    time_line = tree.find("./playlist[@id='playlist2']")
+    start_time = 5
+    for i, slide in enumerate(slides):
+        # print(i,slide)
+
+        node_id = "ti_png{}".format(i)
+
+        tl = copy.deepcopy( nodes['tl_png'] )
+        tl.set("producer", node_id)
+        set_attrib(tl, "in", start_time)
+        set_attrib(tl, "out", start_time + 120)
+        time_line.insert(i*2,tl)
+
+        spacer = copy.deepcopy( nodes['spacer'] )
+        spacer.set("length","00:01:00.0")
+        time_line.insert(i*2+1,spacer)
+
+        ti = copy.deepcopy( nodes['ti_png'] )
+        ti.set("id", node_id)
+        set_attrib(ti, "in")
+        set_attrib(ti, "out")
+        # set_text(ti,'length')
+        set_text(ti,'resource', os.path.join(slide_dir, slide))
+        mlt.insert(i,ti)
+
+        start_time += 180
+
+    tree.write(os.path.join(base_dir,dst_file))
 
 if __name__ == '__main__':
-    test()
+    # test()
+    add_slides( "/home/carl/mnt/gator/media/sda1/veyepar/pyohio/pyohio_2019/custom",
+            "Enough_Python_to_Fake_It_start.mlt",
+            "enough",
+            "Enough_Python_to_Fake_It.mlt",
+            )
