@@ -30,10 +30,47 @@ def set_attrib(node, attrib_name, value=None):
         # print(attrib_name, value)
         node.set(attrib_name, value)
 
+def parse_mlt(mlt_file):
+
+    tree = xml.etree.ElementTree.parse(mlt_file)
+    return tree
+
+
+def grab_nodes(tree, node_names):
+
+    nodes={}
+    for id in node_names:
+        if id == "spacer":
+            # special case because Shotcut steps on the id='spacer'
+            # <playlist id="playlist1">
+            # <blank id="spacer" length="00:00:00.267"/>
+            nodes['spacer'] = tree.find("./playlist[@id='playlist1']blank")
+        else:
+            node = tree.find(".//*[@id='{}']".format(id))
+            # print(id,node)
+            nodes[id] = node
+
+    return nodes
+
+def trim_tree(tree, playlist_id):
+
+    mlt = tree.find('.')
+
+    branch = tree.find("./playlist[@id='{}']".format(playlist_id))
+    for twig in branch.findall("./entry[@sample]"):
+        producer = twig.get('producer')
+        producer_node = tree.find("./producer[@id='{}']".format(producer))
+        # print( producer )
+        branch.remove(twig)
+        mlt.remove(producer_node)
+
+    return tree
+
+
 def mk_mlt(template, output, params):
 
     # parse the template
-    tree=xml.etree.ElementTree.parse(template)
+    tree = parse_mlt(template)
 
     # grab nodes we are going to store values into
     # pl - play list
@@ -43,7 +80,7 @@ def mk_mlt(template, output, params):
         'tl_vid2', 'ti_vid2', # Time Line and Item
         'pi_title_img', 'ti_title',
         'pi_foot_img',  'ti_foot',
-        # 'spacer',
+        'spacer',
         'audio_fade_in', 'audio_fade_out',
         'pic_in_pic', 'opacity',
         'channelcopy',
@@ -53,45 +90,24 @@ def mk_mlt(template, output, params):
         'title_fade','foot_fade',
         ]
 
-    nodes={}
-    for id in node_names:
-        node = tree.find(".//*[@id='{}']".format(id))
-        # print(id,node)
-        nodes[id] = node
-
-    # special case because Shotcut steps on the id='spacer'
-    # <playlist id="playlist1">
-    # <blank id="spacer" length="00:00:00.267"/>
-    nodes['spacer'] = tree.find("./playlist[@id='playlist1']blank")
+    nodes = grab_nodes(tree, node_names)
 
     # remove all placeholder nodes
-    mlt = tree.find('.')
+    tree = trim_tree(tree, 'main bin')
+    tree = trim_tree(tree, 'playlist0')
 
-    play_list = tree.find("./playlist[@id='main bin']")
-    for pe in play_list.findall("./entry[@sample]"):
-        producer = pe.get('producer')
-        producer_node = tree.find("./producer[@id='{}']".format(producer))
-        # print( producer )
-        play_list.remove(pe)
-        mlt.remove(producer_node)
-
-    # <playlist id="playlist0">
-    # <entry producer="tl_vid1" in="00:00:00.667" out="00:00:03.003" sample="1" />
-    time_line = tree.find("./playlist[@id='playlist0']")
-    for te in time_line.findall("./entry[@sample]"):
-        # print("te",te)
-        producer = te.get('producer')
-        producer_node = tree.find("./producer[@id='{}']".format(producer))
-        # print( "producer", producer )
-        time_line.remove(te)
-        mlt.remove(producer_node)
-
+    # remove the filters
+    # they may be added back later
     nodes['ti_vid2'].remove(nodes['channelcopy'])
     nodes['ti_vid2'].remove(nodes['mono'])
     nodes['ti_vid2'].remove(nodes['normalize'])
     # nodes['ti_vid2'].remove(nodes['volume'])
 
-    # add each clip to the playlist
+    # add real stuff to the tree
+    mlt = tree.find('.')
+
+    # add each episode clip to the playlist
+    play_list = tree.find("./playlist[@id='main bin']")
     # pprint(params['clips'])
     for i,clip in enumerate(params['clips']):
 
@@ -116,6 +132,7 @@ def mk_mlt(template, output, params):
         mlt.insert(i,pi)
 
     # add each cut to the timeline
+    time_line = tree.find("./playlist[@id='playlist0']")
     total_length = 0
     for i,cut in enumerate(params['cuts']):
         # print(i,cut)
