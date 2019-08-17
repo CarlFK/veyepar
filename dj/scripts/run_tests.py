@@ -140,8 +140,7 @@ class Run_Tests(object):
        frames = 90
        parms={'input_file':text_file,
            'output_file':os.path.join(dv_dir,out_file),
-           'format':self.options.dv_format,
-           # 'format':"dv_ntsc_wide",
+           'profile':self.options.mlt_profile,
            'video_frames':frames,
            'audio_frames':frames}
        if i%2:
@@ -154,7 +153,7 @@ class Run_Tests(object):
        print(parms)
 
        # make a text file to use as encoder input
-       text = ["test %s - %s" % ( i, self.options.dv_format),
+       text = ["test %s - %s" % ( i, self.options.mlt_profile),
                   out_file,
                   melt_ver, datetime.now().ctime(),
                   '',
@@ -167,7 +166,7 @@ class Run_Tests(object):
 
 
        cmd = "melt \
--profile %(format)s \
+-profile {profile} \
  -audio-track %(audio-track)s out=%(audio_frames)s \
  -video-track %(input_file)s bgcolour=%(bgcolour)s out=%(video_frames)s \
 meta.attr.titles=1 \
@@ -207,7 +206,7 @@ pix_fmt=yuv411p" % parms
            'out_file':out_file,
            'text_file':text_file,
            'assets_dir':assets_dir,
-           'format':self.options.dv_format,
+           'profile':self.options.mlt_profile,
            'video_frames':1,
            'audio_frames':1,
            'pix_fmt':'yuv411p',
@@ -222,7 +221,7 @@ pix_fmt=yuv411p" % parms
 
    # create dv file from text and generated noise
    cmd = "melt \
- -profile %(format)s \
+ -profile {profile} \
  -audio-track -producer noise out=%(audio_frames)s \
  -video-track %(input_file)s out=%(video_frames)s \
  -consumer avformat:%(out_file)s \

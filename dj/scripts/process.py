@@ -506,8 +506,6 @@ class process():
         parser = optparse.OptionParser()
 
         # hardcoded defaults
-        # parser.set_defaults(dv_format="square_ntsc_wide")
-        parser.set_defaults(dv_format="hdv_720_30p")
         parser.set_defaults(upload_formats="mp4")
         parser.set_defaults(media_dir=os.path.expanduser('~/Videos/veyepar'))
         parser.set_defaults(lag=0)

@@ -562,20 +562,18 @@ class enc(process):
             if ext == 'webm':
 
                 parms = {
-                    'dv_format': self.options.dv_format,
+                    'profile': self.options.mlt_profile,
                     'mlt': mlt_pathname,
                     'out': out_pathname,
                     'threads': self.options.threads,
                     'test': '',
                 }
 
-               # cmds=["melt %s -profile dv_ntsc -consumer avformat:%s progress=1 acodec=libvorbis ab=128k ar=44100 vcodec=libvpx minrate=0 b=600k aspect=@4/3 maxrate=1800k g=120 qmax=42 qmin=10"% (mlt_pathname,out_pathname,)]
-                # cmds = ["melt -profile %(dv_format)s %(mlt)s force_aspect_ratio=@64/45 -consumer avformat:%(out)s progress=1 threads=0 ab=256k vb=2000k quality=good deadline=good deinterlace=1 deinterlace_method=yadif" % parms]
-                cmds = ["melt -verbose -profile {dv_format} {mlt} -consumer avformat:{out} progress=1 threads=4 acodec=libvorbis ab=256k vb=2000k quality=good cpu-used=0 vcodec=libvpx".format( **parms ) ]
+                cmds = ["melt -verbose -profile {profile} {mlt} -consumer avformat:{out} progress=1 threads=4 acodec=libvorbis ab=256k vb=2000k quality=good cpu-used=0 vcodec=libvpx".format( **parms ) ]
 
             if ext == 'flv':
                 cmds = [
-                    "melt %(mlt)s -progress -profile %(dv_format)s -consumer avformat:%(out)s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % parms]
+                    "melt %(mlt)s -progress -profile {profile} -consumer avformat:%(out)s progressive=1 acodec=libfaac ab=96k ar=44100 vcodec=libx264 b=110k vpre=/usr/share/ffmpeg/libx264-hq.ffpreset" % parms]
 
             if ext == 'flac':
                 # 16kHz/mono
@@ -590,7 +588,7 @@ class enc(process):
                 # High Quality
 
                 parms = {
-                    'dv_format': self.options.dv_format,
+                    'profile': self.options.mlt_profile,
                     'mlt': mlt_pathname,
                     'out': out_pathname,
                     'threads': self.options.threads,
@@ -599,11 +597,9 @@ class enc(process):
 
                 cmd = """
 melt -verbose -progress
--profile atsc_720p_30
+-profile {profile}
 field_order=progressive
 {mlt}
--profile atsc_720p_30
-field_order=progressive
 -consumer avformat:{out}
 threads={threads}
 movflags="+faststart"
@@ -645,7 +641,7 @@ progressive=1
                 ffpreset.extend(
                     open('/usr/share/ffmpeg/libx264-ipod640.ffpreset').read().split('\n'))
                 ffpreset = [i for i in ffpreset if i]
-                cmd = "melt %(mlt)s -progress -profile %(dv_format)s -consumer avformat:%(tmp)s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=70k" % parms
+                cmd = "melt %(mlt)s -progress -profile {profile} -consumer avformat:%(tmp)s s=432x320 aspect=@4/3 progressive=1 acodec=libfaac ar=44100 ab=128k vcodec=libx264 b=70k" % parms
                 cmd = cmd.split()
                 cmd.extend(ffpreset)
                 cmds = [cmd]
@@ -821,20 +817,23 @@ progressive=1
         return ret
 
     def add_more_options(self, parser):
+        parser.add_option('--mlt-profile',
+                          help="melt --profile profile")
         parser.add_option('--enc-script',
                           help='encode shell script')
         parser.add_option('--noencode', action="store_true",
                           help="don't encode, just make svg, png, mlt")
         parser.add_option('--melt', action="store_true",
-                          help="call melt slug.melt (only w/noencode)")
+                          help="play with melt slug.melt (only w/noencode)")
         parser.add_option('--load-temp', action="store_true",
-                          help='copy .dv to temp files')
+                          help='copy raw to local temp files')
         parser.add_option('--rm-temp',
                           help='remove large temp files')
         parser.add_option('--threads',
                           help='thread parameter passed to encoder')
 
     def add_more_option_defaults(self, parser):
+        parser.set_defaults(mlt_profile="atsc_720p_30")
         parser.set_defaults(threads=0)
 
 if __name__ == '__main__':
