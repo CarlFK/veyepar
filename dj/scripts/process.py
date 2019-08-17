@@ -51,11 +51,6 @@ class process():
 
     ready_state = None
 
-    # defaults to ntsc stuff
-    # fps=29.98
-    fps = 30000 / 1001.0
-    bpf = 120000
-
     def save_me(self, o):
         # tring to fix the db timeout problem
         try:
@@ -598,10 +593,6 @@ class process():
             # import code; code.interact(local=locals())
             pprint(self.options.__dict__)
             pprint(self.args)
-
-        if "pal" in self.options.dv_format:
-            self.fps = 25.0
-            self.bpf = 144000
 
         if self.options.ready_state:
             self.ready_state = self.options.ready_state
