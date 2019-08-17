@@ -603,16 +603,19 @@ field_order=progressive
 -consumer avformat:{out}
 threads={threads}
 movflags="+faststart"
+properties="x264-medium"
 acodec="aac"
-ab="256k"
+ab="384k"
 ar="48000"
 channels="2"
 vcodec="libx264"
-width="1280"
-height="720"
+cabac=1
+vb=5000k
+aq-mode=0
+subme=0
+trellis=1
+bframes=2
 colorspace=709
-frame_rate_num="30000"
-frame_rate_den="1001"
 progressive=1
 """.format(**parms)
 
