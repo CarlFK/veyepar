@@ -338,12 +338,11 @@ def add_slides( base_dir, src_file, slide_dir, dst_file ):
     mlt = tree.find('.')
 
     # add each png to the timeline
-    slide_dir = os.path.join(base_dir,slide_dir)
-    slides = os.listdir( slide_dir )
+    slides = os.listdir( os.path.join(base_dir,slide_dir) )
     slides.sort()
 
     time_line = tree.find("./playlist[@id='playlist2']")
-    start_time = 5
+    # start_time = 5
     for i, slide in enumerate(slides):
         # print(i,slide)
 
@@ -351,8 +350,8 @@ def add_slides( base_dir, src_file, slide_dir, dst_file ):
 
         tl = copy.deepcopy( nodes['tl_png'] )
         tl.set("producer", node_id)
-        set_attrib(tl, "in", start_time)
-        set_attrib(tl, "out", start_time + 120)
+        # set_attrib(tl, "in", start_time)
+        # set_attrib(tl, "out", start_time + 20)
         time_line.insert(i*2,tl)
 
         spacer = copy.deepcopy( nodes['spacer'] )
@@ -361,20 +360,70 @@ def add_slides( base_dir, src_file, slide_dir, dst_file ):
 
         ti = copy.deepcopy( nodes['ti_png'] )
         ti.set("id", node_id)
-        set_attrib(ti, "in")
-        set_attrib(ti, "out")
+        # set_attrib(ti, "in")
+        # set_attrib(ti, "out")
         # set_text(ti,'length')
         set_text(ti,'resource', os.path.join(slide_dir, slide))
         mlt.insert(i,ti)
 
-        start_time += 180
+        # start_time += 120
 
     tree.write(os.path.join(base_dir,dst_file))
 
+
+def find_targets(tree, target):
+    # target = ( "playlist0", "avformat"),
+    playlist_id, mlt_service = target
+
+    nodes = []
+    time_line = tree.find("./playlist[@id='{}']".format(playlist_id))
+    _ = time_line.findall('entry[@producer]')
+    for tli in _:
+        p_id = tli.get('producer')
+        producer = tree.find("producer[@id='{}']".format(p_id))
+        if producer is not None:
+            mlt_service = producer.find("property[@name='{}']".format("mlt_service"))
+            if mlt_service.text == "avformat":
+                # print(p_id)
+                nodes.append(producer)
+
+    return nodes
+
+
+def add_filters( base_dir, src_file, filters, target, dst_file ):
+
+    tree = parse_mlt(os.path.join(base_dir,src_file))
+
+    filter_nodes = grab_nodes(tree, filters)
+
+    # remove in/out
+    for f in filter_nodes:
+        node = filter_nodes[f]
+        set_attrib(node, "in")
+        set_attrib(node, "out")
+
+    targets = find_targets(tree, target)
+
+    for target in targets:
+        print(target.get('id'))
+        for f in filter_nodes:
+            node = filter_nodes[f]
+            target.insert(0, node)
+
+    tree.write(os.path.join(base_dir,dst_file))
+
+
 if __name__ == '__main__':
     # test()
-    add_slides( "/home/carl/mnt/gator/media/sda1/veyepar/pyohio/pyohio_2019/custom",
-            "Enough_Python_to_Fake_It_start.mlt",
-            "enough",
-            "Enough_Python_to_Fake_It.mlt",
+
+    add_slides( "/home/carl/Videos/veyepar/pyohio/pyohio_2019/custom",
+            'How_to_Write_Pytest_Plugins_v1.mlt',
+            "pytests/png",
+            'How_to_Write_Pytest_Plugins.mlt',
             )
+
+#    add_filters( "/home/carl/Videos/veyepar/pyohio/pyohio_2019.local/custom",
+#            "Enough_Python_to_Fake_It_v2.mlt",
+#            ["filter9", "filter10"],
+#            ("playlist0", "avformat"),
+#            "Enough_Python_to_Fake_It.mlt",)
