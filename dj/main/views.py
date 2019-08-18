@@ -309,7 +309,7 @@ def ep_json(request, ep_id):
                 ( 'public', ep.public_url ),
                 ( 'archive', ep.archive_ogv_url ),
                 ( 'archive', ep.archive_url ),
-                ( 'archive', ep.archive_mp4_url ),
+                ( 'archive', ep.archive_url ),
                 ( 'rax', ep.rax_mp4_url ),
                 ( 'conf', ep.conf_url ),
                 ( 'tweet', ep.twitter_url ),
@@ -386,7 +386,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'start', 'duration',
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
-            'host_url', 'public_url', 'rax_mp4_url', 'archive_mp4_url',
+            'host_url', 'public_url', 'rax_mp4_url', 'archive_url',
             'twitter_url',
             'comment',
         ]
@@ -1647,6 +1647,14 @@ def episode_assets(request, episode_id, slug, mode="sh"):
     assets.append( { 'cmd': wget,
             'url': "{}/assets/credits/{}".format(show_url,client.credits),
             'dst': "assets/credits/{}".format(client.credits), } )
+
+
+    # add the img files
+    imgs = Image_File.objects.filter(episodes=episode)
+    for img in imgs:
+        assets.append( { 'cmd': wget,
+                'url': "{}/img/{}".format(show_url, img.filename, ),
+                'dst': "img/{}".format( img.filename ), } )
 
 
     # add the raw files
