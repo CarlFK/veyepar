@@ -1698,6 +1698,8 @@ def episode_assets(request, episode_id, slug, mode="sh"):
             assets.append({ 'cmd': "ln -s {} {}".format(
                 pathname1, pathname2), })
 
+        assets.append({ 'cmd': "ln -s ../custom/pytests mlt/"})
+
 
     # We have a list of asset dicts, now make a return thing
 
