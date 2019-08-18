@@ -1652,9 +1652,15 @@ def episode_assets(request, episode_id, slug, mode="sh"):
     # add the img files
     imgs = Image_File.objects.filter(episodes=episode)
     for img in imgs:
-        assets.append( { 'cmd': wget,
-                'url': "{}/img/{}".format(show_url, img.filename, ),
-                'dst': "img/{}".format( img.filename ), } )
+        if img.filename.startswith("custom"):
+            # hack for slide images
+            assets.append( { 'cmd': wget,
+                    'url': "{}/{}".format(show_url, img.filename, ),
+                    'dst': "{}".format( img.filename ), } )
+        else:
+            assets.append( { 'cmd': wget,
+                    'url': "{}/img/{}".format(show_url, img.filename, ),
+                    'dst': "img/{}".format( img.filename ), } )
 
 
     # add the raw files
