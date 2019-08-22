@@ -132,7 +132,7 @@ def initialize_upload(youtube, filename, metadata):
               },
           'status':{
               'privacyStatus':metadata['privacyStatus'],
-              'license':metadata['license'],
+              # 'license':metadata['license'],
               }
           }
 
