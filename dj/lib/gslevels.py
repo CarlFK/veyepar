@@ -146,12 +146,16 @@ class Make_png(AudioPreviewer):
 
     def process(self, levs):
 
-        # 0 out positive levels (above 0 is cliping, don't care how much)
+        # 0 out positive levels
+        # above 0 is cliping, don't care how much
+        # can't put data outside the png canvas
         for type in ("rms","peak","decay"):
             levs[type] = [min(lev,0) for lev in levs[type]]
 
         # tick mark every minute (I think)
-        tick = 2 if self.count % 600 == 599 else 0
+        tick = 1 if self.count % 60 == 59 else 0
+        # bigger one every 10
+        tick = 3 if self.count % 600 == 599 else 0
         if self.channels == 2:
             # left rms
             # map 0 to -40 to 0 to height
