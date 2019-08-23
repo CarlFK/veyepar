@@ -1656,7 +1656,7 @@ def episode_assets(request, episode_id, slug, mode="sh"):
             # hack for slide images
             assets.append( { 'cmd': wget,
                     'url': "{}/{}".format(show_url, img.filename, ),
-                    'dst': "{}".format( img.filename ), } )
+                    'dst': "mlt"+img.filename[6:] } )
         else:
             assets.append( { 'cmd': wget,
                     'url': "{}/img/{}".format(show_url, img.filename, ),
@@ -1685,9 +1685,9 @@ def episode_assets(request, episode_id, slug, mode="sh"):
         assets.append({ 'cmd': "cd " + show_dir, })
 
         # make the proxy dir(s)
-        for dir in [ "dv/{}/{}".format(
+        for dir in { "dv/{}/{}".format(
                 rf.location.slug, os.path.split(rf.filename)[0])
-                for rf in rfs]:
+                for rf in rfs}:
             assets.append({ 'cmd': "mkdir -p {}".format(dir), })
 
         # make the links
@@ -1698,7 +1698,7 @@ def episode_assets(request, episode_id, slug, mode="sh"):
             assets.append({ 'cmd': "ln -s {} {}".format(
                 pathname1, pathname2), })
 
-        assets.append({ 'cmd': "ln -s ../custom/pytests mlt/"})
+        # assets.append({ 'cmd': "ln -s ../custom/pytests mlt/"})
 
 
     # We have a list of asset dicts, now make a return thing
