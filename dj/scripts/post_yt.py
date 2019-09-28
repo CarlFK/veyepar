@@ -233,30 +233,31 @@ class post(process):
                 print('skipping archive_uploader .upload()')
                 ia_success = False
 
-            elif ep.archive_mp4_url and not self.options.replace:
-                # um.. what about other formats?
-                # kinda buggy here.
-                # but only relevant when things are messed up
-                # and looking for problemss.
+            elif ep.archive_url and not self.options.replace:
                 print("skipping archive, file already there.")
                 ia_success = True
 
             else:
-
                 # actually upload
                 # uploader.debug_mode=True
                 ia_success = uploader.upload()
                 if ia_success:
                     if self.options.verbose: print(uploader.new_url)
+                    # store the archive url (page)
+                    ep.archive_url = uploader.new_url
+
+                    archive_file_url = "{page}/{slug}.{ext}".format(
+                            page=uploader.new_url,
+                            slug=ep.slug,
+                            ext=f['ext'])
+
                     # this is pretty gross.
-                    # store the archive url
-                    # it should really just be: archive_url
                     if f['ext'] == "mp4":
-                        ep.archive_mp4_url = uploader.new_url
+                        ep.archive_mp4_url = archive_file_url
                     elif f['ext'] == "ogv":
-                        ep.archive_ogv_url = uploader.new_url
+                        ep.archive_ogv_url = archive_file_url
                     elif f['ext'] == "webm": # omg super gross.
-                        ep.archive_ogv_url = uploader.new_url
+                        ep.archive_ogv_url = archive_file_url
 
                     # hook for tests so that it can be browsed
                     self.archive_url = uploader.new_url
