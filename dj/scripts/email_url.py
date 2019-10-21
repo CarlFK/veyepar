@@ -38,7 +38,7 @@ As soon as either you or the AV team approves your video, it will be tweeted on 
         urls = filter( None,
                 [ep.public_url,
                     ep.host_url,
-                    ep.archive_ogv_url,
+                    ep.archive_url,
                     ep.archive_mp4_url] )
 
         ctx['urls'] = urls
