@@ -55,6 +55,7 @@ from urllib.parse import parse_qs
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError, ResumableUploadError
 from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaIoBaseDownload
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
@@ -529,6 +530,27 @@ raise HttpError(resp, content, uri=self.uri)
 apiclient.errors.HttpError: <HttpError 410 when requesting https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&alt=json&part=snippet%2Cstatus returned "Backend Error">
 """
 
+def test_caption(oauth_file, vid_id):
+
+    youtube = get_authenticated_service(oauth_file=oauth_file)
+    request = youtube.captions().download(
+            id=vid_id,
+            )
+
+    # TODO: For this request to work, you must replace "YOUR_FILE"
+    #       with the location where the downloaded content should be written.
+    # io.FileIO("YOUR_FILE", "wb")
+    with open("captions.txt", "wb")  as fh:
+
+        download = MediaIoBaseDownload(fh, request)
+        complete = False
+        while not complete:
+            status, complete = download.next_chunk()
+            print(status)
+
+    return
+
+
 def main():
 
     parser = make_parser()
@@ -541,7 +563,9 @@ def main():
     else:
         # url = my_upload(args)
         # url = test_upload(args)
-        test_set_pub(args, "http://youtu.be/IdSelnHIxWY")
+        # test_set_pub(args, "http://youtu.be/IdSelnHIxWY")
+        # https://www.googleapis.com/youtube/v3/captions/H6hk0RhmAAs
+        test_caption( args.oauth_file, "H6hk0RhmAAs" )
 
     # test_set_pub(args, 'http://youtu.be/tB3YtzAxFLo')
     # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
