@@ -1,15 +1,14 @@
-# git+https://github.com/django/django.git#egg=django
 django==1.11
 vobject
 django-debug-toolbar
-git+https://github.com/bear/python-twitter.git
+# git+https://github.com/bear/python-twitter.git
 feedparser
 
 # steve
 python-dateutil
 
-# progressbar
-git+https://github.com/niltonvolpato/python-progressbar.git
+progressbar
+# git+https://github.com/niltonvolpato/python-progressbar.git
 
 boto
 internetarchive
@@ -39,7 +38,7 @@ psycopg2-binary
 numpy
 
 # for util/dirmon.py
-git+https://github.com/maliubiao/python_inotify.git
+# git+https://github.com/maliubiao/python_inotify.git
 
 six
 python-keystoneclient
@@ -47,14 +46,14 @@ oslo.utils
 oslo.serialization
 beautifulsoup4
 
-git+https://github.com/smarnach/pyexiftool.git
+# git+https://github.com/smarnach/pyexiftool.git
 
 
-git+https://github.com/openstack/oslo.i18n.git
+# git+https://github.com/openstack/oslo.i18n.git
 debtcollector
 monotonic
 keystoneauth1
-git+https://github.com/openstack/oslo.config.git
+# git+https://github.com/openstack/oslo.config.git
 netifaces
 
 python-swiftclient
