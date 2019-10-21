@@ -134,7 +134,12 @@ class SyncRax(process):
             os.makedirs(os.path.dirname(out), exist_ok=True)
 
             # look for low on local file system
-            if not os.path.exists(out) or self.options.replace:
+            # or --replace
+            # or the source is newer
+            if (not os.path.exists(out) or
+                self.options.replace or
+                (os.stat(rfpathname).st_mtime > os.stat(out).st_mtime)):
+
                 self.mk_low(rfpathname, out)
 
             if self.options.rsync:
@@ -153,7 +158,9 @@ class SyncRax(process):
         src = os.path.join(self.show_dir,rf_tail)
         dst = os.path.join(self.show_dir,aac_tail)
 
-        if not os.path.exists(dst) or self.options.replace:
+        if (not os.path.exists(dst) or
+                self.options.replace or
+                (os.stat(src).st_mtime > os.stat(dst).st_mtime)):
             ret = self.mk_audio(src,dst)
 
         if self.options.rsync and (
@@ -286,8 +293,10 @@ class SyncRax(process):
 
 
     def cut_list(self,show,ep):
+        if self.options.verbose: print("#{} cut list".format(ep.id))
         cls = ep.cut_list_set.all()
         for cl in cls:
+            if self.options.verbose: print("raw: {}".format(cl.raw_file))
             self.rf_web(show, cl.raw_file)
 
 
