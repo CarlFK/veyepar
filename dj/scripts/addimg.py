@@ -119,9 +119,8 @@ class add_img(process):
     def slice_dice(self, img_page, src_name, show, eps):
 
         # ocr
-        text = self.ocr_img(src_name)
         # and connect the img object to episodes
-        # imgname = self.ass_one( img, text, locs, eps )
+        text = self.ocr_img(src_name)
 
         # words to look for in set header:
         words = ["Kit Number",  "Cam Op", "Audio op",
@@ -189,14 +188,13 @@ class add_img(process):
             img_band.text = text
             img_band.save()
 
-            # self.ass_one( img_band, text, locs, eps )
             founds = self.find_eps(text, eps )
             for found in founds:
                 img_band.episodes.add(found)
                 img_page.episodes.add(found)
 
 
-    def one_page(self, src_base, show, locs, eps):
+    def one_page(self, src_base, show, eps):
 
         """
         convert ppm to png
@@ -237,6 +235,44 @@ class add_img(process):
         if not self.options.dumb:
             self.slice_dice(img_page, src_name, show, eps)
 
+
+    def one_ep(self, src_base, show, eps):
+
+        """
+        hack for slide images
+        only one episode allowed
+        upload png to cdn
+        add png name to db under current show and
+        link to episode
+        """
+        img_dir = "custom/pytests/png"
+
+        print()
+        print(1, img_dir)
+        print(2, src_base)
+        # foo.ppm
+
+        # the scan that was extracted from the pdf
+        src_name = os.path.join( self.show_dir, img_dir, src_base )
+        print(3, src_name)
+
+        # upload it
+        if self.options.rsync:
+            img_branch = os.path.join( img_dir, src_base )
+            print(4, img_branch)
+            self.file2cdn(show, img_branch)
+
+
+        # make sure the png name is in the db
+        img,created = Image_File.objects.get_or_create(
+                show=show,
+                filename=img_branch,)
+
+        if created:
+            for ep in eps:
+                img.episodes.add(ep)
+
+
     def one_show(self, show):
 
       self.show = show
@@ -251,11 +287,14 @@ class add_img(process):
           eps = eps.filter(start__day=self.options.day)
       if self.options.room:
           eps = eps.filter(location__slug=self.options.room)
+      if self.args:
+          eps = eps.filter(id__in=self.args)
 
-      locs = Location.objects.filter(show=show)
+      # locs = Location.objects.filter(show=show)
 
       self.set_dirs(show)
       ep_dir=os.path.join(self.show_dir,'img')
+      ep_dir=os.path.join(self.show_dir,'custom/pytests/png')
       if self.options.verbose:
           print("ep_dir:", ep_dir)
 
@@ -265,7 +304,7 @@ class add_img(process):
               print("checking...", dirpath, d, dirnames, filenames)
           for f in filenames:
               if os.path.splitext(f)[1] in [
-                      ".ppm", ".pbm", ".jpg" ]:
+                      ".png", ".ppm", ".pbm", ".jpg" ]:
                   print(f, end='')
 
                   if self.options.base and \
@@ -273,10 +312,11 @@ class add_img(process):
                         print(" doesn't match the 'filter'.")
                         continue
 
-                  self.one_page(os.path.join(d,f),show,locs,eps)
+                  # self.one_page(os.path.join(d,f),show,eps)
+                  self.one_ep(os.path.join(d,f),show,eps)
 
                   if self.options.test:
-                      print("Test mode, only doing one.")
+                      print("...Test mode, only doing one.")
                       return
 
     def work(self):
