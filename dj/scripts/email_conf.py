@@ -30,7 +30,7 @@ Please help us promote your talk by retweeting it, blogging it, and sharing it w
         urls = filter( None,
                 [ep.public_url,
                     ep.host_url,
-                    ep.archive_ogv_url,
+                    ep.archive_url,
                     ep.archive_mp4_url] )
 
         ctx['urls'] = urls
