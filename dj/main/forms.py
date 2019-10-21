@@ -5,6 +5,7 @@ import re
 from django import forms
 
 from main.models import Episode, Location, Mark
+from main.models import STATES
 
 
 class Who(forms.Form):
@@ -75,20 +76,21 @@ class Episode_Form_Mini(forms.ModelForm):
 
 class Episode_Reschedule_Form(forms.ModelForm):
 
-    def clean_start_time(self):
-        # t is time in "hh mm ss"
-        label = 'start'
-        t = self.cleaned_data['start_time']
-        basedate = self.instance.start
-        # print("1 {}".format(t))
+    def mk_dt(self, t, basedate, label):
+        # t is time from form in "hh mm ss"
+
         if t:
             try:
                 h,m,s = [int(s) for s in re.split('[ _:]', t)]
                 dt = basedate.replace(hour=h, minute=m, second=s)
             except Exception as e:
+                print(e)
                 raise forms.ValidationError(
                         # django doesn't seem to like this, yet.
-			'{label} data bad!: {t} - e:{e}',
+			'{label} data bad!: {t} - e:{e}'.format(
+                            label=label,
+                            t=t,
+                            e=e),
 			code='invalid',
 			params={
                              'label':label,
@@ -108,43 +110,32 @@ class Episode_Reschedule_Form(forms.ModelForm):
             dt = None
         return dt
 
-    def clean_end_time(self):
-        t = self.cleaned_data['end_time']
-        if t:
-            try:
-                h,m,s = [int(s) for s in t.split()]
-                dt = self.instance.end.replace(hour=h, minute=m, second=s)
-            except Exception as e:
-                raise forms.ValidationError(
-			 '{label} data bad!: {t} - e:{e}',
-			 code='invalid',
-			 params={
-                             'label':'start',
-                             't': t,
-                             'e':e,
-                             },
-			 )
+    def clean_start_time(self):
+        # t is time in "hh mm ss"
+        label = 'start'
+        t = self.cleaned_data['start_time']
+        basedate = self.instance.start
+        dt = self.mk_dt(t, basedate, label)
+        return dt
 
-            marks = Mark.objects.filter(click=dt)
-            if not marks:
-                raise forms.ValidationError(
-                        'e datetime not found in marks: {dt}',
-                           code='invalid',
-                            params={'dt': dt},
-                                )
-        else:
-            dt = None
+    def clean_end_time(self):
+        # t is time in "hh mm ss"
+        label = 'end'
+        t = self.cleaned_data['end_time']
+        basedate = self.instance.end
+        dt = self.mk_dt(t, basedate, label)
         return dt
 
     start_time = forms.CharField(max_length=8,
             required=False,
             widget=forms.TextInput(attrs={'size':'8'}),
+            # help = "HH MM SS",
             )
-            # to_python=ck_start)
 
     end_time = forms.CharField(max_length=8,
             required=False,
             widget=forms.TextInput(attrs={'size':'8'}),
+            # help = "HH MM SS",
             )
 
 
