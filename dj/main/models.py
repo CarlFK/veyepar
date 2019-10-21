@@ -1,16 +1,15 @@
 # models.py
 
-from django.db import models
-from django.db.models.signals import pre_save
-
 import os
 import socket
 import datetime
 import random
 import re
 
-# from django.forms import Textarea
 from django import forms
+from django import urls
+from django.db import models
+from django.db.models.signals import pre_save
 
 from .unique_slugify import unique_slugify
 from .titlecase import titlecase
@@ -76,9 +75,8 @@ class Client(models.Model):
     def __str__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('client', [self.slug,])
+        return urls.reverse('client', [self.slug,])
 
     class Meta:
         ordering = ["sequence"]
@@ -367,7 +365,6 @@ class Episode(models.Model):
         ordering = ["sequence"]
         # unique_together = [("show", "slug")]
 
-    @models.permalink
     def get_absolute_url(self):
         return ('episode', [self.id])
 
@@ -476,9 +473,8 @@ class Cut_List(models.Model):
         help_text='offset from start in HH:MM:SS.ss')
     apply = models.BooleanField(default=1)
     comment = models.TextField(blank=True)
-    @models.permalink
     def get_absolute_url(self):
-        return ('episode', [self.episode.id])
+        return urls.reverse('episode', [self.episode.id])
     def __str__(self):
         return "%s - %s" % (self.raw_file, self.episode.name)
     class Meta:
@@ -547,6 +543,15 @@ class Image_File(models.Model):
     episodes = models.ManyToManyField(Episode, blank=True)
     filename = models.CharField(max_length=135, help_text="foo.png")
     text = models.TextField(blank=True, help_text="OCRed text")
+
+    def get_absolute_url(self):
+        #  https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlencode
+        url = "{}?{}={}".format(
+                urls.reverse( 'admin:main_episode_changelist'),
+                "image_file__id__exact",
+                self.id)
+        return url
+
 
 class Log(models.Model):
     episode = models.ForeignKey(Episode)
