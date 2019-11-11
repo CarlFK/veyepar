@@ -402,17 +402,6 @@ class process():
         if self.args:
             episodes = episodes.filter(id__in=self.args)
 
-        if self.options.resume:
-            episodes.exclude(log__id__gte=self.options.resume)
-
-            """
-            log = Log.objects.get(id=self.options.resume)
-            start = log.start
-            print(start)
-            episodes = episodes.annotate( max_start=Max('log__start'))
-            episodes.exclude(max_start__gte=start)
-            """
-
         if self.ready_state is not None \
                 and not self.options.force:
             episodes = episodes.filter(state=self.ready_state)
@@ -569,8 +558,6 @@ class process():
                           help="whack current episodes, use with care.")
         parser.add_option('--skip', action="store_true",
                           help="skip processing and bump state.")
-        parser.add_option('--resume', type="int",
-                          help="resume a failed run.")
         parser.add_option('--lag', type="int",
                           help="delay in seconds between processing episodes.")
         parser.add_option('--poll',
