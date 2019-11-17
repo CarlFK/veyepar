@@ -8,7 +8,7 @@ Client: <a href="{% url "client" client.slug %}">{{ client.name }}</a></br>
 Show: <a href="{% url "episode_list" client.slug show.slug %}">{{ show.name }}</a> - <a href="{{show.conf_url}}">{{show.conf_url}}</a>
 </br>
 
-Rooms:
+Rooms ({{locations|length}}):
 {% for location in locations %}
 <a href="{% url "admin:main_location_change" location.id%}">{{location.name}}</a>
 {% if location.lat %}<a href="http://maps.google.com/?q={{location.lat}},{{location.lon}}">map</a>{% endif %},
