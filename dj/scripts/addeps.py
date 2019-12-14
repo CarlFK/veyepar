@@ -62,13 +62,10 @@ def mk_fieldlist():
 
     print("""printf '{}\\n'|xclip -selection clipboard""".format('\\t'.join(fields)))
 
-# FireFox plugin to view .json data:
-# https://addons.mozilla.org/en-US/firefox/addon/10869/
-
 from datetime import datetime, timedelta
 import csv
 import functools
-import html.parser
+from html.parser import HTMLParser
 import os
 import pytz
 import re
@@ -452,14 +449,14 @@ class add_eps(process.process):
                 # 'comment',
                 )
 
-        if self.options.test:
-            print("test mode, not adding to db")
-            return
-
         diff_ids=[]
         seq=0
         for row in schedule:
             if self.options.verbose: pprint( row )
+
+            if self.options.test:
+                print("test mode, not adding to db")
+                return
 
             # try to find an existing item in the db
 
@@ -486,11 +483,7 @@ class add_eps(process.process):
                 if episode.emails == "<redacted>":
                     episode.emails = ""
 
-                # special case for email: don't blank it out
-                # use what is in the db.
-                # up here and now below so the diff doesn't wazz
-                # if episode.emails and not row['emails']:
-                #    row['emails'] = episode.emails
+                # see below for special case for email: don't blank it out
             else:
                 episode = None
 
@@ -522,7 +515,7 @@ class add_eps(process.process):
                     # veyepar, remote
                     a1,a2 = getattr(episode,f), row[f]
 
-                    if f=="emails":
+                    if f in ("emails", "reviewers"):
                         # don't always have rights to get email
                         if not a2:
                             # don't blank out what might be there
@@ -961,9 +954,7 @@ class add_eps(process.process):
 
             if row["entities"] == "true":
                 for k in html_encoded_fields:
-                    # x = html_parser.unescape('&pound;682m')
                     event[k] = html_parser.unescape( event[k] )
-
 
             # x = html_parser.unescape('&pound;682m')
 
@@ -1169,7 +1160,6 @@ class add_eps(process.process):
 
         video_types = (
 'plenary',
-'Keynote',
 'Lightning Talks and Conference Closing',
 'Lightning Talks',
 'Conference Closing',
@@ -1185,11 +1175,16 @@ class add_eps(process.process):
 'Games and FOSS Session',
 'Open Knowledge Session',
 'Kernel Session',
-'housekeeping',
                 )
 
+        special_video_types = (
+'Keynote',
+'housekeeping',
+'Housekeeping',
+)
         not_video_kinds = (
 'break',
+'Break',
 'other',
 'nothing',
 'off-site',
@@ -1251,20 +1246,30 @@ class add_eps(process.process):
 
             event['duration'] =   "0:{}:0".format(event['duration'])
 
-            event['emails'] =  ', '.join( event['emails'] )
-            # event['emails'] =  ', '.join(
-            #        a['contact'] for a in event['authors'] )
+            if event['raw']['kind'] in special_video_types:
 
-            event['twitter_id'] = fix_twitter_id(event['twitter_id'])
-            # event['twitter_id'] =   fix_twitter_id(','.join(
-            #        a['twitter'] for a in event['authors'] ) )
+                event['authors'] =  ''
+                event['emails'] =  ""
 
-            # event['picture_url'] =  ', '.join(
-            #        a['picture_url'] for a in event['authors'] )
+            else:
+                if type(event['authors']) == list:
 
-            event['authors'] =  ', '.join( event['authors'] )
-            # event['authors'] =  ', '.join(
-            #        a['name'] for a in event['authors'] )
+                    event['emails'] =  ', '.join(
+                           a['contact'] for a in event['authors'] )
+
+                    event['twitter_id'] =   fix_twitter_id(','.join(
+                           a['twitter'] for a in event['authors'] ) )
+
+                    event['picture_url'] =  ', '.join(
+                           a['picture_url'] for a in event['authors'] )
+
+                    event['authors'] =  ', '.join(
+                           a['name'] for a in event['authors'] )
+
+                else:
+                    event['emails'] =  ', '.join( event['emails'] )
+                    event['twitter_id'] = fix_twitter_id(event['twitter_id'])
+                    event['authors'] =  ', '.join( event['authors'] )
 
 
             """
@@ -1274,6 +1279,7 @@ class add_eps(process.process):
                 event['authors'] =  ', '.join( event['authors'] )
 
             if event['emails'] == ["redacted",]:
+                'authors': [{'contact': 'redacted',
                 print('emails redacted!')
                 return
                 event['emails'] =  ""
@@ -1627,11 +1633,28 @@ class add_eps(process.process):
 
     def ddu(self, schedule, show):
         # drupal down under 2012
+
+        schedule = [s['session'] for s in schedule['ddu2012']]
+        # pprint( schedule )
+        s_keys = list(schedule[0].keys())
+        print(s_keys)
+        v_keys=('id',
+            'location','sequence',
+            'name','slug', 'authors','emails', 'description',
+            'start','duration',
+            'released', 'license', 'tags',
+            'conf_key', 'conf_url',
+            'host_url', 'public_url',
+            )
+        print([k for k in v_keys if k in s_keys])
+        print([k for k in v_keys if k not in s_keys])
+
         rooms = self.get_rooms(schedule)
         self.add_rooms(rooms,show)
 
         events = self.ddu_events(schedule)
         self.add_eps(events, show)
+
         return
 
 
@@ -4728,6 +4751,66 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
+    def drupalsouth(self, schedule, show):
+        # DrupalSouth Hobart 2019
+
+        field_maps = [
+            ('room','location'),
+            ('session_times', 'start'),
+            ('session_times', 'duration'),
+            ('session_title', 'name'),
+            ('description', 'description'),
+            ('speakers', 'authors'),
+            ('speaker_email', 'emails'),
+            ('speaker_twitter', 'twitter_id'),
+            ('released', 'released'),
+            ('session_track', 'tags'),
+            ('session_id', 'conf_key'),
+            ('link', 'conf_url'),
+            ('', 'reviewers'),
+            ('', 'license'),
+            ]
+
+        events = self.generic_events(schedule, field_maps)
+
+        html_parser = HTMLParser()
+        html_encoded_fields = [ 'name', 'authors', 'description', ]
+
+        for event in events:
+            if self.options.verbose: pprint(event)
+
+            # "start": "2018-10-08 09:20",
+            # session_times	"2019-11-28T09:00:00 - 2019-11-28T09:45:00"
+            start, end = event['start'].split(' - ')
+            event['start'] = datetime.strptime(
+                    start, '%Y-%m-%dT%H:%M:%S' )
+            event['end'] = datetime.strptime(
+                    end, '%Y-%m-%dT%H:%M:%S' )
+
+            delta = event['end'] - event['start']
+            minutes = int(delta.seconds/60)
+            event['duration'] = "00:%s:00" % ( minutes)
+
+            event['released'] = event['released'] == '1'
+
+            twitter_ids = event['twitter_id'].split(',')
+            twitter_ids = [t.strip() for t in twitter_ids]
+            event['twitter_id'] = ','.join(twitter_ids)
+
+            emails = event['emails'].split(',')
+            emails = [e.strip() for e in emails]
+            event['emails'] = ','.join(emails)
+
+            for k in html_encoded_fields:
+                event[k] = html_parser.unescape( event[k] )
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
+
     def pyvideo(self, schedule, show):
 
         # schedule = [ s for s in schedule if s['speaker']['name'] is not None]
@@ -4889,8 +4972,8 @@ class add_eps(process.process):
 
                     # get the csrf token out of login page
                     session.get(auth['login_page'])
+                    # token = session.cookies['csrfmiddlewaretoken']
                     token = session.cookies['csrftoken']
-
 
                     # in case it does't get passed in the headers
                     # result = requests.get(auth['login_page'])
@@ -5014,6 +5097,13 @@ class add_eps(process.process):
 
         if ext =='.ics':
             return self.ics(schedule,show)
+
+        ####
+        # map show slug to consumer function
+        ####
+
+        if self.options.client =='drupalsouth':
+            return self.drupalsouth(schedule, show)
 
         if self.options.client =='pytexas':
             return self.pyvideo(schedule, show)
@@ -5185,6 +5275,7 @@ class add_eps(process.process):
             # NBPY
             # PyOhio 2018
             # lca 2019
+            # lca 2020
             return self.symposion_chrisjrn(schedule, show)
 
         if j.startswith('{"files": {'):
@@ -5234,21 +5325,6 @@ class add_eps(process.process):
 
         if url.endswith('program/session-schedule/json'):
             # ddu 2012
-            schedule = [s['session'] for s in schedule['ddu2012']]
-            # pprint( schedule )
-            s_keys = list(schedule[0].keys())
-            print(s_keys)
-            v_keys=('id',
-                'location','sequence',
-                'name','slug', 'authors','emails', 'description',
-                'start','duration',
-                'released', 'license', 'tags',
-                'conf_key', 'conf_url',
-                'host_url', 'public_url',
-                )
-            print([k for k in v_keys if k in s_keys])
-            print([k for k in v_keys if k not in s_keys])
-
             return self.ddu(schedule,show)
 
     def add_more_options(self, parser):
