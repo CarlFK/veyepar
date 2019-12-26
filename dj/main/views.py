@@ -422,12 +422,10 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
         # archive_mp4_url is really the url of the page
         # make a mp4 url too
-        if d['archive_mp4_url']:
-            d['archive_url'] = d['archive_mp4_url']
-            d['archive_mp4_url'] = "{page}/{slug}.mp4".format(
-                    page = d['archive_url'],
-                    slug = ep.slug,
-                    )
+        # the mp4 link is now:
+        # https://archive.org/download/pyohio_2019-Changing_Lives_through_Open_Source_Passion_and_Mentoring/Changing_Lives_through_Open_Source_Passion_and_Mentoring.mp4
+        d['archive_url'] = d['archive_mp4_url']
+        d['archive_mp4_url'] = ""
 
         ds.append(d)
 
