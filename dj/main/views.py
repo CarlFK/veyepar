@@ -421,7 +421,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
         # archive_mp4_url is really the url of the page
         # make a mp4 url too
-        d['archive_url'] = d['archive_mp4_url']
+        # d['archive_url'] = d['archive_mp4_url']
         if d['archive_url']:
             d['archive_mp4_url'] += "/{slug}.mp4".format(slug=ep.slug)
 
@@ -2627,7 +2627,8 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
             if add_cutlist_to_ep.cleaned_data['getit']:
                 rf_filename = add_cutlist_to_ep.cleaned_data['rf_filename']
                 sequence = add_cutlist_to_ep.cleaned_data['sequence']
-                rfs = Raw_File.objects.filter(filename=rf_filename)
+                rfs = Raw_File.objects.filter(
+                        location=location, filename=rf_filename)
                 for rf in rfs:
                     cl = Cut_List.objects.create(
                         episode=episode,
