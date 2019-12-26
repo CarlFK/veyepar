@@ -423,7 +423,10 @@ def eps_xfer(request,client_slug=None,show_slug=None):
         # make a mp4 url too
         # d['archive_url'] = d['archive_mp4_url']
         if d['archive_url']:
-            d['archive_mp4_url'] += "/{slug}.mp4".format(slug=ep.slug)
+            d['archive_mp4_url'] = "{page}/{slug}.mp4".format(
+                    page = d['archive_url'],
+                    slug = ep.slug,
+                    )
 
         ds.append(d)
 
