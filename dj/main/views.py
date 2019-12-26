@@ -386,12 +386,13 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'start', 'duration',
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
-            'host_url', 'public_url', 'rax_mp4_url', 'archive_url',
+            'host_url', 'public_url', 'rax_mp4_url',
+            'archive_url', 'archive_mp4_url',
             'twitter_url',
             'comment',
         ]
     if request.user.is_authenticated():
-        fields.extend(['emails', 'edit_key','conf_meta'])
+        fields.extend(['emails', 'edit_key',])
 
     if "fields" in request.GET:
         fields_whitelist = request.GET['fields'].split(',')
@@ -421,8 +422,8 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
         # archive_mp4_url is really the url of the page
         # make a mp4 url too
-        # d['archive_url'] = d['archive_mp4_url']
-        if d['archive_url']:
+        if d['archive_mp4_url']:
+            d['archive_url'] = d['archive_mp4_url']
             d['archive_mp4_url'] = "{page}/{slug}.mp4".format(
                     page = d['archive_url'],
                     slug = ep.slug,

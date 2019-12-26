@@ -264,7 +264,6 @@ class post(process):
                     # for test framework
                     self.last_url = uploader.new_url
 
-
                 else:
                     print("Internet archive.org error!")
 
