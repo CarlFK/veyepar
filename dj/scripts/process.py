@@ -582,17 +582,24 @@ class process():
         if self.options.ready_state:
             self.ready_state = self.options.ready_state
 
-        return
+
+        if self.options.poll and self.options.force:
+            print("poll and force is a bad idea.  So no.")
+            return Talse
+
+
+        return True
 
     def main(self):
-        self.parse_args()
 
-        if self.options.list:
-            ret = self.list()
-        elif self.options.poll:
-            ret = self.poll()
-        else:
-            ret = self.work()
+        if self.parse_args():
+
+            if self.options.list:
+                ret = self.list()
+            elif self.options.poll:
+                ret = self.poll()
+            else:
+                ret = self.work()
 
         return ret
 
