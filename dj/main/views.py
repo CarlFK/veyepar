@@ -429,6 +429,9 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             d['archive_url'] = d['archive_mp4_url']
             d['archive_mp4_url'] = ""
 
+        if 'start' in d:
+            d['start_at'] = d['start'].strftime('%H:%M %d.%m.%Y')
+
         ds.append(d)
 
 
