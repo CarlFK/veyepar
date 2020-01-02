@@ -373,7 +373,8 @@ def eps_xfer(request,client_slug=None,show_slug=None):
 
     client=get_object_or_404(Client,slug=client_slug)
     show=get_object_or_404(Show,client=client,slug=show_slug)
-    eps = Episode.objects.filter(show=show)
+    # eps = Episode.objects.filter(show=show)
+    eps=eps_filters(request.GET).filter(show=show).order_by('start')
 
     if "id" in request.GET:
         eps = eps.filter( id=request.GET['id'] )
@@ -424,8 +425,9 @@ def eps_xfer(request,client_slug=None,show_slug=None):
         # make a mp4 url too
         # the mp4 link is now:
         # https://archive.org/download/pyohio_2019-Changing_Lives_through_Open_Source_Passion_and_Mentoring/Changing_Lives_through_Open_Source_Passion_and_Mentoring.mp4
-        d['archive_url'] = d['archive_mp4_url']
-        d['archive_mp4_url'] = ""
+        if 'archive_mp4_url' in d:
+            d['archive_url'] = d['archive_mp4_url']
+            d['archive_mp4_url'] = ""
 
         ds.append(d)
 
