@@ -101,8 +101,17 @@ class post(process):
         meta['language'] = ep.language
         meta['language'] = "eng"
 
-        if "CC" in ep.license:
+        # YouTube treats 'creativeCommon' == 'CC BY 3.0'
+        # Only use it when the license **exactly** matches that, even if for
+        # a different CC license.
+        # Reference: https://support.google.com/youtube/answer/2797468?hl=en
+        # Context: https://2019.pycon-au.org/news/video-licencing-changes/
+        if ep.license and (ep.license.upper().replace('-', ' ') in (
+                'CC BY', 'CC BY 3.0')):
             meta['license'] = 'creativeCommon'
+        else:
+            # We're not sure -- play it safe.
+            meta['license'] = 'youtube'
 
         # meta['rating'] = self.options.rating
 
