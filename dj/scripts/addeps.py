@@ -1184,18 +1184,40 @@ class add_eps(process.process):
 )
         not_video_kinds = (
 'break',
+'morning tea',
+'afternoon tea',
 'Break',
 'other',
+'lunch',
+'dinner',
+'penguin dinner',
+'Professional Delegates Networking Sessions (PDNS)',
 'nothing',
+'room changeover',
 'off-site',
+'free time',
                 )
+
+        #  'name': 'room changeover',
 
         # Remove types of itmes that aren't for video
         # schedule = [s for s in schedule if s['kind'] in video_types ]
 
-        # remove empty slots
-        # bad_keys = (80, 82, 91, 100, 102, 103)
-        # schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
+        schedule = [s for s in schedule if s['name'] not in [
+            'room changeover', 
+            'room changover', 
+            'unscheduled', 
+            'Discussion', 
+            'TBA', 
+            'Lightning Talks', 
+            'Peter Grehan: Bhyve and Containerization',
+
+            ]]
+
+        # 108 = call-for-nominations-for-2020-linux-australia-council
+
+        bad_keys = (201, 235, 143, 234, 205, 108 )
+        schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
         # remove enteries that don't have authors
         # schedule = [s for s in schedule if "authors" in s]
 
