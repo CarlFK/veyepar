@@ -270,6 +270,8 @@ class Uploader():
     new_url = ''
 
     def set_permission(self, video_url, privacyStatus='public'):
+        # https://developers.google.com/youtube/v3/docs/videos/update
+        # status.license
 
         youtube = get_authenticated_service(oauth_file=self.oauth_file)
         video_id = get_id_from_url(video_url)
@@ -303,6 +305,24 @@ class Uploader():
 
 
         return True
+
+    def set_description(self, video_url, description):
+
+        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        video_id = get_id_from_url(video_url)
+
+        videos_update_response = youtube.videos().update(
+            part='snippet',
+            body={
+                'id':video_id,
+                'snippet': {
+                    'description':description,
+                },
+            },
+        ).execute()
+
+        return True
+
 
     def add_to_playlist(self, video_url, playlist_id):
         youtube = get_authenticated_service(oauth_file=self.oauth_file)
@@ -482,6 +502,16 @@ def test_set_pub(args,video_url):
 
 def test_set_unlisted(args,video_url):
 
+    desc = "This is Part II of a 2-part keynote for North Bay PyCon 2019 by Sha Wallace-Stepter and Jessica McKellar, and covers concrete actions technologists can take to change our criminal justice system. Find part I, on Sha's life story in the prison system, here: http://youtu.be/jNBsrLzHVgM"
+
+    u = Uploader()
+    u.oauth_file=args.oauth_file
+    u.set_description(video_url, description=desc)
+
+    return
+
+def test_set_description(args, video_url):
+
     u = Uploader()
     u.oauth_file=args.oauth_file
     u.set_permission(video_url, privacyStatus='unlisted')
@@ -489,7 +519,9 @@ def test_set_unlisted(args,video_url):
     return
 
 
+
 def test_set_no_comments(args,video_url):
+    # WIP?
 
     u = Uploader()
     u.oauth_file=args.oauth_file
@@ -565,7 +597,9 @@ def main():
         # url = test_upload(args)
         # test_set_pub(args, "http://youtu.be/IdSelnHIxWY")
         # https://www.googleapis.com/youtube/v3/captions/H6hk0RhmAAs
-        test_caption( args.oauth_file, "H6hk0RhmAAs" )
+        # test_caption( args.oauth_file, "H6hk0RhmAAs" )
+        # test_set_unlisted( args.oauth_file, "hyd6MiWXSP4")
+        test_set_description( args, "hyd6MiWXSP4")
 
     # test_set_pub(args, 'http://youtu.be/tB3YtzAxFLo')
     # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
