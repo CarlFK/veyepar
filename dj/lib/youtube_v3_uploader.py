@@ -133,7 +133,7 @@ def initialize_upload(youtube, filename, metadata):
               },
           'status':{
               'privacyStatus':metadata['privacyStatus'],
-              # 'license':metadata['license'],
+              'license':metadata.get('license', 'youtube'),
               }
           }
 
@@ -283,7 +283,6 @@ class Uploader():
                 'status': {
                     'privacyStatus': privacyStatus,
                     'embeddable': True,
-                    'license': 'creativeCommon',
                     'publicStatsViewable': True,
                 },
             },
@@ -292,8 +291,8 @@ class Uploader():
         """
         >>> videos_update_response
         {u'status': {u'publicStatsViewable': False, u'privacyStatus':
-        u'public', u'uploadStatus': u'processed', u'license': u'youtube',
-        u'embeddable': False}, u'kind': u'youtube#video', u'etag':
+        u'public', u'uploadStatus': u'processed', u'embeddable': False},
+        u'kind': u'youtube#video', u'etag':
         u'"fpJ9onbY0Rl_LqYLG6rOCJ9h9N8/yzjxcIfiMnHpq7I5wbMY44afabU"', u'id':
         u'cUvNths_5RA'}
         """
@@ -449,7 +448,7 @@ def my_upload(args):
       'tags': ['goodtimes', ],
       'privacyStatus':'unlisted', # 'private',
       # 'latlon': (37.0,-122.0),
-      'license':'creativeCommon',
+      'license':'youtube',
     }
 
     u.oauth_file = args.oauth_file
@@ -476,7 +475,7 @@ def test_upload(args):
       'tags': ['test', 'tests', ],
       'privacyStatus':'unlisted', # 'private',
       # 'latlon': (37.0,-122.0),
-      'license':'creativeCommon',
+      'license':'youtube',
     }
 
     u.oauth_file = args.oauth_file
