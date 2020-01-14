@@ -284,6 +284,7 @@ admin.site.register(State, StateAdmin)
 class LogAdmin(admin.ModelAdmin):
     list_display=['episode', 'state', 'start', 'end', 'duration']
     list_display_links = ('episode',)
-    list_filter = ('state', 'episode__show','episode__location')
+    list_filter = ('state', 'episode__show','episode__location', 'result')
+    date_hierarchy = 'start'
 admin.site.register(Log, LogAdmin)
 
