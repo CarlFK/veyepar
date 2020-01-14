@@ -1204,19 +1204,21 @@ class add_eps(process.process):
         # schedule = [s for s in schedule if s['kind'] in video_types ]
 
         schedule = [s for s in schedule if s['name'] not in [
-            'room changeover', 
-            'room changover', 
-            'unscheduled', 
-            'Discussion', 
-            'TBA', 
-            'Lightning Talks', 
+            'room changeover',
+            'room changover',
+            'unscheduled',
+            'Discussion',
+            'TBA',
+            'Lightning Talks',
             'Peter Grehan: Bhyve and Containerization',
 
             ]]
 
         # 108 = call-for-nominations-for-2020-linux-australia-council
+        # 241 = Q&A
+        # 233 = newcommers session
 
-        bad_keys = (201, 235, 143, 234, 205, 108 )
+        bad_keys = (201, 235, 143, 234, 205, 108, 241, 233 )
         schedule = [s for s in schedule if s['conf_key'] not in bad_keys ]
         # remove enteries that don't have authors
         # schedule = [s for s in schedule if "authors" in s]
