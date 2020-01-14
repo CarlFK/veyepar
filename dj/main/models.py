@@ -365,6 +365,7 @@ class Episode(models.Model):
         ordering = ["sequence"]
         # unique_together = [("show", "slug")]
 
+    @models.permalink
     def get_absolute_url(self):
         return ('episode', [self.id])
 
@@ -569,6 +570,10 @@ class Log(models.Model):
             return dur
         else:
             return None
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('episode', [self.episode.id])
 
 def set_slug(sender, instance, **kwargs):
     if not instance.slug or instance.slug is None:
