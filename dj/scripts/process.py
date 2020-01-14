@@ -585,7 +585,7 @@ class process():
 
         if self.options.poll and self.options.force:
             print("poll and force is a bad idea.  So no.")
-            return Talse
+            return False
 
 
         return True
