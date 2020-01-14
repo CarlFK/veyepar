@@ -153,6 +153,7 @@ Name: <b>{{episode.name}}</b><br>
 
 Admin:
 <a href="{% url "admin:main_episode_change" episode.id%}">episode</a>
+<a href="{% url "admin:main_episode_changelist" %}?id__exact={{episode.id}}">episode list</a>
 <a href="{% url "admin:main_cut_list_changelist" %}?episode__id__exact={{episode.id}}">cut list</a>
 <a href="{% url "admin:main_raw_file_changelist" %}?location__id__exact={{episode.location.id}}&amp;start__year={{episode.start|date:"Y"}}&amp;start__month={{episode.start|date:"m"}}&amp;start__day={{episode.start|date:"d"}}">raw files day</a>
 <a href="{% url "admin:main_mark_changelist" %}?location__id__exact={{episode.location.id}}&amp;click__year={{episode.start|date:"Y"}}&amp;click__month={{episode.start|date:"m"}}&amp;click__day={{episode.start|date:"d"}}">marks day</a>
