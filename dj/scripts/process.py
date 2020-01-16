@@ -590,9 +590,19 @@ class process():
 
         return True
 
+    def whoami(self, iam=None):
+        if iam is None:
+            iam =  self.__class__.__name__
+        print( '\033]2;{}\033\\'.format(iam))
+
+        return iam
+
+
     def main(self):
 
         if self.parse_args():
+
+            self.whoami()
 
             if self.options.list:
                 ret = self.list()

@@ -168,8 +168,10 @@ class enc(process):
         # strip the spaces
         # padd to 3 items
         l = [a.strip() for a in authors.split(',')]
+        authors = " and ".join(l)
         l += [''] * (3-len(l))
         author1, author2, author3 = l
+
 
         # World date format
         # date = episode.start.strftime("%Y-%m-%-d")
@@ -721,6 +723,8 @@ progressive=1
         return cmd
 
     def process_ep(self, episode):
+
+        self.whoami(episode.slug)
 
         ret = False
 
