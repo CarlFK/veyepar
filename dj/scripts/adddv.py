@@ -107,6 +107,10 @@ class add_dv(process):
                 if self.options.verbose:
                     print("filename: {}".format(filename))
 
+                if filename.startswith('.'):
+                    # hidden file, skip it.
+                    continue
+
                 basename, extension = os.path.splitext(filename)
 
                 # cut list file from voctomix
