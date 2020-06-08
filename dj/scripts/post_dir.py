@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
-# posts to a local dir
-# for fosdem, 
+# 'posts' to a local dir
+# in a dir hiarchery: year/room/Day
+
+# for fosdem,
 # (02:50:17 PM) h01ger: please use $room/$day/$talk
 # (02:51:41 PM) h01ger: i think "saturday" is beter
 
 # Maybe this should be a config stored in the client?
-# It is the first time in 5 years it has come up, so 
+# It is the first time in 5 years it has come up, so
 # for now, just hack this code.
 
 import os
@@ -25,12 +27,10 @@ class FileNotFound(Exception):
 
 class post(process):
 
-    ready_state = 11
+    ready_state = 12
 
     def get_files(self, ep):
         # get a list of video files to upload
-        # blip and archive support multiple formats, youtube does not.
-        # youtube and such will only upload the first file.
         files = []
         for ext in self.options.upload_formats:
             src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
@@ -60,22 +60,22 @@ class post(process):
 
         # collect data needed for uploading
         files = self.get_files(ep)
-        if self.options.verbose: 
+        if self.options.verbose:
             print("[files]:", end=' ')
             pprint.pprint(files)
 
 
         for fn in files:
-            # construct a dest dir of the form year/room/Day 
-            dest = os.path.join( 
-                ep.start.strftime("%Y"), 
-                ep.location.slug, 
+            # construct a dest dir of the form year/room/Day
+            dest = os.path.join(
+                ep.start.strftime("%Y"),
+                ep.location.slug,
                 ep.start.strftime("%A"),
                 )
 
             # this is the dir the website will want
             # add the filename to be nice
-            ep.public_url = "/".join([ 
+            ep.public_url = "/".join([
                     host_url,
                     dest, "%s.%s"%(ep.slug,fn['ext'])])
             if self.options.verbose: print("public", ep.public_url)
@@ -95,7 +95,7 @@ class post(process):
                 )))
                 filename = os.path.split(fn['pathname'])[1]
                 dest = os.path.join(dest,filename)
-                
+
                 print(("dst: {} {}".format(
                     dest,
                     "found." if os.path.exists(fn['pathname']) else "not found."

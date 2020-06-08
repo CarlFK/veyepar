@@ -220,6 +220,13 @@ https://developers.google.com/resources/api-libraries/documentation/sheets/v4/py
     remaining rows will be data.
     """
 
+    """
+    val request = sheets.values().get(spreadsheetId, range)
+        request.dateTimeRenderOption = "SERIAL_NUMBER"
+        return request.execute().getValues()
+    request.valueRenderOption = "UNFORMATTED_VALUE"
+    """
+
     # Setup the Sheets API
     SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
     store = oauth2client.file.Storage('credentials.json')
@@ -1261,7 +1268,6 @@ class add_eps(process.process):
 
             if plenary_room in event['location']:
                 event['location'] = plenary_room
-
 
             event['name'] =  re.sub( r'[\n\r]', ':)', event['name'] )
 

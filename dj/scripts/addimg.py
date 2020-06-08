@@ -142,13 +142,13 @@ class add_img(process):
         """
 
         if first_page_of_set:
-            start = 1014 # 982 # 1000 #1100 # 728 # 820 # 995
-            end = 1560 # 1526 # 1528 # 1705 # 1071 # 1370 # 1547
+            start = 539 # 1014 # 982 # 1000 #1100 # 728 # 820 # 995
+            end = 908 # 1560 # 1526 # 1528 # 1705 # 1071 # 1370 # 1547
             bands= 3
             suffix='a'
         else:
-            start = 622 # 584 #730 # 802 # 400 # 577
-            end =  1169 # 1126 # 1255 # 1318 # 960 # 1127
+            start = 267 # 622 # 584 #730 # 802 # 400 # 577
+            end =  636 # 1169 # 1126 # 1255 # 1318 # 960 # 1127
             bands= 4
             suffix='b'
 
@@ -245,11 +245,12 @@ class add_img(process):
         add png name to db under current show and
         link to episode
         """
-        img_dir = "custom/pytests/png"
+        # img_dir = "custom/pytests/png"
+        img_dir = "img"
 
-        print()
-        print(1, img_dir)
-        print(2, src_base)
+        # print()
+        # print(1, img_dir)
+        # print(2, src_base)
         # foo.ppm
 
         # the scan that was extracted from the pdf
@@ -294,7 +295,7 @@ class add_img(process):
 
       self.set_dirs(show)
       ep_dir=os.path.join(self.show_dir,'img')
-      ep_dir=os.path.join(self.show_dir,'custom/pytests/png')
+      # ep_dir=os.path.join(self.show_dir,'custom/pytests/png')
       if self.options.verbose:
           print("ep_dir:", ep_dir)
 
@@ -312,8 +313,8 @@ class add_img(process):
                         print(" doesn't match the 'filter'.")
                         continue
 
-                  # self.one_page(os.path.join(d,f),show,eps)
-                  self.one_ep(os.path.join(d,f),show,eps)
+                  self.one_page(os.path.join(d,f),show,eps)
+                  # self.one_ep(os.path.join(d,f),show,eps)
 
                   if self.options.test:
                       print("...Test mode, only doing one.")

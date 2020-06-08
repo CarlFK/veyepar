@@ -63,3 +63,5 @@ PyRSS2Gen
 icalendar
 
 pymediainfo
+
+mwparserfromhell
