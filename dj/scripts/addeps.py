@@ -282,6 +282,7 @@ class add_eps(process.process):
         # so you can cut/paste it into the show specific code.
 
         # if the json object is one big key:value, pull the list out
+
         try:
             keys= list(schedule.keys())
             key = keys[0]
@@ -1539,6 +1540,30 @@ class add_eps(process.process):
         return
 
     def ictev_2013(self, schedule, show):
+
+        def unfold_origami_unicorn(self, schedule):
+            # dig out the data from
+            # {'phpcode_2':{label: "Duration", content: "45"}
+            # [{v['label']:v['content'] for v in s.items()} for s in schedule]
+            # [{v['label']:v['content'] for v in s.values()} for s in schedule]
+
+            ret_rows = []
+            for s in schedule:
+                row = {}
+                for k in s:
+                    v = s[k]
+                    field_name = v['label']
+                    value = v['content']
+                    print("#1", field_name, value)
+                    row[field_name] = value
+                pprint(row)
+                ret_rows.append(row)
+
+            return ret_rows
+
+
+        schedule = unfold_origami_unicorn( schedule )
+
         field_maps = [
             ('Room', 'location'),
             ('Title', 'name'),
@@ -1639,26 +1664,6 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
         return
-
-    def unfold_origami_unicorn(self, schedule):
-        # dig out the data from
-        # {'phpcode_2':{label: "Duration", content: "45"}
-        # [{v['label']:v['content'] for v in s.items()} for s in schedule]
-        # [{v['label']:v['content'] for v in s.values()} for s in schedule]
-
-        ret_rows = []
-        for s in schedule:
-            row = {}
-            for k in s:
-                v = s[k]
-                field_name = v['label']
-                value = v['content']
-                print("#1", field_name, value)
-                row[field_name] = value
-            pprint(row)
-            ret_rows.append(row)
-
-        return ret_rows
 
 
     def ddu(self, schedule, show):
@@ -4904,6 +4909,81 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
+    def pretalx(self, schedule, show):
+        # https://docs.pretalx.org/en/latest/api/resources/events.html
+
+        # Flatten the tree
+        schedule = schedule['schedule']['conference']
+
+        leafs = []
+        for day in schedule['days']:
+            for room in day['rooms']:
+
+                branch=day['rooms'][room]
+                for leaf in branch:
+                    leaf['room']=room
+                leafs.extend(branch)
+
+        # self.dump_keys( schedule['days'][0]['rooms']['Curlyboi Theatre'])
+        # self.dump_keys( leafs )
+
+        field_maps = [
+            ('id', 'conf_key'), # ('guid',
+            ('url', 'conf_url'),
+            ('room','location'),
+            ('date', 'start'),
+            ('duration', 'duration'),
+            ('title', 'name'),
+            ('description', 'description'),
+            ('persons', 'authors'),
+            ('persons', 'emails'),
+            ('persons', 'twitter_id'),
+            ('do_not_record', 'released'),
+            ('recording_license', 'license'),
+            ('language', 'language'),
+            ('track', 'tags'),
+            ('', 'reviewers'),
+            ]
+
+        """
+('type',
+('logo',
+('answers',
+('attachments',
+('slug',
+('subtitle',
+('links',
+"""
+
+        events = self.generic_events(leafs, field_maps)
+
+        html_parser = HTMLParser()
+        # html_encoded_fields = [ 'name', 'authors', 'description', ]
+        html_encoded_fields = [ ]
+
+        for event in events:
+            if self.options.verbose: pprint(event)
+
+            event['start'] = datetime.strptime(
+                    event['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
+
+            event['duration'] = event['duration'] + ":00"
+
+            event['released'] = not event['released']
+
+            for k in html_encoded_fields:
+                event[k] = html_parser.unescape( event[k] )
+
+        rooms = self.get_rooms(events)
+        # pprint(rooms)
+        # for room in rooms:
+        #     print("'{0}': '{0}',".format(room))
+        # return
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
+
 
 
 #################################################3
@@ -5116,6 +5196,9 @@ class add_eps(process.process):
 
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
+
+        if url.startswith('https://pretalx.com'):
+            return self.pretalx(schedule, show)
 
         if url.endswith('programme/schedule/json'):
             # Zookeepr
@@ -5345,10 +5428,6 @@ class add_eps(process.process):
         if self.options.show == 'ictev_2013':
             # some drupal thing
             # 'ictev_2013': "http://ictev.vic.edu.au/program/2013/json",
-
-            schedule =  self.unfold_origami_unicorn( schedule )
-            # pprint( schedule )
-            # return self.dump_keys(schedule)
 
             return self.ictev_2013(schedule,show)
 
