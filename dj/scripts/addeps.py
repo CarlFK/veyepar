@@ -4936,16 +4936,17 @@ class add_eps(process.process):
             ('title', 'name'),
             ('description', 'description'),
             ('persons', 'authors'),
-            ('persons', 'emails'),
-            ('persons', 'twitter_id'),
+            ('', 'emails'),
+            ('', 'twitter_id'),
             ('do_not_record', 'released'),
             ('recording_license', 'license'),
             ('language', 'language'),
-            ('track', 'tags'),
             ('', 'reviewers'),
+            ('', 'tags'),
             ]
 
         """
+            ('track', 'tags'),
 ('type',
 ('logo',
 ('answers',
@@ -4964,6 +4965,12 @@ class add_eps(process.process):
         for event in events:
             if self.options.verbose: pprint(event)
 
+            event['location'] = {
+'Python 2 Memorial Concert Hall': 'Python 2',
+'Flip Floperator Pavillion': 'Floperator',
+'The One Obvious Room': 'Obvious',
+'Curlyboi Theatre': 'Curlyboi',}[event['location']]
+
             event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
 
@@ -4972,6 +4979,11 @@ class add_eps(process.process):
             event['released'] = not event['released']
 
             event['license'] = event['license']
+
+            event['authors'] = ", ".join(
+                    a['public_name'] for a in event['authors']
+                    )
+                    # if a['name'] is not None)
 
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )
