@@ -4971,6 +4971,8 @@ class add_eps(process.process):
 
             event['released'] = not event['released']
 
+            event['license'] = event['license']
+
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )
 
