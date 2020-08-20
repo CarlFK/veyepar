@@ -4909,7 +4909,7 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
-    def pretalx(self, schedule, show):
+    def pretalx(self, schedule, speakers, show):
         # https://docs.pretalx.org/en/latest/api/resources/events.html
 
         # Flatten the tree
@@ -4927,6 +4927,10 @@ class add_eps(process.process):
         # self.dump_keys( schedule['days'][0]['rooms']['Curlyboi Theatre'])
         # self.dump_keys( leafs )
 
+        # index the speaker list
+        # import code; code.interact(local=locals())
+        speakersd = { s['code']:s for s in speakers }
+
         field_maps = [
             ('id', 'conf_key'), # ('guid',
             ('url', 'conf_url'),
@@ -4936,8 +4940,8 @@ class add_eps(process.process):
             ('title', 'name'),
             ('description', 'description'),
             ('persons', 'authors'),
-            ('', 'emails'),
-            ('', 'twitter_id'),
+            ('persons', 'emails'),
+            ('persons', 'twitter_id'),
             ('do_not_record', 'released'),
             ('recording_license', 'license'),
             ('language', 'language'),
@@ -4984,6 +4988,16 @@ class add_eps(process.process):
                     a['public_name'] for a in event['authors']
                     )
                     # if a['name'] is not None)
+
+            emails = []
+            twits = []
+            for person in event['emails']:
+                speaker = speakersd[person['code']]
+                emails.append(speaker['email'])
+                # twits.append(speaker['twit']
+            event['emails'] = ", ".join(emails)
+
+            event['twitter_id'] = fix_twitter_id(','.join( twits ) )
 
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )
@@ -5145,7 +5159,7 @@ class add_eps(process.process):
             pprint(headers)
             # return
 
-            for x in 1, : #,2:
+            for x in 1, : #,2: # this is whack.  I wonder what show?
                 response = session.get(url, params=payload, verify=False,
                     headers=headers)
 
@@ -5212,7 +5226,24 @@ class add_eps(process.process):
         #   call appropiate parser
 
         if url.startswith('https://pretalx.com'):
-            return self.pretalx(schedule, show)
+
+            speakers = []
+
+            url = "https://pretalx.com/api/events/pycon-au-2020/speakers/"
+            # https://pretalx.com/api/events/pycon-au-2020/talks/
+            # https://pretalx.com/pycon-au-2020/schedule/export/schedule.json
+            # https://pretalx.com/pycon-au-2020/schedule/export/schedule.xml
+
+            while url is not None:
+                if self.options.verbose: print(url)
+
+                response = session.get(url, params=payload, verify=False,
+                        headers=headers)
+                j = response.json()
+                speakers.extend(j['results'])
+                url = j['next']
+
+            return self.pretalx(schedule, speakers, show)
 
         if url.endswith('programme/schedule/json'):
             # Zookeepr

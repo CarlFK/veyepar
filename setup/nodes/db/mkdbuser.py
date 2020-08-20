@@ -29,4 +29,4 @@ SQL = """
  GRANT ALL PRIVILEGES ON DATABASE %(NAME)s TO %(USER)s;
 """
 
-print SQL % settings.DATABASES['default']
+print( SQL % settings.DATABASES['default'] )
