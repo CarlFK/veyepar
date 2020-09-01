@@ -4909,10 +4909,10 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
-    def pretalx(self, schedule, speakers, show):
+    def pretalx(self, schedule, speakers, talks, show):
         # https://docs.pretalx.org/en/latest/api/resources/events.html
 
-        # Flatten the tree
+        # Flatten the schedule tree
         schedule = schedule['schedule']['conference']
 
         leafs = []
@@ -4924,12 +4924,13 @@ class add_eps(process.process):
                     leaf['room']=room
                 leafs.extend(branch)
 
+
         # self.dump_keys( schedule['days'][0]['rooms']['Curlyboi Theatre'])
         # self.dump_keys( leafs )
 
         # index the speaker list
-        # import code; code.interact(local=locals())
         speakersd = { s['code']:s for s in speakers }
+        talksd = { t['code']:t for t in talks }
 
         field_maps = [
             ('id', 'conf_key'), # ('guid',
@@ -4970,17 +4971,17 @@ class add_eps(process.process):
             if self.options.verbose: pprint(event)
 
             event['location'] = {
-'Python 2 Memorial Concert Hall': 'Python 2',
-'Flip Floperator Pavillion': 'Floperator',
-'The One Obvious Room': 'Obvious',
-'Curlyboi Theatre': 'Curlyboi',}[event['location']]
+                'Python 2 Memorial Concert Hall': 'Python 2',
+                'Flip Floperator Pavillion': 'Floperator',
+                'The One Obvious Room': 'Obvious',
+                'Curlyboi Theatre': 'Curlyboi',
+                    }[event['location']]
 
             event['start'] = datetime.strptime(
                     event['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
 
             event['duration'] = event['duration'] + ":00"
 
-            event['released'] = not event['released']
 
             event['license'] = event['license']
 
@@ -4996,6 +4997,19 @@ class add_eps(process.process):
                 emails.append(speaker['email'])
                 # twits.append(speaker['twit']
             event['emails'] = ", ".join(emails)
+
+            import code; code.interact(local=locals())
+
+    # Permission to release is here
+    # https://pretalx.com/api/events/pycon-au-2020/talks/?format=json
+    # talks d
+
+            # answers n things
+            qd = {a['question']['id']:a
+                    for a in talksd[event['id']]['answers']}
+            pprint(qd)
+            event['released'] = qd[546]['answer'] == 'True'
+
 
             event['twitter_id'] = fix_twitter_id(','.join( twits ) )
 
@@ -5227,23 +5241,36 @@ class add_eps(process.process):
 
         if url.startswith('https://pretalx.com'):
 
-            speakers = []
+            def unpage(url, session):
 
-            url = "https://pretalx.com/api/events/pycon-au-2020/speakers/"
+                ret =  []
+                while url is not None:
+                    if self.options.verbose: print(url)
+
+                    response = session.get(url,
+                            params=payload,
+                            verify=False,
+                            headers=headers,
+                            )
+                    j = response.json()
+                    ret.extend(j['results'])
+                    url = j['next']
+
+                return ret
+
+
+
             # https://pretalx.com/api/events/pycon-au-2020/talks/
             # https://pretalx.com/pycon-au-2020/schedule/export/schedule.json
             # https://pretalx.com/pycon-au-2020/schedule/export/schedule.xml
 
-            while url is not None:
-                if self.options.verbose: print(url)
+            url = "https://pretalx.com/api/events/pycon-au-2020/speakers/"
+            speakers = unpage(url, session)
 
-                response = session.get(url, params=payload, verify=False,
-                        headers=headers)
-                j = response.json()
-                speakers.extend(j['results'])
-                url = j['next']
+            url = "https://pretalx.com/api/events/pycon-au-2020/talks/?format=json"
+            talks = unpage(url, session)
 
-            return self.pretalx(schedule, speakers, show)
+            return self.pretalx(schedule, speakers, talks, show)
 
         if url.endswith('programme/schedule/json'):
             # Zookeepr

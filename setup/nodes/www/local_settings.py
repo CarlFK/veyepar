@@ -7,6 +7,10 @@ STATIC_ROOT = '{{ staticdir }}'
 STATIC_URL = "/static/"
 ADMIN_MEDIA_PREFIX = join(STATIC_URL, "admin/")
 
+ALLOWED_HOSTS = [
+    'veyepar.nextdayvideo.com',
+    ]
+
 DATABASES =  {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
