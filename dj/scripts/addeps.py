@@ -4912,7 +4912,9 @@ class add_eps(process.process):
     def pretalx(self, schedule, speakers, talks, show):
         # https://docs.pretalx.org/en/latest/api/resources/events.html
 
+        # ignore schedule, use talks and speakers
         # Flatten the schedule tree
+        """
         schedule = schedule['schedule']['conference']
 
         leafs = []
@@ -4923,45 +4925,34 @@ class add_eps(process.process):
                 for leaf in branch:
                     leaf['room']=room
                 leafs.extend(branch)
-
+        """
 
         # self.dump_keys( schedule['days'][0]['rooms']['Curlyboi Theatre'])
-        # self.dump_keys( leafs )
+        # self.dump_keys( talks )
 
         # index the speaker list
         speakersd = { s['code']:s for s in speakers }
-        talksd = { t['code']:t for t in talks }
+        # talksd = { t['code']:t for t in talks }
 
         field_maps = [
-            ('id', 'conf_key'), # ('guid',
-            ('url', 'conf_url'),
-            ('room','location'),
-            ('date', 'start'),
+            ('code', 'conf_key'), # ('guid',
+            ('slot','location'),
+            ('slot', 'start'),
             ('duration', 'duration'),
             ('title', 'name'),
             ('description', 'description'),
-            ('persons', 'authors'),
-            ('persons', 'emails'),
-            ('persons', 'twitter_id'),
-            ('do_not_record', 'released'),
-            ('recording_license', 'license'),
+            ('speakers', 'authors'),
+            ('speakers', 'emails'),
+            ('speakers', 'twitter_id'),
+            ('answers', 'released'),
+            ('answers', 'license'),
             ('language', 'language'),
             ('', 'reviewers'),
             ('', 'tags'),
             ]
 
-        """
-            ('track', 'tags'),
-('type',
-('logo',
-('answers',
-('attachments',
-('slug',
-('subtitle',
-('links',
-"""
 
-        events = self.generic_events(leafs, field_maps)
+        events = self.generic_events(talks, field_maps)
 
         html_parser = HTMLParser()
         # html_encoded_fields = [ 'name', 'authors', 'description', ]
@@ -4970,52 +4961,51 @@ class add_eps(process.process):
         for event in events:
             if self.options.verbose: pprint(event)
 
+            room = event['location']['room']['en']
             event['location'] = {
                 'Python 2 Memorial Concert Hall': 'Python 2',
                 'Flip Floperator Pavillion': 'Floperator',
                 'The One Obvious Room': 'Obvious',
                 'Curlyboi Theatre': 'Curlyboi',
-                    }[event['location']]
+                    }[room]
 
             event['start'] = datetime.strptime(
-                    event['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
+                    event['start']['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
 
-            event['duration'] = event['duration'] + ":00"
+            event['conf_url'] = "https://2020.pycon.org.au/program/{}".format(
+                    event['conf_key'])
 
+            event['duration'] = "00:{}:00".format(event['duration'])
 
-            event['license'] = event['license']
+            event['released'] = [q for q in event['released'] if q['question']['id']==546][0]['answer'] == 'True'
+
+            event['license'] = "CC BY-NC-SA" if event['released'] else ""
+
 
             event['authors'] = ", ".join(
-                    a['public_name'] for a in event['authors']
+                    a['name'] for a in event['authors']
                     )
                     # if a['name'] is not None)
+
 
             emails = []
             twits = []
             for person in event['emails']:
                 speaker = speakersd[person['code']]
                 emails.append(speaker['email'])
-                # twits.append(speaker['twit']
+
+                qt = [q for q in speaker['answers'] if q['question']['id']==554]
+                if qt:
+                    twits.append( qt[0]['answer'] )
+
             event['emails'] = ", ".join(emails)
-
-            import code; code.interact(local=locals())
-
-    # Permission to release is here
-    # https://pretalx.com/api/events/pycon-au-2020/talks/?format=json
-    # talks d
-
-            # answers n things
-            qd = {a['question']['id']:a
-                    for a in talksd[event['id']]['answers']}
-            pprint(qd)
-            event['released'] = qd[546]['answer'] == 'True'
-
-
             event['twitter_id'] = fix_twitter_id(','.join( twits ) )
 
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )
 
+
+        # import code; code.interact(local=locals())
         rooms = self.get_rooms(events)
         # pprint(rooms)
         # for room in rooms:
