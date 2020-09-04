@@ -435,6 +435,17 @@
 				<x>'1.0 pt'</x>
 				<y>'2.6 pt'</y>
 			</String>
+
+     	<String>
+				<expr>self.episode_tags</expr>
+				<FontColor>(.5, .5, .5)</FontColor>
+				<FontName>'Helvetica-Bold'</FontName>
+				<FontSize>10</FontSize>
+				<width>'80.0 pt'</width>
+				<x>'456.0 pt'</x>
+				<y>'31.0 pt'</y>
+			</String>
+
 			<String>
 				<expr>"[  ] [  ] [  ] misc."</expr>
 				<FontColor>(.5, .5, .5)</FontColor>
@@ -678,7 +689,7 @@
 				<FontSize>13</FontSize>
 				<width>'53.0 pt'</width>
 				<x>'405.0 pt'</x>
-				<y>'22.3 pt'</y>
+				<y>'21.3 pt'</y>
 			</String>
 			<String>
 				<expr>"[  ] Review"</expr>

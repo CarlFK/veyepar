@@ -4947,8 +4947,8 @@ class add_eps(process.process):
             ('answers', 'released'),
             ('answers', 'license'),
             ('language', 'language'),
+            ('answers', 'tags'),
             ('', 'reviewers'),
-            ('', 'tags'),
             ]
 
 
@@ -5000,6 +5000,41 @@ class add_eps(process.process):
 
             event['emails'] = ", ".join(emails)
             event['twitter_id'] = fix_twitter_id(','.join( twits ) )
+
+            questions = event['tags']
+
+            tags = []
+
+# 492 'How would you prefer to present?'
+
+            answers = {
+                    'I can do either pre-recorded or live': 'do either',
+                    'I would prefer to present live': 'prefer live',
+                    'I would prefer to pre-record': 'pre-record',
+                    "I don't mind": "don't care"
+                        }
+
+            try:
+                answer = [q for q in questions if q['question']['id']==492][0]['answer']
+                answer = answers[answer]
+                tags.append(answer)
+            except IndexError:
+                pass
+
+                    # 549 'Presentation format'
+
+            answers = {
+                'I will produce my own video file by 23 August': 'will produce',
+                'I will present live on the day': 'format: live'
+                        }
+
+
+            answer = [q for q in questions if q['question']['id']==549][0]['answer']
+            answer = answers[answer]
+            tags.append(answer)
+
+            event['tags'] = ', '.join(tags)
+
 
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )

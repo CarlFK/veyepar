@@ -688,6 +688,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
           'episode_end':ep.end,
           'episode_released':ep.released,
           'episode_comment':ep.comment,
+          'episode_tags':ep.tags,
           'location_name':location_name,
           'location_slug':location_slug,
           'client_name':client.name,
