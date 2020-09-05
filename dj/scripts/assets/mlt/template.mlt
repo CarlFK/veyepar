@@ -154,7 +154,7 @@
     <property name="seekable">1</property>
     <property name="aspect_ratio">1.18519</property>
     <property name="audio_index">1</property>
-    <property name="video_index">0</property>
+    <property name="video_index">1</property>
     <property name="mute_on_pause">1</property>
     <property name="mlt_service">avformat</property>
     <property name="global_feed">1</property>
