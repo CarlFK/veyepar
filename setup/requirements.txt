@@ -1,4 +1,4 @@
-django==1.11.23
+django==2.2.24
 vobject
 django-debug-toolbar
 # git+https://github.com/bear/python-twitter.git
