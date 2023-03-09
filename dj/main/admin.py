@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib import messages
-from django.utils.translation import ungettext
+# from django.utils.translation import ungettext
+from django.utils.translation import gettext_lazy as ungettext
 
 from django import forms
 from django.db import models
@@ -138,7 +139,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             'set_stopped', 'clear_locked', 're_slug',
             'bump_state', 'smack_state',
             'encode_state'] \
-            + admin.ModelAdmin.actions
+            + list(admin.ModelAdmin.actions)
 
     def set_stopped(self, request, queryset):
         rows_updated = queryset.update(stop=True)
@@ -259,7 +260,7 @@ class Cut_ListAdmin(admin.ModelAdmin):
 
     admin_order_field = list_display
 
-    actions = ['un_apply' ] + admin.ModelAdmin.actions
+    actions = ['un_apply' ] + list(admin.ModelAdmin.actions)
     def un_apply(self, request, queryset):
         rows_updated = queryset.update(apply=False)
         msg = ungettext(

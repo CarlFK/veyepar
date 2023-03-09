@@ -414,13 +414,14 @@ def add_filters( base_dir, src_file, filters, target, dst_file ):
 
 
 if __name__ == '__main__':
-    # test()
-
+    test()
+    """
     add_slides( "/home/carl/Videos/veyepar/pyohio/pyohio_2019/custom",
             'How_to_Write_Pytest_Plugins_v1.mlt',
             "pytests/png",
             'How_to_Write_Pytest_Plugins.mlt',
             )
+    """
 
 #    add_filters( "/home/carl/Videos/veyepar/pyohio/pyohio_2019.local/custom",
 #            "Enough_Python_to_Fake_It_v2.mlt",

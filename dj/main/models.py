@@ -112,7 +112,7 @@ class Location(models.Model):
 
 ANN_STATES=((1,'preview'),(2,'review'),(3,'approved'))
 class Show(models.Model):
-    client = models.ForeignKey(Client)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     locations = models.ManyToManyField(Location,
             limit_choices_to={'active': True},
             blank=True)
@@ -137,15 +137,15 @@ class Show(models.Model):
         return self.client
     def __str__(self):
         return "%s: %s" % ( self.client_name, self.name )
-    @models.permalink
+    # @models.permalink
     def get_absolute_url(self):
         return ('episode_list', [self.client.slug,self.slug,])
     class Meta:
         ordering = ["sequence"]
 
 class Raw_File(models.Model):
-    location = models.ForeignKey(Location)
-    show = models.ForeignKey(Show)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
     filename = models.CharField(max_length=135,help_text="filename.dv")
     filesize = models.BigIntegerField(default=1,help_text="size in bytes")
     start = models.DateTimeField(null=True, blank=True,
@@ -216,7 +216,7 @@ class Raw_File(models.Model):
     def __str__(self):
         return self.filename
 
-    @models.permalink
+    # @models.permalink
     def get_absolute_url(self):
         return ('raw_file', [self.id,])
 
@@ -224,8 +224,8 @@ class Raw_File(models.Model):
         ordering = ["start", "location", "filename"]
 
 class Mark(models.Model):
-    show = models.ForeignKey(Show)
-    location = models.ForeignKey(Location)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     click = models.DateTimeField(
         help_text='When Cut was Clicked.')
 
@@ -266,8 +266,8 @@ def generate_edit_key():
 
 
 class Episode(models.Model):
-    show = models.ForeignKey(Show)
-    location = models.ForeignKey(Location, null=True)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, null=True, on_delete=models.CASCADE)
     active = models.BooleanField(default=True,
             help_text="Turn off to hide from UI.")
     state = models.IntegerField(null=True, blank=True,
@@ -348,8 +348,8 @@ class Episode(models.Model):
     twitter_url = models.CharField(max_length=135, null=True,blank=True,
         help_text = "URL of tweet to email presenters for retweeting")
 
-    video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality')
-    audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality')
+    video_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='video_quality', on_delete=models.CASCADE)
+    audio_quality = models.ForeignKey(Quality,null=True,blank=True,related_name='audio_quality', on_delete=models.CASCADE)
 
     comment = models.TextField(blank=True, help_text="production notes")
 
@@ -365,7 +365,7 @@ class Episode(models.Model):
         ordering = ["sequence"]
         # unique_together = [("show", "slug")]
 
-    @models.permalink
+    # @models.permalink
     def get_absolute_url(self):
         return ('episode', [self.id])
 
@@ -465,8 +465,8 @@ class Cut_List(models.Model):
     note: this sould be Cut_list_ITEM
     because it is not the whole list, just one entry.
     """
-    raw_file = models.ForeignKey(Raw_File)
-    episode = models.ForeignKey(Episode)
+    raw_file = models.ForeignKey(Raw_File, on_delete=models.CASCADE)
+    episode = models.ForeignKey(Episode, on_delete=models.CASCADE)
     sequence = models.IntegerField(default=1)
     start = models.CharField(max_length=11, blank=True,
         help_text='offset from start in HH:MM:SS.ss')
@@ -539,8 +539,8 @@ class State(models.Model):
         return self.slug
 
 class Image_File(models.Model):
-    show = models.ForeignKey(Show)
-    location = models.ForeignKey(Location, null=True)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, null=True, on_delete=models.CASCADE)
     episodes = models.ManyToManyField(Episode, blank=True)
     filename = models.CharField(max_length=135, help_text="foo.png")
     text = models.TextField(blank=True, help_text="OCRed text")
@@ -555,8 +555,8 @@ class Image_File(models.Model):
 
 
 class Log(models.Model):
-    episode = models.ForeignKey(Episode)
-    state = models.ForeignKey(State, null=True, blank=True)
+    episode = models.ForeignKey(Episode, on_delete=models.CASCADE)
+    state = models.ForeignKey(State, null=True, blank=True, on_delete=models.CASCADE)
     ready = models.DateTimeField()
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
@@ -571,7 +571,7 @@ class Log(models.Model):
         else:
             return None
 
-    @models.permalink
+    # @models.permalink
     def get_absolute_url(self):
         return ('episode', [self.episode.id])
 

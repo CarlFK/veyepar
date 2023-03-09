@@ -1,3 +1,3 @@
 #!/bin/bash -x
 
-python ./manage.py runserver 0.0.0.0:8080
+~/.virtualenvs/veyepar/bin/python manage.py runserver 0.0.0.0:8080

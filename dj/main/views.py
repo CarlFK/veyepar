@@ -1,6 +1,6 @@
 # main/view.py
 
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
@@ -24,7 +24,7 @@ from django.db.models.functions import Length, Trunc
 from django.http import (HttpResponse, HttpResponseRedirect,
         Http404, HttpResponseForbidden)
 from django.core import serializers
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.mail import get_connection, EmailMessage
 
 import csv

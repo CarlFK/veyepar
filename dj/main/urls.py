@@ -1,6 +1,7 @@
 # dj/main/urls.py
 
-from django.conf.urls import url
+# from django.conf.urls import url
+from django.urls import re_path as url
 
 # from django.views.generic import list_detail
 
