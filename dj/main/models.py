@@ -291,7 +291,7 @@ class Episode(models.Model):
         help_text="file name friendly version of name")
     priority = models.IntegerField(null=True,blank=True,
         help_text="lower may not get recorded")
-    released = models.NullBooleanField(null=True,blank=True,
+    released = models.BooleanField(null=True,blank=True,
         help_text="has someone authorised pubication")
     conf_key = models.CharField(max_length=32, blank=True,
         help_text='primary key of event in conference system database.')
@@ -328,7 +328,7 @@ class Episode(models.Model):
     license = models.CharField(max_length=20, null=True,blank=True,
             default='CC BY-SA',
             help_text='see http://creativecommons.org/licenses/')
-    hidden = models.NullBooleanField(null=True,blank=True,
+    hidden = models.BooleanField(null=True,blank=True,
         help_text='hidden (does not show up on public episode list')
 
     thumbnail = models.CharField(max_length=135,blank=True,
@@ -353,7 +353,7 @@ class Episode(models.Model):
 
     comment = models.TextField(blank=True, help_text="production notes")
 
-    stop = models.NullBooleanField(
+    stop = models.BooleanField(
              help_text="Stop process.py from processing anymore")
 
     formfield_overrides = {
