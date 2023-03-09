@@ -114,12 +114,12 @@ TEMPLATES = [
     },
 ]
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.common.CommonMiddleware',
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.common.CommonMiddleware',
 )
 
 VALIDATOR_APP_VALIDATORS = {
@@ -128,12 +128,12 @@ VALIDATOR_APP_VALIDATORS = {
     }
 if DEBUG:
     INTERNAL_IPS = ('127.0.0.1',)
-    MIDDLEWARE_CLASSES = \
+    MIDDLEWARE = \
         (
         # 'lukeplant_me_uk.django.validator.middleware.ValidatorMiddleware',
         # 'debug_toolbar.middleware.DebugToolbarMiddleware',
                 ) +\
-        MIDDLEWARE_CLASSES
+        MIDDLEWARE
 
 ROOT_URLCONF = 'dj.urls'
 
