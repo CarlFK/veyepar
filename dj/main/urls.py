@@ -1,6 +1,8 @@
 # dj/main/urls.py
 
 # from django.conf.urls import url
+from django.urls import path
+from django.urls import re_path
 from django.urls import re_path as url
 
 # from django.views.generic import list_detail
@@ -11,7 +13,7 @@ from .views import *
 #    "template_object_name": "client_list" }
 
 urlpatterns = [
-    url(r'^$', main, name='main'),
+    path(r'', main, name='main'),
     url(r'start/$', start_here, name='start_here'),
     url(r'clients/$', clients, name='clients'),
     url(r'locations/$', locations, name='locations'),

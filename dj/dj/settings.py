@@ -142,12 +142,13 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
      # 'django.contrib.sites',
+    'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.staticfiles',
     'main',
     'accounts',
-    'volunteers',
+    # 'volunteers',
     'rest_framework',
     'api',
     'django_extensions',
@@ -167,6 +168,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 try:    from dj.local_settings import *
 except ImportError:    pass

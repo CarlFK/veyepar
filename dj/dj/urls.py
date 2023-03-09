@@ -31,15 +31,15 @@ urlpatterns = [
     # to INSTALLED_APPS to enable admin documentation:
     # url('^main/approve/2341/Flip_Case_Potentiometer/295432$', RedirectView.as_view(url='/main/approve/2341/Flip_Case_Potentiometer/29543200/')),
     # url('^main/approve/2337/thevenins_theorem/862004$', RedirectView.as_view(url='/main/approve/2337/thevenins_theorem/86200400/')),
-    ('^$', RedirectView.as_view(url='/main/')),
+    ('', RedirectView.as_view(url='/main/')),
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    re_path(r'^admin/', admin.site.urls),
+    re_path(r'admin/', admin.site.urls),
     #(r'^databrowse/(.*)', login_required(databrowse.site.root) ),
-    re_path(r'^main/', include('main.urls')),
-    re_path(r'^accounts/', include('accounts.urls')),
+    re_path(r'main/', include('main.urls')),
+    re_path(r'accounts/', include('accounts.urls')),
     # url(r'^my_admin/jsi18n', django.views.i18n.javascript_catalog),
-    re_path(r'^volunteers/', include('volunteers.urls')),
-    re_path(r'^api/', include('api.urls')),
+    # re_path(r'^volunteers/', include('volunteers.urls')),
+    re_path(r'api/', include('api.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
