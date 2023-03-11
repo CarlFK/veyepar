@@ -1,7 +1,7 @@
 # veyepar/dj/urls.py
 
 from django.conf import settings
-from django.urls import include, re_path
+from django.urls import include, path, re_path
 
 from django.views.generic.base import RedirectView
 
@@ -31,7 +31,7 @@ urlpatterns = [
     # to INSTALLED_APPS to enable admin documentation:
     # url('^main/approve/2341/Flip_Case_Potentiometer/295432$', RedirectView.as_view(url='/main/approve/2341/Flip_Case_Potentiometer/29543200/')),
     # url('^main/approve/2337/thevenins_theorem/862004$', RedirectView.as_view(url='/main/approve/2337/thevenins_theorem/86200400/')),
-    ('', RedirectView.as_view(url='/main/')),
+    path('', RedirectView.as_view(url='/main/')),
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     re_path(r'admin/', admin.site.urls),
     #(r'^databrowse/(.*)', login_required(databrowse.site.root) ),
