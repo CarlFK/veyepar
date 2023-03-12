@@ -16,7 +16,7 @@ urlpatterns = [
     re_path(r'clients/$', clients, name='clients'),
     re_path(r'locations/$', locations, name='locations'),
     re_path(r'C/(?P<client_slug>[-\w]+)/$', client, name='client'),
-    re_path(r'^C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/$',
+    re_path(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/$',
          episodes, name='episode_list'),
     re_path(r'reschedule/(?P<show_id>\d+)/$',
          episodes_reschedule, name='episodes_reschedule'),
@@ -25,7 +25,7 @@ urlpatterns = [
     re_path(r'train/(?P<episode_id>\w+)/(?P<episode_slug>[-\w]+)/(?P<edit_key>\w+)/$', train, name='train'),
     re_path(r'approve/(?P<episode_id>\w+)/(?P<episode_slug>[-\w]+)/(?P<edit_key>\w+)/$', approve_episode, name='approve_episode'),
 
-    re_path(r'E/edit/(?P<episode_id>\w+)/(?P<episode_slug>[-\w]+)/(?P<edit_key>\w+)/$', episode, name='episode'),
+    re_path(r'.*E/edit/(?P<episode_id>\w+)/(?P<episode_slug>[-\w]+)/(?P<edit_key>\w+)/$', episode, name='episode'),
 
     re_path(r'state/(?P<state>\w+)/$', episode_list, name='episode_list'),
     re_path(r'script/(?P<script>\w+)/$', episodes_script, name='episodes_script'),
@@ -37,8 +37,8 @@ urlpatterns = [
     re_path(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
     re_path(r'C/(?P<client_slug>[-\w]+)/S/(?P<show_slug>[-\w]+)/L/(?P<location_slug>[\w\-]+)/D/(?P<start_day>\w+)/s/(?P<state>\w+)/$', episodes, name='episode_list'),
 
-    re_path(r'E/(?P<episode_id>\d+)/$', episode, name='episode'),
-    re_path(r'E/(?P<episode_id>\d+)/claim_lock/$', claim_episode_lock),
+    re_path(r'.*E/(?P<episode_id>\d+)/$', episode, name='episode'),
+    re_path(r'.*E/(?P<episode_id>\d+)/claim_lock/$', claim_episode_lock),
 
     re_path(r'meeting_announcement/(?P<show_id>\w+)/$',
         meet_ann,
@@ -83,7 +83,7 @@ urlpatterns = [
     re_path(r'E/(?P<ep_id>\d+).json$',
         ep_json,
         name='ep_json'),
-    re_path(r'M/pyvid_json.urls$',
+    re_path(r'.*M/pyvid_json.urls$',
         pyvid_jsons,
         name='pyvid_jsons'),
 
