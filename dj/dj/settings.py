@@ -148,7 +148,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'main',
     'accounts',
-    # 'volunteers',
+    'volunteers',
     'rest_framework',
     'api',
     'django_extensions',

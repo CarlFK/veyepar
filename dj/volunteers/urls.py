@@ -1,6 +1,6 @@
 # volunteers/urls.py
 
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib.auth.decorators import login_required
 
 from volunteers.views import *
