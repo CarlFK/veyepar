@@ -902,7 +902,7 @@ def clients(request):
             fields=('name','slug','tags','description')
 
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.method == 'POST':
             # client=Client(sequence=1)
             # form=Client_Form(request.POST,instance=client)

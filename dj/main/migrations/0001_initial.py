@@ -2,6 +2,7 @@
 
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -148,7 +149,7 @@ class Migration(migrations.Migration):
                 ('end', models.DateTimeField(null=True, blank=True)),
                 ('user', models.CharField(max_length=50)),
                 ('result', models.CharField(max_length=250)),
-                ('episode', models.ForeignKey(to='main.Episode')),
+                ('episode', models.ForeignKey(to='main.Episode', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },
@@ -178,7 +179,7 @@ class Migration(migrations.Migration):
                 ('trash', models.BooleanField(default=False, help_text=b'This clip is trash')),
                 ('ocrtext', models.TextField(null=True, blank=True)),
                 ('comment', models.TextField(blank=True)),
-                ('location', models.ForeignKey(to='main.Location')),
+                ('location', models.ForeignKey(to='main.Location', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'ordering': ['start', 'location', 'filename'],
@@ -199,7 +200,7 @@ class Migration(migrations.Migration):
                 ('conf_url', models.CharField(max_length=200, null=True, blank=True)),
                 ('schedule_url', models.CharField(max_length=235, null=True, blank=True)),
                 ('announcement_state', models.IntegerField(default=2, null=True, blank=True, choices=[(1, b'preview'), (2, b'review'), (3, b'approved')])),
-                ('client', models.ForeignKey(to='main.Client')),
+                ('client', models.ForeignKey(to='main.Client', on_delete=django.db.models.deletion.CASCADE)),
                 ('locations', models.ManyToManyField(to='main.Location', blank=True)),
             ],
             options={
@@ -223,61 +224,61 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='raw_file',
             name='show',
-            field=models.ForeignKey(to='main.Show'),
+            field=models.ForeignKey(to='main.Show', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='log',
             name='state',
-            field=models.ForeignKey(blank=True, to='main.State', null=True),
+            field=models.ForeignKey(blank=True, to='main.State', null=True, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='image_file',
             name='location',
-            field=models.ForeignKey(to='main.Location', null=True),
+            field=models.ForeignKey(to='main.Location', null=True, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='image_file',
             name='show',
-            field=models.ForeignKey(to='main.Show'),
+            field=models.ForeignKey(to='main.Show', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='episode',
             name='audio_quality',
-            field=models.ForeignKey(related_name='audio_quality', blank=True, to='main.Quality', null=True),
+            field=models.ForeignKey(related_name='audio_quality', blank=True, to='main.Quality', null=True, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='episode',
             name='location',
-            field=models.ForeignKey(to='main.Location', null=True),
+            field=models.ForeignKey(to='main.Location', null=True, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='episode',
             name='show',
-            field=models.ForeignKey(to='main.Show'),
+            field=models.ForeignKey(to='main.Show', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='episode',
             name='video_quality',
-            field=models.ForeignKey(related_name='video_quality', blank=True, to='main.Quality', null=True),
+            field=models.ForeignKey(related_name='video_quality', blank=True, to='main.Quality', null=True, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='cut_list',
             name='episode',
-            field=models.ForeignKey(to='main.Episode'),
+            field=models.ForeignKey(to='main.Episode', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='cut_list',
             name='raw_file',
-            field=models.ForeignKey(to='main.Raw_File'),
+            field=models.ForeignKey(to='main.Raw_File', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
     ]

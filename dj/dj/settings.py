@@ -16,7 +16,7 @@ ADMINS = (
 
 # STATICFILES_DIRS = [os.path.expanduser('~/Videos/veyepar'),]
 STATIC_URL = "/static/"
-MEDIA_URL = "file:///%s/"%os.path.expanduser('~/Videos/veyepar')
+# MEDIA_URL = "file:///%s/"%os.path.expanduser('~/Videos/veyepar')
 
 UPLOAD_FORMATS = ['mp4',]
 

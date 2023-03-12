@@ -14,6 +14,10 @@ sudo apt-get --assume-yes install \
     gir1.2-gst-plugins-base-1.0 gstreamer1.0-plugins-good \
     python-numpy
 
+# sudo apt --assume-yes install python3-gi libgirepository1.0-dev
+# pip install pycairo
+# pip install PyGObject
+
 # new stuff!!!
 pip install pyocr
 sudo apt install tesseract-ocr-eng tesseract-ocr

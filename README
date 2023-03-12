@@ -4,7 +4,7 @@ Video metadata manager - given file names of raw footage, construct cut list (wi
 
 based on DebConf system
 
-authors: Carl Karsten <carl@personnelware.com>  
+authors: Carl Karsten <carl@personnelware.com>
 
 Install and usage:
 
@@ -12,25 +12,25 @@ Install and usage:
 This installs all of the python modules in a virtualenv sandbox using virtualenvwrapper.  So before running any python apps, you must activate the virtualenv with:
 workon veyepar.
 This has been added to ~/.bashrc so it should be setup.
-Then you must run everything with 
+Then you must run everything with
 python <script name>.py
 Running ./<script>.py won't work.
-Using virtualenv makes develoment easier and reduces the amount of things that require root/sudo privs.  
+Using virtualenv makes develoment easier and reduces the amount of things that require root/sudo privs.
 
 
 1.1 create the database
-INSTAL.sh calls rt.sh (run tests) which will create the db 
+INSTAL.sh calls rt.sh (run tests) which will create the db
 and an admin username: test, password abc.
 For production you should use a secure set of credentials
 so delete veyepar.db and run:
-veyepar/dj$ python ./manage.py syncdb
+veyepar/dj$ python ./manage.py (new stuff)
 This will prompt for an admin username and password.
 
 2. create a location, client, show, and episode records in the db
-browse to http://localhost:8080 
+browse to http://localhost:8080
 log in
 a. click "Locations"
-b. enter Location Name, hit save. 
+b. enter Location Name, hit save.
 c. click "Clients"
 d. enter Client Name, hit save.
 f. enter Show Name, select Location(s) from step b, hit Save.
@@ -41,7 +41,7 @@ If you have many Episodes it might be worth the effort to import locaion and epi
 h. enter Episode Name, start/duration - hit Save.
 i. repeat for each Episode
 
-3. veyepar.cfg: set client and show to the client and show slugs.  
+3. veyepar.cfg: set client and show to the client and show slugs.
 review settings,  pal/ntsc is one of the more important ones.
 
 4. create the dirs for the .dv files:
@@ -59,7 +59,7 @@ Do some sanity checks:
 browse to the show page:
 check "overlapping episodes" - there shouldn't be any.
 show stats: grid of days by room.  should look like your show
-schedule: crude grid of events in a room and time slot. 
+schedule: crude grid of events in a room and time slot.
 review titles
 meeting announcement: meant for usergroup meetings, doesn't scale well to a large event.
 
@@ -67,23 +67,23 @@ add_to_richard.py = creates landing page for videos
 
 email_title.py - emails url of title image and landing page to presenters for review.
 
-recording sheets: pdf to be printed and put next to each recoreding station runing DVswitch.  
+recording sheets: pdf to be printed and put next to each recoreding station runing DVswitch.
 
 Use DVswitch to record talks.  Note the actual start/end time on the recoding sheet.
 
 4.2. put the dv files into the dirs
-Use your mad file copy skilz to rsync, mv, whatever.  
+Use your mad file copy skilz to rsync, mv, whatever.
 
 5. for all dv files, add records into the db:
 veyepar/dj/scripts$ python adddv.py
 Adds the .dv filenames to the raw files table
 
-6.0 collect dv metadata  
+6.0 collect dv metadata
 6.1 start/end
 veyepar/dj/scripts$ python tsdv.py - timestamp dv
 Gets start from one of:
 the file name (assumes hh_mm_ss.dv format)
-There is code to read the time stamp from the .dv file frames, but that doesn't work well at all.  
+There is code to read the time stamp from the .dv file frames, but that doesn't work well at all.
 
 6.2 ocr/thumbnail (don't bother, not used for anything any more)
 use ocr to find some text, which makes for a good thumnail.
@@ -99,17 +99,17 @@ veyepar/dj/scripts$ python dv2ogv.py:# makes .ogv for all dv in a show
 
 9. Post production editing
 
-9.1 for each episode, look at what .dv files have been assigned to it.  
+9.1 for each episode, look at what .dv files have been assigned to it.
 
 browse http://0.0.0.0:8080/main/E/1  (for a fresh system, else find your show)
 
 DV files that might belong to the talk are marked to be included.  un mark [x]Apply the ones that should not be included.
 
-If there are ones missing, .. get help. 
+If there are ones missing, .. get help.
 use "add raw file" at bottom of page.
-or use fixdv.py to fix batches, or use django's admin UI to add one by one.  
+or use fixdv.py to fix batches, or use django's admin UI to add one by one.
 
-If a dv needs junk trimmed from the start or end, put the time offset in "Cut List - Start/End" 
+If a dv needs junk trimmed from the start or end, put the time offset in "Cut List - Start/End"
 1 or 0:0:1 means trim 1 second from start.  1:2:3 means the clip ends 1 hour 2 min 3 seconds from the start of the file, so in this case 1h 2m 3 seconds would be used.
 
 Set Episode.state to Encode (2)
@@ -118,17 +118,17 @@ Set Episode.state to Encode (2)
 enc.py:# encodes to ogg, flv, m4v, webm, mpeg
 adds titles too.
 
-11. 
-upload 
+11.
+upload
 push.py - sends copy to private cloud stoage.  (currently disabled)
 post_yt.py - sends to youtube (and archive and rax cuz eww, terible hack.)
-post_blip.py - posts to blip.tv, 
+post_blip.py - posts to blip.tv,
 post_vimeo.py - posts to vimeo (not used in years, suffers from bit rot)
 pw.py holds user/passwords, not checked in, make one from pw_samp.py
 
 add_to_richard.py - adds video url's to landing page
 
-12. visually review: richard, youtube, archive, title slide, encoding quality.  If good, manualy move state to email.  Once satified that everything is in place and no longer needs every video to be reviewed, run review_1.py to move evertyhing to next step. 
+12. visually review: richard, youtube, archive, title slide, encoding quality.  If good, manualy move state to email.  Once satified that everything is in place and no longer needs every video to be reviewed, run review_1.py to move evertyhing to next step.
 
 email_url.py - emails presenter the richard URL again, this time encouraging them to advertise the URL to their social network, or report back any problmes they see.
 
@@ -137,17 +137,17 @@ email_url.py - emails presenter the richard URL again, this time encouraging the
 mk_public.py - changes state from draft/hidden to public in youtube and richard
 
 
-12. tweet 
+12. tweet
 tweet.py
 
 
 HACKING ON THE CODE
-There are no useful docs for setting up a development environment. 
+There are no useful docs for setting up a development environment.
 
 If you want to hack on this:
 Ubuntu LTS, likely any ubuntu/debian in the last 3 years.
 
-Build the encoder binary: https://github.com/CarlFK/veyepar/blob/master/setup/melt/mkmlt.sh 
+Build the encoder binary: https://github.com/CarlFK/veyepar/blob/master/setup/melt/mkmlt.sh
 Setup a box for production using the steps at the top of this file.
 
 The test suite is often in a broken state, tyically it will error.  If it completes but shows tests failing, that is typically a real problem that should be addressed asap.

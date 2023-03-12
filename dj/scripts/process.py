@@ -12,7 +12,7 @@ import subprocess
 import sys
 import time
 
-import fixunicode
+# import fixunicode
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dj.settings")
 sys.path.insert(0, '..' )
@@ -27,7 +27,7 @@ django.setup()
 
 from main.models import Client, Show, Location, Episode, State, Log
 
-import swift_uploader as rax_uploader
+# import swift_uploader as rax_uploader
 
 
 class process():
