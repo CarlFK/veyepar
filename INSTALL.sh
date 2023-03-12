@@ -14,8 +14,8 @@ sudo apt --assume-yes install software-properties-common
 # trunk gstreamer - used for mkthumbs
 # sudo apt-add-repository --yes ppa:gstreamer-developers/ppa
 
-# sunab tracks melt trunk, 
-# kxstudio has melt stable 
+# sunab tracks melt trunk,
+# kxstudio has melt stable
 # sudo apt-add-repository ppa:sunab/kdenlive-svn
 # sudo apt-add-repository ppa:kxstudio-team/ppa
 
@@ -38,24 +38,24 @@ sudo apt-get --assume-yes install melt
 
 sudo apt-get --assume-yes install libyaml-dev libjpeg-dev
 
-# python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad 
-# python-lxml 
+# python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad
+# python-lxml
 # python-dev libxml2-dev libxslt-dev
-# sphinx2-bin 
-# libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51 
+# sphinx2-bin
+# libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-1 libavformat-extra-52 libavutil-extra-50 libpostproc-extra-51
 # pocketsphinx-utils
 
 # for encoder node
 sudo apt-get --assume-yes install python-psycopg2 inkscape ffmpeg2theora python-imaging python3-venv
-# python-virtualenv 
+# python-virtualenv
 
-# virtualenvwrapper 
+# virtualenvwrapper
 
 sudo apt-get --assume-yes build-dep python-lxml python-psycopg2
 # sudo apt-get build-dep python-opencv
 
-# for web server 
-# python-psycopg2 python-imaging python-virtualenv virtualenvwrapper 
+# for web server
+# python-psycopg2 python-imaging python-virtualenv virtualenvwrapper
 # ttf-dejavu-core (for pdfs)
 
 # gstreamer bindings
@@ -72,13 +72,13 @@ sudo apt-get --assume-yes install python3-gi \
 # Why am I installing py3 stuff?
     # python3-gi \
 
-# curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv 
+# curl -s http://peak.telecommunity.com/dist/ez_setup.py | python - && easy_install pip && pip install -U pip virtualenv
 
 # sudo pip install hg+https://CarlFK@bitbucket.org/CarlFK/virtualenvwrapper
 # sudo pip install hg+https://bitbucket.org/dhellmann/virtualenvwrapper
 
 # printf "\nsource /usr/local/bin/virtualenvwrapper.sh\n" >> ~/.bashrc
-# source /usr/local/bin/virtualenvwrapper.sh 
+# source /usr/local/bin/virtualenvwrapper.sh
 # if [ ! -d ~/.virtualenvs ]; then
 #   mkdir ~/.virtualenvs
 #fi
@@ -105,7 +105,7 @@ cd veyepar
 pip install -r setup/requirements.txt
 
 # fix a bunch of things that don't pip install well
-cd $(python3 -c "from distutils.sysconfig import get_python_lib; print( get_python_lib())")
+cd $(python3 -c "import sysconfig; print( sysconfig.get_path('purelib'))")
 
 # Dabo
 # maybe it works now?  http://trac.dabodev.com/changeset/5554
@@ -115,7 +115,7 @@ cd $(python3 -c "from distutils.sysconfig import get_python_lib; print( get_pyth
 # git clone https://github.com/dabodev/dabo.git dabo-master
 # get my py3 fork
 git clone https://github.com/CarlFK/dabo.git dabo-master
-ln -s dabo-master/dabo 
+ln -s dabo-master/dabo
 
 
 pydp=/usr/lib/python3/dist-packages
@@ -123,7 +123,7 @@ pydp=/usr/lib/python3/dist-packages
 ln -s $pydp/gi
 
 # to hookinto local open-cv
-# python -c "import cv2;print cv2.__file__" 
+# python -c "import cv2;print cv2.__file__"
 # /usr/lib/python2.7/dist-packages/cv2.so
 # ln -s /usr/lib/python2.7/dist-packages/cv2.so
 ln -s $pydp/cv2.so
@@ -162,18 +162,18 @@ cp sample_veyepar.cfg veyepar.cfg
 cd ../..
 
 # either install apache or some other http server and figure out how to enable seeking in ogv, or allow file:// access to the local files:
-# http://kb.mozillazine.org/Links_to_local_pages_do_not_work#Firefox_1.5.2C_SeaMonkey_1.0_and_newer  "Disabling the Security Check" 
+# http://kb.mozillazine.org/Links_to_local_pages_do_not_work#Firefox_1.5.2C_SeaMonkey_1.0_and_newer  "Disabling the Security Check"
 
-# this assumes FireFox has been run, 
+# this assumes FireFox has been run,
 # which will create ~/.mozilla/firefox/profiles.ini
 
 # This no longer works :(
 
-# if [[ -f  ~/.mozilla/firefox/profiles.ini ]]; then 
+# if [[ -f  ~/.mozilla/firefox/profiles.ini ]]; then
 #    python setup/nodes/review/set_ff_prefs.py
 # fi
 
-# adds these lines to FireFox config 
+# adds these lines to FireFox config
 # user_pref("capability.policy.policynames", "localfilelinks");
 # user_pref("capability.policy.localfilelinks.sites", "http://localhost:8080");
 # user_pref("capability.policy.localfilelinks.checkloaduri.enabled", "allAccess");
