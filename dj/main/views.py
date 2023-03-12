@@ -392,7 +392,7 @@ def eps_xfer(request,client_slug=None,show_slug=None):
             'twitter_url',
             'comment',
         ]
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         fields.extend(['emails', 'edit_key',])
 
     if "fields" in request.GET:
@@ -682,7 +682,7 @@ def episode_pdfs(request, show_id, episode_id=None, rfxml='test.rfxml'):
           'episode_name':ep.name,
           'episode_authors':ep.authors,
           'episode_emails':
-            ep.emails if request.user.is_authenticated() else '',
+            ep.emails if request.user.is_authenticated else '',
           'episode_start':ep.start,
           'episode_duration':ep.duration,
           'episode_end':ep.end,
@@ -945,7 +945,7 @@ def client(request,client_slug=None):
             model=Show
             fields=('name','slug','locations','tags','description')
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.method == 'POST':
             show=Show(client=client,sequence=1,)
             form=Show_Form(request.POST,instance=show)
@@ -983,7 +983,7 @@ def client(request,client_slug=None):
 
 def locations(request):
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
 
         if request.method == 'POST':
             location_form=Location_Form(request.POST)
@@ -1109,7 +1109,7 @@ def show_stats(request, show_id, ):
     Location_Active_FormFormSet = formset_factory(
             Location_Active_Form, extra=0)
 
-    if request.user.is_authenticated() and \
+    if request.user.is_authenticated and \
             request.method == 'POST':
         loctaion_formset = Location_Active_FormFormSet(request.POST)
     else:
@@ -1489,7 +1489,7 @@ def orphan_img(request, show_id, ):
     # dupes = Episode.objects.values('slug').annotate(Count('id')).order_by().filter(id__count__gt=1, show=show)
 
     AddImageToEpFormSet = formset_factory(AddImageToEp, extra=0)
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.method == 'POST':
             formset = AddImageToEpFormSet(request.POST)
             for form in formset:
@@ -1875,7 +1875,7 @@ def episodes(request, client_slug=None, show_slug=None, location_slug=None,
     else:
         episodes = episodes.order_by('start')
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.method == 'POST':
             form=Episode_Form_Preshow(request.POST)
             if form.is_valid():
@@ -1969,7 +1969,7 @@ def episodes_reschedule(request, show_id=None):
             extra=0,
             fields=[])
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.method == 'POST':
             episodereschedule_formset = EpisodeReschedule_FormSet(
                     request.POST)
@@ -2267,7 +2267,7 @@ def mk_episode(request,show_id):
 
     MarkPicker_FormSet = formset_factory(MarkPicker, extra=0)
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
 
         if request.method == 'POST':
 
@@ -2551,7 +2551,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     client=show.client
 
     email_eps = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if not episode.emails and episode.authors:
 
             # mine emails from other events
@@ -2598,7 +2598,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
     clrfFormSet = formset_factory(clrfForm, extra=0)
     if request.method == 'POST' and \
-            (request.user.is_authenticated() or
+            (request.user.is_authenticated or
                     episode.edit_key == edit_key):
 
         episode_form = Episode_Form_small(request.POST, instance=episode)
@@ -2784,7 +2784,7 @@ def episode_logs(request, episode_id):
 
 
 def claim_episode_lock(request, episode_id):
-    assert request.user.is_authenticated()
+    assert request.user.is_authenticated
 
     episode = get_object_or_404(Episode, id=episode_id)
 
