@@ -155,6 +155,37 @@ def tests(request):
     return render(request,'tests.html',
        locals())
 
+def test_rfxml(request):
+    """
+    Generates a pdf
+    """
+    try:
+        from dabo.dReportWriter import dReportWriter
+    except ImportError:
+        raise Http404("Dabo is not installed")
+
+    import dabo
+    base  = os.path.dirname(dabo.__file__)
+    # rfxmlfile  = os.path.join(base, 'lib', 'reporting_stefano', 'samplespec.rfxml' )
+    rfxmlfile  = os.path.join(base, 'lib/reporting_tests/invoice_demo/invoice.rfxml')
+
+    # buffer to create pdf in
+    buf = BytesIO()
+
+    # generate the pdf in the buffer, using the layout and data
+    rw = dReportWriter(OutputFile=buf, ReportFormFile=rfxmlfile, Cursor=[])
+    rw.write()
+
+    # get the pdf out of the buffer
+    pdf = buf.getvalue()
+    buf.close()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename=samplespec.pdf'
+    response.write(pdf)
+    return response
+
+
 def start_here(request):
     """
     landing page for someone who has never been here before
