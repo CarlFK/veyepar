@@ -1,0 +1,24 @@
+preshow:
+- Decide on who is responcible for the titles and other metadata.
+- Decide what the definitive data store for the schedule is. (conference website, an offline spread sheet, a cork board in an office...)
+- Decide how release aggrements will be managed.
+- Decide how to sync the above data sources with veyepar's db. (right answer: conf web site db is definitive, there is an api, hack addeps.py to fit it)
+- Create title slide template.svg.
+- create title png's, send to conf chair for approval. (Are all logo plaement sponsership aggreements satified?)
+- email pngs to presenters.  (this will expose problems when there is time to fix)
+
+1. generate title slides, email to presenters for review
+ - this double checks lots of things and has resulted in replies such as
+"I didn't know I was speaking"
+"I didn't know I was being recorded"
+"Can you add my co-presenter's name?"
+
+
+- destinations: youtube, mirror, physical media, richard, etc.  collect auth.
+Showtime:
+- print recording sheets and intro check list.
+- record talks. Make sure clocks are accurate.  Files will need to be such that the location, start time and durration can be determined.
+
+move files to encoding file server, add to db, create preview and visulations.
+
+

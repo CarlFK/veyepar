@@ -1,0 +1,47 @@
+assets -
+  original content - created by humans,
+  needs to be deployed to encodde nodes
+
+├── raw video files (and cutlist log) from vocto
+      +--room
+          cutlist.log
+        +---date
+│   └── transcriptions.txt/scc/srt (originals)
+├── credits
+│   └── ndv-169.png
+├── mlt
+│   └── template.mlt
+└── titles
+    ├── lca2018-titleslide.svg
+    ├── lca2018-titleslide-v2.svg
+    └── titillium-web.zip
+  fonts -
+     needs to be deployed.
+     typically a zip,
+     needs to go into... ~/.fonts, right?
+
+  scans of sheets -
+     human feeds paper into scanner, move pdf to assets
+     gscan2pdf - creates pdf, one image per page.
+     pdfimages - extracts images into 1 file per page
+     addimg.py - cuts up images into one per talk,
+                   uploads to cdn
+                   adds filenames to veyepar db
+                   ocr to link filename to episode
+
+
+==============
+artifacts - intermediate stuff created by computers
+
+  raw/web 1:1 of all the raws
+  titles/svg/png
+  mlt
+  sh
+  images extracted and then cut up from scan pdf
+
+transcriptions.txt/scc/srt (cut up to match talk cuts) ((or embed as text track))
+
+final - the things consumed by humans
+  mp4
+  webm
+  transcriptions.txt/scc/srt (?)
