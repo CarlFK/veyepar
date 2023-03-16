@@ -1,0 +1,43 @@
+---
+- name: install packages
+  apt:
+    name:
+      - nginx
+      - python3
+      - systemd
+
+- name: disable default configuration
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: reload nginx
+
+- name: configure http vhost
+  template:
+    src: templates/http-vhost.conf.j2
+    dest: "/etc/nginx/sites-enabled/{{ domain_name}}-http.conf"
+  notify: reload nginx
+
+- name: force nginx reload before tls cert handling
+  meta: flush_handlers
+
+- name: generate tls certificate
+  include_role:
+    name: tls-certificates
+  vars:
+    basename: "{{ sitename }}"
+    common_name: "{{ domain_name }}"
+    subject_alt_names: []
+    self_sign: False
+    letsencrypt_do_nginx_vhost: False
+
+- name: Install common Nginx TLS config
+  include_role:
+    name: tls-certificates
+    tasks_from: nginx_common
+
+- name: configure https vhost
+  template:
+    src: templates/https-vhost.conf.j2
+    dest: "/etc/nginx/sites-enabled/{{ domain_name}}-https.conf"
+  notify: reload nginx

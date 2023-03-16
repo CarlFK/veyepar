@@ -1,0 +1,77 @@
+# install_django.yml
+---
+- name: python and friends
+  apt:
+    name:
+    - python3-venv
+
+# - name: create site dir
+#  file:
+#    path: "{{ app_dir }}/pib"
+#    state: directory
+
+#- name: copy the core pib site files
+#  copy:
+#    src: "files/pib/pib/{{ item }}"
+#    dest: "{{ app_dir }}/pib/"
+#  loop:
+#    - __init__.py
+#    - settings.py
+#    - local_settings.py
+#    - urls.py
+#    - asgi.py
+#  tags: django
+
+#- name: copy manage.py into site dir
+#  copy:
+#    src: "files/pib/manage.py"
+#    dest: "{{ app_dir }}"
+
+#- name: chmod u+x manage.py
+#  file:
+#    path: "{{ app_dir }}/manage.py"
+#    mode: 'u+x'
+
+# change permissions of whole app_dir
+# - name: Recursively change ownership of a directory
+#   file:
+#     path: "{{ app_dir }}"
+#    state: directory
+#    recurse: yes
+#    group: wheel
+#    mode: '0775'
+
+- name: local_settings.py
+  template:
+    src: templates/local_settings.py.j2
+    dest: "{{ app_dir }}/{{ django_project_name }}/local_settings.py"
+
+# Run Django collectstatic
+- name: Run manage.py collectstatic
+  community.general.django_manage:
+    command: collectstatic
+    app_path: "{{ app_dir }}"
+    virtualenv: "{{ app_dir }}/venv"
+
+# Run Django manage.py makemigrations
+# - name: Run manage.py makemigrations
+#  community.general.django_manage:
+#    command: makemigrations
+#    app_path: "{{ app_dir }}"
+#    virtualenv: "{{ app_dir }}/venv"
+
+# Run Django manage.py migrate
+- name: Run manage.py migrate
+  community.general.django_manage:
+    command: migrate
+    app_path: "{{ app_dir }}"
+    virtualenv: "{{ app_dir }}/venv"
+
+- name: Load the initial_data fixture into the application
+  community.general.django_manage:
+    command: loaddata
+    app_path: "{{ app_dir }}"
+    fixtures: "{{ fixture_path }}"
+    virtualenv: "{{ app_dir }}/venv"
+  when: fixture_path is defined
+

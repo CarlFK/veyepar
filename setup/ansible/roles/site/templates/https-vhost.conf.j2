@@ -1,0 +1,24 @@
+# Ansible managed
+
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name {{ domain_name }};
+
+  ssl_certificate /etc/ssl/ansible/certs/{{ sitename }}.fullchain.pem;
+  ssl_certificate_key /etc/ssl/ansible/private/{{ sitename }}.key;
+
+  location /static/ {
+    alias {{ static_dir }}/;
+    autoindex on;
+  }
+
+  location / {
+    include proxy_params;
+    proxy_pass http://unix:/run/gunicorn.sock;
+  }
+
+  access_log /var/log/nginx/{{ sitename }}-access.log;
+  error_log /var/log/nginx/{{ sitename }}-error.log;
+
+}

@@ -1,0 +1,5 @@
+---
+- hosts: vweb
+  roles:
+  - site
+

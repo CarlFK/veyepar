@@ -1,0 +1,49 @@
+# install_gunicorn.yml
+---
+- name: python and friends
+  apt:
+    name:
+    - python3-venv
+    - python3-pip
+
+- name: Install virtualenv via pip
+  pip:
+    name: virtualenv
+# executable: pip3
+
+# Ensure gunicorn is installed
+- name: pip install gunicorn
+  pip:
+    name:
+    - gunicorn
+    - uvicorn
+    virtualenv: "{{ app_dir }}/venv"
+
+# Copy gunicorn socket file
+- name: copy gunicorn socket file to /etc/systemd/system/gunicorn.socket
+  template:
+    src: templates/gunicorn.socket.j2
+    dest: /etc/systemd/system/gunicorn.socket
+
+# Copy gunicorn systemd file
+- name: copy gunicorn systemd file to /etc/systemd/system/gunicorn.service
+  template:
+    src: templates/gunicorn.service.j2
+    dest: /etc/systemd/system/gunicorn.service
+
+- name: Enable services
+  systemd:
+    service: "{{ item }}"
+    enabled: yes
+  with_items:
+    - gunicorn.socket
+    - gunicorn.service
+
+# Ensure gunicorn socket and system service is running
+- name: force systemd to reread configs (2.4 and above)
+  systemd:
+    daemon_reload: yes
+- name: Start/Make sure the gunicorn.socket systemd service is running
+  systemd:
+    state: started
+    name: gunicorn.socket

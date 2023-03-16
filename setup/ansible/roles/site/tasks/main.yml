@@ -1,0 +1,5 @@
+---
+- {include_tasks: veyepar.yml, tags: [veyepar, django] }
+- {include_tasks: nginx.yml, tags: django}
+- {include_tasks: gunicorn.yml, tags: django}
+- {include_tasks: django.yml, tags: [snmp, django] }

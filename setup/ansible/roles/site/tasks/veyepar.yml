@@ -1,0 +1,28 @@
+---
+- name: python and friends
+  apt:
+    name:
+    - python3-venv
+    - python3-pip
+    - build-essential
+    - python3-dev
+    - pkg-config
+    - libcairo2-dev
+    - libgirepository1.0-dev
+
+- name: Git checkout
+  ansible.builtin.git:
+    repo: 'https://github.com/CarlFK/veyepar'
+    dest: /home/videoteam/vipar
+
+- name: pip install www deps
+  pip:
+    requirements: /home/videoteam/vipar/setup/requirements_www.txt
+    virtualenv: "{{ app_dir }}/venv"
+
+- name: dabo
+  script: files/install_dabo.sh "{{ app_dir }}/venv"
+  args:
+    creates: /home/videoteam/dabo_installed.txt
+
+

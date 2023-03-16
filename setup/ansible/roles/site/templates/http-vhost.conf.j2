@@ -1,0 +1,21 @@
+# {{ ansible_managed }}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name {{ domain_name }};
+
+  root /var/www/html;
+
+  index index.html;
+
+  # Let's Encrypt challenges
+  location /.well-known/ {
+    alias {{ letsencrypt_well_known_dir }}/;
+  }
+
+  # Redirect non-https traffic to https
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}

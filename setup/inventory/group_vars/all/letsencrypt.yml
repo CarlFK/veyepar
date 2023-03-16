@@ -1,0 +1,5 @@
+---
+letsencrypt_well_known_dir: /var/www/well-known
+letsencrypt_account_email: "cfkarsten@gmail.com"
+sitename: veyepar
+skip_unit_test: False

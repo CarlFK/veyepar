@@ -1,0 +1,11 @@
+---
+- name: restart dnsmasq
+  systemd:
+    name: dnsmasq
+    state: restarted
+
+- name: reload nginx
+  systemd:
+    name: nginx
+    state: restarted
+    # state: reloaded
