@@ -1,14 +1,8 @@
 # dj/main/urls.py
 
-# from django.conf.urls import url
 from django.urls import path, re_path
 
-# from django.views.generic import list_detail
-
 from .views import *
-
-# client_list={"queryset": Client.objects.all(), }
-#    "template_object_name": "client_list" }
 
 urlpatterns = [
     path(r'', main, name='main'),
@@ -146,9 +140,8 @@ urlpatterns = [
 
     re_path(r'util/title_templates/', title_templates, name="title_templates" ),
 
-    re_path(r'tests$', tests, name='tests'),
+    re_path(r'tests/$', tests, name='tests'),
     re_path(r'tests/samplespec.rfxml', test_rfxml, name='testrfxml'),
-
 ]
 
 
