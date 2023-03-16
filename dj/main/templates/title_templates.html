@@ -1,0 +1,21 @@
+{# clients.html #}
+{% extends "base.html" %}
+
+{% block content %}
+{% for client in clients %}
+
+    <a href="{% url "admin:main_client_change" client.id%}">{{client.id}}</a>
+    <a href="{% url "client" client.slug %}">{{ client.name }}</a><br>
+
+    {% for show in client.show_set.all %}
+        1 <a href="{% url 'title_slides' show.id %}">
+2.
+  3.     <a href='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}>
+4       <img src='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png'> </a>
+5
+    {% endfor %}
+
+{% endfor %}
+
+{% endblock %}
+
