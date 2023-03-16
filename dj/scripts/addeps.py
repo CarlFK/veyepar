@@ -104,8 +104,11 @@ from django.utils.timezone import localtime
 from apiclient.discovery import build
 from httplib2 import Http
 
-import oauth2client # import file, client, tools
-from oauth2client.file import Storage
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 # for google calandar:
 # import lxml.etree
@@ -228,14 +231,43 @@ https://developers.google.com/resources/api-libraries/documentation/sheets/v4/py
     """
 
     # Setup the Sheets API
-    SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
-    store = oauth2client.file.Storage('credentials.json')
-    creds = store.get()
-    if not creds or creds.invalid:
-        flow = oauth2client.client.flow_from_clientsecrets(
-                'client_secret.json', SCOPES)
-        creds = oauth2client.tools.run_flow(flow, store)
-    service = build('sheets', 'v4', http=creds.authorize(Http()))
+    # If modifying these scopes, delete the file token.json.
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+    creds = None
+
+    # The file token.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+   try:
+        service = build('sheets', 'v4', credentials=creds)
+
+        # Call the Sheets API
+        sheet = service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=spreadsheedId,
+                                    range=range_name).execute()
+        values = result.get('values', [])
+
+        if not values:
+            print('No data found.')
+            return
+
+    except HttpError as err:
+        print(err)
+
 
     # import code; code.interact(local=locals())
 
