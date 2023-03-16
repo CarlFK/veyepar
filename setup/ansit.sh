@@ -1,4 +1,5 @@
-# set -ex
+#
+set -ex
 host=veyepar.nextdayvideo.com
 
 # ln -s /home/carl/src/dc/debian/ansible dc_a
@@ -9,21 +10,25 @@ host=veyepar.nextdayvideo.com
 # * in the configured roles_path. The default search path is ~/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles.
 # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html#storing-and-finding-roles
 # maybe this will work?
-a_dir=/usr/share/ansible/roles
+a_dir=/usr/share/ansible
 dca_dir=${a_dir}/dc_a
 if [ -d ${dca_dir} ]; then
     ( cd ${dca_dir}
-      git pull
+        # git pull
     )
 else
     ( cd ${a_dir}
-      git clone https://salsa.debian.org/debconf-video-team/ansible dc_a
-      ln -l dc_a/roles/tls-certificates
+        git clone https://salsa.debian.org/debconf-video-team/ansible dc_a
+        cd roles
+        ln -s ../dc_a/roles/tls-certificates
     )
 fi
 
 # ansible-playbook ${dca_dir}/site.yml --inventory-file inventory/hosts --user root --limit ${host} -vvv
 # --tags streaming,tls-certificates
 
-ansible-playbook ansible/site.yml --inventory-file inventory/hosts --user root --limit ${host} -vvv
+ansible-playbook \
+    ansible/site.yml --inventory-file inventory/hosts \
+    --user root --limit ${host} -vvv \
+    --vault-password-file ~/.ansible/pw_file.txt
 

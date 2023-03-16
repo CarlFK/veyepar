@@ -20,6 +20,11 @@
     requirements: /home/videoteam/vipar/setup/requirements_www.txt
     virtualenv: "{{ app_dir }}/venv"
 
+- name: pip install db module
+  pip:
+    name: psycopg2-binary
+    virtualenv: "{{ app_dir }}/venv"
+
 - name: dabo
   script: files/install_dabo.sh "{{ app_dir }}/venv"
   args:

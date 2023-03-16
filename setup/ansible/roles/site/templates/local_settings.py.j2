@@ -1,3 +1,16 @@
 STATIC_ROOT="{{ static_dir }}"
 ALLOWED_HOSTS = ['{{ domain_name }}']
 
+DATABASES =  {'default':
+        {'ENGINE': 'django.db.backends.postgresql_psycopg2',
+         'HOST': "{{ db_host }}",
+         'NAME': "{{ db_name }}",
+         'USER': "{{ db_user }}",
+         'OPTIONS': {},
+         'PASSWORD': "{{ db_pw }}",
+         'PORT': "{{ db_port }}",
+         'TEST_CHARSET': None,
+         'TEST_COLLATION': None,
+         'TEST_NAME': None,
+         } }
+

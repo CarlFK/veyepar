@@ -1,0 +1,40 @@
+---
+- name: Install Postgres
+  apt:
+    name:
+      - postgresql
+      - python3-psycopg2
+
+# - name: Set server port
+#  postgresql_set:
+#    name: port
+#    value: "{{ db_port }}"
+
+- name: Create Postgres user
+  postgresql_user:
+    name: "{{ db_user }}"
+  become: yes
+  become_user: postgres
+
+- name: Create veyepar Postgres DB
+  postgresql_db:
+    name: "{{ db_name }}"
+    owner: "{{ db_user }}"
+  become: yes
+  become_user: postgres
+
+- name: grant user access to database
+  postgresql_user:
+    db: "{{ db_name }}"
+    name: "{{ db_name }}"
+    password: "{{ db_pw }}"
+    priv: All
+  become: yes
+  become_user: postgres
+
+- name: Grant users veyepar access to databases veyepar from ipv4 localhost
+  postgresql_pg_hba:
+    dest: /etc/postgresql/13/main/pg_hba.conf
+    contype: host
+    databases: "{{ db_name }}"
+    users: "{{ db_user }}"
