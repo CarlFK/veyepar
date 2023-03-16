@@ -246,18 +246,18 @@ https://developers.google.com/resources/api-libraries/documentation/sheets/v4/py
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                settings.GOOG_CLIENT_SECRET, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
-   try:
+    try:
         service = build('sheets', 'v4', credentials=creds)
 
         # Call the Sheets API
         sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=spreadsheedId,
+        result = sheet.values().get(spreadsheetId=spreadsheetId,
                                     range=range_name).execute()
         values = result.get('values', [])
 
@@ -5609,6 +5609,11 @@ class add_eps(process.process):
         self.one_show(show)
 
 def testit():
+    googid="1FD68fJFCSWrLpgVwS58jNfsLNSH8xdnOWY8r6l0Z-8E"
+    rows = goog_sheet(googid)
+    pprint(rows)
+    return rows
+
     fn = "/home/carl/Videos/veyepar/fossi/latch_2019/schedule/Latchup.html"
     # session = requests.session()
     # response = session.get(url)
@@ -5619,8 +5624,8 @@ def testit():
     return p.latch_2019(soup)
 
 if __name__ == '__main__':
-
-    # testit()
-    p=add_eps()
-    p.main()
+    # mk_fieldlist()
+    testit()
+    # p=add_eps()
+    # p.main()
 
