@@ -81,6 +81,7 @@ class process():
             if self.options.verbose:
                 print("command failed")
                 print(retcode)
+            raise Exception
             ret = False
         else:
             ret = True

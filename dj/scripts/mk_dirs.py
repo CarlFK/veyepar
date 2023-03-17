@@ -50,14 +50,15 @@ class mkdirs(process):
         # /home/carl/src/veyepar/dj/scripts/assets/credits/ndv/ndv-169.png
 
         credits_img = client.credits
-        credits_src = os.path.join(
-            os.path.split(os.path.abspath(__file__))[0],
-            "assets/credits/ndv",
-            credits_img)
-        # copy into show/assetts
-        credits_pathname = os.path.join(
-                self.show_dir, "assets", "credits", credits_img )
-        self.run_cmd( ["cp", credits_src, credits_pathname] )
+        if credits_img == "ndv-169.png":
+            credits_src = os.path.join(
+                os.path.split(os.path.abspath(__file__))[0],
+                "assets/credits/ndv",
+                credits_img)
+            # copy into show/assetts
+            credits_pathname = os.path.join(
+                    self.show_dir, "assets", "credits", credits_img )
+            ret = self.run_cmd( ["cp", credits_src, credits_pathname] )
 
         # assets/titles/title.svg
         # Videos/veyepar/koya_law/training/assets/titles/
@@ -88,8 +89,7 @@ class mkdirs(process):
                 os.path.split(os.path.abspath(__file__))[0],
                 "assets", "mlt",
                 "template.mlt")
-            self.run_cmd( ["cp", src, dst] )
-
+            ret = self.run_cmd( ["cp", src, dst] )
 
         if self.options.raw_slugs:
             # I wonder what this is for?

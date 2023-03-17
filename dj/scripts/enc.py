@@ -214,7 +214,8 @@ class enc(process):
         if os.path.exists(png_name):
             os.remove(png_name)
         cmd = ["inkscape", svg_name,
-               "--export-png", png_name,
+               "--export-filename", png_name,
+               "--export-type", "png",
                # "--export-width", "720",
                ]
         ret = self.run_cmds(episode, [cmd])

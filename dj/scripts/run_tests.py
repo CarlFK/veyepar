@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/e something..
 
 from datetime import datetime
 from pprint import pprint
@@ -43,6 +43,8 @@ def callme_maybe(f):
         return skip
 
 class Run_Tests(object):
+
+ mlt_profile = "atsc_720p_30"
 
  def run_cmd(self, cmd, get_out=False):
 
@@ -140,7 +142,7 @@ class Run_Tests(object):
        frames = 90
        parms={'input_file':text_file,
            'output_file':os.path.join(dv_dir,out_file),
-           'profile':self.options.mlt_profile,
+           'profile': self.mlt_profile,
            'video_frames':frames,
            'audio_frames':frames}
        if i%2:
@@ -153,7 +155,7 @@ class Run_Tests(object):
        print(parms)
 
        # make a text file to use as encoder input
-       text = ["test %s - %s" % ( i, self.options.mlt_profile),
+       text = ["test %s - %s" % ( i, self.mlt_profile ),
                   out_file,
                   melt_ver, datetime.now().ctime(),
                   '',
@@ -199,14 +201,14 @@ pix_fmt=yuv411p" % parms
    convert that frame to footer.png
    """
 
-   assets_dir = os.path.join(self.show_dir, 'assets')
+   assets_dir = os.path.join(self.show_dir, 'assets', 'credits')
    text_file = os.path.join(self.tmp_dir, "source.txt")
    out_file = os.path.join(self.tmp_dir,"footer.mp4")
    parms={'input_file':text_file,
            'out_file':out_file,
            'text_file':text_file,
            'assets_dir':assets_dir,
-           'profile':self.options.mlt_profile,
+           'profile':self.mlt_profile,
            'video_frames':1,
            'audio_frames':1,
            'pix_fmt':'yuv411p',
@@ -471,8 +473,8 @@ pix_fmt=yuv411p" % parms
     -ss 9 \
     -vf framestep=20 \
     -ao null \
-    -vo pnm:outdir=%(self.tmp_dir)s \
-    %(filename)s" % parms
+    -vo pnm:outdir={tmp_dir} \
+    {filename}".format(**parms)
   print(cmd)
   self.run_cmd(cmd.split())
 
@@ -481,7 +483,7 @@ pix_fmt=yuv411p" % parms
   text = gocr_outs['sout']
 
   # not sure what is tacking on the \n, but it is there, so it is here.
-  acceptables = ["ABCDEFG\n","_BCDEFG\n"]
+  acceptables = [b"ABCDEFG\n", b"_BCDEFG\n"]
   print("acceptables:", acceptables)
 
   print("ocr results:", text)
@@ -587,7 +589,7 @@ def main():
     t.add_raw()
     # t.make_thumbs() ## this jackes up gstreamer1.0 things, like mk_audio
     result['cuts'] = t.make_cut_list()
-    t.sync_rax()
+    # t.sync_rax() # Rack Space dropped the free service, find a new place to sync, like ps1's boxen.
     ## test missing dv files
     # os.remove('/home/carl/Videos/veyepar/test_client/test_show/dv/test_loc/2010-05-21/00_00_03.dv')
     t.encode()
