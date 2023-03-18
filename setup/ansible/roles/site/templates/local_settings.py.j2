@@ -1,5 +1,7 @@
 STATIC_ROOT="{{ static_dir }}"
-ALLOWED_HOSTS = ['{{ domain_name }}']
+
+ALLOWED_HOSTS = ['{{ domain_name }}', ]
+CSRF_TRUSTED_ORIGINS = ['{{ domain_name }}', ]
 
 DATABASES =  {'default':
         {'ENGINE': 'django.db.backends.postgresql_psycopg2',
