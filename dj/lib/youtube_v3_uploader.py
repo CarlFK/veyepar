@@ -61,7 +61,11 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run_flow
 
-CLIENT_SECRETS_FILE = "client_secrets.json"
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+
+# CLIENT_SECRETS_FILE = "client_secrets.json"
+CLIENT_SECRETS_FILE = "/home/carl/.creds/client_secret_234470688854-ujjpjkbth2cpkoalbqh0fb4tj0c2jo7e.apps.googleusercontent.com.json"
 
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
@@ -72,7 +76,7 @@ YOUTUBE_API_VERSION = "v3"
 
 # This OAuth 2.0 access scope allows for full read/write access to the
 # authenticated user's account.
-YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube"
+YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube.force-ssl"
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -105,22 +109,34 @@ def get_authenticated_service(oauth_file):
   args.logging_level='ERROR'
 
   # how and where tokens are stored
-  storage = Storage(oauth_file)
+  #storage = Storage(oauth_file)
 
   # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html
 
-  credentials = storage.get()
+  #credentials = storage.get()
 
-  if credentials is None or credentials.invalid:
+  credentials = None
 
-      flow = flow_from_clientsecrets( CLIENT_SECRETS_FILE,
-              scope=YOUTUBE_READ_WRITE_SCOPE,)
+  if os.path.exists(oauth_file):
+      credentials = Credentials.from_authorized_user_file(oauth_file, scopes=[YOUTUBE_READ_WRITE_SCOPE,])
+  else:
+  #if credentials is None or not credentials.valid:
+
+      #flow = flow_from_clientsecrets( CLIENT_SECRETS_FILE,
+      #        scope=YOUTUBE_READ_WRITE_SCOPE,)
 
       # do the "allow access" step, save token.
-      credentials = run_flow(flow, storage, args)
+      #credentials = run_flow(flow, storage, args)
 
-  return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-    http=credentials.authorize(httplib2.Http()))
+      flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, YOUTUBE_READ_WRITE_SCOPE)
+      credentials = flow.run_local_server(port=0)
+
+      with open(oauth_file, 'w') as token:
+          token.write(credentials.to_json())
+
+  return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, credentials=credentials, static_discovery=False)
+
+  #  http=credentials.authorize(httplib2.Http()))
 
 def initialize_upload(youtube, filename, metadata):
 
@@ -384,6 +400,35 @@ playlist_items_delete(client,
 
         # videos_delete_response is ''
         return videos_delete_response
+
+    def comments(self, video_url, enable):
+        """
+        Not implemented, as YT Data v3 API doesn't support this :(
+        https://issuetracker.google.com/issues/35174729
+        """
+        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        video_id = get_id_from_url(video_url)
+        # do_stuff_to_video_id
+        # return response
+
+    def get_captions(self, video_url, verbose=False):
+        """
+        Not implemented, as YT Data v3 API doesn't support this :(
+        https://issuetracker.google.com/issues/35174729
+        """
+        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        video_id = get_id_from_url(video_url)
+
+        video = youtube.captions().list(videoId=video_id, part='id').execute()
+
+        if len(video['items']) != 1:
+            print("FAILURE: Couldn't find exactly 1 caption.  Found: {}".format(video['items']))
+            return None  # Can't get captions
+        for captions in video['items']:
+            caption_id = captions['id']
+
+        return youtube.captions().download(id=caption_id, tfmt='srt').execute()
+
 
 
     def upload(self):
