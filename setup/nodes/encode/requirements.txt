@@ -1,4 +1,4 @@
-django<2
+django
 djangorestframework
 django-extensions
 python-swiftclient
