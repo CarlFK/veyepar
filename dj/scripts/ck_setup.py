@@ -13,7 +13,7 @@ from django.template.defaultfilters import slugify
 
 import pw
 
-import swift_uploader
+# import swift_uploader
 import archive_uploader
 
 import os
@@ -414,11 +414,12 @@ class ck_setup(process):
                 self.ck_richard(secrets)
             """
 
-
+            """
             secrets = self.ck_pw("swift","rax_id",
                     ['key', 'authurl', 'user'])
             if secrets:
                 self.ck_cdn(secrets)
+            """
 
             secrets = self.ck_pw( "yt","youtube_id",['filename', ])
             if secrets:
