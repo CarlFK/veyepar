@@ -10,8 +10,8 @@
     {% for show in client.show_set.all %}
         1 <a href="{% url 'title_slides' show.id %}">
 2.
-  3.     <a href='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}>
-4       <img src='http://veyepar.ndv.cdn.nextdayvideo.com/veyepar/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png'> </a>
+  3.     <a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}>
+4       <img src='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png'> </a>
 5
     {% endfor %}
 
