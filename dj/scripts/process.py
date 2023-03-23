@@ -28,6 +28,7 @@ django.setup()
 from main.models import Client, Show, Location, Episode, State, Log
 
 # import swift_uploader as rax_uploader
+import paramiko
 
 
 class process():
@@ -130,26 +131,74 @@ class process():
 
         return True
 
+    def dir2cdn(self, show, dst):
+        path = os.path.join("Videos", "veyepar", show.client.slug, show.slug, dst)
+
+        host = "veyepar.nextdayvideo.com"
+        port = 22
+
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        keys = paramiko.RSAKey.from_private_key_file("/home/carl/.ssh/id_rsa")
+        client.connect(hostname="veyepar.nextdayvideo.com", username="videoteam", pkey=keys)
+
+        sftp = client.open_sftp()
+
+        mode=511
+        ignore_existing=True
+        ''' Augments mkdir by adding an option to not fail if the folder exists  '''
+        try:
+            print(path)
+            sftp.mkdir(path, mode)
+        except IOError as e:
+            if ignore_existing:
+                pass
+            else:
+                raise
+
+
     def file2cdn(self, show, src, dst=None):
+
         """
         src is relitive to the show dir.
         src and dst get filled to full paths.
         Check to see if src exists,
         if it does, try to upload it to cdn
         (rax_uploader will skip if same file exists).
+
+        NB: no more Rackspace, so swapping in sftp to wherever
         """
-        print("checking:", src, end='')
+        print("checking:", src )
 
         if dst is None:
             dst = src
 
         src = os.path.join(self.show_dir, src)
-        dst = os.path.join("veyepar", show.client.slug, show.slug, dst)
+        dst = os.path.join("Videos", "veyepar", show.client.slug, show.slug, dst)
 
         if os.path.exists(src):
 
-            u = rax_uploader.Uploader()
+            # upload
 
+            # rax out, old school rsync in (using paramiko)
+
+            host = "veyepar.nextdayvideo.com"
+            port = 22
+
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            keys = paramiko.RSAKey.from_private_key_file("/home/carl/.ssh/id_rsa")
+            client.connect(hostname="veyepar.nextdayvideo.com", username="videoteam", pkey=keys)
+
+            sftp = client.open_sftp()
+            print( f"Copying file {src} to {dst}" )
+            sftp.put(src, dst)
+            sftp.close()
+
+            ret = True
+
+            """
+            u = rax_uploader.Uploader()
             u.user = show.client.rax_id
 
             if not show.client.bucket_id.strip():
@@ -164,9 +213,10 @@ class process():
             ret = u.upload()
             print(u.new_url)
             ret = u.new_url
+            """
 
         else:
-            print(("file2cdn can't find {}".format(src)))
+            print(f"file2cdn can't find {src}")
             ret = False
 
         return ret
@@ -591,6 +641,14 @@ class process():
 
         return True
 
+
+    def mk_tunnel(self):
+        # bring up the tunnel to the server
+        # someday...
+        # ssh -v videoteam@veyepar.nextdayvideo.com -L localhost:5432:localhost:5432
+        pass
+
+
     def whoami(self, iam=None):
         if iam is None:
             iam =  self.__class__.__name__
@@ -604,6 +662,8 @@ class process():
         if self.parse_args():
 
             self.whoami()
+
+            self.mk_tunnel()
 
             if self.options.list:
                 ret = self.list()

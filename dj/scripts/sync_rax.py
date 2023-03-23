@@ -12,7 +12,7 @@ from process import process
 from main.models import Client, Show, Location, Episode, \
   Raw_File, Cut_List
 
-import swift_uploader as rax_uploader
+# import swift_uploader as rax_uploader
 import gslevels
 
 class SyncRax(process):
@@ -368,7 +368,8 @@ class SyncRax(process):
             if os.path.exists(png_name):
                 os.remove(png_name)
             cmd = ["inkscape", svg_name,
-                   "--export-png", png_name,
+               "--export-filename", png_name,
+               "--export-type", "png",
                    ]
             ret = self.run_cmd(cmd)
             ret = os.path.exists(png_name)
@@ -377,13 +378,17 @@ class SyncRax(process):
                 return
 
         # walk the assets dir looking for random files ;/
-        for dirpath, dirnames, filenames in os.walk(loc_dir,followlinks=True):
-            stuby=dirpath[len(self.show_dir)+1:]
-            for filename in filenames:
-                base = os.path.join(stuby,filename)
+        if self.options.rsync:
 
-                if self.options.rsync:
-                    self.file2cdn(show,base)
+            for dirpath, dirnames, filenames in os.walk(loc_dir,followlinks=True):
+                stuby=dirpath[len(self.show_dir)+1:]
+
+                for dirname in dirnames:
+                    self.dir2cdn(show,dirname)
+
+                for filename in filenames:
+                    base = os.path.join(stuby,filename)
+                    # self.file2cdn(show,base)
 
 
     def init_rax(self, show):
@@ -413,8 +418,8 @@ class SyncRax(process):
     def one_show(self, show):
         self.set_dirs(show)
 
-        if self.options.rsync:
-            self.init_rax(show)
+        # if self.options.rsync:
+        #    self.init_rax(show)
 
         if self.options.assets:
             self.show_assets(show)
