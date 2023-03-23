@@ -230,6 +230,9 @@ https://developers.google.com/resources/api-libraries/documentation/sheets/v4/py
     request.valueRenderOption = "UNFORMATTED_VALUE"
     """
 
+    GOOG_CLIENT_SECRET = "/home/carl/.creds/client_secret_234470688854-ujjpjkbth2cpkoalbqh0fb4tj0c2jo7e.apps.googleusercontent.com.json"
+
+
     # Setup the Sheets API
     # If modifying these scopes, delete the file token.json.
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -246,7 +249,7 @@ https://developers.google.com/resources/api-libraries/documentation/sheets/v4/py
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                settings.GOOG_CLIENT_SECRET, SCOPES)
+                GOOG_CLIENT_SECRET, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
@@ -348,7 +351,6 @@ class add_eps(process.process):
             'start','duration',
             'released', 'license', 'tags',
             'conf_key', 'conf_url',
-            'host_url', 'public_url',
     )
 
         # for f,g in field_maps:
@@ -358,7 +360,7 @@ class add_eps(process.process):
         print([k for k in v_keys if k in s_keys])
 
         for k in [k for k in v_keys if k not in s_keys]:
-            print(("('{}',''),".format(k)))
+            print(f"('{k}',''),")
         print("\n")
 
         for k in v_keys:
@@ -418,7 +420,7 @@ class add_eps(process.process):
         # TODO:
         # consider only creating destination when there is proper source.
         # current code make add_eps() simpler.
-        # something has to contend with whacky source,
+        # something has to contend with whacky source data,
         #  currently it is this.
 
         events=[]
@@ -4495,10 +4497,67 @@ class add_eps(process.process):
         return talks
 
 
+    def latch_2023(self, show, response, session):
+        googid="12XgZH26YZhnsUBySohOWfMm_W5fMvKowUESVaK8C6bA"
+        rows = goog_sheet( googid )
+
+        if self.options.keys: return self.dump_keys(rows)
+
+        # grab the name of the first room.  prolly the only room.
+        locations=show.locations.filter(active=True).order_by('sequence')
+        loc_name = locations[0].name
+
+        field_maps = [
+            ('title','name'),
+            ('description','description'),
+            ('speakers','authors'),
+            ('emails','emails'),
+            ('twitter_id','twitter_id'),
+            ('start','start'),
+            ('duration','duration'),
+            ('released','released'),
+            ('tags','tags'),
+            ('conf_key','conf_key'),
+            ]
+
+        events = self.generic_events(rows, field_maps)
+
+        # events = [ event for event in events if event['conf_key'] == 6]
+
+        for event in events:
+            if self.options.verbose: pprint(event)
+
+            event['location'] = loc_name
+
+            #  'start': '2023-03-31 13:30:00',
+            event['start'] = datetime.strptime(
+                    event['start'],
+                    '%Y-%m-%d %H:%M:%S')
+
+            if event['name'] == "":
+                event['name'] = f"Talk id:{event['conf_key']}"
+
+            duration = int(event['duration'])
+            event['duration'] = f"00:{duration}:00"
+
+            event['twitter_id'] = ""
+            event['reviewers'] = ""
+            event['license'] = "CC-BY-NA"
+            event['conf_url'] = show.schedule_url
+            event['tags'] = ""
+            event['released'] = False
+            # event['released'] = event['released'].upper() == "Y"
+
+        self.add_eps(events, show)
+
+
     def latch_2019(self, show, response, session):
 
+        # googid="1FD68fJFCSWrLpgVwS58jNfsLNSH8xdnOWY8r6l0Z-8E"
+        # "1wOJzXyVx1uHxvImFSEOtV31AZpepMdTSPBhPA0vNeVY")
+
         proposals = {}
-        rows = goog_sheet( "1wOJzXyVx1uHxvImFSEOtV31AZpepMdTSPBhPA0vNeVY")
+        rows = goog_sheet( googid )
         for proposal in rows:
             proposals[proposal['Your name(s)']] = proposal
 
@@ -5241,8 +5300,8 @@ class add_eps(process.process):
             elif self.options.client =='kicon_2019':
                 return self.kicon(show, response)
 
-            elif self.options.show =='latch_2019':
-                return self.latch_2019(show, response, session)
+            elif self.options.show =='latch_2023':
+                return self.latch_2023(show, response, session)
 
         parsed = urlparse(url)
         ext = os.path.splitext(parsed.path)[1]
@@ -5609,7 +5668,6 @@ class add_eps(process.process):
         self.one_show(show)
 
 def testit():
-    googid="1FD68fJFCSWrLpgVwS58jNfsLNSH8xdnOWY8r6l0Z-8E"
     rows = goog_sheet(googid)
     pprint(rows)
     return rows
@@ -5625,7 +5683,7 @@ def testit():
 
 if __name__ == '__main__':
     # mk_fieldlist()
-    testit()
-    # p=add_eps()
-    # p.main()
+    # testit()
+    p=add_eps()
+    p.main()
 
