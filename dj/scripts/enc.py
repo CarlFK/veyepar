@@ -74,6 +74,7 @@ class enc(process):
 
     def get_title_text(self, episode):
         # lets try putting (stuff) on a new line
+
         title = episode.name
         authors = episode.authors
 
@@ -92,8 +93,17 @@ class enc(process):
             title2 = ''
 
         elif ": " in title: # the space keeps 9:00 from breaking
-            pos = title.index(":") + 1
-            title1, title2 = title[:pos], title[pos:].strip()
+            if len(title) < 80:
+                pos = title.index(":") + 1
+                title1, title2 = title[:pos], title[pos:].strip()
+            else:
+                title1, title2 = title, ""
+        elif ". " in title: # the space keeps 1.2.3.4 from breaking
+            if len(title) < 80:
+                pos = title.index(".") + 1
+                title1, title2 = title[:pos], title[pos:].strip()
+            else:
+                title1, title2 = title, ""
         elif " - " in title:
             # error if there is more than 1.
             # title, title2 = title.split(' - ')
