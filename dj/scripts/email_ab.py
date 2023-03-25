@@ -38,7 +38,7 @@ Reference: https://veyepar.nextdayvideo.com/main/E/{{ep.id}}/
 
         ctx = { 'ep':ep,
                 'py_name': "email_ab.py",
-                # 'MEDIA_URL':settings.MEDIA_URL,
+                'MEDIA_URL':settings.MEDIA_URL,
                 }
 
         return ctx
