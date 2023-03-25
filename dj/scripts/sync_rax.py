@@ -302,7 +302,9 @@ class SyncRax(process):
 
     def sync_title_png(self,show,ep):
         base = os.path.join("titles", ep.slug + ".png" )
-        if not self.cdn_exists(show, base) or self.options.replace:
+        # if not self.cdn_exists(show, base) or self.options.replace:
+        if self.options.replace:
+            print( f"self.file2cdn ... {base}")
             self.file2cdn(show, base)
 
 
@@ -321,6 +323,7 @@ class SyncRax(process):
         self.file2cdn(show,src,mlt)
 
     def episodes(self, show):
+        # import code; code.interact(local=locals())
         eps = Episode.objects.filter(show=show)
 
         if self.options.day:
@@ -422,7 +425,9 @@ class SyncRax(process):
         #    self.init_rax(show)
 
         if self.options.assets:
+            print("doing one_show ... self.show_assets...")
             self.show_assets(show)
+
         if self.options.raw:
             self.raw_files(show)
         if self.options.cooked:
