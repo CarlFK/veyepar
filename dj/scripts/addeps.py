@@ -4511,7 +4511,7 @@ class add_eps(process.process):
             ('title','name'),
             ('description','description'),
             ('speakers','authors'),
-            ('emails','emails'),
+            ('email','emails'),
             ('twitter_id','twitter_id'),
             ('start','start'),
             ('duration','duration'),
