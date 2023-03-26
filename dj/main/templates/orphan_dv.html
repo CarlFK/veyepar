@@ -6,8 +6,8 @@
 <table>
 
 <tr>
-<td> <video src ="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv" controls width=200
-    poster ="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png"
+<td> <video src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv" controls width=200
+    poster ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png"
     preload="none"
     ></video>
 </td>
@@ -17,7 +17,7 @@
 <tr><td> <a href="/admin/main/raw_file/{{raw_file.id}}/">{{raw_file.filename}}</a> </td></tr>
 
 <tr><td>
-        {% for ext in exts %}<a href="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.{{ext}}">{{raw_file.basename}}.{{ext}}</a>
+        {% for ext in exts %}<a href="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.{{ext}}">{{raw_file.basename}}.{{ext}}</a>
         {% endfor %}
     </td></tr>
 
@@ -47,7 +47,7 @@
 </tr>
 
 </table>
-<img src="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png">
+<img src="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png">
 
   {% endfor %}
 

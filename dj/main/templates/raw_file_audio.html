@@ -27,7 +27,7 @@
    {% endif%}
 
    <a href="{% url "raw_file" rfa.rf.id %}">
-       <img src ="{{MEDIA_URL}}{{rfa.rf.show.client.slug}}/{{rfa.rf.show.slug}}/dv/{{rfa.rf.location.slug}}/{{rfa.rf.filename}}.wav.png">
+       <img src ="{{MEDIA_URL}}/{{rfa.rf.show.client.slug}}/{{rfa.rf.show.slug}}/dv/{{rfa.rf.location.slug}}/{{rfa.rf.filename}}.wav.png">
    </a>
 
   {% endfor %}

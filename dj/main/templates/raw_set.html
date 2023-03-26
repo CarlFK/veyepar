@@ -9,8 +9,8 @@ trash:{{trash}}
 <table>
 
 <tr>
-<td> <video src ="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv" controls width=200
-    poster ="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png"
+<td> <video src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.ogv" controls width=200
+    poster ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.png"
     preload="none"
     ></video>
 </td>
@@ -19,8 +19,8 @@ trash:{{trash}}
 <table>
 <tr>
 <td><a href="{% url "admin:main_raw_file_change" raw_file.id %}">{{raw_file.id}}</a></td>
-<td><a href="{{MEDIA_URL}}{{raw_file.base_url}}.png">png</a></td>
-<td><a href="{{MEDIA_URL}}{{raw_file.base_url}}.ogv">ogv</a></td>
+<td><a href="{{MEDIA_URL}}/{{raw_file.base_url}}.png">png</a></td>
+<td><a href="{{MEDIA_URL}}/{{raw_file.base_url}}.ogv">ogv</a></td>
 </tr>
 
      <tr> <td> [{{raw_file.trash|yesno:"X, "}}] Trash </td>
@@ -60,7 +60,7 @@ trash:{{trash}}
 </tr>
 
 </table>
-<img src="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.wav.png">
+<img src="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.basename}}.wav.png">
 
   {% endfor %}
 

@@ -10,11 +10,14 @@ from main.models import Client, Show, Location, Episode
 
 class mk_conf(process):
 
-    def mk_mix(self, i, loc):
+    def mk_mix(self, i, loc, kags):
         filename = "/tmp/r{}mix.yml".format(i)
+        print(filename)
         with open(filename, 'w') as f:
             f.write("""
 ---
+org: {client}
+show: {show}
 room_name: {slug}
 
 static_ip: 10.42.0.{i}0
@@ -44,10 +47,11 @@ streaming:
               garblygook
 
 
-""".format(i=i, slug=loc.slug))
+""".format(i=i, slug=loc.slug, **kags))
 
-    def mk_grab(self, i, loc):
+    def mk_grab(self, i, loc, kags):
         filename = "/tmp/r{}grab.yml".format(i)
+        print(filename)
         with open(filename, 'w') as f:
             f.write("""
 ---
@@ -58,9 +62,9 @@ voctomix:
 """.format(i=i, slug=loc.slug))
 
 
-    def one_loc(self, i, loc):
-        self.mk_mix(i, loc)
-        self.mk_grab(i, loc)
+    def one_loc(self, i, loc, kags):
+        self.mk_mix(i, loc, kags)
+        self.mk_grab(i, loc, kags)
 
 
     def work(self):
@@ -72,13 +76,16 @@ voctomix:
 
         for i,loc in enumerate( Location.objects.filter(
                 show=show, active=True).order_by('sequence') ):
-            ret = self.one_loc(i+1,loc)
+            kags = {
+                    'client': client.slug,
+                    'show': show.slug,
+                    }
+            ret = self.one_loc(i+1,loc, kags)
 
         return
 
     def add_more_options(self, parser):
-        parser.add_option('--raw-slugs', action="store_true",
-                              help="Make a dir for each talk's raw files")
+        parser.add_option('--raw-slugs', action="store_true", )
 
 if __name__=='__main__':
     p=mk_conf()

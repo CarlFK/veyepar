@@ -100,12 +100,12 @@ Name: <b>{{episode.name}}</b><br>
 {% if episode.twitter_url%}<a href="{{episode.twitter_url}}">tweet</a>{%endif%}
 
     {% for ext in exts %}
-       <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}">{{ext}}</a>
+       <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}">{{ext}}</a>
     {% endfor %}
 
 
-<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
-<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br>
+<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
+<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br>
 
       <video id="final"
           controls
@@ -114,14 +114,14 @@ Name: <b>{{episode.name}}</b><br>
           {% if foo.start %}currentTime={{foo.start}}{% endif %}
           >
           {% for ext in exts %}
-            <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}" type="video/{{ext}}">
+            <source src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/{{ext}}/{{episode.slug}}.{{ext}}" type="video/{{ext}}">
           {% endfor %}
        </video>
 
    {% for ext in exts %}
 
    <div id="audio_image_{{ext}}">
-     <img src ="{{MEDIA_URL}}{{episode.show.client.slug}}/{{episode.show.slug}}/web/cooked/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio" onerror="this.style.display='none'" />
+     <img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/web/cooked/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio" onerror="this.style.display='none'" />
    </div>
    <br>
 
@@ -187,7 +187,7 @@ Admin:
 <div id="sheets">
  <div class="viewer" style="height: 200px; width: 800px;" >
 {% for img in episode.image_file_set.all %}
-    <img alt="recording sheet" src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=1200 >
+    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=1200 >
 {% endfor %}
  </div> <!-- class="viewer" -->
 </div> <!-- id="sheets" -->
@@ -227,11 +227,11 @@ $(".viewer").zoomer();
           preload="metadata"
           width=400
           {% if cl.start %}currentTime={{cl.start}}{% endif %}
-          {# poster="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
+          {# poster="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png" #}
           >
           {% for ext in exts %}
-          <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/web/raw/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
-          <source src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/web/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
+          <source src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/web/raw/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
+          <source src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/web/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" type="video/{{ext}}">
           {% endfor %}
        </video>
       </td>
@@ -298,14 +298,14 @@ $(".viewer").zoomer();
             <tr>
                 <td>
    {% for ext in exts %}
-   <a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/web/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" target={{ext}}>{{ext}}</a><br>
-   <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}">{{ext}}.m3u</a>
+   <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/web/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" target={{ext}}>{{ext}}</a><br>
+   <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}">{{ext}}.m3u</a>
                 {% endfor %}
   </td>
   <td>
-                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">dv.m3u</a>
+                <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}">dv.m3u</a>
   </td>
-                {#<a href="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png">png</a> #}
+                {#<a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.png">png</a> #}
 
                 <td>
                     {{ clrfform.split.label_tag }}{{ clrfform.split }}
@@ -329,7 +329,7 @@ $(".viewer").zoomer();
   {% endif %}
 
   <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'"
-    src ="{{MEDIA_URL}}{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/web/raw/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
+    src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/web/raw/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
 
   {% with forloop.counter0 as x %}
 
@@ -444,7 +444,7 @@ $(".viewer").zoomer();
   <div id="audio_image_{{rf.id}}">
       {{rf.filename}}<br>
     <img alt="audio viz" onerror="this.style.display='none'"
-     src ="{{MEDIA_URL}}{{rf.show.client.slug}}/{{rf.show.slug}}/web/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>
+     src ="{{MEDIA_URL}}/{{rf.show.client.slug}}/{{rf.show.slug}}/web/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>
   </div>
 {% endfor %}
 

@@ -9,11 +9,11 @@
         <video id="rawfile{{ raw_file.id }}"
             width=600
       controls
-      poster = "{{MEDIA_URL}}{{raw_file.filename}}.png"
+      poster = "{{MEDIA_URL}}/{{raw_file.filename}}.png"
       preload="none"
         >
           {% for ext in exts %}
-            <source src="{{MEDIA_URL}}{{raw_file.base_url}}.{{ext}}"
+            <source src="{{MEDIA_URL}}/{{raw_file.base_url}}.{{ext}}"
                     type="video/{{ext}}">
           {% endfor %}
 
@@ -23,11 +23,11 @@
     <td> <table>
     <tr><td> <a href="{% url "admin:main_raw_file_change" raw_file.id %}">admin</a> </td></tr>
 
-    <tr><td colspan="2"> <a href="{{MEDIA_URL}}{{raw_file.base_url}}.wav.png">
+    <tr><td colspan="2"> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}.wav.png">
     {{raw_file.filename}}.wav.png</a></td></tr>
 
           {% for ext in exts %}
-          <tr><td colspan="2"> <a href="{{MEDIA_URL}}{{raw_file.base_url}}.{{ext}}">
+          <tr><td colspan="2"> <a href="{{MEDIA_URL}}/{{raw_file.base_url}}.{{ext}}">
                       {{raw_file.filename}}.{{ext}}</a></td></tr>
           {% endfor %}
 
@@ -57,7 +57,7 @@
     </tr>
 </table>
   <img id="audio_image_{{raw_file.id}}" alt="audio viz"
-    src ="{{MEDIA_URL}}{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png"
+    src ="{{MEDIA_URL}}/{{raw_file.show.client.slug}}/{{raw_file.show.slug}}/dv/{{raw_file.location.slug}}/{{raw_file.filename}}.wav.png"
     onerror="this.style.display='none'" />
 
   {% with 1 as x %}

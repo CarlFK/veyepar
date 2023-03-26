@@ -13,7 +13,7 @@
 <tr><td border="5" style="border-color: gray" >
 start
   <a href="{% url "admin:main_image_file_change" img.id%}">{{img.id}}</a>
-    <img alt="recording sheet" src="{{MEDIA_URL}}{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=800 border="5" style="border-color: gray" >
+    <img alt="recording sheet" src="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/img/{{img.filename}}" width=800 border="5" style="border-color: gray" >
   </br>
   <form method="POST">{% csrf_token %}{{ iefs.management_form }}
       <table>{{form}} </table><input type="submit" value="{{user.is_authenticated|yesno:"Save,not logged in,"}}" />
