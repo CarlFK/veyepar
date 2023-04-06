@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# posts to youtube
+# posts to youtube (and other hosting services)
 
 from process import process
 
@@ -219,7 +219,7 @@ class post(process):
         if ep.license.upper().startswith('CC'):
             x=ep.license[3:8].lower()
             ver='4.0'
-            meta['licenseurl'] = 'http://creativecommons.org/licenses/{x}/{ver}/'.format(x=x,ver=ver)
+            meta['licenseurl'] = f'http://creativecommons.org/licenses/{x}/{ver}/'
 
         for f in files:
 
@@ -419,6 +419,7 @@ class post(process):
         else: archive_success = self.do_ia(ep,files,meta)
 
         # upload rackspace cdn
+        # needs a rackspace account
         # if not ep.show.client.rax_id: rax_success = True
         # else: rax_success = self.do_rax(ep,files,meta)
 
