@@ -78,7 +78,7 @@ class add_dv(process):
                    rf.filesize=filesize
                    rf.save()
                 else:
-                   print("(exists)")
+                   print(f"(exists) {rf} {rf.id}")
 
     def one_loc(self,show,location):
         """
