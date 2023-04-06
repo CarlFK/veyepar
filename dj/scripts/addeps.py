@@ -4499,7 +4499,7 @@ class add_eps(process.process):
 
     def latch_2023(self, show, response, session):
         googid="12XgZH26YZhnsUBySohOWfMm_W5fMvKowUESVaK8C6bA"
-        rows = goog_sheet( googid )
+        rows = goog_sheet( googid ) #, range_name='A14:V14' )
 
         if self.options.keys: return self.dump_keys(rows)
 
@@ -4516,6 +4516,7 @@ class add_eps(process.process):
             ('start','start'),
             ('duration','duration'),
             ('released','released'),
+            ('reviewers','reviewers'),
             ('tags','tags'),
             ('conf_key','conf_key'),
             ]
@@ -4541,12 +4542,11 @@ class add_eps(process.process):
             event['duration'] = f"00:{duration}:00"
 
             event['twitter_id'] = ""
-            event['reviewers'] = ""
             event['license'] = "CC-BY-NA"
             event['conf_url'] = show.schedule_url
             event['tags'] = ""
-            event['released'] = False
-            # event['released'] = event['released'].upper() == "Y"
+            # event['released'] = False
+            event['released'] = event['released'].upper() == "Y"
 
         self.add_eps(events, show)
 
