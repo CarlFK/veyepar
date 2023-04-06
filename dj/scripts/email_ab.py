@@ -108,14 +108,14 @@ What follows is what was intended to be sent to the presenter and reviewer.
             ccs =  list(set([a.strip() for a in ccs if a]))
             # make a list of addresses:
             # [a for a if a] is to get rid of the empty CC.
-            # set to get rid of dupes
+            # set() to get rid of dupes
             # .strip() do remove the spaces from the front of things.
             reply_tos = set([a.strip() for a in
                     [sender,] \
                     + ep.show.client.contacts.split(',') \
                     + ccs \
                        if a] )
-            # headers={Reply-To... needs to be a string of comma seperated
+            # headers={Reply-To... a string of comma seperated
             reply_to = ','.join( reply_tos )
             headers = {
                      'Reply-To': reply_to,
@@ -139,7 +139,7 @@ What follows is what was intended to be sent to the presenter and reviewer.
                 connection = get_connection()
                 ret = connection.send_messages([email])
                 print("subject:", subject)
-                print("tos:", tos)
+                print(f"tos: {tos}  ccs: {ccs}")
                 ret = True # need to figure out what .send_messages returns
 
         else:
