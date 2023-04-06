@@ -76,12 +76,12 @@ class mk_public(process):
             ret = uploader.set_permission(ep.host_url)
             if playlist_id:
                 uploader.add_to_playlist(ep.host_url, playlist_id)
-        # except apiclient.errors.HttpError as e:
         except youtube_v3_uploader.HttpError as e:
             print(e)
-            # this shouldn't happen, prolly debugging something.
+            pprint(e.error_details)
             import code
             code.interact(local=locals())
+            ret=False # I guess?
 
         return ret
 
