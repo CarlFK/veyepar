@@ -143,11 +143,10 @@ class SyncRax(process):
                 self.mk_low(rfpathname, out)
 
             if self.options.rsync:
-                if not self.cdn_exists(show, low) or self.options.replace:
-                    self.file2cdn(show, low)
+                # if not self.cdn_exists(show, low) or self.options.replace:
+                self.file2cdn(show, low)
                     # raw file (huge!!! way over 5 gig each)
                     ### self.file2cdn(show, base)
-
 
 
     def rf_audio(self, show, rf):
