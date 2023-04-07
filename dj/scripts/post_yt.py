@@ -18,6 +18,7 @@ from django.template.defaultfilters import slugify
 
 # from add_to_richard import get_video_id
 
+from django.conf import settings
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
 class FileNotFound(Exception):
@@ -156,8 +157,8 @@ class post(process):
 
         uploader = youtube_v3_uploader.Uploader()
 
-        uploader.oauth_file = \
-                pw.yt[ep.show.client.youtube_id]['filename']
+        uploader.token_file = pw.yt[ep.show.client.youtube_id]['filename']
+        uploader.client_secrets_file = settings.GOOG_CLIENT_SECRET
         uploader.pathname = files[0]['pathname']
         uploader.meta = meta
         uploader.private = private

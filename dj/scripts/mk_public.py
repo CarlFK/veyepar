@@ -26,6 +26,7 @@ import pw
 
 import pprint
 
+from django.conf import settings
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
 class mk_public(process):
@@ -68,8 +69,8 @@ class mk_public(process):
     def up_youtube(self, ep):
 
         uploader = youtube_v3_uploader.Uploader()
-        uploader.oauth_file = \
-                pw.yt[ep.show.client.youtube_id]['filename']
+        uploader.client_secrets_file = settings.GOOG_CLIENT_SECRET
+        uploader.token_file = pw.yt[ep.show.client.youtube_id]['filename']
         playlist_id = ep.show.youtube_playlist_id
         if self.options.verbose: print("Setting Youtube to public...")
         try:
