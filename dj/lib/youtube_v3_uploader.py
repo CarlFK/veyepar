@@ -99,9 +99,6 @@ RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
 def get_authenticated_service(client_secrets_file, token_file):
 
-  print(client_secrets_file)
-  print(token_file)
-
   args = namedtuple('flags', [
             'noauth_local_webserver',
             'logging_level'
@@ -117,8 +114,6 @@ def get_authenticated_service(client_secrets_file, token_file):
   # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html
 
   #credentials = storage.get()
-
-  credentials = None
 
   if os.path.exists(token_file):
       credentials = Credentials.from_authorized_user_file(token_file, scopes=[YOUTUBE_READ_WRITE_SCOPE,])
