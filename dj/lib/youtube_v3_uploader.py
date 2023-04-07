@@ -453,24 +453,25 @@ playlist_items_delete(client,
 
 def make_parser():
 
-    parser = argparse.ArgumentParser(description="""
-    Find a video file and upload it to youtube.
-    """)
+    parser = argparse.ArgumentParser(
+            description="Upload a file to youtube.",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter
+            )
 
     parser.add_argument('--credintials-file', '-c',
-            default='~/.creds/client_secrets.json',
+            default=os.path.expanduser('~/.creds/client_secrets.json'),
             dest="client_secrets_file",
-            help="Process API key (what needs access to upload"),
+            help="Process API key (what needs access to upload.)"),
 
     parser.add_argument('--token-file', '-t',
-            default='oauth-token.json',
-            help="auth token file. default: oauth.json")
+            default=os.path.expanduser('~/.creds/oauth_token.json'),
+            help="Auth token file. (permission from the destination account owner)")
 
     # find the test file
     ext = "mp4"
     veyepar_dir = os.path.expanduser('~/Videos/veyepar')
-    test_dir = os.path.join(veyepar_dir,"test_client/test_show/",ext)
-    test_file = os.path.join(test_dir,"Lets_make_a_Test.%s" % (ext))
+    test_dir = os.path.join(veyepar_dir, "test_client", "test_show", ext)
+    test_file = os.path.join(test_dir, f"Lets_make_a_Test.{ext}")
     if not os.path.exists(test_file):
         # if we can't find a video to upload, upload this .py file!
         test_file = os.path.abspath(__file__)
@@ -503,6 +504,7 @@ def my_upload(args):
     }
 
     u.token_file = args.token_file
+    u.client_secrets_file=args.client_secrets_file
     u.debug_mode = args.debug_mode
     u.pathname = args.pathname
 
@@ -530,6 +532,7 @@ def test_upload(args):
     }
 
     u.token_file = args.token_file
+    u.client_secrets_file=args.client_secrets_file
     u.debug_mode = args.debug_mode
     u.pathname = args.pathname
 
@@ -545,6 +548,7 @@ def test_set_pub(args,video_url):
 
     u = Uploader()
     u.token_file=args.token_file
+    u.client_secrets_file=args.client_secrets_file
     u.set_permission(video_url)
 
     return
@@ -556,6 +560,7 @@ def test_set_description(args, video_url):
 
     u = Uploader()
     u.token_file=args.token_file
+    u.client_secrets_file=args.client_secrets_file
     u.set_description(video_url, description=desc)
 
     return
@@ -564,6 +569,7 @@ def test_set_unlisted(args,video_url):
 
     u = Uploader()
     u.token_file=args.token_file
+    u.client_secrets_file=args.client_secrets_file
     u.set_permission(video_url, privacyStatus='unlisted')
 
     return
@@ -573,6 +579,7 @@ def test_set_no_comments(args,video_url):
     # WIP?
 
     u = Uploader()
+    u.client_secrets_file=args.client_secrets_file
     u.token_file=args.token_file
     u.set_permission(video_url, privacyStatus='unlisted')
 
