@@ -43,7 +43,7 @@ import argparse
 import http.client
 import httplib2
 import os
-import pprint
+from pprint import pprint
 import random
 import sys
 import time
@@ -314,7 +314,7 @@ class Uploader():
 
         stat = videos_update_response['status']['privacyStatus']
         if stat != privacyStatus:
-            pprint.pprint(videos_update_response)
+            pprint(videos_update_response)
             import code; code.interact(local=locals())
 
 
@@ -436,7 +436,7 @@ playlist_items_delete(client,
 
         if self.debug:
             print(self.pathname)
-            pprint.pprint(self.meta)
+            pprint(self.meta)
 
         self.meta['description'] = clean_description(
                 self.meta['description'])
