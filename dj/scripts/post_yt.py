@@ -9,7 +9,7 @@ import ia_uploader
 # import rax_uploader
 
 import os
-import pprint
+from pprint import pprint
 import re
 
 import pw
@@ -406,10 +406,10 @@ class post(process):
         files = self.get_files(ep)
         if self.options.verbose:
             print("[files]:", end=' ')
-            pprint.pprint(files)
+            pprint(files)
 
         meta = self.collect_metadata(ep)
-        if self.options.verbose: pprint.pprint(meta)
+        if self.options.verbose: pprint(meta)
 
         # upload youtube
         if not ep.show.client.youtube_id: youtube_success = True

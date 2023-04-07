@@ -1,14 +1,14 @@
 # whack_richard
 # removes test data from a ricard
 
-import pprint
+from pprint import pprint
 import slumber
 from . import pw
 
 # test data is this list of categories:
-test_categories = [ 
+test_categories = [
     'carlcon-2012',
-#    'test_show', 
+#    'test_show',
 #    'chipy_aug_2012',
 #    'scipy_2012'
 ]
@@ -17,7 +17,7 @@ test_categories = [
 host_user = 'local_test'  # localhost:9000, carl
 
 host = pw.richard[host_user]
-pprint.pprint(host)
+pprint(host)
 
 endpoint = 'http://%(host)s/api/v1/' % host
 api = slumber.API(endpoint)
@@ -33,6 +33,6 @@ for cat in cats['objects']:
         cat_id = cat['id']
         print("found", cat_id, cat['slug'], 'deletted:', end=' ')
         print(api.category(cat_id).delete(
-                username=host['user'], 
+                username=host['user'],
                 api_key=host['api_key']))
 

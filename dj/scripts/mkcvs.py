@@ -5,7 +5,7 @@
 import urllib.request, urllib.error, urllib.parse
 import xml.etree.ElementTree
 import os
-import pprint
+from pprint import pprint
 
 from csv import DictWriter
 import json
@@ -143,7 +143,7 @@ class csv(process):
         # if self.options.verbose: print xml_code
         # blip_meta = blip_cli.Parse_VideoMeta(xml_code)
         # if self.options.verbose: print blip_meta
-        # if self.options.verbose: print pprint.pprint(blip_meta)
+        # if self.options.verbose: print pprint(blip_meta)
 
         # blip_xml=self.blip_meta(ep.host_url)
         # show_page = self.get_showpage(blip_xml)
@@ -158,7 +158,7 @@ class csv(process):
 
         # row['embed']=blip_meta['embed_code']
         # oggs = [i for i in blip_meta['contents'] if i['type']=='video/ogg']
-        # if self.options.verbose: print pprint.pprint(oggs)
+        # if self.options.verbose: print pprint(oggs)
         # row['source']=oggs[0]
 
         # row['name'] = row['name'].encode('utf-8')
@@ -185,7 +185,7 @@ class csv(process):
             json.dump(json_data,open(json_pathname, "w"),indent=2)
         else:
             json.dump(json_data,open(json_pathname, "w"))
-        pprint.pprint(json_data)
+        pprint(json_data)
 
   def add_more_options(self, parser):
         parser.add_option('-f', '--basename',

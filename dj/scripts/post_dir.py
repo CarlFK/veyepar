@@ -13,7 +13,7 @@
 
 import os
 import shutil
-import pprint
+from pprint import pprint
 
 from process import process
 
@@ -62,7 +62,7 @@ class post(process):
         files = self.get_files(ep)
         if self.options.verbose:
             print("[files]:", end=' ')
-            pprint.pprint(files)
+            pprint(files)
 
 
         for fn in files:

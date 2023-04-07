@@ -3,7 +3,7 @@
 # push metadata to richard (like pyvideo.org)
 
 import datetime
-import pprint
+from pprint import pprint
 from urllib.parse import urlparse, parse_qs
 from process import process as Process
 
@@ -115,7 +115,7 @@ class add_to_richard(Process):
 
         if self.options.verbose:
             print("1. video_data:")
-            pprint.pprint(video_data)
+            pprint(video_data)
 
         if \
             not video_data['video_mp4_url'] \
@@ -161,19 +161,19 @@ class add_to_richard(Process):
                 auth_token=self.host['api_key'],
                 video_id=v_id)
 
-        # if self.options.verbose: pprint.pprint( video_data )
+        # if self.options.verbose: pprint( video_data )
 
         if video_data['state'] == STATE_LIVE:
             print("Currently STATE_LIVE, 403 coming.")
 
         if self.options.test:
             print('test mode, not updating richard')
-            print('veyepar:', pprint.pprint(new_data))
-            print('ricard:', pprint.pprint(video_data))
+            print('veyepar:', pprint(new_data))
+            print('ricard:', pprint(video_data))
             ret = False
         else:
             print('2. updating richard', v_id)
-            if self.options.verbose: pprint.pprint( video_data )
+            if self.options.verbose: pprint( video_data )
             video_data.update(new_data)
             try:
                 # update richard with new information
@@ -373,7 +373,7 @@ class add_to_richard(Process):
 
         if self.options.verbose:
             print("scraped_meta")
-            pprint.pprint( scraped_meta )
+            pprint( scraped_meta )
 
         return scraped_meta
 

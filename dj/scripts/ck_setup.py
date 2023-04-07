@@ -17,7 +17,7 @@ import pw
 import archive_uploader
 
 import os
-import pprint
+from pprint import pprint
 import xml.etree.ElementTree
 import requests
 
@@ -287,7 +287,7 @@ class ck_setup(process):
 
         print("logging in...")
         uploader = swift_uploader.Uploader()
-        # pprint.pprint(pw.swift[rax_id])
+        # pprint(pw.swift[rax_id])
         uploader.user=rax_id
         cf = uploader.auth()
 

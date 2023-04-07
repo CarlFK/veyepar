@@ -24,7 +24,7 @@ import youtube_v3_uploader
 
 import pw
 
-import pprint
+from pprint import pprint
 
 from django.conf import settings
 from main.models import Show, Location, Episode, Raw_File, Cut_List

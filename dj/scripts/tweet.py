@@ -9,7 +9,7 @@
 import twitter
 
 import urllib.request, urllib.error, urllib.parse
-import pprint
+from pprint import pprint
 
 import pw  # see pw_samp.py for sample.
 
@@ -93,7 +93,7 @@ class tweet(process):
             self.last_tweet_url = "http://twitter.com/NextDayVideo/status/{}".format(d["id"], )
             # print("x-rate-limit-remaining: {}".format(d['x-rate-limit-remaining']))
             print(self.last_tweet_url)
-            pprint.pprint(d)
+            pprint(d)
             """
 {'created_at': 'Wed Jan 23 04:54:06 +0000 2019',
  'hashtags': [{'text': 'lca2019'}],
@@ -147,7 +147,7 @@ class tweet(process):
         status = api.PostRetweet(status_id)
 
         d=status.AsDict()
-        pprint.pprint(d)
+        pprint(d)
 
         return
 
