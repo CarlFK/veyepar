@@ -1,0 +1,17 @@
+Django
+django-extensions
+djangorestframework
+
+# psycopg2
+psycopg2-binary
+
+paramiko
+
+progressbar
+
+internetarchive
+boto
+google-api-python-client
+google_auth_oauthlib
+oauth2client
+
