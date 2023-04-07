@@ -17,7 +17,7 @@ ADMINS = (
 # STATICFILES_DIRS = [os.path.expanduser('~/Videos/veyepar'),]
 STATIC_URL = "/static/"
 
-MEDIA_URL = "https://veyepar.nextdayvideo.com/Videos/veyepar"
+MEDIA_URL = "https://veyepar.nextdayvideo.com/Videos/veyepar/"
 
 UPLOAD_FORMATS = ['mp4',]
 

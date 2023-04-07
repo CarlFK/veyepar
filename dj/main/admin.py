@@ -225,7 +225,7 @@ class EpisodeAdmin(admin.ModelAdmin):
             'name_plural': self.model._meta.verbose_name_plural.title()
         }
         messages.success(request, msg)
-    bump_state.short_discription = "smacke state back a notch"
+    bump_state.short_discription = "smack state back a notch"
 
 
     def encode_state(self, request, queryset):
