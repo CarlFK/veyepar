@@ -1,11 +1,13 @@
 #!/usr/bin/python
 
 # push encoded files to data center box
-# uses rsync. 
+# uses rsync.
 
 import os, subprocess
 
 from process import process
+
+from django.conf import settings
 from main.models import Show, Location, Episode
 
 class push(process):
@@ -14,6 +16,14 @@ class push(process):
     ret = None
 
     def process_ep(self, ep):
+
+        if self.options.verbose: print(ep)
+
+        for ext in self.options.upload_formats:
+            base = os.path.join( ext, "{}.{}".format(ep.slug, ext) )
+            # if not self.cdn_exists(show,base) or self.options.replace:
+            self.file2cdn(ep.show,base)
+
         return True
 
         # get a list of video files to upload
@@ -21,27 +31,27 @@ class push(process):
         for ext in self.options.upload_formats:
             src_pathname = os.path.join( self.show_dir, ext, "%s.%s"%(ep.slug,ext))
             files.append({'ext':ext,'pathname':src_pathname})
-      
+
         # dest_host = 'veyepar@nextdayvideo.com'
         # dest_path = "/home/veyepar/Videos/veyepar/enthought/scipy_2012/mp4"
         for f in files:
 
-            # Ryans data center box, 
-            # veyepar user and /home dir
-            user="veyepar"
-            host =  'nextdayvideo.com'
-            dest_host = '%s@%s' % (user,host)
-            dest_path = "/home/%s/Videos/veyepar/%s/%s/%s" % (
-                    user, 
-                    ep.show.client.slug, ep.show.slug,
-                    f['ext'] )
+            host = settings.CDN['host']
+            user = settings.CDN['user']
+            dest_host = f"{user}@{host}"
+            dest_path = "/home/{user}/Videos/veyepar/{client}/{show}/{ext}/".format(
+                    user=user,
+                    client=ep.show.client.slug,
+                    show=ep.show.slug,
+                    ext=f['ext'] )
 
-            dest = "%s:%s" %( dest_host, dest_path )
+            dest = f"{dest_host}:{dest_path}"
 
             # 'ssh -p 222' = use ssh on port 222
 
-            cmd = ['rsync',  '-rtvP', '-e', 'ssh -p 222', 
-                    f['pathname'], dest ] 
+            cmd = ['rsync',  '-rtvP',
+                    # '-e', 'ssh -p 222',
+                    f['pathname'], dest ]
 
             ret = self.run_cmd(cmd)
 

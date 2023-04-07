@@ -25,10 +25,12 @@ import django
 
 django.setup()
 
+from django.conf import settings
 from main.models import Client, Show, Location, Episode, State, Log
 
 # import swift_uploader as rax_uploader
 import paramiko
+import progressbar as pb
 
 
 class process():
@@ -168,6 +170,7 @@ class process():
 
         NB: no more Rackspace, so swapping in sftp to wherever
         """
+
         print("checking:", src )
 
         if dst is None:
@@ -182,7 +185,9 @@ class process():
 
             # rax out, old school rsync in (using paramiko)
 
-            host = "veyepar.nextdayvideo.com"
+            host = settings.CDN['host']
+            user = settings.CDN['user']
+            private_key_file = settings.CDN['private_key_file']
             port = 22
 
             client = paramiko.SSHClient()
@@ -191,9 +196,18 @@ class process():
             client.connect(hostname="veyepar.nextdayvideo.com", username="videoteam", pkey=keys)
 
             sftp = client.open_sftp()
-            print( f"Copying file {src} to {dst}" )
-            sftp.put(src, dst)
+            print( f"Copying file {src} to {dst}..." )
+
+            widgets = ['Uploading: ', pb.Percentage(), ' ', pb.Bar(marker='0',left='[',right=']'), ' ', pb.ETA(), ' ', pb.FileTransferSpeed()]
+            pbar = pb.ProgressBar(widgets=widgets,  maxval=os.path.getsize(src))
+            pbar.start()
+
+            # callback(transferred so far,  total bytes to be transferred )
+            sftp.put(src, dst,
+                    callback = lambda size, file_size : pbar.update(size) )
+
             sftp.close()
+            pbar.finish()
 
             ret = True
 
