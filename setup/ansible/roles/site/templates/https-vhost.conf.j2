@@ -8,8 +8,17 @@ server {
   ssl_certificate /etc/ssl/ansible/certs/{{ sitename }}.fullchain.pem;
   ssl_certificate_key /etc/ssl/ansible/private/{{ sitename }}.key;
 
+  location = /favicon.ico {
+    alias {{ static_dir }}/favicon.ico;
+  }
+
   location /static/ {
     alias {{ static_dir }}/;
+    autoindex on;
+  }
+
+  location /Videos/veyepar/ {
+    alias /home/videoteam/Videos/veyepar/;
     autoindex on;
   }
 
