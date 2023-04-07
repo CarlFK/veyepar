@@ -9,7 +9,7 @@ README
 
 To run this standalone:
 
-1. pip install google-api-python-client
+1. pip install google-api-python-client progressbar
 
 2. Get a client ID (defines who is running this code)
 https://salsa.debian.org/debconf-video-team/youtube#authentication
@@ -27,10 +27,12 @@ A token gets saved in oauth.json and will be used for all subsiquent runs.
 which errors with:
     ResumableUploadError ... "reason": "badContent", "message": "Media type 'text/x-python' is not supported.
 
+https://developers.google.com/youtube/v3/getting-started#quota
 """
 
 # https://developers.google.com/youtube/v3/
 # https://developers.google.com/youtube/v3/code_samples/python
+# https://developers.google.com/identity/protocols/oauth2/scopes#youtube
 # https://github.com/youtube/api-samples/tree/master/python
 
 # https://developers.google.com/api-client-library/python/guide/aaa_oauth
@@ -64,9 +66,6 @@ from oauth2client.tools import run_flow
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-# CLIENT_SECRETS_FILE = "client_secrets.json"
-CLIENT_SECRETS_FILE = "/home/carl/.creds/client_secret_234470688854-ujjpjkbth2cpkoalbqh0fb4tj0c2jo7e.apps.googleusercontent.com.json"
-
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
@@ -98,7 +97,10 @@ RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
 # VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
-def get_authenticated_service(oauth_file):
+def get_authenticated_service(client_secrets_file, token_file):
+
+  print(client_secrets_file)
+  print(token_file)
 
   args = namedtuple('flags', [
             'noauth_local_webserver',
@@ -109,7 +111,8 @@ def get_authenticated_service(oauth_file):
   args.logging_level='ERROR'
 
   # how and where tokens are stored
-  #storage = Storage(oauth_file)
+  # storage = Storage(token_file)
+  # na, store them in a file self.options.oauth_token
 
   # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html
 
@@ -117,21 +120,21 @@ def get_authenticated_service(oauth_file):
 
   credentials = None
 
-  if os.path.exists(oauth_file):
-      credentials = Credentials.from_authorized_user_file(oauth_file, scopes=[YOUTUBE_READ_WRITE_SCOPE,])
+  if os.path.exists(token_file):
+      credentials = Credentials.from_authorized_user_file(token_file, scopes=[YOUTUBE_READ_WRITE_SCOPE,])
   else:
   #if credentials is None or not credentials.valid:
 
-      #flow = flow_from_clientsecrets( CLIENT_SECRETS_FILE,
+      #flow = flow_from_clientsecrets( client_secrets_file,
       #        scope=YOUTUBE_READ_WRITE_SCOPE,)
 
       # do the "allow access" step, save token.
       #credentials = run_flow(flow, storage, args)
 
-      flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, YOUTUBE_READ_WRITE_SCOPE)
+      flow = InstalledAppFlow.from_client_secrets_file(client_secrets_file, YOUTUBE_READ_WRITE_SCOPE)
       credentials = flow.run_local_server(port=0)
 
-      with open(oauth_file, 'w') as token:
+      with open(token_file, 'w') as token:
           token.write(credentials.to_json())
 
   return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, credentials=credentials, static_discovery=False)
@@ -207,10 +210,10 @@ def resumable_upload(insert_request):
         exit("The upload failed with an unexpected response: %s" % response)
 
     except ResumableUploadError as e:
-      print(("ResumableUploadError e.content:{}".format(e.content)))
+      print(e)
+      pprint(e.error_details)
       print("to get out of this loop:\nimport sys;sys.exit()")
       import code; code.interact(local=locals())
-      # raise e
 
     except HttpError as e:
       if e.resp.status in RETRIABLE_STATUS_CODES:
@@ -275,7 +278,8 @@ https://developers.google.com/youtube/v3/docs/videos#properties
 class Uploader():
 
     # input attributes:
-    oauth_file = 'oauth.json'
+    client_secrets_file = 'client_secrets.json'
+    token_file = 'oauth.json'
     pathname = ''
     meta = {}
     old_url = ''
@@ -289,7 +293,7 @@ class Uploader():
         # https://developers.google.com/youtube/v3/docs/videos/update
         # status.license
 
-        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
         video_id = get_id_from_url(video_url)
 
         videos_update_response = youtube.videos().update(
@@ -323,7 +327,7 @@ class Uploader():
 
     def set_description(self, video_url, description):
 
-        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
         video_id = get_id_from_url(video_url)
 
         videos_update_response = youtube.videos().update(
@@ -340,7 +344,7 @@ class Uploader():
 
 
     def add_to_playlist(self, video_url, playlist_id):
-        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
         video_id = get_id_from_url(video_url)
         youtube.playlistItems().insert(
             part='snippet',
@@ -369,7 +373,7 @@ playlist_items_delete(client,
     id='REPLACE_ME',
     onBehalfOfContentOwner='')
 """
-        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
         youtube.playlistItems().insert(
             part='snippet',
             body={
@@ -389,7 +393,7 @@ playlist_items_delete(client,
         # https://developers.google.com/youtube/v3/docs/videos/delete
         # https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/youtube_v3.videos.html
 
-        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
         video_id = get_id_from_url(video_url)
 
         videos_delete_response = youtube.videos().delete(
@@ -406,7 +410,7 @@ playlist_items_delete(client,
         Not implemented, as YT Data v3 API doesn't support this :(
         https://issuetracker.google.com/issues/35174729
         """
-        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
         video_id = get_id_from_url(video_url)
         # do_stuff_to_video_id
         # return response
@@ -416,7 +420,7 @@ playlist_items_delete(client,
         Not implemented, as YT Data v3 API doesn't support this :(
         https://issuetracker.google.com/issues/35174729
         """
-        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
         video_id = get_id_from_url(video_url)
 
         video = youtube.captions().list(videoId=video_id, part='id').execute()
@@ -433,7 +437,7 @@ playlist_items_delete(client,
 
     def upload(self):
 
-        youtube = get_authenticated_service(oauth_file=self.oauth_file)
+        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
 
         if self.debug:
             print(self.pathname)
@@ -447,7 +451,7 @@ playlist_items_delete(client,
 
         self.response = response
 
-        self.new_url = "http://youtu.be/{id}".format(**response)
+        self.new_url = "https://youtu.be/{id}".format(**response)
         self.thumbnail = "https://i.ytimg.com/vi/{id}/hqdefault.jpg".format(**response)
 
         return True
@@ -458,7 +462,13 @@ def make_parser():
     Find a video file and upload it to youtube.
     """)
 
-    parser.add_argument('--oauth-file', '-o', default='oauth.json',
+    parser.add_argument('--credintials-file', '-c',
+            default='~/.creds/client_secrets.json',
+            dest="client_secrets_file",
+            help="Process API key (what needs access to upload"),
+
+    parser.add_argument('--token-file', '-t',
+            default='oauth-token.json',
             help="auth token file. default: oauth.json")
 
     # find the test file
@@ -471,6 +481,7 @@ def make_parser():
         test_file = os.path.abspath(__file__)
 
     parser.add_argument('--pathname', '-f', default=test_file,
+            dest="filename",
                         help='file to upload.')
 
     parser.add_argument('--delete',
@@ -496,7 +507,7 @@ def my_upload(args):
       'license':'youtube',
     }
 
-    u.oauth_file = args.oauth_file
+    u.token_file = args.token_file
     u.debug_mode = args.debug_mode
     u.pathname = args.pathname
 
@@ -523,7 +534,7 @@ def test_upload(args):
       'license':'youtube',
     }
 
-    u.oauth_file = args.oauth_file
+    u.token_file = args.token_file
     u.debug_mode = args.debug_mode
     u.pathname = args.pathname
 
@@ -538,47 +549,46 @@ def test_upload(args):
 def test_set_pub(args,video_url):
 
     u = Uploader()
-    u.oauth_file=args.oauth_file
+    u.token_file=args.token_file
     u.set_permission(video_url)
 
     return
 
 
-def test_set_unlisted(args,video_url):
+def test_set_description(args, video_url):
 
-    desc = "This is Part II of a 2-part keynote for North Bay PyCon 2019 by Sha Wallace-Stepter and Jessica McKellar, and covers concrete actions technologists can take to change our criminal justice system. Find part I, on Sha's life story in the prison system, here: http://youtu.be/jNBsrLzHVgM"
+    desc = "This is Part II of a 2-part keynote for North Bay PyCon 2019 by Sha Wallace-Stepter and Jessica McKellar, and covers concrete actions technologists can take to change our criminal justice system. Find part I, on Sha's life story in the prison system, here: https://youtu.be/jNBsrLzHVgM"
 
     u = Uploader()
-    u.oauth_file=args.oauth_file
+    u.token_file=args.token_file
     u.set_description(video_url, description=desc)
 
     return
 
-def test_set_description(args, video_url):
+def test_set_unlisted(args,video_url):
 
     u = Uploader()
-    u.oauth_file=args.oauth_file
+    u.token_file=args.token_file
     u.set_permission(video_url, privacyStatus='unlisted')
 
     return
-
 
 
 def test_set_no_comments(args,video_url):
     # WIP?
 
     u = Uploader()
-    u.oauth_file=args.oauth_file
+    u.token_file=args.token_file
     u.set_permission(video_url, privacyStatus='unlisted')
 
     return
 
 
-
 def test_delete(args, video_url):
 
     u = Uploader()
-    u.oauth_file=args.oauth_file
+    u.client_secrets_file=args.client_secrets_file
+    u.token_file=args.token_file
     u.delete_video(video_url)
 
     return
@@ -606,9 +616,9 @@ raise HttpError(resp, content, uri=self.uri)
 apiclient.errors.HttpError: <HttpError 410 when requesting https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&alt=json&part=snippet%2Cstatus returned "Backend Error">
 """
 
-def test_caption(oauth_file, vid_id):
+def test_caption(token_file, vid_id):
 
-    youtube = get_authenticated_service(oauth_file=oauth_file)
+    youtube = get_authenticated_service(token_file=token_file)
     request = youtube.captions().download(
             id=vid_id,
             )
@@ -641,8 +651,8 @@ def main():
         # url = test_upload(args)
         # test_set_pub(args, "http://youtu.be/IdSelnHIxWY")
         # https://www.googleapis.com/youtube/v3/captions/H6hk0RhmAAs
-        # test_caption( args.oauth_file, "H6hk0RhmAAs" )
-        # test_set_unlisted( args.oauth_file, "hyd6MiWXSP4")
+        # test_caption( args.token_file, "H6hk0RhmAAs" )
+        # test_set_unlisted( args.token_file, "hyd6MiWXSP4")
         test_set_description( args, "hyd6MiWXSP4")
 
     # test_set_pub(args, 'http://youtu.be/tB3YtzAxFLo')
