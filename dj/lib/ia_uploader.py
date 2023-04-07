@@ -62,7 +62,8 @@ class Uploader(object):
     pathname = ''  # path to video file to upload`
     slug = "" # slug used to make URL
 
-    verbose = False
+    progress = True # ia :param verbose: Display upload progress.
+    verbose = False # spew extra stuff
     debug_mode = False
     test = False
 
@@ -116,7 +117,7 @@ class Uploader(object):
             ret = item.upload(self.pathname, metadata=md,
                     access_key=auth['access'], secret_key=auth['secret'],
                     # ignore_preexisting_bucket=True,
-                    verbose=self.verbose)
+                    verbose=self.progress)
 
             if self.debug_mode:
                 import code; code.interact(local=locals())
