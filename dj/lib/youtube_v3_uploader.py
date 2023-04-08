@@ -40,19 +40,20 @@ https://developers.google.com/youtube/v3/getting-started#quota
 
 import argparse
 
+import datetime
 import http.client
 import httplib2
 import os
-from pprint import pprint
 import random
 import sys
 import time
 
-import progressbar as pb
-
 from collections import namedtuple
+from pprint import pprint
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
+
+import progressbar as pb
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError, ResumableUploadError
@@ -207,6 +208,10 @@ def resumable_upload(insert_request):
     except ResumableUploadError as e:
       print(e)
       pprint(e.error_details)
+      if e.error_details[0]['reason'] == 'quotaExceeded':
+          sec = time_till_quota_reset(datetime.datetime.now(), 2)
+          time.sleep(sec)
+
       print("to get out of this loop:\nimport sys;sys.exit()")
       import code; code.interact(local=locals())
 
@@ -270,6 +275,16 @@ https://developers.google.com/youtube/v3/docs/videos#properties
     description = description.replace(">","›")
     return description
 
+def time_till_quota_reset(current, reset_hour):
+    # given now and what hour reset happens
+    # returns seconds untill youtube quota reset
+
+    reset = datetime.datetime(current.year, current.month, current.day+1, reset_hour)
+    delta = reset - current
+    seconds = delta.seconds # this drops delta.days, which covers the 1am case
+    return seconds
+
+
 class Uploader():
 
     # input attributes:
@@ -287,6 +302,12 @@ class Uploader():
     def set_permission(self, video_url, privacyStatus='public'):
         # https://developers.google.com/youtube/v3/docs/videos/update
         # status.license
+
+        # if you try to flip the status on a video uploaded to a different account...
+        # >>> e.error_details
+        # [{'message': 'Forbidden', 'domain': 'youtube.video', 'reason': 'forbidden'}]
+        # >>> e.status_code
+        # 403
 
         youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
         video_id = get_id_from_url(video_url)
@@ -637,6 +658,23 @@ def test_caption(token_file, vid_id):
             print(status)
 
     return
+
+def test():
+
+    # seconds till next quota reset
+    # midnight 2h till 2am
+    assert time_till_quota_reset(datetime.datetime(2023, 4, 8, 0), 2) == 2 * 3600
+    # 1am
+    assert time_till_quota_reset(datetime.datetime(2023, 4, 8, 1), 2) == 3600
+    # 2am
+    assert time_till_quota_reset(datetime.datetime(2023, 4, 8, 2), 2) == 0
+    # 3am
+    assert time_till_quota_reset(datetime.datetime(2023, 4, 8, 3), 2) == 23 * 3600
+    # 4am
+    assert time_till_quota_reset(datetime.datetime(2023, 4, 8, 4), 2) == 22 * 3600
+    # 23:00, midnight reset
+    assert time_till_quota_reset(datetime.datetime(2023, 4, 8, 23), 0) == 3600
+
 
 
 def main():
