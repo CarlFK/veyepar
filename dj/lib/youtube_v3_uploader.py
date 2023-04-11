@@ -279,9 +279,9 @@ def time_till_quota_reset(current, reset_hour):
     # given now and what hour reset happens
     # returns seconds untill youtube quota reset
 
-    reset = datetime.datetime(current.year, current.month, current.day+1, reset_hour)
+    reset = datetime.datetime(current.year, current.month, current.day, reset_hour) + datetime.timedelta(days=1)
     delta = reset - current
-    seconds = delta.seconds # this drops delta.days, which covers the 1am case
+    seconds = delta.seconds # this drops delta.days, which covers the case of reset coming later in the same day. like 1am and reset it 2am.
     return seconds
 
 
