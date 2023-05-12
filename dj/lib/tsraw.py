@@ -18,6 +18,7 @@ last frame ?
 
 import argparse
 import datetime
+import pathlib
 import pprint
 import os
 import re
@@ -59,6 +60,13 @@ def get_start( pathname, time_source ):
         # print("parse_name")
         # parse string into datetime
         # expects room/yyy-mm-dd/hh_mm_ss-x.ext
+        # or room/yyy-mm-dd/GMT20230511-232712_Recording_2880x1800.mp4
+
+        p = pathlib.PurePath(pathname)
+        filename = p.stem # GMT20230511-232712_Recording_2880x1800
+
+        start = datetime.datetime.strptime(filename,'GMT%Y%m%d-%H%M%S_Recording_2880x1800')
+        return start
 
         # remove extention
         filename = os.path.splitext(pathname)[0]
