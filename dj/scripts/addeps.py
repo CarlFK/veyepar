@@ -1752,13 +1752,24 @@ class add_eps(process.process):
 
     def chipy_v3(self, schedule, show):
 
-        schedule = max(schedule, key=operator.itemgetter('when'))
-        when = schedule['when']
+        # url = "https://www.chipy.org/meetings/223/"
+        parsed = urlparse(show.conf_url)
+        paths = parsed.path.strip('/').split('/')
+        meeting_id = int(paths[1])
+        schedule = [s for s in schedule if s['id']==meeting_id][0]
+
+        # the next meeitng may not be the last in the list
+        # schedule = max(schedule, key=operator.itemgetter('when'))
+
+        when = datetime.strptime( schedule['when'], '%Y-%m-%dT%H:%M:%S' )
+        next_talk = when + timedelta(minutes=30) # talks start 30 min after event start
+
         where = schedule['where']
-        # ['name']
-        pprint( schedule['where'] )
 
         schedule = schedule['topics']
+
+        # import code; code.interact(local=locals())
+
         schedule = [s for s in schedule if s['approved']]
         # schedule = [s for s in schedule if s['start_time']]
         for s in schedule:
@@ -1786,8 +1797,18 @@ class add_eps(process.process):
 
             event['location'] = where['name']
 
-            event['start'] = datetime.strptime(
-                    event['start'], '%Y-%m-%dT%H:%M:%S' )
+            if event['duration'] is None:
+                event['duration'] = 30
+
+            if event['start'] is None:
+                event['start'] = next_talk
+            else:
+                event['start'] = datetime.strptime(
+                        event['start'], '%Y-%m-%dT%H:%M:%S' )
+            # import code; code.interact(local=locals())
+            next_talk = event['start'] + timedelta(minutes=event['duration'] + 10 ) # 10 min between talks
+
+            event['duration'] = f"00:{event['duration']}:00"
 
             event['authors'] =  ', '.join(
                     [ a['name'] for a in  event['authors'] ])
@@ -1802,7 +1823,9 @@ class add_eps(process.process):
             event['released'] = all(
                     [ a['release'] for a in event['released'] ])
 
-            event['conf_url'] = "http://www.chipy.org/"
+            event['conf_url'] = show.conf_url
+
+            event['reviewers'] = ""
 
         rooms = set(row['location'] for row in events)
         self.add_rooms(rooms,show)
