@@ -12,12 +12,12 @@ import googleapiclient.errors
 
 def get_creds(credentials_file, client_secrets_file):
 
-    # If modifying these scopes, delete the file token.json.
+    # If modifying these scopes, delete credentials_file.
     YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube.force-ssl"
     # scopes = [YOUTUBE_READ_WRITE_SCOPE,]
     scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
 
-    # The file token.json stores the user's access and refresh tokens.
+    # The credentials_file stores the user's access and refresh tokens.
     if os.path.exists(credentials_file):
         credentials = google.oauth2.credentials.Credentials.from_authorized_user_file(
                 credentials_file, scopes)
