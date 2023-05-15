@@ -1,6 +1,7 @@
 # veyepar/dj/urls.py
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import include, path, re_path
 
 from django.views.generic.base import RedirectView
@@ -37,9 +38,19 @@ urlpatterns = [
     # url(r'^my_admin/jsi18n', django.views.i18n.javascript_catalog),
     re_path(r'volunteers/', include('volunteers.urls')),
     re_path(r'api/', include('api.urls')),
+    re_path(r'googauth/', include('googauth.urls')),
 ]
 
-urlpatterns += staticfiles_urlpatterns()
+if settings.DEBUG:
+    urlpatterns += static(r'/favicon.ico', document_root='static/favicon.ico')
+
+# urlpatterns += staticfiles_urlpatterns()
+
+# urlpatterns += static(
+#        settings.STATIC_URL,
+#        document_root=settings.STATIC_ROOT
+#        )
+
 # urlpatterns += patterns('',
 # (r'^static/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve',
 #        {'document_root': 'static/','show_indexes': True}))
