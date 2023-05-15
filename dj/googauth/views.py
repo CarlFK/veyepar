@@ -11,10 +11,9 @@ import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+if settings.DEBUG:
+    # for dev server runing on http://localhost:8000
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 # This variable specifies the name of a file that contains the OAuth 2.0
 # information for this application, including its client_id and client_secret.
