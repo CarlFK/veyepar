@@ -7,7 +7,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.http import HttpResponse
 
-from .utils import goog_start, goog_token, get_items
+from .utils import goog_start, goog_token, get_items, get_cred, put_cred
 
 if settings.DEBUG:
     # for dev server runing on http://localhost:8000
@@ -15,6 +15,8 @@ if settings.DEBUG:
 
 # CLIENT_SECRET:  the OAuth 2.0 for this application, namely client_id and client_secret.
 CLIENT_SECRET_FILE = settings.GOOG_CLIENT_SECRET
+TOKEN_FILE = settings.GOOG_TOKEN
+
 SCOPES = settings.GOOG_SCOPES # ["https://www.googleapis.com/auth/youtube.force-ssl",]
 REDIRECT_URL = settings.GOOG_REDIRECT_URL #  'http://127.0.0.1:8000/googauth/redirect/'
 
@@ -36,7 +38,11 @@ def goog_redirect(request):
     credd = goog_token( CLIENT_SECRET_FILE, SCOPES, REDIRECT_URL, authorization_response, state)
 
     # Save Creds and bail
+    put_cred(credd, TOKEN_FILE)
+
     # or maybe verify they can do something
+    # or maybe a thank you page.
+    # don't know or care right now, getting/saving the key is the important part.
 
     items = get_items(api_service_name="youtube", api_version="v3", credd=credd)
     d = {
