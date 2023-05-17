@@ -12,6 +12,7 @@ import json
 import os
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from queue import Queue
 from pathlib import Path
 from pprint import pprint
 from urllib.parse import urlparse, parse_qs
@@ -103,15 +104,12 @@ def get_some_data(credd):
     return d
 
 
-PATH=None
-
 class My_Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        # send this data to the calling code (so bad!)
-        global PATH
-        PATH=self.path
+        # send the path to the calling code
+        self.server._saved_path = self.path
 
         # give the browser something to chew on
         self.send_response(200)
@@ -120,19 +118,17 @@ class My_Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(bytes(content, 'utf-8'))
 
-        return self.path
-
 
 def wait_for_callback():
 
     # run a little webserver,
     # wait for the callback
-    # return the path part of the URL (using global.. ewww.)
+    # return the path of the URL
 
     print("wating for a connection...")
     httpd = HTTPServer(('localhost', 8000), My_Handler)
     httpd.handle_request()
-    path = PATH
+    path = httpd._saved_path
 
     return path
 
