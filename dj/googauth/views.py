@@ -37,15 +37,17 @@ def goog_redirect(request):
 
     credd = goog_token( CLIENT_SECRET_FILE, SCOPES, REDIRECT_URL, authorization_response, state)
 
-    # Save Creds and bail
+    # Save Creds
+    # Saving to a file on the local file system.
+    # TODO: use something like https://pypi.org/project/keyring/
     put_cred(credd, TOKEN_FILE)
 
-    # or maybe verify they can do something
-    # or maybe a thank you page.
-    # don't know or care right now, getting/saving the key is the important part.
+    # verify they can do something
 
     data = get_some_data(credd=credd)
 
+    # TODO: a nice thankyou page confirming all is well.
+    # this blurt of json might be a little alarming.
     response = HttpResponse(content_type="application/json")
     json.dump(data, response, indent=2)
     return response
