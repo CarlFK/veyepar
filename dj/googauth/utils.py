@@ -1,17 +1,24 @@
 # veyepar/dj/googauth/utils.py
 
+"""
+clients_secrets.json contains: client id, client secret, and the authorized redirect uri(s).
+You get these values by creating a new project in the Google APIs console
+and registering for OAuth2.0 for *web* applications:
+https://code.google.com/apis/console
+"""
+
 import argparse
 import json
 import os
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from pathlib import Path
 from pprint import pprint
 from urllib.parse import urlparse, parse_qs
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
-
 
 def goog_start( client_secret_file, scopes, redirect_uri ):
 
@@ -66,30 +73,32 @@ def goog_token( client_secret_file, scopes, redirect_uri, authorization_response
 
     return credd
 
+## Save and Load tokens from the servers filesystem
+def put_cred(credd, file_name):
+    ret = json.dump( credd, open(file_name, 'w'), indent=2 )
+    return ret
+
+def get_cred(file_name):
+    ret = json.load( open(file_name) )
+    return ret
+
 ### end of auth ###
 
 # sammple/demo code:
 
-def get_items(api_service_name, api_version, credd):
+def get_some_data(credd):
     # verify we can do something with the token
-    # TODO: find something generic instead of video.
 
     credentials = google.oauth2.credentials.Credentials(**credd)
-    service = googleapiclient.discovery.build(
-        api_service_name, api_version, credentials=credentials)
 
-    request = service.videos().list(
-            part="id",
-            chart="mostPopular",
-            prettyPrint=True
-        )
+    service = googleapiclient.discovery.build("oauth2", "v2", credentials=credentials)
+    request = service.userinfo().get()
     response = request.execute()
 
-    if not response['items']:
-        print('No data found.')
-        d = {"message": "No data found or user credentials invalid."}
+    if not response:
+        d = {"message": "No data in response = request.execute()."}
     else:
-        d = {"items": response['items']}
+        d = response
 
     return d
 
@@ -148,19 +157,26 @@ def get_args():
             formatter_class=argparse.ArgumentDefaultsHelpFormatter
             )
 
+
     parser.add_argument('-client-secret-file', '-c',
+            type = Path,
             default=os.path.expanduser('~/.secrets/client_secret.json'),
             dest="client_secret_file",
             help="Process API key (what needs access to upload.)"),
 
     parser.add_argument('--token-file', '-t',
+            type = Path,
             default=os.path.expanduser('~/.secrets/oauth_token.json'),
             help="oAuth token file. (permission from the destination account owner)")
 
     parser.add_argument('--scope', '-s',
             nargs='+',
             dest="scopes",
-            default='https://www.googleapis.com/auth/youtube.readonly',
+            default=[
+                "openid",
+                "https://www.googleapis.com/auth/userinfo.profile",
+                'https://www.googleapis.com/auth/youtube.readonly',
+                ],
             help="oAuth token file. (permission from the destination account owner)")
 
     parser.add_argument('--redirect-url', '-r',
@@ -189,17 +205,29 @@ def main():
     if args.oauthlib_insecure_transport:
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
-    # oAuth2 step 1
-    start_url = goog_start( args.client_secret_file, args.scopes, args.redirect_url )
-    print( f"Browse to {start_url}" )
+    if args.token_file.exists():
 
-    # oAuth2 step 2
-    path = wait_for_callback()
-    credd = get_token( args.client_secret_file, args.scopes, args.redirect_url, path )
-    pprint(credd)
+        credd = get_cred(args.token_file)
+        print(f"credd read from {args.token_file=}")
+
+    else:
+
+        # oAuth2 step 1
+        start_url = goog_start( args.client_secret_file, args.scopes, args.redirect_url )
+        print( f"Browse to {start_url}" )
+
+        # oAuth2 step 2
+        path = wait_for_callback()
+        credd = get_token( args.client_secret_file, args.scopes, args.redirect_url, path )
+
+        # save it for the next run
+        put_cred(credd, args.token_file)
+        print(f"credd saved to {args.token_file=}")
+
 
     # bonus step to prove it worked:
-    d = get_items(api_service_name="youtube", api_version="v3", credd=credd)
+    print("get_some_data(), maybe...")
+    d = get_some_data(credd=credd)
     pprint(d)
 
 
