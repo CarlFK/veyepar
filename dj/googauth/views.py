@@ -7,7 +7,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.http import HttpResponse
 
-from .utils import goog_start, goog_token, get_items, get_cred, put_cred
+from .utils import goog_start, goog_token, get_cred, put_cred, get_some_data
 
 if settings.DEBUG:
     # for dev server runing on http://localhost:8000
@@ -44,15 +44,10 @@ def goog_redirect(request):
     # or maybe a thank you page.
     # don't know or care right now, getting/saving the key is the important part.
 
-    items = get_items(api_service_name="youtube", api_version="v3", credd=credd)
-    d = {
-            "authorization_response": authorization_response,
-            "credd": credd,
-            "items": items,
-            }
+    data = get_some_data(credd=credd)
 
     response = HttpResponse(content_type="application/json")
-    json.dump(d, response, indent=2)
+    json.dump(data, response, indent=2)
     return response
 
 
