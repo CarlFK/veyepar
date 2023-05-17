@@ -12,7 +12,6 @@ import json
 import os
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from queue import Queue
 from pathlib import Path
 from pprint import pprint
 from urllib.parse import urlparse, parse_qs
