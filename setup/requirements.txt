@@ -3,6 +3,7 @@ vobject
 django-debug-toolbar
 # git+https://github.com/bear/python-twitter.git
 feedparser
+Mastodon.py
 
 # steve
 python-dateutil
