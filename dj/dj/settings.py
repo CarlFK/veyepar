@@ -2,10 +2,10 @@
 
 import os
 
-DEBUG = True
+from pathlib import Path
 
-BASE_DIR = os.path.dirname( os.path.dirname(
-        os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 # this file is down a level, so the base is the parent dir.
 # PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
         # os.path.dirname(os.path.dirname(__file__)))
@@ -14,7 +14,13 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
-# STATICFILES_DIRS = [os.path.expanduser('~/Videos/veyepar'),]
+# STATICFILES_DIRS = [os.path.expanduser('~/Videos/veyepar/static'),]
+# STATICFILES_DIRS = [ BASE_DIR + "/static",]
+# print(STATICFILES_DIRS)
+
+# STATIC_ROOT = os.path.expanduser('~/Videos/veyepar/')
+STATIC_ROOT =  BASE_DIR / "static"
+# print(STATIC_ROOT)
 STATIC_URL = "/static/"
 
 MEDIA_URL = "https://veyepar.nextdayvideo.com/Videos/veyepar/"
@@ -72,23 +78,6 @@ SECRET_KEY = '_)n%2id#&ke+^q_si_9c^v(+d9o6$&6kp*&s*w2sl$%esyx4$v'
 LOGIN_URL = '/accounts/login'
 # LOGIN_REDIRECT_URL = '/main'
 
-xTEMPLATE_CONTEXT_PROCESSORS = (
-    # 'django.core.context_processors.auth',
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.request',
-    )
-
-# List of callables that know how to import templates from various sources.
-xTEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader'
-)
-
-xTEMPLATE_DEBUG = DEBUG
-xTEMPLATE_STRING_IF_INVALID = 'template_error'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -109,7 +98,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
             ],
-           'debug':DEBUG,
+           'debug':True,
            'string_if_invalid':'error-in-template',
         },
     },
@@ -127,14 +116,16 @@ VALIDATOR_APP_VALIDATORS = {
         'text/html': '/usr/bin/validate',
         'application/xml+xhtml': '/usr/bin/validate',
     }
-if DEBUG:
-    INTERNAL_IPS = ('127.0.0.1',)
-    MIDDLEWARE = \
-        (
-        # 'lukeplant_me_uk.django.validator.middleware.ValidatorMiddleware',
-        # 'debug_toolbar.middleware.DebugToolbarMiddleware',
-                ) +\
-        MIDDLEWARE
+
+#
+# if DEBUG:
+#     INTERNAL_IPS = ('127.0.0.1',)
+#     MIDDLEWARE = \
+#         (
+#         # 'lukeplant_me_uk.django.validator.middleware.ValidatorMiddleware',
+#         # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+#                 ) +\
+#         MIDDLEWARE
 
 ROOT_URLCONF = 'dj.urls'
 
@@ -153,6 +144,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'api',
     'django_extensions',
+    'googauth',
     # "debug_toolbar",
     # 'django_databrowse',
 )
