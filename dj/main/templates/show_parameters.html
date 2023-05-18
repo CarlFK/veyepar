@@ -18,14 +18,14 @@ Rooms ({{locations|length}}):
 
 Youtube account:
 {% if client.youtube_id %}
-    client.youtube_id
+    {{client.youtube_id}}
 {% else %}
-(Not Granted)<br>
-To grant permission to Next Day Video's Veyepar app:
-<ol>
-    <li> <a href='/googauth/init/'>Start Grant Process</a>
-    <li> Next Day Video staff will use access to upload videos.
-</ol>
+    (Not Granted)<br>
+    To grant permission to Next Day Video's Veyepar app:
+    <ol>
+        <li> <a href='/googauth/init/'>Start Grant Process</a>
+        <li> Next Day Video staff will use access to upload videos.
+    </ol>
 {% endif %}</br>
 Youtube playlist ID: <a href="https://www.youtube.com/playlist?list={{show.youtube_playlist_id}}">{{show.youtube_playlist_id|default:"(none)"}}</a></br>
 Archive.org account:  {{client.archive_id|default:"(none)"}}</br>
