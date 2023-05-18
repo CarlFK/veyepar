@@ -66,6 +66,7 @@ def get_start( pathname, time_source ):
         filename = p.stem # GMT20230511-232712_Recording_2880x1800
 
         start = datetime.datetime.strptime(filename,'GMT%Y%m%d-%H%M%S_Recording_2880x1800')
+        start += timedelta(hours-6) for chicago time
         return start
 
         # remove extention
@@ -268,11 +269,12 @@ def get_duration(pathname):
         # use gstreamer to find get_duration
         # print("gst_discover_duration")
         discoverer = GstPbutils.Discoverer()
-        # try:
-        d = discoverer.discover_uri('file://{}'.format(pathname))
-        seconds = d.get_duration() / float(Gst.SECOND)
-        #except :
-        #    seconds=None
+        try:
+            d = discoverer.discover_uri('file://{}'.format(pathname))
+            seconds = d.get_duration() / float(Gst.SECOND)
+        except gi.repository.GLib.GError:
+            seconds=None
+            seconds=6300
 
         return seconds
 
