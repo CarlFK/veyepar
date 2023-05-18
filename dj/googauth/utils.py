@@ -1,6 +1,9 @@
 # veyepar/dj/googauth/utils.py
 
 """
+https://developers.google.com/identity/protocols/oauth2/web-server#creatingcred
+    Go to the Credentials page....
+
 clients_secrets.json contains: client id, client secret, and the authorized redirect uri(s).
 You get these values by creating a new project in the Google APIs console
 and registering for OAuth2.0 for *web* applications:
@@ -74,7 +77,7 @@ def goog_token( client_secret_file, scopes, redirect_uri, authorization_response
     return credd
 
 ## Save and Load tokens from the servers filesystem
-def put_cred(credd, file_name):
+def put_cred(file_name, credd):
     ret = json.dump( credd, open(file_name, 'w'), indent=2 )
     return ret
 
@@ -216,7 +219,7 @@ def main():
         credd = get_token( args.client_secret_file, args.scopes, args.redirect_url, path )
 
         # save it for the next run
-        put_cred(credd, args.token_file)
+        put_cred(args.token_file, credd)
         print(f"credd saved to {args.token_file=}")
 
 

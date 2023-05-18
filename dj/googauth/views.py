@@ -4,7 +4,7 @@ import json
 import os
 
 from django.conf import settings
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 
 from .utils import goog_start, goog_token, get_cred, put_cred, get_some_data
@@ -39,17 +39,19 @@ def goog_redirect(request):
 
     # Save Creds
     # Saving to a file on the local file system.
+    # the file name is set in local_settings.py
     # TODO: use something like https://pypi.org/project/keyring/
-    put_cred(credd, TOKEN_FILE)
+    put_cred(TOKEN_FILE, credd)
 
-    # verify they can do something
+    # get more data, and create another file using the id as the filename
+    # the file contains the name of the person that granted access to the youtube account.
 
     data = get_some_data(credd=credd)
 
-    # TODO: a nice thankyou page confirming all is well.
-    # this blurt of json might be a little alarming.
-    response = HttpResponse(content_type="application/json")
-    json.dump(data, response, indent=2)
-    return response
+    file_name = settings.SECRETS_DIR / (data['id'] + ".json")
+    data['credd'] = credd
+    put_cred(file_name, data)
+
+    return render(request, 'done.html', {'data':data})
 
 
