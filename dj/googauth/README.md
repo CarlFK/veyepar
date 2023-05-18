@@ -16,3 +16,5 @@ Someone reviews the saved token, makes sure it was done by the expected person, 
 
 Later this is used to upload vidoes to the event's YouTube channel.
 
+ps - This takes the place of what was done via e-mail, which was deprecated due to potential fishing attack vector.
+
