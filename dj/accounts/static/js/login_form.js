@@ -44,7 +44,7 @@ function hide_show_login_out() {
 
     if (auth_name)
     {
-        // hide the login form, 
+        // hide the login form,
         // show logout, username, and any forms
         $('.logged-out').hide();
         $('.logged-in').show();
@@ -61,7 +61,7 @@ function hide_show_login_out() {
 
 
 $(function(){
-    
+
     $('#login').submit(function(event){
         // var csrftoken = $.cookie('csrftoken');
         $.ajax({
@@ -83,7 +83,7 @@ $(function(){
             }
         })
         event.preventDefault();
-    })
+    });
 
     $('#logout').submit(function(ev){
         $.ajax({
@@ -93,12 +93,12 @@ $(function(){
                 auth_name=0;
                 hide_show_login_out();
             }
-        })
-        ev.defaultPrevented();
+        });
+        // ev.defaultPrevented();
     })
 
 
-// init the page - both login/out is hidden, 
+// init the page - both login/out is hidden,
 // auth_user is either 0 or username
     hide_show_login_out()
 
