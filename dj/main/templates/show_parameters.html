@@ -16,13 +16,23 @@ Rooms ({{locations|length}}):
 </br>
 </br>
 
-Youtube account:  {{client.youtube_id|default:"(none)"}}</br>
+Youtube account:
+{% if client.youtube_id %}
+    client.youtube_id
+{% else %}
+(Not Granted)<br>
+To grant permission to Next Day Video's Veyepar app:
+<ol>
+    <li> <a href='/googauth/init/'>Start Grant Process</a>
+    <li> Next Day Video staff will use access to upload videos.
+</ol>
+{% endif %}</br>
 Youtube playlist ID: <a href="https://www.youtube.com/playlist?list={{show.youtube_playlist_id}}">{{show.youtube_playlist_id|default:"(none)"}}</a></br>
 Archive.org account:  {{client.archive_id|default:"(none)"}}</br>
 </br>
 
-Twitter account:  {{client.tweet_id|default:"(none)"}}</br>
-Tweet prefix: {{client.tweet_prefix|default:"(none)"}}</br>
+Mastodon account:  {{client.tweet_id|default:"(none)"}}</br>
+prefix: {{client.tweet_prefix|default:"(none)"}}</br>
 </br>
 
 Schedule data: <a href="{{show.schedule_url}}">{{show.schedule_url|default:"(none)"}}</a> </br>
