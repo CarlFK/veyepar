@@ -150,7 +150,7 @@ class process():
         ignore_existing=True
         ''' Augments mkdir by adding an option to not fail if the folder exists  '''
         try:
-            print(path)
+            print(f"{path=}")
             sftp.mkdir(path, mode)
         except IOError as e:
             if ignore_existing:

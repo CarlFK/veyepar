@@ -104,6 +104,7 @@ class mk_public(process):
                 if self.options.verbose: print("Youtube public.")
         else:
 
+            if self.opts.verbose: print( f"ep.released: {ep.released}")
             ret = False # Nope. Not until it is both approved and Released.
 
 

@@ -125,10 +125,10 @@ class SyncRax(process):
             web_base = os.path.join("web", "raw",
                     rf.location.slug, rf.filename)
             if self.options.verbose:
-                print('{} -> {}'.format(base, web_base))
+                print(f'{base} -> {web_base}')
 
             rfpathname = os.path.join(self.show_dir, base)
-            low = "{web_base}.{ext}".format(web_base=web_base, ext=ext)
+            low = f"{web_base}.{ext}"
             out = os.path.join(self.show_dir, low)
 
             os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -384,13 +384,15 @@ class SyncRax(process):
 
             for dirpath, dirnames, filenames in os.walk(loc_dir,followlinks=True):
                 stuby=dirpath[len(self.show_dir)+1:]
+                if self.options.verbose: print(f"{stuby=}")
 
                 for dirname in dirnames:
                     self.dir2cdn(show,dirname)
 
                 for filename in filenames:
                     base = os.path.join(stuby,filename)
-                    # self.file2cdn(show,base)
+                    if self.options.verbose: print(f"{base=}")
+                    self.file2cdn(show,base)
 
 
     def init_rax(self, show):
