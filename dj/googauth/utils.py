@@ -178,7 +178,7 @@ def get_args():
             help="oAuth token file. (permission from the destination account owner)")
 
     parser.add_argument('--redirect-url', '-r',
-            default='http://localhost:8080/redirect/',
+            default='http://localhost:8000/googauth/redirect/',
             help="The Autorized URL google will redirect to once the user allow/denys access.")
     # more help:
     """
@@ -189,7 +189,15 @@ It can’t contain URL fragments, relative paths, or wildcards, and can’t be a
 
     parser.add_argument('--oauthlib-insecure-transport', '-i',
             default=True,
-            help='set OAUTHLIB_INSECURE_TRANSPORT = 1 for runing on http://localhost:8080' )
+            help='set OAUTHLIB_INSECURE_TRANSPORT = 1 for runing on http://localhost:8000' )
+
+    parser.add_argument('--debug',
+            action="store_true",
+            help='pprint the keys to stdout.' )
+
+    parser.add_argument('--warnings',
+            action="store_true",
+            help='print warnings to stdout.' )
 
     args = parser.parse_args()
 
@@ -203,10 +211,30 @@ def main():
     if args.oauthlib_insecure_transport:
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
+    if args.debug:
+        client_secret = get_cred(args.client_secret_file)
+        print( "client_secret:" )
+        pprint( client_secret )
+        print()
+
+    if args.warnings:
+        client_secret = get_cred(args.client_secret_file)
+        if args.redirect_url not in client_secret['web']['redirect_uris']:
+            print( "WARNING: args.redirect_url not in client_secret." )
+            if args.debug:
+                print( "client_secret['web']['redirect_uris']:" )
+                pprint( client_secret['web']['redirect_uris'] )
+                print()
+
     if args.token_file.exists():
 
         credd = get_cred(args.token_file)
         print(f"credd read from {args.token_file=}")
+
+        if args.debug:
+            print( "credd:" )
+            pprint( credd )
+            print()
 
     else:
 
