@@ -22,9 +22,12 @@ Youtube account:
 {% else %}
     (Not Granted)<br>
     To grant permission to Next Day Video's Veyepar app:
-    <ol style="border-width:3px; border-style:solid; border-color:#FF0000; padding: 1em;">
-        <li> <a href='/googauth/init/'>Start Grant Process</a>
-        <li> Next Day Video staff will use access to upload videos.
+    <ol style="border-width:4px; border-style:solid; border-color:#FF0000; padding: 2em;">
+        <li> <a href='/googauth/init/'>Start Grant Process</a><br>
+            (Currently this app is unverified, we are working on getting verified.)<br>
+            check "[x] See, edit, and permanently delete your YouTube videos"<br>
+            ("edit" includes upload ;/)<br>
+        <li> Next Day Video staff will use this to upload videos.
     </ol>
 {% endif %}</br>
 Youtube playlist ID: <a href="https://www.youtube.com/playlist?list={{show.youtube_playlist_id}}">{{show.youtube_playlist_id|default:"(none)"}}</a></br>
