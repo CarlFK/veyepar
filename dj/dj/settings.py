@@ -1,26 +1,24 @@
 # Django settings for veyepar project.
 
 import os
+import sys
 
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+# PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+# PROJECT_ROOT = os.path.dirname(__file__)
 
 # this file is down a level, so the base is the parent dir.
-# PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-        # os.path.dirname(os.path.dirname(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# add dj/libs
+sys.path.insert(0, BASE_DIR / 'lib')
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
-# STATICFILES_DIRS = [os.path.expanduser('~/Videos/veyepar/static'),]
-# STATICFILES_DIRS = [ BASE_DIR + "/static",]
-# print(STATICFILES_DIRS)
-
-# STATIC_ROOT = os.path.expanduser('~/Videos/veyepar/')
 STATIC_ROOT =  BASE_DIR / "static"
-# print(STATIC_ROOT)
 STATIC_URL = "/static/"
 
 MEDIA_URL = "https://veyepar.nextdayvideo.com/Videos/veyepar/"
@@ -146,7 +144,6 @@ INSTALLED_APPS = (
     'django_extensions',
     'googauth',
     # "debug_toolbar",
-    # 'django_databrowse',
 )
 
 REST_FRAMEWORK = {

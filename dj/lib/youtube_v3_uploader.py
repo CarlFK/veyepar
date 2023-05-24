@@ -55,28 +55,20 @@ from urllib.parse import parse_qs
 
 import progressbar as pb
 
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError, ResumableUploadError
 from googleapiclient.http import MediaFileUpload
+from googleapiclient.errors import HttpError, ResumableUploadError
 from googleapiclient.http import MediaIoBaseDownload
 
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.file import Storage
-from oauth2client.tools import run_flow
+import googleapiclient.discovery
+import googleapiclient.errors
+import google.oauth2.credentials
 
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-
-YOUTUBE_API_SERVICE_NAME = "youtube"
-YOUTUBE_API_VERSION = "v3"
+from goauth import goog_start, goog_token, get_cred
 
 # This OAuth 2.0 access scope allows an application to upload files to the
 # authenticated user's YouTube channel, but doesn't allow other types of access.
 # YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube.upload"
 
-# This OAuth 2.0 access scope allows for full read/write access to the
-# authenticated user's account.
-YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube.force-ssl"
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -96,93 +88,10 @@ RETRIABLE_EXCEPTIONS = (
 # codes is raised.
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
-# VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
-
-def get_authenticated_service(client_secrets_file, token_file):
-
-  args = namedtuple('flags', [
-            'noauth_local_webserver',
-            'logging_level'
-            ] )
-
-  args.noauth_local_webserver = True
-  args.logging_level='ERROR'
-
-  # how and where tokens are stored
-  # storage = Storage(token_file)
-  # na, store them in a file self.options.oauth_token
-
-  # http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.multistore_file-module.html
-
-  #credentials = storage.get()
-
-  if os.path.exists(token_file):
-      credentials = Credentials.from_authorized_user_file(token_file, scopes=[YOUTUBE_READ_WRITE_SCOPE,])
-  else:
-  #if credentials is None or not credentials.valid:
-
-      #flow = flow_from_clientsecrets( client_secrets_file,
-      #        scope=YOUTUBE_READ_WRITE_SCOPE,)
-
-      # do the "allow access" step, save token.
-      #credentials = run_flow(flow, storage, args)
-
-      flow = InstalledAppFlow.from_client_secrets_file(client_secrets_file, YOUTUBE_READ_WRITE_SCOPE)
-      credentials = flow.run_local_server(port=0)
-
-      with open(token_file, 'w') as token:
-          token.write(credentials.to_json())
-
-  return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, credentials=credentials, static_discovery=False)
-
-  #  http=credentials.authorize(httplib2.Http()))
-
-def initialize_upload(youtube, filename, metadata):
-
-  body={
-          'snippet':{
-              'title':metadata['title'],
-              'description':metadata['description'],
-              'tags':metadata['tags'],
-              'categoryId':metadata['category'],
-              },
-          'status':{
-              'privacyStatus':metadata['privacyStatus'],
-              'license':metadata.get('license', 'youtube'),
-              }
-          }
-
-  # Call the API's videos.insert method to create and upload the video.
-  insert_request = youtube.videos().insert(
-    part=",".join(list(body.keys())),
-    body=body,
-    # The chunksize parameter specifies the size of each chunk of data, in
-    # bytes, that will be uploaded at a time. Set a higher value for
-    # reliable connections as fewer chunks lead to faster uploads. Set a lower
-    # value for better recovery on less reliable connections.
-    #
-    # Setting "chunksize" equal to -1 in the code below means that the entire
-    # file will be uploaded in a single HTTP request. (If the upload fails,
-    # it will still be retried where it left off.) This is usually a best
-    # practice, but if you're using Python older than 2.6 or if you're
-    # running on App Engine, you should set the chunksize to something like
-    # 1024 * 1024 (1 megabyte).
-    media_body=MediaFileUpload(filename,
-        # chunksize=5 * 1024 * 1024, resumable=True)
-        # chunksize=5000 * 1024, resumable=True)
-        # chunksize=-1, resumable=True)
-        chunksize=10* 1024 * 1024, resumable=True)
-        # chunksize=500 * 1024, resumable=True)
-        # chunksize=500 * 1024 * 1024, resumable=True)
-  )
-
-  status, response = resumable_upload(insert_request)
-
-  return status, response
-
-# This method implements an exponential backoff strategy to resume a
-# failed upload.
 def resumable_upload(insert_request):
+  # This method implements an exponential backoff strategy to resume a
+  # failed upload.
+
   response = None
   error = None
   retry = 0
@@ -203,7 +112,7 @@ def resumable_upload(insert_request):
       if 'id' in response:
         print("Successful upload, Video id '%s'" % response['id'])
       else:
-        exit("The upload failed with an unexpected response: %s" % response)
+        exit( f"The upload failed with an unexpected response:\n{response=}")
 
     except ResumableUploadError as e:
       print(e)
@@ -225,24 +134,24 @@ def resumable_upload(insert_request):
         # raise e
 
     except RETRIABLE_EXCEPTIONS as e:
-      error = "A retriable error occurred: %s" % e
+        error = "A retriable error occurred: %s" % e
 
     except Exception as e:
-      print(("No clue what is going on.  e:{}".format(e)))
-      print("to get out of this loop:\nimport sys;sys.exit()")
-      import code; code.interact(local=locals())
+        print(("No clue what is going on.  e:{}".format(e)))
+        print("to get out of this loop:\nimport sys;sys.exit()")
+        import code; code.interact(local=locals())
 
 
     if error is not None:
-      print(error)
-      retry += 1
-      if retry > MAX_RETRIES:
-        exit("No longer attempting to retry.")
+        print(error)
+        retry += 1
+        if retry > MAX_RETRIES:
+            exit("No longer attempting to retry.")
 
-      max_sleep = 2 ** retry
-      sleep_seconds = random.random() * max_sleep
-      print("Sleeping %f seconds and then retrying..." % sleep_seconds)
-      time.sleep(sleep_seconds)
+        max_sleep = 2 ** retry
+        sleep_seconds = random.random() * max_sleep
+        print("Sleeping %f seconds and then retrying..." % sleep_seconds)
+        time.sleep(sleep_seconds)
 
   pbar.finish()
 
@@ -263,8 +172,8 @@ def get_id_from_url(url):
 def clean_description(description):
 
     """
-"The property value has a maximum length of 5000 bytes and may contain all valid UTF-8 characters except < and >."
-https://developers.google.com/youtube/v3/docs/videos#properties
+    The property value has a maximum length of 5000 bytes and may contain all valid UTF-8 characters except < and >.
+    https://developers.google.com/youtube/v3/docs/videos#properties
     """
 
     # replace <- and -> with arrows, < > with pointy things.
@@ -273,6 +182,7 @@ https://developers.google.com/youtube/v3/docs/videos#properties
     description = description.replace("->","→")
     description = description.replace("<","‹")
     description = description.replace(">","›")
+
     return description
 
 def time_till_quota_reset(current, reset_hour):
@@ -299,6 +209,40 @@ class Uploader():
     ret_text = ''
     new_url = ''
 
+    def get_authenticated_service(self):
+
+        credd = get_cred(self.token_file)
+        credentials = google.oauth2.credentials.Credentials(**credd)
+
+        api_service_name = "youtube"
+        api_version = "v3"
+
+        service = googleapiclient.discovery.build(
+            api_service_name, api_version, credentials=credentials)
+
+        return service
+
+
+    def youtube_upload(self):
+
+        service = get_authenticated_service(token_file=token_file)
+
+        media_body=MediaFileUpload(
+                self.pathname,
+                chunksize=10* 1024 * 1024,
+                resumable=True)
+
+        insert_request = service.videos().insert(
+            part=",".join(list(self.body.keys())),
+            body=self.body,
+            media_body=media_body,
+        )
+
+        status, response = resumable_upload(insert_request)
+
+        return status, response
+
+
     def set_permission(self, video_url, privacyStatus='public'):
         # https://developers.google.com/youtube/v3/docs/videos/update
         # status.license
@@ -309,7 +253,7 @@ class Uploader():
         # >>> e.status_code
         # 403
 
-        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
+        youtube = self.get_authenticated_service()
         video_id = get_id_from_url(video_url)
 
         videos_update_response = youtube.videos().update(
@@ -343,7 +287,7 @@ class Uploader():
 
     def set_description(self, video_url, description):
 
-        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
+        youtube = self.get_authenticated_service()
         video_id = get_id_from_url(video_url)
 
         videos_update_response = youtube.videos().update(
@@ -360,7 +304,7 @@ class Uploader():
 
 
     def add_to_playlist(self, video_url, playlist_id):
-        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
+        youtube = self.get_authenticated_service()
         video_id = get_id_from_url(video_url)
         youtube.playlistItems().insert(
             part='snippet',
@@ -378,18 +322,8 @@ class Uploader():
 
     def playlist_item_delete(self, video_id, playlist_id):
         # https://developers.google.com/youtube/v3/docs/playlistItems/delete
-        """
-  response = client.playlistItems().delete(
-    **kwargs
-  ).execute()
 
-  return print_response(response)
-
-playlist_items_delete(client,
-    id='REPLACE_ME',
-    onBehalfOfContentOwner='')
-"""
-        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
+        youtube = self.get_authenticated_service()
         youtube.playlistItems().insert(
             part='snippet',
             body={
@@ -409,7 +343,7 @@ playlist_items_delete(client,
         # https://developers.google.com/youtube/v3/docs/videos/delete
         # https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/youtube_v3.videos.html
 
-        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
+        youtube = self.get_authenticated_service()
         video_id = get_id_from_url(video_url)
 
         videos_delete_response = youtube.videos().delete(
@@ -425,18 +359,15 @@ playlist_items_delete(client,
         """
         Not implemented, as YT Data v3 API doesn't support this :(
         https://issuetracker.google.com/issues/35174729
+        https://issuetracker.google.com/issues/35175046
         """
-        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
+        youtube = self.get_authenticated_service()
         video_id = get_id_from_url(video_url)
         # do_stuff_to_video_id
         # return response
 
     def get_captions(self, video_url, verbose=False):
-        """
-        Not implemented, as YT Data v3 API doesn't support this :(
-        https://issuetracker.google.com/issues/35174729
-        """
-        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
+        youtube = self.get_authenticated_service()
         video_id = get_id_from_url(video_url)
 
         video = youtube.captions().list(videoId=video_id, part='id').execute()
@@ -450,10 +381,7 @@ playlist_items_delete(client,
         return youtube.captions().download(id=caption_id, tfmt='srt').execute()
 
 
-
     def upload(self):
-
-        youtube = get_authenticated_service(self.client_secrets_file, self.token_file)
 
         if self.debug:
             print(self.pathname)
@@ -462,8 +390,23 @@ playlist_items_delete(client,
         self.meta['description'] = clean_description(
                 self.meta['description'])
 
-        status, response = initialize_upload(youtube,
-                self.pathname, self.meta)
+        metadata = self.meta
+
+        self.body={
+          'snippet':{
+              'title':metadata['title'],
+              'description':metadata['description'],
+              'tags':metadata['tags'],
+              'categoryId':metadata['category'],
+              },
+          'status':{
+              'privacyStatus':metadata['privacyStatus'],
+              'license':metadata.get('license', 'youtube'),
+              }
+          }
+
+
+        status, response = self.youtube_upload()
 
         self.response = response
 
@@ -480,12 +423,12 @@ def make_parser():
             )
 
     parser.add_argument('--credintials-file', '-c',
-            default=os.path.expanduser('~/.creds/client_secrets.json'),
+            default=os.path.expanduser('~/.secrets/client_secrets.json'),
             dest="client_secrets_file",
             help="Process API key (what needs access to upload.)"),
 
     parser.add_argument('--token-file', '-t',
-            default=os.path.expanduser('~/.creds/oauth_token.json'),
+            default=os.path.expanduser('~/.secrets/oauth_token.json'),
             help="Auth token file. (permission from the destination account owner)")
 
     # find the test file
@@ -497,9 +440,10 @@ def make_parser():
         # if we can't find a video to upload, upload this .py file!
         test_file = os.path.abspath(__file__)
 
-    parser.add_argument('--pathname', '-f', default=test_file,
-            dest="filename",
-                        help='file to upload.')
+    parser.add_argument('--pathname', '-f',
+            default=test_file,
+            # dest="filename",
+            help='file to upload.')
 
     parser.add_argument('--delete',
                         help='existing youtube vid to delete.')
@@ -588,6 +532,8 @@ def test_set_description(args, video_url):
 
 def test_set_unlisted(args,video_url):
 
+    # VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
+
     u = Uploader()
     u.token_file=args.token_file
     u.client_secrets_file=args.client_secrets_file
@@ -598,6 +544,7 @@ def test_set_unlisted(args,video_url):
 
 def test_set_no_comments(args,video_url):
     # WIP?
+    # no worky :(
 
     u = Uploader()
     u.client_secrets_file=args.client_secrets_file
@@ -616,28 +563,6 @@ def test_delete(args, video_url):
 
     return
 
-"""
-errors!
-A retriable HTTP error 500 occurred:
-{
- "error": {
-  "errors": [
-   {
-    "domain": "global",
-    "reason": "backendError",
-    "message": "Backend Error"
-   }
-  ],
-  "code": 500,
-  "message": "Backend Error"
- }
-}
-
-Sleeping 0.040870 seconds and then retrying...
-
-raise HttpError(resp, content, uri=self.uri)
-apiclient.errors.HttpError: <HttpError 410 when requesting https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&alt=json&part=snippet%2Cstatus returned "Backend Error">
-"""
 
 def test_caption(token_file, vid_id):
 
@@ -659,6 +584,7 @@ def test_caption(token_file, vid_id):
 
     return
 
+
 def test():
 
     # seconds till next quota reset
@@ -676,7 +602,6 @@ def test():
     assert time_till_quota_reset(datetime.datetime(2023, 4, 8, 23), 0) == 3600
 
 
-
 def main():
 
     parser = make_parser()
@@ -688,12 +613,12 @@ def main():
         test_delete(args, url)
     else:
         # url = my_upload(args)
-        # url = test_upload(args)
+        url = test_upload(args)
         # test_set_pub(args, "http://youtu.be/IdSelnHIxWY")
         # https://www.googleapis.com/youtube/v3/captions/H6hk0RhmAAs
         # test_caption( args.token_file, "H6hk0RhmAAs" )
         # test_set_unlisted( args.token_file, "hyd6MiWXSP4")
-        test_set_description( args, "hyd6MiWXSP4")
+        # test_set_description( args, "hyd6MiWXSP4")
 
     # test_set_pub(args, 'http://youtu.be/tB3YtzAxFLo')
     # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")

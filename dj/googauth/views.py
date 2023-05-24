@@ -7,7 +7,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 
-from .utils import goog_start, goog_token, get_cred, put_cred, get_some_data
+from lib.goauth import goog_start, goog_token, get_cred, put_cred, get_some_data
 
 if settings.DEBUG:
     # for dev server runing on http://localhost:8000
