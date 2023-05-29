@@ -7,11 +7,10 @@ psycopg2-binary
 
 paramiko
 
-progressbar
-
 internetarchive
 boto
 google-api-python-client
-google_auth_oauthlib
-oauth2client
+# google_auth_oauthlib
+google-auth
 
+progressbar

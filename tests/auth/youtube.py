@@ -15,6 +15,7 @@ def get_creds(credentials_file, client_secrets_file):
     # If modifying these scopes, delete credentials_file.
     YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube.force-ssl"
     # scopes = [YOUTUBE_READ_WRITE_SCOPE,]
+    # scopes = ['https://www.googleapis.com/auth/youtube.upload']
     scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
 
     # The credentials_file stores the user's access and refresh tokens.

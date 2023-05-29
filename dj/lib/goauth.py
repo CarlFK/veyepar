@@ -103,12 +103,27 @@ def get_some_data(credd):
 
     service = googleapiclient.discovery.build("oauth2", "v2", credentials=credentials)
     request = service.userinfo().get()
-    response = request.execute()
+    user = request.execute()
 
-    if not response:
-        d = {"message": "No data in response = request.execute()."}
-    else:
-        d = response
+    service = googleapiclient.discovery.build("youtube", "v3", credentials=credentials)
+    request = service.channels().list(
+        part="snippet,contentDetails,statistics",
+        mine=True
+    )
+    youtube = request.execute()
+
+    # If there are no channels, add an empty list so we see no items.
+    if not 'items' in youtube:
+        youtube['items'] = []
+
+    # import code; code.interact(local=locals())
+
+    d = {
+            'user': user,
+            'youtube': youtube,
+            }
+
+    pprint(d)
 
     return d
 

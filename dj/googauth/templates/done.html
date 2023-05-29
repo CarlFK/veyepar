@@ -10,8 +10,25 @@
 {% block content %}
 You have completed your part of the Google authorization process.<br>
 Reference:<br>
-name: {{data.name}}<br>
-id: {{data.id}}<br>
+User:<br>
+<ul>
+    <li>name: {{data.user.name}}</li>
+    <li>id: {{data.user.id}}</li>
+</ul>
+Channel(s):<br>
+{% for item in data.youtube.items %}
+<ul>
+    <li>item: {{item}}</li>
+    <li>id: {{item.id}}</li>
+    <li>title: {{item.snippet.title}}</li>
+    <li>description: {{item.snippet.description}}</li>
+    <li>videoCount: {{item.statistics.videoCount}}</li>
+    <li>viewCount: {{item.statistics.viewCount}}</li>
+    <li>subscriberCount: {{item.statistics.subscriberCount}}</li>
+</ul>
+{% empty %}
+Um, can't find any YouTube channels... try again?<br>
+{% endfor %}
 <br>
 Please notify the video team, who will do their part.<br>
 You can close this page.

@@ -1,7 +1,7 @@
 # uc.py
 
 # log in to https://alioth.debian.org
-# which is used for auth with https://summit.debconf.org/debconf14/ 
+# which is used for auth with https://summit.debconf.org/debconf14/
 # so that comes next
 
 """
@@ -22,18 +22,18 @@ from BeautifulSoup import BeautifulSoup
 
 try:
     # read credentials from a file
-    from pw import addeps 
+    from pw import addeps
 except ImportError:
     # you can fill in your credentials here
     # but better to put in pw.py so that they don't leak
-    addeps = { 
-        'debconf14': { 
+    addeps = {
+        'debconf14': {
              'login_page':'https://alioth.debian.org/account/login.php',
-             'login_data':{ 
-                'form_loginname':'someone-guest', 
+             'login_data':{
+                'form_loginname':'someone-guest',
                 'form_pw':'abc' ,
                 'login':'Login' ,
-                'return_to':'/' }}, 
+                'return_to':'/' }},
         }
 
 auth=addeps['debconf14']
@@ -44,8 +44,7 @@ response = requests.get(auth['login_page'])
 
 # grab the crsf token (this is php stuff, not django, so not in headers)
 soup = BeautifulSoup(response.text)
-token = soup.find('input', 
-        dict(name='form_key'))['value']
+token = soup.find('input', dict(name='form_key'))['value']
 print token
 
 login_data = auth['login_data']

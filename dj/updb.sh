@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 # updb.sh - update db
-# pulls fairly recent data from production,
+# pulls fairly recent data from production, loads it into the local db.
 # uses a local file for auth
 # so your user/pw will be what you created for your local dev db
 # export it with:

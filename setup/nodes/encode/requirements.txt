@@ -8,13 +8,5 @@ pymediainfo
 numpy
 pypng
 
-google-api-python-client
-oauth2client
-
-boto
-internetarchive
 pycaption
-progressbar
 
-# for ansible box that does most of the things
-python-twitter

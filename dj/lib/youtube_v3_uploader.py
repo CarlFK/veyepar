@@ -212,6 +212,7 @@ class Uploader():
     def get_authenticated_service(self):
 
         credd = get_cred(self.token_file)
+        credd = credd['credd'] # I don't like this.  Need to figure out who is storing what where.
         credentials = google.oauth2.credentials.Credentials(**credd)
 
         api_service_name = "youtube"
@@ -225,7 +226,7 @@ class Uploader():
 
     def youtube_upload(self):
 
-        service = get_authenticated_service(token_file=token_file)
+        service = self.get_authenticated_service()
 
         media_body=MediaFileUpload(
                 self.pathname,
@@ -318,6 +319,7 @@ class Uploader():
                 },
             }
         ).execute()
+
         return True
 
     def playlist_item_delete(self, video_id, playlist_id):
