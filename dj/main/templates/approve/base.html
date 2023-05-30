@@ -10,9 +10,10 @@
 <tr><td>Name</td><td><b>{{episode.name}}</b></td></tr>
 <tr><td>Presenter(s)</td><td>{{episode.authors}} </td></tr>
 <tr><td>Location</td><td>{{episode.location}} </td></tr>
-<tr><td>Date</td><td>{{episode.start|date:"M D d"}}</td></tr>
+<tr><td>Date</td><td>{{episode.start|date:"D M d"}}</td></tr>
 </tbody>
 </table>
+Video link(s):<br>
 {% if episode.public_url %}
     <a href="{{episode.public_url}}">{{episode.public_url}}</a>
 {% else %}
@@ -24,6 +25,8 @@
     <a href="{{episode.archive_mp4_url}}">archive.org</a><br>
     {% endif %}
 {% endif %}
+(If there is not a link to a video, something is wrong.  Please report this to someone.)
+<hr>
 
 {% block point %}
 {% endblock %}

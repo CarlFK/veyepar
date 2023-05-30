@@ -6,13 +6,13 @@
 <form action="" method="POST">
     {% csrf_token %}
     <p><b>
-        Please review this pre-release video.  Review instructions are <u><a href="https://github.com/CarlFK/veyepar/wiki/Reviewer#for-reviewers">here</a></u>.<br>
-        Then if you feel the video is ready for the public,<br>
-        {{who}}
-        (or inits, or something so I have a clue who did this)<br>
-        and click
-        <input type="submit" value="Approve" />
-        which queues it up to be made public and tweeted.
+        Please review this pre-release video.
+        <u><a href="https://github.com/CarlFK/veyepar/wiki/Reviewer#for-reviewers">(Instructions)</a></u><br>
+        If you feel the video is ready for the public,<br>
+        {{who}}<br>
+        or inits, or something so we have a clue who did this,<br>
+        and click <input type="submit" value="Approve" /><br>
+        which queues it up to be un-hidden and announced to the public.
     </b></p>
 
 </form>

@@ -10,7 +10,7 @@ from main.models import STATES
 
 class Who(forms.Form):
     locked_by = forms.CharField(max_length=32, required=True,
-            label="Please enter your name")
+            label="Enter your name")
 
 class Location_Form(forms.ModelForm):
     class Meta:
