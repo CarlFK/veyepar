@@ -286,20 +286,31 @@ class Uploader():
 
         return True
 
-    def set_description(self, video_url, description):
+    def set_description(self, video_url, description, title, categoryId):
+        """You must specify a value for these properties:
+    id
+    snippet.title – This property is only required if the request updates the video resource's snippet.
+    snippet.categoryId – This property is only required if the request updates the video resource's snippet.
+        """
 
         youtube = self.get_authenticated_service()
         video_id = get_id_from_url(video_url)
 
-        videos_update_response = youtube.videos().update(
+        title = "FPGA introduction - i5 Colorlite Edition - Part 1 of 3 - Jonathan Bisson (FPGA i5 v1.0)"
+
+        request = youtube.videos().update(
             part='snippet',
             body={
-                'id':video_id,
+                'id': video_id,
                 'snippet': {
-                    'description':description,
+                    'title': title,
+                    'categoryId': categoryId,
+                    'description': description,
                 },
             },
-        ).execute()
+        )
+
+        response = request.execute()
 
         return True
 
@@ -398,8 +409,8 @@ class Uploader():
           'snippet':{
               'title':metadata['title'],
               'description':metadata['description'],
+              'categoryId':metadata['categoryId'],
               'tags':metadata['tags'],
-              'categoryId':metadata['category'],
               },
           'status':{
               'privacyStatus':metadata['privacyStatus'],
@@ -416,72 +427,6 @@ class Uploader():
         self.thumbnail = "https://i.ytimg.com/vi/{id}/hqdefault.jpg".format(**response)
 
         return True
-
-def make_parser():
-
-    parser = argparse.ArgumentParser(
-            description="Upload a file to youtube.",
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter
-            )
-
-    parser.add_argument('--credintials-file', '-c',
-            default=os.path.expanduser('~/.secrets/client_secrets.json'),
-            dest="client_secrets_file",
-            help="Process API key (what needs access to upload.)"),
-
-    parser.add_argument('--token-file', '-t',
-            default=os.path.expanduser('~/.secrets/oauth_token.json'),
-            help="Auth token file. (permission from the destination account owner)")
-
-    # find the test file
-    ext = "mp4"
-    veyepar_dir = os.path.expanduser('~/Videos/veyepar')
-    test_dir = os.path.join(veyepar_dir, "test_client", "test_show", ext)
-    test_file = os.path.join(test_dir, f"Lets_make_a_Test.{ext}")
-    if not os.path.exists(test_file):
-        # if we can't find a video to upload, upload this .py file!
-        test_file = os.path.abspath(__file__)
-
-    parser.add_argument('--pathname', '-f',
-            default=test_file,
-            # dest="filename",
-            help='file to upload.')
-
-    parser.add_argument('--delete',
-                        help='existing youtube vid to delete.')
-
-    parser.add_argument('--debug_mode', '-d', default=False,
-            action='store_true',
-            help='whether to drop to prompt after upload. default: False')
-
-    return parser
-
-def my_upload(args):
-
-    u = Uploader()
-
-    u.meta = {
-      'title': "Party Tent",
-      'description': "Late night getting setup for the party.",
-      'category': 22, # 22 is maybe "Education",
-      'tags': ['goodtimes', ],
-      'privacyStatus':'unlisted', # 'private',
-      # 'latlon': (37.0,-122.0),
-      'license':'youtube',
-    }
-
-    u.token_file = args.token_file
-    u.client_secrets_file=args.client_secrets_file
-    u.debug_mode = args.debug_mode
-    u.pathname = args.pathname
-
-    ret = u.upload()
-    if ret:
-        print(u.new_url)
-        print(u.thumbnail)
-        return u.new_url
-    else:
-        print(u.ret_text)
 
 
 def test_upload(args):
@@ -521,14 +466,22 @@ def test_set_pub(args,video_url):
     return
 
 
-def test_set_description(args, video_url):
+def test_set_description(args):
 
     desc = "This is Part II of a 2-part keynote for North Bay PyCon 2019 by Sha Wallace-Stepter and Jessica McKellar, and covers concrete actions technologists can take to change our criminal justice system. Find part I, on Sha's life story in the prison system, here: https://youtu.be/jNBsrLzHVgM"
 
+    desc = """
+Jonathan Bisson
+
+#ps1 #FPGA #OpenSource #LiteX
+
+Introduce the basics of FPGA programming using Verilog on an Open Source and Free toolchain.
+"""
+
     u = Uploader()
     u.token_file=args.token_file
-    u.client_secrets_file=args.client_secrets_file
-    u.set_description(video_url, description=desc)
+    # u.client_secrets_file=args.client_secrets_file
+    u.set_description(args.up_desc, description=desc)
 
     return
 
@@ -604,27 +557,72 @@ def test():
     assert time_till_quota_reset(datetime.datetime(2023, 4, 8, 23), 0) == 3600
 
 
+def make_parser():
+
+    parser = argparse.ArgumentParser(
+            description="Upload a file to youtube.",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter
+            )
+
+    parser.add_argument('--credintials-file', '-c',
+            default=os.path.expanduser('~/.secrets/client_secrets.json'),
+            dest="client_secrets_file",
+            help="Process API key (what needs access to upload.)"),
+
+    parser.add_argument('--token-file', '-t',
+            default=os.path.expanduser('~/.secrets/oauth_token.json'),
+            help="Auth token file. (permission from the destination account owner)")
+
+    # find the test file
+    ext = "mp4"
+    veyepar_dir = os.path.expanduser('~/Videos/veyepar')
+    test_dir = os.path.join(veyepar_dir, "test_client", "test_show", ext)
+    test_file = os.path.join(test_dir, f"Lets_make_a_Test.{ext}")
+    if not os.path.exists(test_file):
+        # if we can't find a video to upload, upload this .py file!
+        test_file = os.path.abspath(__file__)
+
+    parser.add_argument('--pathname', '-f',
+            default=test_file,
+            # dest="filename",
+            help='file to upload.')
+
+    parser.add_argument('--delete',
+                        help='existing youtube vid to delete.')
+
+    parser.add_argument('--up-desc',
+                        help='existing youtube vid to update desc.')
+
+    parser.add_argument('--debug_mode', '-d', default=False,
+            action='store_true',
+            help='whether to drop to prompt after upload. default: False')
+
+    return parser
+
+
+
+
 def main():
 
     parser = make_parser()
     args = parser.parse_args()
 
-    if args.delete:
+    if args.up_desc:
+        test_set_description( args )
+
+    elif args.delete:
         # url = "http://youtu.be/C3U5G5uxgz4"
         url = args.delete
         test_delete(args, url)
     else:
-        # url = my_upload(args)
         url = test_upload(args)
         # test_set_pub(args, "http://youtu.be/IdSelnHIxWY")
         # https://www.googleapis.com/youtube/v3/captions/H6hk0RhmAAs
         # test_caption( args.token_file, "H6hk0RhmAAs" )
         # test_set_unlisted( args.token_file, "hyd6MiWXSP4")
-        # test_set_description( args, "hyd6MiWXSP4")
-
-    # test_set_pub(args, 'http://youtu.be/tB3YtzAxFLo')
-    # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
-    # test_set_unlisted(args, url)
+        # test_set_pub(args, 'http://youtu.be/tB3YtzAxFLo')
+        # test_set_unlisted(args, "http://youtu.be/zN-drQny-m4")
+        # test_set_unlisted(args, url)
 
 if __name__ == '__main__':
     main()

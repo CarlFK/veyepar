@@ -117,7 +117,7 @@ class post(process):
         # meta['rating'] = self.options.rating
 
         # http://gdata.youtube.com/schemas/2007/categories.cat
-        meta['category'] = 27 # "Education"
+        meta['categoryId'] = 27 # "Education"
 
         if ep.location.lat and ep.location.lon:
             meta['latlon'] = (ep.location.lat, ep.location.lon)
@@ -148,7 +148,7 @@ class post(process):
 
         return key
 
-    def do_yt(self,ep,files,private,meta):
+    def do_yt(self, ep,files, private, meta):
 
         youtube_success = False
 
@@ -165,11 +165,29 @@ class post(process):
 
         if self.options.test:
             print('test mode:')
-            print("user key:", uploader.user)
+            print(f"{uploader.token_file=}")
+            print(f"{uploader.client_secrets_file=}")
             print('files = %s' % files)
             print('meta = %s' % pprint.pformat(meta))
             print('skipping youtube_upoad.py uploader.upload()')
             print(len(meta['description']))
+
+        elif self.options.update_description:
+            # I don't like where this code lives.
+
+            # required to update (I don't know why...)
+            title = meta['title']
+            categoryId = meta['categoryId']
+
+            description=meta['description']
+
+            if self.options.verbose:
+                print(description)
+
+            uploader.set_description(ep.host_url, description=description, title=title, categoryId=categoryId)
+
+            self.sate = None
+            return False
 
         elif ep.host_url and not self.options.replace:
             print("skipping youtube, already there.")
@@ -411,20 +429,20 @@ class post(process):
         meta = self.collect_metadata(ep)
         if self.options.verbose: pprint(meta)
 
-        # upload youtube
+        # process youtube
         if not ep.show.client.youtube_id: youtube_success = True
         else: youtube_success = self.do_yt(ep,files,True,meta)
 
-        # upload archive.org
+        # process archive.org
         if not ep.show.client.archive_id: archive_success = True
         else: archive_success = self.do_ia(ep,files,meta)
 
-        # upload rackspace cdn
+        # process rackspace cdn
         # needs a rackspace account
         # if not ep.show.client.rax_id: rax_success = True
         # else: rax_success = self.do_rax(ep,files,meta)
 
-        # upload vimeo (needs upgrading to new api)
+        # process vimeo (needs upgrading to new api)
         # if not ep.show.client.vimeo_id: vimeo_success = True
         # else: vimeo_success = self.do_vimeo(ep,files,meta)
 
@@ -440,6 +458,12 @@ class post(process):
 
         parser.add_option('--release-all', action="store_true",
             help="ignore the released setting (assuming this is enabled.)")
+
+        parser.add_option('--update-description', action="store_true",
+            help="Just update description of existing upload.")
+
+
+
 
 if __name__ == '__main__':
     p=post()
