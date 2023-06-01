@@ -85,7 +85,7 @@ $(function(){
         event.preventDefault();
     });
 
-    $('#logout').submit(function(ev){
+    $('#logout').submit(function(event){
         $.ajax({
             url: "/admin/logout/",
             type: "POST",
@@ -94,7 +94,7 @@ $(function(){
                 hide_show_login_out();
             }
         });
-        // ev.defaultPrevented();
+        event.preventDefault();
     })
 
 
