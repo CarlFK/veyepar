@@ -1,16 +1,10 @@
 {#Meeting  meeting_announcement.html #}
 {% spaceless %}
 {% if show.announcement_state == 2 %}
-please proof: {{client.name}} meeting announcement 
+pre-release: {{client.name}} meeting announcement
 
-{# Subject and below is what will go out, and what will be used to title the videos. #}
-If you want to edit your stuff, 
-ask me for an account, then use the the edit URL under your item.  
-Anything else, email me.  
-If it looks good, email me.
-
-If you want to hack on the template:
-https://github.com/CarlFK/veyepar/blob/master/dj/main/templates/meeting_announcement.html
+Please take a moment to review your details and reply with OK or edits.
+Subject and below is what will go out and also will be used to title the videos.
 
 Subject: {% endif %}
 ANN: {{client.name}} at {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
@@ -20,28 +14,17 @@ ANN: {{client.name}} at {{location.name}} {{episodes.0.start|date:"D F j, fp" }}
 {{client.name}}
 =========================
 When: {{episodes.0.start|date:"f A l F j, Y"}}
-Where: {{location.name}} 
-
+Where: {{location.name}}
 {{show.description}}
+{{show.conf_url}}
 
 Topics
 ------
-{% for episode in episodes %} {{forloop.counter}}. {{episode.start|date:"g:i"}} {{ episode.name }} ({{episode.authors}})
-{% endfor %}
- 
-Details
--------
-{% for episode in episodes %}
-{{forloop.counter}}. {{ episode.name }} 
+{% for episode in episodes %}{{forloop.counter}}. {{ episode.name }}
 {{episode.authors}}
 {% if episode.tags %}tags: {{episode.tags}}{% endif %}
 {% if episode.description %}{{episode.description}}{% else %}(Needs description.) {% endif %}
-{% if show.announcement_state == 2 %}
-recording release: {{episode.released|yesno:"yeah,no,maybe" }} 
-{# license: {{episode.released|yesno:[episode.lisense,""] }} #}
-{% if episode.released %}license: {{episode.license}} {%endif%}
-EDIT: http://nextdayvideo.com{% url "admin:main_episode_change" episode.id%}
-{% endif %}
+{% if show.announcement_state == 2 %} recording release: {{episode.released|yesno:"yes,no,maybe" }} {% if episode.released %}license: {{episode.license}} {%endif%} {% endif %}
 {% if episode.public_url %} Video: {{episode.public_url}} {% endif %}
 {% endfor %}
 
