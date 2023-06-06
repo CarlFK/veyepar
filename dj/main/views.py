@@ -534,12 +534,11 @@ def meet_ann(request,show_id):
     episodes=Episode.objects.filter(show=show).order_by('start')
     location=episodes[0].location
     t = loader.get_template('meeting_announcement.html')
-    c = Context(
-        {'client':client,'show':show,
+    c = {'client':client,'show':show,
           'ANN_STATES': ANN_STATES,
           'location':location,
           'episodes':episodes,
-    })
+        }
     r = t.render(c)
     if request:
         return HttpResponse("<pre>%s</pre>" % r)
