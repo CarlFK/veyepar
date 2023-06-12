@@ -296,8 +296,6 @@ class Uploader():
         youtube = self.get_authenticated_service()
         video_id = get_id_from_url(video_url)
 
-        title = "FPGA introduction - i5 Colorlite Edition - Part 1 of 3 - Jonathan Bisson (FPGA i5 v1.0)"
-
         request = youtube.videos().update(
             part='snippet',
             body={
