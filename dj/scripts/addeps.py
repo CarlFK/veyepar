@@ -65,6 +65,7 @@ def mk_fieldlist():
 from datetime import datetime, timedelta
 import csv
 import functools
+from html import unescape
 from html.parser import HTMLParser
 import os
 import pytz
@@ -1752,8 +1753,10 @@ class add_eps(process.process):
 
     def chipy_v3(self, schedule, show):
 
-        # url = "https://www.chipy.org/meetings/223/"
-        parsed = urlparse(show.conf_url)
+        html_parser = HTMLParser()
+
+        # get the meeting id from the "next meeting" url
+        parsed = urlparse(show.conf_url)  # https://www.chipy.org/meetings/223/
         paths = parsed.path.strip('/').split('/')
         meeting_id = int(paths[1])
         schedule = [s for s in schedule if s['id']==meeting_id][0]
@@ -1762,7 +1765,8 @@ class add_eps(process.process):
         # schedule = max(schedule, key=operator.itemgetter('when'))
 
         when = datetime.strptime( schedule['when'], '%Y-%m-%dT%H:%M:%S' )
-        next_talk = when + timedelta(minutes=30) # talks start 30 min after event start
+        # next_talk = when + timedelta(minutes=30) # talks start 30 min after event start
+        next_talk = when
 
         where = schedule['where']
 
@@ -1805,10 +1809,12 @@ class add_eps(process.process):
             else:
                 event['start'] = datetime.strptime(
                         event['start'], '%Y-%m-%dT%H:%M:%S' )
-            # import code; code.interact(local=locals())
             next_talk = event['start'] + timedelta(minutes=event['duration'] + 10 ) # 10 min between talks
 
             event['duration'] = f"00:{event['duration']}:00"
+
+            event['description'] = unescape(strip_tags(
+                                        event['description'])).strip()
 
             event['authors'] =  ', '.join(
                     [ a['name'] for a in  event['authors'] ])
@@ -1827,18 +1833,26 @@ class add_eps(process.process):
 
             event['reviewers'] = ""
 
+
         rooms = set(row['location'] for row in events)
         self.add_rooms(rooms,show)
 
-        # __iexact won't work with ger_or_add to don't try to use it
+        # Chipy has one room. I hope.
+        # get the name, address and directions.
         try:
             loc = Location.objects.get(name__iexact=where['name'])
-            loc.description = where['address']
-            loc.save()
+            keys = ['phone', 'address', 'directions', 'embed_map', 'link']
+            # remove empty keys
+            # keys = [k for k in keys where where[k]]
+            description = "\n\n".join( [ f"{k}: {where[k]}" for k in keys ] )
+            if self.options.verbose:
+                print(description)
+            loc.description = description
+            if self.options.update:
+                loc.save()
         except Location.DoesNotExist:
             # test mode I guess
             pass
-
 
         self.add_eps(events, show)
 
@@ -5236,6 +5250,8 @@ class add_eps(process.process):
         url = show.schedule_url
         if self.options.verbose: print(url)
 
+        # everything after this is an edge case.
+
         if self.options.client =='croud_supply':
             return self.teardown18(show)
 
@@ -5648,6 +5664,8 @@ class add_eps(process.process):
             return self.ddu(schedule,show)
 
     def add_more_options(self, parser):
+        parser.add_option('--conf-url',
+          help='URI of event page - gets stored in new show record' )
         parser.add_option('--schedule',
           help='URI of schedule data - gets stored in new show record' )
         parser.add_option('-u', '--update', action="store_true",
@@ -5658,7 +5676,7 @@ class add_eps(process.process):
           help='regenerate slugs' )
 
     def work(self):
-      print("working")
+      print("working...")
       if self.options.client and self.options.show:
 
         client,created = Client.objects.get_or_create(slug=self.options.client)
@@ -5670,6 +5688,7 @@ class add_eps(process.process):
                              client=client,slug=self.options.show)
         if created:
           show.name = self.options.show.capitalize()
+          show.conf_url = self.options.conf_url
           show.schedule_url = self.options.schedule
           show.save()
 
