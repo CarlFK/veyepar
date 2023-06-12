@@ -67,16 +67,18 @@ class mk_public(process):
         return True
 
     def up_youtube(self, ep):
+        if self.options.verbose: print("Setting Youtube to public...")
 
         uploader = youtube_v3_uploader.Uploader()
-        uploader.client_secrets_file = settings.GOOG_CLIENT_SECRET
-        uploader.token_file = pw.yt[ep.show.client.youtube_id]['filename']
+        uploader.token_file = settings.SECRETS_DIR / "youtube" / pw.yt[ep.show.client.youtube_id]['filename']
+
         playlist_id = ep.show.youtube_playlist_id
-        if self.options.verbose: print("Setting Youtube to public...")
+
         try:
             ret = uploader.set_permission(ep.host_url)
             if playlist_id:
                 uploader.add_to_playlist(ep.host_url, playlist_id)
+
         except youtube_v3_uploader.HttpError as e:
             print(e)
             pprint(e.error_details)
