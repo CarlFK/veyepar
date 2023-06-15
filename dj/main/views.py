@@ -340,7 +340,6 @@ def ep_json(request, ep_id):
                 ( 'public', ep.public_url ),
                 ( 'archive', ep.archive_ogv_url ),
                 ( 'archive', ep.archive_url ),
-                ( 'archive', ep.archive_url ),
                 ( 'rax', ep.rax_mp4_url ),
                 ( 'conf', ep.conf_url ),
                 ( 'tweet', ep.twitter_url ),
