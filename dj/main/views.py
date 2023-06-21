@@ -334,24 +334,41 @@ def ep_json(request, ep_id):
 
     ep = Episode.objects.get( id=ep_id )
 
+    # make a list of the non empty URLs
     videos = []
     for t,u in (
                 ( 'host', ep.host_url ),
+                ( 'archive', ep.archive_mp4_url ),
+            ):
+
+        if u:
+
+            # PyVideo wants "youtube"
+            if "youtu" in u: t="youtube"
+
+            videos.append(
+                    {
+                      "type": t,
+                      "url": u
+                    }
+                )
+
+    related_urls = []
+    for t,u in (
                 ( 'public', ep.public_url ),
-                ( 'archive', ep.archive_ogv_url ),
                 ( 'archive', ep.archive_url ),
-                ( 'rax', ep.rax_mp4_url ),
                 ( 'conf', ep.conf_url ),
                 ( 'tweet', ep.twitter_url ),
             ):
+
         if u:
-            videos.append(
-                {
-                  "length": None,
-                  "type": t,
-                  "url": u
-                }
+            related_urls.append(
+                    {
+                      "label": t,
+                      "url": u
+                    }
                 )
+
 
     d = {
       "category": ep.show.client.category_key,
@@ -370,6 +387,7 @@ def ep_json(request, ep_id):
       "thumbnail_url": ep.thumbnail,
       "title": ep.name,
       "videos": videos,
+      "related_urls": related_urls,
       "veyepar_state": ep.state,
     }
 
