@@ -159,6 +159,7 @@ class post(process):
 
         uploader.token_file = settings.SECRETS_DIR / "youtube" / pw.yt[ep.show.client.youtube_id]['filename']
         uploader.client_secrets_file = settings.GOOG_CLIENT_SECRET
+
         uploader.pathname = files[0]['pathname']
         uploader.meta = meta
         uploader.private = private
