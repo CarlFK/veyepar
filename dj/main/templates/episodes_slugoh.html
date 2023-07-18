@@ -15,8 +15,11 @@
         <th>start</th>
         <th>state</th>
         <th>episode.name<br>
-            episode.name New York Times Manual of Style<br>
-            episode.slug</th>
+            per New York Times Manual of Style<br>
+{% if slugs %}
+            episode.slug
+{% endif %}
+        </th>
         <th title="comment size"><a href="?comment=1">cmt</a></th>
         <th>released</th>
         <th>yt<br>mp4</th>
@@ -32,7 +35,9 @@
 
  <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}<br>
     {{episode.titlecase}}<br>
+{% if slugs %}
     {{episode.slug}}</a>
+{% endif %}
         </td>
         <td style="white-space:normal"><a href="E/{{episode.id}}/#id_comment" title="{{episode.comment}}">{{episode.comment|length|default:""}}</a></td>
         <td>{{episode.released|yesno:"Y,N"}}</td>

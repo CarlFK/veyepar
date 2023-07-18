@@ -1609,6 +1609,7 @@ def slugoh(request, show_id=None):
 
     """
     page where of slug <> slug(title)
+    or title not propperly capped per NYT style guide.
     """
     show=get_object_or_404(Show,id=show_id)
     client=show.client
@@ -1619,10 +1620,9 @@ def slugoh(request, show_id=None):
           'client':client,
           'show':show,
           'episodes':episodes,
+          'slugs': "titleoh" not in request.GET,
         },
          )
-
-
 
 
 def episodes_script(request, script=None):
