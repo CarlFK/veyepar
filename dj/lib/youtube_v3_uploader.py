@@ -122,8 +122,9 @@ def resumable_upload(insert_request):
           print(f'sleeping till time_till_quota_reset: {sec=}')
           time.sleep(sec)
 
-      print("to get out of this loop:\nimport sys;sys.exit()")
-      import code; code.interact(local=locals())
+      print("wake up!  quota refreshed?  Continuing to upload....")
+      # print("to get out of this loop:\nimport sys;sys.exit()")
+      # import code; code.interact(local=locals())
 
     except HttpError as e:
       if e.resp.status in RETRIABLE_STATUS_CODES:
