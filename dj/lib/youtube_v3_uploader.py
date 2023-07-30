@@ -117,7 +117,6 @@ def resumable_upload(insert_request):
     except ResumableUploadError as e:
       print(e)
       pprint(e.error_details)
-      ptrint('sleeping till time_till_quota_reset')
       if e.error_details[0]['reason'] == 'quotaExceeded':
           sec = time_till_quota_reset(datetime.datetime.now(), 2)
           print('sleeping till time_till_quota_reset: {sec=}')
