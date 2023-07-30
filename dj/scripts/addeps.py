@@ -5037,12 +5037,12 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
-    def pretalx(self, schedule, speakers, talks, show):
+    def pretalx(self, show, session, payload, headers):
         # https://docs.pretalx.org/en/latest/api/resources/events.html
 
         # ignore schedule, use talks and speakers
-        # Flatten the schedule tree
         """
+        # Flatten the schedule tree
         schedule = schedule['schedule']['conference']
 
         leafs = []
@@ -5054,13 +5054,75 @@ class add_eps(process.process):
                     leaf['room']=room
                 leafs.extend(branch)
         """
+        # v2 for NBPy 2023
+        # url is schedule=https://pretalx.northbaypython.org/api/events/nbpy-2023/talks/
+        # schedules, talks, speakers,
+
+        def unpage(url, session, payload, headers):
+            # or maybe use ?format=json&limit=10000
+
+            ret =  []
+            while url is not None:
+                if self.options.verbose: print(url)
+
+                response = session.get(url,
+                        params=payload,
+                        verify=False,
+                        headers=headers,
+                        )
+                j = response.json()
+                ret.extend(j['results'])
+                url = j['next']
+
+            # pprint(ret)
+
+            return ret
+
+        base_url = show.schedule_url[:-6] # the schedule url gets emailed
+
+        url = base_url + "schedules"
+        schedule = unpage(url, session, payload, headers)
+
+        url = base_url + "talks"
+        talks = unpage(url, session, payload, headers)
+
+        url = base_url + "speakers"
+        speakers = unpage(url, session, payload, headers)
+
+        """
+        # v1 for pycon.au
+        if "https://pretalx" in url:
+
+            # https://pretalx.com/api/events/pycon-au-2020/talks/
+            # https://pretalx.com/pycon-au-2020/schedule/export/schedule.json
+            # https://pretalx.com/pycon-au-2020/schedule/export/schedule.xml
+
+            url = "https://pretalx.com/api/events/pycon-au-2020/speakers/"
+            speakers = unpage(url, session)
+
+            url = "https://pretalx.com/api/events/pycon-au-2020/talks/?format=json"
+            talks = unpage(url, session)
+
+        """
 
         # self.dump_keys( schedule['days'][0]['rooms']['Curlyboi Theatre'])
         # self.dump_keys( talks )
 
         # index the speaker list
         speakersd = { s['code']:s for s in speakers }
+
+        print("# shim in emails:")
+        with open('schedules/nbpy-2023_speakers.json') as f:
+            speakes = json.load(f)
+        # pprint(speakes[0])
+        emails = { s['ID']:s['E-Mail'] for s in speakes }
+        for speaker in speakersd.values():
+            speaker['email']=emails[speaker['code']]
+
         # talksd = { t['code']:t for t in talks }
+
+        # remove unaccepted, canceled, etc.
+        talks = [ t for t in talks if t['state']=='confirmed']
 
         field_maps = [
             ('code', 'conf_key'), # ('guid',
@@ -5068,17 +5130,16 @@ class add_eps(process.process):
             ('slot', 'start'),
             ('duration', 'duration'),
             ('title', 'name'),
-            ('description', 'description'),
+            ('abstract', 'description'),
             ('speakers', 'authors'),
             ('speakers', 'emails'),
             ('speakers', 'twitter_id'),
-            ('answers', 'released'),
+            ('do_not_record', 'released'),
             ('answers', 'license'),
             ('language', 'language'),
             ('answers', 'tags'),
             ('', 'reviewers'),
             ]
-
 
         events = self.generic_events(talks, field_maps)
 
@@ -5090,25 +5151,33 @@ class add_eps(process.process):
             if self.options.verbose: pprint(event)
 
             room = event['location']['room']['en']
+            """
             event['location'] = {
                 'Python 2 Memorial Concert Hall': 'Python 2',
                 'Flip Floperator Pavillion': 'Floperator',
                 'The One Obvious Room': 'Obvious',
                 'Curlyboi Theatre': 'Curlyboi',
                     }[room]
+            """
+            event['location'] = {
+                'The Barn': 'Reis River Ranch',
+                    }[room]
+
 
             event['start'] = datetime.strptime(
-                    event['start']['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
+                    event['start']['start'], '%Y-%m-%dT%H:%M:%S-07:00' )
+                    # event['start']['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
 
-            event['conf_url'] = "https://2020.pycon.org.au/program/{}".format(
-                    event['conf_key'])
+            # event['conf_url'] = "https://2020.pycon.org.au/program/{}".format(event['conf_key'])
+            event['conf_url'] = f"https://pretalx.northbaypython.org/nbpy-2023/talk/{event['conf_key']}"
 
             event['duration'] = "00:{}:00".format(event['duration'])
 
-            event['released'] = [q for q in event['released'] if q['question']['id']==546][0]['answer'] == 'True'
+            event['released'] = not event['released'] # do_not_record
+            # event['released'] = [q for q in event['released'] if q['question']['id']==546][0]['answer'] == 'True'
 
-            event['license'] = "CC BY-NC-SA" if event['released'] else ""
-
+            event['license'] = "CC BY-NC-SA"
+            # event['license'] = "CC BY-NC-SA" if event['released'] else ""
 
             event['authors'] = ", ".join(
                     a['name'] for a in event['authors']
@@ -5122,18 +5191,22 @@ class add_eps(process.process):
                 speaker = speakersd[person['code']]
                 emails.append(speaker['email'])
 
+                """
                 qt = [q for q in speaker['answers'] if q['question']['id']==554]
                 if qt:
                     twits.append( qt[0]['answer'] )
+                """
 
             event['emails'] = ", ".join(emails)
             event['twitter_id'] = fix_twitter_id(','.join( twits ) )
+
+            """
 
             questions = event['tags']
 
             tags = []
 
-# 492 'How would you prefer to present?'
+            # 492 'How would you prefer to present?'
 
             answers = {
                     'I can do either pre-recorded or live': 'do either',
@@ -5148,7 +5221,6 @@ class add_eps(process.process):
                 tags.append(answer)
             except IndexError:
                 pass
-
                     # 549 'Presentation format'
 
             answers = {
@@ -5162,7 +5234,7 @@ class add_eps(process.process):
             tags.append(answer)
 
             event['tags'] = ', '.join(tags)
-
+            """
 
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )
@@ -5248,9 +5320,9 @@ class add_eps(process.process):
         client = show.client
         self.set_dirs(show)
         url = show.schedule_url
-        if self.options.verbose: print(url)
+        if self.options.verbose: print(f"{url=}")
 
-        # everything after this is an edge case.
+        # everything is an edge case.
 
         if self.options.client =='croud_supply':
             return self.teardown18(show)
@@ -5394,39 +5466,6 @@ class add_eps(process.process):
         # look at fingerprint of file, (or cheat and use the showname)
         #   call appropiate parser
 
-        if url.startswith('https://pretalx.com'):
-
-            def unpage(url, session):
-
-                ret =  []
-                while url is not None:
-                    if self.options.verbose: print(url)
-
-                    response = session.get(url,
-                            params=payload,
-                            verify=False,
-                            headers=headers,
-                            )
-                    j = response.json()
-                    ret.extend(j['results'])
-                    url = j['next']
-
-                return ret
-
-
-
-            # https://pretalx.com/api/events/pycon-au-2020/talks/
-            # https://pretalx.com/pycon-au-2020/schedule/export/schedule.json
-            # https://pretalx.com/pycon-au-2020/schedule/export/schedule.xml
-
-            url = "https://pretalx.com/api/events/pycon-au-2020/speakers/"
-            speakers = unpage(url, session)
-
-            url = "https://pretalx.com/api/events/pycon-au-2020/talks/?format=json"
-            talks = unpage(url, session)
-
-            return self.pretalx(schedule, speakers, talks, show)
-
         if url.endswith('programme/schedule/json'):
             # Zookeepr
             return self.zoo(schedule,show)
@@ -5441,6 +5480,9 @@ class add_eps(process.process):
         ####
         # map show slug to consumer function
         ####
+
+        if self.options.show =='nbpy23':
+            return self.pretalx(show, session, payload, headers)
 
         if self.options.client =='drupalsouth':
             return self.drupalsouth(schedule, show)
