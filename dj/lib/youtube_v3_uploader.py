@@ -119,7 +119,7 @@ def resumable_upload(insert_request):
       pprint(e.error_details)
       if e.error_details[0]['reason'] == 'quotaExceeded':
           sec = time_till_quota_reset(datetime.datetime.now(), 2)
-          print('sleeping till time_till_quota_reset: {sec=}')
+          print(f'sleeping till time_till_quota_reset: {sec=}')
           time.sleep(sec)
 
       print("to get out of this loop:\nimport sys;sys.exit()")
