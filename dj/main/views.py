@@ -2597,6 +2597,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     location=episode.location
     client=show.client
 
+    # If the email is blank, check other events for the same name.
     email_eps = None
     if request.user.is_authenticated:
         if not episode.emails and episode.authors:
@@ -2756,6 +2757,12 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
 
         chaps.append(chap)
 
+    # bool value to check [x]Show_More (only bring up cuts when "editing".)
+    # "more" is the form that is hidded by the cuts.
+    # this var and logic seems backwards or something.
+    # but it works, so good.
+    ep_sm = episode.state!=1
+
     # default to next Raw_File
     rf_filename = ''
     seq = 10 ## 10 gives it room for shuffling
@@ -2802,6 +2809,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         'next_episode':next_episode,
         'same_dates':same_dates,
         'episode_form':episode_form,
+        'ep_sm':ep_sm,
         'rfs':rfs,
         'clrffs':clrffs,
         'clrfformset':clrfformset,
