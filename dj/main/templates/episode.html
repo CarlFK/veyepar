@@ -32,7 +32,7 @@ Name: <b>{{episode.name}}</b><br>
 
 <form method="post">{% csrf_token %}
 
-<input type="checkbox" id="ep-sm" class="ep-showmore"> <label class="ep-summary" for="ep-sm">show more...</label>
+<input type="checkbox" id="ep-sm" class="ep-showmore" {{ep_sm|yesno:"checked=checked,"}}> <label class="ep-summary" for="ep-sm">show more...</label>
 
 <div class="ep-detail">
 <table>
