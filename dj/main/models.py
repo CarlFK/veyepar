@@ -98,8 +98,10 @@ class Location(models.Model):
     hours_offset =  models.IntegerField(blank=True, null=True,
         help_text='Adjust for bad clock setting')
     description = models.TextField(blank=True)
-    lon = models.FloatField(null=True, blank=True )
-    lat = models.FloatField(null=True, blank=True )
+    lat = models.FloatField(null=True, blank=True,
+            help_text='90=North Pole')
+    lon = models.FloatField(null=True, blank=True,
+            help_text='US is negative')
 
     def natural_key(self):
         return self.name
