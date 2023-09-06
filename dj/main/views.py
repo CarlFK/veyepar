@@ -1119,14 +1119,25 @@ def show_parameters(request, show_id ):
     show=get_object_or_404(Show,id=show_id)
     client=show.client
     locations=show.locations.filter(active=True).order_by('sequence')
-    episodes=Episode.objects.filter(show=show)
+    episodes=Episode.objects.filter(
+            show=show,location__active=True).order_by('start')
+    if episodes:
+        show_dates = {
+                'start': episodes.first().start.date,
+                'end':   episodes.last().end.date }
+    else:
+        show_dates = {
+                'start': None,
+                'end':   None,
+                }
 
     return render(request, 'show_parameters.html',
         {
-          'client':client,
-          'show':show,
-          'locations':locations,
-          'episodes':episodes,
+          'client': client,
+          'show': show,
+          'locations': locations,
+          'episodes': episodes,
+          'show_dates': show_dates,
         },
      )
 
