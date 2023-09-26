@@ -4,10 +4,13 @@
 assembles raw cuts into final, titles, tweaks audio, encodes to format for upload.
 """
 import datetime
+import json
 import os
-from pprint import pprint
 import sys
 import subprocess
+
+from pprint import pprint
+
 import xml.etree.ElementTree
 
 import pycaption
@@ -49,6 +52,9 @@ class enc(process):
                         tree[1][key].clear()
                     else:
                         t.set('{http://www.w3.org/1999/xlink}href', texts[key])
+                elif key == "pictureUrl":
+                    t = tree[1][key]
+                    t.set('{http://www.w3.org/1999/xlink}href', texts[key])
                 else:
                     if self.options.verbose:
                         print("found in svg:", tree[1][key].text)
@@ -93,7 +99,7 @@ class enc(process):
             title2 = ''
 
         elif ": " in title: # the space keeps 9:00 from breaking
-            if len(title) < 80:
+            if len(title) < 180:
                 pos = title.index(":") + 1
                 title1, title2 = title[:pos], title[pos:].strip()
             else:
@@ -121,7 +127,7 @@ class enc(process):
             pos = title.index(" (")
             # +1 skip space in " ("
             title1, title2 = title[:pos], title[pos + 1:]
-        elif ", " in title:
+        elif False and ", " in title:
             pos = title.index(", ")
             # +1 include the comma, + 2 skip space after it
             title1, title2 = title[:pos+1], title[pos + 2:]
@@ -132,6 +138,9 @@ class enc(process):
         elif " # " in title:
             pos = title.index(" # ")
             title1, title2 = title[:pos], title[pos+1:].strip()
+        elif True and " with " in title:
+            pos = title.index(" with ")
+            title1, title2 = title[:pos], title[pos + 1:]
         elif False and " using " in title:
             pos = title.index(" using ")
             title1, title2 = title[:pos], title[pos + 1:]
@@ -182,12 +191,23 @@ class enc(process):
         l += [''] * (3-len(l))
         author1, author2, author3 = l
 
+        if episode.conf_meta:
+            # conf_meta['pictureUrls']=pictureUrls
+            print(f"{episode.conf_meta=}")
+            o = json.loads(episode.conf_meta)
+            pprint(o)
+            pictureUrl = o['pictureUrls'][0]
+            # xlink:href
+            # https://sessionize.com/image/b398-400o400o2-Lupt6QeNRNQr2btcNYY3MR.jpg
+        else:
+            pictureUrl = ""
 
-        # World date format
-        # date = episode.start.strftime("%Y-%m-%-d")
 
-        # US dumb format
+        # US format
         date = episode.start.strftime("%B %-dth, %Y")
+
+        # Rest of the world date format
+        # date = episode.start.strftime("%Y-%m-%-d")
 
         texts = {
             'client': episode.show.client.name,
@@ -201,6 +221,7 @@ class enc(process):
             'author2': author2,
             'author3': author3,
             'presentertitle': "",
+            'pictureUrl': pictureUrl,
             'twitter_id': episode.twitter_id,
             'date': date,
             'time': episode.start.strftime("%H:%M"),

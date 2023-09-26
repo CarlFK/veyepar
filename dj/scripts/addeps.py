@@ -231,8 +231,7 @@ https://developers.google.com/resources/api-libraries/documentation/sheets/v4/py
     request.valueRenderOption = "UNFORMATTED_VALUE"
     """
 
-    GOOG_CLIENT_SECRET = "/home/carl/.creds/client_secret_234470688854-ujjpjkbth2cpkoalbqh0fb4tj0c2jo7e.apps.googleusercontent.com.json"
-
+    GOOG_CLIENT_SECRET = "/home/carl/.creds/goog/client_secret_234470688854-ujjpjkbth2cpkoalbqh0fb4tj0c2jo7e.apps.googleusercontent.com.json"
 
     # Setup the Sheets API
     # If modifying these scopes, delete the file token.json.
@@ -381,6 +380,7 @@ class add_eps(process.process):
         return
 
     def add_rooms(self, rooms, show):
+      # rooms is a list/set of room names (strings)
 
       if self.options.test:
             print("test mode, not adding locations to db\n")
@@ -488,6 +488,7 @@ class add_eps(process.process):
                 'released',
                 'license',
                 'conf_url', 'tags',
+                'conf_meta',
                 # 'host_url',  # for pycon.ca youtube URLs
                 # 'comment',
                 )
@@ -1739,7 +1740,7 @@ class add_eps(process.process):
 
     def chipy(self, schedule, show):
 
-        # schedule is al meetings ever
+        # schedule is all meetings ever
         schedule = schedule[-1]['topic_set']
         # pprint( schedule[0] )
 
@@ -1765,8 +1766,8 @@ class add_eps(process.process):
         # schedule = max(schedule, key=operator.itemgetter('when'))
 
         when = datetime.strptime( schedule['when'], '%Y-%m-%dT%H:%M:%S' )
-        # next_talk = when + timedelta(minutes=30) # talks start 30 min after event start
-        next_talk = when
+        next_talk = when + timedelta(minutes=30) # talks start 30 min after event start
+        # next_talk = when
 
         where = schedule['where']
 
@@ -1776,6 +1777,7 @@ class add_eps(process.process):
 
         schedule = [s for s in schedule if s['approved']]
         # schedule = [s for s in schedule if s['start_time']]
+        print("we have start times?")
         for s in schedule:
             print((s['title'], s['start_time']))
 
@@ -1796,8 +1798,8 @@ class add_eps(process.process):
 
         events = self.generic_events(schedule, field_maps)
         for event in events:
-            print("1, event:")
-            pprint(event)
+            # print("1, event:")
+            # pprint(event)
 
             event['location'] = where['name']
 
@@ -5251,6 +5253,103 @@ class add_eps(process.process):
         self.add_eps(events, show)
 
 
+    def sessionize(self, schedule, show):
+
+        # sheet_id= 'FMfcgzGtxKRbdZdNhTjTrhrttTgWrwxK' # Requested entity was not found.
+        # sheet_id= '1nKe9PjTFben1UGnXM47V95E4QCBx-8xh' # operation is not supported (becaues xls)
+        sheet_id= '1heyM-_a81rvKeJtGEySRF4Tzij4KhXS6wDlWXt0yuyM'
+        rows=goog_sheet(sheet_id, 'veyepar')
+        # pprint(rows)
+        googsheetd = {r['Session Id']:r for r in rows }
+
+        rooms=schedule['rooms']
+
+        # room names for PyBay23:
+        roomd={
+                38667: 'Bungalo East',
+                38668: 'Bungalo West',
+                }
+
+        # make sure the id's didn't change
+        for room in rooms:
+            print( room['name'], roomd[room['id']] )
+
+        # pprint(schedule.keys())
+        # dict_keys(['sessions', 'speakers', 'questions', 'categories', 'rooms'])
+
+        speakers = schedule['speakers']
+        speakerds = { s['id']:s for s in speakers }
+
+        sessions = schedule['sessions']
+
+        # look for wonky
+        for s in sessions:
+            if s['status']!='Accepted':
+                pprint(s)
+
+        field_maps = [
+            ('roomId','location'),
+            ('title','name'),
+            ('speakers','authors'),
+            ('startsAt','start'),
+            ('endsAt','end'),
+            ('description','description'),
+            ('id','conf_key'),
+            (None,'twitter_id'),
+            (None,'reviewers'),
+            (None,'tags'),
+          ]
+
+        events = self.generic_events(sessions, field_maps)
+
+        for event in events:
+            if self.options.verbose: pprint(event)
+
+            event['location'] = roomd[event['location']]
+
+            # "2023-10-08T12:15:00"
+            event['start'] = datetime.strptime(
+                    event['start'], '%Y-%m-%dT%H:%M:%S' )
+
+            event['end'] = datetime.strptime(
+                    event['end'], '%Y-%m-%dT%H:%M:%S' )
+
+            delta = event['end'] - event['start']
+            minutes = int(delta.seconds/60)
+            event['duration'] = "00:%s:00" % ( minutes)
+
+
+            # df477a5e-31da-4727-a04b-2d7a9c698715
+
+            event['released'] = True
+
+            event['license'] = "CC BY-NC-SA"
+
+            speakers=[]
+            pictureUrls=[]
+            for sid in event['authors']:
+                speaker = speakerds[sid]['fullName']
+                speakers.append(speaker)
+                pictureUrls.append(speakerds[sid]['profilePicture'])
+            event['authors'] = ", ".join(speakers)
+            # print(event['authors'])
+
+            # omg hack
+            event['conf_url'] = f"https://pybay.com/speakers/#sz-speaker-{sid}"
+
+            conf_meta={}
+            conf_meta['pictureUrls']=pictureUrls
+            event['conf_meta'] = json.dumps(conf_meta)
+
+            event['emails'] = googsheetd[event['conf_key']]['Owner Email']
+
+            # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
+
+        self.add_eps(events, show)
+
 
 
 #################################################3
@@ -5480,6 +5579,9 @@ class add_eps(process.process):
         ####
         # map show slug to consumer function
         ####
+
+        if self.options.show =='pybay23':
+            return self.sessionize(schedule, show)
 
         if self.options.show =='nbpy23':
             return self.pretalx(show, session, payload, headers)
