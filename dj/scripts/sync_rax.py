@@ -301,9 +301,10 @@ class SyncRax(process):
 
     def sync_title_png(self,show,ep):
         base = os.path.join("titles", ep.slug )
-        if self.options.replace:
-            self.file2cdn(show, f"{base}.svg")
-            self.file2cdn(show, f"{base}.png")
+        # if self.options.replace:
+        #    print(f"{base=}")
+        self.file2cdn(show, f"{base}.svg")
+        self.file2cdn(show, f"{base}.png")
 
 
     def mlt(self,show,ep):
