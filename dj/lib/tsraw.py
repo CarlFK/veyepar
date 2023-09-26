@@ -67,8 +67,9 @@ def get_start( pathname, time_source ):
 
         # for Tegus Zoomy system
         # start = datetime.datetime.strptime(filename,'GMT%Y%m%d-%H%M%S_Recording_2880x1800')
-        # start += timedelta(hours-6) # for chicago time
-        # return start
+        start = datetime.datetime.strptime(filename,'GMT%Y%m%d-%H%M%S_Recording_1920x1120')
+        start += datetime.timedelta(hours=-5) # for chicago time
+        return start
 
         # remove extention
         filename = os.path.splitext(pathname)[0]
