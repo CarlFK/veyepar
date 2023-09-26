@@ -10,19 +10,25 @@ from main.models import Client, Show, Location, Episode
 
 class mkdirs(process):
 
-  def mkdir(self,dir):
+  def mkdir(self, *path_parts):
       """ makes the dir if it doesn't exist """
+      # path_parts: list of dir names: foo,bar,bas = foo/bar/baz/
       ret = False
-      print(dir, end=' ')
-      if os.path.exists(dir):
-         print('(exists)')
+
+      if self.options.rsync:
+          (totally untested!)
+          # try to make dirs on the remote box:
+          full_dir = self.show_dir
+          for part in path_parts:
+              full_dir = os.path.join(full_dir, part)
+              self.dir2cdn(self.show_dir, full_dir)
       else:
-         if self.options.test:
-             print('(testing, skipped)')
-         else:
-             os.makedirs(dir)
+          full_dir = os.path.join(self.show_dir, *path_parts)
+          elif os.path.exists(full_dir):
+             print('(exists)')
+          else:
+             os.makedirs(full_dir)
              ret = True
-         print()
 
       return ret
 
@@ -33,15 +39,15 @@ class mkdirs(process):
         client = Client.objects.get(slug=self.options.client)
         show = Show.objects.get(client=client,slug=self.options.show)
         self.set_dirs(show)
+
         dirs = "dv assets tmp titles webm mp4 mlt custom/titles img"
         for d in dirs.split():
-            full_dir = os.path.join(self.show_dir, d)
-            ret = self.mkdir(full_dir)
+            ret = self.mkdir(d)
 
         dirs = "credits  mlt  titles"
         for d in dirs.split():
             full_dir = os.path.join(self.show_dir, "assets", d)
-            ret = self.mkdir(full_dir)
+            ret = self.mkdir(self.show_dir, "assets", d)
 
         # copy the footer image
         # not sure where this should happen *shrug*
@@ -93,6 +99,7 @@ class mkdirs(process):
 
         if self.options.raw_slugs:
             # I wonder what this is for?
+            # help="Make a dir for each talk's raw files")
 
             # get episodes for this show
             eps = Episode.objects.filter(show=show)
@@ -100,22 +107,24 @@ class mkdirs(process):
                 loc = ep.location.slug
                 dt = ep.start.strftime("%Y-%m-%d")
                 slug = ep.slug
-                full_dir = os.path.join(self.show_dir,'dv',loc,dt,slug)
-                ret = self.mkdir(full_dir)
+                # full_dir = os.path.join(self.show_dir,'dv',loc,dt,slug)
+                ret = self.mkdir(self.show_dir,'dv',loc,dt,slug)
 
         else:
 
             # get locations of the episodes
             for loc in Location.objects.filter(
                     show=show, active=True):
-                 dir = os.path.join(self.show_dir,'dv',loc.slug)
-                 ret = self.mkdir(dir)
+                 # dir = os.path.join(self.show_dir,'dv',loc.slug)
+                 ret = self.mkdir(dir,'dv',loc.slug)
 
         return
 
   def add_more_options(self, parser):
       parser.add_option('--raw-slugs', action="store_true",
                           help="Make a dir for each talk's raw files")
+      parser.add_option('--rsync', action="store_true",
+                          help="mkdirs on CDN")
 
 if __name__=='__main__':
     p=mkdirs()

@@ -136,14 +136,17 @@ class process():
     def dir2cdn(self, show, dst):
         path = os.path.join("Videos", "veyepar", show.client.slug, show.slug, dst)
 
-        host = "veyepar.nextdayvideo.com"
-        port = 22
+        host = settings.CDN['host']
+        port = settings.CDN['port']
+        user = settings.CDN['user']
+        private_key_file = settings.CDN['private_key_file']
+
 
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        keys = paramiko.RSAKey.from_private_key_file("/home/carl/.ssh/id_rsa")
-        client.connect(hostname="veyepar.nextdayvideo.com", username="videoteam", pkey=keys)
-
+        keys = paramiko.RSAKey.from_private_key_file(private_key_file)
+        print(host, user)
+        client.connect( hostname=host, username=user, pkey=keys)
         sftp = client.open_sftp()
 
         mode=511
@@ -186,14 +189,16 @@ class process():
             # rax out, old school rsync in (using paramiko)
 
             host = settings.CDN['host']
+            port = settings.CDN['port']
             user = settings.CDN['user']
             private_key_file = settings.CDN['private_key_file']
-            port = 22
 
             client = paramiko.SSHClient()
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            keys = paramiko.RSAKey.from_private_key_file("/home/carl/.ssh/id_rsa")
-            client.connect(hostname="veyepar.nextdayvideo.com", username="videoteam", pkey=keys)
+            keys = paramiko.RSAKey.from_private_key_file(private_key_file)
+            client.connect( hostname=host, username=user, pkey=keys)
+            sftp = client.open_sftp()
+
 
             sftp = client.open_sftp()
             print( f"Copying file {src} to {dst}..." )
