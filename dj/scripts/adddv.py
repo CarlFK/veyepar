@@ -15,6 +15,22 @@ VIDEO_EXTENSIONS = ('.dv', '.flv', '.mp4', '.MTS', '.mkv', '.mov', '.ts')
 
 class add_dv(process):
 
+    def one_click(self, show, location, click):
+
+        if self.options.verbose:
+            print(f"{click=}")
+
+        mark, created = Mark.objects.get_or_create(
+            show=show, location=location,
+            click=click)
+
+        if created:
+            print("(new)")
+            mark.save()
+        else:
+            print(" {} (exists)".format(mark.id))
+
+
     def mark_file(self,pathname,show,location):
         # one file of timestamps when Cut was Clicked
         fullpathname = os.path.join(
@@ -37,15 +53,8 @@ class add_dv(process):
 
             print(click, end=' ')
 
-            mark, created = Mark.objects.get_or_create(
-                show=show, location=location,
-                click=click)
+            self.one_click( show=show, location=location, click=click)
 
-            if created:
-                print("(new)")
-                mark.save()
-            else:
-                print(" {} (exists)".format(mark.id))
 
     def one_file(self,pathname,show,location,seq):
         # one video asset file
@@ -119,6 +128,7 @@ class add_dv(process):
                             os.path.join(stuby,filename),show,location)
                     continue
 
+
                 # skip Low Quality version made by sync-rax
                 if basename in filenames:
                     # foo.ts makes foo.ts.mp4.
@@ -151,10 +161,25 @@ class add_dv(process):
           Raw_File.objects.filter(show=show).delete()
       return super(add_dv, self).one_show(show)
 
+
+    def process_ep(self, ep):
+        # for when we lost the cutlist.log
+        # and put the h:m:s into the start/end of the talk.
+        self.one_click( show=ep.show, location=ep.location,
+            click=ep.start)
+        self.one_click( show=ep.show, location=ep.location,
+            click=ep.end)
+
+
     def work(self):
         """
         find and process show
+        or maybe an episode.
+        or maybe both? I don't need both today so no.
         """
+        if self.options.eps:
+            return super(add_dv, self).work()
+
         if self.options.client:
             client = Client.objects.get(slug=self.options.client)
             show = Show.objects.get(
@@ -169,6 +194,8 @@ class add_dv(process):
     def add_more_options(self, parser):
         parser.add_option('--include',
            help="only include this glob.")
+        parser.add_option('--eps', action="store_true",
+           help="make cuts from episode's start/end.")
 
 if __name__=='__main__':
     p=add_dv()
