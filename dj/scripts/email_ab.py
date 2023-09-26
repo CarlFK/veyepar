@@ -137,9 +137,10 @@ What follows is what was intended to be sent to the presenter and reviewer.
                         subject, body, sender, tos,
                         headers=headers, cc=ccs )
                 connection = get_connection()
+                # print(f"{connection.username=}, {connection.password=}")
                 ret = connection.send_messages([email])
-                print("subject:", subject)
-                print(f"tos: {tos}  ccs: {ccs}")
+                print(f"{subject=}")
+                print(f"{tos=} {ccs=}")
                 ret = True # need to figure out what .send_messages returns
 
         else:
