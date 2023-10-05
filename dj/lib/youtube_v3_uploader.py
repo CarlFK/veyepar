@@ -215,6 +215,7 @@ class Uploader():
 
         credd = get_cred(self.token_file)
         credd = credd['credd'] # I don't like this.  Need to figure out who is storing what where.
+        pprint(credd)
         credentials = google.oauth2.credentials.Credentials(**credd)
 
         api_service_name = "youtube"
@@ -436,7 +437,7 @@ def test_upload(args):
     u.meta = {
       'title': "test title",
       'description': "<test description",
-      'category': 22, # 22 is maybe "Education",
+      'categoryId': 22, # 22 is maybe "Education",
       'tags': ['test', 'tests', ],
       'privacyStatus':'unlisted', # 'private',
       # 'latlon': (37.0,-122.0),
