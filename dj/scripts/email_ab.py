@@ -123,12 +123,12 @@ What follows is what was intended to be sent to the presenter and reviewer.
                         }
 
             if self.options.test:
-                print("tos:", tos)
-                print("ccs:", ccs)
-                print("subject:", subject)
-                print("headers:", headers)
-                # print("context:", context)
-                print("body:", body)
+                print(f"{tos=}")
+                print(f"{ccs=}:")
+                print(f"{subject=}:")
+                print(f"{headers=}:")
+                # print(f"{context:", context)
+                print(f"{body=}")
                 ret = False
 
             else:
