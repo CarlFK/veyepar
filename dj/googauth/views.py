@@ -41,7 +41,8 @@ def goog_redirect(request):
     # Saving to a file on the local file system.
     # the file name is set in local_settings.py
     # TODO: use something like https://pypi.org/project/keyring/
-    put_cred(TOKEN_FILE, credd)
+
+    put_cred(TOKEN_FILE, credd) #  SECRETS_DIR/youtube/oauth_token.json
 
     # get more data, and create another file using the id as the filename
     # the file contains the name of the person that granted access to the youtube account.

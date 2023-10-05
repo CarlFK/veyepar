@@ -55,9 +55,10 @@ def goog_start( client_secret_file, scopes, redirect_uri ):
 
 def goog_token( client_secret_file, scopes, redirect_uri, authorization_response, state):
 
-    # Google redirects the local browser to a url on some server.
+    # after granting access using goggles servers,
+    # the google server redirects the local browser to a url on our server.
     # parse the URL and send the needed parameters here.
-    # (not sure why we have to extract state, and then pass the URL which includes state=.)
+    # (not sure why we have to extract state, and then pass the URL which includes state=foo.)
 
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         client_secret_file,
@@ -66,11 +67,11 @@ def goog_token( client_secret_file, scopes, redirect_uri, authorization_response
 
     flow.redirect_uri = redirect_uri
 
-    # Use the authorization server's response to derive? the OAuth 2.0 tokens.
+    # Use the authorization server's response to derive the o-auth 2.0 tokens.
     flow.fetch_token(authorization_response=authorization_response)
     credentials = flow.credentials
 
-    # credentials  necessary fields need to refresh the access token.
+    # credentials:  necessary fields needed to refresh the access token.
     # refresh_token, token_uri, client_id, and client_secret.
 
     credd = {'token': credentials.token,
@@ -85,6 +86,7 @@ def goog_token( client_secret_file, scopes, redirect_uri, authorization_response
 ### end of auth flow ###
 
 ## Save and Load tokens from the servers filesystem
+# this is hinting at an abstract class where a subclass does better secret management.
 def put_cred(file_name, credd):
     ret = json.dump( credd, open(file_name, 'w'), indent=2 )
     return ret
@@ -94,7 +96,7 @@ def get_cred(file_name):
     return ret
 
 
-# sammple/demo code:
+# CLI/sammple/demo code:
 
 def get_some_data(credd):
     # verify we can do something with the token
