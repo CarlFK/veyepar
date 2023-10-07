@@ -118,14 +118,10 @@ def get_some_data(credd):
     if not 'items' in youtube:
         youtube['items'] = []
 
-    # import code; code.interact(local=locals())
-
     d = {
             'user': user,
             'youtube': youtube,
             }
-
-    pprint(d)
 
     return d
 
@@ -179,12 +175,11 @@ def get_args():
             formatter_class=argparse.ArgumentDefaultsHelpFormatter
             )
 
-
-    parser.add_argument('-client-secret-file', '-c',
+    parser.add_argument('--client-secret-file', '-c',
             type = Path,
             default=os.path.expanduser('~/.secrets/client_secret.json'),
             dest="client_secret_file",
-            help="Process API key (what needs access to upload.)"),
+            help="Process API key (what system needs access to upload.)"),
 
     parser.add_argument('--token-file', '-t',
             type = Path,
@@ -202,7 +197,8 @@ def get_args():
             help="oAuth token file. (permission from the destination account owner)")
 
     parser.add_argument('--redirect-url', '-r',
-            default='http://localhost:8000/googauth/redirect/',
+            # default='http://localhost:8000/googauth/redirect/',
+            default='http://127.0.0.1:8000/googauth/redirect/',
             help="The Autorized URL google will redirect to once the user allow/denys access.")
     # more help:
     """
@@ -214,6 +210,10 @@ It can’t contain URL fragments, relative paths, or wildcards, and can’t be a
     parser.add_argument('--oauthlib-insecure-transport', '-i',
             default=True,
             help='set OAUTHLIB_INSECURE_TRANSPORT = 1 for runing on http://localhost:8000' )
+
+    parser.add_argument('--force',
+            action="store_true",
+            help='Force re-auth, even if token already exists..' )
 
     parser.add_argument('--debug',
             action="store_true",
@@ -246,11 +246,14 @@ def main():
         if args.redirect_url not in client_secret['web']['redirect_uris']:
             print( "WARNING: args.redirect_url not in client_secret." )
             if args.debug:
+                print( f"{args.redirect_url=}")
                 print( "client_secret['web']['redirect_uris']:" )
                 pprint( client_secret['web']['redirect_uris'] )
                 print()
 
-    if args.token_file.exists():
+    if args.token_file.exists() and not args.force:
+        # If there is a file, and we are not forcing re-auth:
+        # use the file.
 
         credd = get_cred(args.token_file)
         print(f"credd read from {args.token_file=}")
@@ -261,6 +264,7 @@ def main():
             print()
 
     else:
+        # interactive authorazation process using google's auth services.
 
         # oAuth2 step 1
         start_url = goog_start( args.client_secret_file, args.scopes, args.redirect_url )
@@ -276,8 +280,12 @@ def main():
 
 
     # bonus step to prove it worked:
-    print("get_some_data(), maybe...")
+    print("try to get_some_data()...")
     d = get_some_data(credd=credd)
+    if d['youtube']['items'] == [] and args.warnings:
+        print("'items' not in youtube,  so this got set: youtube['items'] = []")
+
+    print("get_some_data(credd=credd) returned:")
     pprint(d)
 
 
