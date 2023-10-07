@@ -10,7 +10,6 @@
 {% block content %}
 You have completed your part of the Google authorization process.<br>
 Reference:<br>
-<p>{data}</p>
 User:<br>
 <ul>
     <li>name: {{data.user.name}}</li>
@@ -19,7 +18,6 @@ User:<br>
 Channel(s):<br>
 {% for item in data.youtube.items %}
 <ul>
-    <li>item: {{item}}</li>
     <li>id: {{item.id}}</li>
     <li>title: {{item.snippet.title}}</li>
     <li>description: {{item.snippet.description}}</li>
