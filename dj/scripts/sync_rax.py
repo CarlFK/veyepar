@@ -18,6 +18,8 @@ import gslevels
 class SyncRax(process):
 
     def cdn_exists(self, show, dst):
+        # need to figure out how to get a list of names from ... rsync?
+        return False
         dst = os.path.join("veyepar",show.client.slug,show.slug,dst)
         # import code; code.interact(local=locals())
 
