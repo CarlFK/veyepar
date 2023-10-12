@@ -215,7 +215,7 @@ class Uploader():
 
         credd = get_cred(self.token_file)
         credd = credd['credd'] # I don't like this.  Need to figure out who is storing what where.
-        pprint(credd)
+        # pprint(credd)
         credentials = google.oauth2.credentials.Credentials(**credd)
 
         api_service_name = "youtube"
