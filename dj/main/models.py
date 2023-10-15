@@ -539,6 +539,7 @@ class State(models.Model):
     sequence = models.IntegerField(default=1)
     slug = models.CharField(max_length=30)
     description = models.CharField(max_length=135, blank=True)
+    command = models.CharField(max_length=135, blank=True)
     class Meta:
         ordering = ["sequence"]
     def __str__(self):
