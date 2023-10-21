@@ -32,6 +32,10 @@
   {% endif %}
         </td>
         <td> {{s.description}} </td>
+  {% if user.is_authenticated %}
+        <td> {{s.command}} </td>
+  {% endif %}
+
     </tr>
 {% endfor %}
 

@@ -1102,7 +1102,9 @@ def show_pipeline(request, show_id ):
                 'sequence':s.sequence,
                 'slug':s.slug,
                 'description':s.description,
-                'count':count }
+                'command':s.command,
+                'count':count,
+                }
 
         statesl.append(stated)
 
