@@ -2,7 +2,7 @@
 
 # Makes the dir tree to put files into
 
-import  os,sys
+import os,sys
 
 from process import process
 
@@ -16,7 +16,7 @@ class mkdirs(process):
       ret = False
 
       if self.options.rsync:
-          (totally untested!)
+          raise Exception("totally untested!")
           # try to make dirs on the remote box:
           full_dir = self.show_dir
           for part in path_parts:
@@ -24,7 +24,7 @@ class mkdirs(process):
               self.dir2cdn(self.show_dir, full_dir)
       else:
           full_dir = os.path.join(self.show_dir, *path_parts)
-          elif os.path.exists(full_dir):
+          if os.path.exists(full_dir):
              print('(exists)')
           else:
              os.makedirs(full_dir)
@@ -107,7 +107,6 @@ class mkdirs(process):
                 loc = ep.location.slug
                 dt = ep.start.strftime("%Y-%m-%d")
                 slug = ep.slug
-                # full_dir = os.path.join(self.show_dir,'dv',loc,dt,slug)
                 ret = self.mkdir(self.show_dir,'dv',loc,dt,slug)
 
         else:
@@ -115,8 +114,7 @@ class mkdirs(process):
             # get locations of the episodes
             for loc in Location.objects.filter(
                     show=show, active=True):
-                 # dir = os.path.join(self.show_dir,'dv',loc.slug)
-                 ret = self.mkdir(dir,'dv',loc.slug)
+                 ret = self.mkdir(self.show_dir,'dv',loc.slug)
 
         return
 
