@@ -1,6 +1,7 @@
 # mkmkraidsh.py
 # python script to generage mk_raid.sh
 
+
 def header():
     print( """
 # mk_raid.sh
@@ -9,9 +10,16 @@ set -xe
 # apt-get install mdadm
     """)
 
+def umount():
+    print(f"if [ -d /mnt/space ]; then")
+    print(f"  umount /mnt/space")
+    print(f"fi")
+
 def remove(md, drives):
 
-    print( f"mdadm --misc --stop /dev/md{md}")
+    print(f"if [ -f /dev/md{md} ]; then")
+    print(f"  mdadm --misc --stop /dev/md{md}")
+    print(f"fi")
 
     """
     cnt = len(drives)
@@ -37,7 +45,8 @@ mdadm --stop --scan
 
 def mk_parts(md, drives):
     for d in drives:
-        print(f"blockdev --rereadpt /dev/sd{d}")
+        print(f"mdadm --misc --zero-superblock /dev/sd{d}1")
+        # print(f"blockdev --rereadpt /dev/sd{d}")
         print(f"parted /dev/sd{d} --script -- mktable gpt")
         print(f"parted /dev/sd{d} --script -- mkpart primary ext4 0% 100%")
         print(f"parted /dev/sd{d} --script -- print")
@@ -48,7 +57,10 @@ def mk_parts(md, drives):
 
 def mk_md(md, drives):
     cnt = len(drives)
-    print( f"mdadm --create /dev/md{md} --level=raid10 --bitmap=internal --raid-devices={cnt} --assume-clean \\")
+    print( f"mdadm --create /dev/md{md} --level=raid5 --bitmap=internal --raid-devices={cnt} --assume-clean --run \\")
+    # print( f"mdadm --create /dev/md{md} --level=raid0 --raid-devices={cnt} --assume-clean \\")
+    # print( f"mdadm --create /dev/md{md} --level=faulty --raid-devices={cnt} --assume-clean --run \\")
+
     for d in drives:
         print( f"/dev/sd{d}1", end=" ")
     print( "  ", end="" )
@@ -63,7 +75,8 @@ def start():
 
 
 def mkfs(md):
-    print(f"mkfs.ext4 /dev/md{md}")
+    # print(f"mkfs.ext4 -q /dev/md{md}")
+    print(f"mkfs.ext4 -O sparse_super,extent,uninit_bg -E lazy_itable_init=1 -m 0 -q -F /dev/md{md}")
     print(f"e2label /dev/md{md} space")
 
 
@@ -75,10 +88,16 @@ def up_initramfs():
     print(f"update-initramfs -u")
 
 
+def mount():
+    print(f"mount /dev/md0 /mnt/space")
+
+
 def doit():
 
     md=0
     drives=list("bcde")
+
+    umount()
 
     header()
     remove(md, drives)
@@ -92,13 +111,8 @@ def doit():
     conf()
     up_initramfs()
 
+    mount()
 
-"""
-
-# show us what we got
-# (well, as much as I know how to show - some sort of grub setup would be nice.)
-
-"""
 
 def main():
     doit()
