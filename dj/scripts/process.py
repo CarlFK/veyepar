@@ -39,7 +39,7 @@ class process():
     Provides basic options and itarators.
     Only operates on episodes in ready_state,
     or all if ready_state is None.
-    if read_sate is not None and .processing() returns True,
+    if ready_sate is not None and .processing() returns True,
         bump the episode's state:
         state=ready_state+1
     """
