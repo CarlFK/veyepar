@@ -58,6 +58,8 @@ from accounts.forms import LoginForm
 
 from .unique_slugify import fnify
 
+from lib import richard
+
 
 def main(request):
     return render(request, 'main.html')
@@ -162,7 +164,7 @@ def test_rfxml(request):
     try:
         from dabo.dReportWriter import dReportWriter
     except ImportError:
-        raise Http404("Dabo is not installed")
+        raise Http404("Dabo ImportError")
 
     import dabo
     base  = os.path.dirname(dabo.__file__)
@@ -326,6 +328,7 @@ def eps_csv(request,client_slug=None,show_slug=None):
 
     return response
 
+
 def ep_json(request, ep_id):
 
     """
@@ -374,7 +377,7 @@ def ep_json(request, ep_id):
       "category": ep.show.client.category_key,
       "copyright_text": ep.license,
       "description": ep.description,
-      "duration": ep.cuts_time(),
+      # "duration": ep.cuts_time(),
       "language": ep.language or "eng",
       "quality_notes": ep.video_quality,
       "recorded": ep.start.isoformat(),
@@ -874,7 +877,8 @@ def enc_play_list(request,episode_id):
 
     writer = csv.writer(response)
     # exts = [ 'ogv','flv', 'mp4', 'm4v', 'ogg', 'mp3' ]:
-    exts = [ 'webm', ]
+    # exts = [ 'webm', ]
+    exts = settings.UPLOAD_FORMATS
     for ext in exts:
 
       foot_pathname = os.path.join(client.slug,show.slug, ext, '%s.%s' % (episode.slug, ext))
