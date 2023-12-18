@@ -6,6 +6,8 @@ import datetime
 from pprint import pprint
 from urllib.parse import urlparse, parse_qs
 from process import process as Process
+from pathlib import Path
+
 
 """
 from steve.richardapi import \
@@ -25,6 +27,9 @@ from django.conf import settings
 
 from main.models import Show, Location, Episode
 
+import json
+from lib import richardd
+
 import pw
 
 def get_video_id(url):
@@ -37,9 +42,8 @@ class add_to_richard(Process):
 
     def process_ep(self, ep):
 
-        return True
-
         """ adds Episode to richard
+            or maybe makes some json files for PyVideo
 
         :arg ep: Episode to add to richard
         :returns: different things based on what is happening
@@ -48,6 +52,10 @@ class add_to_richard(Process):
                   False if there was an exception during processing
 
         """
+        # the new pyvideo is differnt.
+        if self.options.pyvideo:
+            return self.pyvideo(ep, self.options.pyvideo)
+
         # richard categories are stored in Client and Show
         # ChiPy is an example of something that uses Client,
         # pycon 2014 and 300SoC are in Show.
@@ -121,8 +129,8 @@ class add_to_richard(Process):
             not video_data['video_mp4_url'] \
             or not video_data['source_url'] \
             or not video_data['embed']:
-                import code
-                # code.interact(local=locals())
+                pass
+                # import code; code.interact(local=locals())
 
 
         if self.is_already_in_richard(ep):
@@ -390,11 +398,24 @@ class add_to_richard(Process):
 
         return ret
 
+    def pyvideo(self, ep, destdir):
+        # make a pyvideo flavored dictionary,
+        # write it out to a pyvideo flavor json file
+        d=richardd.pyvideod(ep)
+        fn = Path(destdir) / f"{ep.id}.json"
+        if self.options.verbose:
+            pprint(d)
+            print( f"{fn=}" )
+        with open(fn,'w') as f:
+            json.dump(d, f, indent=2)
+
+        return True
+
 
     def add_more_options(self, parser):
 
         # parser.add_option('--all', action="store_true",
-        # oh wait.. I am not sure how to implement this...
+        # well.. I am not sure how to implement this...
         #  help="process all, regardless of state. (does not change state)")
 
         # reload wtd cuz we trashed 2013.. opps!
@@ -412,6 +433,11 @@ class add_to_richard(Process):
         # push to alterate richard (like to test crazy edit feature)
         parser.add_option('--richard-id',
            help="Override client.")
+
+        # dir to create json files to be added to PyVideo
+        # like "--pyvideo ~/temp/pyvideodata/chipy/videos"
+        parser.add_option('--pyvideo',
+           help="pyvideo flavored json files.")
 
 
 if __name__ == '__main__':
