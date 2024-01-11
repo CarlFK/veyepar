@@ -488,7 +488,7 @@ class add_eps(process.process):
                 'released',
                 'license',
                 'conf_url', 'tags',
-                'conf_meta',
+                # 'conf_meta',
                 # 'host_url',  # for pycon.ca youtube URLs
                 # 'comment',
                 )
@@ -616,11 +616,10 @@ class add_eps(process.process):
                                     """
                                     print(
                                         "diff found at pos {0}".format(i))
-                                    """
                                     print(
-                                        "veyepar: {1}\n   conf: {2}".format(                               a1[i:i+80].__repr__(),
-                                a2[i:i+80].__repr__()))
-                                    """
+                                        "veyepar: {1}\n   conf: {2}".format(                               a1[i:i+60].__repr__(),
+                                a2[i:i+60].__repr__()))
+                                    # show first diff, more is too messy.
                                     break
                     print()
 
@@ -1820,6 +1819,7 @@ class add_eps(process.process):
 
             event['authors'] =  ', '.join(
                     [ a['name'] for a in  event['authors'] ])
+            event['authors'] =  event['authors'].replace(", Developer Advocate","")
 
             event['emails'] =  ', '.join(
                     [ a['email'] for a in  event['emails']
@@ -5334,7 +5334,7 @@ class add_eps(process.process):
             event['authors'] = ", ".join(speakers)
             # print(event['authors'])
 
-            # omg hack
+            # this makes me nervous:
             event['conf_url'] = f"https://pybay.com/speakers/#sz-speaker-{sid}"
 
             conf_meta={}
@@ -5479,29 +5479,31 @@ class add_eps(process.process):
 
                     if self.options.verbose: print("login ret:", ret)
 
-                if 'api-key' in auth:
+                elif 'api-key' in auth:
                     url += "?" + auth['api-key']
 
+                elif 'Api-Key' in auth:
+                    headers = auth
+                    payload = None
 
-            if self.options.show in ['chicagowebconf2012"',
-                                        "cusec2013" , ]:
-                payload = {
-                    "api_key": pw.sched[self.options.show]['apikey'],
-                    "format":"json",
-                    # "fields":"name,session_type,description",
-                    "strip_html":"Y",
-                    "custom_data":"Y",
-                    }
+                elif self.options.show in ['chicagowebconf2012"',
+                                            "cusec2013" , ]:
+                    payload = {
+                        "api_key": pw.sched[self.options.show]['apikey'],
+                        "format":"json",
+                        # "fields":"name,session_type,description",
+                        "strip_html":"Y",
+                        "custom_data":"Y",
+                        }
 
-            else:
-                payload = None
+                else:
+                    payload = None
 
             pprint(headers)
             # return
 
-            for x in 1, : #,2: # this is whack.  I wonder what show?
-                response = session.get(url, params=payload, verify=False,
-                    headers=headers)
+            response = session.get(url, params=payload, verify=False,
+                headers=headers)
 
             if self.options.client =='emwc':
                 # return self.emwc_wiki(show, response)
