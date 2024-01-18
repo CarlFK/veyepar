@@ -131,6 +131,10 @@ class enc(process):
             pos = title.index(", ")
             # +1 include the comma, + 2 skip space after it
             title1, title2 = title[:pos+1], title[pos + 2:]
+        elif ", and" in title:
+            pos = title.index(", and")
+            # +1 include the comma, + 2 skip space after it
+            title1, title2 = title[:pos+1], title[pos + 2:]
         elif (") " in title):
             pos = title.index(") ")
             # +1 include the ), + 2 skip space in ") "
