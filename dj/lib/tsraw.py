@@ -20,6 +20,7 @@ import argparse
 import datetime
 import pathlib
 import pprint
+import pytz
 import os
 import re
 import subprocess
@@ -61,14 +62,22 @@ def get_start( pathname, time_source ):
         # parse string into datetime
         # expects room/yyy-mm-dd/hh_mm_ss-x.ext
         # or room/yyy-mm-dd/GMT20230511-232712_Recording_2880x1800.mp4
+        # >>> "GMT20231109-235900_Recording_2880x1800.mp4"[:29]
+        # 'GMT20231109-235900_Recording_'
+
 
         p = pathlib.PurePath(pathname)
         filename = p.stem # GMT20230511-232712_Recording_2880x1800
 
         # for Tegus Zoomy system
         # start = datetime.datetime.strptime(filename,'GMT%Y%m%d-%H%M%S_Recording_2880x1800')
-        start = datetime.datetime.strptime(filename,'GMT%Y%m%d-%H%M%S_Recording_1920x1120')
-        start += datetime.timedelta(hours=-5) # for chicago time
+        # start = datetime.datetime.strptime(filename,'GMT%Y%m%d-%H%M%S_Recording_1920x1120')
+        start = datetime.datetime.strptime(filename[:29],'GMT%Y%m%d-%H%M%S_Recording_')
+        # start += datetime.timedelta(hours=-5) # for chicago time
+        gmt = pytz.timezone('GMT')
+        # pytz.timezone('America/Chicago')
+        start = start.replace( tzinfo=gmt ).astimezone()
+
         return start
 
         # remove extention
