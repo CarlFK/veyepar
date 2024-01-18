@@ -58,7 +58,7 @@ from accounts.forms import LoginForm
 
 from .unique_slugify import fnify
 
-from lib import richard
+# from lib import richard
 
 
 def main(request):
