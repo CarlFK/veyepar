@@ -67,7 +67,7 @@ class SyncRax(process):
         # cmd = ['touch', out]
         # self.run_cmd(cmd)
 
-        # tmp = "{out}.tmp".format(out=out)
+        # tmp = f"{out}.tmp"
 
         # vb = "100k"
         # ab = "75k"
@@ -146,8 +146,8 @@ class SyncRax(process):
 
             if self.options.rsync:
                 # if not self.cdn_exists(show, low) or self.options.replace:
-                self.file2cdn(show, low)
-                    # raw file (huge!!! way over 5 gig each)
+                self.file2cdn(show, low, mkdir=self.options.mkdir)
+                    # raw file (huge!!! over 5 gig each)
                     ### self.file2cdn(show, base)
 
 
@@ -229,8 +229,12 @@ class SyncRax(process):
         # rfs = rfs.exclude(filesize__lt=800000)
         # rfs = rfs.exclude(filename="2016-07-30/12_55_51.ts")
 
-        if self.args:
-            eps = Episode.objects.filter(id__in=self.args)
+        if self.options.ready_state is not None or self.args:
+            # if both are passed, just do the list of eps.
+            if self.args:
+                eps = Episode.objects.filter(id__in=self.args)
+            else:
+                eps = Episode.objects.filter(state=self.ready_state)
             cls = Cut_List.objects.filter(episode__in=eps)
             rfs = rfs.filter(cut_list__in=cls).distinct()
 
@@ -454,6 +458,7 @@ class SyncRax(process):
         return
 
     def add_more_options(self, parser):
+
         parser.add_option('--assets', action="store_true",
            help="sync asset files (mlt, svg, png (not raw or lq raw)).")
         parser.add_option('--raw', action="store_true",
@@ -468,6 +473,8 @@ class SyncRax(process):
            help="process cooked files.")
         parser.add_option('--rsync', action="store_true",
             help="upload to DS box.")
+        parser.add_option('--mkdir', action="store_true",
+            help="mkdir destination dirs on remote box")
         parser.add_option('--delete-unknown', action='store_true',
             help="Delete any file records from the database, if we can't "
                  "find them on disk.")
