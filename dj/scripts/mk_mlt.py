@@ -172,9 +172,9 @@ def mk_mlt(template, output, params):
 
         if cut['normalize']!='0':
             normalize = copy.deepcopy( nodes['normalize'] )
-            # set_text(normalize,'program' , cut['normalize'])
-            set_text(normalize, 'target_loudness' , cut['normalize'])
-
+            # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+            set_text(normalize, 'program' , cut['normalize'])
+            # set_text(normalize, 'target_loudness' , cut['normalize'])
             ti.insert(0,normalize)
 
             # volume = copy.deepcopy( nodes['volume'] )
