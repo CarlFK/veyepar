@@ -12,6 +12,8 @@ import subprocess
 import sys
 import time
 
+from pathlib import Path
+
 # import fixunicode
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dj.settings")
@@ -162,31 +164,27 @@ class process():
                 raise
 
 
-    def file2cdn(self, show, src, dst=None):
+    def file2cdn(self, show, rel_src, dst=None, mkdir=False):
 
         """
-        src is relitive to the show dir.
+        rel_src is relitive to the show dir.
         src and dst get filled to full paths.
-        Check to see if src exists,
+        Check to see if src (local) exists,
         if it does, try to upload it to cdn
         (rax_uploader will skip if same file exists).
 
         NB: no more Rackspace, so swapping in sftp to wherever
         """
 
-        print("checking:", src )
+        print("checking:", rel_src )
 
-        if dst is None:
-            dst = src
+        src = os.path.join(self.show_dir, rel_src)
 
-        src = os.path.join(self.show_dir, src)
+        if dst is None: dst = rel_src
         dst = os.path.join("Videos", "veyepar", show.client.slug, show.slug, dst)
 
         if os.path.exists(src):
-
-            # upload
-
-            # rax out, old school rsync in (using paramiko)
+            # upload it
 
             host = settings.CDN['host']
             port = settings.CDN['port']
@@ -197,10 +195,23 @@ class process():
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             keys = paramiko.RSAKey.from_private_key_file(private_key_file)
             client.connect( hostname=host, username=user, pkey=keys)
-            sftp = client.open_sftp()
-
 
             sftp = client.open_sftp()
+
+            if mkdir:
+                # TODO um.. bleck.
+                l = list(Path(rel_src).parents)
+                l.reverse()
+                print(f"{l=}")
+                for d in l:
+                    full_dir = os.path.join("Videos", "veyepar", show.client.slug, show.slug, d)
+                    print(f"options.mkdir so sftp.mkdir({full_dir=})")
+                    try:
+                        sftp.mkdir(full_dir)
+                    except IOError as e:
+                        print(f"{e=}")
+                        pass
+
             print( f"Copying file {src} to {dst}..." )
 
             widgets = ['Uploading: ', pb.Percentage(), ' ', pb.Bar(marker='0',left='[',right=']'), ' ', pb.ETA(), ' ', pb.FileTransferSpeed()]
