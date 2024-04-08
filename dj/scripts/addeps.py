@@ -559,6 +559,9 @@ class add_eps(process.process):
                     # veyepar, remote
                     a1,a2 = getattr(episode,f), row[f]
 
+                    if self.options.verbose:
+                        print(f"{f=}")
+
                     if f in ("emails", "reviewers"):
                         # don't always have rights to get email
                         if not a2:
@@ -1774,7 +1777,9 @@ class add_eps(process.process):
 
         # import code; code.interact(local=locals())
 
-        schedule = [s for s in schedule if s['approved']]
+        # schedule = [s for s in schedule if s['status']]
+        # 'status': 'confirmed'
+        # schedule = [s for s in schedule if s['approved']]
         # schedule = [s for s in schedule if s['start_time']]
         print("we have start times?")
         for s in schedule:
@@ -1790,6 +1795,7 @@ class add_eps(process.process):
                 ('license','license'),
                 ('start_time', 'start'),
                 ('length', 'duration'),
+                ('reviewers', 'reviewers'),
                 ('', 'conf_url'),
                 ('', 'tags'),
                 ('', 'twitter_id'),
@@ -1825,6 +1831,8 @@ class add_eps(process.process):
                     [ a['email'] for a in  event['emails']
                         if a['email'] ])
 
+            event['reviewers'] =  ', '.join( event['reviewers'] )
+
             # if not event['emails']: # no email found
             #    event['emails'] = "ChiPy <chicago@python.org>"
 
@@ -1832,8 +1840,6 @@ class add_eps(process.process):
                     [ a['release'] for a in event['released'] ])
 
             event['conf_url'] = show.conf_url
-
-            event['reviewers'] = ""
 
 
         rooms = set(row['location'] for row in events)
@@ -5505,6 +5511,13 @@ class add_eps(process.process):
             response = session.get(url, params=payload, verify=False,
                 headers=headers)
 
+            if self.options.debug:
+                # save for later
+                filename=self.show_dir + "/schedule.txt"
+                open(filename,'w').write(response.content.decode())
+                # j=file(filename).read()
+
+
             if self.options.client =='emwc':
                 # return self.emwc_wiki(show, response)
                 return self.emwc_sheet(show, response, session)
@@ -5554,12 +5567,12 @@ class add_eps(process.process):
             # (pyohio 2012)
             # schedule = eval(j)
 
-        # save for later
-        # filename="schedule/%s_%s.json" % ( client.slug, show.slug )
-        # file(filename,'w').write(j)
-        # j=file(filename).read()
-
         if self.options.verbose: pprint(schedule)
+
+        if self.options.debug:
+            # save for later
+            filename=self.show_dir + "/schedule.json"
+            json.dump(schedule, open(filename,'w'), indent=2)
 
         # if self.options.verbose: print j[:40]
         if self.options.keys: return self.dump_keys(schedule)
