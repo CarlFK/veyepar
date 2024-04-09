@@ -136,13 +136,15 @@ class process():
         return True
 
     def dir2cdn(self, show, dst):
+        # make a dir on the remote
+        # (does not transfer files)
+
         path = os.path.join("Videos", "veyepar", show.client.slug, show.slug, dst)
 
         host = settings.CDN['host']
         port = settings.CDN['port']
         user = settings.CDN['user']
         private_key_file = settings.CDN['private_key_file']
-
 
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -151,13 +153,20 @@ class process():
         client.connect( hostname=host, username=user, pkey=keys)
         sftp = client.open_sftp()
 
-        mode=511
+        # mode=511
+        # attrs = paramiko.sftp_attr.SFTPAttributes()
+        # attrs.st_mode = 0o777
         ignore_existing=True
         ''' Augments mkdir by adding an option to not fail if the folder exists  '''
         try:
             print(f"{path=}")
-            sftp.mkdir(path, mode)
+            # print(f"{attrs=}")
+            # sftp.mkdir(path, attrs)
+            # print("import sys; sys.exit()"); import code; code.interact(local=locals())
+            sftp.mkdir(path)
         except IOError as e:
+            print(f"{e=}")
+            # print("import sys; sys.exit()"); import code; code.interact(local=locals())
             if ignore_existing:
                 pass
             else:
@@ -622,6 +631,7 @@ class process():
         parser.add_option('-l', '--list', action="store_true")
         parser.add_option('-v', '--verbose', action="store_true")
         parser.add_option('-q', '--quiet', action="store_true")
+        parser.add_option('--debug', action="store_true")
         parser.add_option(
             '--debug-log', action="store_true",
             help="append logs to .description so it gets posted to blip")

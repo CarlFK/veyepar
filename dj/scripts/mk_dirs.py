@@ -11,17 +11,26 @@ from main.models import Client, Show, Location, Episode
 class mkdirs(process):
 
   def mkdir(self, *path_parts):
-      """ makes the dir if it doesn't exist """
+      # makes dir(s) if they doen't exist
       # path_parts: list of dir names: foo,bar,bas = foo/bar/baz/
+      # mkdir foo
+      # mkdir foo/bar
+      # mkdir foo/bar/baz
       ret = False
 
       if self.options.rsync:
-          raise Exception("totally untested!")
-          # try to make dirs on the remote box:
-          full_dir = self.show_dir
+          # try to make dirs on the remote box
+          print(path_parts)
+
+          client = Client.objects.get(slug=self.options.client)
+          show = Show.objects.get(client=client,slug=self.options.show)
+          # remote_show_dir = os.path.join(self.options.media_dir, client.slug, show.slug)
+
+          tail=""
           for part in path_parts:
-              full_dir = os.path.join(full_dir, part)
-              self.dir2cdn(self.show_dir, full_dir)
+              tail = os.path.join(tail, part)
+              self.dir2cdn(show, tail)
+
       else:
           full_dir = os.path.join(self.show_dir, *path_parts)
           if os.path.exists(full_dir):
@@ -32,6 +41,7 @@ class mkdirs(process):
 
       return ret
 
+
   def work(self):
         """
         find client and show, create the dirs
@@ -40,14 +50,21 @@ class mkdirs(process):
         show = Show.objects.get(client=client,slug=self.options.show)
         self.set_dirs(show)
 
-        dirs = "dv assets tmp titles webm mp4 mlt custom/titles img"
+        # create show dir root
+        ret = self.mkdir("")
+
+        dirs = "dv assets tmp titles webm mp4 mlt custom custom/titles img"
         for d in dirs.split():
             ret = self.mkdir(d)
 
-        dirs = "credits  mlt  titles"
+        dirs = "credits mlt titles"
         for d in dirs.split():
-            full_dir = os.path.join(self.show_dir, "assets", d)
-            ret = self.mkdir(self.show_dir, "assets", d)
+            # full_dir = os.path.join(self.show_dir, "assets", d)
+            # ret = self.mkdir(self.show_dir, "assets", d)
+            ret = self.mkdir("assets", d)
+
+        if self.options.rsync:
+            return
 
         # copy the footer image
         # not sure where this should happen *shrug*
