@@ -407,8 +407,9 @@ class add_to_richard(Process):
         if self.options.verbose:
             pprint(d)
             print( f"{fn=}" )
-        with open(fn,'w') as f:
-            json.dump(d, f, indent=2)
+        # with open(fn,'w') as f:
+        #    json.dump(d, f,
+        json.dump(d, open(fn,'w'), indent=2)
 
         return True
 
