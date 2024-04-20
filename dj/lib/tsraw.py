@@ -181,12 +181,16 @@ def get_start( pathname, time_source ):
         media_info = MediaInfo.parse(pathname)
         t3=media_info.tracks[3]
         time = t3.time_code_of_first_frame
+        # dt = "{year}-{month}-{day} {time}".format(
+        #        year=year, month=month, day=day, time=time)
+        # na, that didn't work
 
-        dt = "{year}-{month}-{day} {time}".format(
-                year=year, month=month, day=day, time=time)
+        # try this
+        dt = media_info.tracks[0].recorded_date
+        # '2024-04-19 19:07:10-05:00'
+        print(dt)
+        start = datetime.datetime.strptime(dt,'%Y-%m-%d %H:%M:%S-05:00')
 
-        # start = datetime.datetime.strptime("16 JULY 2016 07:50:00;00", "%d %B %Y %H:%M:%S;00")
-        start = datetime.datetime.strptime(dt, "%Y-%B-%d %H:%M:%S;00")
         print( start )
 
         return start
@@ -289,8 +293,22 @@ def get_duration(pathname):
 
         return seconds
 
-    if os.path.splitext(pathname)[1]==".dv":
+    def mi(pathname):
+        media_info = MediaInfo.parse(pathname)
+        durations = media_info.tracks[0].other_duration
+        # ['15 s 371 ms', '15 s 371 ms', '15 s 371 ms', '00:00:15.371', '00:00:15;13', '00:00:15.371 (00:00:15;13)']
+        duration = durations[3]
+        h,m,s = [float(i) for i in duration.split(':')]
+        seconds = h*3600 + m*60 + s
+
+        return seconds
+
+    if os.path.splitext(pathname)[1]==".MTS":
+        seconds = mi(pathname)
+
+    elif os.path.splitext(pathname)[1]==".dv":
         seconds = fs_size(pathname)
+
     # elif os.path.splitext(pathname)[1]==".ts":
     #    seconds = 60 * 30
     else:
