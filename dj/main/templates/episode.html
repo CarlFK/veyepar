@@ -298,7 +298,7 @@ $(".viewer").zoomer();
             <tr>
                 <td>
    {% for ext in exts %}
-   <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/web/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" target={{ext}}>{{ext}}</a><br>
+   <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/web/raw/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}" target={{ext}}>{{ext}}</a><br>
    <a href="{% url "mk_play_list" %}?url={{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/dv/{{location.slug}}/{{cl.raw_file.filename}}.{{ext}}">{{ext}}.m3u</a>
                 {% endfor %}
   </td>
