@@ -1,0 +1,30 @@
+{# episode_logs.html #}
+{% extends "base.html" %}
+
+{% block head %}
+<title>veyepar: {{episode.name}} Marks and Cuts</title>
+{% endblock %}
+
+{% block content %}
+
+{{episode.location}}<br>
+<a href="{% url "episode" episode.id %}">{{episode.name}}</a>
+
+{% if user.is_authenticated %}
+    <form method="post">{% csrf_token %}
+        <input type="submit" value="Cut" />
+    </form>
+{% endif %}
+
+<table border=1>
+    <tr><th>id</th><th>Click</th></tr>
+{% for mark in marks %}
+  <tr class=row{{ forloop.counter0|divisibleby:2|yesno:"1,2"}}>
+      <td>{{mark.id}}</td>
+      <td>{{ mark.click | date:"r" }}</td>
+  </tr>
+{% endfor %}
+</table>
+
+{% endblock %}
+
