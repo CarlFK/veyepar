@@ -33,6 +33,7 @@ urlpatterns = [
 
     re_path(r'.*E/(?P<episode_id>\d+)/$', episode, name='episode'),
     re_path(r'.*E/(?P<episode_id>\d+)/claim_lock/$', claim_episode_lock),
+    re_path(r'.*E/(?P<episode_id>\d+)/marks/$', episode_marks, name="episode_marks"),
 
     re_path(r'meeting_announcement/(?P<show_id>\w+)/$',
         meet_ann,

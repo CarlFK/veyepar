@@ -34,6 +34,10 @@ Name: <b>{{episode.name}}</b><br>
 
 <input type="checkbox" id="ep-sm" class="ep-showmore" {{ep_sm|yesno:"checked=checked,"}}> <label class="ep-summary" for="ep-sm">show more...</label>
 
+{%if episode.state == 1 %}
+{% endif %}
+<a href="{% url "episode_marks" episode.id %}">Marks</a><br>
+
 <div class="ep-detail">
 <table>
 <tbody>

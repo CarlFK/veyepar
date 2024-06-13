@@ -2835,6 +2835,53 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         },
          )
 
+def episode_marks(request, episode_id, edit_key=None):
+
+    """
+    Add Episode Mrks and Cuts
+    WIP - meant to add Marks (like when you click cut) on the fly.
+    making this up as I go along.
+    MVP: log in, find an episode, "Cut" and now() is added to Mark.
+    TODO: add support for [x]ing the right cut. (typicaly the last)
+    problem: cutlist has a link to Raw_File,
+      and at the time the talk is happening
+      there isn't a Raw_File item in the DB.
+    """
+
+    episode=get_object_or_404(Episode,id=episode_id)
+
+    cuts = Cut_List.objects.filter(
+            episode=episode).order_by('sequence','raw_file__start','start')
+
+    marks = Mark.objects.filter(
+            location=episode.location,
+                ).order_by('click')
+
+    if request.user.is_authenticated:
+
+        if request.method == 'POST':
+
+            # grab server time (hope it is the right timezone)
+            # client side js time might be better.
+
+            mark = Mark.objects.create(
+                        show=episode.show,
+                        location=episode.location,
+                        click=datetime.datetime.now()
+                        )
+            mark.save()
+
+    return render(
+            request,
+            'episode_marks.html',
+            {'episode':episode,
+             'marks':marks,
+             'cuts':cuts,
+             'edit_key':edit_key,
+            },
+        )
+
+
 def episode_logs(request, episode_id):
 
     episode = get_object_or_404(Episode, id=episode_id)
