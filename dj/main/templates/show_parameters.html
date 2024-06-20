@@ -50,7 +50,7 @@ Item Count: {{episodes.count|default:"(none)"}} <br>
 
 Title slide:<br>
 Template: <a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}'>{{client.title_svg|default:"(none)"}}</a>
-For editing with Inkscape.  (May not render correctly in a browser. link to explanation coming soon.)<br>
+For editing with Inkscape.  (May not render correctly in a browser. "SVG 1.2 never got off the ground and only Inkscape and Batik seem to have implemented parts of flowed text." - {{ "http://tavmjong.free.fr/blog/?p=938" | urlize }})<br>
 <a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png'>
    Preview png<br>
 <img src='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png' width=100>
