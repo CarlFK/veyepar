@@ -48,13 +48,18 @@ Schedule data: <a href="{{show.schedule_url}}">{{show.schedule_url|default:"(non
 Item Count: {{episodes.count|default:"(none)"}} <br>
 <br>
 
-Title slide:
-<a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}'>{{client.title_svg|default:"(none)"}}</a>
-<a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png'>png</a>
-<a href="{% url 'title_slides' show.id %}">rendered title slides</a>
-</br>
+Title slide:<br>
+Template: <a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}'>{{client.title_svg|default:"(none)"}}</a>
+For editing with Inkscape.  (May not render correctly in a browser. link to explanation coming soon.)<br>
+<a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png'>
+   Preview png<br>
+<img src='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png' width=100>
+</a> <br>
+<a href="{% url 'title_slides' show.id %}">rendered title slides</a></br>
+<br>
 
-Credits: <a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/credits/{{client.credits}}'>{{client.credits}}</a>
+End slide:<br>
+<a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/credits/{{client.credits}}'>{{client.credits}}</a>
 </br>
 </br>
 Host metadata:
