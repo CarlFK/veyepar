@@ -251,12 +251,12 @@ $(".viewer").zoomer();
             {# {{ clrfform.trash.label_tag }}{{ clrfform.trash }} #}
 
             <tr>
-                <td><input type="button" id="go-start-{{cl.id}}" value="Start"> </td>
+                <td><input type="button" id="go-start-{{cl.id}}" value="Start" title="Move the playhead to the start of the file."> </td>
                 <td><b>{% if same_dates %}{{cl.raw_file.start|date:"H:i:s"}}{% else %}{{cl.raw_file.start}}{% endif %}</b></td>
                 <td>
-                    <input type="button" value="&gt;" id="start{{cl.id}}">
+                    <input type="button" value="&gt;" id="start{{cl.id}}" title="move the playhead to the value in the box">
                     {{ clrfform.start }}
-                    <input type="button" id="grab-start-{{cl.id}}" value="grab">
+                    <input type="button" id="grab-start-{{cl.id}}" value="grab" title="copy the playhead position, put it in the box.">
                 </td>
                 <td>
                     {# frames? {{chap.0}} #}
@@ -279,12 +279,12 @@ $(".viewer").zoomer();
             </tr>
 
             <tr>
-                <td><input type="button" id="go-end-{{cl.id}}" value="End"> </td>
+                <td><input type="button" id="go-end-{{cl.id}}" value="End" title="Move the playhead to the end of the file."> </td>
                 <td> {% if same_dates %}{{cl.raw_file.end|date:"H:i:s"}}{% else %}{{cl.raw_file.end}}{% endif %}</td>
                 <td>
-                    <input type="button" value="&gt;" id="end{{cl.id}}">
+                    <input type="button" value="&gt;" id="end{{cl.id}}" title="move the playhead to the value in the box">
                     {{ clrfform.end }}
-                    <input type="button" id="grab-end-{{cl.id}}" value="grab">
+                    <input type="button" id="grab-end-{{cl.id}}" value="grab" title="copy the playhead position, put it in the box.">
                 </td>
                 <td>
                     {# frames? {{chap.1}} #}
