@@ -131,6 +131,14 @@ class enc(process):
             pos = title.index(", ")
             # +1 include the comma, + 2 skip space after it
             title1, title2 = title[:pos+1], title[pos + 2:]
+        elif " with " in title:
+            pos = title.index(" with ")
+            # +1 skip the space before the word "with"
+            title1, title2 = title[:pos], title[pos + 1:]
+        elif " and " in title:
+            pos = title.index(" and ")
+            # +1 skip the space before the word "and"
+            title1, title2 = title[:pos], title[pos + 1:]
         elif ", and" in title:
             pos = title.index(", and")
             # +1 include the comma, + 2 skip space after it
