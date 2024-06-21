@@ -14,6 +14,7 @@
         <th>conf</th>
         <th>start</th>
         <th>state</th>
+        <th><a href="?lenoh">len</a></td>
         <th>episode.name<br>
             per New York Times Manual of Style<br>
 {% if slugs %}
@@ -32,6 +33,7 @@
         <td><a href="{{episode.conf_url}}">{{episode.conf_key}}</a></td>
  <td>{{episode.start|date:"D d H:i"}}</td>
  <td>{{episode.state}}{{episode.locked|yesno:"*, "}}</td>
+ <td><a href="?lenoh">{{ episode.name | length }}</a></td>
 
  <td style="white-space:normal"><a href="E/{{episode.id}}/">{{ episode.name }}<br>
     {{episode.titlecase}}<br>

@@ -124,13 +124,14 @@
 Longest strings:<br>
 Titles:<br>
 {% for max_name_ep in max_names %}
-  <a href="E/{{max_name_ep.id}}/">{{ max_name_ep.name }}</a> <br/>
+  {{ max_name_ep.name | length }} <a href="E/{{max_name_ep.id}}/">{{ max_name_ep.name }}</a> <br/>
   <a href="{{max_name_ep.conf_url}}">{{ max_name_ep.conf_url }}</a>
   <br> <br>
 {% endfor %}
 <br>
 Presenters:<br>
 {% for max_authors_ep in max_authors %}
+  {{max_authors_ep.authors | length }}
   <a href="E/{{max_authors_ep.id}}/">{{ max_authors_ep.authors }}</a> <br/>
   <a href="{{max_authors_ep.conf_url}}">{{ max_authors_ep.conf_url }}</a>
   <br><br>

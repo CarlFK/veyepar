@@ -48,7 +48,7 @@ Schedule data: <a href="{{show.schedule_url}}">{{show.schedule_url|default:"(non
 Item Count: {{episodes.count|default:"(none)"}} <br>
 <br>
 
-Title slide:<br>
+<div id="title">Title slide:<br>
 Template: <a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}'>{{client.title_svg|default:"(none)"}}</a>
 For editing with Inkscape.  (May not render correctly in a browser. "SVG 1.2 never got off the ground and only Inkscape and Batik seem to have implemented parts of flowed text." - {{ "http://tavmjong.free.fr/blog/?p=938" | urlize }})<br>
 <a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/titles/{{client.title_svg}}.png'>
@@ -57,6 +57,7 @@ For editing with Inkscape.  (May not render correctly in a browser. "SVG 1.2 nev
 </a> <br>
 <a href="{% url 'title_slides' show.id %}">rendered title slides</a></br>
 <br>
+</div>
 
 End slide:<br>
 <a href='{{ MEDIA_URL }}/{{client.slug}}/{{show.slug}}/assets/credits/{{client.credits}}'>{{client.credits}}</a>

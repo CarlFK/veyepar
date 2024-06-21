@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.template import Context, loader
 
+
 from django.core.paginator import Paginator, InvalidPage, EmptyPage, PageNotAnInteger
 from django.conf import settings
 
@@ -19,7 +20,6 @@ from django.forms import modelformset_factory
 from django.db.models import Q
 from django.db.models import Count, Max
 from django.db.models.functions import Length, Trunc
-
 
 from django.http import (HttpResponse, HttpResponseRedirect,
         Http404, HttpResponseForbidden)
@@ -834,6 +834,9 @@ def eps_filters(rGET):
         e_ids=[ e.id for e in episodes
                 if e.name != e.titlecase ]
         episodes = Episode.objects.filter(id__in=e_ids)
+
+    if "lenoh" in rGET:
+        episodes = episodes.order_by(Length('name').desc())
 
     return episodes
 
