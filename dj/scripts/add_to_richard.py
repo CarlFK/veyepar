@@ -56,6 +56,9 @@ class add_to_richard(Process):
         # the new pyvideo is differnt.
         if self.options.pyvideo:
             return self.pyvideo(ep, self.options.pyvideo)
+        else:
+            # the old pyvideo/richard is no more, so move along, nothing to do.
+            return True
 
         # richard categories are stored in Client and Show
         # ChiPy is an example of something that uses Client,
