@@ -56,14 +56,17 @@ class ts_rf(process):
         seconds = tsraw.get_duration(pathname)
 
         print(( pathname, start, seconds ))
-        rf.start = start
+        if rf.start:
+            print(rf.start - start)
+            print(start - rf.start)
 
         hms = seconds//3600, (seconds%3600)//60, seconds%60
         duration = "%02d:%02d:%02d" % hms
 
-        rf.duration = duration
-
-        rf.save()
+        if self.options.update:
+            rf.start = start
+            rf.duration = duration
+            rf.save()
 
     def one_loc(self, show, location):
         print(show,location)
@@ -94,8 +97,8 @@ class ts_rf(process):
             # offset = self.options.offset_seconds
 
             if not rf.start or self.options.force:
-                # self.one_rf(rf, offset )
-                self.one_rf(rf )
+                # self.one_rf(rf, offset)
+                self.one_rf(rf)
 
     def work(self):
         """
@@ -121,10 +124,17 @@ class ts_rf(process):
         parser.add_option('--time_source',
            help="one of fn, fs, frame, gst, un, auto\n" \
              "(file name, file system, dv frame, gst lib, UN files, auto)")
+
         parser.add_option('--ext',
            help="only hit this ext")
+
         parser.add_option('--subs',
            help="string to use for subs stuff that makes me cry.")
+
+        parser.add_option('-u', '--update',
+                action="store_true",
+           help="update the db, else just print the delta.")
+
         parser.add_option('--delete-unknown', action='store_true',
             help="Delete any file records from the database, if we can't "
                  "find them on disk.")
