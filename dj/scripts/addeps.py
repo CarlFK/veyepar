@@ -636,6 +636,7 @@ class add_eps(process.process):
             """
 
             if self.options.update and diff:
+                if self.options.verbose: pprint(row)
                 if episode is None:
                     print("adding conf_key: %(conf_key)s, name: %(name)s" % row)
                     # I am not sure why some fields are here in .create
@@ -4544,13 +4545,13 @@ class add_eps(process.process):
 
     def latch_2023(self, show, response, session):
         googid="12XgZH26YZhnsUBySohOWfMm_W5fMvKowUESVaK8C6bA"
-        rows = goog_sheet( googid ) #, range_name='A14:V14' )
+        rows = goog_sheet( googid, range_name='veyepar')
 
         if self.options.keys: return self.dump_keys(rows)
 
         # grab the name of the first room.  prolly the only room.
-        locations=show.locations.filter(active=True).order_by('sequence')
-        loc_name = locations[0].name
+        # locations=show.locations.filter(active=True).order_by('sequence')
+        # loc_name = locations[0].name
 
         field_maps = [
             ('title','name'),
@@ -4559,7 +4560,9 @@ class add_eps(process.process):
             ('email','emails'),
             ('twitter_id','twitter_id'),
             ('start','start'),
+            ('end','end'),
             ('duration','duration'),
+            ('room','location'),
             ('released','released'),
             ('reviewers','reviewers'),
             ('tags','tags'),
@@ -4569,29 +4572,52 @@ class add_eps(process.process):
         events = self.generic_events(rows, field_maps)
 
         # events = [ event for event in events if event['conf_key'] == 6]
+        events = [ event for event in events \
+                if event['location'] is not None]
 
+        events = [ event for event in events \
+                if event['duration']=='3']
+        i=1
         for event in events:
             if self.options.verbose: pprint(event)
 
-            event['location'] = loc_name
+            # event['location'] = loc_name
+            event['location'] = "b45r230" if "45-2" in event['location'] else event['location']
 
             #  'start': '2023-03-31 13:30:00',
             event['start'] = datetime.strptime(
                     event['start'],
                     '%Y-%m-%d %H:%M:%S')
+            """
+            event['end'] = datetime.strptime(
+                    event['end'],
+                    '%Y-%m-%d %H:%M:%S')
+            """
+
+            # event['conf_key'] = i
+            i+=1
 
             if event['name'] == "":
                 event['name'] = f"Talk id:{event['conf_key']}"
 
-            duration = int(event['duration'])
-            event['duration'] = f"00:{duration}:00"
+            if event['duration'] is not None and event['duration']:
+                minutes = int(event['duration'])
+            else:
+                delta = event['end'] - event['start']
+                minutes = int(delta.seconds/60) # - 5 for talk slot that includes break
+
+            event['duration'] = f"00:{minutes}:00"
 
             event['twitter_id'] = ""
+            event['reviewers'] = ""
             event['license'] = "CC-BY-NA"
             event['conf_url'] = show.schedule_url
             event['tags'] = ""
             # event['released'] = False
-            event['released'] = event['released'].upper() == "Y"
+            event['released'] = event['released'].upper() in ["Y", "YES"]
+
+        rooms = self.get_rooms(events)
+        self.add_rooms(rooms,show)
 
         self.add_eps(events, show)
 
@@ -5071,7 +5097,7 @@ class add_eps(process.process):
 
             ret =  []
             while url is not None:
-                if self.options.verbose: print(url)
+                if self.options.verbose: print(f'{url=}')
 
                 response = session.get(url,
                         params=payload,
@@ -5079,6 +5105,7 @@ class add_eps(process.process):
                         headers=headers,
                         )
                 j = response.json()
+                pprint(j)
                 ret.extend(j['results'])
                 url = j['next']
 
@@ -5125,7 +5152,8 @@ class add_eps(process.process):
         # pprint(speakes[0])
         emails = { s['ID']:s['E-Mail'] for s in speakes }
         for speaker in speakersd.values():
-            speaker['email']=emails[speaker['code']]
+            pass
+            # speaker['email']=emails[speaker['code']]
 
         # talksd = { t['code']:t for t in talks }
 
@@ -5169,6 +5197,7 @@ class add_eps(process.process):
             """
             event['location'] = {
                 'The Barn': 'Reis River Ranch',
+                'Barn': 'Reis River Ranch',
                     }[room]
 
 
@@ -5177,7 +5206,9 @@ class add_eps(process.process):
                     # event['start']['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
 
             # event['conf_url'] = "https://2020.pycon.org.au/program/{}".format(event['conf_key'])
-            event['conf_url'] = f"https://pretalx.northbaypython.org/nbpy-2023/talk/{event['conf_key']}"
+
+            year = event['start'].year
+            event['conf_url'] = f"https://pretalx.northbaypython.org/nbpy-{year}/talk/{event['conf_key']}"
 
             event['duration'] = "00:{}:00".format(event['duration'])
 
@@ -5197,7 +5228,7 @@ class add_eps(process.process):
             twits = []
             for person in event['emails']:
                 speaker = speakersd[person['code']]
-                emails.append(speaker['email'])
+                # emails.append(speaker['email'])
 
                 """
                 qt = [q for q in speaker['answers'] if q['question']['id']==554]
@@ -5446,6 +5477,7 @@ class add_eps(process.process):
             # auth stuff goes here, kinda.
 
             auth = pw.addeps.get(self.options.client, None)
+            payload = None
 
             if auth is not None:
                 if self.options.verbose: print(auth)
@@ -5490,7 +5522,6 @@ class add_eps(process.process):
 
                 elif 'Api-Key' in auth:
                     headers = auth
-                    payload = None
 
                 elif self.options.show in ['chicagowebconf2012"',
                                             "cusec2013" , ]:
@@ -5501,9 +5532,6 @@ class add_eps(process.process):
                         "strip_html":"Y",
                         "custom_data":"Y",
                         }
-
-                else:
-                    payload = None
 
             pprint(headers)
             # return
@@ -5525,7 +5553,7 @@ class add_eps(process.process):
             elif self.options.client =='kicon_2019':
                 return self.kicon(show, response)
 
-            elif self.options.show =='latch_2023':
+            elif self.options.show in [ 'latch_2023', 'latch_2024', ]:
                 return self.latch_2023(show, response, session)
 
         parsed = urlparse(url)
@@ -5598,7 +5626,7 @@ class add_eps(process.process):
         if self.options.show =='pybay23':
             return self.sessionize(schedule, show)
 
-        if self.options.show =='nbpy23':
+        if self.options.show in ['NBPy2024', 'nbpy23']:
             return self.pretalx(show, session, payload, headers)
 
         if self.options.client =='drupalsouth':
