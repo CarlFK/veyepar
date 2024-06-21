@@ -24,9 +24,9 @@ class mkdirs(process):
 
           client = Client.objects.get(slug=self.options.client)
           show = Show.objects.get(client=client,slug=self.options.show)
-          # remote_show_dir = os.path.join(self.options.media_dir, client.slug, show.slug)
 
           tail=""
+          self.dir2cdn(show, tail) # dir2cdn will make the client/show dir
           for part in path_parts:
               tail = os.path.join(tail, part)
               self.dir2cdn(show, tail)
@@ -53,7 +53,7 @@ class mkdirs(process):
         # create show dir root
         ret = self.mkdir("")
 
-        dirs = "dv assets tmp titles webm mp4 mlt custom custom/titles img"
+        dirs = "dv assets tmp titles webm mp4 mlt raw custom custom/titles img"
         for d in dirs.split():
             ret = self.mkdir(d)
 

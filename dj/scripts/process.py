@@ -139,7 +139,14 @@ class process():
         # make a dir on the remote
         # (does not transfer files)
 
-        path = os.path.join("Videos", "veyepar", show.client.slug, show.slug, dst)
+        # ugly hack to also make the 'base' dir
+        if dst=="":
+            self.dir2cdn(show,None)
+            path = os.path.join("Videos", "veyepar", show.client.slug, show.slug)
+        elif dst is None:
+            path = os.path.join("Videos", "veyepar", show.client.slug)
+        else:
+            path = os.path.join("Videos", "veyepar", show.client.slug, show.slug, dst)
 
         host = settings.CDN['host']
         port = settings.CDN['port']
