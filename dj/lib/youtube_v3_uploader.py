@@ -118,13 +118,19 @@ def resumable_upload(insert_request):
       print(e)
       pprint(e.error_details)
       if e.error_details[0]['reason'] == 'quotaExceeded':
+
+          now = datetime.datetime.now()
+          print(f'{now=}')
+
           sec = time_till_quota_reset(datetime.datetime.now(), 2)
+
+          then = now + datetime.timedelta(seconds=sec)
+          print(f'{then=}')
+
           print(f'sleeping till time_till_quota_reset: {sec=}')
           time.sleep(sec)
 
-      print("wake up!  quota refreshed?  Continuing to upload....")
-      # print("to get out of this loop:\nimport sys;sys.exit()")
-      # import code; code.interact(local=locals())
+          print("wake up!  quota refreshed?  Continuing to upload....")
 
     except HttpError as e:
       if e.resp.status in RETRIABLE_STATUS_CODES:
@@ -133,7 +139,6 @@ def resumable_upload(insert_request):
       else:
         print("to get out of this loop:\nimport sys;sys.exit()")
         import code; code.interact(local=locals())
-        # raise e
 
     except RETRIABLE_EXCEPTIONS as e:
         error = "A retriable error occurred: %s" % e
@@ -142,7 +147,6 @@ def resumable_upload(insert_request):
         print(("No clue what is going on.  e:{}".format(e)))
         print("to get out of this loop:\nimport sys;sys.exit()")
         import code; code.interact(local=locals())
-
 
     if error is not None:
         print(error)
