@@ -379,7 +379,7 @@ def lvlpng(filename, png_name=None):
     p.location = filename
     p.setup()
     p.start()
-    p.tree.write('test.mlt')
+    # p.tree.write('test.mlt')
 
     if png_name is None:
         pathname = filename
