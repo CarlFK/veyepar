@@ -5105,7 +5105,7 @@ class add_eps(process.process):
                         headers=headers,
                         )
                 j = response.json()
-                pprint(j)
+                # pprint(j)
                 ret.extend(j['results'])
                 url = j['next']
 
@@ -5147,13 +5147,12 @@ class add_eps(process.process):
         speakersd = { s['code']:s for s in speakers }
 
         print("# shim in emails:")
-        with open('schedules/nbpy-2023_speakers.json') as f:
+        with open(os.path.join(self.show_dir, 'schedule/nbpy-2024_speakers.json')) as f:
             speakes = json.load(f)
-        # pprint(speakes[0])
+        pprint(speakes[0])
         emails = { s['ID']:s['E-Mail'] for s in speakes }
         for speaker in speakersd.values():
-            pass
-            # speaker['email']=emails[speaker['code']]
+            speaker['email']=emails[speaker['code']]
 
         # talksd = { t['code']:t for t in talks }
 
@@ -5228,7 +5227,7 @@ class add_eps(process.process):
             twits = []
             for person in event['emails']:
                 speaker = speakersd[person['code']]
-                # emails.append(speaker['email'])
+                emails.append(speaker['email'])
 
                 """
                 qt = [q for q in speaker['answers'] if q['question']['id']==554]
