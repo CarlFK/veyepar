@@ -2519,8 +2519,8 @@ def mk_cuts(episode,
         start -= datetime.timedelta( hours = location.hours_offset )
         end -= datetime.timedelta( hours = location.hours_offset )
 
-    print("start:",start, start.__repr__())
-    print("end:",end, end.__repr__())
+    print(f"{start=} {start}")
+    print(f"{end=} {end}")
 
 # start: 2016-07-16 10:00:00
 # end: 2016-07-16 10:25:00
@@ -2531,21 +2531,22 @@ def mk_cuts(episode,
             start__lte=end,
             location=episode.location).order_by('start')
 
-    print(rfs)
+    print(f"{rfs=}")
 
     if not rfs:
         return []
 
     if rfs.last().end <= end:
-        # if the end of the talk is after tha end of the last raw
+        # if the end of the talk is after the end of the last raw
         # seems we are missing the last file, so bail
         print((rfs.last().end, end))
         # return []
 
     seq=100
-    started=False ## magic to figure out when talk really started
+    started=False ## magic to figure out when talk maybe really started
     for rf in rfs:
         print("rf s:{}  e{}".format(rf.start, rf.end))
+        print(f"{rf.start=}, {rf.end=}")
         seq+=10
         if (seq>100 and rf.get_minutes() > short_clip_time) or \
               episode.start == rf.start:
@@ -2583,12 +2584,12 @@ def mk_cuts(episode,
                         ).order_by('click')
             apply=True
             for mark in marks:
-                print("mark:{}".format(mark))
+                print(f"{mark=}")
                 seq+=10
                 # dif is offset from start, in and out points
                 dif = mark.click - rf.start
                 end = dif.total_seconds()
-                print('end: {}'.format(end))
+                print(f"{end=}")
                 cl.end = end
                 cl.save()
 
@@ -2617,6 +2618,12 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
     location=episode.location
     client=show.client
 
+    cls = Cut_List.objects.filter(
+            episode=episode).order_by('sequence','raw_file__start','start')
+
+    rfs = Raw_File.objects.filter(cut_list__in=cls).distinct()
+
+
     # If the email is blank, check other events for the same name.
     email_eps = None
     if request.user.is_authenticated:
@@ -2632,6 +2639,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         # hide emails if user is not logged n
         episode.emails = None
 
+    # find Prev/Next links:
     try:
         # why Start/End can't be null:
         # http://code.djangoproject.com/ticket/13611
@@ -2647,11 +2655,6 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                 show=show, location=location)
     except Episode.DoesNotExist:
         next_episode = None
-
-    cls = Cut_List.objects.filter(
-            episode=episode).order_by('sequence','raw_file__start','start')
-
-    rfs = Raw_File.objects.filter(cut_list__in=cls).distinct()
 
     # If this episode is still being edited, create or add cuts
     # if episode.state==1:
