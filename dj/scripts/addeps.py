@@ -603,27 +603,20 @@ class add_eps(process.process):
                             # pprint(result)
 
                             if a2 is None or max(len(a1),len(a2)) < 160:
-                              # print a1
-                              # print a2
-                              print('veyepar {0}: {1}'.format(f,a1))
-                              print('   conf {0}: {1}'.format(f,a2))
+                                # print a1
+                                # print a2
+                                print('veyepar {0}: {1}'.format(f,a1))
+                                print('   conf {0}: {1}'.format(f,a2))
                             else:
-                              # long string (prolly description)
-                              for i,cs in enumerate(zip(a1,a2)):
-                                if cs[0] != cs[1]:
-                                    """
-                                    print \
-                      "#1, diff found at pos {0}:\n{1}\n{2}".format(
-                              i,cs[0].__repr__(),
-                                cs[1].__repr__())
-                                    """
-                                    print(
-                                        "diff found at pos {0}".format(i))
-                                    print(
-                                        "veyepar: {1}\n   conf: {2}".format(                               a1[i:i+60].__repr__(),
-                                a2[i:i+60].__repr__()))
-                                    # show first diff, more is too messy.
-                                    break
+                                # find where in the >160 len string (prolly description)
+                                for i,cs in enumerate(zip(a1,a2)):
+                                    if cs[0] != cs[1]:
+                                        print(f"diff found at pos {i}")
+                                        print( "veyepar: {0}".format(a1[i:i+60].__repr__()) )
+                                        print( "   conf: {0}".format(a2[i:i+60].__repr__()) )
+
+                                        # show first diff and break, finding/showing more is too messy.
+                                        break
                     print()
 
 
@@ -5073,6 +5066,7 @@ class add_eps(process.process):
 
     def pretalx(self, show, session, payload, headers):
         # https://docs.pretalx.org/en/latest/api/resources/events.html
+        # v2 for NBPy 2023, 24 and PyOhio 2024
 
         # ignore schedule, use talks and speakers
         """
@@ -5088,7 +5082,6 @@ class add_eps(process.process):
                     leaf['room']=room
                 leafs.extend(branch)
         """
-        # v2 for NBPy 2023
         # url is schedule=https://pretalx.northbaypython.org/api/events/nbpy-2023/talks/
         # schedules, talks, speakers,
 
@@ -5146,6 +5139,7 @@ class add_eps(process.process):
         # index the speaker list
         speakersd = { s['code']:s for s in speakers }
 
+        """
         print("# shim in emails:")
         with open(os.path.join(self.show_dir, 'schedule/nbpy-2024_speakers.json')) as f:
             speakes = json.load(f)
@@ -5153,6 +5147,7 @@ class add_eps(process.process):
         emails = { s['ID']:s['E-Mail'] for s in speakes }
         for speaker in speakersd.values():
             speaker['email']=emails[speaker['code']]
+        """
 
         # talksd = { t['code']:t for t in talks }
 
@@ -5165,14 +5160,16 @@ class add_eps(process.process):
             ('slot', 'start'),
             ('duration', 'duration'),
             ('title', 'name'),
-            ('abstract', 'description'),
+            # ('abstract', 'description'),
+            ('description', 'description'),
             ('speakers', 'authors'),
             ('speakers', 'emails'),
             ('speakers', 'twitter_id'),
             ('do_not_record', 'released'),
             ('answers', 'license'),
             ('language', 'language'),
-            ('answers', 'tags'),
+            # ('answers', 'tags'),
+            ('tags', 'tags'),
             ('', 'reviewers'),
             ]
 
@@ -5193,21 +5190,31 @@ class add_eps(process.process):
                 'The One Obvious Room': 'Obvious',
                 'Curlyboi Theatre': 'Curlyboi',
                     }[room]
-            """
             event['location'] = {
                 'The Barn': 'Reis River Ranch',
                 'Barn': 'Reis River Ranch',
                     }[room]
+            """
 
+            event['location'] = {
+                'Orchid Ballroom East': 'Orchid East',
+                'Orchid Ballroom West': 'Orchid West',
+                'Cattleya': 'Cattleya',
+                'Calypso': 'Calypso',
+                    }[room]
 
             event['start'] = datetime.strptime(
-                    event['start']['start'], '%Y-%m-%dT%H:%M:%S-07:00' )
+                    event['start']['start'], '%Y-%m-%dT%H:%M:%S-04:00' )
+                    # event['start']['start'], '%Y-%m-%dT%H:%M:%S-07:00' )
                     # event['start']['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
 
-            # event['conf_url'] = "https://2020.pycon.org.au/program/{}".format(event['conf_key'])
 
             year = event['start'].year
-            event['conf_url'] = f"https://pretalx.northbaypython.org/nbpy-{year}/talk/{event['conf_key']}"
+            # event['conf_url'] = "https://2020.pycon.org.au/program/{}".format(event['conf_key'])
+            # conf_url = f"https://pretalx.northbaypython.org/nbpy-{year}/talk/{event['conf_key']}"
+            # conf_url=f"https://www.pyohio.org/{year}/program/talks/is-python-your-type-of-programming-language/
+            conf_url="https://www.pyohio.org/2024/program/talks/"
+            event['conf_url'] = conf_url
 
             event['duration'] = "00:{}:00".format(event['duration'])
 
@@ -5221,7 +5228,6 @@ class add_eps(process.process):
                     a['name'] for a in event['authors']
                     )
                     # if a['name'] is not None)
-
 
             emails = []
             twits = []
@@ -5273,6 +5279,8 @@ class add_eps(process.process):
 
             event['tags'] = ', '.join(tags)
             """
+
+            event['tags'] = ', '.join(event['tags'])
 
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )
@@ -5625,7 +5633,7 @@ class add_eps(process.process):
         if self.options.show =='pybay23':
             return self.sessionize(schedule, show)
 
-        if self.options.show in ['NBPy2024', 'nbpy23']:
+        if self.options.show in ['pyohio_2024', 'NBPy2024', 'nbpy23']:
             return self.pretalx(show, session, payload, headers)
 
         if self.options.client =='drupalsouth':
