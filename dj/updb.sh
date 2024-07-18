@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -x
 
 # updb.sh - update db
 # pulls fairly recent data from production, loads it into the local db.
@@ -18,7 +18,7 @@ fi
 ssh -o BatchMode=yes veyepar@veyepar.nextdayvideo.com /home/veyepar/site/veyepar/utils/dumpdata.sh
 
 
-SRC=http://veyepar.nextdayvideo.com/static/temp
+SRC=http://veyepar.nextdayvideo.com/temp
 # wget -N $SRC/veyepar_all.json
 # wget -N $SRC/veyepar_noauth.json
 wget -N $SRC/veyepar_main.json

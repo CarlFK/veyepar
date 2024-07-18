@@ -47,14 +47,17 @@ class enc(process):
                         t = tree[1][key]
                         # import code; code.interact(local=locals())
                     if texts[key] is None:
-                        # del(tree[1][key])
-                        # print tree[1].has_key(key)
                         tree[1][key].clear()
                     else:
                         t.set('{http://www.w3.org/1999/xlink}href', texts[key])
                 elif key == "pictureUrl":
-                    t = tree[1][key]
-                    t.set('{http://www.w3.org/1999/xlink}href', texts[key])
+                    print(f"{texts[key]=}")
+                    if texts[key]:
+                        t = tree[1][key]
+                        t.set('{http://www.w3.org/1999/xlink}href', texts[key])
+                    else:
+                        tree[1][key].clear()
+
                 else:
                     if self.options.verbose:
                         print("found in svg:", tree[1][key].text)
@@ -204,11 +207,13 @@ class enc(process):
         author1, author2, author3 = l
 
         if episode.conf_meta:
-            # conf_meta['pictureUrls']=pictureUrls
             print(f"{episode.conf_meta=}")
             o = json.loads(episode.conf_meta)
             pprint(o)
-            pictureUrl = o['pictureUrls'][0]
+            if o['picture_urls']:
+                pictureUrl = o['picture_urls'][0]
+            else:
+                pictureUrl = ""
             # xlink:href
             # https://sessionize.com/image/b398-400o400o2-Lupt6QeNRNQr2btcNYY3MR.jpg
         else:

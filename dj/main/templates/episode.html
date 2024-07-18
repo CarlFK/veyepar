@@ -111,7 +111,7 @@ Name: <b>{{episode.name}}</b><br>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.svg"> svg</a>
 <a href="{{MEDIA_URL}}/{{client.slug}}/{{show.slug}}/titles/{{episode.slug}}.png"> png</a><br>
 
-      <video id="final"
+      <video id="final_video"
           controls
           preload="metadata"
           width=400
@@ -124,19 +124,22 @@ Name: <b>{{episode.name}}</b><br>
 
    {% for ext in exts %}
 
-   <div id="audio_image_{{ext}}">
+   <div id="audio_image_{{ext}}" style="overflow: scroll;" >
      <img src ="{{MEDIA_URL}}/{{episode.show.client.slug}}/{{episode.show.slug}}/web/cooked/{{ext}}/{{episode.slug}}.{{ext}}.wav.png" alt="final audio" onerror="this.style.display='none'" />
    </div>
    <br>
 
     <script>
 
-    var elementLeft = $('#audio_image_{{ext}}').offset().left;
-    var imageX = 0;
-    var vid = $( "#final" );
+    var img_div = $('#audio_image_{{ext}}');
+    var vid = $( "#final_video" );
+
+    var imgLeft;
+    var imageX;
 
     $( "#audio_image_{{ext}}" ).mousemove(function( event ) {
-        imageX = (event.pageX - elementLeft);
+        imgLeft = img_div.offset().left - img_div.scrollLeft();
+        imageX = (event.pageX - imgLeft);
        });
 
     $( "#audio_image_{{ext}}" ).click(function() {
@@ -332,8 +335,10 @@ $(".viewer").zoomer();
   {{cl.raw_file.ocrtext|linebreaks}}
   {% endif %}
 
-  <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'"
-    src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/web/raw/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
+  <div style="overflow: scroll;" >
+    <img id="audio_image_{{cl.id}}" alt="audio viz" onerror="this.style.display='none'"
+      src ="{{MEDIA_URL}}/{{cl.raw_file.show.client.slug}}/{{cl.raw_file.show.slug}}/web/raw/{{cl.raw_file.location.slug}}/{{cl.raw_file.filename}}.wav.png">
+   </div>
 
   {% with forloop.counter0 as x %}
 
@@ -445,7 +450,7 @@ $(".viewer").zoomer();
 
 <br>
 {% for rf in rfs %}
-  <div id="audio_image_{{rf.id}}">
+  <div id="audio_image_{{rf.id}}" style="overflow: scroll;" >
       {{rf.filename}}<br>
     <img alt="audio viz" onerror="this.style.display='none'"
      src ="{{MEDIA_URL}}/{{rf.show.client.slug}}/{{rf.show.slug}}/web/{{rf.location.slug}}/{{rf.filename}}.wav.png"><br>

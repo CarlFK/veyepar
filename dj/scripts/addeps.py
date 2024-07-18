@@ -488,7 +488,7 @@ class add_eps(process.process):
                 'released',
                 'license',
                 'conf_url', 'tags',
-                # 'conf_meta',
+                'conf_meta',
                 # 'host_url',  # for pycon.ca youtube URLs
                 # 'comment',
                 )
@@ -5117,6 +5117,13 @@ class add_eps(process.process):
         url = base_url + "speakers"
         speakers = unpage(url, session, payload, headers)
 
+        slugs_url = "https://raw.githubusercontent.com/pyohio/pyohio-static-website/main/2024/src/content/json/talks.json"
+        response=requests.get( slugs_url )
+        o = response.json()
+        pprint(o[0].keys())
+        slugs={ i['code']:i['slug'] for i in o }
+        youtubes={ i['code']:i for i in o }
+
         """
         # v1 for pycon.au
         if "https://pretalx" in url:
@@ -5155,7 +5162,8 @@ class add_eps(process.process):
         talks = [ t for t in talks if t['state']=='confirmed']
 
         field_maps = [
-            ('code', 'conf_key'), # ('guid',
+            ('code', 'conf_key'),
+            ('code', 'conf_url'),
             ('slot','location'),
             ('slot', 'start'),
             ('duration', 'duration'),
@@ -5170,6 +5178,7 @@ class add_eps(process.process):
             ('language', 'language'),
             # ('answers', 'tags'),
             ('tags', 'tags'),
+            ('speakers', 'picture_url'),
             ('', 'reviewers'),
             ]
 
@@ -5210,12 +5219,15 @@ class add_eps(process.process):
 
 
             year = event['start'].year
-            # event['conf_url'] = "https://2020.pycon.org.au/program/{}".format(event['conf_key'])
+            # conf_url = "https://2020.pycon.org.au/program/{}".format(event['conf_key'])
             # conf_url = f"https://pretalx.northbaypython.org/nbpy-{year}/talk/{event['conf_key']}"
             # conf_url=f"https://www.pyohio.org/{year}/program/talks/is-python-your-type-of-programming-language/
-            conf_url="https://www.pyohio.org/2024/program/talks/"
+            conf_slug="pyohio"
+            slug = slugs[event['conf_key']]
+            conf_url=f"https://www.{conf_slug}.org/{year}/program/talks/{slug}"
             event['conf_url'] = conf_url
 
+            # event['description'] = youtubes[event['conf_key']]['description_youtube']
             event['duration'] = "00:{}:00".format(event['duration'])
 
             event['released'] = not event['released'] # do_not_record
@@ -5231,9 +5243,13 @@ class add_eps(process.process):
 
             emails = []
             twits = []
+            picture_urls = []
             for person in event['emails']:
+
                 speaker = speakersd[person['code']]
                 emails.append(speaker['email'])
+
+                picture_urls.append(person['avatar'])
 
                 """
                 qt = [q for q in speaker['answers'] if q['question']['id']==554]
@@ -5284,6 +5300,10 @@ class add_eps(process.process):
 
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )
+
+            conf_meta={}
+            conf_meta['picture_urls']=picture_urls
+            event['conf_meta'] = json.dumps(conf_meta)
 
 
         # import code; code.interact(local=locals())

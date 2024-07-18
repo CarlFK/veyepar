@@ -1,6 +1,8 @@
 #
 set -ex
-host=veyepar.nextdayvideo.com
+# host=veyepar.nextdayvideo.com
+host=example.com
+boom
 
 # ln -s /home/carl/src/dc/debian/ansible dc_a
 # ln -s /home/carl/src/dc/debian/ansible/roles/tls-certificates/ ansible/roles/
@@ -30,5 +32,5 @@ fi
 ansible-playbook \
     ansible/site.yml --inventory-file inventory/hosts \
     --user root --limit ${host} -vvv \
-    --vault-password-file ~/.ansible/pw_file.txt
+#     --vault-password-file ~/.ansible/pw_file.txt
 

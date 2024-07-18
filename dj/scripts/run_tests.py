@@ -260,7 +260,7 @@ pix_fmt=yuv411p" % parms
   import tsdv
   p=tsdv.ts_rf()
   p.set_options(
-    time_source="fn")
+    time_source="gst")
   p.main()
 
   return

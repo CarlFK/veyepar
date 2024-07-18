@@ -1,5 +1,6 @@
 ---
 letsencrypt_well_known_dir: /var/www/well-known
 letsencrypt_account_email: "cfkarsten@gmail.com"
-sitename: veyepar
+# sitename: veyepar
+sitename: ps1fpgas
 skip_unit_test: False
