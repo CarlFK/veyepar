@@ -101,6 +101,27 @@ class enc(process):
         elif episode.id in [13741, ]: # black list - don't touch this.
             title2 = ''
 
+        elif episode.id in [15458, ]: # break this one on comma
+            pos = title.index(", ")
+            # +1 include the comma, + 2 skip space after it
+            # title1, title2 = title[:pos+1], title[pos + 2:]
+            # (don't keep the comma.. I think.)
+            title1, title2 = title[:pos], title[pos + 2:]
+
+        elif "…" in title:
+            if len(title) < 180:
+                pos = title.index("…") + 1
+                title1, title2 = title[:pos], title[pos:].strip()
+            else:
+                title1, title2 = title, ""
+
+        elif "! " in title:
+            if len(title) < 180:
+                pos = title.index("! ") + 1
+                title1, title2 = title[:pos], title[pos:].strip()
+            else:
+                title1, title2 = title, ""
+
         elif ": " in title: # the space keeps 9:00 from breaking
             if len(title) < 180:
                 pos = title.index(":") + 1
@@ -130,10 +151,6 @@ class enc(process):
             pos = title.index(" (")
             # +1 skip space in " ("
             title1, title2 = title[:pos], title[pos + 1:]
-        elif False and ", " in title:
-            pos = title.index(", ")
-            # +1 include the comma, + 2 skip space after it
-            title1, title2 = title[:pos+1], title[pos + 2:]
         elif " with " in title:
             pos = title.index(" with ")
             # +1 skip the space before the word "with"
@@ -201,10 +218,17 @@ class enc(process):
         # parse into list
         # strip the spaces
         # padd to 3 items
-        l = [a.strip() for a in authors.split(',')]
-        authors = " and ".join(l)
-        l += [''] * (3-len(l))
-        author1, author2, author3 = l
+        # (I don't understand what I am doing here...)
+        # I guess we get one big string (authors) and 3 smaller ones.
+
+        if episode.id in [15447, ]: # black list - don't "and" this.
+            author1, author2, author3 = authors, "", ""
+        else:
+
+            l = [a.strip() for a in authors.split(',')]
+            authors = " and ".join(l)
+            l += [''] * (3-len(l))
+            author1, author2, author3 = l
 
         if episode.conf_meta:
             print(f"{episode.conf_meta=}")
