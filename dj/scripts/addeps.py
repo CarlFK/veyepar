@@ -569,8 +569,8 @@ class add_eps(process.process):
                             continue
 
                     if f=="description":
-                        a1 = a1.replace('\r','')
-                        a2 = a2.replace('\r','')
+                        a1 = a1.strip().replace('\r','')
+                        a2 = a2.strip().replace('\r','')
 
                     if ((a1 or a2) and (a1 != a2)) or (a1 is None and a2 == False):
                         diff=True
@@ -5227,7 +5227,10 @@ class add_eps(process.process):
             conf_url=f"https://www.{conf_slug}.org/{year}/program/talks/{slug}"
             event['conf_url'] = conf_url
 
-            # event['description'] = youtubes[event['conf_key']]['description_youtube']
+            if self.options.show == 'pyohio_2024':
+                # event['description'] = youtubes[event['conf_key']]['description_youtube']
+                event['description'] = youtubes[event['conf_key']]['description_text']
+
             event['duration'] = "00:{}:00".format(event['duration'])
 
             event['released'] = not event['released'] # do_not_record
