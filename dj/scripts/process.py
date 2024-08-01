@@ -442,7 +442,7 @@ class process():
             self.end = datetime.datetime.now()
             e.save()
 
-            if not self.options.test:
+            if not self.options.test and not self.options.skip:
                 self.log_out(e)
 
             if e.stop:
