@@ -422,7 +422,7 @@ class process():
                 connection.connection = None
                 e = Episode.objects.get(pk=e_id)
 
-            if ret:
+            if ret or self.options.skip:
                 # if the process doesn't fail,
                 # and it was part of the normal process,
                 # don't bump if the process was forced,
@@ -434,6 +434,7 @@ class process():
                 # 1. you can't bump None
                 # 2. don't bump when in test mode
                 # 3. if it wasn't forced:, bump.
+                # 4. and not maybe skip wtf?
                 if self.ready_state is not None \
                         and not self.options.test \
                         and not self.options.force:
