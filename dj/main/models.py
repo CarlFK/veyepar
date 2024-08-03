@@ -342,7 +342,7 @@ class Episode(models.Model):
         help_text = "URL of page video is hosted")
     public_url = models.CharField(max_length=335, null=True,blank=True,
         help_text = "URL public should use (like pvo or some aggregator")
-    archive_ogv_url = models.CharField(max_length=355, null=True,blank=True,
+    archave_ogv_url = models.CharField(max_length=355, null=True,blank=True,
         help_text = "URL public can use to dl an ogv (like archive.org")
     archive_url = models.CharField(max_length=355, null=True,blank=True,
         help_text = "not sure.. deprecated?")
@@ -448,12 +448,13 @@ class Episode(models.Model):
                 self.conf_url,
                 self.description,
                 show.tags,
-                show.description, client.description,
-                footer,
+                show.description,
+                client.description,
                 client.tags,
                 "{} at {}".format(
                     self.start.strftime("%c"),
                     self.location.name),
+                footer,
                 ]
 
         # remove blanks
