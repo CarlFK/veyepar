@@ -484,7 +484,10 @@ class enc(process):
                 # else None
 
                 cut['in']=hms_to_clock(cl.start)
-                cut['out']=hms_to_clock(cl.end)
+                if cl.end:
+                    cut['out']=hms_to_clock(cl.end)
+                else:
+                    cut['out']=hms_to_clock(str(cl.raw_file.get_seconds()))
 
                 cut['length'] = cl.duration()
 
