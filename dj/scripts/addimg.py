@@ -19,6 +19,8 @@ pdfimages pyohio2014reviewsheets.pdf pyohio2014reviewsheets
 
 # if pdfimages doesn't work out, use convert
 # convert -monochrome -density 300 pyohio2014reviewsheets.pdf pyohio2014reviewsheets.png
+# or pdftoppm
+# pdftoppm PyOhio_2024_Recording_Sheets.pdf PyOhio_2024_Recording_Sheets
 
 pip install pyocr
 sudo apt install tesseract-ocr-eng tesseract-ocr
@@ -120,6 +122,9 @@ class add_img(process):
 
         # ocr
         # and connect the img object to episodes
+        if self.options.display:
+            self.run_cmd(['display', src_name])
+
         text = self.ocr_img(src_name)
 
         # words to look for in set header:
@@ -142,20 +147,20 @@ class add_img(process):
         """
 
         if first_page_of_set:
-            start = 539 # 1014 # 982 # 1000 #1100 # 728 # 820 # 995
-            end = 908 # 1560 # 1526 # 1528 # 1705 # 1071 # 1370 # 1547
+            start = 471 # 900 # 460 # 539 # 1014 # 982 # 1000 #1100 # 728 # 820 # 995
+            end = 735 # 1470 # 750 # 908 # 1560 # 1526 # 1528 # 1705 # 1071 # 1370 # 1547
             bands= 3
             suffix='a'
         else:
-            start = 267 # 622 # 584 #730 # 802 # 400 # 577
-            end =  636 # 1169 # 1126 # 1255 # 1318 # 960 # 1127
+            start = 271 # 540 #260 # 267 # 622 # 584 #730 # 802 # 400 # 577
+            end = 532 # 1070 # 590 # 636 # 1169 # 1126 # 1255 # 1318 # 960 # 1127
             bands= 4
             suffix='b'
 
-        page = 3450 # 2338 # 3216
+        page = 1653 # 3301 # 3450 # 2338 # 3216
 
-        head = float(start)/float(page)
-        band = float(end-start)/float(page)
+        head = float(start) # /float(page)
+        band = float(end-start) # /float(page)
         fudge = 0.025 # I'm not really sure what the unit is)
 
         im = Image.open(src_name)
@@ -163,15 +168,25 @@ class add_img(process):
         src_base = os.path.basename(src_name)
         for i in range(bands):
 
+            """
             box = im.crop(
                 (0, int(h * (head + band * i - fudge )),
                  w, int(h * (head + band * (i+1) + fudge) ))
+            """
+
+            box = im.crop(
+                (0, (head + int(band * (i - fudge))),
+                 w, (head + int(band * ((i+1) + fudge)) ))
                         )
 
             png_name = '{}-{}{}.png'.format(
                     os.path.splitext(src_base)[0], i, suffix)
             print(png_name)
-            box.save( os.path.join( self.show_dir, "img", png_name ))
+            png_path_name = os.path.join( self.show_dir, "img", png_name )
+            box.save( png_path_name )
+
+            if self.options.display:
+                self.run_cmd(['display', png_path_name])
 
             # upload it
             if self.options.rsync:
@@ -183,8 +198,7 @@ class add_img(process):
                     filename=png_name,)
 
             # ocr and connect the img object to episodes
-            text = self.ocr_img(
-                    os.path.join( self.show_dir, "img", png_name ))
+            text = self.ocr_img( png_path_name )
             img_band.text = text
             img_band.save()
 
@@ -316,7 +330,7 @@ class add_img(process):
                   self.one_page(os.path.join(d,f),show,eps)
                   # self.one_ep(os.path.join(d,f),show,eps)
 
-                  if self.options.test:
+                  if self.options.test or self.options.display:
                       print("...Test mode, only doing one.")
                       return
 
@@ -337,6 +351,9 @@ class add_img(process):
 
         parser.add_option('--base',
             help="source filename base.")
+
+        parser.add_option('--display', action="store_true",
+            help="display the sliced images.")
 
         parser.add_option('--dumb', action="store_true",
             help="just add to show, no ocr, no guessing.")
