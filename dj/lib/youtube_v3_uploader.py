@@ -178,7 +178,10 @@ def get_id_from_url(url):
 def clean_description(description):
 
     """
-    The property value has a maximum length of 5000 bytes and may contain all valid UTF-8 characters except < and >.
+    Descriptin: The property value has a maximum length of 5000 bytes
+    and may contain all valid UTF-8 characters except < and >.
+    Same The video's title. The property value has a maximum length of 100 characters
+    and may contain all valid UTF-8 characters except < and >.
     https://developers.google.com/youtube/v3/docs/videos#properties
     """
 
@@ -404,6 +407,9 @@ class Uploader():
         if self.debug:
             print(self.pathname)
             pprint(self.meta)
+
+        self.meta['title'] = clean_description(
+                self.meta['title'])
 
         self.meta['description'] = clean_description(
                 self.meta['description'])
