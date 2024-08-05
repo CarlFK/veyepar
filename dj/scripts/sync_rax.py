@@ -126,11 +126,10 @@ class SyncRax(process):
             base = os.path.join("dv", rf.location.slug, rf.filename)
             web_base = os.path.join("web", "raw",
                     rf.location.slug, rf.filename)
-            if self.options.verbose:
-                print(f'{base} -> {web_base}')
-
             rfpathname = os.path.join(self.show_dir, base)
             low = f"{web_base}.{ext}"
+            if self.options.verbose:
+                print(f'{base} -> {low}')
             out = os.path.join(self.show_dir, low)
 
             os.makedirs(os.path.dirname(out), exist_ok=True)
