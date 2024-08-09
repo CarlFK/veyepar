@@ -40,21 +40,16 @@ Title: {{ep.name}}
 === begin ===
 {{ep.composed_description}}
 === end description ===
-  {% else %} (is blank.)
-  {% endif %}
+  {% else %} (is blank.) {% endif %}
 {% endif %}
+
 {% if no_releases %}
 If you do not want your talk video published, contact the event organizers (reply to this email.)
-{% else %}
-Released: "{{ep.released|yesno:"Yes,No,None"}}" means:
-Yes: Permission has been given to record your talk and post it online.  Once it is up, you will get another e-mail with a URL that is not public until someone approves it.  Once it's approved it will be made public and tweeted {{ep.show.client.tweet_prefix}} {{ep.twitter_id}}.
-No: You have requested for the video not to be released. This request will be honored.  However the a video may be produced and available for review in case you change your mind.  If you need to be absolutely sure, at the event you can ask to have the camera turned off.
-None: Permission to publish a video of this talk is unknown.  This means it may get recorded and processed, but it will not be made public and we will send another email asking for permission.  Please reply to this email stating your preference.
-{% if not ep.location.active %}However, we are not planning on recording any of the talks in {{ ep.location.name }}.  {% endif %}
-{% if not ep.reviewers %}
-If you would like someone to double check your video, (mostly for technical defects, see https://github.com/CarlFK/veyepar/wiki/Reviewer) hit reply, add a name and email to the top, hit send.  They will then get CCed when your video is ready for review.
 {% endif %}
-{% endif %}
+
+https://github.com/CarlFK/veyepar/wiki/Recording-Policy
+https://github.com/CarlFK/veyepar/wiki/Privacy-Policy
+https://github.com/CarlFK/veyepar/wiki/Reviewer#for-presenters
 
 If everything looks good, you don't need to do anything. Good luck with your talk; expect another email when the video is posted.
 
