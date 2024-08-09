@@ -6,13 +6,15 @@
 <form action="" method="POST">
     {% csrf_token %}
     <p><b>
-        Please review this pre-release video.
+        Please review the pre-release video.
         <u><a href="https://github.com/CarlFK/veyepar/wiki/Reviewer#for-reviewers">(Instructions)</a></u><br>
+        After you have watched the entire video from start to end,<br>
         If you feel the video is ready for the public,<br>
         {{who}}<br>
-        or inits, or something so we have a clue who did this,<br>
         and click <input type="submit" value="Approve" /><br>
-        which queues it up to be un-hidden and announced to the public.
+        which queues it up to be un-hidden and announced to the public.<br>
+        If you do not want to watch the video, that's ok.  <br>
+        Someone will soon, or after a few days it will be pushed out for public viewing which is probably fine.
     </b></p>
 
 </form>
