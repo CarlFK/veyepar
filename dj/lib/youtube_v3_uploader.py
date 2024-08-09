@@ -124,7 +124,7 @@ def resumable_upload(insert_request):
 
           sec = time_till_quota_reset(datetime.datetime.now(), 2)
 
-          then = now + datetime.timedelta(seconds=sec)
+          then = now + datetime.timedelta(seconds=sec) + 62 # 62 to make sure.
           print(f'{then=}')
 
           print(f'sleeping till time_till_quota_reset: {sec=}')
