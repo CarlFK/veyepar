@@ -9,7 +9,7 @@
 {%else%}
     <p>This video is not waiting to be approved.</p>
     <p>Either it has been approved, or it is being reprocessed.</p>
-    <p>It is currently in state: {{episode.state}}</p>
+    <p>It is currently in state: {{episode.state}}: {{state.slug}} - {{state.description}}</p>
 {% endif %}
 
 {% endblock %}

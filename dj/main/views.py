@@ -2088,6 +2088,7 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
     Lets hope that the edit_key does not get abused.
     """
     episode=get_object_or_404( Episode, id=episode_id )
+    state=State.objects.get(sequence=episode.state)
 
     if request.method == 'POST':
             episode.locked = datetime.datetime.now()
@@ -2101,7 +2102,6 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
                     who = Who(request.POST)
                     if who.is_valid():
                         episode.locked_by = who.cleaned_data['locked_by']
-                        state = State.objects.get(sequence=episode.state)
                         log=Log(episode=episode,
                             state=state,
                             ready = datetime.datetime.now(),
@@ -2127,7 +2127,6 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
             # not in review 2 state
             # likely someone else already approved it
             template = "not_ready"
-
     else:
         # bad key
         # who knows what is going on here.
@@ -2137,6 +2136,7 @@ def approve_episode(request,episode_id, episode_slug, edit_key):
     return render(request, "approve/%s.html"%template,
                     { 'episode':episode,
                         'who':who,
+                        'state':state,
                     },
                      )
 
