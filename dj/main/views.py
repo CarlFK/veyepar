@@ -1796,7 +1796,9 @@ def episode_assets(request, episode_id, slug, mode="sh"):
 
     elif mode == 'py':
         # make .py
-        py = """
+        # this inline .py makes me agitated.
+        py = \
+        """
 import tempfile
 import zipfile
 
@@ -1821,7 +1823,7 @@ def zip(zf, fd, dst):
 
 with zipfile.ZipFile('{}.zip', 'w') as zf:
 
-""".format(slug)
+    """.format(slug)
 
         for asset in assets:
             if 'url' in asset:
