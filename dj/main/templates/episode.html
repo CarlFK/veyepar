@@ -17,12 +17,14 @@ Name: <b>{{episode.name}}</b><br>
 --show <a href="{% url "episode_list" client.slug show.slug%}">{{ show.slug }}</a> --room {{episode.location.slug}} {{episode.id}} --force
 <br>
 
+{% comment %}
 {% if prev_episode %}
   <a href="/main/E/{{ prev_episode.id }}">Prev: {{prev_episode.state }} {{prev_episode.name }}</a>
 {% else %}
   Prev: (none, at start of list)
 {% endif %}
 <br>
+{% endcomment %}
 {% if next_episode %}
 <a href="/main/E/{{ next_episode.id }}">Next: {{next_episode.state }} {{next_episode.name }}</a>
 {% else %}

@@ -2642,21 +2642,26 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         episode.emails = None
 
     # find Prev/Next links:
-    try:
+#     try:
         # why Start/End can't be null:
         # http://code.djangoproject.com/ticket/13611
         # prev_episode = episode.get_previous_by_start(show=show)
-        prev_episode = episode.get_previous_by_start(
-                show=show, location=location)
-    except Episode.DoesNotExist:
+#        prev_episode = episode.get_previous_by_start(
+#                show=show, location=location, state=episode.state)
+#    except Episode.DoesNotExist:
         # at edge of the set of nulls or values.
-        prev_episode = None
+#        prev_episode = None
 
     try:
         next_episode = episode.get_next_by_start(
-                show=show, location=location)
+                show=show, location=location, state=episode.state)
     except Episode.DoesNotExist:
-        next_episode = None
+        try:
+            next_episode = episode.get_next_by_start(
+                    show=show, state=episode.state)
+        except Episode.DoesNotExist:
+            next_episode = None
+
 
     # If this episode is still being edited, create or add cuts
     # if episode.state==1:
@@ -2830,7 +2835,7 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
         'offset':offset,
         'chaps':chaps,
         'client':client, 'show':show, 'location':location,
-        'prev_episode':prev_episode,
+        # 'prev_episode':prev_episode,
         'next_episode':next_episode,
         'same_dates':same_dates,
         'episode_form':episode_form,
