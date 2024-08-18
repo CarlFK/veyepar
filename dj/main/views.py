@@ -2657,8 +2657,19 @@ def episode(request, episode_id, episode_slug=None, edit_key=None):
                 show=show, location=location, state=episode.state)
     except Episode.DoesNotExist:
         try:
-            next_episode = episode.get_next_by_start(
-                    show=show, state=episode.state)
+            print(f"{location.sequence=}")
+            next_location = Location.objects.filter(
+                    show=show,
+                    sequence__gt=location.sequence
+                    ).order_by("sequence").first()
+            print(f"{next_location=}")
+
+            next_episode = Episode.objects.filter(
+                    show=show,
+                    location=next_location,
+                    state=episode.state,
+                    ).order_by("start").first()
+            print(f"{next_episode=}")
         except Episode.DoesNotExist:
             next_episode = None
 
