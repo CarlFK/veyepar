@@ -98,7 +98,8 @@ class enc(process):
         if False and episode.show.slug != 'pygotham_2015' and  len(title) > 80: # crazy long titles need all the lines
             title2 = ''
 
-        elif episode.id in [13741, ]: # black list - don't touch this.
+        elif episode.id in [13741, 15485]: # black list - don't touch this.
+            title1 = title
             title2 = ''
 
         elif episode.id in [15458, ]: # break this one on comma
@@ -144,6 +145,12 @@ class enc(process):
             else:
                 title1, title2 = t1, t2
 
+        elif " – " in title:
+            title1, title2 = title.split(' – ')
+
+        elif "--" in title:
+            title1, title2 = title.split('--')
+
         elif " -- " in title:
             # error if there is more than 1.
             title1, title2 = title.split(' -- ')
@@ -151,7 +158,7 @@ class enc(process):
             pos = title.index(" (")
             # +1 skip space in " ("
             title1, title2 = title[:pos], title[pos + 1:]
-        elif " with " in title:
+        elif False and " with " in title:
             pos = title.index(" with ")
             # +1 skip the space before the word "with"
             title1, title2 = title[:pos], title[pos + 1:]
@@ -170,9 +177,6 @@ class enc(process):
         elif " # " in title:
             pos = title.index(" # ")
             title1, title2 = title[:pos], title[pos+1:].strip()
-        elif True and " with " in title:
-            pos = title.index(" with ")
-            title1, title2 = title[:pos], title[pos + 1:]
         elif False and " using " in title:
             pos = title.index(" using ")
             title1, title2 = title[:pos], title[pos + 1:]
