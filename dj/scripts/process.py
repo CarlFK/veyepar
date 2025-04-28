@@ -386,6 +386,9 @@ class process():
     def process_eps(self, episodes):
         # if self.options.verbose: print("process_ep: enter")
 
+        ep_nos=[e.id for e in episodes]
+        print(f"processing {len(ep_nos)=} episodes: {ep_nos=}")
+
         ret = None
         for e in episodes:
             if not self.ep_is_available(e):
