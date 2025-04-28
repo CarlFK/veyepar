@@ -174,7 +174,7 @@ class post(process):
             print(len(meta['description']))
 
         elif self.options.update_description:
-            # I don't like where this code lives.
+            # I don't like where this code lives. (currently here.)
 
             # required to update (I don't know why...)
             title = meta['title']
