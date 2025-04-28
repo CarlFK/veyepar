@@ -895,7 +895,7 @@ class add_eps(process.process):
     def get_rooms(self, schedule, key='location'):
       rooms=set()
       for row in schedule:
-          if self.options.verbose: print(row)
+          if self.options.verbose: pprint(row)
           room = row[key]
           if room is None: room = "None"
           rooms.add(room)
@@ -4537,6 +4537,11 @@ class add_eps(process.process):
 
 
     def latch_2023(self, show, response, session):
+        # testing ps1 budget sheet access:
+        sid = "1YQp5S1O9fWlwi0376IMbfVBQkvq6GHO-CChKtbTxd5I"
+        rows = goog_sheet( sid )
+
+
         googid="12XgZH26YZhnsUBySohOWfMm_W5fMvKowUESVaK8C6bA"
         rows = goog_sheet( googid, range_name='veyepar')
 
@@ -5146,15 +5151,13 @@ class add_eps(process.process):
         # index the speaker list
         speakersd = { s['code']:s for s in speakers }
 
-        """
         print("# shim in emails:")
-        with open(os.path.join(self.show_dir, 'schedule/nbpy-2024_speakers.json')) as f:
+        with open(os.path.join(self.show_dir, 'schedule/nbpy-2025_speakers.json')) as f:
             speakes = json.load(f)
         pprint(speakes[0])
-        emails = { s['ID']:s['E-Mail'] for s in speakes }
+        emails = { s['ID']:s['Email'] for s in speakes }
         for speaker in speakersd.values():
             speaker['email']=emails[speaker['code']]
-        """
 
         # talksd = { t['code']:t for t in talks }
 
@@ -5168,8 +5171,8 @@ class add_eps(process.process):
             ('slot', 'start'),
             ('duration', 'duration'),
             ('title', 'name'),
-            # ('abstract', 'description'),
-            ('description', 'description'),
+            ('abstract', 'description'),
+            # ('description', 'description'),
             ('speakers', 'authors'),
             ('speakers', 'emails'),
             ('speakers', 'twitter_id'),
@@ -5199,32 +5202,34 @@ class add_eps(process.process):
                 'The One Obvious Room': 'Obvious',
                 'Curlyboi Theatre': 'Curlyboi',
                     }[room]
-            event['location'] = {
-                'The Barn': 'Reis River Ranch',
-                'Barn': 'Reis River Ranch',
-                    }[room]
-            """
 
-            event['location'] = {
+           event['location'] = {
                 'Orchid Ballroom East': 'Orchid East',
                 'Orchid Ballroom West': 'Orchid West',
                 'Cattleya': 'Cattleya',
                 'Calypso': 'Calypso',
                     }[room]
+            """
+
+            event['location'] = {
+                'The Barn': 'Reis River Ranch',
+                'Barn': 'Reis River Ranch',
+                    }[room]
+
 
             event['start'] = datetime.strptime(
-                    event['start']['start'], '%Y-%m-%dT%H:%M:%S-04:00' )
-                    # event['start']['start'], '%Y-%m-%dT%H:%M:%S-07:00' )
+                    # event['start']['start'], '%Y-%m-%dT%H:%M:%S-04:00' )
+                    event['start']['start'], '%Y-%m-%dT%H:%M:%S-07:00' )
                     # event['start']['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
 
 
             year = event['start'].year
             # conf_url = "https://2020.pycon.org.au/program/{}".format(event['conf_key'])
-            # conf_url = f"https://pretalx.northbaypython.org/nbpy-{year}/talk/{event['conf_key']}"
+            conf_url = f"https://pretalx.northbaypython.org/nbpy-{year}/talk/{event['conf_key']}"
             # conf_url=f"https://www.pyohio.org/{year}/program/talks/is-python-your-type-of-programming-language/
-            conf_slug="pyohio"
-            slug = slugs[event['conf_key']]
-            conf_url=f"https://www.{conf_slug}.org/{year}/program/talks/{slug}"
+            # conf_slug="pyohio"
+            # slug = slugs[event['conf_key']]
+            # conf_url=f"https://www.{conf_slug}.org/{year}/program/talks/{slug}"
             event['conf_url'] = conf_url
 
             if self.options.show == 'pyohio_2024':
@@ -5299,7 +5304,7 @@ class add_eps(process.process):
             event['tags'] = ', '.join(tags)
             """
 
-            event['tags'] = ', '.join(event['tags'])
+            # event['tags'] = ', '.join(event['tags'])
 
             for k in html_encoded_fields:
                 event[k] = html_parser.unescape( event[k] )
@@ -5656,7 +5661,8 @@ class add_eps(process.process):
         if self.options.show =='pybay23':
             return self.sessionize(schedule, show)
 
-        if self.options.show in ['pyohio_2024', 'NBPy2024', 'nbpy23']:
+        if self.options.show in [
+                'NBPy2025', 'pyohio_2024', 'NBPy2024', 'nbpy23']:
             return self.pretalx(show, session, payload, headers)
 
         if self.options.client =='drupalsouth':
