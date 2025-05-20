@@ -205,7 +205,7 @@ class post(process):
 
             if youtube_success:
                 # if self.options.verbose: print uploader.new_url
-                print((uploader.new_url))
+                print(f"new: {uploader.new_url}")
 
                 # save new youtube url
                 ep.host_url = uploader.new_url
