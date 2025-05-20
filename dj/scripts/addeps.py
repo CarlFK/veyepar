@@ -5004,6 +5004,61 @@ class add_eps(process.process):
 
         self.add_eps(events, show)
 
+    def smwcon_spring_2025(self, show):
+
+        session = requests.session()
+
+        episodes = Episode.objects.filter( show=show, )
+        for e in episodes:
+
+            conf_meta = json.loads(e.conf_meta)
+
+            # print(e.name)
+            # parsed = urlparse(e.name)
+            # i = parsed.path.index('2025')
+            # page_name = parsed.path[i+5:]
+            # url = f"https://meza.wiki/mwplus/MediaWiki_Users_and_Developers_Workshop_Spring_2025/{page_name}"
+
+            url = conf_meta['url']
+            response = session.get(url=url)
+
+            # print(response)
+            # conf_meta['url'] = url
+            # e.conf_meta = json.dumps(conf_meta)
+            # e.save()
+            # print(f"{e.conf_meta=}")
+
+            soup = BeautifulSoup(response.content, "html.parser")
+            node = soup.find(id="firstHeading")
+            i = node.text.index('/')
+            name = node.text[i+1:]
+            print(f"{name=}")
+            e.name=name
+            slug = slugify(name).replace('-','_')
+            e.slug = slug
+
+            # node = soup.find(id="mw-content-text")
+            node = soup.find(title="Property:Has Presenters")
+            authors = node.find_next('td').text.strip()
+            print(f"{authors=}")
+            e.authors=authors
+
+            node = soup.find(title="Property:Has Length")
+            length = node.find_next('td').text.strip()
+            print(f"{length=} {e.duration}")
+
+
+            node = soup.find(title="Property:Has Description")
+            description = node.find_next('td').text.strip()
+            print(f"{description=}")
+            e.description=description
+
+            e.released=True
+
+            e.save()
+
+            # print("import sys;sys.exit()"); import code; code.interact(local=locals())
+            # import sys;sys.exit()
 
 
     def pyvideo(self, schedule, show):
@@ -5500,6 +5555,9 @@ class add_eps(process.process):
 
         elif self.options.show =='kicon_2019':
             return self.kicon(show)
+
+        elif self.options.show =='smwcon_spring_2025':
+            return self.smwcon_spring_2025(show)
 
         if url.startswith('file'):
             f = open(url[7:])
