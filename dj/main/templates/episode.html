@@ -214,7 +214,7 @@ $(".viewer").zoomer();
 
 <div id="cl{{cl.id}}">
 
-  {{cl.raw_file.filename}}
+  <a href="#cl{{cl.id}}">{{cl.raw_file.filename}}</a>
   {{ clrfform.apply }}{{ clrfform.apply.label_tag }}
   {{ cl.get_start_wall|date:"H:i:s" }} - {{ cl.get_end_wall|date:"H:i:s" }}
   ( {{ cl.duration_hms }} )
