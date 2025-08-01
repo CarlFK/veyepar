@@ -502,6 +502,8 @@ class enc(process):
                 else:
                     cut['channelcopy']='01'
 
+                # Because the data schema has .channelcopy on episode not cutlist, here is a hack:
+                # Put this in the cutlist comment: "channelcopy=10"
                 if cl.comment.startswith('channelcopy'):
                    channelcopy = cl.comment.split('\n')[0].split('=')[1].strip()
                    cut['channelcopy']=channelcopy
@@ -780,12 +782,10 @@ progressive=1
             print("encoding to %s" % (ext,))
             ret = enc_one(ext) and ret
 
-        """
         if self.options.enc_script:
             cmd = [self.options.enc_script,
                    self.show_dir, episode.slug]
             ret = ret and self.run_cmds(episode, [cmd])
-        """
 
         return ret
 
