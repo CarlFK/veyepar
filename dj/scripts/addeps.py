@@ -5126,7 +5126,7 @@ class add_eps(process.process):
 
     def pretalx(self, show, session, payload, headers):
         # https://docs.pretalx.org/en/latest/api/resources/events.html
-        # v2 for NBPy 2023, 24 and PyOhio 2024
+        # v2 for NBPy 2023, 24 and PyOhio 2024 2025
 
         # ignore schedule, use talks and speakers
         """
@@ -5157,8 +5157,11 @@ class add_eps(process.process):
                         verify=False,
                         headers=headers,
                         )
+                if response.status_code != 200:
+                    print(f"{response.status_code=}")
+                    import code; code.interact(local=locals())
                 j = response.json()
-                # pprint(j)
+                if self.options.verbose: pprint(j)
                 ret.extend(j['results'])
                 url = j['next']
 
@@ -5167,22 +5170,46 @@ class add_eps(process.process):
             return ret
 
         base_url = show.schedule_url[:-6] # the schedule url gets emailed
+        base_url = show.schedule_url
 
-        url = base_url + "schedules"
+        # submissions/?state=confirmed&expand=speakers,submission_type
+
+        url = base_url + "/schedules"
         schedule = unpage(url, session, payload, headers)
 
-        url = base_url + "talks"
-        talks = unpage(url, session, payload, headers)
+        url = base_url + "/talks"
+        # talks = unpage(url, session, payload, headers)
 
-        url = base_url + "speakers"
+        # sessions_url = f"{self.base_url}/submissions/?state=confirmed&expand=speakers,submission_type"
+        url = f"{base_url}/submissions/?state=confirmed&expand=speakers,submission_type"
+        sessions = unpage(url, session, payload, headers)
+        talks = sessions
+
+        url = base_url + "/speakers"
         speakers = unpage(url, session, payload, headers)
 
-        slugs_url = "https://raw.githubusercontent.com/pyohio/pyohio-static-website/main/2024/src/content/json/talks.json"
-        response=requests.get( slugs_url )
+        # slugs_url = "https://github.com/pyohio/pyohio-static-website/raw/refs/heads/main/2025/src/content/json/talks.json"
+
+        url = "https://raw.githubusercontent.com/pyohio/pyohio-static-website/refs/heads/main/2025/src/content/jsonData/talks.json"
+        # https://github.com/pyohio/pyohio-static-website/blob/main/2025/src/content/jsonData/talks.json
+
+        response=requests.get( url )
+        if response.status_code != 200:
+            print(f"{response.status_code=}")
+            import code; code.interact(local=locals())
         o = response.json()
         pprint(o[0].keys())
         slugs={ i['code']:i['slug'] for i in o }
         youtubes={ i['code']:i for i in o }
+
+        url = base_url + "/rooms"
+        rooms = unpage(url, session, payload, headers)
+        roomsd = { i['id']:i for i in rooms }
+
+        url = base_url + "/slots"
+        slots = unpage(url, session, payload, headers)
+        slotsd = { s['id']:s for s in slots }
+
 
         """
         # v1 for pycon.au
@@ -5206,6 +5233,7 @@ class add_eps(process.process):
         # index the speaker list
         speakersd = { s['code']:s for s in speakers }
 
+        """
         print("# shim in emails:")
         with open(os.path.join(self.show_dir, 'schedule/nbpy-2025_speakers.json')) as f:
             speakes = json.load(f)
@@ -5213,11 +5241,21 @@ class add_eps(process.process):
         emails = { s['ID']:s['Email'] for s in speakes }
         for speaker in speakersd.values():
             speaker['email']=emails[speaker['code']]
+        """
 
         # talksd = { t['code']:t for t in talks }
 
         # remove unaccepted, canceled, etc.
-        talks = [ t for t in talks if t['state']=='confirmed']
+        talks = [ t for t in talks
+                if t['state']=='confirmed']
+        talks = [ t for t in talks
+                if not t['title'].startswith('CANCELED')]
+
+        # error on talk more than one slot
+        for talk in talks:
+            if talk['slot_count'] != 1:
+                pprint(talk)
+                import code; code.interact(local=locals())
 
         field_maps = [
             ('code', 'conf_key'),
@@ -5244,12 +5282,23 @@ class add_eps(process.process):
 
         html_parser = HTMLParser()
         # html_encoded_fields = [ 'name', 'authors', 'description', ]
-        html_encoded_fields = [ ]
+        html_encoded_fields = []
 
         for event in events:
             if self.options.verbose: pprint(event)
 
-            room = event['location']['room']['en']
+            slot = slotsd[event['raw']['slots'][0]]
+            # {'id': 1228974, 'room': 4364, 'start': '2025-07-26T09:00:00-04:00', 'end': '2025-07-26T09:15:00-04:00', 'submission': None, 'schedule': 9531, 'description': {'en': 'Saturday Welcome'}, 'duration': 15, 'is_visible': True}
+
+            event['start'] = datetime.strptime( slot['start'], '%Y-%m-%dT%H:%M:%S-04:00' )
+
+            # import code; code.interact(local=locals())
+            event['duration'] = f"00:{slot['duration']}:00"
+
+            # {'id': 4364, 'name': {'en': 'Ballroom D'},
+            event['location'] = roomsd[slot['room']]['name']['en']
+
+
             """
             event['location'] = {
                 'Python 2 Memorial Concert Hall': 'Python 2',
@@ -5264,34 +5313,34 @@ class add_eps(process.process):
                 'Cattleya': 'Cattleya',
                 'Calypso': 'Calypso',
                     }[room]
-            """
 
             event['location'] = {
                 'The Barn': 'Reis River Ranch',
                 'Barn': 'Reis River Ranch',
                     }[room]
 
-
             event['start'] = datetime.strptime(
                     # event['start']['start'], '%Y-%m-%dT%H:%M:%S-04:00' )
                     event['start']['start'], '%Y-%m-%dT%H:%M:%S-07:00' )
                     # event['start']['start'], '%Y-%m-%dT%H:%M:%S+09:30' )
 
+            """
+
+            # https://www.pyohio.org/2025/program/talks/detecting-road-conditions-from-space-using-pytorch-public-data/
+
 
             year = event['start'].year
             # conf_url = "https://2020.pycon.org.au/program/{}".format(event['conf_key'])
-            conf_url = f"https://pretalx.northbaypython.org/nbpy-{year}/talk/{event['conf_key']}"
+            # conf_url = f"https://pretalx.northbaypython.org/nbpy-{year}/talk/{event['conf_key']}"
             # conf_url=f"https://www.pyohio.org/{year}/program/talks/is-python-your-type-of-programming-language/
-            # conf_slug="pyohio"
-            # slug = slugs[event['conf_key']]
-            # conf_url=f"https://www.{conf_slug}.org/{year}/program/talks/{slug}"
+            conf_slug="pyohio"
+            slug = slugs[event['conf_key']]
+            conf_url=f"https://www.{conf_slug}.org/{year}/program/talks/{slug}"
             event['conf_url'] = conf_url
 
-            if self.options.show == 'pyohio_2024':
+            if self.options.show == 'pyohio_2025':
                 # event['description'] = youtubes[event['conf_key']]['description_youtube']
                 event['description'] = youtubes[event['conf_key']]['description_text']
-
-            event['duration'] = "00:{}:00".format(event['duration'])
 
             event['released'] = not event['released'] # do_not_record
             # event['released'] = [q for q in event['released'] if q['question']['id']==546][0]['answer'] == 'True'
@@ -5304,6 +5353,8 @@ class add_eps(process.process):
                     )
                     # if a['name'] is not None)
 
+            event['tags'] = ",".join(event['tags'])
+
             emails = []
             twits = []
             picture_urls = []
@@ -5312,7 +5363,7 @@ class add_eps(process.process):
                 speaker = speakersd[person['code']]
                 emails.append(speaker['email'])
 
-                picture_urls.append(person['avatar'])
+                picture_urls.append(person['avatar_url'])
 
                 """
                 qt = [q for q in speaker['answers'] if q['question']['id']==554]
@@ -5720,7 +5771,7 @@ class add_eps(process.process):
             return self.sessionize(schedule, show)
 
         if self.options.show in [
-                'NBPy2025', 'pyohio_2024', 'NBPy2024', 'nbpy23']:
+                'NBPy2025', 'pyohio_2025', 'NBPy2024', 'nbpy23']:
             return self.pretalx(show, session, payload, headers)
 
         if self.options.client =='drupalsouth':

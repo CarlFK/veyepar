@@ -538,7 +538,7 @@ class Cut_List(models.Model):
         return self.raw_file.base_url()
 
 class State(models.Model):
-    sequence = models.IntegerField(default=1)
+    sequence = models.IntegerField(default=1, help_text="episode.state value")
     slug = models.CharField(max_length=30)
     description = models.CharField(max_length=135, blank=True)
     command = models.CharField(max_length=135, blank=True)

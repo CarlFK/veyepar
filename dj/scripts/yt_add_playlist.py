@@ -9,7 +9,10 @@ import pw
 from django.conf import settings
 from main.models import Show, Location, Episode, Raw_File, Cut_List
 
-class mk_public(process):
+class yt_add_pl(process):
+    """
+    Add videos to theh show's playlist
+    """
 
     ready_state = None
 
@@ -54,6 +57,6 @@ class mk_public(process):
         return ret
 
 if __name__ == '__main__':
-    p=mk_public()
+    p=yt_add_pl()
     p.main()
 

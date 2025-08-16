@@ -7,6 +7,8 @@
 # export it with:
 # ./manage.py dumpdata auth > main/fixtures/veyepar_auth.json
 
+user=videoteam
+host=veyepar.nextdayvideo.com
 
 if grep ^DATABASES dj/local_settings.py; then
     vim dj/local_settings.py
@@ -15,10 +17,9 @@ fi
 
 # If the current user doesn't have ssh key access,
 # BatchMode will cause this to fail and continue to the wget
-ssh -o BatchMode=yes veyepar@veyepar.nextdayvideo.com /home/veyepar/site/veyepar/utils/dumpdata.sh
+# ssh -o BatchMode=yes ${user}@${host} /home/${user}/veyepar/utils/dumpdata.sh
 
-
-SRC=http://veyepar.nextdayvideo.com/temp
+SRC=http://${host}/temp
 # wget -N $SRC/veyepar_all.json
 # wget -N $SRC/veyepar_noauth.json
 wget -N $SRC/veyepar_main.json

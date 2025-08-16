@@ -4,8 +4,8 @@
 # as in, if 12-34-56.dv is in raw_files, look for 12-34-56.ogv.
 # no walking the directory tree looking for random files.
 
-# python sync_rax.py --rsync --raw --low --audio-viz
-# python sync_rax.py --rsync --cooked --audio-viz 15552 --replace
+# python sync_rax.py --rsync --audio-viz --raw --low
+# python sync_rax.py --rsync --audio-viz --cooked --replace 15552
 
 
 import os
