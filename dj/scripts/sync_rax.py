@@ -315,6 +315,10 @@ class SyncRax(process):
         self.file2cdn(show, f"{base}.svg")
         self.file2cdn(show, f"{base}.png")
 
+        # base = os.path.join("custom/titles", ep.slug )
+        # self.file2cdn(show, f"{base}.svg")
+        # self.file2cdn(show, f"{base}.png")
+
 
     def mlt(self,show,ep):
         # put whatever is found into target/mlt
