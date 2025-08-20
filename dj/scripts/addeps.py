@@ -5255,9 +5255,13 @@ class add_eps(process.process):
                 pprint(talk)
                 import code; code.interact(local=locals())
 
+        # Dear PyOhio 2026, use the PyOhio slug instead of Veyepar's.
+        # hope this works, good luck!
+
         field_maps = [
             ('code', 'conf_key'),
             ('code', 'conf_url'),
+            ('code', 'slug'),
             ('slot','location'),
             ('slot', 'start'),
             ('duration', 'duration'),
