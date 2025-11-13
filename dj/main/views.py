@@ -485,6 +485,18 @@ def eps_xfer(request,client_slug=None,show_slug=None):
                     - datetime.timedelta(minutes=5)
                     ).strftime('%H:%M %d.%m.%Y')
 
+        if 'edit_key' in d:
+            # d['approve'] = \
+            d = {'approve': \
+                "https://veyepar.nextdayvideo.com/main/approve/{episode_id}/{slug}/{edit_key}/".format(
+                episode_id=ep.id, slug=ep.slug, edit_key=ep.edit_key )
+                }
+
+                # ep.id ep.slug ep.approve
+
+        # https://veyepar.nextdayvideo.com/main/approve/15543/Demystifying_AI_Agents_with_Python_Code/49419897/
+
+
         ds.append(d)
 
 
