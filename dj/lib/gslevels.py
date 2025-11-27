@@ -19,7 +19,7 @@ gi.require_version('Gst', '1.0')
 from gi.repository import Gst, GLib
 Gst.init(None)
 
-from mk_mlt import set_text, set_attrib
+# from mk_mlt import set_text, set_attrib
 
 class AudioPreviewer:
 
@@ -441,10 +441,12 @@ def parse_args():
     #        help="start time", )
     # parser.add_option('--count', type=int, default=None,
     #        help="number of seconds", )
+
     parser.add_option('--channels', type=int, default=2,
             help="number of channels to render", )
     parser.add_option('--interval', type=float, default=1,
             help="buffer size in seconds", )
+
     parser.add_option('-v','--verbose', action="store_true",
             help="verbose", )
     parser.add_option('--test', action="store_true",
