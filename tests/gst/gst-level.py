@@ -4,9 +4,10 @@ import optparse
 import sys
 
 import gi
+
 # import pgi as gi
 
-gi.require_version('Gst', '1.0')
+gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib
 
 # init GObject & Co. before importing local classes
@@ -38,15 +39,14 @@ class Abby:
         # do it
         self.play_pipeline(pipeline)
 
-
     def on_eos(self, bus, message):
-        print('Received EOS-Signal')
+        print("Received EOS-Signal")
         self.quit()
 
     def on_error(self, bus, message):
-        print('Received Error-Signal')
+        print("Received Error-Signal")
         (error, debug) = message.parse_error()
-        print(f'Error-Details: {error.code=}, {debug=}')
+        print(f"Error-Details: {error.code=}, {debug=}")
         self.quit()
 
     def quit(self, exitcode=0):
@@ -58,9 +58,8 @@ class Abby:
         return pipeline
 
     def constuct_pipeline(self, pipeline):
-        print('launch pipeline: ' + pipeline)
+        print("launch pipeline: " + pipeline)
         self.pipeline = Gst.parse_launch(pipeline)
-
 
     def setup_bus(self):
 
@@ -73,18 +72,25 @@ class Abby:
 
         self.bus = bus
 
-    def my_name_is(self):
-        pass
-
     def connect_message(self):
         self.bus.connect("message", self._messageCb)
+
+    def my_name_is(self):
+        pass
 
     def _messageCb(self, bus, message):
 
         t = message.type
 
         if t == Gst.MessageType.ELEMENT:
-            self.process(t,bus,message)
+            self.process(t, bus, message)
+
+        elif t == Gst.MessageType.QOS:
+            print("qos")
+            print("import sys; sys.exit()")
+            import code
+
+            code.interact(local=locals())
 
         elif t == Gst.MessageType.ERROR:
             gerror, dbg_msg = message.parse_error()
@@ -96,8 +102,7 @@ class Abby:
             print("EOS sys.quiting...")
             self.quit()
 
-
-    def process(self,t,bus,message):
+    def process(self, t, bus, message):
         pass
 
     def play_pipeline(self, pipeline):
@@ -116,21 +121,20 @@ class Level(Abby):
 
     def my_name_is(self):
 
-        print('setting up level...')
+        print("setting up level...")
 
-        level = self.pipeline.get_by_name( 'level0' )
-        level.set_property( 'interval', int(self.options.interval * Gst.SECOND))
+        level = self.pipeline.get_by_name("level0")
+        level.set_property("interval", int(self.options.interval * Gst.SECOND))
 
-        level.set_property( 'post-messages', True )
+        level.set_property("post-messages", True)
 
-
-    def process(self,t,bus,message):
+    def process(self, t, bus, message):
 
         if message.has_name("level"):
 
             s = message.get_structure()
 
-            levs={}
+            levs = {}
             # for type in ("rms","peak","decay"):
             #    levs[type] = s.get_value(type)
 
@@ -142,43 +146,57 @@ class Level(Abby):
             if max(levs["rms"]) > self.options.threashold:
                 self.triggered(message, levs)
 
-
     # called when levels are above threashold
     def triggered(self, message, levs):
-        # print("import sys; sys.exit()"); import code; code.interact(local=locals())
+        print("triggered")
+        print("import sys; sys.exit()")
+        import code
+
+        code.interact(local=locals())
         print(f"{message.timestamp=:,}")
         print(f"{message.timestamp/Gst.SECOND=:,}")
         print(levs)
         self.quit(1)
 
 
-
-
 def parse_args():
     parser = optparse.OptionParser()
 
-    parser.add_option('--audio-src',
-            default="audiotestsrc freq=8820 num-buffers=500 ! audio/x-raw,channels=2",
-            help="gst audio element")
+    parser.add_option(
+        "--audio-src",
+        default="audiotestsrc freq=8820 num-buffers=500 ! audio/x-raw,channels=2",
+        help="gst audio element",
+    )
 
-    parser.add_option('--interval', type=float, default=1,
-            help="buffer size in seconds", )
+    parser.add_option(
+        "--interval",
+        type=float,
+        default=1,
+        help="buffer size in seconds",
+    )
 
-    parser.add_option('-v','--verbose', action="store_true",
-            help="verbose", )
+    parser.add_option(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="verbose",
+    )
 
-    parser.add_option('--threashold', type=float, default=-8,
-            help="if rms > threashold: exit", )
-
+    parser.add_option(
+        "--threashold",
+        type=float,
+        default=-8,
+        help="if rms > threashold: exit",
+    )
 
     options, args = parser.parse_args()
 
-    return options,args
+    return options, args
 
 
 def main():
 
-    options,args = parse_args()
+    options, args = parse_args()
 
     level = Level(options)
 
@@ -186,6 +204,5 @@ def main():
     mainloop.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-
