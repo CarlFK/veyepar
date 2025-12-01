@@ -39,20 +39,8 @@ class Abby:
         # do it
         self.play_pipeline(pipeline)
 
-    def on_eos(self, bus, message):
-        print("Received EOS-Signal")
-        self.quit()
 
-    def on_error(self, bus, message):
-        print("Received Error-Signal")
-        (error, debug) = message.parse_error()
-        print(f"Error-Details: {error.code=}, {debug=}")
-        self.quit()
-
-    def quit(self, exitcode=0):
-        print("quit called, sys.exiting...")
-        sys.exit(exitcode)
-
+    # __init
     def mk_pipeline(self):
         pipeline = "fakesrc ! fakesink"
         return pipeline
@@ -78,19 +66,29 @@ class Abby:
     def my_name_is(self):
         pass
 
+    def play_pipeline(self, pipeline):
+        print("playing")
+        self.pipeline.set_state(Gst.State.PLAYING)
+
+    # setup_bus
+    def on_eos(self, bus, message):
+        print("Received EOS-Signal")
+        self.quit()
+
+    def on_error(self, bus, message):
+        print("Received Error-Signal")
+        (error, debug) = message.parse_error()
+        print(f"Error-Details: {error.code=}, {debug=}")
+        self.quit()
+
+
+    # connect_message
     def _messageCb(self, bus, message):
 
         t = message.type
 
         if t == Gst.MessageType.ELEMENT:
             self.process(t, bus, message)
-
-        elif t == Gst.MessageType.QOS:
-            print("qos")
-            print("import sys; sys.exit()")
-            import code
-
-            code.interact(local=locals())
 
         elif t == Gst.MessageType.ERROR:
             gerror, dbg_msg = message.parse_error()
@@ -102,12 +100,14 @@ class Abby:
             print("EOS sys.quiting...")
             self.quit()
 
+    # _messageCb if Gst.MessageType.ELEMENT
     def process(self, t, bus, message):
         pass
 
-    def play_pipeline(self, pipeline):
-        print("playing")
-        self.pipeline.set_state(Gst.State.PLAYING)
+
+    def quit(self, exitcode=0):
+        print("quit called, sys.exiting...")
+        sys.exit(exitcode)
 
 
 # class that does something:
@@ -128,6 +128,7 @@ class Level(Abby):
 
         level.set_property("post-messages", True)
 
+
     def process(self, t, bus, message):
 
         if message.has_name("level"):
@@ -135,28 +136,41 @@ class Level(Abby):
             s = message.get_structure()
 
             levs = {}
-            # for type in ("rms","peak","decay"):
-            #    levs[type] = s.get_value(type)
+            for type in ("rms","peak","decay"):
+                levs[type] = s.get_value(type)
 
-            levs["rms"] = s.get_value("rms")
+            # levs["rms"] = s.get_value("rms")
+            levs["delta"] = levs["decay"][0] - levs["rms"][0]
 
             if self.options.verbose:
+                stream_time = s.get_value("stream-time")
+                print(f"{stream_time/Gst.SECOND=:.4f}", end=" ")
                 print(levs)
 
-            if max(levs["rms"]) > self.options.threashold:
-                self.triggered(message, levs)
+            if levs["rms"][0] < -55:
+                return
 
-    # called when levels are above threashold
-    def triggered(self, message, levs):
+            if levs["delta"] > self.options.threashold:
+                self.triggered(s, message, levs)
+
+            # if max(levs["rms"]) <= self.options.threashold:
+            #    self.triggered(s, message, levs)
+
+
+    # called when a level hits threashold
+    def triggered(self, s, message, levs):
         print("triggered")
-        print("import sys; sys.exit()")
-        import code
 
-        code.interact(local=locals())
-        print(f"{message.timestamp=:,}")
-        print(f"{message.timestamp/Gst.SECOND=:,}")
         print(levs)
-        self.quit(1)
+
+        stream_time = s.get_value("stream-time")
+        print(f"{stream_time/Gst.SECOND=:.2f}")
+
+        # the start/end time of the window of time that triggered
+        # I think stream-time is the end, so stream-time-interval is the start.
+        print(f"{stream_time/Gst.SECOND - self.options.interval:.5f} - {stream_time/Gst.SECOND:.5f}")
+
+        # self.quit(1)
 
 
 def parse_args():
