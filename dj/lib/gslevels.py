@@ -21,13 +21,12 @@ Gst.init(None)
 
 # from mk_mlt import set_text, set_attrib
 
-class AudioPreviewer:
+class AudioVizTime:
 
     count = 0
     interval = 1.0  ## buffer size in seconds
     verbose = False
-    # uri = None
-    location = None
+    audiosrc = "audiotestsrc num-buffers=150"
 
     def mk_pipe(self):
 
@@ -35,9 +34,11 @@ class AudioPreviewer:
         # self.pipeline = Gst.parse_launch( "filesrc name=filesrc ! qtdemux ! audioconvert ! level name=wavelevel ! fakesink")
         # "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
         # "uridecodebin3 name=decode ! audioconvert ! level name=wavelevel ! fakesink"
-        self.pipeline = Gst.parse_launch(
-            "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
-            )
+            # "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
+
+        # pipeline = "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
+        pipeline = f"{self.audiosrc} ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
+        self.pipeline = Gst.parse_launch( pipeline )
 
         """
         # removed so I can use decodebin3
@@ -48,9 +49,6 @@ class AudioPreviewer:
         decode = self.pipeline.get_by_name("decode")
         decode.set_property( 'uri', self.uri )
         """
-
-        filesrc = self.pipeline.get_by_name("filesrc")
-        filesrc.set_property( 'location', self.location )
 
         wavelevel = self.pipeline.get_by_name( 'wavelevel' )
         wavelevel.set_property( 'interval', int(self.interval * Gst.SECOND))
@@ -81,7 +79,6 @@ class AudioPreviewer:
         if self.verbose:
             print(( "verbose: _messageCb called with bus:{} message:{}".format(bus, message)))
             print(( "type:", t ))
-            # import code; code.interact(local=locals())
 
         if t == Gst.MessageType.ELEMENT \
               and message.has_name("level"):
@@ -107,6 +104,7 @@ class AudioPreviewer:
             self.quit()
 
         elif t == Gst.MessageType.EOS:
+            print("t == Gst.MessageType.EOS:")
             self.quit()
 
     def start(self):
@@ -119,8 +117,12 @@ class AudioPreviewer:
         self.mainloop.run()
 
     def quit(self):
+        print("self.pipeline.set_state(Gst.State.NULL)")
         self.pipeline.set_state(Gst.State.NULL)
+        print("self.mainloop.quit()")
         self.mainloop.quit()
+
+
 
 # something useful
 
@@ -131,7 +133,7 @@ import png
 import numpy
 import urllib.parse
 
-class Make_png(AudioPreviewer):
+class Make_png(AudioVizTime):
 
     height = 50
     # don't care about anything under -40 (pretty quiet)
@@ -171,6 +173,8 @@ class Make_png(AudioPreviewer):
 
             # right rms
             # map 0 to -70 to height to height * 2
+
+            # import code; code.interact(local=locals())
             l = int(max(levs['rms'][1],self.threashold)
                     * (self.height-1)/-self.threashold + 2 * self.height)
             for y in range(self.height+tick,l):
@@ -213,7 +217,7 @@ class Make_png(AudioPreviewer):
 import xml.etree.ElementTree
 import copy
 
-class Make_mlt_fix_1(AudioPreviewer):
+class Make_mlt_fix_1(AudioVizTime):
 
     height = 50
     # don't care about anything under -40 (pretty quiet)
@@ -422,17 +426,44 @@ def many(indir, outdir):
                     lvlpng( rf_name, png_name )
 
 
-def cklevels(filename):
+def test(filename=None):
     """
     tests the gstreamer functionality:
-      report levels from an input file.
+      report levels from source
     """
-    p=AudioPreviewer()
-    p.location = filename
+    p=AudioVizTime()
+    if filename is not None:
+        p.audiosrc="filesrc"
+    p.mk_pipe()
+
+    # filesrc = p.pipeline.get_by_name("filesrc")
+    # filesrc.set_property( 'location', self.location )
+    # p.location = filename
+
+    p.start()
+
+    p=AudioVizTime()
+    p.audiosrc = "audiotestsrc wave=ticks num-buffers=3000"
+    p.interval = .2
     p.mk_pipe()
     p.start()
 
+
+    png_name="/tmp/gslevels_test1.png"
+    print(f"\nmaking {png_name}")
+    p=Make_png()
+    p.audiosrc = "audiotestsrc wave=ticks num-buffers=600"
+    p.channels=1
+    p.interval = .005
+    p.height = 300
+    p.setup()
+    p.start()
+    p.mk_png(png_name)
+
+
     return
+
+
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -466,27 +497,8 @@ def parse_args():
 
 def main():
 
-    """
-    filenames = [
-   # "/home/carl/Videos/veyepar/test_client/test_show/mp4/Test_Episode.mp4",
-   # "/home/carl/temp/Manageable_Puppet_Infrastructure.webm",
-   # "/home/carl/temp/15_57_39.ogv",
-   #"/home/carl/src/veyepar/tests/165275__blouhond__surround-test-1khz-tone.wav",
-    # "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Swang_102/2015-11-14/cam/10_51_03/00002.MTS",
-    "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Stowe_Hall/2015-11-14/graphics swang 11:14/Clip1GTK19.mov",
-    "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Stowe_Hall/2015-11-14/video swang 11:14/Clip1ATK1.mov",
-    "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Collins_Auditorium/2015-11-14/Saturday Morning Camera/SC1ATK103.mov",
-    "/home/carl/Videos/veyepar/nodevember/nodevember15/dv/Collins_Auditorium/2015-11-14/Saturday Morning GFX/Clip1ATK653.mov",
-    ]
-
-    for filename in filenames:
-        if options.test:
-            cklevels(filename)
-        else:
-            lvlpng(filename)
-
-    return
-    """
+    if options.test:
+        test()
 
     if options.indir:
         many(options.indir, options.outdir)
@@ -499,7 +511,7 @@ def main():
 
         for uri in uris:
             if options.test:
-                cklevels(uri)
+                test(uri)
             else:
                 lvlpng(uri)
 
