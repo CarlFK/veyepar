@@ -37,7 +37,8 @@ class AudioVizTime:
             # "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
 
         # pipeline = "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
-        pipeline = f"{self.audiosrc} ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
+        pipeline = f"{self.audiosrc} ! audioconvert ! level name=wavelevel ! fakesink"
+        print(pipeline)
         self.pipeline = Gst.parse_launch( pipeline )
 
         """
@@ -133,7 +134,7 @@ import png
 import numpy
 import urllib.parse
 
-class Make_png(AudioVizTime):
+class Make_Png(AudioVizTime):
 
     height = 50
     # don't care about anything under -40 (pretty quiet)
@@ -374,7 +375,7 @@ def lvlpng(filename, png_name=None):
          munged if input is http)
     """
 
-    p=Make_png()
+    p=Make_Png()
     # p=Make_mlt_fix_1()
     p.interval = options.interval
     p.height = options.height
@@ -399,7 +400,7 @@ def lvlpng(filename, png_name=None):
         """
         png_name = pathname+".wav.png"
 
-    p.mk_png(png_name)
+    p.mk_Png(png_name)
     print(png_name)
 
 
@@ -442,20 +443,78 @@ def test(filename=None):
 
     p.start()
 
-    p=AudioVizTime()
-    p.audiosrc = "audiotestsrc wave=ticks num-buffers=3000"
-    p.interval = .2
-    p.mk_pipe()
-    p.start()
+def dl_tests():
+
+    class test_dl_png(Make_Png):
+        channels=1
+        interval=.02
+        height=100
+
+        def go(self, png_name):
+            print(png_name)
+            self.setup()
+            self.start()
+            self.mk_png(png_name)
+            print()
+
+    p=test_dl_png()
+    p.audiosrc = "audiotestsrc num-buffers=300"
+    p.go("/tmp/gslvl_dl_1.png")
+
+    p=test_dl_png()
+    p.audiosrc = "audiotestsrc wave=ticks num-buffers=300"
+    p.go("/tmp/gslvl_dl_2.png")
+
+    p=test_dl_png()
+    p.audiosrc = "audiotestsrc wave=ticks sine-periods-per-tick=90 num-buffers=300"
+    p.go("/tmp/gslvl_dl_3.png")
+
+
+
+    return
+
 
 
     png_name="/tmp/gslevels_test1.png"
     print(f"\nmaking {png_name}")
     p=Make_png()
-    p.audiosrc = "audiotestsrc wave=ticks num-buffers=600"
+    p.audiosrc = "audiotestsrc wave=ticks sine-periods-per-tick=90 num-buffers=600"
+    p.interval = .05
+    p.setup()
+    p.start()
+    p.mk_png(png_name)
+
+
+    png_name="/tmp/gslevels_test1.png"
+    print(f"\nmaking {png_name}")
+    p=Make_png()
+    p.audiosrc = "audiotestsrc wave=ticks sine-periods-per-tick=90 num-buffers=600"
     p.channels=1
-    p.interval = .005
+    p.interval = .05
     p.height = 300
+    p.setup()
+    p.start()
+    p.mk_png(png_name)
+
+
+    png_name="/tmp/gslevels_dl1.png"
+    print(f"\nmaking {png_name}")
+    p=Make_png()
+    p.audiosrc = "decklinkvideosrc device-number=0 mode=1080p30  num-buffers=600 ! fakesink decklinkaudiosrc device-number=0 num-buffers=600"
+    p.channels=2
+    p.interval = .01
+    p.height = 100
+    p.setup()
+    p.start()
+    p.mk_png(png_name)
+
+    png_name="/tmp/gslevels_dl2.png"
+    print(f"\nmaking {png_name}")
+    p=Make_png()
+    p.audiosrc = "decklink2src device-number=0 mode=1080p30 num-buffers=600 ! decklink2demux"
+    p.channels=2
+    p.interval = .01
+    p.height = 100
     p.setup()
     p.start()
     p.mk_png(png_name)
@@ -498,7 +557,7 @@ def parse_args():
 def main():
 
     if options.test:
-        test()
+        dl_tests()
 
     if options.indir:
         many(options.indir, options.outdir)
