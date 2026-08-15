@@ -470,54 +470,16 @@ def dl_tests():
     p.go("/tmp/gslvl_dl_3.png")
 
 
-
-    return
-
-
-
-    png_name="/tmp/gslevels_test1.png"
-    print(f"\nmaking {png_name}")
-    p=Make_png()
-    p.audiosrc = "audiotestsrc wave=ticks sine-periods-per-tick=90 num-buffers=600"
-    p.interval = .05
-    p.setup()
-    p.start()
-    p.mk_png(png_name)
-
-
-    png_name="/tmp/gslevels_test1.png"
-    print(f"\nmaking {png_name}")
-    p=Make_png()
-    p.audiosrc = "audiotestsrc wave=ticks sine-periods-per-tick=90 num-buffers=600"
-    p.channels=1
-    p.interval = .05
-    p.height = 300
-    p.setup()
-    p.start()
-    p.mk_png(png_name)
-
-
-    png_name="/tmp/gslevels_dl1.png"
-    print(f"\nmaking {png_name}")
-    p=Make_png()
+    p=test_dl_png()
     p.audiosrc = "decklinkvideosrc device-number=0 mode=1080p30  num-buffers=600 ! fakesink decklinkaudiosrc device-number=0 num-buffers=600"
-    p.channels=2
-    p.interval = .01
-    p.height = 100
-    p.setup()
-    p.start()
-    p.mk_png(png_name)
+    p.go("/tmp/gslvl_dl_4.png")
 
-    png_name="/tmp/gslevels_dl2.png"
-    print(f"\nmaking {png_name}")
-    p=Make_png()
+    p=test_dl_png()
     p.audiosrc = "decklink2src device-number=0 mode=1080p30 num-buffers=600 ! decklink2demux"
-    p.channels=2
-    p.interval = .01
-    p.height = 100
-    p.setup()
-    p.start()
-    p.mk_png(png_name)
+    p.go("/tmp/gslvl_dl_5.png")
+
+    p=test_dl_png()
+    # p.go("/tmp/gslvl_dl_6.png")
 
 
     return
