@@ -142,10 +142,13 @@ class Make_Png(AudioVizTime):
     channels = 2
     grid = None
 
+    # pipeline = "filesrc name=filesrc ! decodebin3 ! audioconvert ! level name=wavelevel ! fakesink"
 
-    def setup(self):
+    def setup(self, filename):
+        self.audiosrc = f"filesrc name=filesrc location={filename} ! decodebin3 "
         self.grid = numpy.zeros((self.height*self.channels,36000), dtype=numpy.uint8)
         self.mk_pipe()
+
 
     def process(self, levs):
 
@@ -381,8 +384,8 @@ def lvlpng(filename, png_name=None):
     p.height = options.height
     p.verbose = options.verbose
     p.channels = options.channels
-    p.location = filename
-    p.setup()
+    # p.location = filename
+    p.setup(filename)
     p.start()
     # p.tree.write('test.mlt')
 
@@ -400,7 +403,7 @@ def lvlpng(filename, png_name=None):
         """
         png_name = pathname+".wav.png"
 
-    p.mk_Png(png_name)
+    p.mk_png(png_name)
     print(png_name)
 
 
@@ -417,7 +420,8 @@ def many(indir, outdir):
     for dirpath, dirnames, filenames in os.walk( indir, followlinks=True):
         d=dirpath[len(options.indir)+1:]
         for f in filenames:
-            if os.path.splitext(f)[1] in ['.mov','.ts', '.dv']:
+            print(f)
+            if os.path.splitext(f)[1] in ['.mov','.ts', '.dv', '.ts', '.mkv']:
                 rf_name = os.path.join(options.indir,d,f)
                 png_name = os.path.join(outdir,d,f+".wav.png")
                 if options.verbose:
@@ -435,7 +439,7 @@ def test(filename=None):
     p=AudioVizTime()
     if filename is not None:
         p.audiosrc="filesrc"
-    p.mk_pipe()
+    p.mk_pipe( filename )
 
     # filesrc = p.pipeline.get_by_name("filesrc")
     # filesrc.set_property( 'location', self.location )
